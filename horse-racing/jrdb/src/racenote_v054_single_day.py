@@ -76,8 +76,7 @@ def session_identity(session: dict[str, Any]) -> dict[str, Any]:
             "logic_version", "binding_sha256", "policy_sha256",
         )
     }
-    # Pre-rebuild v0.5.4 sessions did not carry a contract revision. Keep their
-    # session ids reproducible while binding every new r2 session explicitly.
+    # Every v0.5.4 session must bind the new contract revision explicitly.
 
     if session.get("contract_revision") is not None:
         result["contract_revision"] = session["contract_revision"]
@@ -124,7 +123,7 @@ def init_session(
         raise FileExistsError(f"v0.5.4 single-day root already exists: {root}")
     if len(base_main_sha) != 40 or any(c not in "0123456789abcdef" for c in base_main_sha):
         raise ValueError("base_main_sha must be a full lowercase commit SHA")
-    if contract_revision not in {None, CONTRACT_REVISION}:
+    if contract_revision != CONTRACT_REVISION:
         raise ValueError(f"unsupported v0.5.4 contract revision: {contract_revision}")
 
     handoff, clean_manifest, readers = load_clean(prep_root)
@@ -146,7 +145,7 @@ def init_session(
 
     binding = load_binding(binding_path)
     policy = read_json(policy_path)
-    # v0.5.4 shares the exact v0.5 Reader evidence contract.
+    # v0.5.4 reuses v0.5 Reader binding but adds supplemental context.
     from racenote_reader_v050 import validate_policy_binding
     validate_policy_binding(binding, policy)
 
@@ -266,7 +265,7 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
         session.get("schema_version") != SESSION_VERSION
         or session.get("status") != "SESSION_SEALED"
         or session.get("logic_version") != LOGIC
-        or session.get("contract_revision") not in {None, CONTRACT_REVISION}
+        or session.get("contract_revision") != CONTRACT_REVISION
         or session.get("market_blind") is not True
         or session.get("target_market_opened") is not False
         or session.get("result_opened") is not False
