@@ -1,0 +1,201 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.2",
+  "confidence_target": "pairwise_honmei_over_second_with_A_purification",
+  "confidence_rule": {
+    "A": "pairwise clearly above AND honmei-minus-second pre-IDM >= 5 AND no major absolute uncertainty",
+    "B": "reason to rank ◎ above ○ but A purification gate not met",
+    "C": "◎ and ○ very close / tiebreak-like or material counterargument remains"
+  },
+  "a_purification": {
+    "pre_idm_gap_min": 5,
+    "upgrade_from_B_or_C": false,
+    "obstacle_or_debut_auto_A": false
+  },
+  "formal_audit_status": "PASS",
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "run/btday0102-v054-t1",
+  "source_branch_head_sha": "13c43df1998085a2a17b138c3698009ae43e6f82",
+  "frozen_records_sha256": "fc5ce3bb740aa5b4990d2f0e9443df2dfe8eb4c7f8970a128e3190a9c40929e2",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.4-candidate",
+  "contract_revision": "v054-authored-prose-r2",
+  "btday": "BTDAY-0102",
+  "target_date": "2025-02-08",
+  "methodology": "pre-result human-context pairwise review of frozen decision core plus prospective A-purification gate; RRDB/KYI/SRB signal count is not additive confidence evidence",
+  "assignments": [
+    {
+      "venue": "小倉",
+      "race_no": 1,
+      "honmei": 9,
+      "second": 16,
+      "confidence": "B"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 2,
+      "honmei": 3,
+      "second": 4,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 3,
+      "honmei": 7,
+      "second": 13,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 4,
+      "honmei": 1,
+      "second": 6,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 5,
+      "honmei": 4,
+      "second": 1,
+      "confidence": "B"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 6,
+      "honmei": 6,
+      "second": 5,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 7,
+      "honmei": 6,
+      "second": 1,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 8,
+      "honmei": 5,
+      "second": 12,
+      "confidence": "B"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 9,
+      "honmei": 14,
+      "second": 5,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 10,
+      "honmei": 15,
+      "second": 7,
+      "confidence": "C"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 11,
+      "honmei": 2,
+      "second": 10,
+      "confidence": "A"
+    },
+    {
+      "venue": "小倉",
+      "race_no": 12,
+      "honmei": 2,
+      "second": 4,
+      "confidence": "B"
+    },
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "honmei": 9,
+      "second": 12,
+      "confidence": "B"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "honmei": 4,
+      "second": 6,
+      "confidence": "C"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "honmei": 13,
+      "second": 16,
+      "confidence": "A"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "honmei": 11,
+      "second": 3,
+      "confidence": "A"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "honmei": 5,
+      "second": 11,
+      "confidence": "B"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "honmei": 10,
+      "second": 5,
+      "confidence": "C"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "honmei": 6,
+      "second": 8,
+      "confidence": "B"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "honmei": 4,
+      "second": 9,
+      "confidence": "B"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "honmei": 10,
+      "second": 6,
+      "confidence": "B"
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "honmei": 10,
+      "second": 12,
+      "confidence": "B"
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "honmei": 2,
+      "second": 6,
+      "confidence": "B"
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "honmei": 12,
+      "second": 14,
+      "confidence": "C"
+    }
+  ],
+  "counts": {
+    "A": 3,
+    "B": 11,
+    "C": 10,
+    "total": 24
+  }
+}
