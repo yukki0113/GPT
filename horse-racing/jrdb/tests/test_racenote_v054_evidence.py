@@ -102,6 +102,31 @@ class V054EvidenceTest(unittest.TestCase):
             validate_prose_collection([first, second])
 
 
+
+    def test_v054_btday_workflows_do_not_construct_decision_prose(self):
+        repo_root = Path(__file__).resolve().parents[3]
+        workflow_root = repo_root / ".github" / "workflows"
+        prohibited = (
+            "reader_facing_reason",
+            "'race_model':",
+            '"race_model":',
+            "'mainline_cases':",
+            '"mainline_cases":',
+            "prose=(",
+            "prose = (",
+        )
+        offenders = []
+        for path in workflow_root.glob("racenote_btday*_v054*.yml"):
+            text = path.read_text(encoding="utf-8")
+            hits = [token for token in prohibited if token in text]
+            if hits:
+                offenders.append((path.name, hits))
+        self.assertEqual(
+            offenders,
+            [],
+            f"v0.5.4 BTDAY workflow must not construct model-authored Decision Core/prose: {offenders}",
+        )
+
     def test_r2_requires_explicit_model_authorship(self):
         core = {
             "marks": [3, 13, 4, 2, 7],
