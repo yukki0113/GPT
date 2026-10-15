@@ -3,7 +3,7 @@
 Status: **PROMOTED CURRENT / NEW v0.5.4 SESSIONS**
 Contract: `FORECAST_HUMAN_CONTEXT_READER_v0_5_4_CANDIDATE.md`
 Logic: `RaceNote-Human-Context-Reader-0.5.4-candidate`
-Revision: `v054-context-evidence-r1`
+Revision: `v054-authored-prose-r2` (legacy r1 Freeze verification remains supported)
 
 ## Scope and non-negotiable boundary
 
@@ -103,10 +103,31 @@ winning votes.
 
 For each race, the model authors a complete Decision Core (the same r2
 five-horse structure, fixed challenger boundary and no rank score).
-`reader_facing_reason` is now a supported 2–3 sentence explanation of
-◎'s specific strength, ◎ versus ○ ordering and, when useful, ▲'s different
-win route. Do not publish the internal terms `ordinary five`, `sealed Reader`,
-`r2`, or trivial mark enumeration.
+`reader_facing_reason` is authored **per race by the model**, using the
+already-authored Decision Core; it is not produced by a formatter or fallback
+template. The normal target is a 2–3 sentence explanation of ◎'s specific
+strength, ◎ versus ○ ordering and, when useful, ▲'s different win route.
+
+**Do not put Decision Core or newspaper-prose construction code in a workflow.**
+A workflow may only take model-authored venue JSON and run save / validation /
+Freeze / verify. It must not maintain a marks plan and expand it into
+`race_model`, `mainline_cases`, `ranking_reason` or
+`reader_facing_reason`, and must not assemble prose with f-strings,
+formatters or fixed sentence patterns. There is no programmatic prose fallback.
+
+Each new-r2 core includes:
+
+```json
+"reader_facing_reason_authorship": {
+  "mode": "MODEL_AUTHORED_PER_RACE",
+  "programmatic_template": false,
+  "basis": ["honmei_win_case", "ranking_reason", "single_shot_case"]
+}
+```
+
+The final basis element is optional when ▲ is not discussed. Do not publish
+internal terms such as `ordinary five`, `sealed Reader`, `r2`, or trivial
+mark enumeration.
 
 ```bash
 python horse-racing/jrdb/src/racenote_v054_single_day.py save \
