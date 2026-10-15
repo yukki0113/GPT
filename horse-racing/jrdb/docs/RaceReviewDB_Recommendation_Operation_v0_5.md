@@ -167,6 +167,15 @@ For an individual source run:
 
 These cases do **not** disable the other four RRDB signals.
 
+The operational snapshot can be materialized with:
+
+`.github/workflows/rrdb_race_lap_current_materialization.yml`
+
+Run it with the latest completed race date before a new extraction. It rebuilds
+the canonical 2024-2025 annual + 2026 daily SED RaceLap snapshot and uploads the
+validated `rrdb-race-lap-current` artifact containing `race_lap.parquet`,
+audit JSON, and receipt JSON.
+
 Race key/date mismatch between RRDB source-run identity and RaceLap evidence is
 treated as an integrity error and stops the reverse lookup.
 
