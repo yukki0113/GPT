@@ -54,18 +54,24 @@ def transform(
             else {"status": "UNAVAILABLE", "policy": {"upgrade_creation": False}}
         )
         rrdb = rrdb_by_horse.get(no)
-        # Legacy recommendation is not model-facing in v0.5.4.
-        # Preserve general prior-run review but avoid reading v0.4 and v0.5 as votes.
+        # Single canonical RRDB view: direct v0.5 enrichment when available,
+        # otherwise an explicitly supplied v0.5 bundle; never mix v0.4 votes.
         old_review = (horse.get("other_context") or {}).get("racereview")
+        direct_v05 = None
         if isinstance(old_review, dict):
-            old_review.pop("recommendation", None)
+            existing = old_review.pop("recommendation", None)
             old_review.pop("next_watch", None)
-        horse["rrdb_v05"] = (
-            {"status": rrdb.get("status", "AVAILABLE"),
-             "contract": "rrdb-recommendation-signals-v0.5",
-             "signals": copy.deepcopy(rrdb.get("signals", []))}
-            if rrdb is not None else {"status": "UNAVAILABLE", "signals": []}
-        )
+            if isinstance(existing, dict) and existing.get("contract_version") == "rrdb-recommendation-signals-v0.5":
+                direct_v05 = existing
+        supplied_rrdb = rrdb_by_horse.get(no)
+        if supplied_rrdb is not None:
+            if supplied_rrdb.get("contract_version", "rrdb-recommendation-signals-v0.5") != "rrdb-recommendation-signals-v0.5":
+                raise ValueError(f"unexpected RRDB recommendation contract for horse {no}")
+            horse["rrdb_v05"] = copy.deepcopy(supplied_rrdb)
+        elif direct_v05 is not None:
+            horse["rrdb_v05"] = copy.deepcopy(direct_v05)
+        else:
+            horse["rrdb_v05"] = {"status": "UNAVAILABLE", "contract_version": "rrdb-recommendation-signals-v0.5", "signals": []}
         keys = history_race_keys_by_horse.get(no, [])
         if len(keys) != len(set(keys)):
             raise ValueError(f"duplicate source race key for horse {no}")
@@ -77,7 +83,7 @@ def transform(
     extra["v054_evidence"] = {
         "rrdb_contract_required": "rrdb-recommendation-signals-v0.5",
         "legacy_recommendation_excluded": True,
-        "rrdb_v05_horse_count": sum(int(int(h["identity"]["horse_no"]) in rrdb_by_horse) for h in horses),
+        "rrdb_v05_horse_count": sum(int(h["rrdb_v05"].get("status") != "UNAVAILABLE") for h in horses),
         "kyi_horse_count": sum(int(int(h["identity"]["horse_no"]) in kyi_by_horse) for h in horses),
         "lap_lookup_status": "AVAILABLE" if race_lap_reader is not None else "NOT_SUPPLIED",
         "target_date": target_date,
