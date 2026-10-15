@@ -1,0 +1,69 @@
+name: RaceNote BTDAY-0101 v0.5.4 T2 Freeze
+
+on:
+  push:
+    branches: [run/btday0101-v054-t1]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0101/V054_T2_TRIGGER'
+
+permissions:
+  contents: write
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: run/btday0101-v054-t1
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preflight authored inputs
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0101/20250705/v054'
+          test -f "$ROOT/incoming/函館.json"
+          test -f "$ROOT/incoming/小倉.json"
+          test -f "$ROOT/incoming/福島.json"
+          test ! -e "$ROOT/frozen"
+          test ! -e "$ROOT/authored_decisions"
+      - name: Save model-authored venue decisions
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0101/20250705/v054'
+          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/函館.json"
+          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/小倉.json"
+          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/福島.json"
+      - name: Freeze and verify
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0101/20250705/v054'
+          python horse-racing/jrdb/src/racenote_v054_single_day.py freeze --root "$ROOT"
+          python horse-racing/jrdb/src/racenote_v054_single_day.py verify --root "$ROOT"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0101/20250705/v054')
+          h=json.loads((root/'frozen/day_handoff.json').read_text())
+          assert h['status']=='FROZEN_CLEAN_BLIND'
+          assert h['validator_status']=='PASS'
+          assert h['record_count']==36
+          assert h['market_blind'] is True
+          assert h['target_market_opened'] is False
+          assert h['result_opened'] is False
+          print(json.dumps({'status':'BTDAY0101_T2_FREEZE_PASS','record_count':36,'session_id':h['session_id']},ensure_ascii=False))
+          PY
+      - name: Commit Freeze
+        run: |
+          set -euo pipefail
+          TARGET='horse-racing/jrdb/backtests/BTDAY-0101/20250705/v054'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET/authored_decisions" "$TARGET/frozen"
+          git commit -m 'RaceNote: Freeze BTDAY-0101 v0.5.4 predictions'
+          git push origin HEAD:run/btday0101-v054-t1
