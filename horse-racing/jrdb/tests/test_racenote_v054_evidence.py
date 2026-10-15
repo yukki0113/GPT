@@ -11,7 +11,7 @@ from jrdb_raw import Parser
 from racenote_v054_evidence import (
     decode_reference_runs, historical_lap_contexts, kyi_hidden_value_context,
 )
-from racenote_decision_core_v054 import validate_prose
+from racenote_decision_core_v054 import validate_prose, validate_prose_collection
 
 
 class FakeLapReader:
@@ -86,6 +86,20 @@ class V054EvidenceTest(unittest.TestCase):
         self.assertEqual(result["FUTURE"]["status"], "AS_OF_EXCLUDED")
         self.assertEqual(result["EMPTY"]["status"], "NO_LAPS")
         self.assertEqual(result["MISSING"]["status"], "MISSING")
+
+    def test_repeated_mark_swap_comment_rejected_across_races(self):
+        first = {
+            "venue": "函館",
+            "race_no": 1,
+            "reader_facing_reason": "◎3はクラス上位級の走りを繰り返し、調教も上向き。○13も能力上位だが、現条件での勝ち切り再現性では3を上に取る。▲4は先行残りの別筋。",
+        }
+        second = {
+            "venue": "函館",
+            "race_no": 2,
+            "reader_facing_reason": "◎8はクラス上位級の走りを繰り返し、調教も上向き。○6も能力上位だが、現条件での勝ち切り再現性では8を上に取る。▲7は先行残りの別筋。",
+        }
+        with self.assertRaisesRegex(ValueError, "near-template"):
+            validate_prose_collection([first, second])
 
     def test_newspaper_quality_guard(self):
         marks = [3, 13, 4, 2, 7]
