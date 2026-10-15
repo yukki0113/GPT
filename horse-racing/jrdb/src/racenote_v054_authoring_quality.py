@@ -78,12 +78,15 @@ def inspect(cores: list[dict], *, strict: bool = True) -> dict:
             counts["race_specific_case_count"] += 1
         comp = core.get("candidate_compression", {})
         boundary = paths["boundary_review.reason"]
+        ordinary = comp.get("ordinary_five") or []
+        anchors = {core.get("role_assignment", {}).get("honmei_horse_no"), core.get("role_assignment", {}).get("second_horse_no")}
+        boundary_horse = next((horse for horse in reversed(ordinary) if horse not in anchors), None)
         # Five-runner races have no external horse to compare.
         if comp.get("decision") == "NO_EXTERNAL_CHALLENGER":
             counts["boundary_specificity_pass"] += 1
         elif (_COMPARE.search(boundary) and len(boundary) >= 35
-              and str(comp.get("external_challenger_horse_no")) in boundary
-              and str(core.get("boundary_review", {}).get("alternative_horse_no")) in boundary
+              and re.search(rf"(?<![0-9]){comp.get('external_challenger_horse_no')}番(?![0-9])", boundary) is not None
+              and re.search(rf"(?<![0-9]){boundary_horse}番(?![0-9])", boundary) is not None
               and _EVIDENCE.search(boundary)):
             counts["boundary_specificity_pass"] += 1
         else:
