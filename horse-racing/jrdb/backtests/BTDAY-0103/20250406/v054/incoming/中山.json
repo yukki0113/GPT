@@ -1,0 +1,876 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "race_model": "中山1Rはダート1800m未勝利。1800mの直接実績と現在状態を重視した。",
+    "marks": [
+      6,
+      13,
+      3,
+      9,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6ホークライトは1800m2着IDM36、逃げて状態も上向きで勝ち切りに最も近い。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13プレシャストップは1600m3着IDM32、デキ抜群で距離延長でも上積みが大きい。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3フォアファンは1800m4、6着と条件経験があり、前が競れば差し込みの一発。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6はダ1800で2着IDM36、状態上昇と逃げ脚が強み。○13は初戦1600で3着にデキ抜群の上積み。▲3は1800の直接経験から差し込みを警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        13,
+        3,
+        9,
+        12
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番を境界候補として比較。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 13,
+      "honmei_win_case": "6ホークライトは1800m2着IDM36、逃げて状態も上向きで勝ち切りに最も近い。",
+      "second_case": "13プレシャストップは1600m3着IDM32、デキ抜群で距離延長でも上積みが大きい。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6番を勝ち切り評価で最上位、13番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "race_model": "中山2Rはダート1200m未勝利。短距離の直接実績と状態上昇を比較した。",
+    "marks": [
+      16,
+      14,
+      13,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "16クインズシフォンは1200m2着IDM38、能力40で状態上昇も強い。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14ステラマテュティナは1200m3着IDM31、先行して安定。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13ファリアは1200m4着IDM30、差し脚があり前崩れなら浮上。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎16は1200m2着IDM38で能力値40、状態も上向く。○14は同距離3着で先行安定。▲13は1200m4着の差し脚から展開一つ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        14,
+        13,
+        2,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番を境界候補として比較。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 14,
+      "honmei_win_case": "16クインズシフォンは1200m2着IDM38、能力40で状態上昇も強い。",
+      "second_case": "14ステラマテュティナは1200m3着IDM31、先行して安定。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "16番を勝ち切り評価で最上位、14番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "race_model": "中山3Rはダート1800m未勝利。連続好走馬を軸に位置取りと上昇度を比較した。",
+    "marks": [
+      11,
+      12,
+      6,
+      1,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11グレイテストソングは1800mで連続2着IDM39～40、状態上昇も明確。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12ティアップドライブは1800m4着IDM34、逃げて状態も上向く。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6ソラノキャンバスは1600m5着IDM34、距離延長で差し脚を伸ばせれば一発。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "13番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎11はダ1800で連続2着と安定。○12は同距離4着の逃げ馬で状態上昇。▲6はマイル差しから延長で末脚が生きれば怖い。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        12,
+        6,
+        1,
+        4
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13番を境界候補として比較。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "13番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 12,
+      "honmei_win_case": "11グレイテストソングは1800mで連続2着IDM39～40、状態上昇も明確。",
+      "second_case": "12ティアップドライブは1800m4着IDM34、逃げて状態も上向く。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11番を勝ち切り評価で最上位、12番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "race_model": "中山4Rは障害2880m未勝利。障害実戦の着順と飛越安定を最優先した。",
+    "marks": [
+      3,
+      6,
+      11,
+      5,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3アルカンサスは障害2880m2着、2860m3着と実戦再現性が最上位。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6カルマンフィルターは2880m4、2着で先行して安定。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11アルデドゥオーモは2880m3着があり状態上昇、前二頭が崩れれば浮上。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎3は障害2880で2着、2860で3着。○6も2880で2着歴があり安定。▲11は2880で3着と状態上昇から一角崩しを狙う。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        6,
+        11,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7番を境界候補として比較。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "7番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 6,
+      "honmei_win_case": "3アルカンサスは障害2880m2着、2860m3着と実戦再現性が最上位。",
+      "second_case": "6カルマンフィルターは2880m4、2着で先行して安定。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "3番を勝ち切り評価で最上位、6番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "race_model": "中山5Rは芝1600m未勝利。同距離好走馬と状態上昇馬を比較した。",
+    "marks": [
+      1,
+      16,
+      11,
+      2,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1ルトンワージは1600m2着IDM41、RRDBの先行持続材料もあり条件適性が高い。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16ダングラールは1600m2着IDM34、1200m5着IDM36で先行力が安定。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11ニットウアクシアは初戦1600m3着IDM32、調教指数12.9と上積みがある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 1,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎1は芝1600で2着IDM41、先行持続の裏付けもある。○16も同距離2着の先行馬。▲11は初戦3着から上積みがあれば一発。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        16,
+        11,
+        2,
+        4
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番を境界候補として比較。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 16,
+      "honmei_win_case": "1ルトンワージは1600m2着IDM41、RRDBの先行持続材料もあり条件適性が高い。",
+      "second_case": "16ダングラールは1600m2着IDM34、1200m5着IDM36で先行力が安定。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1番を勝ち切り評価で最上位、16番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "race_model": "中山6Rはダート1800m1勝クラス。1800mの高IDMと昇級勢の勢いを比較した。",
+    "marks": [
+      4,
+      7,
+      12,
+      8,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4チュウワクリスエスは1800m2着IDM52、前走勝ちもあり能力上限が一枚上。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7ミライヘノカギは1800m2着IDM52歴、状態上昇も強い。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12テンワンダーマンは1800m勝ち直後でデキ抜群、昇級でも前で運べれば一発。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎4はダ1800で2着IDM52、勝ち上がり内容も強い。○7も同距離2着IDM52で状態上昇。▲12は前走勝ちにデキ抜群が加わり昇級でも警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        7,
+        12,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5番を境界候補として比較。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "5番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 7,
+      "honmei_win_case": "4チュウワクリスエスは1800m2着IDM52、前走勝ちもあり能力上限が一枚上。",
+      "second_case": "7ミライヘノカギは1800m2着IDM52歴、状態上昇も強い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4番を勝ち切り評価で最上位、7番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "race_model": "中山7Rは芝1600m1勝クラス。現級能力と先行持続、差し脚を比較した。",
+    "marks": [
+      7,
+      5,
+      9,
+      2,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7パワースナッチは1400m3着IDM48、1600m勝ちにRRDBの先行持続材料もある。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5ジョイフルニュースは1600m1、2着、デキ抜群で逃げ脚が強い。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9デリュージョンは1600m3着IDM43、主線二頭が競れば差し込み余地。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎7は芝1600勝ちと1400のIDM48、RRDBも持続を補強。○5は同距離1、2着にデキ抜群。▲9は1600で3着の差し脚から展開待ち。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        5,
+        9,
+        2,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番を境界候補として比較。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 5,
+      "honmei_win_case": "7パワースナッチは1400m3着IDM48、1600m勝ちにRRDBの先行持続材料もある。",
+      "second_case": "5ジョイフルニュースは1600m1、2着、デキ抜群で逃げ脚が強い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7番を勝ち切り評価で最上位、5番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "race_model": "中山8Rは芝1800m1勝クラス。1800m実績と中距離能力、状態を比較した。",
+    "marks": [
+      11,
+      9,
+      4,
+      2,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11レイククレセントは1800m3着IDM48、デキ抜群で能力も最上位。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9アオイメルスイは2000m3着IDM46、状態上昇し1800m短縮も好材料。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4アッシュバーグは1600m4着IDM46、先行力を1800mへ延ばせれば一発。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎11は芝1800で3着IDM48、デキ抜群。○9は2000で3着IDM46、状態上昇。▲4はマイルでIDM46の先行力から延長で残り目。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        9,
+        4,
+        2,
+        1
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番を境界候補として比較。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 9,
+      "honmei_win_case": "11レイククレセントは1800m3着IDM48、デキ抜群で能力も最上位。",
+      "second_case": "9アオイメルスイは2000m3着IDM46、状態上昇し1800m短縮も好材料。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11番を勝ち切り評価で最上位、9番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "race_model": "中山9R安房特別は芝2500m2勝クラス。長距離の直接実績を重視した。",
+    "marks": [
+      9,
+      4,
+      10,
+      3,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9レッドテリオスは2500m3着IDM52、2200m勝ちで状態上昇も強い。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4ハイラントは2500m4着、2200m3着でIDM49～50と安定。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10スピーディブレイクは2400m5着IDM51、追込から前が止まれば一発。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9は芝2500で3着IDM52、状態上昇。○4は2500で4着、2200でも3着と安定。▲10は2400でIDM51の追込脚から差し切りを警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        4,
+        10,
+        3,
+        12
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番を境界候補として比較。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 4,
+      "honmei_win_case": "9レッドテリオスは2500m3着IDM52、2200m勝ちで状態上昇も強い。",
+      "second_case": "4ハイラントは2500m4着、2200m3着でIDM49～50と安定。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9番を勝ち切り評価で最上位、4番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "race_model": "中山10RアリエスSはダート1800m3勝クラス。現級の絶対能力と同距離再現性を比較した。",
+    "marks": [
+      8,
+      11,
+      1,
+      14,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8アピーリングルックは1800m勝ちIDM61、1600m3着IDM60で能力61と抜ける。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11サトノアイオライトは1800mで連続2、3着IDM58、状態上昇も強い。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1マンマリアーレは1800m2着IDM61歴があり、差しで主線二頭を逆転する余地。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎8はダ1800勝ちIDM61、マイルでもIDM60と能力上限が最上位。○11は1800で連続好走。▲1は同距離2着IDM61の差し脚で一角崩し。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        11,
+        1,
+        14,
+        4
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番を境界候補として比較。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 11,
+      "honmei_win_case": "8アピーリングルックは1800m勝ちIDM61、1600m3着IDM60で能力61と抜ける。",
+      "second_case": "11サトノアイオライトは1800mで連続2、3着IDM58、状態上昇も強い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8番を勝ち切り評価で最上位、11番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "race_model": "中山11R美浦Sは芝2000m3勝クラス。中距離の能力上限と現在状態を比較した。",
+    "marks": [
+      6,
+      16,
+      2,
+      8,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6レガーロデルシエロは1800m1、2着IDM56～62、能力64でデキ抜群。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16キュクヌスは1800m3、4着IDM59～62で先行して安定。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2ミスタージーティーは2000m2着IDM59、状態上昇から主線二頭が競れば差し切りまで。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "13番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6は芝1800で1、2着、IDM62にデキ抜群。○16は1800でIDM62と先行安定。▲2は2000で2着IDM59、状態上昇から差し込みを警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        16,
+        2,
+        8,
+        14
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13番を境界候補として比較。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "13番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 16,
+      "honmei_win_case": "6レガーロデルシエロは1800m1、2着IDM56～62、能力64でデキ抜群。",
+      "second_case": "16キュクヌスは1800m3、4着IDM59～62で先行して安定。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6番を勝ち切り評価で最上位、16番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "race_model": "中山12Rはダート1200m2勝クラス。短距離の現級安定度と状態を重視した。",
+    "marks": [
+      10,
+      11,
+      2,
+      5,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10ネイトは1200mで連続2着IDM50～53、能力54でデキ抜群。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11ウォルラスは1200m4着IDM51、1400m4着で状態上昇もある。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番は主線二頭に次ぐ能力・条件適性を持ち、連下圏で評価する。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番は展開が噛み合えば圏内に届く余地があり五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2メモリーグラスは1200m3着IDM50、前が競れば差し切りまである。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14番も比較したが、五頭目を明確に上回る直接材料が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎10はダ1200で連続2着、IDM53にデキ抜群で勝ち切りに最も近い。○11は1200で4着IDM51、状態上昇。▲2は同距離3着IDM50の差し脚で一発。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        11,
+        2,
+        5,
+        7
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14番を境界候補として比較。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "14番は五頭目を明確に上回らず、既定五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 11,
+      "honmei_win_case": "10ネイトは1200mで連続2着IDM50～53、能力54でデキ抜群。",
+      "second_case": "11ウォルラスは1200m4着IDM51、1400m4着で状態上昇もある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "10番を勝ち切り評価で最上位、11番を対抗とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
