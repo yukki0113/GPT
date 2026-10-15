@@ -1,0 +1,223 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 4,
+    "race_model": "阪神4Rは芝2000m未勝利。2000mの直接実績を中心に、1600～1800mから延ばす馬の能力上限と状態上昇を比較する。",
+    "marks": [
+      8,
+      5,
+      6,
+      2,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "ダンツウルスは芝2000m2着IDM37、1800m3着IDM39で、逃げて調教18.3、状態上昇。距離適性と前受け性能が最も整う。"
+      },
+      {
+        "horse_no": 5,
+        "case": "エルナトは芝1600m3着IDM39、能力42で追込型。2000mは初でも調教16.0の状態上昇があり、能力上限で8を脅かす。"
+      },
+      {
+        "horse_no": 2,
+        "case": "ダーリンダーリンは芝2000m5着IDM39歴があり、差しで同距離の直接能力が高い。近走のダート大敗を度外視して芝戻りを評価する。"
+      },
+      {
+        "horse_no": 7,
+        "case": "マテンロウゼロは芝2000mでIDM33、31と安定し、RRDBの後方高上がり材料もある。追込展開になれば連下圏へ届く。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "ジュンプリメーロは芝2000m初戦3着IDM31、調教15.2で状態上昇。先行して2戦目の上積みが出れば、主線二頭より前から粘り込む一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4ウェルムは芝2000m初戦4着IDM30に対し、五頭目7マテンロウゼロは同距離でIDM33、31を連続し、後方高上がり材料もあるため、再現性で7を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      }
+    ],
+    "reader_facing_reason": "◎8は芝2000m2着IDM37、1800m3着IDM39に状態上昇が加わり、逃げて主導権を取れる。○5は芝1600m3着IDM39と能力42で上限は高いが、距離直接性で8を上位。▲6は2000m初戦3着からの上積みで前残りを狙う。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        5,
+        6,
+        2,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4ウェルムは芝2000m初戦4着IDM30を、五頭目7の同距離IDM33、31と末脚材料に対して比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4は2000m4着IDM30に対し、7は同距離でIDM33、31を連続し、後方高上がり材料もあるため7を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 5,
+      "honmei_win_case": "8ダンツウルスは芝2000m2着IDM37、1800m3着IDM39で逃げ、調教18.3の状態上昇から同距離を押し切れる。",
+      "second_case": "5エルナトは芝1600m3着IDM39、能力42、調教16.0で状態上昇。延長をこなせば末脚で8を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○5は能力42と芝1600m3着IDM39で上限が高い一方、◎8は芝2000m2着IDM37の直接実績と逃げの能動性があり、今回条件の勝ち筋で8を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 5,
+    "race_model": "阪神5Rは芝1600m新馬。過去走がないため、事前能力値と調教指数、仕上がり状態からマイル初戦の完成度を比較する。",
+    "marks": [
+      17,
+      5,
+      9,
+      1,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 17,
+        "case": "ドヴィーグランは事前能力40.3で最上位、調教19.9かつデキ抜群。芝1600m新馬で初戦から能力を出せる完成度が一段高い。"
+      },
+      {
+        "horse_no": 5,
+        "case": "アスクブームキセキは事前能力34.5、調教14.8で状態上昇。能力次位グループで仕上がりも強く、初戦から17を追える。"
+      },
+      {
+        "horse_no": 1,
+        "case": "メイショウノヴァスは事前能力29.0、調教1.7、CYB54。派手な上昇はないがマイル新馬として能力値が中位上位にある。"
+      },
+      {
+        "horse_no": 16,
+        "case": "ファイヤーナイフは事前能力27.9、調教11.0、CYB57。能力はやや劣るが仕上がりの良さで連下へ食い込む余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "アンソニーは事前能力29.1、CYB66で状態上昇。能力以上に実戦気配が高く、初戦で流れに乗れれば上位二頭を崩す一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4アビラーシャは事前能力22.2、調教5.2に対し、五頭目16ファイヤーナイフは能力27.9、調教11.0、CYB57で上回り、完成度比較で16を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新馬戦で過去走はない。◎17は事前能力40.3と調教19.9、デキ抜群で完成度が最上位。○5も能力34.5に調教14.8の上昇があるが、総合値で17を上に取る。▲9はCYB66と状態上昇があり、初戦で流れに乗れば食い込める。",
+    "candidate_compression": {
+      "ordinary_five": [
+        17,
+        5,
+        9,
+        1,
+        16
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4アビラーシャは事前能力22.2、調教5.2を、五頭目16の能力27.9と調教11.0、CYB57に対して比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4は能力22.2、調教5.2に対し、16は能力27.9、調教11.0、CYB57で仕上がりが上のため16を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 17,
+      "second_horse_no": 5,
+      "honmei_win_case": "17ドヴィーグランは事前能力40.3で最上位、調教19.9のデキ抜群で、芝1600m新馬を初戦から押し切れる完成度がある。",
+      "second_case": "5アスクブームキセキは事前能力34.5、調教14.8で状態上昇し、17が初戦で甘さを見せれば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○5は能力34.5と調教14.8で高水準だが、◎17は能力40.3、調教19.9、デキ抜群と主要指標で上回るため17を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 6,
+    "race_model": "阪神6Rはダート1800m新馬。既走材料がないため、事前能力と調教、CYBから中距離ダート初戦の完成度を比較する。",
+    "marks": [
+      5,
+      7,
+      6,
+      8,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "ワールドロイヤルは事前能力31.0、調教14.6、CYB66で状態上昇。能力と実戦気配のバランスが最も高く、初戦から動ける。"
+      },
+      {
+        "horse_no": 7,
+        "case": "クイノールトは事前能力32.8でメンバー最上位、調教12.1、CYB56。仕上がりも安定しており、能力値だけなら5を上回る。"
+      },
+      {
+        "horse_no": 8,
+        "case": "シャフメランは事前能力29.9、調教10.9で状態上昇。上位二頭より能力は少し下だが、仕上がりの良さで連下圏へ届く。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ラカーリアは事前能力23.1、調教17.0。CYB31は低めでも調教負荷が高く、初戦の前進余地を評価して五頭目に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "マルベックは事前能力32.4で上位、調教16.1。CYB39は高くないが能力値と調教の組み合わせが強く、初戦で実戦気配を上回れば勝ち切りまである。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2テスタヴェローチェは能力17.9、CYB59で状態上昇だが、五頭目1ラカーリアは能力23.1、調教17.0と能力・調教で上回るため1を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新馬戦で過去走はない。◎5は能力31.0に調教14.6、CYB66の状態上昇で完成度が高い。○7は能力32.8と上だが、実戦気配とのバランスで5を優先。▲6は能力32.4と調教16.1が強く、初戦で噛み合えば逆転まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        7,
+        6,
+        8,
+        1
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2テスタヴェローチェは能力17.9、CYB59の状態上昇を、五頭目1の能力23.1と調教17.0に対して比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2はCYB59が高い一方で能力17.9に留まり、1は能力23.1と調教17.0で上回るため1を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 7,
+      "honmei_win_case": "5ワールドロイヤルは事前能力31.0、調教14.6、CYB66で状態上昇し、ダ1800m新馬で初戦から完成度を発揮できる。",
+      "second_case": "7クイノールトは事前能力32.8で最上位、調教12.1、CYB56。能力を素直に出せれば5を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○7は能力32.8で◎5の31.0を上回る一方、5は調教14.6とCYB66、状態上昇で実戦完成度が高いため、初戦の勝ち切り評価を5に置く。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
