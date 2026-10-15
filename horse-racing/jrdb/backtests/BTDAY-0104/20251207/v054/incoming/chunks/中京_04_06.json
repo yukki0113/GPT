@@ -1,0 +1,223 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 4,
+    "race_model": "中京4Rは芝1600m未勝利。1600mの直接実績を軸に、1400～1800mからの距離変化は先行力と状態上昇で比較する。",
+    "marks": [
+      13,
+      10,
+      14,
+      8,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "トライアンフパスは芝1600m2着IDM36、1400m3着IDM39と安定し、先行して調教18.4。マイルの直接実績と仕上がりの両面で上位。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ジューンアゲインは芝1600m2着IDM31、1800m4着IDM39で逃げ、能力39。調教23.8と状態上昇が強く、前から押し切る勝ち筋がある。"
+      },
+      {
+        "horse_no": 8,
+        "case": "テイエムアイランは芝1400m3着IDM34、4着IDM36。先行してRRDBの先行持続材料もあり、1600m延長でも前残りを狙える。"
+      },
+      {
+        "horse_no": 2,
+        "case": "アパレイユは芝1400m2着IDM35、4着IDM37。差しで安定しており、1600m延長で追走が楽になれば連下圏へ届く。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "リピは芝1600m初戦2着IDM34で先行型。調教5.1と大きな上昇はないが、同距離2戦目で再現できれば主線二頭を前から逆転する余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11ヤクジョは芝1600m6着IDM32、1800m6着IDM40と能力はある一方、五頭目2アパレイユは芝1400m2着IDM35、4着IDM37と近走安定度が高く、マイル延長の再現性で2を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 8,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎13は芝1600m2着IDM36、1400m3着IDM39に調教18.4が加わり、先行して安定。○10は1600m2着と1800mIDM39、調教23.8で勢いは上だが、同距離再現性で13を上位。▲14は1600m初戦2着で、2戦目の上積みなら前から逆転できる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        10,
+        14,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11ヤクジョは芝1800m6着IDM40と1600m6着IDM32を、五頭目2の芝1400m2着IDM35、4着IDM37の近走安定度に対して比較した。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "11は能力上限は高いがマイルでIDM32、2は1400mでIDM35～37を安定して出しており、距離延長の再現性で2を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 10,
+      "honmei_win_case": "13トライアンフパスは芝1600m2着IDM36、1400m3着IDM39で先行し、調教18.4からマイルで押し切れる。",
+      "second_case": "10ジューンアゲインは芝1600m2着IDM31、1800m4着IDM39で逃げ、調教23.8の状態上昇から13を前で逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○10は芝1800mIDM39と調教23.8で上昇度が高い一方、◎13は1600m2着と1400m3着で距離適性の再現性が高く、今回のマイルで13を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 5,
+    "race_model": "中京5Rは芝1400m新馬。既走材料がないため、事前能力と調教指数、CYB、状態から短距離初戦の完成度を比較する。",
+    "marks": [
+      16,
+      17,
+      12,
+      1,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "エルヴィッタは事前能力49.1で抜けて最上位、調教17.4で状態上昇。芝1400m新馬で初戦から能力を出せる完成度が最も高い。"
+      },
+      {
+        "horse_no": 17,
+        "case": "テクノピーチは事前能力40.7、調教6.7、CYB56。能力値は16に次ぎ、仕上がりも大きな不安がなく初戦から動ける。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ウォーターサグラダは事前能力36.7、調教7.5、CYB61。能力と実戦気配のバランスが良く、1400m新馬で連下上位へ届く。"
+      },
+      {
+        "horse_no": 3,
+        "case": "セリエンクーニゲンは事前能力35.8、調教10.4、CYB60。上位勢に近い能力と仕上がりがあり、初戦から圏内を狙える。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "ゴーゴーリチャードは事前能力37.0、CYB66でデキ抜群。能力以上に実戦気配が良く、初戦で流れに乗れば16、17を崩す一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11リヴァイは事前能力33.9、調教8.8で状態上昇だが、五頭目3セリエンクーニゲンは能力35.8、調教10.4、CYB60と主要指標で上回るため3を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新馬戦で過去走はない。◎16は事前能力49.1と調教17.4の状態上昇で完成度が抜ける。○17は能力40.7で次位だが、総合値で16を上位。▲12は能力37.0にCYB66のデキ抜群があり、初戦で実戦気配をそのまま出せば食い込める。",
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        17,
+        12,
+        1,
+        3
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11リヴァイは事前能力33.9、調教8.8の状態上昇を、五頭目3の能力35.8、調教10.4、CYB60に対して比較した。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "11は状態上昇があるが、3は能力35.8と調教10.4、CYB60で総合的に上回るため3を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 17,
+      "honmei_win_case": "16エルヴィッタは事前能力49.1で最上位、調教17.4の状態上昇もあり、芝1400m新馬を初戦から押し切れる完成度がある。",
+      "second_case": "17テクノピーチは事前能力40.7、CYB56で能力次位。16が初戦で甘さを見せれば逆転候補になる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○17は事前能力40.7で高水準だが、◎16は能力49.1と調教17.4の状態上昇で明確に上回るため16を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 6,
+    "race_model": "中京6Rはダート1400m1勝クラス。1400mの直接実績を軸に、1200mや中距離からの条件変化は先行力と状態上昇で比較する。",
+    "marks": [
+      15,
+      14,
+      4,
+      1,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "ゼットスパンキーはダ1400m2着IDM50、5着IDM44、6着IDM48で、追込ながら同距離の再現性が高い。調教5.6、CYB82の状態上昇も強い。"
+      },
+      {
+        "horse_no": 14,
+        "case": "レーティッシュはダ1400m3着IDM48、5着IDM37、7着IDM46。先行して調教17.7の状態上昇があり、前受けの勝ち筋が明確。"
+      },
+      {
+        "horse_no": 1,
+        "case": "パヴィーアはダ1400m勝ちIDM46、5着IDM42、40と差しで安定。調教15.3の状態上昇があり、連下以上の再現性を持つ。"
+      },
+      {
+        "horse_no": 11,
+        "case": "エコロカディスはダ1600m5着IDM50、能力51の逃げ馬。1400m短縮で先行力を生かせれば連下圏へ粘り込める。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "ボディブローはダ1200m2着IDM49、1000m2着IDM44で先行型。1400m延長でも調教12.5とCYB67を生かして好位を取れれば、主線二頭を前で封じる一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2カレンワッツアップはダ1800m2着IDM49、3着IDM46と能力は高い一方、五頭目11エコロカディスはダ1600m5着IDM50の逃げ馬で、1400m短縮への位置取り適性が高いため11を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎15はダ1400m2着IDM50を筆頭に同距離で安定し、CYB82の上昇も強い。○14も1400m3着IDM48と先行力があるが、能力上限で15を上位。▲4は1200m2着IDM49の先行馬で、延長でも好位を取れれば前残りの一発がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        14,
+        4,
+        1,
+        11
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2カレンワッツアップはダ1800m2着IDM49の地力を、五頭目11のダ1600m5着IDM50と1400m短縮での逃げ脚に対して比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2は中距離能力が高いが、11は1600mIDM50と逃げの位置取りが今回の1400mへ直結しやすいため11を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 14,
+      "honmei_win_case": "15ゼットスパンキーはダ1400m2着IDM50、5着IDM44、6着IDM48と安定し、CYB82の状態上昇から差し切れる。",
+      "second_case": "14レーティッシュはダ1400m3着IDM48、調教17.7の状態上昇があり、先行して15より前から押し切れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○14はダ1400m3着IDM48と先行力が強い一方、◎15は同距離2着IDM50を含め複数回高IDMを出し、能力上限と再現性で15を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
