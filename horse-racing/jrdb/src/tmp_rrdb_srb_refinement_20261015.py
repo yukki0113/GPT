@@ -286,8 +286,9 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
           FROM a JOIN b USING(period,family)
           ORDER BY period,family,rule_name
         ) TO {q(out/'rule_lift_vs_current.csv')} (HEADER,DELIMITER ',')""")
-        th=con.execute("SELECT * FROM thresholds ORDER BY surface_code,distance_bucket").fetchdf()
-        th.to_csv(out/"frozen_thresholds_2024_2025.csv",index=False)
+        con.execute(f"""COPY (
+          SELECT * FROM thresholds ORDER BY surface_code,distance_bucket
+        ) TO {q(out/'frozen_thresholds_2024_2025.csv')} (HEADER,DELIMITER ',')""")
         meta={
           "status":"PASS",
           "train_outcome_period":["2024-01-01","2025-12-31"],
