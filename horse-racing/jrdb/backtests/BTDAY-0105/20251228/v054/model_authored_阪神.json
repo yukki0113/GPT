@@ -47,7 +47,7 @@
         10
       ],
       "external_challenger_horse_no": 6,
-      "external_challenger_case": "6はA1の注意情報から再確認したが、能力値と予測位置では見劣る。",
+      "external_challenger_case": "外部6番は障害ではなくダート1800mのIDM14.7、予測着差33で、A1の注意情報を踏まえても能力面の直接支持が弱い。",
       "excluded_horse_no": 6,
       "decision": "KEEP_ORDINARY_FIVE",
       "reason": "固定境界10はIDM16.4、KYI15.2で差しの余地があり、6の隠れ値だけでは置換しない。"
@@ -263,7 +263,7 @@
         14
       ],
       "external_challenger_horse_no": 11,
-      "external_challenger_case": "11はA1の注意情報で再確認したが、基礎能力値が低い。",
+      "external_challenger_case": "外部11番はダート1400m新馬でIDM10.3。A1の注意情報はあるが、調教・基礎能力の直接支持が薄い。",
       "excluded_horse_no": 11,
       "decision": "KEEP_ORDINARY_FIVE",
       "reason": "固定境界14はIDM20.1で11を約10ポイント上回る。隠れ値注意だけではこの差を覆さない。"
@@ -335,7 +335,7 @@
         8
       ],
       "external_challenger_horse_no": 2,
-      "external_challenger_case": "2はA1の注意情報から穴候補として再確認したが、基礎能力は低め。",
+      "external_challenger_case": "外部2番は障害未勝利のIDM13でA1の注意情報を持つが、障害適性を裏づける能力値は五頭より低い。",
       "excluded_horse_no": 2,
       "decision": "KEEP_ORDINARY_FIVE",
       "reason": "固定境界8はIDM14と調教55、上昇評価を持ち、2の隠れ値情報だけでは置換しない。"
@@ -466,7 +466,7 @@
     },
     "boundary_review": {
       "alternative_horse_no": 4,
-      "reason": "外部4番と固定境界7番を比較。4はIDM42で適性○だが、固定境界7番はIDM44、調教69、先行可能。直接能力と状態で7を残す。"
+      "reason": "外部4番と固定境界7番をIDMと調教で直接比較。4番はIDM42に対して7番はIDM44、調教69で、7番が能力と状態の両面で上回る。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "9アメリカンチーフと6インディゴは能力差がほぼなく、9をわずかに上。差し勢が多い組み合わせなので、10が前で楽をすると想定以上に粘る可能性がある。",
@@ -563,7 +563,7 @@
       "second_case": "3はIDM57.5とKYI15.3でほぼ互角。展開が差し向きなら逆転可能。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "両馬は非常に近いが、9が能力値とクラス評価で僅かに上。差し脚比較で9を先に取った。"
+      "ranking_reason": "9番は3番よりIDMが58対57.5で僅かに上。両馬とも差し脚が主線だが、クラス評価も含めた能力差を比較して9番を先に取った。"
     },
     "reader_facing_reason_authorship": {
       "mode": "MODEL_AUTHORED_PER_RACE",
