@@ -1,0 +1,231 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 1,
+    "race_model": "中京1Rはダート1800m未勝利。同距離の直接実績を最優先し、マイルからの延長組は能力上限と状態面で補完して比較する。",
+    "marks": [
+      2,
+      13,
+      5,
+      6,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "アメリカンイズムはダ1800m初戦2着IDM34で、能力36。差して同距離の直接実績が最上位で、調教23.9も高く勝ち切りに最も近い。"
+      },
+      {
+        "horse_no": 13,
+        "case": "マーゴットデイズはダ1800mで4、5、5着、IDM24～29。差しで同距離経験を重ねており、安定して相手上位に置ける。"
+      },
+      {
+        "horse_no": 6,
+        "case": "クリコバローはダ1800mで6着IDM14、8着IDM26。追込型で振れ幅はあるが、同距離経験の蓄積から連下候補に残す。"
+      },
+      {
+        "horse_no": 10,
+        "case": "タケルムサシはダ1600mでIDM24、22。1800mは初だが差し脚があり、延長で追走が楽になれば連下圏へ届く余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "アデルフィーはダ1600mでIDM26、21、調教は低めでもCYB72のデキ抜群。1800m延長で折り合えば、状態面の上積みから主線を差し切る一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4エクヴァータルは芝2000m6着IDM25でダート実績がなく、五頭目10タケルムサシはダ1600mでIDM24、22を持つため、ダート直接性で10を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2はダ1800m初戦2着IDM34に調教23.9と同距離の完成度が一段上。○13は1800mで4、5、5着と安定するが、能力上限で2を上位に取る。▲5はダ1600m経験にCYB72のデキ抜群があり、延長で差し脚が生きれば一発。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        13,
+        5,
+        6,
+        10
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4エクヴァータルは芝2000m6着IDM25からのダート替わりを、五頭目10のダ1600mIDM24、22というダート直接性に対して比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4は芝2000m実績のみで、10はダ1600mで複数回の実戦IDMを持つため、今回のダート条件への再現性で10を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 13,
+      "honmei_win_case": "2アメリカンイズムはダ1800m初戦2着IDM34、能力36、調教23.9で、同距離2戦目なら差し切って勝ち上がれる。",
+      "second_case": "13マーゴットデイズはダ1800mで4、5、5着と安定し、差しで2が取りこぼせば逆転候補になる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○13はダ1800mで複数回掲示板級の再現性がある一方、◎2は初戦2着IDM34と調教23.9で能力・上積みが上のため2を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 2,
+    "race_model": "中京2Rはダート1400m1勝クラス。同距離の現級好走実績を中心に、先行持続と差しの末脚、状態上昇を比較する。",
+    "marks": [
+      7,
+      3,
+      11,
+      12,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "ヒミノエトワールはダ1400mで連続2着IDM56、51、能力57。先行して調教21.2の状態上昇、RRDBの先行持続材料もあり勝ち切りに最も近い。"
+      },
+      {
+        "horse_no": 3,
+        "case": "アンリーベイビーはダ1400m3着IDM49、能力49でデキ抜群。差しで現級の直接実績があり、7を追う相手として最有力。"
+      },
+      {
+        "horse_no": 12,
+        "case": "ララバッカナールはダ1400m3着IDM40、芝1400m2着IDM48。先行して調教18.2の状態上昇があり、条件戻りで連下以上を狙える。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ハヤブサオヒメサマはダ1400m勝ちIDM43、2着IDM30があり逃げ脚を持つ。RRDBの先行持続材料もあり前残りを警戒する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "マーゴットレーヴはダ1400m2着IDM47があり、調教3.2と状態上昇。RRDBの後方高上がり材料もあり、先行勢が競れば追込からまとめて差す一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8カンカールはダ1400m8着IDM42に対し、五頭目1ハヤブサオヒメサマは同距離勝ちIDM43と逃げ脚、先行持続材料があり、勝ち筋の明確さで1を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 11,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 1,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎7はダ1400mで連続2着IDM56、51に状態上昇と先行持続の裏付けまで揃う。○3も同距離3着IDM49でデキ抜群だが、能力上限で7を上位。▲11は1400m2着歴と末脚材料があり、前崩れなら一気に差し込める。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        3,
+        11,
+        12,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8カンカールはダ1400m8着IDM42の差し脚を、五頭目1の同距離勝ちIDM43と逃げの先行持続材料に対して比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8は1400mIDM42までに対し、1は同距離勝ちIDM43と先行持続材料を持ち、自分で勝ち筋を作れるため1を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 3,
+      "honmei_win_case": "7ヒミノエトワールはダ1400mで連続2着IDM56、51、能力57、調教21.2の状態上昇があり、先行して押し切れる。",
+      "second_case": "3アンリーベイビーはダ1400m3着IDM49、デキ抜群で差し脚があり、7が止まれば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○3はダ1400m3着IDM49とデキ抜群で上昇余地がある一方、◎7は同距離で連続2着IDM56、51と能力上限・再現性で上回るため7を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 3,
+    "race_model": "中京3Rはダート1800m1勝クラス。同距離の現級連対・掲示板実績を軸に、状態上昇と位置取りの再現性を比較する。",
+    "marks": [
+      14,
+      1,
+      9,
+      10,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "アークドールはダ1800m5着IDM53、2着IDM48、2400m3着IDM52で能力53。追込型でも中距離ダートの上限が最も高い。"
+      },
+      {
+        "horse_no": 1,
+        "case": "エイユーファイヤーはダ1800m4着IDM49、2着IDM48、1900m2着IDM46。差しで同距離の再現性が高く、調教15.4も強い。"
+      },
+      {
+        "horse_no": 10,
+        "case": "グレイルクエストはダ1600m3着IDM49、1800m4着IDM36。差しで能力50.3があり、延長でも現級の連下圏へ届く上限がある。"
+      },
+      {
+        "horse_no": 6,
+        "case": "チムニートップスはダ1800m6着IDM46、2000m5着IDM44。先行して中距離で安定し、展開利があれば連下に残れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "ポイントネモはダ1800m3着IDM49、4着IDM44で、先行して調教20.9の状態上昇。前で自分の形に持ち込めば主線二頭を封じる一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3マンオブザマッチはダ1700m1着IDM43でデキ抜群だが、五頭目6チムニートップスはダ1800m6着IDM46、2000m5着IDM44と今回距離に近い現級実績があり、直接性で6を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎14はダ1800m5着IDM53、2着歴まであり中距離の能力上限が最上位。○1は1800m4、2着と再現性では上だが、最大IDMで14を優先する。▲9は1800m3着に調教20.9の上昇があり、先行して前残りなら逆転まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        1,
+        9,
+        10,
+        6
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3マンオブザマッチはダ1700m勝ちIDM43とデキ抜群を、五頭目6のダ1800m6着IDM46と2000m5着IDM44に対して比較した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3は1700m勝ちの勢いがあるが、6は今回の1800mでIDM46を出し中距離現級経験もあるため、条件直接性で6を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 1,
+      "honmei_win_case": "14アークドールはダ1800m5着IDM53、2着IDM48、2400m3着IDM52で、中距離ダートの能力上限から差し切れる。",
+      "second_case": "1エイユーファイヤーはダ1800m4着IDM49、2着IDM48と安定し、調教15.4で14より前から運べれば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○1はダ1800mで4、2着と再現性が高い一方、◎14は同距離IDM53と2400mIDM52で能力上限が上回るため、勝ち切り評価を14に置く。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
