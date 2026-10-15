@@ -6,6 +6,7 @@ import csv
 import json
 import subprocess
 import sys
+import statistics
 import zipfile
 from collections import defaultdict
 from pathlib import Path
@@ -144,6 +145,47 @@ RULES = [
 ]
 
 
+
+def build_pressure_rows(con: duckdb.DuckDBPyConnection) -> None:
+    con.execute("""
+      CREATE TABLE lap_pressure(
+        race_key VARCHAR,
+        middle_mean_vs_opening DOUBLE,
+        middle_max_vs_opening DOUBLE,
+        prelast3_std_sec DOUBLE
+      )
+    """)
+    source = con.execute("""
+      SELECT race_key, segment_distances_m, lap_times_sec
+      FROM lap
+      WHERE coverage_status='AVAILABLE'
+    """).fetchall()
+    rows = []
+    for race_key, distances, laps in source:
+        pairs = [
+            (int(d), float(t))
+            for d, t in zip(distances or [], laps or [])
+            if d is not None and t is not None and int(d) == 200
+        ]
+        full = [t for _, t in pairs]
+        if len(full) < 6:
+            continue
+        prelast3 = full[:-3]
+        if len(prelast3) < 3:
+            continue
+        opening = prelast3[:2]
+        middle = prelast3[2:]
+        if not middle:
+            continue
+        opening_mean = sum(opening) / len(opening)
+        rows.append((
+            str(race_key),
+            sum(middle) / len(middle) - opening_mean,
+            max(middle) - opening_mean,
+            statistics.pstdev(prelast3),
+        ))
+    con.executemany("INSERT INTO lap_pressure VALUES (?,?,?,?)", rows)
+
 def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
     hp = rrdb_paths(rrdb_root,"fact_horse_performance",(2024,2025,2026))
     rc = rrdb_paths(rrdb_root,"fact_race_context",(2024,2025,2026))
@@ -153,6 +195,7 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
         con.execute("CREATE VIEW hp AS SELECT * FROM read_parquet(["+",".join(q(x) for x in hp)+"],union_by_name=true)")
         con.execute("CREATE VIEW rc AS SELECT * FROM read_parquet(["+",".join(q(x) for x in rc)+"],union_by_name=true)")
         con.execute(f"CREATE VIEW lap AS SELECT *, CASE WHEN distance_m<=1400 THEN 'SPRINT' WHEN distance_m<=1800 THEN 'MILE' WHEN distance_m<=2200 THEN 'MIDDLE' ELSE 'STAYING' END distance_bucket FROM read_parquet({q(lap)})")
+        build_pressure_rows(con)
         con.execute(f"CREATE VIEW payouts AS SELECT * FROM read_csv_auto({q(payout_csv)},header=true,all_varchar=false)")
         con.execute("""
           CREATE VIEW starts0 AS
@@ -178,8 +221,10 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
           CREATE VIEW source AS
           SELECT s.*, l.distance_bucket,l.early_late_delta_sec,l.lap_std_sec,l.lap_range_sec,
                  l.max_decel_sec,l.last_vs_best_sec,l.last3_slope_sec_per_segment,
-                 l.pace_up_remaining_furlongs
+                 l.pace_up_remaining_furlongs,
+                 p.middle_mean_vs_opening,p.middle_max_vs_opening,p.prelast3_std_sec
           FROM starts s JOIN lap l USING(race_key)
+          LEFT JOIN lap_pressure p USING(race_key)
           WHERE s.race_date>=DATE '2024-01-01' AND s.race_date<DATE '2026-10-13'
             AND s.next_race_date IS NOT NULL
             AND s.next_race_date>s.race_date
@@ -198,8 +243,14 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
              quantile_cont(last3_slope_sec_per_segment,0.30) sl30,
              quantile_cont(last3_slope_sec_per_segment,0.70) sl70,
              quantile_cont(max_decel_sec,0.70) dec70,
-             quantile_cont(pace_up_remaining_furlongs,0.30) pu30
+             quantile_cont(pace_up_remaining_furlongs,0.30) pu30,
+             quantile_cont(p.middle_mean_vs_opening,0.20) mm20,
+             quantile_cont(p.middle_mean_vs_opening,0.30) mm30,
+             quantile_cont(p.middle_max_vs_opening,0.20) mx20,
+             quantile_cont(p.middle_max_vs_opening,0.30) mx30,
+             quantile_cont(p.prelast3_std_sec,0.30) ps30
           FROM lap
+          LEFT JOIN lap_pressure p USING(race_key)
           WHERE race_date>=DATE '2024-01-01' AND race_date<DATE '2026-01-01'
             AND coverage_status='AVAILABLE'
           GROUP BY 1,2
@@ -222,6 +273,14 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
         add("FRONT_EL70_SLOPE70","FRONT","front_base AND early_late_delta_sec>=el70 AND last3_slope_sec_per_segment>=sl70")
         add("FRONT_EL70_DECEL70","FRONT","front_base AND early_late_delta_sec>=el70 AND max_decel_sec>=dec70")
         add("FRONT_RESCUE","FRONT","pace_balance_percentile>=50 AND pace_balance_percentile<70 AND corner4_frontness>=0.60 AND winner_gap_sec<=0.50 AND early_late_delta_sec>=el80 AND (last_vs_best_sec>=lb70 OR last3_slope_sec_per_segment>=sl70)")
+        add("FRONT_SUSTAIN_MEAN30","FRONT","front_base AND middle_mean_vs_opening<=mm30")
+        add("FRONT_SUSTAIN_MEAN20","FRONT","front_base AND middle_mean_vs_opening<=mm20")
+        add("FRONT_SUSTAIN_MAX30","FRONT","front_base AND middle_max_vs_opening<=mx30")
+        add("FRONT_SUSTAIN_MAX20","FRONT","front_base AND middle_max_vs_opening<=mx20")
+        add("FRONT_SUSTAIN_BOTH30","FRONT","front_base AND middle_mean_vs_opening<=mm30 AND middle_max_vs_opening<=mx30")
+        add("FRONT_SUSTAIN_STD30","FRONT","front_base AND prelast3_std_sec<=ps30")
+        add("FRONT_SUSTAIN_MEAN30_DECEL70","FRONT","front_base AND middle_mean_vs_opening<=mm30 AND max_decel_sec>=dec70")
+
         add("REAR_BASE","REAR","rear_base")
         add("REAR_EL30","REAR","rear_base AND early_late_delta_sec<=el30")
         add("REAR_EL20","REAR","rear_base AND early_late_delta_sec<=el20")
@@ -261,7 +320,7 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
           SELECT period,rule_name,race_date,race_key,horse_no,horse_id,
             pace_balance_percentile,corner4_frontness,winner_gap_sec,last3f_speed_percentile,
             early_late_delta_sec,last_vs_best_sec,last3_slope_sec_per_segment,max_decel_sec,
-            pace_up_remaining_furlongs,next_race_date,next_race_key,next_horse_no,next_finish,
+            pace_up_remaining_furlongs,middle_mean_vs_opening,middle_max_vs_opening,prelast3_std_sec,next_race_date,next_race_key,next_horse_no,next_finish,
             win_payout,place_payout
           FROM settled ORDER BY period,rule_name,race_date,race_key,horse_no
         ) TO {q(out/'matched_details.csv')} (HEADER,DELIMITER ',')""")
@@ -297,7 +356,20 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
           "normalization":"surface_code x distance_bucket",
           "distance_buckets":{"SPRINT":"<=1400","MILE":"1500-1800","MIDDLE":"1900-2200","STAYING":">=2300"},
           "minimum_reference_races_per_group":100,
-          "rules":[r[0] for r in RULES],
+          "pressure_definition":{
+            "opening":"first two full 200m segments",
+            "middle":"full 200m segments after opening and before final 3F",
+            "middle_mean_vs_opening":"mean(middle)-mean(opening)",
+            "middle_max_vs_opening":"max(middle)-mean(opening)",
+            "prelast3_std_sec":"population stddev of full 200m segments before final 3F",
+            "interpretation":"lower values mean less mid-race relief / more sustained leader pressure"
+          },
+          "rules":[r[0] for r in RULES] + [
+            "FRONT_SUSTAIN_MEAN30","FRONT_SUSTAIN_MEAN20",
+            "FRONT_SUSTAIN_MAX30","FRONT_SUSTAIN_MAX20",
+            "FRONT_SUSTAIN_BOTH30","FRONT_SUSTAIN_STD30",
+            "FRONT_SUSTAIN_MEAN30_DECEL70"
+          ],
           "settled_rows":con.execute("SELECT count(*) FROM settled").fetchone()[0],
           "source_rows":con.execute("SELECT count(*) FROM source").fetchone()[0],
           "race_lap_rows":con.execute("SELECT count(*) FROM lap").fetchone()[0],
