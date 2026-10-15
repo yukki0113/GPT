@@ -69,6 +69,8 @@ def inspect(cores: list[dict], *, strict: bool = True) -> dict:
                 normalized = _normal(value)
                 if len(normalized) >= 18:
                     for previous_label, previous in seen.get(path.split("[")[0], []):
+                        if previous_label == label:
+                            continue  # same-race roles can legitimately share evidence
                         if SequenceMatcher(None, normalized, previous).ratio() >= 0.92:
                             errors.append(f"{label} {path}: near duplicate of {previous_label}")
                             counts["template_similarity_violations"] += 1
