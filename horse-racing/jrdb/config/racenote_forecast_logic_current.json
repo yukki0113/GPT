@@ -12,7 +12,7 @@
     "contract_revision": "v053-boundary-safety-r2",
     "status": "FROZEN_REPRODUCTION_PREDECESSOR"
   },
-  "change_reason": "Promote v0.5.4 from v0.5.3 r2: preserve protected ordinary-five/win-first/asymmetric-shot boundary semantics while adding canonical RRDB v0.5, historical SRB RaceLap context, KYI hidden-value recheck context, and non-template reader-facing prose.",
+  "change_reason": "RaceNote v0.5.4 r2: retain forecast/evidence semantics and prohibit programmatic/template newspaper-prose generation; new short comments must be model-authored per race from the authored Decision Core. Legacy r1 Freezes remain verifiable.",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
   "calibration_protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
@@ -40,7 +40,7 @@
   "prospective_research_candidate": {
     "status": "PROMOTED_CURRENT_FOR_NEW_CLEAN_BLIND_RUNS",
     "logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
-    "contract_revision": "v054-context-evidence-r1",
+    "contract_revision": "v054-authored-prose-r2",
     "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_4_CANDIDATE.md",
     "logic_config": "config/racenote_forecast_logic_human_context_v0_5_4.json",
     "execution_contract": "RACENOTE_V054_SINGLE_DAY",
@@ -51,9 +51,10 @@
     "single_day_entrypoint": "src/racenote_v054_single_day.py",
     "predecessor_logic_version": "RaceNote-Human-Context-Reader-0.5.3-candidate",
     "promoted_baseline_logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
-    "design_note": "v0.5.3 r2 decision invariants retained; canonical RRDB v0.5 plus source-run SRB context and KYI hidden-value recheck context; no additive score; specific reader-facing prose generated only from authored Decision Core.",
+    "design_note": "v0.5.3 r2 decision invariants retained; RRDB v0.5/SRB/KYI semantics unchanged; reader-facing prose must be model-authored per race from authored Decision Core, with no workflow/template/fallback generation. Legacy v054-context-evidence-r1 Freeze verification remains supported.",
     "same_day_ab": false,
     "production_pointer_unchanged": false,
-    "freeze_artifact": "<output-root>/v054/frozen/records.json"
+    "freeze_artifact": "<output-root>/v054/frozen/records.json",
+    "reader_facing_prose_policy": "MODEL_AUTHORED_PER_RACE_ONLY_NO_PROGRAMMATIC_TEMPLATE"
   }
 }
