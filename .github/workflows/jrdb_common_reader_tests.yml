@@ -4,7 +4,9 @@ on:
   push:
     paths:
       - 'horse-racing/jrdb/src/jrdb_raw.py'
-      - 'horse-racing/jrdb/src/jrdb_race_lap.py'
+      - 'horse-racing/jrdb/src/jrdb_race_lap*.py'
+      - 'horse-racing/jrdb/schema/race_lap_evidence_schema.json'
+      - 'horse-racing/jrdb/tests/test_jrdb_race_lap*.py'
       - 'horse-racing/jrdb/src/racenote_lap_shape_evidence.py'
       - 'horse-racing/jrdb/src/jrdb_raw_history.py'
       - 'horse-racing/jrdb/src/fetch_jrdb_history.py'
@@ -68,7 +70,9 @@ on:
   pull_request:
     paths:
       - 'horse-racing/jrdb/src/jrdb_raw.py'
-      - 'horse-racing/jrdb/src/jrdb_race_lap.py'
+      - 'horse-racing/jrdb/src/jrdb_race_lap*.py'
+      - 'horse-racing/jrdb/schema/race_lap_evidence_schema.json'
+      - 'horse-racing/jrdb/tests/test_jrdb_race_lap*.py'
       - 'horse-racing/jrdb/src/racenote_lap_shape_evidence.py'
       - 'horse-racing/jrdb/src/jrdb_raw_history.py'
       - 'horse-racing/jrdb/src/fetch_jrdb_history.py'
@@ -141,7 +145,7 @@ jobs:
         run: |
           python -m py_compile \
             src/jrdb_raw.py \
-            src/jrdb_race_lap.py \
+            src/jrdb_race_lap*.py \
             src/racenote_lap_shape_evidence.py \
             src/jrdb_raw_history.py \
             src/fetch_jrdb_history.py \
@@ -171,6 +175,10 @@ jobs:
             src/jrdb_result_query.py \
             src/jrdb_result_query_runner.py \
             src/jrdb_newspaper_build.py
+
+
+      - name: Run common race-lap dataset, Store and Reader contracts
+        run: python -m pytest -q horse-racing/jrdb/tests/test_jrdb_race_lap_dataset.py horse-racing/jrdb/tests/test_jrdb_race_lap_store.py horse-racing/jrdb/tests/test_jrdb_race_lap_reader.py
 
       - name: Run common reader regressions
         working-directory: horse-racing/jrdb/tests
