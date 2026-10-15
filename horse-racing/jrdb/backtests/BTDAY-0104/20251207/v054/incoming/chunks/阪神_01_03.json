@@ -1,0 +1,223 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 1,
+    "race_model": "阪神1Rはダート1800m未勝利。1800mの直接実績を最優先し、距離短縮組は能力上限と状態上昇で補完して比較する。",
+    "marks": [
+      9,
+      10,
+      8,
+      4,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "ウンナターシャはダ1800mで2着IDM40があり、差しで同距離の直接実績が最上位。調教19.3も高く、前走からの再現性を期待できる。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ペンダントはダ1400m2着IDM41、能力41.1で状態上昇。1800mは未知でも差しの能力上限が高く、延長をこなせば9に迫れる。"
+      },
+      {
+        "horse_no": 4,
+        "case": "スターチューンはダ1800m初戦6着IDM33。追込型で位置取り課題はあるが、同距離の直接能力は中位以上にあり連下候補。"
+      },
+      {
+        "horse_no": 7,
+        "case": "オラヴィンリンナはダ1400m3着IDM33、1800m9着IDM22。状態上昇があり、距離経験を生かして差し込み余地を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "デアアテナはダ1800m初戦5着IDM36、能力36。調教14.0も高く、2戦目で位置取りが改善すれば同距離で一気に前進する可能性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1アルムアポジェはダ1800m7着IDM25の先行馬だが、五頭目7オラヴィンリンナはダ1400m3着IDM33と状態上昇があり、能力上限で7を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9はダ1800m2着IDM40と同距離実績が最上位で、調教19.3も高い。○10はダ1400m2着IDM41と能力上限は高いが、1800mの直接性で9を上位。▲8は初戦1800m5着IDM36で、2戦目の上積みがあれば一気に詰められる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        10,
+        8,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1アルムアポジェはダ1800m7着IDM25の直接経験を、五頭目7のダ1400m3着IDM33と状態上昇に対して比較した。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1は1800m経験があるがIDM25に留まり、7は1400m3着IDM33と状態上昇で能力上限が高いため7を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 10,
+      "honmei_win_case": "9ウンナターシャはダ1800m2着IDM40で、調教19.3。差して同距離の直接実績を生かし勝ち切れる。",
+      "second_case": "10ペンダントはダ1400m2着IDM41、能力41.1で状態上昇。1800m延長をこなせば9を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○10はダ1400m2着IDM41と能力上限でわずかに上だが、◎9はダ1800m2着IDM40の直接実績があり、今回条件の再現性で9を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 2,
+    "race_model": "阪神2Rはダート1400m未勝利。同距離の先行好走馬を中心に、近走IDMと位置取りの再現性を比較する。",
+    "marks": [
+      8,
+      11,
+      3,
+      5,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "ジョアンはダ1400m初戦3着IDM36で、先行して同距離の直接実績が最上位。調教18.5も高く、2戦目で押し切りまで見込める。"
+      },
+      {
+        "horse_no": 11,
+        "case": "マルモリラピダスはダ1400m3着IDM32。先行して条件適性があり、芝1800m9着後でもダート1400mへ戻れば再現性が高い。"
+      },
+      {
+        "horse_no": 5,
+        "case": "レッツエンジョイはダ1400m初戦4着IDM28。先行型で条件直接性があり、2戦目の上積みがあれば連下圏へ届く。"
+      },
+      {
+        "horse_no": 13,
+        "case": "メイショウタイザンはダ1800m4着IDM37、1700m5着IDM19。短縮で追走が変われば、先行力を生かして圏内へ残る余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "ハードシングスはダ1400mで4着IDM33、5着IDM29。差し脚があり、先行勢が競れば同距離実績を生かしてまとめて差し込む可能性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16タイムレスラブはダ1400m7着IDM22が最高なのに対し、五頭目13メイショウタイザンはダ1800m4着IDM37があり、距離短縮でも能力上限で13を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎8はダ1400m初戦3着IDM36で、調教18.5と先行力から2戦目の押し切りを期待。○11も同距離3着IDM32と安定するが、能力上限で8を上位。▲3は1400mで4、5着歴があり、前が競れば差し切る別ルートがある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        11,
+        3,
+        5,
+        13
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16タイムレスラブはダ1400m7着IDM22を、五頭目13のダ1800m4着IDM37と短縮適性に対して比較した。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "16は1400m直接経験があるがIDM22に留まり、13は1800m4着IDM37で能力上限が高いため13を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 11,
+      "honmei_win_case": "8ジョアンはダ1400m初戦3着IDM36で先行し、調教18.5。2戦目も同距離で前受けから押し切れる。",
+      "second_case": "11マルモリラピダスはダ1400m3着IDM32で先行型。条件戻りなら8を好位で追走して逆転を狙える。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○11はダ1400m3着IDM32の直接実績がある一方、◎8は初戦同距離3着IDM36と調教18.5で上回るため8を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 3,
+    "race_model": "阪神3Rは芝1400m未勝利。同距離の連対実績を最優先し、1600mからの短縮組は先行力と状態で補完して比較する。",
+    "marks": [
+      11,
+      1,
+      13,
+      16,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "シャンデリュイーズは芝1400mで連続2着IDM35、32。先行して同距離の再現性が高く、調教16.9も強いため勝ち切りに最も近い。"
+      },
+      {
+        "horse_no": 1,
+        "case": "ダノンベルビューは芝1400m初戦2着IDM33で、先行して条件適性が明確。11より経験は少ないが、2戦目の上積みで逆転余地がある。"
+      },
+      {
+        "horse_no": 16,
+        "case": "ゴッドアイは芝1400m2着IDM30があり逃げ脚を持つ。前で自分の形に持ち込めれば連下圏へ粘り込める。"
+      },
+      {
+        "horse_no": 3,
+        "case": "エバイダンスは芝1400m3着IDM34歴があり、先行型。近走7着でも同距離の能力上限から連下候補に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "アンジュラフィーユは芝1600m初戦2着IDM35で逃げ、調教19.1。RRDBの先行持続材料もあり、1400m短縮で主導権を取れば一気に押し切る可能性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15メイクワンズデイは芝1600m2着IDM32の逃げ馬だが、五頭目3エバイダンスは芝1400m3着IDM34の直接実績があり、今回距離への再現性で3を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 13,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎11は芝1400mで連続2着、IDM35まで出し調教16.9と安定。○1も同距離初戦2着IDM33だが、再現性で11を上位に取る。▲13は芝1600m2着IDM35の逃げに先行持続の裏付けがあり、短縮で主導権を握れば一発。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        1,
+        13,
+        16,
+        3
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15メイクワンズデイは芝1600m2着IDM32の逃げ脚を、五頭目3の芝1400m3着IDM34という距離直接性に対して比較した。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "15は1600m2着IDM32があるが、3は今回の芝1400mで3着IDM34を持つため、条件再現性で3を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 1,
+      "honmei_win_case": "11シャンデリュイーズは芝1400mで連続2着IDM35、32。先行して調教16.9も高く、同距離で押し切れる。",
+      "second_case": "1ダノンベルビューは芝1400m初戦2着IDM33。先行して2戦目の上積みがあれば11を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○1は芝1400m初戦2着IDM33と素質を示す一方、◎11は同距離で連続2着、IDM35まで出しており、再現性と調教16.9で11を上位に取る。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
