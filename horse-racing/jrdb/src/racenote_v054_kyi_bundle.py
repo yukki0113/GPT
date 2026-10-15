@@ -40,7 +40,10 @@ def _records_for_date(archive: Path, target_date: str):
 
 
 def build_bundle(prep_root: Path, archives: list[Path]) -> dict[str, Any]:
-    handoff, _, readers = load_clean(prep_root)
+    handoff, _, readers = load_clean(
+        prep_root,
+        expected_rrdb_contract="rrdb-recommendation-signals-v0.5",
+    )
     if handoff.get("market_blind") is not True:
         raise ValueError("forecast_prep must be market-blind")
     if handoff.get("result_opened") is not False or handoff.get("target_market_opened") is not False:
