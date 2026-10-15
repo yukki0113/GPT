@@ -54,6 +54,12 @@ def transform(
             else {"status": "UNAVAILABLE", "policy": {"upgrade_creation": False}}
         )
         rrdb = rrdb_by_horse.get(no)
+        # Legacy recommendation is not model-facing in v0.5.4.
+        # Preserve general prior-run review but avoid reading v0.4 and v0.5 as votes.
+        old_review = (horse.get("other_context") or {}).get("racereview")
+        if isinstance(old_review, dict):
+            old_review.pop("recommendation", None)
+            old_review.pop("next_watch", None)
         horse["rrdb_v05"] = (
             {"status": rrdb.get("status", "AVAILABLE"),
              "contract": "rrdb-recommendation-signals-v0.5",
@@ -70,6 +76,7 @@ def transform(
     extra = candidate.setdefault("provenance", {})
     extra["v054_evidence"] = {
         "rrdb_contract_required": "rrdb-recommendation-signals-v0.5",
+        "legacy_recommendation_excluded": True,
         "rrdb_v05_horse_count": sum(int(int(h["identity"]["horse_no"]) in rrdb_by_horse) for h in horses),
         "kyi_horse_count": sum(int(int(h["identity"]["horse_no"]) in kyi_by_horse) for h in horses),
         "lap_lookup_status": "AVAILABLE" if race_lap_reader is not None else "NOT_SUPPLIED",
