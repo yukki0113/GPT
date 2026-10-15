@@ -19,7 +19,7 @@ from racenote_freeze_prepared_forecast import contains_key
 
 LOGIC = "RaceNote-Human-Context-Reader-0.4.6-candidate"
 VERSION = "racenote-save-venue-batch-0.4.6"
-RRDB = "rrdb-recommendation-signals-v0.4"\nRRDB_V05 = "rrdb-recommendation-signals-v0.5"
+RRDB = "rrdb-recommendation-signals-v0.4"
 ROLES = {
     "UPGRADE_RECENT_FORM",
     "DOWNGRADE_APPARENT_FORM",
