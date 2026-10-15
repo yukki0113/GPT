@@ -32,8 +32,11 @@ jobs:
         run: |
           set -euo pipefail
           ROOT='horse-racing/jrdb/backtests/BTDAY-0105/20251228/v054'
-          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/model_authored_中山.json"
-          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/model_authored_阪神.json"
+          mkdir -p "$ROOT/incoming"
+          cp "$ROOT/model_authored_中山.json" "$ROOT/incoming/中山.json"
+          cp "$ROOT/model_authored_阪神.json" "$ROOT/incoming/阪神.json"
+          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/中山.json"
+          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/阪神.json"
 
       - name: Freeze and verify
         env:
