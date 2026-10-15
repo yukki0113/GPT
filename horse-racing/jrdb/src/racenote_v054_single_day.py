@@ -303,7 +303,10 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
         raise ValueError("v0.5.4 single-day session seal invalid")
 
     prep_root = (root / session["source_prep_root"]).resolve()
-    handoff, clean_manifest, readers = load_clean(prep_root)
+    handoff, clean_manifest, readers = load_clean(
+        prep_root,
+        expected_rrdb_contract="rrdb-recommendation-signals-v0.5",
+    )
     if (
         handoff.get("selection_id") != session["selection_id"]
         or handoff.get("target_date") != session["target_date"]
