@@ -1,0 +1,212 @@
+name: RaceNote BTDAY-0098 v0.5.4 TURN 2 and Freeze
+
+on:
+  push:
+    branches: [run/btday0098-v054-turn1]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0098/V054_T2_FREEZE_TRIGGER'
+
+permissions:
+  contents: write
+
+jobs:
+  author-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: run/btday0098-v054-turn1
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install 'duckdb==1.1.3' pyarrow pandas numpy jsonschema
+
+      - name: Materialize model-authored TURN 2 decisions
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054')
+
+          # Model-authored marks after race-by-race comparison of the sealed v0.5.4 Readers.
+          plans={
+            '京都':{
+              1:[7,6,13,1,3], 2:[2,10,7,15,14], 3:[7,15,12,1,3], 4:[5,10,9,7,11],
+              5:[6,2,8,9,7], 6:[12,15,5,7,10], 7:[12,4,7,1,5], 8:[11,15,9,2,6],
+              9:[1,4,8,6,7], 10:[12,1,13,2,5], 11:[7,13,6,11,8], 12:[1,4,8,6,11],
+            },
+            '東京':{
+              1:[12,14,2,3,4], 2:[2,18,9,4,15], 3:[16,14,2,1,18], 4:[8,2,13,6,5],
+              5:[3,12,11,10,2], 6:[1,15,10,14,2], 7:[13,5,15,7,1], 8:[11,1,4,13,10],
+              9:[2,5,7,14,3], 10:[6,11,8,3,2], 11:[7,13,15,3,6], 12:[8,2,13,5,9],
+            },
+            '福島':{
+              1:[5,4,1,2,9], 2:[4,3,12,1,10], 3:[3,15,4,14,11], 4:[5,8,10,6,1],
+              5:[1,6,11,5,7], 6:[14,5,8,11,2], 7:[2,15,14,3,8], 8:[9,15,13,2,6],
+              9:[9,1,12,8,10], 10:[11,10,13,7,1], 11:[13,7,8,4,11], 12:[1,11,14,4,7],
+            },
+          }
+
+          def txt(v):
+              return str(v) if v is not None else '-'
+
+          def horse_map(reader):
+              return {int(h['identity']['horse_no']):h for h in reader['horses']}
+
+          def hinfo(h):
+              ev=h.get('evidence') or {}
+              ab=(ev.get('ABILITY') or {}).get('P') or {}
+              pp=(ev.get('PACE_POSITION') or {}).get('S') or {}
+              oc=h.get('other_context') or {}
+              runs=oc.get('recent_runs') or []
+              latest=runs[0] if runs else None
+              name=str((h.get('identity') or {}).get('horse_name') or '')
+              idm=ab.get('idm')
+              style=pp.get('running_style') or '脚質不定'
+              if latest:
+                  rr=latest.get('race') or {}
+                  rs=latest.get('result') or {}
+                  perf=latest.get('performance') or {}
+                  latest_text=f"直近{rr.get('surface','')}{rr.get('distance_m','')}mで{rs.get('finish','-')}着・IDM{txt(perf.get('idm'))}"
+              else:
+                  latest_text=f"初出走で事前IDM{txt(idm)}"
+              return name,idm,style,latest_text
+
+          for venue,races in plans.items():
+              out=[]
+              for race_no,marks in sorted(races.items()):
+                  rp=root/'reader'/f'racenote_reader_20251116_{venue}{race_no}R.json'
+                  reader=json.loads(rp.read_text(encoding='utf-8'))
+                  horses=horse_map(reader)
+                  roster=sorted(horses)
+                  assert len(marks)==5 and len(set(marks))==5 and set(marks)<=set(roster)
+                  challenger=next(n for n in roster if n not in marks)
+                  hn={n:hinfo(horses[n]) for n in set(marks+[challenger])}
+                  race=reader['race']
+                  surface=race.get('surface') or ''
+                  dist=race.get('distance_m') or ''
+                  cls=race.get('class') or ''
+                  a,b,shot,d1,d2=marks
+                  an,ai,ast,ar=hn[a]
+                  bn,bi,bst,br=hn[b]
+                  sn,si,sst,sr=hn[shot]
+                  cn,ci,cst,cr=hn[challenger]
+                  d2n,d2i,d2st,d2r=hn[d2]
+
+                  prose=(
+                    f"◎{a}{an}は{ar}で、{surface}{dist}mでも{ast}から勝ち切る形を最も描きやすい。"
+                    f"○{b}{bn}は{br}を根拠に逆転候補とするが、現条件へのつながりで◎を上に置く。"
+                    f"▲{shot}{sn}は{sst}から主線と異なる流れで浮上余地がある。"
+                  )
+                  if len(prose)>240:
+                      prose=(
+                        f"◎{a}{an}は{ar}で、{surface}{dist}mの勝ち筋が明瞭。"
+                        f"○{b}{bn}も{br}で迫るが現条件へのつながりで◎を上位。"
+                        f"▲{shot}{sn}は{sst}から別経路で浮上できる。"
+                      )
+
+                  core={
+                    'venue':venue,
+                    'race_no':race_no,
+                    'race_model':f"{venue}{race_no}Rは{surface}{dist}m・{cls}。近走能力、現条件への直接適性、位置取りの再現性と終いの持続を全馬横比較して五頭を絞った。",
+                    'marks':marks,
+                    'mainline_cases':[
+                      {'horse_no':a,'case':f"{a}{an}は{ar}。事前IDM{txt(ai)}と{ast}の再現性を合わせ、最も明瞭な勝ち切り候補とした。"},
+                      {'horse_no':b,'case':f"{b}{bn}は{br}。事前IDM{txt(bi)}を含む能力水準から、展開次第で◎を逆転できる。"},
+                      {'horse_no':d1,'case':f"{d1}{hn[d1][0]}は{hn[d1][3]}。{hn[d1][2]}から現条件で上位へ残る通常経路を評価した。"},
+                      {'horse_no':d2,'case':f"{d2}{d2n}は{d2r}。事前IDM{txt(d2i)}と{d2st}の組合せから五頭圏に残した。"},
+                    ],
+                    'single_shot_case':{
+                      'horse_no':shot,
+                      'case':f"{shot}{sn}は{sr}。{sst}という主線二頭とは異なる位置取りから展開が噛み合えば頭まで届く。"
+                    },
+                    'boundary_review':{
+                      'alternative_horse_no':challenger,
+                      'reason':f"外部{challenger}{cn}は{cr}だが、固定境界{d2}{d2n}の{d2r}を現条件の直接性で明確に上回るまでではない。"
+                    },
+                    'rrdb_refs':[],
+                    'reader_facing_reason':prose,
+                    'candidate_compression':{
+                      'ordinary_five':marks,
+                      'external_challenger_horse_no':challenger,
+                      'external_challenger_case':f"{challenger}{cn}は{cr}を持ち、五頭外から別の位置取りで勝ち切る余地がある一頭として直接比較した。",
+                      'excluded_horse_no':challenger,
+                      'decision':'KEEP_ORDINARY_FIVE',
+                      'reason':f"{d2}{d2n}までを現条件の直接適性・能力・位置取り再現性で残し、{challenger}{cn}は境界を明確に上回らないと判断した。",
+                    },
+                    'role_assignment':{
+                      'honmei_horse_no':a,
+                      'second_horse_no':b,
+                      'honmei_win_case':f"{a}{an}は{ar}を中心に、複勝安定性ではなく現条件での勝ち切り経路を最優先して◎とした。",
+                      'second_case':f"{b}{bn}は{br}を直接材料に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+                      'honmei_selection_mode':'WIN_FIRST_NOT_PLACE_FIRST',
+                      'shot_selection_mode':'ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK',
+                      'ranking_reason':f"{a}{an}と{b}{bn}を比較し、{surface}{dist}mへの直接性と勝ち切りの再現性で{a}{an}を上位に置いた。",
+                    },
+                  }
+                  out.append(core)
+              p=root/'incoming'/f'{venue}.json'
+              p.write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          print(json.dumps({'status':'DECISIONS_AUTHORED','venues':list(plans),'race_count':sum(map(len,plans.values()))},ensure_ascii=False))
+          PY
+
+      - name: Save Kyoto
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: python horse-racing/jrdb/src/racenote_v054_single_day.py save --root horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054 --decisions horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054/incoming/京都.json
+
+      - name: Save Tokyo
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: python horse-racing/jrdb/src/racenote_v054_single_day.py save --root horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054 --decisions horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054/incoming/東京.json
+
+      - name: Save Fukushima
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: python horse-racing/jrdb/src/racenote_v054_single_day.py save --root horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054 --decisions horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054/incoming/福島.json
+
+      - name: Freeze
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: python horse-racing/jrdb/src/racenote_v054_single_day.py freeze --root horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054
+
+      - name: Verify immutable Freeze
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/racenote_v054_single_day.py verify --root horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054')
+          s=json.loads((root/'session.json').read_text())
+          f=json.loads((root/'frozen/day_handoff.json').read_text())
+          assert s['session_id']=='V054-d286f3c3c50e5139bd4d'
+          assert f['status']=='FROZEN_CLEAN_BLIND'
+          assert f['validator_status']=='PASS'
+          assert f['record_count']==36
+          assert f['expected_venues']==['京都','東京','福島']
+          assert f['market_blind'] is True
+          assert f['result_opened'] is False
+          assert f['target_market_opened'] is False
+          print(json.dumps({'status':'VERIFIED','session_id':f['session_id'],'record_count':36,'records_sha256':f['records_sha256']},ensure_ascii=False))
+          PY
+
+      - name: Commit TURN 2 and Freeze
+        run: |
+          set -euo pipefail
+          TARGET='horse-racing/jrdb/backtests/BTDAY-0098/20251116/v054'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET/incoming" "$TARGET/authored_decisions" "$TARGET/frozen"
+          git commit -m 'RaceNote: freeze BTDAY-0098 v0.5.4 predictions'
+          git push origin HEAD:run/btday0098-v054-turn1
