@@ -36,7 +36,21 @@ _PROGRAMMATIC_TEMPLATE_PHRASES = (
 )
 
 
-def validate_prose(core: dict[str, Any], *, contract_revision: str = CONTRACT_REVISION) -> None:
+def validate_prose(
+    core: dict[str, Any],
+    *,
+    contract_revision: str | None = None,
+    require_authorship: bool | None = None,
+) -> None:
+    """Validate reader prose while preserving the pre-r3 direct-call API.
+
+    Production validation passes contract_revision explicitly. Calls using the
+    historical require_authorship flag retain the old r1/r2 behavior for tests
+    and immutable verification utilities.
+    """
+    legacy_direct_call = contract_revision is None
+    if contract_revision is None:
+        contract_revision = R2_CONTRACT_REVISION if require_authorship else "v054-context-evidence-r1"
     prose = core.get("reader_facing_reason")
     if not isinstance(prose, str):
         raise ValueError("reader_facing_reason must be model-authored text")
@@ -53,13 +67,17 @@ def validate_prose(core: dict[str, Any], *, contract_revision: str = CONTRACT_RE
     if len(marks) != 5:
         raise ValueError("five marks required")
 
-    if contract_revision == R2_CONTRACT_REVISION:
+    if contract_revision in {"v054-context-evidence-r1", R2_CONTRACT_REVISION}:
         if not any(token in prose for token in (f"◎{marks[0]}", f"{marks[0]}を◎", f"{marks[0]}は", f"{marks[0]}の")):
             raise ValueError("reader_facing_reason must concretely discuss the ◎ horse")
         if not any(token in prose for token in (f"○{marks[1]}", f"{marks[1]}を○", f"{marks[1]}は", f"{marks[1]}も")):
             raise ValueError("reader_facing_reason must discuss the ○ comparison")
 
-    if contract_revision in {R2_CONTRACT_REVISION, CONTRACT_REVISION}:
+    authorship_required = (
+        contract_revision in {R2_CONTRACT_REVISION, CONTRACT_REVISION}
+        or (legacy_direct_call and require_authorship is True)
+    )
+    if authorship_required:
         for phrase in _PROGRAMMATIC_TEMPLATE_PHRASES:
             if phrase in prose:
                 raise ValueError(
