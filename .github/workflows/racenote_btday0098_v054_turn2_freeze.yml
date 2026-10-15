@@ -80,6 +80,8 @@ jobs:
                   latest_text=f"初出走で事前IDM{txt(idm)}"
               return name,idm,style,latest_text
 
+          (root/'incoming').mkdir(parents=True, exist_ok=True)
+
           for venue,races in plans.items():
               out=[]
               for race_no,marks in sorted(races.items()):
