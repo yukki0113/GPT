@@ -34,7 +34,7 @@
     },
     "boundary_review": {
       "alternative_horse_no": 4,
-      "reason": "外部4は調教81と上昇気配が魅力だが、固定比較対象15のIDM27と上がり予測を上回るだけの能力裏付けまではなく15を残した。"
+      "reason": "外部4は調教81と上昇気配が魅力だが、固定境界8はIDM31の差し脚を持つ。4の状態面だけでは8の直接能力支持を上回らない。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "11ミツカネメルクリオは能力と調教の両面が揃い、前受けしても差しに回っても崩れにくい。14の逃げ切りを対抗視するが、流れが速まれば8の差し脚が一気に怖くなる。",
@@ -114,9 +114,9 @@
       "ordinary_five": [
         7,
         9,
+        15,
         12,
-        4,
-        15
+        4
       ],
       "external_challenger_horse_no": 13,
       "external_challenger_case": "13は調教指数76で状態面から浮上する余地があるが、ダート1800mへの直接支持は弱い。",
@@ -179,7 +179,7 @@
     },
     "boundary_review": {
       "alternative_horse_no": 8,
-      "reason": "8はIDM30とA2の注意材料を持つが、固定境界11のIDM36と差し脚評価を直接上回るほどの支持はない。"
+      "reason": "外部8はIDM30とA2の注意材料を持つが、固定境界10はIDM32で先行できる。隠れ値注意だけでは10の直接能力と位置取りを上回らない。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "13シャインフォーミーは先行力、能力、調教の三点が揃う。3は短距離適性と上昇度で逆転候補。前の隊列が緩めば10の粘り込み、速くなれば11の差しまで警戒したい。",
@@ -332,8 +332,8 @@
         15,
         8,
         6,
-        16,
-        4
+        4,
+        16
       ],
       "external_challenger_horse_no": 2,
       "external_challenger_case": "2はA1の注意情報で再確認したが、能力・調教の直接支持が薄い。",
@@ -403,9 +403,9 @@
       "ordinary_five": [
         15,
         7,
+        4,
         6,
-        5,
-        4
+        5
       ],
       "external_challenger_horse_no": 17,
       "external_challenger_case": "17はIDM31.4とA2の注意情報で比較したが、調教面が弱い。",
@@ -476,8 +476,8 @@
         2,
         5,
         8,
-        6,
-        14
+        14,
+        6
       ],
       "external_challenger_horse_no": 16,
       "external_challenger_case": "16はA1と短距離適性から外部候補として確認したが、能力値は一段低い。",
@@ -547,9 +547,9 @@
       "ordinary_five": [
         10,
         5,
+        7,
         6,
-        12,
-        7
+        12
       ],
       "external_challenger_horse_no": 1,
       "external_challenger_case": "1はIDM55の先行馬でA1の注意情報もあり、前残り候補として再確認した。",
@@ -611,7 +611,7 @@
     },
     "boundary_review": {
       "alternative_horse_no": 1,
-      "reason": "1は長距離適性○の逃げ馬だがIDM50.4。固定境界13のIDM55.3を展開だけで逆転評価するには不足する。"
+      "reason": "1は長距離適性○の逃げ馬だがIDM50.4。固定境界11はIDM54の差し馬で、展開だけを理由に1へ入れ替えるほどの直接差はない。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "8ピックデムッシュは状態と予測値が揃い中心。6は能力だけなら最上位で、12は2500mへの適性が強い。消耗戦になれば11の差し込みが波乱の入口になる。",
@@ -692,8 +692,8 @@
         7,
         8,
         9,
-        2,
-        4
+        4,
+        2
       ],
       "external_challenger_horse_no": 3,
       "external_challenger_case": "3はIDM55と予測着差0で六頭目まで迫る外部候補。",
