@@ -11,9 +11,6 @@ jobs:
   study:
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    env:
-      JRDB_USER: ${{ secrets.JRDB_USER }}
-      JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,12 +35,21 @@ jobs:
           test -f /tmp/rrdb-current/postrace_review/v0_1/current.json
           (cd /tmp/rrdb-current && zip -qr /tmp/rrdb-current-ready.zip .)
           echo "zip=/tmp/rrdb-current-ready.zip" >> "$GITHUB_OUTPUT"
-      - name: Run 2024-2026 SRB refinement study
+      - uses: actions/download-artifact@v4
+        with:
+          name: tmp-rrdb-srb-refinement-38664393631
+          run-id: 38664393631
+          github-token: ${{ github.token }}
+          path: /tmp/srb-prebuilt
+      - name: Run 2024-2026 SRB refinement aggregation
         run: |
           python horse-racing/jrdb/src/tmp_rrdb_srb_refinement_20261015.py \
             --rrdb-zip "${{ steps.rrdb.outputs.zip }}" \
             --work-root /tmp/srb-study-work \
-            --out /tmp/srb-study-out
+            --out /tmp/srb-study-out \
+            --prebuilt-lap /tmp/srb-prebuilt/race_lap_2024_2026.parquet \
+            --prebuilt-payouts /tmp/srb-prebuilt/payouts.csv \
+            --prebuilt-lap-audit /tmp/srb-prebuilt/race_lap_2024_2026.audit.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
