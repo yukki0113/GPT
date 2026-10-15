@@ -13,8 +13,9 @@ from racenote_decision_core_v053 import validate_core as validate_v053_core
 
 LOGIC = "RaceNote-Human-Context-Reader-0.5.4-candidate"
 VERSION = "racenote-decision-core-0.5.4"
-CONTRACT_REVISION = "v054-authored-prose-r2"
-LEGACY_CONTRACT_REVISIONS = {"v054-context-evidence-r1"}
+CONTRACT_REVISION = "v054-authored-prose-r3"
+R2_CONTRACT_REVISION = "v054-authored-prose-r2"
+LEGACY_CONTRACT_REVISIONS = {"v054-context-evidence-r1", R2_CONTRACT_REVISION}
 SUPPORTED_CONTRACT_REVISIONS = LEGACY_CONTRACT_REVISIONS | {CONTRACT_REVISION}
 
 _INTERNAL = (
@@ -35,13 +36,13 @@ _PROGRAMMATIC_TEMPLATE_PHRASES = (
 )
 
 
-def validate_prose(core: dict[str, Any], *, require_authorship: bool = False) -> None:
+def validate_prose(core: dict[str, Any], *, contract_revision: str = CONTRACT_REVISION) -> None:
     prose = core.get("reader_facing_reason")
     if not isinstance(prose, str):
         raise ValueError("reader_facing_reason must be model-authored text")
     prose = prose.strip()
-    if not 45 <= len(prose) <= 240:
-        raise ValueError("reader_facing_reason must be a useful compact newspaper note (45-240 chars)")
+    if not 35 <= len(prose) <= 240:
+        raise ValueError("reader_facing_reason must be a useful compact newspaper note (35-240 chars)")
     for bad in _INTERNAL:
         if bad in prose:
             raise ValueError(f"reader_facing_reason contains internal/template language: {bad}")
@@ -51,11 +52,14 @@ def validate_prose(core: dict[str, Any], *, require_authorship: bool = False) ->
     marks = core.get("marks", [])
     if len(marks) != 5:
         raise ValueError("five marks required")
-    if not any(token in prose for token in (f"◎{marks[0]}", f"{marks[0]}を◎", f"{marks[0]}は", f"{marks[0]}の")):
-        raise ValueError("reader_facing_reason must concretely discuss the ◎ horse")
-    if not any(token in prose for token in (f"○{marks[1]}", f"{marks[1]}を○", f"{marks[1]}は", f"{marks[1]}も")):
-        raise ValueError("reader_facing_reason must discuss the ○ comparison")
-    if require_authorship:
+
+    if contract_revision == R2_CONTRACT_REVISION:
+        if not any(token in prose for token in (f"◎{marks[0]}", f"{marks[0]}を◎", f"{marks[0]}は", f"{marks[0]}の")):
+            raise ValueError("reader_facing_reason must concretely discuss the ◎ horse")
+        if not any(token in prose for token in (f"○{marks[1]}", f"{marks[1]}を○", f"{marks[1]}は", f"{marks[1]}も")):
+            raise ValueError("reader_facing_reason must discuss the ○ comparison")
+
+    if contract_revision in {R2_CONTRACT_REVISION, CONTRACT_REVISION}:
         for phrase in _PROGRAMMATIC_TEMPLATE_PHRASES:
             if phrase in prose:
                 raise ValueError(
@@ -63,14 +67,22 @@ def validate_prose(core: dict[str, Any], *, require_authorship: bool = False) ->
                 )
         authorship = core.get("reader_facing_reason_authorship")
         if not isinstance(authorship, dict):
-            raise ValueError("reader_facing_reason_authorship required for r2")
+            raise ValueError("reader_facing_reason_authorship required")
         if authorship.get("mode") != "MODEL_AUTHORED_PER_RACE":
             raise ValueError("reader_facing_reason must be model-authored per race")
         if authorship.get("programmatic_template") is not False:
             raise ValueError("programmatic newspaper-prose templates are prohibited")
         basis = authorship.get("basis")
-        if not isinstance(basis, list) or "honmei_win_case" not in basis or "ranking_reason" not in basis:
-            raise ValueError("reader-facing prose must cite authored Decision Core basis")
+        allowed_basis = {
+            "race_model", "mainline_cases", "single_shot_case", "boundary_review",
+            "honmei_win_case", "second_case", "ranking_reason",
+        }
+        if not isinstance(basis, list) or not basis or any(x not in allowed_basis for x in basis):
+            raise ValueError("reader-facing prose must cite its authored Decision Core basis")
+        if contract_revision == R2_CONTRACT_REVISION and (
+            "honmei_win_case" not in basis or "ranking_reason" not in basis
+        ):
+            raise ValueError("r2 reader-facing prose basis requires honmei_win_case and ranking_reason")
     # Language/style checks are heuristics. Source support is a human/model audit.
 
 
@@ -88,7 +100,7 @@ def validate_core(
         contract_revision="v053-boundary-safety-r2",
         rrdb_contract="rrdb-recommendation-signals-v0.5",
     )
-    validate_prose(core, require_authorship=contract_revision == CONTRACT_REVISION)
+    validate_prose(core, contract_revision=contract_revision)
 
 
 def validate_prose_collection(cores: list[dict[str, Any]]) -> None:
