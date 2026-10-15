@@ -59,7 +59,12 @@ def validate_core(
 ) -> None:
     if contract_revision != CONTRACT_REVISION:
         raise ValueError(f"unsupported v0.5.4 revision: {contract_revision}")
-    validate_v053_core(core, reader, contract_revision="v053-boundary-safety-r2")
+    validate_v053_core(
+        core,
+        reader,
+        contract_revision="v053-boundary-safety-r2",
+        rrdb_contract="rrdb-recommendation-signals-v0.5",
+    )
     validate_prose(core)
 
 
