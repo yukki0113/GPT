@@ -1,0 +1,223 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 10,
+    "race_model": "中京10R志摩特別は芝1600m2勝クラス。マイルの現級好走実績を中心に、先行馬の再現性と差し馬の近走上昇度を比較する。",
+    "marks": [
+      13,
+      10,
+      9,
+      5,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "テラメリタは芝1600mで2着IDM56、2着IDM55、3着IDM54と連続好走。差しで能力56.1、調教11.9もあり、現級マイルの再現性が最上位。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ジーティードレスは芝1600mをIDM55で勝ち、1800m3着IDM50。差しで能力57、調教19.1の状態上昇が強く、昇級でも勝ち切る上限がある。"
+      },
+      {
+        "horse_no": 5,
+        "case": "サクラオーラは芝1600mで4着IDM54、3着IDM54、5着IDM50。先行して同距離の安定度が高く、連下以上へ残りやすい。"
+      },
+      {
+        "horse_no": 6,
+        "case": "クスクスは芝1600m3着IDM52、同距離勝ちIDM52の逃げ馬。自分のペースで運べれば前残りの連下候補になる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "ヴィスマールは芝1600m3着IDM55、能力56の逃げ馬。2000m2着IDM51歴もあり、マイルへ戻って主導権を握れば主線二頭を前から封じる一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "12フォーキャンドルズは芝2000m4着IDM56と能力58で地力は高い一方、五頭目6クスクスは芝1600m勝ち・3着IDM52の逃げ馬で、今回マイルへの直接適性と展開能動性で6を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎13は芝1600mで2、2、3着、IDM54～56と現級で安定。○10はマイル勝ちIDM55に調教19.1の上昇で勢いはあるが、再現性で13を上位。▲9は1600m3着IDM55の逃げ馬で、主導権を握れば前から押し切る別ルートがある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        10,
+        9,
+        5,
+        6
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12フォーキャンドルズは芝2000m4着IDM56と能力58を、五頭目6の芝1600m勝ち・3着IDM52と逃げの展開能動性に対して比較した。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "12は中距離能力が高いがマイル直接実績がなく、6は芝1600m勝ちと3着を持つ逃げ馬で今回条件への再現性が高いため6を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 10,
+      "honmei_win_case": "13テラメリタは芝1600mで2、2、3着、IDM54～56と安定し、差しで現級マイルを勝ち切れる再現性が高い。",
+      "second_case": "10ジーティードレスは芝1600m勝ちIDM55、能力57、調教19.1の状態上昇があり、勢いで13を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○10は芝1600m勝ちIDM55と状態上昇で上限が高い一方、◎13は同距離で2、2、3着とIDM54～56を連続して出すため、現級再現性で13を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 11,
+    "race_model": "中京11RチャンピオンズCはダート1800mオープン。1800～2000mのG級高IDM、近走の勝ち切り実績、先行して自力で流れを作れるかを比較する。",
+    "marks": [
+      2,
+      12,
+      16,
+      7,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "ダブルハートボンドはダ1800mをIDM75で勝ち、2000m2着IDM67、1800m勝ちIDM65。逃げて能力75と、今回距離での勝ち切り性能が最上位。"
+      },
+      {
+        "horse_no": 12,
+        "case": "ナルカミはダ2000mをIDM71で連勝し、1700mもIDM68で勝利。逃げて調教19.3のデキ抜群で、距離短縮でも主導権を握れる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ラムジェットはダ1800m4着IDM72、2000m6着IDM64。追込型で展開依存はあるが、1800mの能力上限は主線級。"
+      },
+      {
+        "horse_no": 10,
+        "case": "テンカジョウはダ1800m2着IDM69、別走2着IDM64。追込で同距離の高い再現性があり、前が激しくなれば連下以上へ浮上する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "ルクソールカフェはダ1600mをIDM76で勝ち、能力76とメンバー最高。1800m以上では不安もあるが、先行して距離をこなせば絶対能力で主線を押し切る一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9アウトレンジはダ2000m2着IDM74、1900m勝ちIDM69と強い一方、五頭目10テンカジョウはダ1800mで2着IDM69、64を持ち、今回距離への直接再現性で10を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2はダ1800m勝ちIDM75と同距離実績が抜け、逃げて自分で勝ち筋を作れる。○12は2000m連勝IDM71にデキ抜群で勢いは上だが、1800mの直接上限で2を優先。▲16はマイル勝ちIDM76の絶対能力があり、距離をこなせば一気に押し切る余地。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        12,
+        16,
+        7,
+        10
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9アウトレンジはダ2000m2着IDM74と1900m勝ちIDM69を、五頭目10のダ1800m2着IDM69、64という距離直接性に対して比較した。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "9は中距離能力が非常に高いが、10は今回のダ1800mで2着IDM69と64を持ち、条件再現性を優先して10を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 12,
+      "honmei_win_case": "2ダブルハートボンドはダ1800m勝ちIDM75、別の1800m勝ちIDM65があり、逃げて今回距離を自力で押し切れる。",
+      "second_case": "12ナルカミはダ2000mをIDM71で連勝し、調教19.3のデキ抜群。逃げて距離短縮をこなせば2を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○12はダ2000m連勝IDM71とデキ抜群で勢いが強い一方、◎2はダ1800m勝ちIDM75と同距離最高値を持つため、条件直接性と勝ち切り上限で2を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 12,
+    "race_model": "中京12R栄特別は芝2200m1勝クラス。2200～2600mの直接実績を重視し、距離延長組は中距離能力と状態上昇で比較する。",
+    "marks": [
+      10,
+      5,
+      3,
+      1,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "アスクコモンタレヴは芝2200mをIDM52で勝ち、2000mでも連続2着IDM45、44。能力54.9、調教16.1の状態上昇で同距離の勝ち切り実績が最上位。"
+      },
+      {
+        "horse_no": 5,
+        "case": "オーサムユニバンスは芝2200m2着IDM49、2600m2着IDM47、2000m3着IDM48。差しで状態上昇、RRDBの後方高上がり材料もあり安定。"
+      },
+      {
+        "horse_no": 1,
+        "case": "メイショウアイルは芝2000m勝ちIDM46、5着IDM47で先行型。調教17.2が高く、2200m延長でも前受けして連下に残れる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ホウオウレイヴンは芝2200m4着IDM47、2400m6着IDM43。差しで長距離の直接経験があり、連下圏への再現性がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "ヤマニンヒストリアは芝2400m2着IDM51、2600m3着IDM42。差しで能力52があり、2200m短縮で追走が楽になれば主線を差し切る一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7トゥルーサクセサーは芝1800m2着IDM50がある一方、五頭目6ホウオウレイヴンは芝2200m4着IDM47、2400m6着IDM43と今回距離に近い直接実績があり、長距離適性で6を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 5,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      }
+    ],
+    "reader_facing_reason": "◎10は芝2200m勝ちIDM52に能力54.9、調教16.1の上昇が揃い、同距離で勝ち筋が明確。○5は2200m2着IDM49、2600m2着と安定するが、勝ち切り実績で10を上位。▲3は2400m2着IDM51があり、短縮で差し脚が生きれば逆転まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        5,
+        3,
+        1,
+        6
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7トゥルーサクセサーは芝1800m2着IDM50を、五頭目6の芝2200m4着IDM47と2400m6着IDM43の距離直接性に対して比較した。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "7は1800mで能力を出すが、6は2200～2400mの直接経験があり、今回の長距離条件への再現性で6を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 5,
+      "honmei_win_case": "10アスクコモンタレヴは芝2200m勝ちIDM52、能力54.9、調教16.1の状態上昇があり、同距離を差して勝ち切れる。",
+      "second_case": "5オーサムユニバンスは芝2200m2着IDM49、2600m2着IDM47、状態上昇と末脚材料があり、10を追い詰められる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○5は芝2200～2600mで2着を重ねる安定型だが、◎10は2200m勝ちIDM52と能力54.9で勝ち切り上限が上のため10を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
