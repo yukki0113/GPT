@@ -28,6 +28,11 @@ _GENERIC_PATTERNS = (
     r"勝ち切り優先で◎",
     r"主線二頭と異なる.*勝ち筋を評価",
 )
+_PROGRAMMATIC_TEMPLATE_PHRASES = (
+    "勝ち切る形を最も描きやすい",
+    "現条件へのつながりで◎を上に置く",
+    "主線と異なる流れで浮上余地がある",
+)
 
 
 def validate_prose(core: dict[str, Any], *, require_authorship: bool = False) -> None:
@@ -51,6 +56,11 @@ def validate_prose(core: dict[str, Any], *, require_authorship: bool = False) ->
     if not any(token in prose for token in (f"○{marks[1]}", f"{marks[1]}を○", f"{marks[1]}は", f"{marks[1]}も")):
         raise ValueError("reader_facing_reason must discuss the ○ comparison")
     if require_authorship:
+        for phrase in _PROGRAMMATIC_TEMPLATE_PHRASES:
+            if phrase in prose:
+                raise ValueError(
+                    f"reader_facing_reason contains prohibited programmatic-template phrase: {phrase}"
+                )
         authorship = core.get("reader_facing_reason_authorship")
         if not isinstance(authorship, dict):
             raise ValueError("reader_facing_reason_authorship required for r2")
