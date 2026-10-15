@@ -63,7 +63,7 @@ def validate_core(
     if COMPRESSION_FIELD not in core or ROLE_FIELD not in core:
         raise ValueError("v0.5.2 requires candidate_compression and role_assignment")
 
-    base = {k: v for k, v in core.items() if k not in {COMPRESSION_FIELD, ROLE_FIELD}}
+    base = {k: v for k, v in core.items() if k not in {COMPRESSION_FIELD, ROLE_FIELD, "reader_facing_reason_authorship"}}
     validate_v046_core(base, reader, rrdb_contract=rrdb_contract)
 
     race = reader["race"]
