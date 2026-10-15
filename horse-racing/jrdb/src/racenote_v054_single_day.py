@@ -219,17 +219,16 @@ def init_session(
 
             race_extra = bundle_rows.get((row["venue"], row["race_no"]), {})
             kyis = {}
-            rrdbs = {}
             histories = {}
             for item in race_extra.get("horses", []):
+                if set(item) - {"horse_no", "kyi", "source_race_keys", "provenance"}:
+                    raise ValueError("unapproved supplemental evidence field")
                 number = int(item["horse_no"])
                 if number in kyis:
                     raise ValueError(f"duplicate KYI evidence for horse {number}")
                 if number not in row["horse_nos"]:
                     raise ValueError(f"unknown horse in KYI evidence: {number}")
                 kyis[number] = item.get("kyi") or {}
-                if "rrdb_v05" in item:
-                    rrdbs[number] = item["rrdb_v05"]
                 historical = item.get("source_race_keys")
                 if historical is None:
                     historical = [
@@ -240,7 +239,6 @@ def init_session(
             candidate = transform(
                 source, binding, kyi_by_horse=kyis,
                 history_race_keys_by_horse=histories,
-                rrdb_by_horse=rrdbs,
                 target_date=session["target_date"], race_lap_reader=race_lap_reader,
             )
             if any(h["rrdb_v05"].get("status") == "UNAVAILABLE" for h in candidate["normal_view"]["horses"]):
