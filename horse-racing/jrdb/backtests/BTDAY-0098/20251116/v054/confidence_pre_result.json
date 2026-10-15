@@ -1,0 +1,315 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "run/btday0098-v054-turn1",
+  "source_branch_head_sha": "39bdd17509b89933e67c243cc50b3d3a118b7191",
+  "frozen_records_sha256": "79be6a585013108e782237484a386a111ff8e3391557e97916cdf62a3dd64f7e",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.4-candidate",
+  "contract_revision": "v054-context-evidence-r1",
+  "btday": "BTDAY-0098",
+  "target_date": "2025-11-16",
+  "methodology": "human_context_pairwise_review_of_frozen_decision_core_pre_result; RRDB/KYI/SRB signal count is not additive confidence evidence",
+  "assignments": [
+    {
+      "venue": "京都",
+      "race_no": 1,
+      "honmei": 7,
+      "second": 6,
+      "confidence": "B",
+      "reason": "◎7は同距離IDM35、○6は同距離2着IDM31。能力値で7を上に取れるが、着順面では6の直接反証がある。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 2,
+      "honmei": 2,
+      "second": 10,
+      "confidence": "A",
+      "reason": "◎2はダート1200m4着IDM36、○10は1400m6着IDM25で、現条件への直接性と能力差がともに明瞭。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 3,
+      "honmei": 7,
+      "second": 15,
+      "confidence": "B",
+      "reason": "◎7は同距離2着、○15は同距離6着だがIDMは15が1高い。着順再現性で7を上にする理由はあるが数値反証が残る。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 4,
+      "honmei": 5,
+      "second": 10,
+      "confidence": "C",
+      "reason": "双方初出走で事前IDM35.2対35.0。差は実質tie-break。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 5,
+      "honmei": 6,
+      "second": 2,
+      "confidence": "A",
+      "reason": "双方初出走だが事前IDM45.3対38.2と差が大きく、◎6優位が明瞭。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 6,
+      "honmei": 12,
+      "second": 15,
+      "confidence": "C",
+      "reason": "双方同距離3着でIDM48対49。○15の数値が上で、◎12を上に置く序列は僅差。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 7,
+      "honmei": 12,
+      "second": 4,
+      "confidence": "B",
+      "reason": "◎12は1900m2着IDM59、○4は1800m1着IDM54。能力水準で12が上だが、対象距離での勝利は4の強い反証。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 8,
+      "honmei": 11,
+      "second": 15,
+      "confidence": "A",
+      "reason": "双方同距離2着で◎11 IDM59、○15 IDM53。条件実績同等で能力差が明瞭。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 9,
+      "honmei": 1,
+      "second": 4,
+      "confidence": "A",
+      "reason": "双方1800m実績で◎1は2着IDM51、○4は4着IDM44。直接比較で◎優位が明確。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 10,
+      "honmei": 12,
+      "second": 1,
+      "confidence": "C",
+      "reason": "双方同距離1着で、IDMは○1の61が◎12の59を上回る。◎序列には強い反証がある。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 11,
+      "honmei": 7,
+      "second": 13,
+      "confidence": "A",
+      "reason": "◎7は対象2200m1着IDM73、○13は2000m2着IDM69。直接性と能力水準の双方で◎優位。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 12,
+      "honmei": 1,
+      "second": 4,
+      "confidence": "B",
+      "reason": "双方直近1600mでIDM61。◎1は4着、○4は6着で差はあるが能力値は同等。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "honmei": 12,
+      "second": 14,
+      "confidence": "C",
+      "reason": "双方同距離2着でIDM35対34。序列差はごく小さい。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "honmei": 2,
+      "second": 18,
+      "confidence": "B",
+      "reason": "双方同距離2着でIDM38対36。◎2を上にする数値差はあるが大差ではない。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "honmei": 16,
+      "second": 14,
+      "confidence": "C",
+      "reason": "◎16は1600m3着IDM37、○14は対象1400m3着IDM36。能力は16、条件直接性は14で拮抗。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "honmei": 8,
+      "second": 2,
+      "confidence": "B",
+      "reason": "双方初出走で事前IDM38.1対35.7。◎8優位の根拠はあるが初出走同士で不確実性が高い。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "honmei": 3,
+      "second": 12,
+      "confidence": "A",
+      "reason": "双方初出走で事前IDM50.6対38.8と大差。◎3優位が明瞭。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "honmei": 1,
+      "second": 15,
+      "confidence": "C",
+      "reason": "双方同距離4着でIDM50対49。差は小さくtie-break寄り。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "honmei": 13,
+      "second": 5,
+      "confidence": "A",
+      "reason": "◎13は同距離1着IDM55、○5は同距離3着IDM54。直接着順と能力の両方で◎優位。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "honmei": 11,
+      "second": 1,
+      "confidence": "A",
+      "reason": "◎11は対象1800m1着IDM59、○1は2000m1着IDM58。対象条件への直接性で◎優位。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "honmei": 2,
+      "second": 5,
+      "confidence": "A",
+      "reason": "◎2は対象1400m3着IDM61、○5は1600m4着IDM57。条件直接性と能力差が一致。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "honmei": 6,
+      "second": 11,
+      "confidence": "C",
+      "reason": "◎6は2200m2着IDM63、○11は対象1800m1着IDM60。能力は6、条件直接性と勝利実績は11で反証が強い。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "honmei": 7,
+      "second": 13,
+      "confidence": "C",
+      "reason": "双方対象1400mで、◎7は5着IDM67、○13は1着IDM63。能力は7だが勝ち切り実績は13で拮抗。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "honmei": 8,
+      "second": 2,
+      "confidence": "C",
+      "reason": "◎8は1800m2着IDM49、○2は対象2000m3着IDM47。能力は8、条件直接性は2で差は小さい。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 1,
+      "honmei": 5,
+      "second": 4,
+      "confidence": "B",
+      "reason": "双方1200m2着でIDM36対34。1150mへの転用条件も近く、◎5が小幅優位。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 2,
+      "honmei": 4,
+      "second": 3,
+      "confidence": "B",
+      "reason": "双方対象1700mでIDM47。◎4は2着、○3は3着で着順差のみの小幅優位。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 3,
+      "honmei": 3,
+      "second": 15,
+      "confidence": "C",
+      "reason": "◎3は1400m5着IDM45、○15は対象1700m2着IDM44。能力は3、条件直接性は15で強く拮抗。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 4,
+      "honmei": 5,
+      "second": 8,
+      "confidence": "A",
+      "reason": "◎5は障害2910m3着、○8は2880m8着。IDMなしでも直近障害内容の差は明瞭。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 5,
+      "honmei": 1,
+      "second": 6,
+      "confidence": "C",
+      "reason": "◎1は障害2910m11着、○6は2860m10着で双方弱く、明確な序列根拠が乏しい。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 6,
+      "honmei": 14,
+      "second": 5,
+      "confidence": "A",
+      "reason": "双方初出走で事前IDM38.0対33.9。差が比較的大きく◎14優位。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 7,
+      "honmei": 2,
+      "second": 15,
+      "confidence": "B",
+      "reason": "◎2は1400m3着IDM47、○15は1400m5着IDM46。1200m短縮は双方未知で小幅優位。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 8,
+      "honmei": 9,
+      "second": 15,
+      "confidence": "A",
+      "reason": "◎9は1200m2着IDM46、○15は1200m6着IDM38。1150m転用も同系統で能力差が明瞭。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 9,
+      "honmei": 9,
+      "second": 1,
+      "confidence": "B",
+      "reason": "◎9は1400m3着IDM47、○1は1400m6着IDM45。1200m短縮を含め差は中程度。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 10,
+      "honmei": 11,
+      "second": 10,
+      "confidence": "C",
+      "reason": "◎11は2400m3着IDM54、○10は対象2600m2着IDM55。条件直接性・数値とも○側の反証が強い。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 11,
+      "honmei": 13,
+      "second": 7,
+      "confidence": "B",
+      "reason": "◎13は1800m4着IDM65、○7は1800m5着IDM63。1700m転用は同程度で◎が小幅優位。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 12,
+      "honmei": 1,
+      "second": 11,
+      "confidence": "C",
+      "reason": "双方対象2000mで◎1は2着IDM46、○11は1着IDM45。能力は◎、勝ち切り実績は○で僅差。"
+    }
+  ],
+  "counts": {
+    "A": 12,
+    "B": 11,
+    "C": 13,
+    "total": 36
+  }
+}
