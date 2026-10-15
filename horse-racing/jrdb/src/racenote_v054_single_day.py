@@ -40,6 +40,14 @@ def digest(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+def digest_file(path: Path) -> str:
+    hasher = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            hasher.update(block)
+    return hasher.hexdigest()
+
+
 def read_json(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
@@ -171,24 +179,30 @@ def init_session(
     if contract_revision is not None:
         session["contract_revision"] = contract_revision
 
-    if race_lap_parquet is not None and evidence_bundle is None:
-        raise ValueError("race_lap_parquet requires a source-run evidence bundle")
+    if race_lap_parquet is None or evidence_bundle is None:
+        raise ValueError("v0.5.4 requires both canonical RaceLap Parquet and a KYI evidence bundle")
     supplemental = read_json(evidence_bundle) if evidence_bundle is not None else {}
-    if supplemental and supplemental.get("rrdb_contract") != "rrdb-recommendation-signals-v0.5":
+    if supplemental.get("schema_version") != "racenote-v054-kyi-supplemental-0.1":
+        raise ValueError("unsupported v0.5.4 evidence bundle")
+    if supplemental.get("rrdb_contract") != "rrdb-recommendation-signals-v0.5":
         raise ValueError("v0.5.4 requires RRDB v0.5 evidence contract")
+    if supplemental.get("target_date") != handoff["target_date"] or supplemental.get("source_selection_id") != handoff["selection_id"]:
+        raise ValueError("supplemental KYI bundle target does not match sealed forecast prep")
+    if (supplemental.get("policy") or {}).get("target_result") is not False or (supplemental.get("policy") or {}).get("target_final_odds") is not False:
+        raise ValueError("supplemental KYI bundle has unsafe target-result/market policy")
     bundle_rows = {}
     for item in supplemental.get("races", []):
         key = (str(item["venue"]), int(item["race_no"]))
         if key in bundle_rows:
             raise ValueError(f"duplicate v0.5.4 evidence race: {key}")
         bundle_rows[key] = item
-    if set(bundle_rows) - set(readers):
-        raise ValueError("supplemental evidence references unknown race")
+    if set(bundle_rows) != set(readers):
+        raise ValueError("supplemental evidence race roster mismatch")
     session["evidence_bundle_sha256"] = (
         digest(encoded(supplemental) + b"\n") if evidence_bundle is not None else None
     )
     session["race_lap_parquet_sha256"] = (
-        digest(race_lap_parquet.read_bytes()) if race_lap_parquet is not None else None
+        digest_file(race_lap_parquet) if race_lap_parquet is not None else None
     )
     race_lap_reader = None
     if race_lap_parquet is not None:
@@ -229,6 +243,10 @@ def init_session(
                 rrdb_by_horse=rrdbs,
                 target_date=session["target_date"], race_lap_reader=race_lap_reader,
             )
+            if any(h["rrdb_v05"].get("status") == "UNAVAILABLE" for h in candidate["normal_view"]["horses"]):
+                raise ValueError(
+                    f"{row['venue']}{row['race_no']}R: missing canonical RRDB v0.5 enrichment"
+                )
             path = staging / "reader" / row["file"]
             write_json(path, candidate["normal_view"])
             entries.append({
