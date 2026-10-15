@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "artifact_type": "btday0098_v054_race_lap_input",
+  "coverage": "2024-2025 annual SED",
+  "reader_metadata": {
+    "parquet_path": "/tmp/racelap/race_lap.parquet",
+    "race_count": 6909,
+    "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1",
+    "shape_logic_version": "SRB-Neutral-RaceShape-v0.1",
+    "min_race_date": "2024-01-06",
+    "max_race_date": "2025-12-28"
+  },
+  "frozen_rear_srb_contract": "rrdb-rear-srb-q20-v0.1"
+}
