@@ -1,0 +1,315 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "run/btday0100-v054-t1",
+  "source_branch_head_sha": "a07dcc5955f15ce6649bf64d0d3da0b206d724a3",
+  "frozen_records_sha256": "bb6a7f02a63ea9d55b633911ad9c41dff39b3370371e90f050eafbb3c8261288",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.4-candidate",
+  "contract_revision": "v054-authored-prose-r2",
+  "btday": "BTDAY-0100",
+  "target_date": "2025-04-27",
+  "methodology": "human_context_pairwise_review_of_frozen_decision_core_pre_result; RRDB/KYI/SRB signal count is not additive confidence evidence",
+  "assignments": [
+    {
+      "venue": "京都",
+      "race_no": 1,
+      "honmei": 14,
+      "second": 11,
+      "confidence": "C",
+      "reason": "能力水準は近く、流れ想定で◎14の差しを上に取った比較。○11は前受け再現性が高く、展開依存の僅差。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 2,
+      "honmei": 11,
+      "second": 3,
+      "confidence": "B",
+      "reason": "○3の安定性は上だが、◎11は前で運べる利と調教上昇で勝ち筋を能動的に作れる。序列理由はあるが決定的ではない。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 3,
+      "honmei": 2,
+      "second": 13,
+      "confidence": "B",
+      "reason": "◎2は同距離で連続2着と直接性が高い。○13は地力上位だが距離短縮の不確実性が残るため、2を上に取る根拠は明確。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 4,
+      "honmei": 8,
+      "second": 11,
+      "confidence": "A",
+      "reason": "◎8は障害2860mで2、3着と反復しており、○11の同距離3着より実戦安定性と失敗幅で明確に上。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 5,
+      "honmei": 7,
+      "second": 3,
+      "confidence": "B",
+      "reason": "双方2000m実績がある中で◎7は3、4着、○3は5着。近走完成度の差はあるが大差ではない。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 6,
+      "honmei": 4,
+      "second": 3,
+      "confidence": "B",
+      "reason": "○3は条件再現性とRRDB裏付けが強い一方、◎4は直近勝利内容と絶対能力で上。勝ち切り評価の差はあるが反証も残る。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 7,
+      "honmei": 7,
+      "second": 8,
+      "confidence": "B",
+      "reason": "○8の能力上限は高いが、◎7は1800m直近3着と位置取りの明瞭さで優位。直接性を重視した中程度の差。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 8,
+      "honmei": 4,
+      "second": 5,
+      "confidence": "B",
+      "reason": "○5も1700～1800mで安定するが、◎4は1800mでより高い能力を連続して示しRRDBも再現性を補強。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 9,
+      "honmei": 2,
+      "second": 8,
+      "confidence": "B",
+      "reason": "○8は2200m4着で直接性が高いが、◎2は2600mで反復好走しRRDBも持続力を補強。勝ち切り上限で2を上に取る。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 10,
+      "honmei": 7,
+      "second": 2,
+      "confidence": "A",
+      "reason": "◎7は同距離勝利と高い能力値、前で運べる再現性が揃う。○2の末脚は安定するが、勝ち切り実績の差が明確。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 11,
+      "honmei": 3,
+      "second": 8,
+      "confidence": "C",
+      "reason": "○8はマイルでの条件再現性とRRDB裏付けが高い一方、◎3は能力上限と状態上昇を優先した判断。近走反証が強く僅差。"
+    },
+    {
+      "venue": "京都",
+      "race_no": 12,
+      "honmei": 8,
+      "second": 1,
+      "confidence": "B",
+      "reason": "○1の同距離2着差し脚は強いが、◎8は同距離を高IDMで逃げ切り状態も上向き。直近完成度で8を上に取る。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "honmei": 13,
+      "second": 8,
+      "confidence": "B",
+      "reason": "◎13は同条件で連続3着、○8は同距離4着に調教上昇。条件再現性で13が一歩上。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "honmei": 7,
+      "second": 2,
+      "confidence": "B",
+      "reason": "○2は初戦3着と上積みがあるが、◎7は逃げて2着の実戦経験と距離短縮利で勝ち筋がより具体的。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "honmei": 8,
+      "second": 10,
+      "confidence": "B",
+      "reason": "◎8は1200mで2、3着、○10は3、5着。末脚と近走再現性で8が上だが差は中程度。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "honmei": 9,
+      "second": 10,
+      "confidence": "C",
+      "reason": "○10は2400mで3、5着の直接実績、◎9は2200m2着と能力上限を優先。条件直接性と能力上限が分かれ拮抗。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "honmei": 8,
+      "second": 13,
+      "confidence": "B",
+      "reason": "○13は1600mで安定するが、◎8は1800m2着の直接実績と状態上昇が揃い今回条件で一歩上。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "honmei": 7,
+      "second": 5,
+      "confidence": "A",
+      "reason": "◎7はマイル能力値54と同距離勝ちがあり、○5の安定先行力に対して絶対能力差が明瞭。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "honmei": 2,
+      "second": 13,
+      "confidence": "C",
+      "reason": "○13は直近マイル4着と鮮度が高く、◎2は過去の同条件高IDMを重視した判断。現状と条件上限が競合し僅差。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "honmei": 14,
+      "second": 9,
+      "confidence": "B",
+      "reason": "○9のスピード上限は高いが、◎14は同距離2着、調教上昇、RRDB先行持続が揃い条件再現性で上。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "honmei": 8,
+      "second": 1,
+      "confidence": "B",
+      "reason": "○1は状態上昇が大きいが、◎8は1200m連続2着と前で運べる安定度が高い。勝ち筋の能動性で8を上に取る。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "honmei": 5,
+      "second": 7,
+      "confidence": "C",
+      "reason": "○7は近況・状態が非常に良く、◎5は東京1600mの直接高能力実績を優先。強みが分かれた比較で差は小さい。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "honmei": 9,
+      "second": 12,
+      "confidence": "B",
+      "reason": "○12は2000m連勝で上積み余地があるが、◎9は2000m勝ちと高IDMを既に示しており現時点の完成度で上。"
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "honmei": 9,
+      "second": 7,
+      "confidence": "C",
+      "reason": "Freeze理由自体が『ほぼ互角』『わずかに上』。◎9の状態上昇だけを決め手にした明確なtie-break。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 1,
+      "honmei": 8,
+      "second": 3,
+      "confidence": "B",
+      "reason": "◎8は福島1150m2着の直接実績があり、○3の1200m先行力よりコース再現性で上。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 2,
+      "honmei": 11,
+      "second": 6,
+      "confidence": "C",
+      "reason": "○6は1200～1400m連続2着で安定感最上位。◎11は同距離能力とRRDB裏付けで『わずかに上』とした比較。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 3,
+      "honmei": 7,
+      "second": 6,
+      "confidence": "B",
+      "reason": "双方1800m好走歴があるが、◎7は直近能力上昇と1700m短縮で能動性が増す。序列理由はあるが大差ではない。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 4,
+      "honmei": 14,
+      "second": 11,
+      "confidence": "B",
+      "reason": "○11は同距離で安定するが、◎14は直近2着、能力値上位、調教上昇が揃い勝ち切り評価で上。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 5,
+      "honmei": 3,
+      "second": 5,
+      "confidence": "B",
+      "reason": "○5は初戦2着で未知の伸びしろがあるが、◎3は2000mで2、3着を反復。直接再現性で3を上に取る。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 6,
+      "honmei": 2,
+      "second": 4,
+      "confidence": "B",
+      "reason": "○4も能力は近いが、◎2は1700m直接好走と調教上昇が揃う。今回条件での再現性で一歩上。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 7,
+      "honmei": 2,
+      "second": 4,
+      "confidence": "C",
+      "reason": "○4は同距離2着で直接着順が上。◎2は能力値とRRDB持続材料を優先した判断で、反証が強く僅差。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 8,
+      "honmei": 15,
+      "second": 7,
+      "confidence": "B",
+      "reason": "○7は条件安定性があるが、◎15は能力上限と状態上昇、先行力を評価。勝ち切りを狙う序列理由は十分ある。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 9,
+      "honmei": 3,
+      "second": 11,
+      "confidence": "B",
+      "reason": "○11は2500m3着で能力上限が高いが、◎3は2600m連続4着と距離再現性が明確。直接条件で3を上に取る。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 10,
+      "honmei": 7,
+      "second": 4,
+      "confidence": "B",
+      "reason": "○4も同距離2着IDM55だが、◎7は2、3着を連続しIDM57、先行して勝ち筋を作れる点で上。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 11,
+      "honmei": 11,
+      "second": 10,
+      "confidence": "A",
+      "reason": "◎11は芝1200mをIDM61で直近勝利。○10も安定・調教上昇だが、実際に勝ち切った完成度の差が明確。"
+    },
+    {
+      "venue": "福島",
+      "race_no": 12,
+      "honmei": 9,
+      "second": 6,
+      "confidence": "B",
+      "reason": "○6は福島1150m4着でコース直接性が高いが、◎9は1000mで連続高能力。短距離スピードを勝ち切り評価で上に取る。"
+    }
+  ],
+  "counts": {
+    "A": 4,
+    "B": 24,
+    "C": 8,
+    "total": 36
+  }
+}
