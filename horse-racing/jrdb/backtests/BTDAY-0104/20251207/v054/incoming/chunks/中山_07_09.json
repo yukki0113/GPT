@@ -1,0 +1,233 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "race_model": "中山7Rは芝2500m2勝クラス。2500～2600mの直接実績を最重視し、近走の中長距離IDMと状態を比較する。",
+    "marks": [
+      8,
+      5,
+      9,
+      2,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "フィーリウスは芝2600m1着IDM51、3着IDM49があり、事前能力59でデキ抜群。2200m8着IDM56歴もあり、中長距離の能力上限が最上位。"
+      },
+      {
+        "horse_no": 5,
+        "case": "サトノソティラスは芝2600m2着IDM53、2200m1着IDM52。差して長距離で安定し、調教16.6も高く、2500mでも再現しやすい。"
+      },
+      {
+        "horse_no": 2,
+        "case": "ヴァイザーバルコは芝2600mで2着IDM53、4着IDM52、5着IDM51と安定。追込型で展開待ちだが長距離の直接能力が高い。"
+      },
+      {
+        "horse_no": 4,
+        "case": "プルミエソルティは芝2600m2着IDM48、2000m1着IDM49。先行して状態上昇、RRDBの先行持続材料もあり前残りを狙える。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "エコロレイズは芝2500m3着IDM49、2400m4着IDM52。差しで条件直接性が高く、主線二頭より前が流れれば2500m実績を生かして差し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1ミクニインスパイアは芝2000m連勝IDM46～50で勢いがある一方、五頭目4プルミエソルティは芝2600m2着IDM48と長距離の直接実績、状態上昇、先行持続材料があり、2500m適性で4を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 4,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎8は芝2600m1着・3着に能力59、デキ抜群まで揃い中長距離の上限が高い。○5も2600m2着IDM53と長距離安定度は高いが、能力上限と状態で8を上位。▲9は2500m3着、2400m4着の直接実績があり差し切りを警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        5,
+        9,
+        2,
+        4
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1ミクニインスパイアは芝2000m連勝IDM46～50の勢いを、五頭目4の芝2600m2着IDM48と先行持続材料に対して比較した。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1は2000m連勝で能力は高いが、4は2600m2着IDM48と2500mへ直結する距離実績があり、状態上昇もあるため4を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 5,
+      "honmei_win_case": "8フィーリウスは芝2600m1着IDM51、3着IDM49に能力59、デキ抜群が加わり、2500mでも差し脚を長く使って勝ち切れる。",
+      "second_case": "5サトノソティラスは芝2600m2着IDM53、2200m1着IDM52と長距離で安定し、8より前で運べれば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○5は芝2600m2着IDM53と直接能力が高い一方、◎8は能力59とデキ抜群、2600m勝ち実績まであり、勝ち切りの上限で8を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "race_model": "中山8Rはダート1200m2勝クラス。1200mでの現級能力、先行持続、状態上昇を中心に比較し、前受けできる馬を重視する。",
+    "marks": [
+      13,
+      5,
+      16,
+      4,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "アシャカトベはダ1200mをIDM54で勝ち、能力55.8。逃げて調教20.8、デキ抜群まで揃い、昇級でも同距離で押し切れる形が明確。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ズバットマサムネはダ1200mで2着IDM52、5着IDM54。先行して現級相当の能力を安定して出しており、13に次ぐ軸候補。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ショウナンハクウンはダ1200mをIDM53で勝ち、同距離3着IDM43。RRDBの先行持続材料もあり、前受けして粘り込める。"
+      },
+      {
+        "horse_no": 2,
+        "case": "テセラリアンはダ1200m5着IDM47、1300mでもIDM46。差しで距離適性があり、前が速くなれば連下へ浮上できる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "ジャスパーソレイユはダ1150m勝ちIDM46、1200m2着IDM48で、調教12.2と状態上昇。逃げて自分のペースを作れれば昇級でも前残りの一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8バロンはダ1400m6着IDM51がある一方、五頭目2テセラリアンはダ1200m5着IDM47、1300mIDM46と今回距離への直接性が高く、1200m条件適性で2を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 4,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎13はダ1200m勝ちIDM54に能力55.8、デキ抜群が重なり昇級でも押し切り候補。○5も1200mでIDM52～54と高水準だが、勝利実績と状態で13を上位に取る。▲16は1200m2着と状態上昇があり、逃げて残る形なら一発。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        5,
+        16,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8バロンはダ1400m6着IDM51の地力を、五頭目2のダ1200m5着IDM47と1300mIDM46の距離直接性に対して比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8は1400mでIDM51を出すが、2は1200m5着IDM47と1300mIDM46で今回条件への再現性が高いため2を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 5,
+      "honmei_win_case": "13アシャカトベはダ1200mをIDM54で勝ち、能力55.8、調教20.8のデキ抜群。逃げて同距離を押し切れる。",
+      "second_case": "5ズバットマサムネはダ1200m2着IDM52、5着IDM54と現級水準が高く、13を好位で追走できれば逆転候補。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○5はダ1200mでIDM54まで出す安定馬だが、◎13は同距離勝ちIDM54に能力55.8とデキ抜群が加わるため、勝ち切り評価で13を上に取る。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "race_model": "中山9R南総Sは芝1200m3勝クラス。現級での1200m高IDM、先行再現性、近走の勝ち上がり内容を比較する。",
+    "marks": [
+      4,
+      12,
+      11,
+      3,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "ソーダーンライトは芝1200mをIDM60で勝ち、能力61。先行して調教18.5、状態上昇で、現級でも前受けから押し切る能力がある。"
+      },
+      {
+        "horse_no": 12,
+        "case": "モジャーリオは芝1200m1着IDM57、直近も2着IDM56を連続。先行して短距離の再現性が高く、昇級でも崩れにくい。"
+      },
+      {
+        "horse_no": 3,
+        "case": "パクスロマーナは芝1200mで3着IDM60、別走でも3着IDM59。先行型で能力上限は主線級に近く、展開ひとつで圏内上位。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ルーフは芝1200m2着IDM58、3着IDM50があり、現級短距離で安定。先行して大崩れしにくい点を連下評価する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "トーセンエスクードは芝1200m2着IDM56、1600m3着IDM59。RRDBの先行持続材料もあり、距離短縮で前を取れれば主線二頭を封じる一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7ハートホイップは芝1200m1着IDM56、2着IDM54がある一方、五頭目6ルーフは同距離2着IDM58、3着IDM50と能力上限が高く、現級短距離の直接比較で6を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 11,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎4は芝1200mをIDM60で勝ち、能力61と状態上昇で現級でも前から押し切れる。○12は同距離1着と連続2着で安定するが、能力上限で4を上位。▲11は1200m2着に先行持続の裏付けがあり、前受けできれば逆転まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        12,
+        11,
+        3,
+        6
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7ハートホイップは芝1200m勝ちIDM56を、五頭目6ルーフの同距離2着IDM58と現級再現性に対して比較した。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "7は1200m勝ちIDM56があるが、6は同距離2着IDM58と能力上限で上回り、現級の連下再現性を重視して6を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 12,
+      "honmei_win_case": "4ソーダーンライトは芝1200mをIDM60で勝ち、能力61、調教18.5の状態上昇があり、先行して現級でも押し切れる。",
+      "second_case": "12モジャーリオは芝1200m1着IDM57、直近2着IDM56を連続し、先行して安定する。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○12は芝1200mで1着と連続2着の再現性が高い一方、◎4は同距離勝ちIDM60と能力61で上限が一段高く、勝ち切りを4に取る。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
