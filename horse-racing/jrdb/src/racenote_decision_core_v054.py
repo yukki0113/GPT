@@ -82,8 +82,16 @@ def validate_core(
 ) -> None:
     if contract_revision not in SUPPORTED_CONTRACT_REVISIONS:
         raise ValueError(f"unsupported v0.5.4 revision: {contract_revision}")
+    # r2 adds authorship metadata at the v0.5.4 layer. Strip only that
+    # wrapper field before delegating to the legacy v0.5.3/v0.4.6 structural
+    # validator, whose exact-field schema predates r2.
+    legacy_core = {
+        key: value
+        for key, value in core.items()
+        if key != "reader_facing_reason_authorship"
+    }
     validate_v053_core(
-        core,
+        legacy_core,
         reader,
         contract_revision="v053-boundary-safety-r2",
         rrdb_contract="rrdb-recommendation-signals-v0.5",
