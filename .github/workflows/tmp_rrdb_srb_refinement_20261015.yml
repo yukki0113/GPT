@@ -30,14 +30,14 @@ jobs:
           run-id: 38327108923
           github-token: ${{ github.token }}
           path: /tmp/rrdb-current
-      - name: Locate RRDB zip
+      - name: Materialize RRDB zip
         id: rrdb
         shell: bash
         run: |
           set -euo pipefail
-          ZIP="$(find /tmp/rrdb-current -type f -name '*.zip' | head -1)"
-          test -n "$ZIP"
-          echo "zip=$ZIP" >> "$GITHUB_OUTPUT"
+          test -f /tmp/rrdb-current/postrace_review/v0_1/current.json
+          (cd /tmp/rrdb-current && zip -qr /tmp/rrdb-current-ready.zip .)
+          echo "zip=/tmp/rrdb-current-ready.zip" >> "$GITHUB_OUTPUT"
       - name: Run 2024-2026 SRB refinement study
         run: |
           python horse-racing/jrdb/src/tmp_rrdb_srb_refinement_20261015.py \
