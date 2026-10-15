@@ -186,7 +186,7 @@ def init_session(
     if set(bundle_rows) - set(readers):
         raise ValueError("supplemental evidence references unknown race")
     session["evidence_bundle_sha256"] = (
-        digest(evidence_bundle.read_bytes()) if evidence_bundle is not None else None
+        digest(encoded(supplemental) + b"\n") if evidence_bundle is not None else None
     )
     session["race_lap_parquet_sha256"] = (
         digest(race_lap_parquet.read_bytes()) if race_lap_parquet is not None else None
@@ -290,10 +290,8 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
 
     bundle_path = root / "input_evidence.json"
     if bundle_path.exists():
-        original = bundle_path.read_bytes()
-        canonical_input = read_json(bundle_path)
-        if digest((encoded(canonical_input) + b"\\n").replace(b"\\\\n", b"\\n")) != digest(original):
-            raise ValueError("supplemental evidence must be canonical JSON")
+        if digest(bundle_path.read_bytes()) != session.get("evidence_bundle_sha256"):
+            raise ValueError("supplemental evidence snapshot changed after seal")
     elif session.get("evidence_bundle_sha256") is not None:
         raise ValueError("supplemental evidence snapshot missing")
     manifest_path = root / "reader_manifest.json"
