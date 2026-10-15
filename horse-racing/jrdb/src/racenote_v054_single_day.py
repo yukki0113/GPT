@@ -15,7 +15,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from racenote_decision_core_v054 import CONTRACT_REVISION, validate_core
+from racenote_decision_core_v054 import CONTRACT_REVISION, validate_core, validate_prose_collection
 from racenote_reader_v050 import DEFAULT_BINDING
 from racenote_reader_v054 import VERSION as LOGIC, load_binding, transform
 from racenote_save_venue_batch_v046 import load_clean
@@ -360,6 +360,8 @@ def save_venue(root: Path, decisions_path: Path) -> dict[str, Any]:
             contract_revision=session.get("contract_revision"),
         )
 
+    validate_prose_collection(decisions)
+
     payload = {
         "schema_version": AUTHORED_VERSION,
         "session_id": session["session_id"],
@@ -421,6 +423,7 @@ def build_freeze(root: Path) -> dict[str, Any]:
     session, readers, entries = load_session(root)
     authored = _load_authored(root, session, entries)
     records = []
+    validate_prose_collection([core for payload in authored for core in payload["decisions"]])
     for payload in authored:
         for core in payload["decisions"]:
             key = (payload["venue"], int(core["race_no"]))
