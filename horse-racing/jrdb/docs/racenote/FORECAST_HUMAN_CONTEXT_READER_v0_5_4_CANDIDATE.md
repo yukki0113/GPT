@@ -3,7 +3,7 @@
 Status: **PROMOTED CURRENT — NEW v0.5.4 FREEZES ONLY / EXISTING v0.5.3 FREEZES IMMUTABLE**
 Date: 2026-10-15
 Logic ID: `RaceNote-Human-Context-Reader-0.5.4-candidate`
-Contract revision: `v054-context-evidence-r1`
+Contract revision: `v054-authored-prose-r2`\nLegacy verification support: `v054-context-evidence-r1`
 Predecessor: `RaceNote-Human-Context-Reader-0.5.3-candidate` / `v053-boundary-safety-r2`
 
 ## 1. Objective and invariant
@@ -79,9 +79,9 @@ If KYI extraction is not available or a field is blank, record missing coverage;
 
 Record race model, win cases, ranking reason, one external-challenger case, fixed boundary decision, non-▲ mainline cases, and ▲ single-shot case exactly once. Keep trace links to source-run identities and evidence provenance, including whether RRDB/SRB/KYI influenced **attention only**, **corroborated**, **contradicted**, or **contributed to the final decision**.
 
-`reader_facing_reason` is a **reader-facing compression** of the already-authored Decision Core, not another forecast pass. Use 2–3 natural sentences, usually around 100–150 Japanese characters where supported. Convey (1) ◎'s most distinctive concrete reason, (2) what decides ◎ versus ○, and optionally (3) ▲'s genuine alternate winning route. Do not merely enumerate marks or repeat templates. Omit △ enumeration unless vital.
+`reader_facing_reason` is a **reader-facing compression** of the already-authored Decision Core, not another forecast pass. It must be authored separately for each race by the same model authoring that race's Decision Core. Use 2–3 natural sentences, usually around 100–150 Japanese characters where supported. Convey (1) ◎'s most distinctive concrete reason, (2) what decides ◎ versus ○, and optionally (3) ▲'s genuine alternate winning route. Do not merely enumerate marks or repeat templates. Omit △ enumeration unless vital.\n\n**Programmatic short-comment generation is prohibited.** A workflow, Python helper, formatter, string template, mark-plan expander, or other deterministic process must not construct `reader_facing_reason` from horse number, latest finish, IDM, running style, marks, or other fields. Workflows may validate, save, Freeze and verify a model-authored venue JSON, but may not manufacture its prose or Decision Core. Prediction runtime must not contain a fallback prose generator.\n\nFor r2, every Decision Core must carry `reader_facing_reason_authorship` with `mode=MODEL_AUTHORED_PER_RACE`, `programmatic_template=false`, and a `basis` containing at least `honmei_win_case` and `ranking_reason`. This is provenance/operation metadata, not permission to auto-compose those fields.
 
-**Forbidden in newspaper prose**: `sealed Reader`, `ordinary five`, `r2`, `boundary KEEP`, model plumbing, unsupported specifics, market-sensitive hidden-value index values. Never reopen all horses to generate prose. If the recorded core lacks the facts for a good explanation, record the deficiency and correct it **before** Freeze with the original decision author; do not invent a better story afterward.
+**Forbidden in newspaper prose and authoring path**: `sealed Reader`, `ordinary five`, `r2`, `boundary KEEP`, model plumbing, unsupported specifics, market-sensitive hidden-value index values. Never reopen all horses to generate prose. If the recorded core lacks the facts for a good explanation, record the deficiency and correct it **before** Freeze with the original decision author; do not invent a better story afterward.
 
 ## 8. Research and release gates
 

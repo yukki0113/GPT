@@ -101,6 +101,66 @@ class V054EvidenceTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "near-template"):
             validate_prose_collection([first, second])
 
+
+
+    def test_v054_btday_workflows_do_not_construct_decision_prose(self):
+        repo_root = Path(__file__).resolve().parents[3]
+        workflow_root = repo_root / ".github" / "workflows"
+        prohibited = (
+            "reader_facing_reason",
+            "'race_model':",
+            '"race_model":',
+            "'mainline_cases':",
+            '"mainline_cases":',
+            "prose=(",
+            "prose = (",
+        )
+        offenders = []
+        for path in workflow_root.glob("racenote_btday*_v054*.yml"):
+            text = path.read_text(encoding="utf-8")
+            hits = [token for token in prohibited if token in text]
+            if hits:
+                offenders.append((path.name, hits))
+        self.assertEqual(
+            offenders,
+            [],
+            f"v0.5.4 BTDAY workflow must not construct model-authored Decision Core/prose: {offenders}",
+        )
+
+    def test_r2_requires_explicit_model_authorship(self):
+        core = {
+            "marks": [3, 13, 4, 2, 7],
+            "reader_facing_reason": "◎3はクラス上位級の内容を繰り返し、調教も上向き。○13も能力上位だが、現条件での勝ち切り再現性では3を上に取る。▲4は先行残りの別筋。",
+        }
+        with self.assertRaisesRegex(ValueError, "authorship"):
+            validate_prose(core, require_authorship=True)
+        core["reader_facing_reason_authorship"] = {
+            "mode": "MODEL_AUTHORED_PER_RACE",
+            "programmatic_template": False,
+            "basis": ["honmei_win_case", "ranking_reason", "single_shot_case"],
+        }
+        validate_prose(core, require_authorship=True)
+
+    def test_r2_rejects_btday0098_style_programmatic_prose(self):
+        core = {
+            "marks": [7, 6, 13, 1, 3],
+            "reader_facing_reason": "◎7は直近ダート1400mで4着・IDM35で、ダート1400mでも逃げから勝ち切る形を最も描きやすい。○6は直近ダート1400mで2着・IDM31を根拠に逆転候補とするが、現条件へのつながりで◎を上に置く。▲13は差しから主線と異なる流れで浮上余地がある。",
+            "reader_facing_reason_authorship": {
+                "mode": "MODEL_AUTHORED_PER_RACE",
+                "programmatic_template": False,
+                "basis": ["honmei_win_case", "ranking_reason", "single_shot_case"],
+            },
+        }
+        with self.assertRaisesRegex(ValueError, "programmatic-template"):
+            validate_prose(core, require_authorship=True)
+
+    def test_legacy_r1_prose_remains_valid_without_authorship_metadata(self):
+        core = {
+            "marks": [3, 13, 4, 2, 7],
+            "reader_facing_reason": "◎3はクラス上位級の内容を繰り返し、調教も上向き。○13も能力上位だが、現条件での勝ち切り再現性では3を上に取る。▲4は先行残りの別筋。",
+        }
+        validate_prose(core, require_authorship=False)
+
     def test_newspaper_quality_guard(self):
         marks = [3, 13, 4, 2, 7]
         good = "◎3はクラス上位級の走りを繰り返し、調教も上向き。○13も能力上位だが、現条件での勝ち切り再現性では3を上に取る。▲4は先行残りの別筋。"

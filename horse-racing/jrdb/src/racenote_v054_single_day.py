@@ -15,7 +15,12 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from racenote_decision_core_v054 import CONTRACT_REVISION, validate_core, validate_prose_collection
+from racenote_decision_core_v054 import (
+    CONTRACT_REVISION,
+    SUPPORTED_CONTRACT_REVISIONS,
+    validate_core,
+    validate_prose_collection,
+)
 from racenote_reader_v050 import DEFAULT_BINDING
 from racenote_reader_v054 import VERSION as LOGIC, load_binding, transform
 from racenote_save_venue_batch_v046 import load_clean
@@ -131,7 +136,7 @@ def init_session(
         raise FileExistsError(f"v0.5.4 single-day root already exists: {root}")
     if len(base_main_sha) != 40 or any(c not in "0123456789abcdef" for c in base_main_sha):
         raise ValueError("base_main_sha must be a full lowercase commit SHA")
-    if contract_revision != CONTRACT_REVISION:
+    if contract_revision not in SUPPORTED_CONTRACT_REVISIONS:
         raise ValueError(f"unsupported v0.5.4 contract revision: {contract_revision}")
 
     handoff, clean_manifest, readers = load_clean(
@@ -294,7 +299,7 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
         session.get("schema_version") != SESSION_VERSION
         or session.get("status") != "SESSION_SEALED"
         or session.get("logic_version") != LOGIC
-        or session.get("contract_revision") != CONTRACT_REVISION
+        or session.get("contract_revision") not in SUPPORTED_CONTRACT_REVISIONS
         or session.get("market_blind") is not True
         or session.get("target_market_opened") is not False
         or session.get("result_opened") is not False
