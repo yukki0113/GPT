@@ -112,8 +112,9 @@ def validate_core(
 ) -> None:
     if contract_revision not in SUPPORTED_CONTRACT_REVISIONS:
         raise ValueError(f"unsupported v0.5.4 revision: {contract_revision}")
+    legacy_core = {k: v for k, v in core.items() if k != "reader_facing_reason_authorship"}
     validate_v053_core(
-        core,
+        legacy_core,
         reader,
         contract_revision="v053-boundary-safety-r2",
         rrdb_contract="rrdb-recommendation-signals-v0.5",
