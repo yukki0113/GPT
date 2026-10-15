@@ -1,0 +1,202 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.2",
+  "confidence_target": "pairwise_honmei_over_second_with_A_purification",
+  "confidence_rule": {
+    "A": "pairwise clearly above AND honmei-minus-second pre-IDM >= 5 AND no major absolute uncertainty",
+    "B": "reason to rank ◎ above ○ but A purification gate not met",
+    "C": "◎ and ○ very close / tiebreak-like or material counterargument remains"
+  },
+  "a_purification": {
+    "pre_idm_gap_min": 5,
+    "upgrade_from_B_or_C": false,
+    "obstacle_or_debut_auto_A": false
+  },
+  "formal_audit_status": "SEMANTIC_WARNING_RANKING_REASON_TEMPLATE",
+  "audit_note": "All 24 ranking_reason values use the same generic X番を勝ち切り評価で最上位、Y番を対抗とした pattern. Workflow does not programmatically generate Decision Core and other core/prose fields are race-specific, but ranking_reason lacks the concrete comparative support expected by r2.",
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "run/btday0103-v054-t1",
+  "source_branch_head_sha": "27718f8d30688d188b40d1322a6cd221f1ef4f79",
+  "frozen_records_sha256": "7b3802e1eb0a116dd104a89d3d5cf2d0c9b7f5d2a8518f4d0033e93fabc9dabd",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.4-candidate",
+  "contract_revision": "v054-authored-prose-r2",
+  "btday": "BTDAY-0103",
+  "target_date": "2025-04-06",
+  "methodology": "pre-result confidence frozen despite semantic audit warning; pairwise review uses frozen honmei/second cases, reader evidence and prose, with prospective A-purification gate",
+  "assignments": [
+    {
+      "venue": "中山",
+      "race_no": 1,
+      "honmei": 6,
+      "second": 13,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 2,
+      "honmei": 16,
+      "second": 14,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "honmei": 11,
+      "second": 12,
+      "confidence": "A"
+    },
+    {
+      "venue": "中山",
+      "race_no": 4,
+      "honmei": 3,
+      "second": 6,
+      "confidence": "C"
+    },
+    {
+      "venue": "中山",
+      "race_no": 5,
+      "honmei": 1,
+      "second": 16,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "honmei": 4,
+      "second": 7,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 7,
+      "honmei": 7,
+      "second": 5,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 8,
+      "honmei": 11,
+      "second": 9,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "honmei": 9,
+      "second": 4,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "honmei": 8,
+      "second": 11,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "honmei": 6,
+      "second": 16,
+      "confidence": "B"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "honmei": 10,
+      "second": 11,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 1,
+      "honmei": 5,
+      "second": 2,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 2,
+      "honmei": 8,
+      "second": 9,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 3,
+      "honmei": 7,
+      "second": 16,
+      "confidence": "C"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 4,
+      "honmei": 12,
+      "second": 10,
+      "confidence": "C"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 5,
+      "honmei": 11,
+      "second": 12,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 6,
+      "honmei": 8,
+      "second": 4,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 7,
+      "honmei": 3,
+      "second": 6,
+      "confidence": "A"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 8,
+      "honmei": 5,
+      "second": 8,
+      "confidence": "C"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 9,
+      "honmei": 14,
+      "second": 13,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 10,
+      "honmei": 14,
+      "second": 13,
+      "confidence": "B"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 11,
+      "honmei": 5,
+      "second": 13,
+      "confidence": "C"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 12,
+      "honmei": 4,
+      "second": 11,
+      "confidence": "B"
+    }
+  ],
+  "counts": {
+    "A": 3,
+    "B": 16,
+    "C": 5,
+    "total": 24
+  }
+}
