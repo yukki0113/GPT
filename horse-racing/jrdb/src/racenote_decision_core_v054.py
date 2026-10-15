@@ -7,6 +7,7 @@ true or that a model has made a sound judgment.
 from __future__ import annotations
 
 import re
+from difflib import SequenceMatcher
 from typing import Any
 from racenote_decision_core_v053 import validate_core as validate_v053_core
 
@@ -60,3 +61,24 @@ def validate_core(
         raise ValueError(f"unsupported v0.5.4 revision: {contract_revision}")
     validate_v053_core(core, reader, contract_revision="v053-boundary-safety-r2")
     validate_prose(core)
+
+
+def validate_prose_collection(cores: list[dict[str, Any]]) -> None:
+    """Catch a card-wide formula with only horse numbers changed.
+
+    Race-specific wording remains a model-authorship obligation; this is a
+    deterministic near-duplicate warning barrier, not a naturalness score.
+    """
+    seen: list[tuple[str, str]] = []
+    for core in cores:
+        venue = str(core.get("venue") or "")
+        race_no = str(core.get("race_no") or "")
+        label = f"{venue}{race_no}R"
+        note = re.sub(r"[0-9０-９]+", "#", str(core.get("reader_facing_reason") or ""))
+        note = re.sub(r"\s+", "", note)
+        for previous_label, previous in seen:
+            if SequenceMatcher(None, note, previous).ratio() >= 0.94:
+                raise ValueError(
+                    f"repeated near-template newspaper prose: {previous_label} / {label}"
+                )
+        seen.append((label, note))
