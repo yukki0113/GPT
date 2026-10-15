@@ -3,7 +3,7 @@
 Status: **PROMOTED CURRENT / NEW v0.5.4 SESSIONS**
 Contract: `FORECAST_HUMAN_CONTEXT_READER_v0_5_4_CANDIDATE.md`
 Logic: `RaceNote-Human-Context-Reader-0.5.4-candidate`
-Revision: `v054-authored-prose-r2` (legacy r1 Freeze verification remains supported)
+Revision: `v054-authored-prose-r3` (legacy r2/r1 Freeze verification remains supported)
 
 ## Scope and non-negotiable boundary
 
@@ -103,10 +103,7 @@ winning votes.
 
 For each race, the model authors a complete Decision Core (the same r2
 five-horse structure, fixed challenger boundary and no rank score).
-`reader_facing_reason` is authored **per race by the model**, using the
-already-authored Decision Core; it is not produced by a formatter or fallback
-template. The normal target is a 2–3 sentence explanation of ◎'s specific
-strength, ◎ versus ○ ordering and, when useful, ▲'s different win route.
+`reader_facing_reason` is authored **per race by the model**, using the already-authored Decision Core; it is not produced by a formatter or fallback template. It is a reader-facing editorial note, not a checklist summary. The model chooses the most useful race-specific point and is not required to cover ◎/○/▲ in a fixed order, mention every mark, or use a fixed sentence count.
 
 **Do not put Decision Core or newspaper-prose construction code in a workflow.**
 A workflow may only take model-authored venue JSON and run save / validation /
@@ -121,13 +118,11 @@ Each new-r2 core includes:
 "reader_facing_reason_authorship": {
   "mode": "MODEL_AUTHORED_PER_RACE",
   "programmatic_template": false,
-  "basis": ["honmei_win_case", "ranking_reason", "single_shot_case"]
+  "basis": ["<the Decision Core field(s) actually used>"]
 }
 ```
 
-The final basis element is optional when ▲ is not discussed. Do not publish
-internal terms such as `ordinary five`, `sealed Reader`, `r2`, or trivial
-mark enumeration.
+`basis` is non-empty but has no mandatory member in r3. Do not publish internal terms such as `ordinary five`, `sealed Reader`, contract/plumbing labels, or trivial mark enumeration.
 
 ```bash
 python horse-racing/jrdb/src/racenote_v054_single_day.py save \
@@ -155,14 +150,7 @@ and validation but may **not construct marks, Decision Core, boundary comparison
 ranking reasons, or reader-facing prose**. Saving a complete venue JSON is
 still permitted; the chunk limit applies to authoring, not the venue filename.
 
-Before a new Freeze, `racenote_v054_single_day.py freeze` examines every
-authored Decision Core across the full day and writes
-`v054/authoring_quality_report.json`. The Freeze fails closed on generic
-horse cases, highly similar repeated passages, insufficient concrete
-challenger-vs-lowest-ordinary boundary comparison, insufficient ◎/○ comparison,
-or reader-facing prose lacking a concrete 2–3 sentence comparison.
-The report contains field-specific violations. Only a PASS can be frozen;
-the frozen report is separately SHA-sealed and verified.
+Before a new Freeze, `racenote_v054_single_day.py freeze` examines every authored Decision Core across the full day and writes `v054/authoring_quality_report.json`. Decision Core fields remain subject to race-specific evidence, boundary-comparison and ◎/○ ranking-specificity checks. Reader-facing prose is checked only for operational accidents: known generic/fallback language, internal plumbing language, trivial mark enumeration, implausible length, or day-wide near-duplicate reuse. The gate does **not** grade prose composition or require specific marks, comparison words, evidence tokens, sentence count, or a narrow character target. Only a PASS can be frozen; the frozen report is separately SHA-sealed and verified.
 
 Mechanical keyword and similarity detection is a **necessary screen, not
 proof of horse-specific evidence truth or model provenance**. The execution

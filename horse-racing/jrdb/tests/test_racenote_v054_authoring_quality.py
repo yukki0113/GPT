@@ -5,6 +5,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from racenote_v054_authoring_quality import inspect
+from racenote_decision_core_v054 import (
+    CONTRACT_REVISION,
+    R2_CONTRACT_REVISION,
+    validate_prose,
+)
 
 
 def core(race_no, generic=False):
@@ -30,6 +35,11 @@ def core(race_no, generic=False):
             "honmei_win_case": "11番は直近東京芝1600mのIDM58と先行力で勝ち切りがある。",
             "second_case": "12番は東京芝1600mで2着、追い込みの安定性がある。",
             "ranking_reason": rank},
+        "reader_facing_reason_authorship": {
+            "mode": "MODEL_AUTHORED_PER_RACE",
+            "programmatic_template": False,
+            "basis": ["ranking_reason"],
+        },
         "reader_facing_reason": ("11番は前走東京芝1600mでIDM58を記録し、先行から長く脚を使える。"
             "12番も同距離で2着した実績がある一方、直近IDMと位置取りの優位で11番を上に取る。"
             "3番は逃げる展開なら別の勝ち筋を持つ。")
@@ -56,6 +66,37 @@ class GateTests(unittest.TestCase):
         obj = core(1)
         obj["role_assignment"]["ranking_reason"] = "11番を最上位、12番を対抗とした。"
         self.assertEqual(inspect([obj])["ranking_comparison_specificity_pass"], 0)
+
+
+    def test_r3_free_form_prose_does_not_require_mark_checklist(self):
+        obj = core(1)
+        obj["reader_facing_reason"] = (
+            "前走の持続力が今回の条件に最もつながる。位置を取りに行ける強みを素直に評価したい。"
+        )
+        obj["reader_facing_reason_authorship"]["basis"] = ["honmei_win_case"]
+        validate_prose(obj, contract_revision=CONTRACT_REVISION)
+        report = inspect([obj])
+        self.assertEqual(report["reader_facing_reason_safety_pass"], 1)
+        self.assertEqual(report["status"], "PASS")
+
+    def test_r2_legacy_still_requires_honmei_and_second_mentions(self):
+        obj = core(1)
+        obj["reader_facing_reason"] = (
+            "前走の持続力が今回の条件に最もつながる。位置を取りに行ける強みを素直に評価したい。"
+        )
+        obj["reader_facing_reason_authorship"]["basis"] = [
+            "honmei_win_case", "ranking_reason"
+        ]
+        with self.assertRaises(ValueError):
+            validate_prose(obj, contract_revision=R2_CONTRACT_REVISION)
+
+    def test_r3_known_fallback_phrase_rejected(self):
+        obj = core(1)
+        obj["reader_facing_reason"] = (
+            "勝ち切る形を最も描きやすい。現条件へのつながりで評価する。"
+        )
+        with self.assertRaises(ValueError):
+            validate_prose(obj, contract_revision=CONTRACT_REVISION)
 
 
 if __name__ == "__main__":

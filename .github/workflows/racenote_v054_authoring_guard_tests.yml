@@ -1,0 +1,37 @@
+name: RaceNote v0.5.4 authoring guard tests
+
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v054_authoring_quality.py'
+      - 'horse-racing/jrdb/src/racenote_decision_core_v054.py'
+      - 'horse-racing/jrdb/src/racenote_v054_single_day.py'
+      - 'horse-racing/jrdb/tests/test_racenote_v054_authoring_quality.py'
+      - 'horse-racing/jrdb/docs/racenote/**'
+      - 'horse-racing/jrdb/config/racenote_forecast_logic_current.json'
+      - '.github/workflows/racenote_v054_authoring_guard_tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile changed guard modules
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/racenote_v054_authoring_quality.py \
+            horse-racing/jrdb/src/racenote_decision_core_v054.py \
+            horse-racing/jrdb/src/racenote_v054_single_day.py
+      - name: Run authoring guard regression tests
+        run: |
+          python -m unittest -v horse-racing/jrdb/tests/test_racenote_v054_authoring_quality.py
