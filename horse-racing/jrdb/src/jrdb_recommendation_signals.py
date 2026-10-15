@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Canonical RaceReviewDB recommendation signals v0.4.
+"""Canonical RaceReviewDB recommendation signals v0.5.
 
 This module is the current operational recommendation contract after the
 2024-2025 Historical OOS and strength/monotonicity studies.
@@ -14,7 +14,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 import math
 
-VERSION = "rrdb-recommendation-signals-v0.4"
+VERSION = "rrdb-recommendation-signals-v0.5"
 OPERATIONAL_LOOKBACK_DAYS = 730
 
 # Frozen from the accepted pre-OOS / OOS research contracts.
@@ -146,6 +146,7 @@ def matched_signals(row: Mapping[str, object]) -> list[str]:
         and frontness <= REAR_FRONTNESS_MAX
         and last3f is not None
         and last3f >= REAR_LAST3F_MIN
+        and row.get("rear_srb_q20_match") is True
     ):
         matched.append("REAR_HIGH_LAST3F90")
 
@@ -185,6 +186,14 @@ def signal_strength(signal_id: str, row: Mapping[str, object]) -> dict[str, obje
             "winner_gap_sec": _finite(row.get("winner_gap_sec")),
             "pace_balance_percentile": _finite(row.get("pace_balance_percentile")),
             "corner4_frontness": _finite(row.get("corner4_frontness")),
+            "race_lap_early_late_delta_sec": _finite(
+                row.get("rear_srb_early_late_delta_sec")
+            ),
+            "race_lap_q20_sec": _finite(row.get("rear_srb_q20_sec")),
+            "race_lap_distance_bucket": row.get("rear_srb_distance_bucket"),
+            "race_lap_reference_race_count": _int(
+                row.get("rear_srb_reference_race_count")
+            ),
         }
     if signal_id == "HV02_Q85_Q90":
         return {

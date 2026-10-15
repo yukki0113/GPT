@@ -33,9 +33,12 @@ from jrdb_postrace_review_reader import RaceReviewReader
 from jrdb_recommendation_reverse import (
     _course_profile_fit,
     _load_course_profile_sources,
+    _load_rear_srb_contract,
     _parse_target_races,
+    _rear_srb_evidence,
     _target_course_profile,
 )
+from jrdb_race_lap_reader import RaceLapReader
 from racenote_jrdb import VENUES
 from racenote_horse_evidence_card import build_horse_evidence_cards
 from racenote_racereview_adapter import build_racereview_evidence
@@ -147,10 +150,10 @@ def _course_profile_context(
 ) -> tuple[Path, dict[str, dict[str, object]]]:
     """Resolve target-course profile once per race and bind it to each target horse."""
     if not paci_path.is_file():
-        raise RRDBEnrichmentError(f"PACI ZIP not found for RRDB v0.4: {paci_path}")
+        raise RRDBEnrichmentError(f"PACI ZIP not found for RRDB v0.5: {paci_path}")
     if not course_fit_root.is_dir():
         raise RRDBEnrichmentError(
-            f"Horse Course Fit root not found for RRDB v0.4: {course_fit_root}"
+            f"Horse Course Fit root not found for RRDB v0.5: {course_fit_root}"
         )
 
     target_dates = {
@@ -160,7 +163,7 @@ def _course_profile_context(
     }
     if len(target_dates) != 1 or not next(iter(target_dates)):
         raise RRDBEnrichmentError(
-            f"RRDB v0.4 requires one target date: {sorted(target_dates)}"
+            f"RRDB v0.5 requires one target date: {sorted(target_dates)}"
         )
     target_date_only = next(iter(target_dates))
 
@@ -191,7 +194,7 @@ def _course_profile_context(
         target_race = race_lookup.get(key)
         if target_race is None:
             raise RRDBEnrichmentError(
-                f"RRDB v0.4 target BAC row missing for {key[0]}{key[1]}R"
+                f"RRDB v0.5 target BAC row missing for {key[0]}{key[1]}R"
             )
         profile = _target_course_profile(
             target_race,
@@ -222,8 +225,10 @@ def _latest_recommendation(
     *,
     candidate_fit_path: Path,
     target_profiles: Mapping[str, Mapping[str, object]],
+    race_lap_reader: RaceLapReader | None = None,
+    rear_srb_contract: Mapping[str, object] | None = None,
 ) -> dict[str, dict[str, object]]:
-    """Apply RRDB v0.4 signals to latest prior run plus target-course fit evidence."""
+    """Apply RRDB v0.5 signals to latest prior run plus target-course fit evidence."""
     hp = _table_sql(_relation_paths(reader, "fact_horse_performance"))
     rc = _table_sql(_relation_paths(reader, "fact_race_context"))
     con = duckdb.connect(":memory:")
@@ -253,7 +258,7 @@ def _latest_recommendation(
             profile = target_profiles.get(horse_id)
             if not isinstance(profile, Mapping):
                 raise RRDBEnrichmentError(
-                    f"RRDB v0.4 target course profile missing: {horse_id}"
+                    f"RRDB v0.5 target course profile missing: {horse_id}"
                 )
             fit = _course_profile_fit(
                 con,
@@ -284,6 +289,8 @@ def _latest_recommendation(
                 source_run = {
                     "race_date": str(item.get("race_date")),
                     "race_key": item.get("race_key"),
+                    "surface_code": item.get("surface_code"),
+                    "distance_m": item.get("distance_m"),
                     "finish": item.get("finish"),
                     "winner_gap_sec": item.get("winner_gap_sec"),
                     "pace_balance_percentile": item.get("pace_balance_percentile"),
@@ -299,7 +306,24 @@ def _latest_recommendation(
             course_profile_match = bool(
                 profile.get("eligible") and fit.get("match")
             )
+            if race_lap_reader is not None and rear_srb_contract is not None:
+                rear_srb = _rear_srb_evidence(
+                    race_lap_reader,
+                    dict(rear_srb_contract),
+                    source_run,
+                )
+            else:
+                rear_srb = {"match": False, "reason": "RACE_LAP_CONTEXT_NOT_PROVIDED"}
             item.update({
+                "rear_srb_q20_match": rear_srb.get("match") is True,
+                "rear_srb_early_late_delta_sec": rear_srb.get(
+                    "early_late_delta_sec"
+                ),
+                "rear_srb_q20_sec": rear_srb.get("q20_sec"),
+                "rear_srb_distance_bucket": rear_srb.get("distance_bucket"),
+                "rear_srb_reference_race_count": rear_srb.get(
+                    "reference_race_count"
+                ),
                 "course_profile_fit_match": course_profile_match,
                 "target_course_size_class": profile.get("course_size_class"),
                 "target_final_straight_bucket": profile.get(
@@ -333,6 +357,7 @@ def _latest_recommendation(
                 "source_run": source_run,
                 "target_course_profile": dict(profile),
                 "course_profile_fit": fit,
+                "rear_srb": rear_srb,
             }
         return result
     finally:
@@ -458,6 +483,7 @@ def enrich_bundle(
     *,
     paci_path: Path,
     course_fit_root: Path,
+    race_lap_parquet: Path,
     per_horse_limit: int = 5,
 ) -> dict[str, object]:
     """Enrich one authoritative RaceNote bundle under the current RRDB contract."""
@@ -467,6 +493,7 @@ def enrich_bundle(
         contract,
         paci_path=paci_path,
         course_fit_root=course_fit_root,
+        race_lap_parquet=race_lap_parquet,
         per_horse_limit=per_horse_limit,
     )[0]
 
@@ -478,13 +505,14 @@ def enrich_bundles(
     *,
     paci_path: Path,
     course_fit_root: Path,
+    race_lap_parquet: Path,
     per_horse_limit: int = 5,
 ) -> list[dict[str, object]]:
-    """Enrich one target day with RRDB v0.4 prior-run and Course Fit evidence."""
+    """Enrich one target day with RRDB v0.5 prior-run and Course Fit evidence."""
     if not bundles:
         return []
 
-    if RECOMMENDATION_VERSION != "rrdb-recommendation-signals-v0.4":
+    if RECOMMENDATION_VERSION != "rrdb-recommendation-signals-v0.5":
         raise RRDBEnrichmentError(
             f"unsupported operational recommendation contract: {RECOMMENDATION_VERSION}"
         )
@@ -523,12 +551,20 @@ def enrich_bundles(
         course_fit_root,
     )
     target_date = next(iter(target_dates))
+    if not race_lap_parquet.is_file():
+        raise RRDBEnrichmentError(
+            f"RaceLap Parquet not found for RRDB v0.5: {race_lap_parquet}"
+        )
+    race_lap_reader = RaceLapReader.from_parquet(race_lap_parquet)
+    rear_srb_contract = _load_rear_srb_contract()
     recommendation = _latest_recommendation(
         reader,
         sorted(set(horse_ids)),
         target_date,
         candidate_fit_path=candidate_fit_path,
         target_profiles=target_profiles,
+        race_lap_reader=race_lap_reader,
+        rear_srb_contract=rear_srb_contract,
     )
     return [
         _apply_bundle_enrichment(
@@ -549,6 +585,7 @@ def main() -> int:
     p.add_argument("--racereview-drive-file-id", default=STABLE_CURRENT_FILE_ID)
     p.add_argument("--paci", type=Path, required=True)
     p.add_argument("--course-fit-root", type=Path, required=True)
+    p.add_argument("--race-lap-parquet", type=Path, required=True)
     p.add_argument(
         "--next-watch-rules",
         type=Path,
@@ -594,6 +631,7 @@ def main() -> int:
             contract,
             paci_path=args.paci,
             course_fit_root=args.course_fit_root,
+            race_lap_parquet=args.race_lap_parquet,
             per_horse_limit=args.per_horse_limit,
         )
         args.output.parent.mkdir(parents=True, exist_ok=True)

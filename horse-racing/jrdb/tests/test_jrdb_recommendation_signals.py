@@ -36,7 +36,7 @@ def base_row() -> dict[str, object]:
 
 class RecommendationSignalsTest(unittest.TestCase):
     def test_contract_has_two_year_operational_lookback(self) -> None:
-        self.assertEqual(VERSION, "rrdb-recommendation-signals-v0.4")
+        self.assertEqual(VERSION, "rrdb-recommendation-signals-v0.5")
         self.assertEqual(OPERATIONAL_LOOKBACK_DAYS, 730)
 
     def test_time_class_plus1(self) -> None:
@@ -59,7 +59,27 @@ class RecommendationSignalsTest(unittest.TestCase):
             "pace_balance_percentile": 18.0,
             "corner4_frontness": 0.25,
             "last3f_speed_percentile": 98.0,
+            "rear_srb_q20_match": True,
+            "rear_srb_early_late_delta_sec": -2.4,
+            "rear_srb_q20_sec": -2.1,
+            "rear_srb_distance_bucket": "MILE",
+            "rear_srb_reference_race_count": 1273,
         })
+        self.assertEqual(matched_signals(row), ["REAR_HIGH_LAST3F90"])
+
+    def test_rear_high_last3f90_requires_srb_q20_confirmation(self) -> None:
+        row = base_row()
+        row.update({
+            "pace_balance_percentile": 18.0,
+            "corner4_frontness": 0.25,
+            "last3f_speed_percentile": 98.0,
+        })
+        self.assertEqual(matched_signals(row), [])
+
+        row["rear_srb_q20_match"] = False
+        self.assertEqual(matched_signals(row), [])
+
+        row["rear_srb_q20_match"] = True
         self.assertEqual(matched_signals(row), ["REAR_HIGH_LAST3F90"])
 
     def test_hv02_q85_q90_matches_only_narrow_band(self) -> None:
@@ -139,6 +159,11 @@ class RecommendationSignalsTest(unittest.TestCase):
             "corner4_frontness": 0.20,
             "winner_gap_sec": 0.31,
             "last3f_speed_percentile": 98.0,
+            "rear_srb_q20_match": True,
+            "rear_srb_early_late_delta_sec": -2.4,
+            "rear_srb_q20_sec": -2.1,
+            "rear_srb_distance_bucket": "MILE",
+            "rear_srb_reference_race_count": 1273,
         })
         self.assertEqual(
             newspaper_comment(row),

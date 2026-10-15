@@ -32,7 +32,7 @@ class FakeReader:
         }
 
 
-class RaceNoteRRDBV04Test(unittest.TestCase):
+class RaceNoteRRDBV05Test(unittest.TestCase):
     def test_missing_course_fit_root_fails_closed(self) -> None:
         bundle = {
             "schema_version": "1.0",
@@ -186,7 +186,7 @@ class RaceNoteRRDBV04Test(unittest.TestCase):
             self.assertEqual(item["status"], "MATCH")
             self.assertIsNone(item["source_run"])
             self.assertEqual(item["matched_signal_ids"], ["COURSE_PROFILE_FIT"])
-            self.assertEqual(item["contract_version"], "rrdb-recommendation-signals-v0.4")
+            self.assertEqual(item["contract_version"], "rrdb-recommendation-signals-v0.5")
             self.assertEqual(item["human_summary"], "大箱コースで好走傾向")
             self.assertEqual(item["course_profile_fit"]["as_of_date"], "2026-01-01")
 

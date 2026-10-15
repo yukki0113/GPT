@@ -1,0 +1,75 @@
+{
+  "version": "rrdb-rear-srb-q20-v0.1",
+  "research_period": [
+    "2024-01-01",
+    "2025-12-31"
+  ],
+  "forward_period": [
+    "2026-01-01",
+    "2026-10-12"
+  ],
+  "grouping": [
+    "surface_code",
+    "distance_bucket"
+  ],
+  "distance_buckets": {
+    "SPRINT": "<=1400",
+    "MILE": "1500-1800",
+    "MIDDLE": "1900-2200",
+    "STAYING": ">=2300"
+  },
+  "minimum_reference_races": 100,
+  "rule": "early_late_delta_sec <= q20",
+  "thresholds": [
+    {
+      "surface_code": "1",
+      "distance_bucket": "SPRINT",
+      "reference_race_count": 981,
+      "early_late_delta_q20_sec": -0.4
+    },
+    {
+      "surface_code": "1",
+      "distance_bucket": "MILE",
+      "reference_race_count": 1273,
+      "early_late_delta_q20_sec": -2.1
+    },
+    {
+      "surface_code": "1",
+      "distance_bucket": "MIDDLE",
+      "reference_race_count": 838,
+      "early_late_delta_q20_sec": -2.26
+    },
+    {
+      "surface_code": "1",
+      "distance_bucket": "STAYING",
+      "reference_race_count": 246,
+      "early_late_delta_q20_sec": -2.9
+    },
+    {
+      "surface_code": "2",
+      "distance_bucket": "SPRINT",
+      "reference_race_count": 1449,
+      "early_late_delta_q20_sec": 1.2
+    },
+    {
+      "surface_code": "2",
+      "distance_bucket": "MILE",
+      "reference_race_count": 1633,
+      "early_late_delta_q20_sec": 0.14
+    },
+    {
+      "surface_code": "2",
+      "distance_bucket": "MIDDLE",
+      "reference_race_count": 203,
+      "early_late_delta_q20_sec": 0.96
+    }
+  ],
+  "excluded_groups": [
+    {
+      "surface_code": "2",
+      "distance_bucket": "STAYING",
+      "reference_race_count": 39,
+      "reason": "REFERENCE_RACE_COUNT_LT_100"
+    }
+  ]
+}

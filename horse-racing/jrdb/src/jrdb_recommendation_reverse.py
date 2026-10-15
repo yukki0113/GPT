@@ -18,6 +18,7 @@ import duckdb
 
 from jrdb_course_profile_identity import course_key_from_observation
 from jrdb_raw import Parser, canonical_members, read_fixed_records
+from jrdb_race_lap_reader import RaceLapReader
 from jrdb_recommendation_signals import (
     OPERATIONAL_LOOKBACK_DAYS,
     VERSION as SIGNAL_VERSION,
@@ -26,7 +27,7 @@ from jrdb_recommendation_signals import (
     recommendation_payload,
 )
 
-VERSION = "rrdb-recommendation-reverse-v0.4"
+VERSION = "rrdb-recommendation-reverse-v0.5"
 COURSE_PROFILE_MIN_SAMPLE = 4
 COURSE_PROFILE_MIN_SHRUNK_DELTA = 0.10
 COURSE_PROFILE_MIN_CONFIDENCE = 0.50
@@ -342,12 +343,130 @@ def _course_profile_fit(
     return {"match": match, **item}
 
 
+
+def _load_rear_srb_contract() -> dict[str, object]:
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "config"
+        / "recommendation"
+        / "rear_srb_q20_v0_1.json"
+    )
+    value = _read_json(path)
+    if value.get("version") != "rrdb-rear-srb-q20-v0.1":
+        raise RecommendationReverseError(
+            f"unexpected rear SRB contract version: {value.get('version')}"
+        )
+    thresholds = value.get("thresholds")
+    if not isinstance(thresholds, list) or not thresholds:
+        raise RecommendationReverseError("rear SRB threshold table missing")
+    return value
+
+
+def _distance_bucket(distance_m: object) -> str | None:
+    try:
+        distance = int(distance_m)
+    except (TypeError, ValueError):
+        return None
+    if distance <= 1400:
+        return "SPRINT"
+    if distance <= 1800:
+        return "MILE"
+    if distance <= 2200:
+        return "MIDDLE"
+    return "STAYING"
+
+
+def _rear_srb_evidence(
+    reader: RaceLapReader,
+    contract: dict[str, object],
+    source_run: dict[str, object] | None,
+) -> dict[str, object]:
+    if source_run is None:
+        return {"match": False, "reason": "NO_SOURCE_RUN"}
+    race_key = str(source_run.get("race_key") or "")
+    surface_code = str(source_run.get("surface_code") or "")
+    bucket = _distance_bucket(source_run.get("distance_m"))
+    if not race_key or not surface_code or bucket is None:
+        return {"match": False, "reason": "SOURCE_RUN_IDENTITY_INCOMPLETE"}
+
+    context = reader.get_race_context(race_key)
+    if context is None:
+        return {
+            "match": False,
+            "reason": "RACE_LAP_NOT_FOUND",
+            "distance_bucket": bucket,
+        }
+    race = context.get("race")
+    coverage = context.get("coverage")
+    shape = context.get("shape")
+    if not isinstance(race, dict) or not isinstance(coverage, dict) or not isinstance(shape, dict):
+        return {"match": False, "reason": "RACE_LAP_CONTEXT_INVALID"}
+    if str(race.get("race_key") or "") != race_key:
+        raise RecommendationReverseError(
+            f"RaceLap race_key mismatch: source={race_key} lap={race.get('race_key')}"
+        )
+    source_date = str(source_run.get("race_date") or "")
+    if source_date and str(race.get("race_date") or "") != source_date:
+        raise RecommendationReverseError(
+            f"RaceLap race_date mismatch: source={source_date} lap={race.get('race_date')}"
+        )
+    if str(coverage.get("status") or "") != "AVAILABLE":
+        return {
+            "match": False,
+            "reason": "RACE_LAP_UNAVAILABLE",
+            "coverage_status": coverage.get("status"),
+            "distance_bucket": bucket,
+        }
+    early_late = shape.get("early_late_delta_sec")
+    if early_late is None:
+        return {
+            "match": False,
+            "reason": "EARLY_LATE_DELTA_UNAVAILABLE",
+            "distance_bucket": bucket,
+        }
+
+    thresholds = contract.get("thresholds")
+    assert isinstance(thresholds, list)
+    threshold = next(
+        (
+            row for row in thresholds
+            if isinstance(row, dict)
+            and str(row.get("surface_code") or "") == surface_code
+            and str(row.get("distance_bucket") or "") == bucket
+        ),
+        None,
+    )
+    if threshold is None:
+        return {
+            "match": False,
+            "reason": "NO_FROZEN_Q20_THRESHOLD",
+            "surface_code": surface_code,
+            "distance_bucket": bucket,
+        }
+
+    q20 = float(threshold["early_late_delta_q20_sec"])
+    value = float(early_late)
+    return {
+        "match": value <= q20,
+        "reason": "MATCH" if value <= q20 else "ABOVE_Q20_THRESHOLD",
+        "surface_code": surface_code,
+        "distance_bucket": bucket,
+        "early_late_delta_sec": value,
+        "q20_sec": q20,
+        "reference_race_count": int(threshold["reference_race_count"]),
+        "race_lap_schema_version": context.get("schema_version"),
+        "race_lap_logic_version": context.get("logic_version"),
+        "race_lap_coverage_status": coverage.get("status"),
+    }
+
+
 def main() -> int:
     p = argparse.ArgumentParser()
     p.add_argument("--race-date", required=True)
     p.add_argument("--paci-zip", type=Path, required=True)
     p.add_argument("--current-zip", type=Path, required=True)
     p.add_argument("--course-fit-root", type=Path, required=True)
+    p.add_argument("--race-lap-parquet", type=Path, required=True)
     p.add_argument("--work-root", type=Path, required=True)
     p.add_argument("--output-json", type=Path, required=True)
     args = p.parse_args()
@@ -357,6 +476,8 @@ def main() -> int:
     candidate_path, course_masters, course_geometry = _load_course_profile_sources(
         args.course_fit_root
     )
+    rear_srb_contract = _load_rear_srb_contract()
+    race_lap_reader = RaceLapReader.from_parquet(args.race_lap_parquet)
     root = _race_review_root(args.current_zip, args.work_root)
     current = _read_json(root / "current.json")
     manifest_ref = current.get("manifest")
@@ -434,12 +555,28 @@ def main() -> int:
                     "race_key": item.get("race_key"),
                     "race_horse_key": item.get("race_horse_key"),
                     "finish": item.get("finish"),
+                    "surface_code": item.get("surface_code"),
+                    "distance_m": item.get("distance_m"),
                 }
 
             course_profile_match = bool(
                 target_profile.get("eligible") and fit.get("match")
             )
+            rear_srb = _rear_srb_evidence(
+                race_lap_reader,
+                rear_srb_contract,
+                source_run,
+            )
             item.update({
+                "rear_srb_q20_match": rear_srb.get("match") is True,
+                "rear_srb_early_late_delta_sec": rear_srb.get(
+                    "early_late_delta_sec"
+                ),
+                "rear_srb_q20_sec": rear_srb.get("q20_sec"),
+                "rear_srb_distance_bucket": rear_srb.get("distance_bucket"),
+                "rear_srb_reference_race_count": rear_srb.get(
+                    "reference_race_count"
+                ),
                 "course_profile_fit_match": course_profile_match,
                 "target_course_size_class": target_profile.get(
                     "course_size_class"
@@ -474,6 +611,7 @@ def main() -> int:
                 "source_run": source_run,
                 "target_course_profile": target_profile,
                 "course_profile_fit": fit,
+                "rear_srb": rear_srb,
                 **payload,
                 "human_summary": human_summary(item),
                 "newspaper_comment": newspaper_comment(item),
@@ -497,6 +635,17 @@ def main() -> int:
             "source_generation_id": manifest.get("generation_id"),
             "lookback_days": OPERATIONAL_LOOKBACK_DAYS,
             "grade_status": "DISABLED",
+            "rear_srb_contract": {
+                "version": rear_srb_contract.get("version"),
+                "rule": rear_srb_contract.get("rule"),
+                "grouping": rear_srb_contract.get("grouping"),
+                "minimum_reference_races": rear_srb_contract.get(
+                    "minimum_reference_races"
+                ),
+                "threshold_count": len(rear_srb_contract.get("thresholds") or []),
+                "race_lap_parquet": str(args.race_lap_parquet),
+                "race_lap_metadata": race_lap_reader.store.metadata(),
+            },
             "course_profile_fit_contract": {
                 "min_sample_count": COURSE_PROFILE_MIN_SAMPLE,
                 "min_shrunk_delta": COURSE_PROFILE_MIN_SHRUNK_DELTA,

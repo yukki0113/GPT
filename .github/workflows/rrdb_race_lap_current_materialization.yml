@@ -1,0 +1,97 @@
+name: RRDB RaceLap current materialization
+
+on:
+  workflow_dispatch:
+    inputs:
+      through_date:
+        description: "Inclusive latest completed race date (YYYY-MM-DD)"
+        required: true
+        type: string
+      daily_start_date:
+        description: "Daily JRDB SED acquisition start (YYYY-MM-DD)"
+        required: true
+        default: "2026-01-01"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      JRDB_USER: ${{ secrets.JRDB_USER }}
+      JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Fetch annual SED 2024-2025
+        run: |
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2024 --to-year 2025 \
+            --kinds SED \
+            --output-dir /tmp/rrdb-racelap-raw \
+            --sleep-seconds 0.2 \
+            --max-retries 5 \
+            --retry-backoff-seconds 2
+      - name: Fetch daily SED through requested date
+        run: |
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-date "${{ inputs.daily_start_date }}" \
+            --to-date "${{ inputs.through_date }}" \
+            --kinds SED \
+            --output-dir /tmp/rrdb-racelap-raw \
+            --sleep-seconds 0.2 \
+            --max-retries 5 \
+            --retry-backoff-seconds 2
+      - name: Build canonical RaceLap snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rrdb-racelap-current
+          mapfile -t ARCHIVES < <(
+            {
+              printf '%s\n' /tmp/rrdb-racelap-raw/SED/SED_2024.zip
+              printf '%s\n' /tmp/rrdb-racelap-raw/SED/SED_2025.zip
+              find /tmp/rrdb-racelap-raw/SED -maxdepth 1 -type f -name 'SED26*.zip' | sort
+            }
+          )
+          python horse-racing/jrdb/src/jrdb_race_lap_dataset.py \
+            "${ARCHIVES[@]}" \
+            --output /tmp/rrdb-racelap-current/race_lap.parquet \
+            --audit /tmp/rrdb-racelap-current/race_lap.audit.json \
+            --replace
+      - name: Validate reader contract and write receipt
+        run: |
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          from pathlib import Path
+          from jrdb_race_lap_reader import RaceLapReader
+
+          root = Path("/tmp/rrdb-racelap-current")
+          reader = RaceLapReader.from_parquet(root / "race_lap.parquet")
+          receipt = {
+              "status": "PASS",
+              "artifact_type": "rrdb_race_lap_current",
+              "through_date": "${{ inputs.through_date }}",
+              "reader_metadata": reader.store.metadata(),
+              "frozen_rear_srb_contract": "rrdb-rear-srb-q20-v0.1",
+          }
+          (root / "receipt.json").write_text(
+              json.dumps(receipt, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(receipt, ensure_ascii=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rrdb-race-lap-current
+          path: |
+            /tmp/rrdb-racelap-current/race_lap.parquet
+            /tmp/rrdb-racelap-current/race_lap.audit.json
+            /tmp/rrdb-racelap-current/receipt.json
+          retention-days: 90
