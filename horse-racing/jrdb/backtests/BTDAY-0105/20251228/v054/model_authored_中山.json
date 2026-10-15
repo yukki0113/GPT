@@ -1,0 +1,868 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "race_model": "中山ダート1200m。先行勢が複数いてハイ寄りを想定し、前で運べる持続力と差し脚の両方を重視した。11は能力値と調教が最上位級、14は逃げの明確さ、8は差しの地力で続く。",
+    "marks": [
+      11,
+      14,
+      8,
+      5,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "ミツカネメルクリオはIDM32に加え調教指数84、KYI調教16.6と状態面が強く、先行しても崩れにくい総合力を最上位に取った。"
+      },
+      {
+        "horse_no": 14,
+        "case": "イイクニパッションはIDM35で逃げ想定。1200mで前を取り切れる強みがあり、11より展開利を得れば逆転まである。"
+      },
+      {
+        "horse_no": 5,
+        "case": "タイセイガナールは短距離適性○とIDM26を持ち、前崩れになった時に差し込む余地がある。"
+      },
+      {
+        "horse_no": 15,
+        "case": "オテモヤンはIDM27で上がり予測が良く、先行勢の直後からロスなく運べれば残り目がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "コウユーニポポニコはIDM31の差し馬で、前が競り合う形なら主線の先行組をまとめて差す別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "外部4は調教81と上昇気配が魅力だが、固定比較対象15のIDM27と上がり予測を上回るだけの能力裏付けまではなく15を残した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "11ミツカネメルクリオは能力と調教の両面が揃い、前受けしても差しに回っても崩れにくい。14の逃げ切りを対抗視するが、流れが速まれば8の差し脚が一気に怖くなる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        14,
+        5,
+        15,
+        8
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4は調教指数81と上昇気配を持ち、能力差を状態面で詰める可能性を持つ外部候補。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "最低位の非主軸8ではなく、通常順位上の固定境界はordinary_five末尾8となるため、4と8を比較してIDM31の8を残す判断とした。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 14,
+      "honmei_win_case": "11はIDM32、調教84、先行可能な脚質が噛み合い、1200mで自ら勝ちに行ける材料が最も揃う。",
+      "second_case": "14はIDM35の逃げ馬で、隊列を支配できれば11を押し切る可能性がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11と14は能力面で拮抗するが、11は調教内容と先行・差し双方への対応幅を持ち、逃げ一本の14より展開依存度が低いと判断した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "race_model": "中山ダート1800mの未勝利。7の能力値が一段抜け、9と15が状態・地力で追う構図。後方型が多く、位置を取りやすい馬と直線で長く脚を使える馬を優先した。",
+    "marks": [
+      7,
+      9,
+      15,
+      12,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "サイモフェーンはIDM44、ダート適性○、KYI調教22.6で予測着差0。能力と状態が同時に抜けている。"
+      },
+      {
+        "horse_no": 9,
+        "case": "プリンセスダーコはIDM30ながら調教指数83、デキ抜群で先行想定。7を前で待てる位置取りが強み。"
+      },
+      {
+        "horse_no": 12,
+        "case": "イデアクリスタルはIDM29、調教KYI12.8で後方からの伸びに一定の裏付けがある。"
+      },
+      {
+        "horse_no": 4,
+        "case": "パワポケウォーズはIDM27で中距離条件に入り、A1の注意喚起は補助扱いとしても末脚比較では圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "タイセツナヒはIDM33で主線より後ろから運ぶ型。流れが前掛かりになれば能力値を生かして一気に差し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "13は調教76が目立つが芝寄りの基礎評価で、固定境界4のダート実績評価とIDM27を直接上回る根拠が不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "7サイモフェーンは能力値と調教評価が揃って一枚上。9は先行力と仕上がりで食い下がるが、差しが届く流れならIDM33の15が相手関係をひっくり返す余地がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        9,
+        12,
+        4,
+        15
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13は調教指数76で状態面から浮上する余地があるが、ダート1800mへの直接支持は弱い。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界15と13を比較すると、15はIDM33という明確な能力支持があり、13の調教優位だけでは入れ替えるには足りない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 9,
+      "honmei_win_case": "7はIDM44、適性○、調教22.6、予測着差0が揃い、この組み合わせでは自力で抜け出す勝ち筋が最も強い。",
+      "second_case": "9は先行して調教83の仕上がりを生かせれば、7に先着する余地を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9の状態上昇は大きいが、7は能力差が14ポイントあり適性も明確。状態差だけで逆転評価するには差が大きい。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "race_model": "中山芝1200m。13の先行力と状態が中心で、3・12・11が能力帯で接近。前が止まらない形を本線としつつ、差しが届く場合の10を別線として評価した。",
+    "marks": [
+      13,
+      3,
+      10,
+      12,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "シャインフォーミーはIDM37、調教83、KYI21.6、先行で予測着差0。現状の完成度が最も高い。"
+      },
+      {
+        "horse_no": 3,
+        "case": "キッショウダラニはIDM36.1、短距離適性○、KYI19.1で上昇。13より後ろからでも差を詰められる。"
+      },
+      {
+        "horse_no": 12,
+        "case": "クリオロゴールドはIDM34、調教75、先行型で予測着差3。流れに乗れば上位二頭に続く。"
+      },
+      {
+        "horse_no": 11,
+        "case": "ツルノマイハシはIDM36で差し脚を持ち、前が速くなった時の安定した追走候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "ニシノセイドウはIDM32の先行馬でA1は加点しないが、13を早めに追いかけず自分のリズムなら前残りの別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8はIDM30とA2の注意材料を持つが、固定境界11のIDM36と差し脚評価を直接上回るほどの支持はない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "13シャインフォーミーは先行力、能力、調教の三点が揃う。3は短距離適性と上昇度で逆転候補。前の隊列が緩めば10の粘り込み、速くなれば11の差しまで警戒したい。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        3,
+        12,
+        11,
+        10
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8はIDM30と差し脚、A2の注意情報から再確認した外部候補。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界10と8は能力差が小さいが、10は先行して展開利を取りやすく、8の隠れ値だけでは置換しない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 3,
+      "honmei_win_case": "13はIDM37に調教83とKYI21.6が重なり、先行して自分でレースを動かせる。",
+      "second_case": "3は短距離適性○とIDM36.1を持ち、13の直後から差す形なら逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "能力値はほぼ同等だが、13は調教と先行位置の両方で優位。3は適性面で詰めるものの、現時点の完成度で13を上位にした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "mainline_cases",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "race_model": "中山ダート1200mの1勝クラス。10の能力が抜け、2と7が次位。先行型が多く、速い流れでも押し切れる地力と差しに回れる余裕を重視した。",
+    "marks": [
+      10,
+      2,
+      4,
+      7,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "ラブルラウザーはIDM58、KYI21.5、上昇気配で予測着差0。過去の時計評価も高く、総合力で先頭。"
+      },
+      {
+        "horse_no": 2,
+        "case": "エムフォーはIDM48.8で逃げ想定、時計面の裏付けもあり、展開を握れば10に抵抗できる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "エコロシードはIDM48、調教75、デキ抜群。先行しながら上がり予測も良く安定感がある。"
+      },
+      {
+        "horse_no": 3,
+        "case": "コパノトーマスはIDM46.1で短距離適性○。芝基礎評価ながらダート適性もあり前で運べる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "アルデトップガンはIDM37でも調教77、短距離適性○で差し想定。前が潰れる流れなら状態の良さを生かして頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 11,
+      "reason": "11はA1の注意材料があるもののIDM31、予測着差24。固定境界4はIDM37と調教77があり、現条件の直接材料で上回る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "10ラブルラウザーは能力値が一段高く、状態も上向き。2の逃げ残りが最大の相手だが、前が競り合えば調教の良い4が差し込むシーンまで見ておきたい。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        2,
+        7,
+        3,
+        4
+      ],
+      "external_challenger_horse_no": 11,
+      "external_challenger_case": "11はA1と短距離適性から穴方向の再確認対象だが、能力・予測値は低い。",
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界4はIDM37、調教77、短距離適性○を持つ。11の隠れ値情報だけではこの直接支持を上回らない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 2,
+      "honmei_win_case": "10はIDM58と調教上昇、時計面の裏付けを併せ持ち、速い1200mでも押し切れる地力がある。",
+      "second_case": "2は逃げて自分のペースを作れる点が最大の逆転材料。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "2は展開利が大きいが、10とのIDM差は約9ポイント。10は先行勢が競っても崩れにくい能力余地があり上位評価とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "second_case",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "race_model": "ダート1800mの新馬戦で既走歴がなく不確実性が高い。事前能力評価と調教を中心に、15と8を主軸、6・4を次位とし、低評価帯では16を残した。",
+    "marks": [
+      15,
+      8,
+      4,
+      6,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "クラウトロックはIDM38.5で最上位、KYI調教20.2と上昇気配もあり初戦から動ける材料が最も強い。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ロードトライデントはIDM34.5、調教71、KYI20.2で予測着差0。完成度では15に迫る。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ジオストラテジーはIDM27.7、調教70で上位二頭に次ぐ基礎値。"
+      },
+      {
+        "horse_no": 16,
+        "case": "リュウゴピュアはIDM16.3ながら中位以上の調教値があり、下位群では相対的に残す材料がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "ジージージェットはIDM23.3と上位二頭には劣るが、予測着差7・KYI8.8で初戦の走り出しが噛み合えば一変する余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2はA1の注意情報を持つがIDM10、予測着差24。固定境界16の基礎能力16.3を上回る直接材料はない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "初出走同士で読みにくいが、15クラウトロックは事前能力値が最上位で調教も良い。8も完成度が高く差は小さい。上位二頭以外では4の初戦変わりが一番面白い。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        8,
+        6,
+        16,
+        4
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2はA1の注意情報で再確認したが、能力・調教の直接支持が薄い。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界4はIDM23.3と予測着差7を持ち、2の隠れ値注意だけでは通常候補を置き換えない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 8,
+      "honmei_win_case": "15は新馬の比較材料が限られる中でIDM38.5と調教20.2が揃い、初戦から勝ち負けできる期待が最も高い。",
+      "second_case": "8はIDM34.5と調教71、予測着差0で完成度は高く、15の初戦不確実性を突ける。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "両馬とも調教評価は高いが、15が事前能力値で約4ポイント上。新馬戦の不確実性を考慮してもこの差を優先した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "race_model": "芝2000mの新馬戦。15が事前能力と調教で一歩リードし、7、4、6が続く。距離実績がないため、能力値と仕上がりの整合を重視した。",
+    "marks": [
+      15,
+      7,
+      4,
+      6,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "レッドレガリアはIDM46.8で最上位、KYI20.5と上昇気配、予測着差0で完成度が高い。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ミッキーファルコンはIDM41.9で次位、調教65とKYI12.6が安定している。"
+      },
+      {
+        "horse_no": 6,
+        "case": "コンジェスタスはIDM35.6、KYI10.5で中位以上の事前評価を持つ。"
+      },
+      {
+        "horse_no": 5,
+        "case": "キミガハマはIDM31.1、調教63で下位群より明確に基礎値が高い。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "サトノクラシカルはIDM36.8とKYI14.6、上昇気配を持ち、初戦で前向きさが出れば7との差を詰めて頭まで届く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 17,
+      "reason": "17はIDM31.4とA2の注意材料があるが、固定境界5はIDM31.1に調教63。17の調教43を踏まえると置換までの直接差はない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "15レッドレガリアは事前能力と調教評価が最も揃う。7が能力で続くが、4は上昇度が高く初戦から噛み合えば上位二頭に割って入れる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        7,
+        6,
+        5,
+        4
+      ],
+      "external_challenger_horse_no": 17,
+      "external_challenger_case": "17はIDM31.4とA2の注意情報で比較したが、調教面が弱い。",
+      "excluded_horse_no": 17,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界4はIDM36.8とKYI14.6を持ち、17より直接能力・状態の両面で上。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 7,
+      "honmei_win_case": "15はIDM46.8、KYI20.5、予測着差0と新馬戦で使える事前材料が三方向から一致している。",
+      "second_case": "7はIDM41.9で能力二番手、調教も大きな不安がない。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7も高水準だが15は能力値で約5ポイント上、かつ状態上昇が明確。初戦の不確実性を差し引いても15を上に置く。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "race_model": "ダート1200mの1勝クラス。2と5が能力上位だが、5は中距離寄りの適性で短縮対応が鍵。短距離適性が明確な2・8・6を重視し、差し中心の流れを想定した。",
+    "marks": [
+      2,
+      5,
+      14,
+      8,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "エフエイトはIDM44、短距離適性○、KYI19.1で上昇。現条件へのまとまりが最も良い。"
+      },
+      {
+        "horse_no": 5,
+        "case": "メッエフアパラはIDM45、予測着差0で能力は最上位。ただし中距離寄り適性の短縮が課題。"
+      },
+      {
+        "horse_no": 8,
+        "case": "パシーヴはIDM43、短距離適性○、予測着差7で安定した差し候補。"
+      },
+      {
+        "horse_no": 6,
+        "case": "エルオレンスはIDM41.1、短距離適性○で追込から展開待ちの余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "タイセイルヴァンはIDM41で差し想定。通常評価では2・5に劣るが、前が想定以上に速くなれば外から一気に届く経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "16はA1と短距離適性○だがIDM35。固定境界6のIDM41.1と同じ短距離適性を上回る直接材料がない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2エフエイトは短距離適性と上昇度が噛み合う。5は能力だけなら互角以上だが距離短縮が焦点。差しが強く出る流れなら14の一撃まで押さえたい。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        5,
+        8,
+        6,
+        14
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16はA1と短距離適性から外部候補として確認したが、能力値は一段低い。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界14はIDM41、16は35。両者とも短距離条件に対応できるため、直接能力差を優先して14を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 5,
+      "honmei_win_case": "2はIDM44に短距離適性○、KYI19.1が揃い、1200mで自分の末脚を最も生かしやすい。",
+      "second_case": "5はIDM45と予測着差0で能力は高く、短縮に対応できれば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5の能力値は上だが適性は中距離寄り。2は短距離への直接支持と状態上昇があり、今回条件での勝ち筋をより強く評価した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "race_model": "ダート1800mの2勝クラス。10・5・6が高能力帯で、7は先行して予測着差0。差し優勢だけに決め打ちせず、前で運べる7を別経路として残した。",
+    "marks": [
+      10,
+      5,
+      7,
+      6,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "プルナチャンドラはIDM59で最上位、中距離適性○、KYI12.8。追込でも能力で届く基盤がある。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ジェイエルマスターはIDM58.1、KYI19.2で上昇。10との差は小さく状態面では上回る。"
+      },
+      {
+        "horse_no": 6,
+        "case": "オールマキシマムはIDM58で地力上位。追込型で流れが向けば差はない。"
+      },
+      {
+        "horse_no": 12,
+        "case": "マンダリンボレロはIDM56の差し馬で、上位三頭に次ぐ能力帯を維持する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "アートレスマインドはIDM56.1で先行し予測着差0。差し勢が互いに牽制する形なら前でそのまま押し切る別線がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1はA1で先行、IDM55と魅力はあるが、固定境界12はIDM56で差しの再現性があり、直接比較では僅かに12を上に取る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "10プルナチャンドラは能力最上位で1800mも合う。5は状態上昇でほぼ互角。差し勢が多いだけに、前で運べる7が楽をするとそのまま残る場面が怖い。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        5,
+        6,
+        12,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1はIDM55の先行馬でA1の注意情報もあり、前残り候補として再確認した。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界7はIDM56.1かつ予測着差0。1のIDM55と注意情報では、この直接支持を上回らない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 5,
+      "honmei_win_case": "10はIDM59で最上位、中距離適性○。追込でも地力で前を捕まえられる能力を評価した。",
+      "second_case": "5はIDM58.1にKYI19.2の上昇があり、状態差で10を逆転し得る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5の状態は魅力だが、10は能力値と距離適性が素直に揃う。僅差ながら条件への直接支持で10を上位に置いた。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "race_model": "芝2500m。8の状態と予測値が中心で、6は能力値が高く、12は長距離適性が明確。長距離戦らしく位置取りより持続力を重視しつつ、11の差し込みを別線にした。",
+    "marks": [
+      8,
+      6,
+      11,
+      12,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "ピックデムッシュはIDM59.2、調教デキ抜群、KYI19.1、予測着差0で今回の完成度が高い。"
+      },
+      {
+        "horse_no": 6,
+        "case": "コーチェラバレーはIDM63で能力最上位。距離適性は中距離寄りだが地力で押し切る余地がある。"
+      },
+      {
+        "horse_no": 12,
+        "case": "フィーリウスはIDM59.1、長距離適性○、KYI17.3で上昇。2500mへの直接支持が強い。"
+      },
+      {
+        "horse_no": 13,
+        "case": "リギーロはIDM55.3で差し想定。上位三頭に次ぐ地力を持ち、消耗戦なら浮上する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "ショウナンガチはIDM54でA1は単独加点しないが、差しに回って前が止まる形なら人気薄想定でも頭まで届く別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1は長距離適性○の逃げ馬だがIDM50.4。固定境界13のIDM55.3を展開だけで逆転評価するには不足する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "8ピックデムッシュは状態と予測値が揃い中心。6は能力だけなら最上位で、12は2500mへの適性が強い。消耗戦になれば11の差し込みが波乱の入口になる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        6,
+        12,
+        13,
+        11
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1は長距離適性と逃げ脚質から展開候補として検討した。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界11はIDM54で差しの勝ち筋を持ち、1はIDM50.4。逃げ展開だけでは置換するほどの直接差がない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 6,
+      "honmei_win_case": "8はIDM59.2に調教良化、KYI19.1、予測着差0が重なり、現在の仕上がりで勝ちに最も近い。",
+      "second_case": "6はIDM63の地力が突出し、距離をこなせば能力で8を上回る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6は能力値で上だが2500mへの直接適性は強くない。8は状態と予測が一致しており、今回条件での確実な勝ち筋を優先した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "race_model": "ダート1200mの3勝クラスで上位が拮抗。7の逃げ、8・9の差し、4の差しが主要経路。前の位置を取れる7を軸に、流れが速くなる場合の差し勢を厚く見た。",
+    "marks": [
+      7,
+      8,
+      4,
+      9,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "アシャカトベはIDM57、KYI15.5で上昇、逃げ想定。自分で流れを作れるのが最大の強み。"
+      },
+      {
+        "horse_no": 8,
+        "case": "アンズアメはIDM56、KYI15.6、差しで予測着差0。前が速くなれば7を捕まえる筆頭。"
+      },
+      {
+        "horse_no": 9,
+        "case": "ワークソングはIDM56.1、KYI16.9、差しで予測着差0。8とほぼ同等の末脚候補。"
+      },
+      {
+        "horse_no": 2,
+        "case": "ルージュアズライトはIDM56.2、先行で予測着差1。前に行きつつ粘れる安定した主線。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "アイアムユウシュンはIDM55.9で上昇気配。7が作る速い流れを中団でやり過ごせれば、直線で一気に差し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3はIDM55で予測着差0と十分だが、固定境界2はIDM56.2で先行可能。僅差でも2の能力と位置取りを優先した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "7アシャカトベの逃げを中心に見る。8は差しに回って予測値も高く逆転候補。流れが締まれば4の上昇度が生き、直線でまとめて交わす場面もある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        8,
+        9,
+        2,
+        4
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3はIDM55と予測着差0で六頭目まで迫る外部候補。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界4はIDM55.9と上昇気配を持ち、3との差は小さいが状態面を含む直接支持で4を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 8,
+      "honmei_win_case": "7は上位拮抗の中で唯一明確な逃げ経路を持ち、IDM57と状態上昇で自分から勝ちに行ける。",
+      "second_case": "8はIDM56と予測着差0の差し馬で、前が速くなれば7を捕まえる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8の差し性能は高いが、7は展開の主導権を握れる。能力差も僅かに7が上で、他馬の動きに依存しない点を評価した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "honmei_win_case",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "race_model": "芝2500mのオープン。9・5・4・16・3がG1級能力帯で接近。前に6や11がいて持続戦も想定されるため、総合能力に加え位置取りと長く脚を使えるかを重視した。",
+    "marks": [
+      9,
+      5,
+      6,
+      4,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "ダノンデサイルはIDM76で最上位、KYI11.2で上昇、先行して予測着差0。能力と位置取りが噛み合う。"
+      },
+      {
+        "horse_no": 5,
+        "case": "レガレイラはIDM74.1、調教73、予測着差0。差し脚の質と中距離適性で9に肉薄する。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ミュージアムマイルはIDM73.4、調教60でデキ抜群。差しの破壊力があり展開が向けば上位二頭に迫る。"
+      },
+      {
+        "horse_no": 16,
+        "case": "タスティエーラはIDM73、調教69の先行馬。大舞台級の地力を持ち、好位で運べれば残る。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "メイショウタバルはIDM73.3の逃げ馬。主線の差し・先行勢と異なり、自分のペースで後続に脚を使わせればそのまま押し切る非対称な勝ち筋が明確。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部6を固定境界3と比較。3はIDM74だが調教36で差し依存、6はIDM73.3とほぼ同等の能力を持ち逃げという独立経路があるため、今回は6を直接支持して3を外した。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "9ダノンデサイルは能力最上位で好位を取れるのが強い。5レガレイラが差しで迫る構図だが、6メイショウタバルが自分のペースに持ち込むと前から一気に押し切る可能性がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        5,
+        4,
+        16,
+        3
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6はIDM73.3のG1級能力帯にいて、逃げで主線と異なる勝ち筋を持つ。",
+      "excluded_horse_no": 3,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "固定境界3はIDM74だが調教36で差し展開への依存が大きい。6はほぼ同等の能力に加え逃げという直接的な勝ち筋があり、現条件で6を上位に取った。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 5,
+      "honmei_win_case": "9はIDM76で最上位、先行して予測着差0。2500mでも位置を取って自力で抜け出せる。",
+      "second_case": "5はIDM74.1と調教73、差しの質で9に迫り、流れが締まれば逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5は状態が良いが、9は能力値で上回り先行できるため展開の自由度が高い。自ら位置を作れる9を上位とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "boundary_review",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "race_model": "芝1600mの3勝クラス。5・8・6・12・11が高能力帯で密集。先行できる5・6と差しの8・11・12の対比になり、状態面を含め5を中心に置いた。",
+    "marks": [
+      5,
+      8,
+      11,
+      6,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "グローリーリンクはIDM62、マイル適性◎、KYI19.8で上昇。先行して自分から動ける。"
+      },
+      {
+        "horse_no": 8,
+        "case": "セブンマジシャンはIDM61.3、マイル適性◎、差しで予測着差0。展開が流れれば5を逆転する。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ジョイフルニュースはIDM60.3、調教71、KYI22.3でデキ抜群。先行して上位二頭に続く。"
+      },
+      {
+        "horse_no": 12,
+        "case": "ファインラインはIDM61.2、調教73で差し脚を持ち、能力帯では互角圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "カニキュルはIDM61.1で差し想定。過去に高い末脚を示した文脈もあり、前が止まる形なら外からまとめて差し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3はIDM61で予測着差2と接近するが、固定境界11はIDM61.1に差しの再現材料があり、僅差でも11を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "5グローリーリンクはマイル適性と上昇度、先行力が揃う。8は差しに回って予測値が高く、流れ次第で逆転。前が止まるなら11の末脚が一番大きな変化を起こしそうだ。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        8,
+        6,
+        12,
+        11
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3はIDM61と予測着差2で五頭に迫る外部候補として比較した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界11はIDM61.1で差しの再現材料を持ち、3との差は僅少。明確な置換根拠がないため11を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 8,
+      "honmei_win_case": "5はIDM62、マイル適性◎、KYI19.8の上昇に加え先行でき、展開を選びにくい。",
+      "second_case": "8はIDM61.3、適性◎、予測着差0の差し馬で、ペースが上がれば5を捕まえる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "能力差は小さいが、5は先行して自ら位置を取れ、状態上昇も明確。8より展開依存度が低い点を優先した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
