@@ -68,7 +68,13 @@ def parse_args() -> argparse.Namespace:
         "--course-fit-root",
         required=True,
         type=Path,
-        help="Extracted RRDB Horse Course Fit v0.1 artifact root required by recommendation v0.4.",
+        help="Extracted RRDB Horse Course Fit v0.1 artifact root required by recommendation v0.5.",
+    )
+    parser.add_argument(
+        "--race-lap-parquet",
+        required=True,
+        type=Path,
+        help="Immutable canonical JRDB RaceLap Parquet required by RRDB recommendation v0.5.",
     )
     rrdb_source = parser.add_mutually_exclusive_group(required=True)
     rrdb_source.add_argument("--racereview-root", type=Path)
@@ -124,6 +130,7 @@ def build_plan(args: argparse.Namespace) -> dict[str, Any]:
             "paci": {"path": str(args.paci)},
             "analysis": {"root": str(args.analysis_root), "backend": "parquet"},
             "course_fit": {"root": str(args.course_fit_root), "required_by": rrdb.RECOMMENDATION_VERSION},
+            "race_lap": {"parquet": str(args.race_lap_parquet), "required_by": rrdb.RECOMMENDATION_VERSION},
             "rrdb": rrdb_source,
             "rrdb_recommendation": {
                 "contract_version": rrdb.RECOMMENDATION_VERSION,
@@ -368,12 +375,13 @@ def enrich_rrdb_bundles(
     *,
     paci_path: Path,
     course_fit_root: Path,
+    race_lap_parquet: Path,
     racereview_root: Path | None,
     racereview_current_cache: Path | None,
     next_watch_rules: Path | None,
     work_root: Path,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    """Resolve RRDB once and enrich all daily RaceNotes with recommendation v0.4."""
+    """Resolve RRDB once and enrich all daily RaceNotes with recommendation v0.5."""
     work_root.mkdir(parents=True, exist_ok=True)
     try:
         contract = (
@@ -407,6 +415,7 @@ def enrich_rrdb_bundles(
             contract,
             paci_path=paci_path,
             course_fit_root=course_fit_root,
+            race_lap_parquet=race_lap_parquet,
             per_horse_limit=5,
         )
     except (
@@ -424,6 +433,10 @@ def enrich_rrdb_bundles(
             "root": str(course_fit_root),
             "contract": "RRDB Horse Course Fit v0.1",
         },
+        "race_lap_source": {
+            "parquet": str(race_lap_parquet),
+            "contract": "JRDB RaceLapReader v0.1",
+        },
         "recommendation_contract_version": rrdb.RECOMMENDATION_VERSION,
         "recommendation_grade_status": "DISABLED",
         "operational_lookback_days": rrdb.OPERATIONAL_LOOKBACK_DAYS,
@@ -434,6 +447,7 @@ def enrich_rrdb_bundles(
         "source_resolutions": {
             "rrdb": 1,
             "course_fit": 1,
+            "race_lap": 1,
             "legacy_next_watch_contract": 1 if contract is not None else 0,
         },
     }
@@ -445,6 +459,7 @@ def build_through_rrdb(
     target_date: str,
     analysis_root: Path,
     course_fit_root: Path,
+    race_lap_parquet: Path,
     racereview_root: Path | None,
     racereview_current_cache: Path | None,
     next_watch_rules: Path | None,
@@ -460,6 +475,7 @@ def build_through_rrdb(
         bundles,
         paci_path=paci_path,
         course_fit_root=course_fit_root,
+        race_lap_parquet=race_lap_parquet,
         racereview_root=racereview_root,
         racereview_current_cache=racereview_current_cache,
         next_watch_rules=next_watch_rules,
@@ -610,7 +626,9 @@ def validate_daily_bundles(
     if not rrdb_report.get("rrdb_generation_id"):
         errors.append("RRDB generation provenance is missing")
     if not rrdb_report.get("course_fit_source"):
-        errors.append("RRDB v0.4 Course Fit provenance is missing")
+        errors.append("RRDB v0.5 Course Fit provenance is missing")
+    if not rrdb_report.get("race_lap_source"):
+        errors.append("RRDB v0.5 RaceLap provenance is missing")
     if rrdb_report.get("recommendation_contract_version") != rrdb.RECOMMENDATION_VERSION:
         errors.append("RRDB recommendation contract provenance is missing or stale")
     if rrdb_report.get("recommendation_grade_status") != "DISABLED":
@@ -711,6 +729,7 @@ def write_daily_package(
             "analysis": report["history"].get("analysis_source"),
             "rrdb": report["rrdb"].get("rrdb_source"),
             "course_fit": report["rrdb"].get("course_fit_source"),
+            "race_lap": report["rrdb"].get("race_lap_source"),
             "rrdb_recommendation": {
                 "contract_version": rrdb.RECOMMENDATION_VERSION,
                 "grade_status": report["rrdb"].get("recommendation_grade_status"),
@@ -768,6 +787,7 @@ def build_daily_package(
     target_date: str,
     analysis_root: Path,
     course_fit_root: Path,
+    race_lap_parquet: Path,
     racereview_root: Path | None,
     racereview_current_cache: Path | None,
     next_watch_rules: Path | None,
@@ -780,6 +800,7 @@ def build_daily_package(
         target_date=target_date,
         analysis_root=analysis_root,
         course_fit_root=course_fit_root,
+        race_lap_parquet=race_lap_parquet,
         racereview_root=racereview_root,
         racereview_current_cache=racereview_current_cache,
         next_watch_rules=next_watch_rules,
@@ -863,6 +884,7 @@ def run(args: argparse.Namespace) -> int:
             target_date=args.target_date,
             analysis_root=args.analysis_root,
             course_fit_root=args.course_fit_root,
+            race_lap_parquet=args.race_lap_parquet,
             racereview_root=args.racereview_root,
             racereview_current_cache=args.racereview_current_cache,
             next_watch_rules=args.next_watch_rules,
@@ -877,6 +899,7 @@ def run(args: argparse.Namespace) -> int:
                 target_date=args.target_date,
                 analysis_root=args.analysis_root,
                 course_fit_root=args.course_fit_root,
+                race_lap_parquet=args.race_lap_parquet,
                 racereview_root=args.racereview_root,
                 racereview_current_cache=args.racereview_current_cache,
                 next_watch_rules=args.next_watch_rules,
