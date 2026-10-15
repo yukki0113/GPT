@@ -1,5 +1,6 @@
 name: JRDB One-Time Documentation Collection
 on:
+  workflow_dispatch:
   issues:
     types: [opened]
 permissions:
@@ -7,7 +8,7 @@ permissions:
   issues: write
 jobs:
   collect:
-    if: github.event.issue.title == '[JRDB_DOC_FETCH_ONESHOT] 20261015' && github.event.issue.user.login == 'yukki0113'
+    if: github.event_name == 'workflow_dispatch' || (github.event.issue.title == '[JRDB_DOC_FETCH_ONESHOT] 20261015' && github.event.issue.user.login == 'yukki0113')
     runs-on: ubuntu-latest
     steps:
       - name: Download official linked documentation
