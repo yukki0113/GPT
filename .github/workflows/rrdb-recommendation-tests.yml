@@ -30,7 +30,9 @@ on:
       - 'horse-racing/jrdb/src/racenote_history_enrichment.py'
       - 'horse-racing/jrdb/src/build_racenote_daily.py'
       - 'horse-racing/jrdb/tests/test_jrdb_recommendation_signals.py'
+      - 'horse-racing/jrdb/tests/test_jrdb_recommendation_reverse_v05.py'
       - 'horse-racing/jrdb/tests/test_racenote_rrdb_v05.py'
+      - 'horse-racing/jrdb/config/recommendation/rear_srb_q20_v0_1.json'
       - '.github/workflows/rrdb-recommendation-tests.yml'
   workflow_dispatch:
 
