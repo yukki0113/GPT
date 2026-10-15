@@ -1,6 +1,6 @@
 # RaceNote v0.5.4 Candidate — Contextual Evidence and Reader-Facing Prose
 
-Status: **RESEARCH CANDIDATE — NOT PROMOTED / NOT FOR EXISTING FREEZES**
+Status: **PROMOTED CURRENT — NEW v0.5.4 FREEZES ONLY / EXISTING v0.5.3 FREEZES IMMUTABLE**
 Date: 2026-10-15
 Logic ID: `RaceNote-Human-Context-Reader-0.5.4-candidate`
 Contract revision: `v054-context-evidence-r1`
@@ -94,7 +94,7 @@ Stage implementation:
 4. sealed representative **diagnostic** cases comparing 0.5.3 vs 0.5.4 interpretation, with no post-result retroactive promotion;
 5. new untouched race-day Freeze and clean-blind evaluation.
 
-Compare ordinary-five capture, ◎/○/▲, KEEP/ADMIT, confidence distribution, unsupported claims, and prose specificity; settlement and wagering policies remain separate. Do not switch the production/current pointer by creating this candidate.
+Compare ordinary-five capture, ◎/○/▲, KEEP/ADMIT, confidence distribution, unsupported claims, and prose specificity; settlement and wagering policies remain separate. The current forecast pointer may reference v0.5.4 after the promotion gate passes. Existing v0.5.3 sessions and Freezes remain reproducible through their own versioned contracts.
 
 ## 9. Source handoffs
 
