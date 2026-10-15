@@ -56,6 +56,46 @@ jobs:
             echo "===== BTDAY-$ID ====="
             cat "/tmp/settle/$ID/settlement.md"
           done
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          for ident in ("0104","0105"):
+              records=json.loads(Path(f"/tmp/settle/{ident}/records.json").read_text())
+              results=json.loads(Path(f"/tmp/settle/{ident}/result.json").read_text())
+              idx={(r["date"],r["venue"],r["race_no"]):r for r in results["races"]}
+              n=honmei_win=honmei_top3=winner_in5=top3_ge2=top3_all3=0
+              rows=[]
+              for rec in records:
+                  ident_obj=rec.get("identity",rec)
+                  key=(ident_obj.get("target_date") or ident_obj.get("date"),ident_obj["venue"],ident_obj["race_no"])
+                  rr=idx[key]
+                  top3=[int(x["horse_no"]) for x in rr["top3"]]
+                  core=rec.get("decision_core") or {}
+                  marks=core.get("marks")
+                  if not marks:
+                      pm=(rec.get("prediction") or {}).get("marks") or {}
+                      marks=[pm["main"]["horse_no"],pm["second"]["horse_no"],pm["third"]["horse_no"]]+[x["horse_no"] for x in pm.get("others",[])]
+                  marks=[int(x) for x in marks]
+                  n+=1
+                  honmei_win += top3[0]==marks[0]
+                  honmei_top3 += marks[0] in top3
+                  winner_in5 += top3[0] in marks
+                  hit_top3=sum(h in marks for h in top3)
+                  top3_ge2 += hit_top3>=2
+                  top3_all3 += hit_top3==3
+                  rows.append({"venue":key[1],"race":key[2],"marks":marks,"top3":top3,"top3_hits":hit_top3})
+              out={
+                  "btday":ident,"n":n,
+                  "honmei_win":honmei_win,"honmei_win_pct":round(honmei_win/n*100,1),
+                  "honmei_top3":honmei_top3,"honmei_top3_pct":round(honmei_top3/n*100,1),
+                  "winner_in5":winner_in5,"winner_in5_pct":round(winner_in5/n*100,1),
+                  "top3_ge2":top3_ge2,"top3_ge2_pct":round(top3_ge2/n*100,1),
+                  "top3_all3":top3_all3,"top3_all3_pct":round(top3_all3/n*100,1),
+              }
+              print("===== METRICS",ident,"=====")
+              print(json.dumps(out,ensure_ascii=False))
+          PY
 
   regression:
     runs-on: ubuntu-latest
