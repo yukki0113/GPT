@@ -1,0 +1,232 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 10,
+    "race_model": "阪神10R元町Sは芝1800m3勝クラス。1800mの現級実績と近走IDMを中心に、差し・追込の末脚再現性と状態を比較する。",
+    "marks": [
+      6,
+      9,
+      18,
+      16,
+      17
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "チャンネルトンネルは芝1800m3着IDM59、5着IDM54、芝1600m4着IDM59と現級で高水準。差しで能力60、調教11.1もあり再現性が最も高い。"
+      },
+      {
+        "horse_no": 9,
+        "case": "アウフヘーベンは芝1800m2着IDM59、7着IDM52で逃げ、能力61。自分で流れを作れる点が強く、前受けから押し切る勝ち筋がある。"
+      },
+      {
+        "horse_no": 16,
+        "case": "マイネルエニグマは芝1800m3着IDM60、2000m4着IDM59。差しで能力59が安定し、1800mへ戻れば連下上位の再現性が高い。"
+      },
+      {
+        "horse_no": 17,
+        "case": "ベラジオボンドは芝1600m3着IDM57、1800m7着IDM56。先行して調教13.3の状態上昇、RRDBの先行持続材料もあり粘り込みを狙える。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 18,
+      "case": "エバーハピネスは芝1800m1着IDM58、3着IDM57、6着IDM57と安定。RRDBの後方高上がり材料もあり、流れが速くなれば追込から一気に差し切る一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "15ミエスペランサは能力61.1、芝1600m5着IDM59がある一方、五頭目17ベラジオボンドは芝1800m7着IDM56の直接実績と調教13.3の状態上昇、先行持続材料があり、今回距離への勝ち筋で17を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 18,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      },
+      {
+        "horse_no": 17,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎6は芝1800m3着IDM59、マイルでもIDM59と現級で安定し、差しの再現性が高い。○9は1800m2着IDM59で逃げられる強みがあるが、近走の安定度で6を上位。▲18は1800m1着を含む安定実績と末脚材料があり、差し展開なら逆転まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        9,
+        18,
+        16,
+        17
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15ミエスペランサは能力61.1と芝1600m5着IDM59を、五頭目17の芝1800mIDM56と状態上昇・先行持続材料に対して比較した。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "15は能力上限が高いが1800m直接材料が薄く、17は同距離IDM56と先行持続、状態上昇があるため今回条件で17を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 9,
+      "honmei_win_case": "6チャンネルトンネルは芝1800m3着IDM59、5着IDM54と現級で安定し、差しで能力60を再現して勝ち切れる。",
+      "second_case": "9アウフヘーベンは芝1800m2着IDM59、能力61の逃げ馬で、自分のペースなら6より前から押し切れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○9は芝1800m2着IDM59と逃げの能動性がある一方、◎6は1800m3着とマイル4着でIDM59を連続し、現級の安定性で6を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 11,
+    "race_model": "阪神11RりんくうSはダート1200mオープン。同距離の高IDMと近走の勝ち切り実績を軸に、先行型と追込型の再現性を比較する。",
+    "marks": [
+      8,
+      7,
+      4,
+      5,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "メイショウホウレンはダ1200m1着IDM65、2着IDM62で逃げ、能力65。調教16.5も高く、同距離で自分の形を作れるため勝ち筋が最も明確。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ペプチドヤマトはダ1200mをIDM64で勝ち、能力64.1。差しで近走の勝ち切り実績があり、8が飛ばせば後ろから逆転できる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "アルファマムはダ1200m5着IDM63、6着IDM61。追込でオープン短距離の能力を安定して出しており、前崩れなら連下以上。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ジョーローリットはダ1200m2着IDM61、4着IDM57で先行型。調教5.9と状態上昇があり、前で粘る連下候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "キタノズエッジはダ1200m3着IDM61、能力64で調教19.8のデキ抜群。追込型で展開依存だが、状態面の上積みから一気に差し切る可能性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6ムーヴはダ1200m勝ちIDM62がある一方、五頭目15ジョーローリットは同距離2着IDM61、4着IDM57に状態上昇があり、現在の再現性と先行位置で15を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎8はダ1200m1着IDM65、2着IDM62と同距離で能力65を示し、逃げて主導権を握れる。○7も1200m勝ちIDM64で差し切る力はあるが、近走再現性で8を上位。▲4は1200m3着IDM61にデキ抜群が加わり、前崩れなら一気に浮上する。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        7,
+        4,
+        5,
+        15
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6ムーヴはダ1200m勝ちIDM62を、五頭目15の同距離2着IDM61と4着IDM57、状態上昇に対して比較した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6は1200m勝ちIDM62の一発力があるが、15は同距離2着と4着を持ち状態上昇もあるため、現在の再現性で15を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 7,
+      "honmei_win_case": "8メイショウホウレンはダ1200m1着IDM65、2着IDM62で逃げ、調教16.5。自分で流れを作って押し切れる。",
+      "second_case": "7ペプチドヤマトはダ1200m勝ちIDM64の差し馬で、8が飛ばせば末脚で逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○7はダ1200m勝ちIDM64で末脚の上限が高い一方、◎8は同距離1着IDM65と2着IDM62を続け、逃げて自分で勝ち筋を作れるため8を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 12,
+    "race_model": "阪神12Rは芝1400m2勝クラス。1400mの現級実績と近走IDMを中心に、先行馬の残り目と差し・追込の末脚を比較する。",
+    "marks": [
+      7,
+      1,
+      10,
+      12,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "クイックバイオは芝1400mで5着IDM57、別走5着IDM47。差しで能力57と上限が高く、現級1400mの直接能力を最上位に取る。"
+      },
+      {
+        "horse_no": 1,
+        "case": "エールトゥヘヴンは芝1400m1着IDM55、4着IDM55、7着IDM55と先行して極めて安定。調教9.4もあり、前受けの再現性が高い。"
+      },
+      {
+        "horse_no": 12,
+        "case": "オンザブルースカイは芝1400m2着IDM55があり逃げ脚を持つ。近走9着でも同距離の能力は足り、展開利があれば粘り込める。"
+      },
+      {
+        "horse_no": 2,
+        "case": "メイショウカイトは芝1400m3着IDM53、5着IDM55。追込で同距離の安定性があり、前が止まれば連下圏へ届く。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "ルージュスエルテは芝1200m3着IDM57、5着IDM51で、RRDBの後方高上がり材料もある。1400m延長で差し脚が生きれば主線をまとめて逆転する余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 17,
+      "reason": "17チューラワンサは芝1400m1着IDM52、5着IDM51がある一方、五頭目2メイショウカイトは同距離3着IDM53、5着IDM55と能力上限・再現性で上回り、2を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 10,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      }
+    ],
+    "reader_facing_reason": "◎7は芝1400m5着IDM57と能力上限が最も高い。○1は同距離1着を含めIDM55を3走続け先行再現性では上だが、勝ち切り上限で7を優先。▲10は1200mIDM57と末脚材料があり、延長で差しが生きれば一気に逆転できる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        1,
+        10,
+        12,
+        2
+      ],
+      "external_challenger_horse_no": 17,
+      "external_challenger_case": "17チューラワンサは芝1400m勝ちIDM52を、五頭目2の同距離3着IDM53と5着IDM55の再現性に対して比較した。",
+      "excluded_horse_no": 17,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "17は1400m勝ちがあるがIDM52に対し、2は同距離でIDM53、55を出しており能力上限と再現性で2を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 1,
+      "honmei_win_case": "7クイックバイオは芝1400m5着IDM57、能力57で、差し脚の上限を出せれば現級を勝ち切れる。",
+      "second_case": "1エールトゥヘヴンは芝1400m1着、4着、7着でIDM55を安定して出し、先行して7より前で運べる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○1は芝1400mでIDM55を3走続ける再現性が高い一方、◎7は同距離IDM57と能力上限で上回るため、勝ち切り評価を7に置く。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
