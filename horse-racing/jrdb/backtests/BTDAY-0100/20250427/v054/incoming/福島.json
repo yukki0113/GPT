@@ -1,0 +1,901 @@
+[
+  {
+    "venue": "福島",
+    "race_no": 1,
+    "race_model": "福島1Rはダート1150m未勝利。短距離先行馬が多く、1150～1200mの直接実績と前半で位置を取れるかを重視した。",
+    "marks": [
+      8,
+      3,
+      9,
+      13,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "ベルトネは福島1150mで2着IDM38、1200mでも4着。今回条件への直接実績が最も強い。"
+      },
+      {
+        "horse_no": 3,
+        "case": "ゴールドシャークは1200m4着IDM37、先行して安定した水準を出しており1150mでも前で運べる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "メイショウドライブは1400m2着IDM35歴があり、距離短縮で先行力を生かせれば残り目がある。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ヒタムキは1200m3着IDM31。好位で立ち回れるため五頭目として条件適性を評価した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "ジョイナーテソーロは1200m5着、1300m3着で調教も上昇。好位から早めに動けば主線を差し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "フレーズボンボンは能力値33.1だが1200m6着が直近で、3着歴を持つ10を明確に上回らない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎8は福島ダ1150で2着、1200でも4着と今回条件への実績が最も素直。○3は1200で4着の先行力があり前で粘れるが、コース直接性で8を上位にした。▲9は1300で3着歴があり、調教上昇から好位差しを警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        3,
+        9,
+        13,
+        10
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1フレーズボンボンは1200mの差し実績と能力値から短縮で上げられるかを比較した。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1は近走6着で、1200m3着の10より現在の直接実績が強いとは言えず五頭を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 3,
+      "honmei_win_case": "8は1150m2着の直接実績があり、逃げ先行から今回も自力で押し切れる。",
+      "second_case": "3は1200m4着の先行力があり、8が前で競られれば最後に逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "3の能力も高いが、8は今回と同じ福島1150mで2着しており、条件再現性を勝ち切り評価で優先した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 2,
+    "race_model": "福島2Rは芝1200m未勝利。芝短距離の直接好走馬を優先し、ダートから芝へ戻る馬は適性の裏付けを慎重に扱った。",
+    "marks": [
+      11,
+      6,
+      15,
+      2,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "リケアコンパンナは芝1200m3着IDM37、RRDBの先行持続材料もあり現条件での再現性が高い。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ユーティジャーニーは芝1200m2着、1400m2着と安定し、調教指数も高く終いまで崩れにくい。"
+      },
+      {
+        "horse_no": 2,
+        "case": "レイリースピリットは芝1200m6着IDM30、ダート大敗から芝へ戻れば巻き返し余地がある。"
+      },
+      {
+        "horse_no": 16,
+        "case": "シャンハイノハナは芝1200m4着IDM31があり、先行して流れに乗れば圏内へ残れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "アンダーザライトは能力値36で調教上昇。芝1200m8着歴から状態面で前進すれば主線とは違う先行押し切りがある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "ブライティアブーケは能力値34だが近走がダート中心で、芝1200m4着の16を外す直接材料に欠ける。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 11,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎11は芝1200で3着IDM37、RRDBの先行持続材料も同条件での再現性を補強する。○6は1200と1400で連続2着と安定感では最上位だが、今回は11の現条件適合をわずかに上に取る。▲15は状態上昇で先行一変を狙う。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        6,
+        15,
+        2,
+        16
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3ブライティアブーケは高めの能力値を芝替わりで生かせるかを境界で確認した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "3は芝1200mの直接裏付けが薄く、同距離4着の16を外すほどの条件材料がない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 6,
+      "honmei_win_case": "11は芝1200m3着の直接実績と先行持続の裏付けから、好位で運んで押し切れる。",
+      "second_case": "6は1200～1400mで連続2着し、11が前で消耗すれば差し切れる安定した勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6の安定度は高いが、11は今回と同じ1200mで高い能力を出し、RRDBもその走りの再現性を補助するため上位にした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 3,
+    "race_model": "福島3Rはダート1700m未勝利。1800m組の先行力を1700mへ短縮して評価し、直線での持続力を重視した。",
+    "marks": [
+      7,
+      6,
+      13,
+      9,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "ティアップドライブは1800mで3、4着、IDM34～40と上昇。先行して今回も好位を取れる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ヒサエノオモカゲは1800mで3、5着、能力値35。先行して大きく崩れず1700m短縮も合う。"
+      },
+      {
+        "horse_no": 9,
+        "case": "ポジティビティは1800mで5、6着。追込から流れが速くなれば終いで圏内へ届く。"
+      },
+      {
+        "horse_no": 10,
+        "case": "タイセイバンクールは1800m5着歴があり、先行して短縮で粘りが増す可能性を評価した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "バーンズベリーは1400m3着IDM35、調教上昇もあり、距離延長でも先行力を生かせれば一気に前進できる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "ジーティートゥルーはRRDBの後方高上がり材料を持つが近走6、7着で、10を外すだけの直接的な1700m優位はない。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 15,
+        "decision_role": "CONTEXT_ONLY"
+      }
+    ],
+    "reader_facing_reason": "◎7はダ1800で3、4着と内容が上向き、1700への短縮なら先行力をさらに生かせる。○6も1800で3着歴があり大崩れしにくい。▲13は1400で3着の先行力と調教上昇があり、距離延長をこなせば一変余地。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        6,
+        13,
+        9,
+        10
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15ジーティートゥルーはRRDBの後方高上がりを1700mで生かせるかを境界候補として再確認した。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "15の末脚材料は確認したが近走着順と現状値で10を明確に上回らず、RRDB単独では入れ替えない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 6,
+      "honmei_win_case": "7は1800mで3着IDM40まで上げており、短縮で先行して押し切る形が最も具体的。",
+      "second_case": "6は1800m3着歴があり、7を見ながら運んで最後に差を詰める逆転ルートがある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "両馬とも1800mで好走しているが、7は直近の能力上昇が大きく、短縮でより能動的に勝ちに行けると判断した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 4,
+    "race_model": "福島4Rは芝1200m未勝利。短距離の直接好走馬を中心に、1600mから短縮する馬のスピード転用を比較した。",
+    "marks": [
+      14,
+      11,
+      13,
+      6,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "ペイシャアーサーは芝1200m2着IDM39、調教も上昇。今回最も高い直接実績を持つ。"
+      },
+      {
+        "horse_no": 11,
+        "case": "タマカヅラは芝1200mで2、4着、IDM34～39。先行して安定して運べる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "シベリアンデネブは1600mでIDM33歴があり、距離短縮で終いをまとめれば圏内へ届く。"
+      },
+      {
+        "horse_no": 2,
+        "case": "アッケシは芝1400m2着歴があり、1200m短縮で先行力を生かせれば巻き返せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "グリフォンは芝1200mで3、5着と安定。先行して主線二頭を前で射程に入れれば頭まで迫れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "ロネットは1600m中心で現状値29.1。芝1400m2着歴を持つ2を外すだけの1200m適性材料に欠ける。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎14は芝1200で2着IDM39、調教も上向きで勝ち切りに最も近い。○11は同距離で2、4着と安定し先行力もあるが、直近の能力上限で14を上位。▲13は1200で3、5着と堅実で、前残りなら差は小さい。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        11,
+        13,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8ロネットは1600mから大幅短縮で追走が変わる可能性を比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8は1200mの直接証拠がなく、1400m2着歴のある2を外すまでの条件適合を示せない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 11,
+      "honmei_win_case": "14は1200m2着の高い能力と状態上昇から、差しでも好位でも最後に抜け出せる。",
+      "second_case": "11は同距離で安定し先行できるため、14が後ろから届かない流れなら押し切れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11の安定性は高いが、14は直近2着で能力値も上回り調教上昇まであるため、勝ち切り評価で先に取った。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 5,
+    "race_model": "福島5Rは芝2000m未勝利。2000mの直接好走馬を軸に、1800～2200mで高い能力を示した差し馬を比較した。",
+    "marks": [
+      3,
+      5,
+      6,
+      4,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "サンカシグレは2000mで2、3着、IDM38～41と安定し、今回条件への直接実績が最上位。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ドウジャスティは芝1800m初戦2着IDM39、能力値41で距離延長でも底を見せていない。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ミッドセンチュリーは2000m2着歴があり、前走6着でも同距離での再現性を連下評価した。"
+      },
+      {
+        "horse_no": 11,
+        "case": "クランドゥイユは2000m5着、1800m7着。逃げて自分の形なら五頭圏に残る。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "ディベルティスマンは2200m2着IDM41、調教指数も非常に高く、2000m短縮で差し脚が鋭くなる可能性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "ウインポセイドンはRRDBのHV02材料があるが2000m8着で、5着実績の11を直接上回るまでの裏付けはない。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 8,
+        "decision_role": "CONTEXT_ONLY"
+      }
+    ],
+    "reader_facing_reason": "◎3は芝2000で2、3着と安定し、同条件でIDM41まで出している。○5は1800初戦2着で能力上限は近いが、距離経験の差で3を上位。▲6は2200で2着、調教も高く、短縮で末脚が鋭くなれば一気に差し切れる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        5,
+        6,
+        4,
+        11
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8ウインポセイドンはHV02の時計文脈と2000m経験から着順以上に見直せるかを点検した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8のRRDB材料は再確認に使ったが、2000m5着の11を外すだけの現条件での直接証拠にはならない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 5,
+      "honmei_win_case": "3は2000mで連続好走し、高いIDMを同条件で再現しているため差し切りまで最も近い。",
+      "second_case": "5は初戦1800m2着で底を見せず、距離延長で折り合えば3を上回る上積みがある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5の未知の伸びしろは大きいが、3は2000mで既に2、3着と高水準を繰り返しており、直接再現性を優先した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 6,
+    "race_model": "福島6Rはダート1700m1勝クラス。1700mの直接実績と1800mから短縮する差し馬の末脚を比較した。",
+    "marks": [
+      2,
+      4,
+      7,
+      5,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "ブレットフライは1700m3着、1800m4着でIDM39～45。調教も上昇し差し脚の再現性が高い。"
+      },
+      {
+        "horse_no": 4,
+        "case": "エーデルは1800m3着IDM43、差し運びから1700m短縮でも終いを生かせる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ジャクソンは1800m4着IDM45歴があり、前走8着からでも距離短縮で巻き返す余地がある。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ゼンダンスカイは1800m4、6着で調教指数が高く、先行から短縮で粘りを増せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "エイブラムスは能力値45で先行力があり、1700mで近走7、8着でも状態上昇から前残りの一変を狙える。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "ナチュラルリバーは1700m5着歴があるが前走10着で、10の調教上昇と先行力を明確に上回らない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎2はダ1700で3着、1800でも4着と距離を問わず安定し、調教も上向く。○4は1800で3着IDM43の差し脚があり短縮で迫る。▲7は近走着順以上に能力値45が高く、状態上昇から先行残りの変化を警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        4,
+        7,
+        5,
+        10
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13ナチュラルリバーは1700m5着歴を根拠に境界で再比較した。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "13は直近10着で、調教上昇と先行力を持つ10を外すほど近況の優位を示せない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 4,
+      "honmei_win_case": "2は1700m3着と1800m4着を続け、差し脚を安定して使えているため今回も勝ち切りまで届く。",
+      "second_case": "4は1800m3着の地力があり、短縮で位置を取りやすくなれば2を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4も能力は近いが、2は1700mの直接好走と上向く調教が揃い、今回条件での再現性を上位に見た。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 7,
+    "race_model": "福島7Rは芝1200m1勝クラス。1200mの直接好走馬が複数おり、先行力と近走の末脚安定度を重視した。",
+    "marks": [
+      2,
+      4,
+      10,
+      13,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "ライクアフラワーは芝1200m3着IDM44、能力値47。RRDBの先行持続材料も短距離での再現性を支える。"
+      },
+      {
+        "horse_no": 4,
+        "case": "テンプーシャオンは芝1200m2着IDM45、先行して今回も前で運べる直接実績がある。"
+      },
+      {
+        "horse_no": 13,
+        "case": "セイウンデセオは1200m4、6着でIDM39～42。差し運びで安定して圏内を狙える。"
+      },
+      {
+        "horse_no": 9,
+        "case": "コーリングユーは1400m2着IDM46歴があり、1200m短縮で末脚を生かせれば圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "ソレントフレイバーは1200mで3、4着と安定。差し脚を同条件で再現できれば主線二頭をまとめて捕らえる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "ジョウゲンノツキは能力値46だが近走1400m6着で、1400m2着歴の9を明確に上回る短距離材料はない。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 2,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎2は芝1200で3着、能力値47に加えRRDBの先行持続材料も今回の再現性を補強する。○4は同距離2着で先行力が明確、差は小さい。▲10は1200で3、4着と末脚が安定し、前が競れば一気に差し切れる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        4,
+        10,
+        13,
+        9
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8ジョウゲンノツキは高い能力値を1200m短縮で生かせるかを比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8は1200mの直接裏付けがなく、1400m2着歴を持つ9を外すだけの条件適合がない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 4,
+      "honmei_win_case": "2は1200m3着の能力と先行持続の裏付けから、好位差しで勝ち切る形がある。",
+      "second_case": "4は同距離2着の先行力があり、2より前で楽に運べれば押し切れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4の直接着順は上だが、2は能力値が高くRRDBも短距離での持続を補助しており、勝ち切り上限を上に見た。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 8,
+    "race_model": "福島8Rは芝1800m1勝クラス。近走着順が低調な馬が多く、1800mでの能力水準と着順以上の内容を丁寧に比較した。",
+    "marks": [
+      15,
+      7,
+      14,
+      6,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "ハーエクセレンシーは1800m7着IDM44、調教指数17.8と高く、先行して状態面の上積みが見込める。"
+      },
+      {
+        "horse_no": 7,
+        "case": "ニシノコマチムスメは1800m5、8着でIDM38～41、同距離で安定した差し脚を持つ。"
+      },
+      {
+        "horse_no": 6,
+        "case": "グレイトクラウンは1800m10着IDM40、1600m9着IDM39。先行力を生かせれば巻き返し余地がある。"
+      },
+      {
+        "horse_no": 16,
+        "case": "フラッシングレートは2000m7着、1600m6着で調教上昇。1800m中間距離ならバランスを取りやすい。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "クインズステラは1800m6着歴とRRDBのHV02材料があり、直近13着を時計面から割り引けば差し込みの一変がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "ドゥムーランは能力値44だが直近芝2000m14着で、14の1800m直接実績とRRDB材料を合わせると境界で下げた。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 14,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "◎15は芝1800でIDM44を出し、今回は調教指数も高く先行して前進が見込める。○7は同距離5着歴があり差しの安定感で続く。▲14は1800の6着歴に加え、RRDBのHV02材料から直近13着を額面通りにせず一変候補とした。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        7,
+        6,
+        16,
+        5
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14クインズステラは1800m6着歴とHV02の時計文脈から、直近13着以上の走力が残るかを再評価した。",
+      "excluded_horse_no": 5,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "14は今回と同じ1800mで6着の直接実績があり、HV02が着順以上の時計内容を補強する。直近2000m14着の5より現条件への根拠が具体的と判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 7,
+      "honmei_win_case": "15は1800mで高いIDMを持ち、調教上昇から先行して最後まで粘る勝ち筋がある。",
+      "second_case": "7は同距離で5着歴があり、15が前で苦しくなれば差し脚で逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7の条件安定性も評価するが、15は能力上限と状態上昇が上で、勝ち切りを狙うなら先行できる15を上位に置いた。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 9,
+    "race_model": "福島9R燧ヶ岳特別は芝2600m1勝クラス。2600mの直接実績を最重視し、2500mや2200mからの距離適応を補助材料とした。",
+    "marks": [
+      3,
+      11,
+      10,
+      4,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "オールデュスヴランは2600mで連続4着、IDM43～50。今回条件で最も安定した直接実績を持つ。"
+      },
+      {
+        "horse_no": 11,
+        "case": "ヴァイザーバルコは2500m3着IDM51、2600m9着。長距離での能力上限は3と互角以上。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ピースヒロフェイスは2200mで3、4着、先行してIDM45～48。距離延長でも前で運べる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "チャイボーグは2600m7着IDM47、2000m9着。長距離へ戻る今回は条件面で見直せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "テイクザクラウンは2600m3着IDM47。追込から長く脚を使えるため、前が止まれば主線をまとめて差し切れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "モルトマエストーソは2600m4着歴があるが能力値43.7で、2600m7着IDM47の5を明確に上回らない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎3は芝2600で連続4着、直近IDM50と条件再現性が最も高い。○11は2500で3着IDM51と能力上限は高いが、2600での安定度で3を上位。▲10は同距離3着の追込脚があり、前が止まれば一気に差し切れる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        11,
+        10,
+        4,
+        5
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8モルトマエストーソは2600m4着歴を根拠に五頭目との比較を行った。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8は直接実績があるものの能力水準で5を明確に上回らず、近走2600m7着の5を残した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 11,
+      "honmei_win_case": "3は2600mで連続4着し、直近はIDM50まで上げているため同条件で差し切りまで期待できる。",
+      "second_case": "11は2500m3着IDM51の地力があり、2600mでも展開ひとつで3を逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11の能力上限は高いが、3は今回と同じ2600mで連続好走しており、距離再現性を勝ち切り評価で優先した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 10,
+    "race_model": "福島10R尾瀬特別はダート1700m2勝クラス。1700mでの現級好走馬が揃い、先行持続と差しの安定度を比較した。",
+    "marks": [
+      7,
+      4,
+      14,
+      9,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "アセレラシオンは1700mで2、3着、IDM53～57と高水準。先行して現級でも崩れない。"
+      },
+      {
+        "horse_no": 4,
+        "case": "パフは1700mで2、5着、IDM55。差し運びで前がやり合えば逆転まで届く。"
+      },
+      {
+        "horse_no": 9,
+        "case": "ブレイゼストは1800mで3、4着IDM52～54。距離短縮で先行力をより生かせる。"
+      },
+      {
+        "horse_no": 1,
+        "case": "タガノアレハンドラは1700m2着IDM51歴があり、前走10着から同距離での反発余地を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "サンドブラストは1700mを1、2着、RRDBの先行持続材料も確認。昇級でも逃げて自分の形なら一気に押し切れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "イモータルバードは能力値53だが近走1800m5、10着で、1700m2着歴の1を外す直接性はない。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 14,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎7はダ1700で2、3着、IDM57まで出して現級実績が一枚上。○4も同距離2着IDM55で差し脚は互角に近い。▲14は1700で1、2着、RRDBの先行持続材料もあり、昇級でも逃げ残りなら一発がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        4,
+        14,
+        9,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8イモータルバードは1800mの能力水準を1700m短縮で生かせるかを比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8は1700mの直接実績がなく、同距離2着歴を持つ1を外すほどの条件優位がない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 4,
+      "honmei_win_case": "7は1700mで連続好走し高いIDMを保っているため、先行してそのまま押し切れる。",
+      "second_case": "4は同距離2着の差し脚があり、7を含む先行勢が競れば最後に逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4も現級で高水準だが、7は2、3着と連続して内容をまとめ、先行して勝ち筋を自分で作れる点を上位評価した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 11,
+    "race_model": "福島11RモルガナイトSは芝1200mオープン。短距離実績馬が揃い、直近1200mの高いIDMと先行・差し双方の再現性を比較した。",
+    "marks": [
+      11,
+      10,
+      16,
+      2,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "ツインクルトーズは芝1200mをIDM61で勝利。直近の勝ち切り内容をそのまま最上位評価した。"
+      },
+      {
+        "horse_no": 10,
+        "case": "ウインモナークは1200mで3、5着、IDM60を連続。調教も大きく上向き先行して安定する。"
+      },
+      {
+        "horse_no": 2,
+        "case": "アスクワンタイムは1200m5着IDM60歴があり、追込から流れが向けば連下へ届く。"
+      },
+      {
+        "horse_no": 9,
+        "case": "スリーアイランドは1200mで連続8着でもIDM58～61を保ち、地力を五頭目として残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "デュガは芝1200m3着IDM59。差し脚を再現できれば、前へ行く主線二頭を直線でまとめて捕らえる可能性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "レッドヒルシューズはHV02のRRDB材料があるが近走7、17着で、9を外すほど現在の直接好走がない。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 12,
+        "decision_role": "CONTEXT_ONLY"
+      }
+    ],
+    "reader_facing_reason": "◎11は芝1200をIDM61で勝ち切った直近内容を素直に評価。○10は1200で3、5着と安定し調教も上昇しており差は小さい。▲16は同距離3着の差し脚があり、前が競れば浮上。12のRRDB材料は確認したが近況不足で五頭外。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        10,
+        16,
+        2,
+        9
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12レッドヒルシューズはHV02の時計文脈から近走着順以上に見直せるかを境界で点検した。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "12のRRDB材料は再確認に使ったが近走7、17着で、能力水準61を保つ9を外す直接根拠にはならない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 10,
+      "honmei_win_case": "11は前走1200mを高いIDMで勝ち切り、現状の勢いと能力をそのまま今回へ持ち込める。",
+      "second_case": "10は1200mで安定して高いIDMを出し、状態上昇から先行して11を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "10の安定性と状態は高いが、11は直近で実際に勝ち切りIDM61を出したため、その完成度を上位に取った。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 12,
+    "race_model": "福島12Rはダート1150m1勝クラス。1000～1200mの短距離実績を重視し、1400m組は短縮での位置取り改善を比較した。",
+    "marks": [
+      9,
+      6,
+      1,
+      5,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "シャーンゴッセはダート1000mで2、3着、IDM45を連続。短距離でのスピード持続が最も安定する。"
+      },
+      {
+        "horse_no": 6,
+        "case": "ダイチラファールは1150m4着、1200m5着でIDM39～41。今回条件への直接実績が強い。"
+      },
+      {
+        "horse_no": 5,
+        "case": "ブリングライトは1150m6着IDM40、状態も上向き。追込から流れが速くなれば圏内へ届く。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ナゲットモンスターは1200m4着IDM42歴があり、前走10着から短縮で巻き返せる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "エフエイトは1400mでIDM39を続け、能力値45と調教上昇が魅力。大幅短縮で追走できれば末脚で一変する。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "スノーホルンロードは状態上昇があるが1000～1200mで6、7着で、1200m4着の4を外すほどの優位はない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9はダ1000で2、3着、IDM45を連続して短距離適性が明確。○6は福島1150で4着がありコース直接性では最上位だが、勝ち切りのスピードで9を上に取る。▲1は1400からの大幅短縮と状態上昇で一変を狙う。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        6,
+        1,
+        5,
+        4
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12スノーホルンロードは高い調教状態から1000～1200mでの近走以上に上げられるかを比較した。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "12は短距離で6、7着が続き、1200m4着IDM42の4を外すほど直接的な近況優位がない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 6,
+      "honmei_win_case": "9は1000mで連続好走し高いIDMを安定して出せるため、1150mでもスピードで押し切れる。",
+      "second_case": "6は1150m4着の直接実績があり、9が前で忙しくなれば好位から逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6のコース実績は高く評価するが、9はより短い1000mで連続して高い能力を示し、勝ち切るスピードを上に見た。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
