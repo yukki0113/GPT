@@ -1,0 +1,218 @@
+{
+  "schema_version": "racenote-confidence-pre-result-v0.1",
+  "confidence_target": "pairwise_honmei_over_second",
+  "confidence_rule": {
+    "A": "◎ clearly above ○",
+    "B": "reason to rank ◎ above ○ but gap less clear",
+    "C": "◎ and ○ very close / tiebreak-like"
+  },
+  "result_consulted": false,
+  "payout_consulted": false,
+  "source_ref": "main",
+  "baseline_session_main_sha": "c7dccf374efda4cf2cbe30e06581ad734230833e",
+  "logic_id": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+  "contract_revision": "v053-boundary-safety-r2",
+  "btday": "BTDAY-0096",
+  "target_date": "2025-03-09",
+  "methodology": "human_context_pairwise_review_of_sealed_reader_pre_result_fields",
+  "assignments": [
+    {
+      "venue": "中山",
+      "race_no": 1,
+      "honmei": 8,
+      "second": 6,
+      "confidence": "A",
+      "reason": "◎8がIDM・情報・調教・状態・想定着順で○6を上回り、履歴3着内率でも優勢。○にもhidden strengthがあるが主線序列は明瞭。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 2,
+      "honmei": 6,
+      "second": 4,
+      "confidence": "B",
+      "reason": "◎6がIDM・情報・調教で優勢だが、○4は状態指数が高くfragile評価もなく、明確Aには置かない。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 3,
+      "honmei": 3,
+      "second": 14,
+      "confidence": "C",
+      "reason": "○14がIDM・情報・調教・状態・想定着順・履歴で上回り、◎3は上昇調教とhidden strengthを根拠とする文脈判断。強い反証がある。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 4,
+      "honmei": 3,
+      "second": 4,
+      "confidence": "C",
+      "reason": "IDMはほぼ互角。○4が情報・調教で優位だが、◎3は状態指数と履歴で上回るため優劣はtie-break寄り。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 5,
+      "honmei": 1,
+      "second": 5,
+      "confidence": "C",
+      "reason": "◎1はIDMで優位だが、○5は情報・調教・状態・想定着順・履歴で上回る。◎を上に置く序列確信は弱い。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 6,
+      "honmei": 8,
+      "second": 2,
+      "confidence": "A",
+      "reason": "◎8はIDM・情報・調教・想定着順で上回り、状態・履歴は同等。勝ち切り主線の優位は明瞭。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 7,
+      "honmei": 7,
+      "second": 4,
+      "confidence": "A",
+      "reason": "◎7がIDM・情報・調教・状態・履歴で○4を上回り、想定着順も僅差。序列根拠は一貫。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 8,
+      "honmei": 11,
+      "second": 14,
+      "confidence": "C",
+      "reason": "○14がIDM・情報・調教・状態・想定着順で優位。一方◎11は調教矢印と履歴3着内率で強く、文脈による序列。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "honmei": 4,
+      "second": 5,
+      "confidence": "B",
+      "reason": "◎4がIDM・情報・調教・状態・想定着順で上回るが、○5は履歴安定性で対抗でき、差はあるがAまで断定しない。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "honmei": 2,
+      "second": 7,
+      "confidence": "A",
+      "reason": "○7がIDMで僅かに上だが、◎2は情報・調教・状態・想定着順・履歴で優位。現条件の勝ち切り評価では明確。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "honmei": 2,
+      "second": 3,
+      "confidence": "C",
+      "reason": "○3がIDM・情報・調教・状態・想定着順で優位、履歴は互角。◎2の上位判断には強い数値的反証が残る。"
+    },
+    {
+      "venue": "中山",
+      "race_no": 12,
+      "honmei": 3,
+      "second": 14,
+      "confidence": "B",
+      "reason": "◎3はIDM・情報・想定着順・履歴で優位だが、○14は調教・状態で上回りfragile評価もないため差は限定的。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 1,
+      "honmei": 10,
+      "second": 2,
+      "confidence": "C",
+      "reason": "◎10はIDMと履歴で上だが、○2は情報・調教・状態・想定着順で優位。強みが分かれ序列は拮抗。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 2,
+      "honmei": 7,
+      "second": 15,
+      "confidence": "C",
+      "reason": "○15が情報・調教・状態・想定着順・履歴で優勢。◎7はfragileがない点を評価するがIDM互角で差を付けがたい。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 3,
+      "honmei": 4,
+      "second": 12,
+      "confidence": "B",
+      "reason": "◎4はIDM・状態・履歴で優位だが、○12は情報・調教・想定着順で対抗。◎上位の理由はあるが決定的ではない。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 4,
+      "honmei": 3,
+      "second": 8,
+      "confidence": "C",
+      "reason": "○8がIDM・状態・調教矢印・想定着順・履歴で上回り、◎3は情報・調教指数で優位。◎序列には強い反証がある。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 5,
+      "honmei": 6,
+      "second": 9,
+      "confidence": "B",
+      "reason": "IDMは互角だが◎6が情報・調教・履歴で上回り、fragile評価もない。ただし想定着順や状態に差はなくB。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 6,
+      "honmei": 11,
+      "second": 8,
+      "confidence": "A",
+      "reason": "◎11がIDM・情報・調教・状態・想定着順・履歴を一貫して上回り、勝ち切り主線差は明確。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 7,
+      "honmei": 6,
+      "second": 7,
+      "confidence": "B",
+      "reason": "◎6はIDM・調教・状態・履歴で小幅優位。○7は情報・想定着順・調教矢印で対抗しAほどの差はない。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 8,
+      "honmei": 2,
+      "second": 1,
+      "confidence": "C",
+      "reason": "◎2はIDM・調教・状態で優勢だが、○1は情報・想定着順・履歴・調教上昇で対抗し序列は僅差。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 9,
+      "honmei": 3,
+      "second": 6,
+      "confidence": "B",
+      "reason": "◎3は情報・調教・状態・履歴で優位だが、IDM・想定着順差はほぼなく○6にも逆転余地。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 10,
+      "honmei": 4,
+      "second": 11,
+      "confidence": "C",
+      "reason": "◎4は調教で優位だが、○11はIDM・状態・調教上昇で上回る。情報差は小さく序列はtie-break相当。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 11,
+      "honmei": 12,
+      "second": 9,
+      "confidence": "B",
+      "reason": "◎12はIDM・情報・調教・状態で優位だが、○9の履歴3着内安定性は高く、想定着順は同等。差は中程度。"
+    },
+    {
+      "venue": "阪神",
+      "race_no": 12,
+      "honmei": 6,
+      "second": 4,
+      "confidence": "B",
+      "reason": "◎6は情報・調教とIDM近接で優位だが、○4は状態・想定着順・履歴で対抗し、Aとまでは言えない。"
+    }
+  ],
+  "counts": {
+    "A": 5,
+    "B": 9,
+    "C": 10,
+    "total": 24
+  }
+}
