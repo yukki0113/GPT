@@ -1,0 +1,223 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "race_model": "中山4Rは障害2880m未勝利。平地能力ではなく、直近の障害戦での着順・距離経験・前受け性能を最優先し、飛越実戦の再現性で比較する。",
+    "marks": [
+      3,
+      9,
+      5,
+      2,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "テーオーリカードは障害3000m2着、2970mで連続3着。逃げて調教23.1、状態上昇もあり、障害実戦の安定度と前受け性能が最上位。"
+      },
+      {
+        "horse_no": 9,
+        "case": "ゴールデンルーキーは障害2750m2着、2880m2着があり、差しながら中山と同系統の障害距離で結果を残している。"
+      },
+      {
+        "horse_no": 2,
+        "case": "トーアマリシテンは障害2750m3着、3000m3着。先行して障害戦で連続好走しており、主線二頭に次ぐ再現性がある。"
+      },
+      {
+        "horse_no": 6,
+        "case": "サトノトルネードは障害3000m4着、2880m7着で、調教12.1と状態上昇。勝ち切りまでは一枚落ちるが連下圏の実戦材料はある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "アスクオンディープは障害2750m2着があり、調教20.8で状態上昇。前走11着からの振れ幅は大きいが、障害2着時の走りを戻せば一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8スラーヴァは障害2750m5着、2880m8、7着に対し、五頭目6サトノトルネードは3000m4着と2880m7着、さらに調教12.1で状態上昇があり、近走障害実績で6を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎3は障害3000m2着、2970mで連続3着に調教23.1の上昇まで揃い、前で運べる強みもある。○9も2750m、2880mで2着歴があるが、近走の連続性で3を上位。▲5は2750m2着時の走りを状態上昇で取り戻せば逆転余地。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        9,
+        5,
+        2,
+        6
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8スラーヴァは障害2750m5着、2880m8、7着の直接経験を、五頭目6の3000m4着と現在の状態上昇に対して比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8は2880mで7着までに対し、6は障害3000m4着と調教12.1の状態上昇があり、近走の障害実績比較で6を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 9,
+      "honmei_win_case": "3テーオーリカードは障害3000m2着、2970mで連続3着。逃げて調教23.1、状態上昇もあり、2880mでも先行して押し切れる。",
+      "second_case": "9ゴールデンルーキーは障害2750m2着、2880m2着があり、差しでも障害戦の安定性が高い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○9は2880m2着の直接実績がある一方、◎3は3000m2着と2970m連続3着に調教23.1の上昇が加わり、近走再現性と勝ち切り性能で3を上位に取る。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "race_model": "中山5Rは芝1200m新馬。既走実績がないため、事前能力値と調教指数、仕上がり状態を中心に短距離初戦の完成度を比較する。",
+    "marks": [
+      13,
+      8,
+      9,
+      12,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "アンジェラスは事前能力44.6で最上位、調教18.9。芝1200m新馬で求められる初速と完成度を数値面から最も高く評価できる。"
+      },
+      {
+        "horse_no": 8,
+        "case": "リナシタは事前能力41.4、調教6.8、CYB63。能力値は13に次ぎ、仕上がりも大きな不安がなく初戦から動ける。"
+      },
+      {
+        "horse_no": 12,
+        "case": "ニシノセイドウは事前能力36.5、CYB62。調教5.0と派手さはないが短距離新馬として能力と実戦気配のバランスがよい。"
+      },
+      {
+        "horse_no": 10,
+        "case": "サムハラは事前能力32.6、調教10.0で状態上昇。能力は上位勢に一歩譲るが、仕上がりの良さで連下へ食い込む余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "モンロワイヤルは事前能力39.2で上位、調教14.9かつ状態上昇。初戦で流れに乗れれば能力と仕上がりを一気に勝ち切りへ変える可能性がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2ルプルミエラムールは事前能力32.9で五頭目10サムハラをわずかに上回るが、10は調教10.0で状態上昇、2は調教3.0に留まり、初戦の完成度比較で10を優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新馬戦で過去走はない。◎13は事前能力44.6と調教18.9で完成度が最上位、○8も能力41.4は高いが仕上がり込みで13を上に取る。▲9は能力39.2に調教14.9の状態上昇があり、初戦から流れに乗れば逆転まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        8,
+        9,
+        12,
+        10
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2ルプルミエラムールは事前能力32.9を、五頭目10サムハラの能力32.6と調教10.0の状態上昇に対して比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2は能力32.9でわずかに上だが調教3.0、10は能力32.6に調教10.0と状態上昇があり、短距離新馬の完成度で10を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 8,
+      "honmei_win_case": "13アンジェラスは事前能力44.6で最上位、調教18.9も高く、芝1200m新馬で初戦から完成度を生かして押し切れる。",
+      "second_case": "8リナシタは事前能力41.4、CYB63で能力次位。13が初戦で甘さを見せれば逆転候補になる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○8は能力41.4とCYB63で高水準だが、◎13は能力44.6と調教18.9の両面で上回るため、初戦の勝ち切り評価を13に置く。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "race_model": "中山6Rはダート1200m1勝クラス。勝ち上がり直後の短距離馬が中心で、1200mの直接能力と先行持続、状態上昇を比較する。",
+    "marks": [
+      2,
+      1,
+      5,
+      3,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "ルクスレイモンドはダ1150mをIDM44で勝ち、1200mでも2着IDM33。先行して調教18.8、状態上昇があり、昇級でも短距離能力が最上位。"
+      },
+      {
+        "horse_no": 1,
+        "case": "カリヨンアヴォンはダ1200mをIDM40で勝ち、事前能力46。調教19.5で状態上昇しており、同距離の直接勝利実績は強い。"
+      },
+      {
+        "horse_no": 3,
+        "case": "クイーンレグナントはダ1200m勝ちIDM33があり逃げ脚を持つ。芝1200m10着後でもダートへ戻れば前受けの形を作れる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "イッツソーブライトはダ1400m14着IDM5と近走は弱いが、出走馬が6頭のため五頭目として比較対象に残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "ランスオブキングはダ1200mをIDM37で勝ち、調教14.0で状態上昇。RRDBの先行持続材料もあり、自分の形で運べば昇級初戦から押し切る一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4ジャメビュは芝1600m13着IDM20、芝1200m14着IDM4でダート実績がなく、五頭目6イッツソーブライトはダ1400m既走歴があるため、低水準同士でもダート直接性で6を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 5,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎2はダ1150m勝ちIDM44に1200m2着歴、調教18.8の上昇まで揃う。○1も1200m勝ちIDM40と能力46で強いが、近走IDM上限で2を上位。▲5は1200m勝ちに先行持続の裏付けがあり、前で運べれば昇級即通用まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        1,
+        5,
+        3,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4ジャメビュは芝1200m14着IDM4からのダート替わりを、五頭目6のダ1400m既走歴に対して比較した。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4は芝短距離中心でダート実績がなく、6はダ1400m既走歴があるため、直接条件の裏付けで6を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 1,
+      "honmei_win_case": "2ルクスレイモンドはダ1150m勝ちIDM44、1200m2着に調教18.8の状態上昇があり、昇級でも先行して勝ち切れる。",
+      "second_case": "1カリヨンアヴォンはダ1200m勝ちIDM40、能力46、調教19.5で状態上昇しており、同距離で2を追える。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○1はダ1200m勝ちIDM40と能力46が強い一方、◎2はダ1150m勝ちIDM44に1200m2着もあり、直近短距離の能力上限で2を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
