@@ -204,7 +204,7 @@
       "second_case": "3は短距離適性○とIDM36.1を持ち、13の直後から差す形なら逆転可能。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "能力値はほぼ同等だが、13は調教と先行位置の両方で優位。3は適性面で詰めるものの、現時点の完成度で13を上位にした。"
+      "ranking_reason": "13番は3番より調教指数83と先行位置の取りやすさで優位。3番は短距離適性○で差を詰めるが、今回の状態と位置取りを比較して13番を上位にした。"
     },
     "reader_facing_reason_authorship": {
       "mode": "MODEL_AUTHORED_PER_RACE",
@@ -348,7 +348,7 @@
       "second_case": "8はIDM34.5と調教71、予測着差0で完成度は高く、15の初戦不確実性を突ける。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "両馬とも調教評価は高いが、15が事前能力値で約4ポイント上。新馬戦の不確実性を考慮してもこの差を優先した。"
+      "ranking_reason": "15番は8番よりIDMが38.5対34.5で約4ポイント上。両馬とも調教評価は高いが、新馬戦の不確実性を考えても基礎能力差を優先した。"
     },
     "reader_facing_reason_authorship": {
       "mode": "MODEL_AUTHORED_PER_RACE",
@@ -611,7 +611,7 @@
     },
     "boundary_review": {
       "alternative_horse_no": 1,
-      "reason": "1は長距離適性○の逃げ馬だがIDM50.4。固定境界11番はIDM54の差し馬で、展開だけを理由に1へ入れ替えるほどの直接差はない。"
+      "reason": "外部1番と固定境界11番をIDMと脚質で比較。1番は長距離適性○の逃げ馬でIDM50.4だが、11番はIDM54の差し馬で、展開利だけでは11番を上回らない。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "8ピックデムッシュは状態と予測値が揃い中心。6は能力だけなら最上位で、12は2500mへの適性が強い。消耗戦になれば11の差し込みが波乱の入口になる。",
