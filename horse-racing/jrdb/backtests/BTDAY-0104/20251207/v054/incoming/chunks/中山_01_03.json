@@ -1,0 +1,227 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "race_model": "中山1Rはダート1200m未勝利。1300～1400mで先行できる馬の短縮適性と、1200m既走馬の実績を比較し、前受けして勝ち切れる馬を上位に取る。",
+    "marks": [
+      6,
+      10,
+      1,
+      7,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "トモジャオーリーはダ1300mの初戦で2着、IDM33。先行して調教指数19.6、状態上昇まで揃い、1200m短縮で押し切る形を描きやすい。"
+      },
+      {
+        "horse_no": 10,
+        "case": "タイキプレジールはダ1400mで5着IDM31。先行型で調教指数17.1、状態上昇があり、短縮で前半の位置を取りやすくなる。"
+      },
+      {
+        "horse_no": 7,
+        "case": "フェスティヴハートはダ1400mで4着IDM30歴があり先行型。状態上昇も示しており、1200mへの短縮で粘り込みを狙える。"
+      },
+      {
+        "horse_no": 15,
+        "case": "ドナソールはダ1300mでIDM30、1800mでは4着IDM27歴。先行力があり、距離短縮で追走が楽になれば連下圏へ残れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "トコシエノヒトミはダ1200mで4着IDM29歴がある追込型。主力先行馬が競って差しの流れになれば、同距離実績を生かす一発がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "14オテモヤンはダ1300m5着IDM24と逃げ脚がある一方、五頭目15ドナソールは同距離IDM30に加えて1800m4着IDM27があり、能力実績で15が上回るためKEEP。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎6はダ1300m初戦2着IDM33に調教19.6、状態上昇まで揃い、1200m短縮で先行押し切りを狙える。○10も1400m5着IDM31と先行力はあるが、直接実績と上積みで6を上位。▲1は1200m4着歴があり、前崩れなら差し切りまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        10,
+        1,
+        7,
+        15
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14オテモヤンはダ1300m5着IDM24の逃げ馬で、1200m短縮による前残り余地を五頭目15と比較した。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "14はダ1300m5着IDM24に対し、15は同距離IDM30とダ1800m4着IDM27があり、直接能力比較で15を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 10,
+      "honmei_win_case": "6トモジャオーリーはダ1300m初戦2着IDM33で、調教19.6と状態上昇もあり、1200m短縮なら先行してそのまま押し切れる。",
+      "second_case": "10タイキプレジールはダ1400m5着IDM31、調教17.1で状態上昇。短縮で好位を取れれば6を追える。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○10もダ1400m5着IDM31と状態上昇を持つ一方、◎6は初戦からダ1300m2着IDM33で先行再現性が高く、より短い1200mで勝ち切る比較を優先した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "race_model": "中山2Rは芝1800m未勝利。1800～2000mの直接実績と先行持続を中心に、状態上昇を加えて勝ち筋を比較する。",
+    "marks": [
+      14,
+      8,
+      1,
+      4,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "テルケンレンスキーは芝1800m2着IDM38、1600mでも2着。逃げて調教15.4、状態上昇にRRDBの先行持続材料もあり、同距離で最も勝ち筋が明確。"
+      },
+      {
+        "horse_no": 8,
+        "case": "ワインダークシーは芝2000m3着IDM37、1800m3着IDM30。逃げ脚があり、RRDBの先行持続材料から1800mでも前で粘る再現性を評価する。"
+      },
+      {
+        "horse_no": 4,
+        "case": "ベルランコントルは芝2000mで4着IDM38、5着IDM33。先行して安定した中距離能力があり、1800m短縮で位置取りが取りやすい。"
+      },
+      {
+        "horse_no": 16,
+        "case": "クールフィデルは芝2000m4着IDM34、3着IDM33で先行型。調教16.5、状態上昇があり、近走の安定性を連下で評価する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "ボニープリンスは芝1600m初戦4着IDM33から、調教19.6でデキ抜群。1800m延長をこなせば初戦以上の上積みで主線を逆転する余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2マイネルヴェーゼンは芝1800mでIDM33歴がある一方、五頭目16クールフィデルは芝2000m4着IDM34、3着IDM33に調教16.5と状態上昇があり、現状の上積みで16を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 14,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 8,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "◎14は芝1800m2着IDM38に状態上昇、先行持続の裏付けもあり同距離で押し切る形が明確。○8も1800m3着と2000m3着を持つが、直接IDMと近況で14を上位に取る。▲1は初戦4着からデキ抜群で、延長の上積みがあれば一発。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        8,
+        1,
+        4,
+        16
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2マイネルヴェーゼンは芝1800mでIDM33歴があり、同距離経験を五頭目16の2000m実績と状態上昇に対して比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2は芝1800mIDM33までで、16は芝2000mIDM34と調教16.5の状態上昇があるため、現状の勝ち筋では16を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 8,
+      "honmei_win_case": "14テルケンレンスキーは芝1800m2着IDM38の逃げ馬で、調教15.4の状態上昇と先行持続材料が揃い、同距離で押し切れる。",
+      "second_case": "8ワインダークシーは芝2000m3着IDM37、1800m3着の逃げ馬で、前受けして14に食い下がれる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○8は芝2000m3着IDM37と持続力がある一方、◎14は芝1800m2着IDM38と同距離の直接能力が上で、状態上昇も加わるため14を優先した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "race_model": "中山3Rはダート1800m新馬。既走実績がないため、事前能力値と調教指数、仕上がり状態を中心に初戦の完成度を比較する。",
+    "marks": [
+      1,
+      12,
+      13,
+      10,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "カフェラジェムは事前能力36.5でメンバー最上位、調教指数19.0。ダ1800m新馬で要求される完成度を数値面から最も高く評価できる。"
+      },
+      {
+        "horse_no": 12,
+        "case": "ユアフェリシティは事前能力29.2、調教16.9で状態上昇。能力次位グループの中で仕上がりの良さが目立ち、初戦から動ける。"
+      },
+      {
+        "horse_no": 10,
+        "case": "アメリカンサクラは事前能力23.4、調教8.5、CYB61。派手さはないが新馬戦としては能力と仕上がりのバランスが取れている。"
+      },
+      {
+        "horse_no": 6,
+        "case": "プリンセスダーコは事前能力20.8ながらCYB67。調教指数は低めでも実戦気配の数値が高く、連下候補として残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "エラルディークは事前能力29.4で12をわずかに上回り、調教12.4で状態上昇。初戦で流れに乗れれば能力値をそのまま勝ち切りへつなげる余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "9ダイユウサルターレは能力20.4、調教3.3で状態上昇だが、五頭目6プリンセスダーコは能力20.8にCYB67があり、初戦の仕上がり比較で6がわずかに上回る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新馬戦で過去走はない。◎1は事前能力36.5と調教19.0で完成度が一段上で、○12は能力29.2に調教16.9の状態上昇があるが総合値で1を優先する。▲13は能力29.4と12.4の調教を持ち、初戦で流れに乗れば逆転まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        12,
+        13,
+        10,
+        6
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9ダイユウサルターレは事前能力20.4、調教3.3の状態上昇を、五頭目6の能力20.8とCYB67に対して比較した。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "9は能力20.4と状態上昇がある一方、6は能力20.8にCYB67の実戦気配があり、新馬の仕上がり比較で6を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 12,
+      "honmei_win_case": "1カフェラジェムは事前能力36.5で最上位、調教19.0も高く、ダ1800m新馬で初戦から完成度を生かして押し切れる。",
+      "second_case": "12ユアフェリシティは事前能力29.2、調教16.9で状態上昇し、1が初戦で甘さを見せれば逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "○12は能力29.2と調教16.9の上昇が強い一方、◎1は能力36.5と調教19.0の双方で上回るため、初戦の勝ち切り確率を1に置く。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
