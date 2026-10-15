@@ -1,13 +1,13 @@
-name: RaceNote BTDAY-0096 v0.5.3 r2 TURN 2 validate
+name: RaceNote BTDAY-0096 v0.5.3 r2 TURN 2 validate and save
 on:
   push:
     branches: [main]
     paths:
       - 'horse-racing/jrdb/backtests/BTDAY-0096/T2_VALIDATE_TRIGGER'
 permissions:
-  contents: read
+  contents: write
 jobs:
-  validate:
+  validate_and_save:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -58,3 +58,18 @@ jobs:
           assert len(seen)==24
           print(json.dumps({'status':'PASS','selection_id':'BTDAY-0096','target_date':'2025-03-09','races':len(seen),'venues':session['expected_venues'],'freeze_performed':False},ensure_ascii=False))
           PY
+      - name: Save venue Decision Cores
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          ROOT="horse-racing/jrdb/backtests/BTDAY-0096/20250309/v053"
+          python horse-racing/jrdb/src/racenote_v053_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/中山.json"
+          python horse-racing/jrdb/src/racenote_v053_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/阪神.json"
+      - name: Commit immutable authored venue saves
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add horse-racing/jrdb/backtests/BTDAY-0096/20250309/v053/authored_decisions
+          git diff --cached --quiet && { echo "No authored_decisions changes"; exit 1; }
+          git commit -m "RaceNote: save BTDAY-0096 TURN 2 decisions"
+          git push origin HEAD:main
