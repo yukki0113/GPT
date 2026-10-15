@@ -21,6 +21,7 @@ from racenote_decision_core_v054 import (
     validate_core,
     validate_prose_collection,
 )
+from racenote_v054_authoring_quality import inspect as inspect_authoring_quality
 from racenote_reader_v050 import DEFAULT_BINDING
 from racenote_reader_v054 import VERSION as LOGIC, load_binding, transform
 from racenote_save_venue_batch_v046 import load_clean
@@ -434,7 +435,17 @@ def build_freeze(root: Path) -> dict[str, Any]:
     session, readers, entries = load_session(root)
     authored = _load_authored(root, session, entries)
     records = []
-    validate_prose_collection([core for payload in authored for core in payload["decisions"]])
+    all_cores = [core for payload in authored for core in payload["decisions"]]
+    validate_prose_collection(all_cores)
+    quality_report = None
+    if session.get("contract_revision") == CONTRACT_REVISION:
+        quality_report = inspect_authoring_quality(all_cores)
+        write_json(root / "authoring_quality_report.json", quality_report)
+        if quality_report["status"] != "PASS":
+            raise ValueError(
+                "pre-Freeze authoring quality gate FAIL: "
+                + "; ".join(quality_report["violations"][:8])
+            )
     for payload in authored:
         for core in payload["decisions"]:
             key = (payload["venue"], int(core["race_no"]))
@@ -478,12 +489,16 @@ def build_freeze(root: Path) -> dict[str, Any]:
         "target_market_opened": False,
         "result_opened": False,
         "records_sha256": digest(encoded(records) + b"\n"),
+        **({"authoring_quality_report_sha256": digest(encoded(quality_report) + b"\n")}
+           if quality_report is not None else {}),
     }
     frozen = root / "frozen"
     if frozen.exists():
         raise FileExistsError(f"immutable single-day Freeze already exists: {frozen}")
     with tempfile.TemporaryDirectory(prefix=".v054.frozen-", dir=root) as temp:
         staging = Path(temp)
+        if quality_report is not None:
+            write_json(staging / "authoring_quality_report.json", quality_report)
         write_json(staging / "records.json", records)
         write_json(staging / "day_handoff.json", handoff)
         staging.rename(frozen)
@@ -519,6 +534,12 @@ def verify_freeze(root: Path) -> dict[str, Any]:
         or handoff.get("records_sha256") != digest(raw)
     ):
         raise ValueError("single-day Freeze seal invalid")
+    if "authoring_quality_report_sha256" in handoff:
+        quality_path = root / "frozen" / "authoring_quality_report.json"
+        if (not quality_path.is_file()
+            or digest(quality_path.read_bytes()) != handoff["authoring_quality_report_sha256"]
+            or read_json(quality_path).get("status") != "PASS"):
+            raise ValueError("frozen authoring quality report seal invalid")
     for row in records:
         key = (row["venue"], int(row["race_no"]))
         entry = entries[key]
