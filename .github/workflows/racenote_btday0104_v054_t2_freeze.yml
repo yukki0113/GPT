@@ -1,0 +1,115 @@
+name: RaceNote BTDAY-0104 v0.5.4 T2 Freeze
+
+on:
+  push:
+    branches: [run/btday0104-v054-t1]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0104/V054_T2_TRIGGER'
+
+permissions:
+  contents: write
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: run/btday0104-v054-t1
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Combine authored chunks without mutation
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0104/20251207/v054/incoming')
+          chunks=root/'chunks'
+          for venue in ('中山','阪神','中京'):
+              rows=[]
+              for path in sorted(chunks.glob(f'{venue}_*.json')):
+                  part=json.loads(path.read_text(encoding='utf-8'))
+                  assert isinstance(part,list) and 3 <= len(part) <= 4
+                  rows.extend(part)
+              assert len(rows)==12, (venue,len(rows))
+              assert [x['race_no'] for x in rows]==list(range(1,13)), venue
+              (root/f'{venue}.json').write_text(
+                  json.dumps(rows,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+
+      - name: Preflight authoring quality gate
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from racenote_v054_authoring_quality import inspect
+
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0104/20251207/v054/incoming')
+          cores=[]
+          for venue in ('中山','阪神','中京'):
+              cores.extend(json.loads((root/f'{venue}.json').read_text(encoding='utf-8')))
+          report=inspect(cores)
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          (root/'authoring_quality_preflight.json').write_text(
+              json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          assert report['status']=='PASS'
+          assert report['race_count']==36
+          PY
+
+      - name: Save model-authored venue decisions
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0104/20251207/v054'
+          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/中山.json"
+          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/阪神.json"
+          python horse-racing/jrdb/src/racenote_v054_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/中京.json"
+
+      - name: Freeze and verify
+        run: |
+          set -euo pipefail
+          ROOT='horse-racing/jrdb/backtests/BTDAY-0104/20251207/v054'
+          python horse-racing/jrdb/src/racenote_v054_single_day.py freeze --root "$ROOT"
+          python horse-racing/jrdb/src/racenote_v054_single_day.py verify --root "$ROOT"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0104/20251207/v054')
+          h=json.loads((root/'frozen/day_handoff.json').read_text())
+          q=json.loads((root/'authoring_quality_report.json').read_text())
+          assert h['status']=='FROZEN_CLEAN_BLIND'
+          assert h['validator_status']=='PASS'
+          assert h['record_count']==36
+          assert h['market_blind'] is True
+          assert h['target_market_opened'] is False
+          assert h['result_opened'] is False
+          assert q['status']=='PASS'
+          assert q['race_count']==36
+          assert q['generic_case_count']==0
+          assert q['template_similarity_violations']==0
+          print(json.dumps({
+              'status':'BTDAY0104_T2_FREEZE_PASS',
+              'record_count':36,
+              'quality_gate':q['status'],
+              'session_id':h['session_id']
+          },ensure_ascii=False))
+          PY
+
+      - name: Commit Freeze
+        run: |
+          set -euo pipefail
+          TARGET='horse-racing/jrdb/backtests/BTDAY-0104/20251207/v054'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET/incoming" "$TARGET/authored_decisions" "$TARGET/authoring_quality_report.json" "$TARGET/frozen"
+          git commit -m 'RaceNote: Freeze BTDAY-0104 v0.5.4 predictions'
+          git push origin HEAD:run/btday0104-v054-t1
