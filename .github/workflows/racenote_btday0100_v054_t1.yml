@@ -215,7 +215,7 @@ jobs:
           manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 
           prep=target/'forecast_prep'
-          handoff=bind(daily,prep,SELECTION_ID,TARGET_DATE,source_sha)
+          handoff=bind(daily,prep,SELECTION_ID,TARGET_DATE,source_sha,rrdb_contract='rrdb-recommendation-signals-v0.5')
 
           evidence=build_bundle(prep,[target_kyi])
           evidence_path=target/'v054_inputs'/'kyi_bundle.json'
