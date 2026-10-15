@@ -52,14 +52,19 @@ def _text(value: Any, minimum: int, label: str) -> None:
         raise ValueError(f"{label} too short")
 
 
-def validate_core(core: dict, reader: dict) -> None:
+def validate_core(
+    core: dict,
+    reader: dict,
+    *,
+    rrdb_contract: str = "rrdb-recommendation-signals-v0.4",
+) -> None:
     if not isinstance(core, dict):
         raise ValueError("Decision Core must be an object")
     if COMPRESSION_FIELD not in core or ROLE_FIELD not in core:
         raise ValueError("v0.5.2 requires candidate_compression and role_assignment")
 
     base = {k: v for k, v in core.items() if k not in {COMPRESSION_FIELD, ROLE_FIELD}}
-    validate_v046_core(base, reader)
+    validate_v046_core(base, reader, rrdb_contract=rrdb_contract)
 
     race = reader["race"]
     venue = str(race["venue"])
