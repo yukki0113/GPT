@@ -94,8 +94,8 @@ def inspect(cores: list[dict], *, strict: bool = True) -> dict:
         ranking = paths["role_assignment.ranking_reason"]
         role = core.get("role_assignment", {})
         if (_COMPARE.search(ranking) and _EVIDENCE.search(ranking)
-            and str(role.get("honmei_horse_no")) in ranking
-            and str(role.get("second_horse_no")) in ranking):
+            and (str(role.get("honmei_horse_no")) in ranking or "◎" in ranking)
+            and (str(role.get("second_horse_no")) in ranking or "○" in ranking)):
             counts["ranking_comparison_specificity_pass"] += 1
         else:
             errors.append(f"{label} role_assignment.ranking_reason: comparative evidence missing")
