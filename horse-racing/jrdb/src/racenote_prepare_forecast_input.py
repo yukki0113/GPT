@@ -27,7 +27,7 @@ def contains_market(value: object) -> bool:
     return False
 
 
-def bind(prep: Path, output: Path, selection: str, target_date: str, main_sha: str) -> dict:
+def bind(prep: Path, output: Path, selection: str, target_date: str, main_sha: str, *, rrdb_contract: str = RRDB) -> dict:
     if not __debug__:
         raise RuntimeError("Forecast input binding must run without Python optimization; validation uses assertions")
     if output.exists():
@@ -37,7 +37,7 @@ def bind(prep: Path, output: Path, selection: str, target_date: str, main_sha: s
     assert manifest.get("status") == validation.get("status") == "PASS"
     assert manifest.get("target_date") == target_date
     assert validation.get("firewall", {}).get("target_result_exposed") is False
-    assert manifest.get("sources", {}).get("rrdb_recommendation", {}).get("contract_version") == RRDB
+    assert manifest.get("sources", {}).get("rrdb_recommendation", {}).get("contract_version") == rrdb_contract
     assert manifest.get("sources", {}).get("rrdb_recommendation", {}).get("grade_status") == "DISABLED"
     expected = int(manifest["counts"]["races_built"])
     assert expected == int(manifest["counts"]["reader_views"]) > 0
@@ -74,7 +74,7 @@ def bind(prep: Path, output: Path, selection: str, target_date: str, main_sha: s
     manifest_bytes = (json.dumps(stripped_manifest, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
     handoff = {
         "selection_id": selection, "target_date": target_date, "race_count": expected,
-        "main_sha": main_sha, "rrdb_contract": RRDB,
+        "main_sha": main_sha, "rrdb_contract": rrdb_contract,
         "market_blind": True, "stripped_at_input_bind": True,
         "result_opened": False, "target_market_opened": False,
         "reader_stripped_manifest_sha256": digest(manifest_bytes),
