@@ -405,3 +405,13 @@ Five active rlt_* workflows and the RL-T-named Warehouse input preparer are expl
 ## RL retirement final status — 2026-10-02
 
 The RL retirement sequence is complete (T1–T6 PASS). Final report: docs/RL_Retirement_Final_Report_20261002.md. No active RL scorer/research workflow, open RL research issue, RL-dependent downstream production path, or RL-required production input remains. Frozen evidence is preserved; shared Warehouse / Index Base / record-hash infrastructure remains active.
+
+
+## Common race-lap evidence v0.1 — 2026-10-15
+
+Canonical SED/SRB -> `jrdb_race_lap_dataset.py` -> one-race-per-row Parquet ->
+`RaceLapStore` -> `RaceLapReader` is the shared race-lap access contract.
+See `docs/JRDB_Race_Lap_Reader_v0_1.md`. Shape calculation is shared with legacy
+RaceNote evidence through `jrdb_race_lap_shape.py`. SRB is leader-based,
+post-race, historical-only as-of exclusive, with `NO_ADDITIVE_SCORE`.
+Reader completion does not activate RaceNote Forecast or RRDB integration.

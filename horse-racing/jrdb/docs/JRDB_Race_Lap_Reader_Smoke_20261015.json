@@ -1,0 +1,12 @@
+{
+  "validation_status": "PASS",
+  "race_count": 72,
+  "schema_valid_count": 72,
+  "legacy_available_shape_match_count": 70,
+  "deterministic_bytes": true,
+  "input_sha256": {
+    "SED260829.zip": "0a602d031d5dcf48fd957791ec0c63c59a778a5bad231000a2f55576b9da2caa",
+    "SED260906.zip": "b40303048e19187ad03dae44f4eba84a82036c8f4fadd9041c9d2f63e413ab01"
+  },
+  "output_sha256": "42b18279dab3f77a2c6df3967d82c43d30c4e897dbe228f0114eeef0044c996b"
+}
