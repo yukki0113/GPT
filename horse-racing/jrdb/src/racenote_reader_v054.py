@@ -25,6 +25,7 @@ def transform(
     *,
     kyi_by_horse: Mapping[int, dict[str, Any]] | None = None,
     history_race_keys_by_horse: Mapping[int, list[str]] | None = None,
+    rrdb_by_horse: Mapping[int, dict[str, Any]] | None = None,
     target_date: str | None = None,
     race_lap_reader: Any = None,
 ) -> dict[str, Any]:
@@ -33,6 +34,7 @@ def transform(
     horses = candidate["normal_view"]["horses"]
     kyi_by_horse = kyi_by_horse or {}
     history_race_keys_by_horse = history_race_keys_by_horse or {}
+    rrdb_by_horse = rrdb_by_horse or {}
     if race_lap_reader is not None and not target_date:
         raise ValueError("target_date required for historical lap lookup")
     all_keys = [key for keys in history_race_keys_by_horse.values() for key in keys]
@@ -51,6 +53,13 @@ def transform(
             kyi_hidden_value_context(supplied) if supplied is not None
             else {"status": "UNAVAILABLE", "policy": {"upgrade_creation": False}}
         )
+        rrdb = rrdb_by_horse.get(no)
+        horse["rrdb_v05"] = (
+            {"status": rrdb.get("status", "AVAILABLE"),
+             "contract": "rrdb-recommendation-signals-v0.5",
+             "signals": copy.deepcopy(rrdb.get("signals", []))}
+            if rrdb is not None else {"status": "UNAVAILABLE", "signals": []}
+        )
         keys = history_race_keys_by_horse.get(no, [])
         if len(keys) != len(set(keys)):
             raise ValueError(f"duplicate source race key for horse {no}")
@@ -61,6 +70,7 @@ def transform(
     extra = candidate.setdefault("provenance", {})
     extra["v054_evidence"] = {
         "rrdb_contract_required": "rrdb-recommendation-signals-v0.5",
+        "rrdb_v05_horse_count": sum(int(int(h["identity"]["horse_no"]) in rrdb_by_horse) for h in horses),
         "kyi_horse_count": sum(int(int(h["identity"]["horse_no"]) in kyi_by_horse) for h in horses),
         "lap_lookup_status": "AVAILABLE" if race_lap_reader is not None else "NOT_SUPPLIED",
         "target_date": target_date,
