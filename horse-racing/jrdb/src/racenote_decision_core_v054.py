@@ -13,7 +13,9 @@ from racenote_decision_core_v053 import validate_core as validate_v053_core
 
 LOGIC = "RaceNote-Human-Context-Reader-0.5.4-candidate"
 VERSION = "racenote-decision-core-0.5.4"
-CONTRACT_REVISION = "v054-context-evidence-r1"
+CONTRACT_REVISION = "v054-authored-prose-r2"
+LEGACY_CONTRACT_REVISIONS = {"v054-context-evidence-r1"}
+SUPPORTED_CONTRACT_REVISIONS = LEGACY_CONTRACT_REVISIONS | {CONTRACT_REVISION}
 
 _INTERNAL = (
     "sealed Reader", "ordinary five", "ordinary_five",
@@ -28,7 +30,7 @@ _GENERIC_PATTERNS = (
 )
 
 
-def validate_prose(core: dict[str, Any]) -> None:
+def validate_prose(core: dict[str, Any], *, require_authorship: bool = False) -> None:
     prose = core.get("reader_facing_reason")
     if not isinstance(prose, str):
         raise ValueError("reader_facing_reason must be model-authored text")
@@ -48,6 +50,17 @@ def validate_prose(core: dict[str, Any]) -> None:
         raise ValueError("reader_facing_reason must concretely discuss the ◎ horse")
     if not any(token in prose for token in (f"○{marks[1]}", f"{marks[1]}を○", f"{marks[1]}は", f"{marks[1]}も")):
         raise ValueError("reader_facing_reason must discuss the ○ comparison")
+    if require_authorship:
+        authorship = core.get("reader_facing_reason_authorship")
+        if not isinstance(authorship, dict):
+            raise ValueError("reader_facing_reason_authorship required for r2")
+        if authorship.get("mode") != "MODEL_AUTHORED_PER_RACE":
+            raise ValueError("reader_facing_reason must be model-authored per race")
+        if authorship.get("programmatic_template") is not False:
+            raise ValueError("programmatic newspaper-prose templates are prohibited")
+        basis = authorship.get("basis")
+        if not isinstance(basis, list) or "honmei_win_case" not in basis or "ranking_reason" not in basis:
+            raise ValueError("reader-facing prose must cite authored Decision Core basis")
     # Language/style checks are heuristics. Source support is a human/model audit.
 
 
@@ -57,7 +70,7 @@ def validate_core(
     *,
     contract_revision: str = CONTRACT_REVISION,
 ) -> None:
-    if contract_revision != CONTRACT_REVISION:
+    if contract_revision not in SUPPORTED_CONTRACT_REVISIONS:
         raise ValueError(f"unsupported v0.5.4 revision: {contract_revision}")
     validate_v053_core(
         core,
@@ -65,7 +78,7 @@ def validate_core(
         contract_revision="v053-boundary-safety-r2",
         rrdb_contract="rrdb-recommendation-signals-v0.5",
     )
-    validate_prose(core)
+    validate_prose(core, require_authorship=contract_revision == CONTRACT_REVISION)
 
 
 def validate_prose_collection(cores: list[dict[str, Any]]) -> None:
