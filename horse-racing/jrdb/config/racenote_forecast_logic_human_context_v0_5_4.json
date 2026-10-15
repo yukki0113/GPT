@@ -3,7 +3,7 @@
   "status": "PROMOTED_CURRENT",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "role": "FORECAST_BLIND_RESEARCH",
-  "contract_revision": "v054-context-evidence-r1",
+  "contract_revision": "v054-authored-prose-r2",
   "predecessor": {
     "logic_version": "RaceNote-Human-Context-Reader-0.5.3-candidate",
     "contract_revision": "v053-boundary-safety-r2",
@@ -41,7 +41,7 @@
     "route_diversity": "TIE_BREAK_ONLY"
   },
   "reader_facing_prose": {
-    "source": "ALREADY_AUTHORED_DECISION_CORE_ONLY",
+    "source": "MODEL_AUTHORED_PER_RACE_FROM_ALREADY_AUTHORED_DECISION_CORE",
     "second_ranking_pass": false,
     "target_sentences": "2-3",
     "target_japanese_chars": "100-150_WHEN_SUPPORTED",
@@ -58,7 +58,12 @@
       "r2",
       "boundary KEEP"
     ],
-    "cross_race_template_guard": true
+    "cross_race_template_guard": true,
+    "programmatic_template_generation": false,
+    "workflow_prose_construction": false,
+    "fallback_generator": false,
+    "authorship_metadata_required": true,
+    "legacy_r1_freeze_verification_supported": true
   },
   "confidence_policy": {
     "status": "UNCHANGED_RESEARCH_LAYER",
