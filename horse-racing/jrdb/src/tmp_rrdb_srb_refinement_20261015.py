@@ -214,7 +214,7 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
         """)
         unions=[]
         def add(name, family, cond):
-            unions.append(f"SELECT *, '{name}' rule_name, '{family}' family FROM x WHERE {cond}")
+            unions.append(f"SELECT *, '{name}' rule_name, '{family}' signal_family FROM x WHERE {cond}")
         add("FRONT_BASE","FRONT","front_base")
         add("FRONT_EL70","FRONT","front_base AND early_late_delta_sec>=el70")
         add("FRONT_EL80","FRONT","front_base AND early_late_delta_sec>=el80")
@@ -241,7 +241,7 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
              OR (m.next_race_date>=DATE '2026-01-01' AND m.next_race_date<DATE '2026-10-13')
         """)
         con.execute(f"""COPY (
-          SELECT period,family,rule_name,count(*) n,count(distinct horse_id) horses,
+          SELECT period,signal_family,rule_name,count(*) n,count(distinct horse_id) horses,
             avg((next_finish=1)::int)::double win_rate,
             avg((next_finish<=3)::int)::double top3_rate,
             avg(next_performance_signal) mean_next_performance,
@@ -250,7 +250,7 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
           FROM settled GROUP BY 1,2,3 ORDER BY 1,2,3
         ) TO {q(out/'rule_summary.csv')} (HEADER,DELIMITER ',')""")
         con.execute(f"""COPY (
-          SELECT period,family,rule_name,surface_code,distance_bucket,count(*) n,
+          SELECT period,signal_family,rule_name,surface_code,distance_bucket,count(*) n,
             avg((next_finish=1)::int)::double win_rate,
             avg((next_finish<=3)::int)::double top3_rate,
             sum(coalesce(win_payout,0))::double/(count(*)*100) win_roi,
@@ -268,7 +268,7 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
         # baseline-relative lift within period/family.
         con.execute(f"""COPY (
           WITH a AS (
-            SELECT period,family,rule_name,count(*) n,
+            SELECT period,signal_family,rule_name,count(*) n,
               avg((next_finish=1)::int)::double win_rate,
               avg((next_finish<=3)::int)::double top3_rate,
               avg(next_performance_signal) perf,
@@ -276,15 +276,15 @@ def research(rrdb_root: Path, lap: Path, payout_csv: Path, out: Path) -> None:
               sum(coalesce(place_payout,0))::double/(count(*)*100) place_roi
             FROM settled GROUP BY 1,2,3
           ), b AS (
-            SELECT period,family,win_rate base_win,top3_rate base_top3,perf base_perf,
+            SELECT period,signal_family,win_rate base_win,top3_rate base_top3,perf base_perf,
                    win_roi base_win_roi,place_roi base_place_roi
             FROM a WHERE rule_name IN ('FRONT_BASE','REAR_BASE')
           )
           SELECT a.*,a.win_rate-b.base_win win_lift,a.top3_rate-b.base_top3 top3_lift,
             a.perf-b.base_perf perf_lift,a.win_roi-b.base_win_roi win_roi_delta,
             a.place_roi-b.base_place_roi place_roi_delta
-          FROM a JOIN b USING(period,family)
-          ORDER BY period,family,rule_name
+          FROM a JOIN b USING(period,signal_family)
+          ORDER BY period,signal_family,rule_name
         ) TO {q(out/'rule_lift_vs_current.csv')} (HEADER,DELIMITER ',')""")
         con.execute(f"""COPY (
           SELECT * FROM thresholds ORDER BY surface_code,distance_bucket
@@ -313,6 +313,9 @@ def main() -> int:
     ap.add_argument("--work-root",type=Path,required=True)
     ap.add_argument("--out",type=Path,required=True)
     ap.add_argument("--skip-fetch",action="store_true")
+    ap.add_argument("--prebuilt-lap",type=Path)
+    ap.add_argument("--prebuilt-payouts",type=Path)
+    ap.add_argument("--prebuilt-lap-audit",type=Path)
     a=ap.parse_args()
     a.work_root.mkdir(parents=True,exist_ok=True); a.out.mkdir(parents=True,exist_ok=True)
     rr=a.work_root/"rrdb"
@@ -322,14 +325,23 @@ def main() -> int:
     with zipfile.ZipFile(a.rrdb_zip) as zf: zf.extractall(rr)
     rrdb_root=find_rrdb_root(rr)
     raw=a.work_root/"raw"
-    fetch_meta = {"skipped":True} if a.skip_fetch else fetch_inputs(raw,rrdb_root)
-    lap,audit=build_lap(raw,a.out)
-    win,place=payout_maps(raw_archives(raw,"HJC"))
-    payout_csv=a.out/"payouts.csv"; write_payout_csv(payout_csv,win,place)
+    if a.prebuilt_lap and a.prebuilt_payouts:
+        if not a.prebuilt_lap.is_file() or not a.prebuilt_payouts.is_file():
+            raise RuntimeError("prebuilt lap/payout inputs missing")
+        fetch_meta={"skipped":True,"source":"prebuilt_artifact"}
+        lap=a.prebuilt_lap
+        payout_csv=a.prebuilt_payouts
+        audit=a.prebuilt_lap_audit
+    else:
+        fetch_meta = {"skipped":True} if a.skip_fetch else fetch_inputs(raw,rrdb_root)
+        lap,audit=build_lap(raw,a.out)
+        win,place=payout_maps(raw_archives(raw,"HJC"))
+        payout_csv=a.out/"payouts.csv"; write_payout_csv(payout_csv,win,place)
     research(rrdb_root,lap,payout_csv,a.out)
     meta=json.loads((a.out/"summary.json").read_text())
     meta["fetch"]=fetch_meta
-    meta["race_lap_audit"]=json.loads(audit.read_text())
+    if audit and Path(audit).is_file():
+        meta["race_lap_audit"]=json.loads(Path(audit).read_text())
     (a.out/"summary.json").write_text(json.dumps(meta,ensure_ascii=False,indent=2)+"\n")
     print(json.dumps(meta,ensure_ascii=False))
     return 0
