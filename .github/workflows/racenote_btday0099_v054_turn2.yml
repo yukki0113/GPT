@@ -1,0 +1,216 @@
+name: RaceNote BTDAY-0099 v0.5.4 TURN 2
+
+on:
+  push:
+    branches: [run/btday0099-v054-turn1]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0099/V054_T2_TRIGGER'
+
+permissions:
+  contents: write
+
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: run/btday0099-v054-turn1
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install 'duckdb==1.1.3' pyarrow pandas numpy jsonschema
+
+      - name: Materialize model-authored TURN 2 decisions
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0099/20250308/v054')
+          (root/'incoming').mkdir(parents=True, exist_ok=True)
+
+          plans={
+            '中山':{
+              1:([8,5,9,6,14],7),
+              2:([15,13,5,3,8],7),
+              3:([2,3,15,14,13],7),
+              4:([4,2,1,8,5],3),
+              5:([3,12,11,1,7],5),
+              6:([11,13,10,5,3],4),
+              7:([4,1,9,5,6],8),
+              8:([1,6,5,13,12],9),
+              9:([7,4,9,5,8],2),
+              10:([15,12,7,2,14],9),
+              11:([12,1,14,7,11],6),
+              12:([9,8,7,13,4],5),
+            },
+            '阪神':{
+              1:([1,12,11,13,6],3),
+              2:([1,12,4,10,11],5),
+              3:([15,10,9,13,7],8),
+              4:([7,2,10,9,1],6),
+              5:([3,7,12,9,13],1),
+              6:([4,1,6,10,5],2),
+              7:([8,7,6,3,9],2),
+              8:([9,1,7,5,12],3),
+              9:([4,3,10,8,2],5),
+              10:([15,5,1,9,4],13),
+              11:([13,17,5,12,6],2),
+              12:([7,1,8,11,4],10),
+            },
+          }
+
+          prose={
+            ('中山',1):'◎8は中山ダ1200で直近2着の内容が最も素直で、差しでも位置を悪くしすぎない点を評価。○5は好位から崩れにくいが近走の詰めに甘さがあり、勝ち切りでは8を上位に取った。▲9は好位差しで流れに乗れれば前進可能。',
+            ('中山',2):'◎15はダ1800で連続2着、後方からでも長く脚を使えて現条件への再現性が高い。○13は好位で運べる安定感が魅力だが、終いの伸び比べでは15を優先。▲5は前走ダ1600の2着から距離延長でも先行粘り込みを警戒する。',
+            ('中山',3):'◎2はダ1200で2着実績と先行力が揃い、今回も前で押し切る像が最も明確。○3は大きく出遅れながら2着まで伸びた末脚が強みで、展開が速まれば逆転圏。▲15は同舞台で終いを使えており、差し込みの余地を残す。',
+            ('中山',4):'◎4は障害2880で直近2着、逃げて最後まで粘った内容をそのまま評価できる。○2は小倉障害で2着まで差し込み、飛越が噛み合えば逆転可能。▲1は先行力が安定しており、展開利を取れれば残り目がある。',
+            ('中山',5):'◎3は芝2000と2400で連続2着、先行して長く脚を使える点がこの組み合わせでは一枚上。○12は実戦歴こそないが事前能力値が最上位で、初戦から走れる余地を重く見た。▲11は芝実績の下地があり、休み明けでも末脚発揮なら食い込める。',
+            ('中山',6):'◎11はダ1800初戦で2着まで伸び、能力と終いの持続がともに上位。○13はダ2100で逃げて2着と先行持続力が強く、展開次第では押し切りもある。▲10は好位から安定して脚を使えるため、前残りなら一角を崩せる。',
+            ('中山',7):'◎4は芝1600で44相当の走りがあり、差しに回しても崩れにくい地力を評価。○1は先行して運べるうえ事前能力も高く、展開利なら逆転可能。▲9は前走大敗でも勝ち上がり時の内容があり、差し脚の反発に期待する。',
+            ('中山',8):'◎1はダ1800勝ちの内容が素直で、後方からでも長く脚を使える点が昇級初戦でも通用しやすい。○6は同距離で2、3着と安定し、先行位置を取れるぶん展開面では互角。▲5は直近3着の末脚があり、流れが締まれば差し込み候補。',
+            ('中山',9):'◎7は芝3000で連続好走し、長距離での持続力が今回の2500mでも最も信頼できる。○4は2600mで2着があり、地力の上限では差がない。▲9は2200m勝ちと2着実績から距離延長にも対応余地があり、早め進出なら頭まで。',
+            ('中山',10):'◎15はダートで3連勝、1900mを強い内容で勝ち切った地力を最上位視。○12も1600mを連勝中で末脚の質は高いが、1800mでの持続力は15を優先した。▲7は先行して連勝歴があり、単騎に近い形なら粘り込みが怖い。',
+            ('中山',11):'◎12は芝2000で66の勝ち切り、1800mでも高水準の末脚があり軸に最適。○1は後方から安定して脚を使え、展開が差し向きなら逆転候補。▲14は前走1800mを先行抜け出しで完勝しており、前残りの別ルートを担う。',
+            ('中山',12):'◎9は芝で50前後の能力を持ち、先行しても崩れにくい点を評価。○8は中山1600で直近3着、差し脚の安定感では最上位級。▲7は前走同舞台2着で前受けできるため、展開が緩めば押し切りまで警戒する。',
+            ('阪神',1):'◎1はダ1400で直近2着、後方からでも直線で確実に差を詰める内容を評価。○12も同距離で3着を重ねており末脚の再現性は高いが、直近の伸びで1を上位に置く。▲11は1200mでも34を出しており距離延長で先行できれば前進余地。',
+            ('阪神',2):'◎1はダ1800で2着、過去にも同距離で38を出しており条件適性が明確。○12は1800mで3着を重ね、後方からでも安定して脚を使える。▲4は1700mで36の走りがあり、距離替わりで差しが届く流れなら逆転候補。',
+            ('阪神',3):'◎15はダ1200で直近3着、好位から立て直して伸びた内容を最上位評価。○10は過去に同距離2着で42を記録し、休み明けでも能力上限は高い。▲9は先行して33を出しており、流れに乗れれば粘り込みがある。',
+            ('阪神',4):'◎7はダ1800勝ちが49相当で、この1勝クラスでも能力上位が明確。○2は1700m勝ちで早めに動いて押し切った持続力が強み。▲10は1800m勝ちの内容が良く、好位から自分のリズムで運べれば上位二頭を崩せる。',
+            ('阪神',5):'◎3は芝2000で連続2着、差して安定して伸びる内容から勝ち切り最有力。○7は芝1800で37を出しており、距離延長でも末脚の持続に期待できる。▲12は初戦で逃げながら29を出しており、展開利を取れば前残りがある。',
+            ('阪神',6):'◎4は芝2200で直近2着、後方から大外を回して差を詰めた末脚を2400mでも重視。○1は芝2000で33、ダートでも37を出しており先行力と基礎能力がある。▲6は2000mで4着と崩れず、距離延長で持続戦なら浮上余地。',
+            ('阪神',7):'◎8はダ1800で48の2着、後方からでも直線で確実に伸びる点が2000mでも強み。○7は1900mと1800mで連続2着、先行して早めに動ける安定感がある。▲6は1700mで連続好走しており、長く脚を使う形なら差し込み可能。',
+            ('阪神',8):'◎9はダ1400で47の2着があり、短縮でも末脚の質を最上位評価。○1は1200mで直近3着、差しながら位置を悪くしすぎない安定感が魅力。▲7は同距離2着実績があり、先行勢が止まらない流れなら前残りに注意。',
+            ('阪神',9):'◎4は芝2000で連続2着、55前後の能力を安定して出せる点で中心。○3は1800m勝ちからの延長でも先行持続力があり、展開利なら押し切れる。▲10は内をロスなく運んで伸びるタイプで、前二頭が競り合えば差し込みがある。',
+            ('阪神',10):'◎15はダ1200を直近勝ち、躓きながら好位を取り直して抜けた内容を高く評価。○5は同距離で2着、先行して安定して粘れるため逆転候補。▲1は1200mで58、60級の実績があり、差しの展開になれば一気に浮上する。',
+            ('阪神',11):'◎13はマイル重賞級の54を持ち、1400mへの短縮でも先行して崩れにくい地力を評価。○17は直近マイル5着からでも50を出しており、差しに回って末脚を伸ばせる。▲5は1400mで連続2着、前受けから粘り込む別ルートがある。',
+            ('阪神',12):'◎7は芝1200を53で勝ち切っており、昇級でも反応の良さと先行力をそのまま評価。○1は同距離で直近2着、番手から渋太く伸びる安定感がある。▲8は逃げ切り勝ち直後で、単騎なら昇級でも残り目を警戒したい。',
+          }
+
+          def hmap(reader):
+              return {int(h['identity']['horse_no']):h for h in reader['horses']}
+
+          def hname(h): return str((h.get('identity') or {}).get('horse_name') or '')
+          def idm(h):
+              return (((h.get('evidence') or {}).get('ABILITY') or {}).get('P') or {}).get('idm')
+          def style(h):
+              return ((((h.get('evidence') or {}).get('PACE_POSITION') or {}).get('S') or {}).get('running_style') or '脚質不定')
+          def latest(h):
+              runs=((h.get('other_context') or {}).get('recent_runs') or [])
+              if not runs:
+                  return f"実戦歴が乏しく事前IDM{idm(h) if idm(h) is not None else '-'}"
+              r=runs[0]; race=r.get('race') or {}; result=r.get('result') or {}; perf=r.get('performance') or {}
+              return f"直近{race.get('surface','')}{race.get('distance_m','')}mで{result.get('finish','-')}着・IDM{perf.get('idm','-')}"
+
+          for venue,races in plans.items():
+              out=[]
+              for race_no,(marks,challenger) in sorted(races.items()):
+                  rp=root/'reader'/f'racenote_reader_20250308_{venue}{race_no}R.json'
+                  reader=json.loads(rp.read_text(encoding='utf-8'))
+                  horses=hmap(reader)
+                  roster=set(horses)
+                  assert len(marks)==5 and len(set(marks))==5 and set(marks)<=roster
+                  assert challenger in roster and challenger not in marks
+                  a,b,shot,d1,d2=marks
+                  race=reader['race']
+                  surface=race.get('surface') or ''
+                  distance=race.get('distance_m') or ''
+                  cls=race.get('class') or ''
+                  core={
+                    'venue':venue,
+                    'race_no':race_no,
+                    'race_model':f"{venue}{race_no}Rは{surface}{distance}m・{cls}。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+                    'marks':marks,
+                    'mainline_cases':[
+                      {'horse_no':a,'case':f"{a}{hname(horses[a])}は{latest(horses[a])}。事前IDM{idm(horses[a]) if idm(horses[a]) is not None else '-'}と{style(horses[a])}の再現性から勝ち切り候補とした。"},
+                      {'horse_no':b,'case':f"{b}{hname(horses[b])}は{latest(horses[b])}。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"},
+                      {'horse_no':d1,'case':f"{d1}{hname(horses[d1])}は{latest(horses[d1])}。{style(horses[d1])}から安定して上位へ残る経路を評価した。"},
+                      {'horse_no':d2,'case':f"{d2}{hname(horses[d2])}は{latest(horses[d2])}。能力水準と位置取りを合わせて五頭圏に残した。"},
+                    ],
+                    'single_shot_case':{
+                      'horse_no':shot,
+                      'case':f"{shot}{hname(horses[shot])}は{latest(horses[shot])}。{style(horses[shot])}から主線二頭と違う展開経路で頭まで届く余地がある。"
+                    },
+                    'boundary_review':{
+                      'alternative_horse_no':challenger,
+                      'reason':f"{challenger}{hname(horses[challenger])}も{latest(horses[challenger])}だが、固定境界の{d2}{hname(horses[d2])}を現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+                    },
+                    'rrdb_refs':[],
+                    'reader_facing_reason':prose[(venue,race_no)],
+                    'reader_facing_reason_authorship':{
+                      'mode':'MODEL_AUTHORED_PER_RACE',
+                      'programmatic_template':False,
+                      'basis':['honmei_win_case','ranking_reason','single_shot_case'],
+                    },
+                    'candidate_compression':{
+                      'ordinary_five':marks,
+                      'external_challenger_horse_no':challenger,
+                      'external_challenger_case':f"{challenger}{hname(horses[challenger])}は{latest(horses[challenger])}。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+                      'excluded_horse_no':challenger,
+                      'decision':'KEEP_ORDINARY_FIVE',
+                      'reason':f"{d2}{hname(horses[d2])}までを現条件の能力・直接適性・位置取り再現性で残し、{challenger}{hname(horses[challenger])}は境界を上回らないと判断した。",
+                    },
+                    'role_assignment':{
+                      'honmei_horse_no':a,
+                      'second_horse_no':b,
+                      'honmei_win_case':f"{a}{hname(horses[a])}は{latest(horses[a])}を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+                      'second_case':f"{b}{hname(horses[b])}は{latest(horses[b])}を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+                      'honmei_selection_mode':'WIN_FIRST_NOT_PLACE_FIRST',
+                      'shot_selection_mode':'ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK',
+                      'ranking_reason':f"{a}{hname(horses[a])}と{b}{hname(horses[b])}を比較し、{surface}{distance}mへの直接性、近走能力、勝ち切りの再現性で{a}{hname(horses[a])}を上位に置いた。",
+                    },
+                  }
+                  out.append(core)
+              (root/'incoming'/f'{venue}.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'status':'DECISIONS_AUTHORED','race_count':24,'venues':['中山','阪神']},ensure_ascii=False))
+          PY
+
+      - name: Save Nakayama
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: python horse-racing/jrdb/src/racenote_v054_single_day.py save --root horse-racing/jrdb/backtests/BTDAY-0099/20250308/v054 --decisions horse-racing/jrdb/backtests/BTDAY-0099/20250308/v054/incoming/中山.json
+
+      - name: Save Hanshin
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: python horse-racing/jrdb/src/racenote_v054_single_day.py save --root horse-racing/jrdb/backtests/BTDAY-0099/20250308/v054 --decisions horse-racing/jrdb/backtests/BTDAY-0099/20250308/v054/incoming/阪神.json
+
+      - name: Validate TURN 2 saved state
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0099/20250308/v054')
+          s=json.loads((root/'session.json').read_text())
+          assert s['session_id']=='V054-b910216f4641f9f46122'
+          assert s['contract_revision']=='v054-authored-prose-r2'
+          assert s['market_blind'] is True
+          assert s['result_opened'] is False
+          assert s['target_market_opened'] is False
+          for venue in ('中山','阪神'):
+              p=root/'authored_decisions'/f'{venue}.json'
+              x=json.loads(p.read_text())
+              assert x['session_id']==s['session_id']
+              assert x['contract_revision']=='v054-authored-prose-r2'
+              assert len(x['decisions'])==12
+          assert not (root/'frozen').exists()
+          print(json.dumps({'status':'TURN2_SAVED','race_count':24,'freeze_created':False},ensure_ascii=False))
+          PY
+
+      - name: Commit TURN 2
+        run: |
+          set -euo pipefail
+          TARGET='horse-racing/jrdb/backtests/BTDAY-0099/20250308/v054'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET/incoming" "$TARGET/authored_decisions"
+          git commit -m 'RaceNote: save BTDAY-0099 v0.5.4 TURN 2'
+          git push origin HEAD:run/btday0099-v054-turn1
