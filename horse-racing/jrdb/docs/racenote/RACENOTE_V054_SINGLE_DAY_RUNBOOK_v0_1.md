@@ -1,6 +1,6 @@
 # RaceNote v0.5.4 Candidate — Single-Day Research Runbook
 
-Status: **CANDIDATE ONLY / NEW SESSIONS / NO PRODUCTION POINTER CHANGE**
+Status: **PROMOTED CURRENT / NEW v0.5.4 SESSIONS**
 Contract: `FORECAST_HUMAN_CONTEXT_READER_v0_5_4_CANDIDATE.md`
 Logic: `RaceNote-Human-Context-Reader-0.5.4-candidate`
 Revision: `v054-context-evidence-r1`
@@ -135,5 +135,4 @@ Compare against v0.5.3 only in explicitly labeled retrospective diagnostic
 or independent forward evaluation. Keep confidence A/B/C and BP2 unchanged
 until their own prospective research protocols authorize changes.
 
-This PR **does not** alter `racenote_forecast_logic_current.json` or
-the v0.5.3 operation pointer.
+The promoted current pointer references this v0.5.4 path. v0.5.3 remains available only for reproduction/audit of existing frozen assets.
