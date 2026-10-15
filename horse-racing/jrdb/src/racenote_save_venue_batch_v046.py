@@ -19,7 +19,7 @@ from racenote_freeze_prepared_forecast import contains_key
 
 LOGIC = "RaceNote-Human-Context-Reader-0.4.6-candidate"
 VERSION = "racenote-save-venue-batch-0.4.6"
-RRDB = "rrdb-recommendation-signals-v0.4"
+RRDB = "rrdb-recommendation-signals-v0.4"\nRRDB_V05 = "rrdb-recommendation-signals-v0.5"
 ROLES = {
     "UPGRADE_RECENT_FORM",
     "DOWNGRADE_APPARENT_FORM",
@@ -39,7 +39,7 @@ def canonical(value: Any) -> bytes:
     ).encode("utf-8")
 
 
-def load_clean(prep: Path) -> tuple[dict, dict, dict]:
+def load_clean(\n    prep: Path, *, expected_rrdb_contract: str = RRDB\n) -> tuple[dict, dict, dict]:
     handoff = json.loads((prep / "day_prep_handoff.json").read_text(encoding="utf-8"))
     raw_manifest = (prep / "reader_stripped_manifest.json").read_bytes()
     manifest = json.loads(raw_manifest)
@@ -88,7 +88,7 @@ def load_clean(prep: Path) -> tuple[dict, dict, dict]:
     return handoff, manifest, readers
 
 
-def validate_core(core: dict, reader: dict) -> None:
+def validate_core(\n    core: dict, reader: dict, *, rrdb_contract: str = RRDB\n) -> None:
     race = reader["race"]
     venue = str(race["venue"])
     race_no = int(race["race_no"])
