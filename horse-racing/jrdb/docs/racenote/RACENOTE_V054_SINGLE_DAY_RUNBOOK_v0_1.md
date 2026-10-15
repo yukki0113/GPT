@@ -147,6 +147,36 @@ v0.5.4 guard additionally rejects generic/internal newspaper prose.
 Validators cannot prove nuanced racing claims: inspect evidence fidelity
 and unsupported specificity on representative samples.
 
+## Authoring Quality Gate (new prospective Freeze; BTDAY-0104+)
+
+For new `v054-authored-prose-r2` sessions, T2 must author in **3–4 race
+chunks**, reading the Reader individually. Common helpers may manage transport
+and validation but may **not construct marks, Decision Core, boundary comparison,
+ranking reasons, or reader-facing prose**. Saving a complete venue JSON is
+still permitted; the chunk limit applies to authoring, not the venue filename.
+
+Before a new Freeze, `racenote_v054_single_day.py freeze` examines every
+authored Decision Core across the full day and writes
+`v054/authoring_quality_report.json`. The Freeze fails closed on generic
+horse cases, highly similar repeated passages, insufficient concrete
+challenger-vs-lowest-ordinary boundary comparison, insufficient ◎/○ comparison,
+or reader-facing prose lacking a concrete 2–3 sentence comparison.
+The report contains field-specific violations. Only a PASS can be frozen;
+the frozen report is separately SHA-sealed and verified.
+
+Mechanical keyword and similarity detection is a **necessary screen, not
+proof of horse-specific evidence truth or model provenance**. The execution
+owner must also inspect representative Reader-to-Core source alignment and
+authoring provenance before formal acceptance. Do not manufacture evidence
+tokens to pass the gate. Rare valid cases flagged by heuristics require
+revision **before Freeze**, not bypassing the guard.
+
+Legacy frozen assets remain immutable; this gate does not retroactively
+invalidate old seals. BTDAY-0103 is `BLIND_INTEGRITY_OK`,
+`AUTHORING_CONTRACT_INVALID`, and
+`EXCLUDE_FROM_FORMAL_EVALUATION`; its existing Freeze must not be rewritten.
+BTDAY-0102 remains a valid clean-blind sample subject to the existing audit.
+
 ## 5. Release gate
 
 Before formally adopting v0.5.4, run the source parser + as-of tests, check
