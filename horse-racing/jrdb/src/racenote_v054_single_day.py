@@ -98,16 +98,16 @@ def expected_session_id(session: dict[str, Any]) -> str:
 
 
 def _validator_reader(normal: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "race": normal["race"],
-        "horses": [
-            {
-                "basic": h["identity"],
-                "racereview": (h.get("other_context") or {}).get("racereview"),
-            }
-            for h in normal["horses"]
-        ],
-    }
+    horses = []
+    for h in normal["horses"]:
+        review = dict((h.get("other_context") or {}).get("racereview") or {})
+        review["recommendation"] = h.get("rrdb_v05") or {
+            "status": "UNAVAILABLE",
+            "contract_version": "rrdb-recommendation-signals-v0.5",
+            "signals": [],
+        }
+        horses.append({"basic": h["identity"], "racereview": review})
+    return {"race": normal["race"], "horses": horses}
 
 
 def expected_by_venue(session: dict[str, Any]) -> dict[str, list[int]]:
@@ -134,7 +134,10 @@ def init_session(
     if contract_revision != CONTRACT_REVISION:
         raise ValueError(f"unsupported v0.5.4 contract revision: {contract_revision}")
 
-    handoff, clean_manifest, readers = load_clean(prep_root)
+    handoff, clean_manifest, readers = load_clean(
+        prep_root,
+        expected_rrdb_contract="rrdb-recommendation-signals-v0.5",
+    )
     if handoff.get("main_sha") != base_main_sha:
         raise ValueError("base SHA must equal forecast_prep handoff main_sha")
     if handoff.get("market_blind") is not True or handoff.get("stripped_at_input_bind") is not True:
