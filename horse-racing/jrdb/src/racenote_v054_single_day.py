@@ -205,6 +205,7 @@ def init_session(
 
             race_extra = bundle_rows.get((row["venue"], row["race_no"]), {})
             kyis = {}
+            rrdbs = {}
             histories = {}
             for item in race_extra.get("horses", []):
                 number = int(item["horse_no"])
@@ -213,10 +214,19 @@ def init_session(
                 if number not in row["horse_nos"]:
                     raise ValueError(f"unknown horse in KYI evidence: {number}")
                 kyis[number] = item.get("kyi") or {}
-                histories[number] = item.get("source_race_keys") or []
+                if "rrdb_v05" in item:
+                    rrdbs[number] = item["rrdb_v05"]
+                historical = item.get("source_race_keys")
+                if historical is None:
+                    historical = [
+                        p.get("race_key_raw") for p in kyis[number].get("previous", [])
+                        if isinstance(p, dict) and p.get("race_key_raw")
+                    ]
+                histories[number] = historical
             candidate = transform(
                 source, binding, kyi_by_horse=kyis,
                 history_race_keys_by_horse=histories,
+                rrdb_by_horse=rrdbs,
                 target_date=session["target_date"], race_lap_reader=race_lap_reader,
             )
             path = staging / "reader" / row["file"]
