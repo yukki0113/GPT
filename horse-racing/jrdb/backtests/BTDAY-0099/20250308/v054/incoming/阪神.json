@@ -1,0 +1,866 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 1,
+    "race_model": "阪神1Rはダート1400m・未勝利。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      1,
+      12,
+      11,
+      13,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1リアルクィーンは直近ダート1400mで2着・IDM32。事前IDM32.0と追込の再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12メイショウバスクは直近ダート1400mで3着・IDM32。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13ハヤブサオヒメサマは直近ダート1400mで4着・IDM29。逃げから安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6スノーサイレンスは実戦歴が乏しく事前IDM25.1。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11ツインギは直近ダート1200mで5着・IDM34。先行から主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3エクラドネージュも直近芝1200mで7着・IDM33だが、固定境界の6スノーサイレンスを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎1はダ1400で直近2着、後方からでも直線で確実に差を詰める内容を評価。○12も同距離で3着を重ねており末脚の再現性は高いが、直近の伸びで1を上位に置く。▲11は1200mでも34を出しており距離延長で先行できれば前進余地。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        12,
+        11,
+        13,
+        6
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3エクラドネージュは直近芝1200mで7着・IDM33。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6スノーサイレンスまでを現条件の能力・直接適性・位置取り再現性で残し、3エクラドネージュは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 12,
+      "honmei_win_case": "1リアルクィーンは直近ダート1400mで2着・IDM32を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "12メイショウバスクは直近ダート1400mで3着・IDM32を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1リアルクィーンと12メイショウバスクを比較し、ダート1400mへの直接性、近走能力、勝ち切りの再現性で1リアルクィーンを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 2,
+    "race_model": "阪神2Rはダート1800m・未勝利。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      1,
+      12,
+      4,
+      10,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1ダイシンレアレアは直近ダート1800mで2着・IDM32。事前IDM30.0と差しの再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12ロードヴォイジャーは直近ダート1800mで3着・IDM28。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10アジュマンは直近芝2000mで10着・IDM31。差しから安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11ピエナアイルは直近ダート1800mで3着・IDM22。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4メイショウアイルは直近ダート1700mで4着・IDM36。差しから主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5バスキュラリティも直近ダート1600mで6着・IDM27だが、固定境界の11ピエナアイルを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎1はダ1800で2着、過去にも同距離で38を出しており条件適性が明確。○12は1800mで3着を重ね、後方からでも安定して脚を使える。▲4は1700mで36の走りがあり、距離替わりで差しが届く流れなら逆転候補。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        12,
+        4,
+        10,
+        11
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5バスキュラリティは直近ダート1600mで6着・IDM27。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "11ピエナアイルまでを現条件の能力・直接適性・位置取り再現性で残し、5バスキュラリティは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 12,
+      "honmei_win_case": "1ダイシンレアレアは直近ダート1800mで2着・IDM32を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "12ロードヴォイジャーは直近ダート1800mで3着・IDM28を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1ダイシンレアレアと12ロードヴォイジャーを比較し、ダート1800mへの直接性、近走能力、勝ち切りの再現性で1ダイシンレアレアを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 3,
+    "race_model": "阪神3Rはダート1200m・未勝利。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      15,
+      10,
+      9,
+      13,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "15ロードヴァルカンは直近ダート1200mで3着・IDM42。事前IDM42.0と差しの再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10フクノフィアーノンは直近ダート1200mで4着・IDM28。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13グランドネビュラは直近ダート1200mで7着・IDM30。追込から安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7テーオーテバルディは直近ダート1000mで6着・IDM34。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9メイショウサトノヒは直近ダート1200mで6着・IDM33。先行から主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "8ヴィオレンツァも直近芝1200mで8着・IDM30だが、固定境界の7テーオーテバルディを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎15はダ1200で直近3着、好位から立て直して伸びた内容を最上位評価。○10は過去に同距離2着で42を記録し、休み明けでも能力上限は高い。▲9は先行して33を出しており、流れに乗れれば粘り込みがある。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        10,
+        9,
+        13,
+        7
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8ヴィオレンツァは直近芝1200mで8着・IDM30。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "7テーオーテバルディまでを現条件の能力・直接適性・位置取り再現性で残し、8ヴィオレンツァは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 10,
+      "honmei_win_case": "15ロードヴァルカンは直近ダート1200mで3着・IDM42を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "10フクノフィアーノンは直近ダート1200mで4着・IDM28を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "15ロードヴァルカンと10フクノフィアーノンを比較し、ダート1200mへの直接性、近走能力、勝ち切りの再現性で15ロードヴァルカンを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 4,
+    "race_model": "阪神4Rはダート1800m・1勝クラス。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      7,
+      2,
+      10,
+      9,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7メイショウズイウンは直近ダート1800mで1着・IDM49。事前IDM47.0と先行の再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2アローオブライトは直近ダート1700mで1着・IDM44。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9スーパージョックは直近ダート1800mで1着・IDM42。逃げから安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1ニシノミチアキは直近ダート1800mで1着・IDM40。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10ソニックステップは直近ダート1700mで4着・IDM43。先行から主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6ポイントネモも直近ダート1800mで1着・IDM38だが、固定境界の1ニシノミチアキを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎7はダ1800勝ちが49相当で、この1勝クラスでも能力上位が明確。○2は1700m勝ちで早めに動いて押し切った持続力が強み。▲10は1800m勝ちの内容が良く、好位から自分のリズムで運べれば上位二頭を崩せる。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        2,
+        10,
+        9,
+        1
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6ポイントネモは直近ダート1800mで1着・IDM38。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1ニシノミチアキまでを現条件の能力・直接適性・位置取り再現性で残し、6ポイントネモは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 2,
+      "honmei_win_case": "7メイショウズイウンは直近ダート1800mで1着・IDM49を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "2アローオブライトは直近ダート1700mで1着・IDM44を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7メイショウズイウンと2アローオブライトを比較し、ダート1800mへの直接性、近走能力、勝ち切りの再現性で7メイショウズイウンを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 5,
+    "race_model": "阪神5Rは芝2000m・未勝利。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      3,
+      7,
+      12,
+      9,
+      13
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3ルージュスティーズは直近芝2000mで2着・IDM39。事前IDM39.0と差しの再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7クランドゥイユは直近芝1800mで7着・IDM37。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9エーグルドールは実戦歴が乏しく事前IDM29.9。脚質不定から安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13ショウナンバジャラは実戦歴が乏しく事前IDM31.2。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12グレートシールは直近芝2000mで6着・IDM29。逃げから主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "1リーティアコナルも直近芝2000mで6着・IDM28だが、固定境界の13ショウナンバジャラを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎3は芝2000で連続2着、差して安定して伸びる内容から勝ち切り最有力。○7は芝1800で37を出しており、距離延長でも末脚の持続に期待できる。▲12は初戦で逃げながら29を出しており、展開利を取れば前残りがある。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        7,
+        12,
+        9,
+        13
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1リーティアコナルは直近芝2000mで6着・IDM28。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "13ショウナンバジャラまでを現条件の能力・直接適性・位置取り再現性で残し、1リーティアコナルは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 7,
+      "honmei_win_case": "3ルージュスティーズは直近芝2000mで2着・IDM39を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "7クランドゥイユは直近芝1800mで7着・IDM37を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "3ルージュスティーズと7クランドゥイユを比較し、芝2000mへの直接性、近走能力、勝ち切りの再現性で3ルージュスティーズを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 6,
+    "race_model": "阪神6Rは芝2400m・未勝利。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      4,
+      1,
+      6,
+      10,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4メイショウアゴナスは直近芝2200mで2着・IDM41。事前IDM41.0と追込の再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1ジーティーダーリンは直近ダート1800mで3着・IDM37。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10マルカベントは直近芝1800mで5着・IDM34。先行から安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5サイモンノーブルは直近芝2000mで8着・IDM33。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6アスクデッドヒートは直近芝2000mで4着・IDM34。差しから主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2スリーラーケンも直近芝2000mで5着・IDM29だが、固定境界の5サイモンノーブルを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎4は芝2200で直近2着、後方から大外を回して差を詰めた末脚を2400mでも重視。○1は芝2000で33、ダートでも37を出しており先行力と基礎能力がある。▲6は2000mで4着と崩れず、距離延長で持続戦なら浮上余地。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        1,
+        6,
+        10,
+        5
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2スリーラーケンは直近芝2000mで5着・IDM29。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "5サイモンノーブルまでを現条件の能力・直接適性・位置取り再現性で残し、2スリーラーケンは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 1,
+      "honmei_win_case": "4メイショウアゴナスは直近芝2200mで2着・IDM41を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "1ジーティーダーリンは直近ダート1800mで3着・IDM37を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4メイショウアゴナスと1ジーティーダーリンを比較し、芝2400mへの直接性、近走能力、勝ち切りの再現性で4メイショウアゴナスを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 7,
+    "race_model": "阪神7Rはダート2000m・1勝クラス。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      8,
+      7,
+      6,
+      3,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8ペネトレイトゴーは直近ダート1800mで3着・IDM45。事前IDM47.0と追込の再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7ジュンラトゥールは直近ダート1800mで2着・IDM45。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3ブリオメンテは直近ダート1900mで6着・IDM40。追込から安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9ガルデルクラージュは直近ダート1800mで5着・IDM41。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6タケノシンセイは直近ダート1700mで4着・IDM45。追込から主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2ロードオールライトも直近芝2200mで12着・IDM41だが、固定境界の9ガルデルクラージュを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎8はダ1800で48の2着、後方からでも直線で確実に伸びる点が2000mでも強み。○7は1900mと1800mで連続2着、先行して早めに動ける安定感がある。▲6は1700mで連続好走しており、長く脚を使う形なら差し込み可能。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        7,
+        6,
+        3,
+        9
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2ロードオールライトは直近芝2200mで12着・IDM41。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "9ガルデルクラージュまでを現条件の能力・直接適性・位置取り再現性で残し、2ロードオールライトは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 7,
+      "honmei_win_case": "8ペネトレイトゴーは直近ダート1800mで3着・IDM45を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "7ジュンラトゥールは直近ダート1800mで2着・IDM45を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8ペネトレイトゴーと7ジュンラトゥールを比較し、ダート2000mへの直接性、近走能力、勝ち切りの再現性で8ペネトレイトゴーを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 8,
+    "race_model": "阪神8Rはダート1200m・1勝クラス。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      9,
+      1,
+      7,
+      5,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9カルパは直近ダート1400mで6着・IDM43。事前IDM45.0と追込の再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1エブライトは直近ダート1200mで3着・IDM44。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5ロードドミニオンは直近ダート1200mで4着・IDM43。差しから安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12イエスウィズキャンは直近ダート1400mで10着・IDM32。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7セールヴォランは直近ダート1200mで8着・IDM37。逃げから主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "3ノビルも直近ダート1200mで8着・IDM34だが、固定境界の12イエスウィズキャンを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎9はダ1400で47の2着があり、短縮でも末脚の質を最上位評価。○1は1200mで直近3着、差しながら位置を悪くしすぎない安定感が魅力。▲7は同距離2着実績があり、先行勢が止まらない流れなら前残りに注意。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        1,
+        7,
+        5,
+        12
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3ノビルは直近ダート1200mで8着・IDM34。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "12イエスウィズキャンまでを現条件の能力・直接適性・位置取り再現性で残し、3ノビルは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 1,
+      "honmei_win_case": "9カルパは直近ダート1400mで6着・IDM43を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "1エブライトは直近ダート1200mで3着・IDM44を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9カルパと1エブライトを比較し、ダート1200mへの直接性、近走能力、勝ち切りの再現性で9カルパを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 9,
+    "race_model": "阪神9Rは芝2000m・2勝クラス。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      4,
+      3,
+      10,
+      8,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4ブリタニアは直近芝2000mで2着・IDM55。事前IDM56.0と差しの再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3コルレオニスは直近芝1800mで1着・IDM53。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8キャリーハピネスは直近芝2600mで6着・IDM51。先行から安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2タイセイミッションは直近芝1600mで5着・IDM46。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10パンデアスカルは直近芝1800mで4着・IDM50。差しから主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5スターリングアップも直近芝2000mで5着・IDM46だが、固定境界の2タイセイミッションを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎4は芝2000で連続2着、55前後の能力を安定して出せる点で中心。○3は1800m勝ちからの延長でも先行持続力があり、展開利なら押し切れる。▲10は内をロスなく運んで伸びるタイプで、前二頭が競り合えば差し込みがある。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        3,
+        10,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5スターリングアップは直近芝2000mで5着・IDM46。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "2タイセイミッションまでを現条件の能力・直接適性・位置取り再現性で残し、5スターリングアップは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 3,
+      "honmei_win_case": "4ブリタニアは直近芝2000mで2着・IDM55を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "3コルレオニスは直近芝1800mで1着・IDM53を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4ブリタニアと3コルレオニスを比較し、芝2000mへの直接性、近走能力、勝ち切りの再現性で4ブリタニアを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 10,
+    "race_model": "阪神10Rはダート1200m・3勝クラス。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      15,
+      5,
+      1,
+      9,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "15タガノミストは直近ダート1200mで1着・IDM55。事前IDM55.1と先行の再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5カミーロは直近ダート1200mで2着・IDM55。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9ライジンは直近ダート1200mで11着・IDM51。差しから安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4ビルカールは直近ダート1200mで7着・IDM55。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1ルクスメテオールは直近ダート1200mで1着・IDM58。差しから主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "13ホワイトガーベラも直近ダート1200mで8着・IDM55だが、固定境界の4ビルカールを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎15はダ1200を直近勝ち、躓きながら好位を取り直して抜けた内容を高く評価。○5は同距離で2着、先行して安定して粘れるため逆転候補。▲1は1200mで58、60級の実績があり、差しの展開になれば一気に浮上する。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        5,
+        1,
+        9,
+        4
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13ホワイトガーベラは直近ダート1200mで8着・IDM55。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4ビルカールまでを現条件の能力・直接適性・位置取り再現性で残し、13ホワイトガーベラは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 5,
+      "honmei_win_case": "15タガノミストは直近ダート1200mで1着・IDM55を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "5カミーロは直近ダート1200mで2着・IDM55を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "15タガノミストと5カミーロを比較し、ダート1200mへの直接性、近走能力、勝ち切りの再現性で15タガノミストを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 11,
+    "race_model": "阪神11Rは芝1400m・オープン。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      13,
+      17,
+      5,
+      12,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "13ショウナンザナドゥは直近芝1600mで9着・IDM48。事前IDM47.0と先行の再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 17,
+        "case": "17スライビングロードは直近芝1600mで5着・IDM50。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12モズナナスターは直近芝1600mで9着・IDM50。先行から安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6ルージュラナキラは直近芝1400mで1着・IDM45。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5ボンヌソワレは直近芝1400mで2着・IDM48。先行から主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "2リリーフィールドも直近芝1600mで12着・IDM48だが、固定境界の6ルージュラナキラを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎13はマイル重賞級の54を持ち、1400mへの短縮でも先行して崩れにくい地力を評価。○17は直近マイル5着からでも50を出しており、差しに回って末脚を伸ばせる。▲5は1400mで連続2着、前受けから粘り込む別ルートがある。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        17,
+        5,
+        12,
+        6
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2リリーフィールドは直近芝1600mで12着・IDM48。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6ルージュラナキラまでを現条件の能力・直接適性・位置取り再現性で残し、2リリーフィールドは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 17,
+      "honmei_win_case": "13ショウナンザナドゥは直近芝1600mで9着・IDM48を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "17スライビングロードは直近芝1600mで5着・IDM50を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "13ショウナンザナドゥと17スライビングロードを比較し、芝1400mへの直接性、近走能力、勝ち切りの再現性で13ショウナンザナドゥを上位に置いた。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 12,
+    "race_model": "阪神12Rは芝1200m・2勝クラス。各馬の近走能力、同系条件の直接実績、位置取りの再現性、終いの持続を横比較して五頭を構成した。",
+    "marks": [
+      7,
+      1,
+      8,
+      11,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7レッドエヴァンスは直近芝1200mで1着・IDM53。事前IDM51.1と先行の再現性から勝ち切り候補とした。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1モンシュマンは直近芝1200mで2着・IDM51。現条件へのつながりが強く、展開ひとつで◎を逆転できる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11サトノプリエールは直近芝1200mで1着・IDM49。先行から安定して上位へ残る経路を評価した。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4バンドシェルは直近芝1400mで8着・IDM46。能力水準と位置取りを合わせて五頭圏に残した。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "8イツモニコニコは直近芝1200mで1着・IDM50。逃げから主線二頭と違う展開経路で頭まで届く余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10ルヴァンノワールも直近芝1200mで7着・IDM44だが、固定境界の4バンドシェルを現条件の直接性と再現性で明確に上回るまでは評価しなかった。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "◎7は芝1200を53で勝ち切っており、昇級でも反応の良さと先行力をそのまま評価。○1は同距離で直近2着、番手から渋太く伸びる安定感がある。▲8は逃げ切り勝ち直後で、単騎なら昇級でも残り目を警戒したい。",
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    },
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        1,
+        8,
+        11,
+        4
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10ルヴァンノワールは直近芝1200mで7着・IDM44。五頭外から別の位置取りで勝ち切る可能性を直接比較した。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4バンドシェルまでを現条件の能力・直接適性・位置取り再現性で残し、10ルヴァンノワールは境界を上回らないと判断した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 1,
+      "honmei_win_case": "7レッドエヴァンスは直近芝1200mで1着・IDM53を中心に、複勝安定性より今回条件での勝ち切り経路を優先して◎とした。",
+      "second_case": "1モンシュマンは直近芝1200mで2着・IDM51を根拠に、展開次第で◎を逆転できる二番手の勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7レッドエヴァンスと1モンシュマンを比較し、芝1200mへの直接性、近走能力、勝ち切りの再現性で7レッドエヴァンスを上位に置いた。"
+    }
+  }
+]
