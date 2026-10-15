@@ -63,15 +63,31 @@ def test_running_style_race_trends_are_asof_safe_and_target_independent():
             horse_no INTEGER,
             horse_id TEXT,
             frame_no INTEGER,
+            race_condition_code TEXT,
+            track_condition_code TEXT,
+            grade_code TEXT,
+            race_key BLOB,
+            horse_name TEXT,
+            sex_code TEXT,
+            age INTEGER,
             sire_name TEXT,
+            broodmare_sire_name TEXT,
+            sire_line_code TEXT,
+            broodmare_sire_line_code TEXT,
             jockey_name TEXT,
             running_style TEXT,
+            distance_aptitude TEXT,
+            uptrend TEXT,
+            training_index REAL,
             finish INTEGER
         )
         """
     )
     analysis.executemany(
-        "INSERT INTO fact_entry_result_lite VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "INSERT INTO fact_entry_result_lite "
+        "(year, race_date, venue_code, race_no, track_type, distance, horse_no, horse_id, "
+        "frame_no, sire_name, jockey_name, running_style, finish) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             (2024, "2024-04-01", "06", 1, "1", 1600, 1, None, 2, None, None, "1", 1),
             (2024, "2024-05-01", "06", 2, "1", 1600, 2, None, 4, None, None, "1", 4),

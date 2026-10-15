@@ -42,11 +42,12 @@ def validate_core(
     reader: dict,
     *,
     contract_revision: str | None = None,
+    rrdb_contract: str = "rrdb-recommendation-signals-v0.4",
 ) -> None:
     if contract_revision not in {None, CONTRACT_REVISION}:
         raise ValueError(f"unsupported v0.5.3 contract revision: {contract_revision}")
 
-    validate_v052_core(core, reader)
+    validate_v052_core(core, reader, rrdb_contract=rrdb_contract)
 
     race = reader["race"]
     venue = str(race["venue"])

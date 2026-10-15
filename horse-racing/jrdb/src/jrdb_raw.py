@@ -261,6 +261,12 @@ class Parser:
             "stable_evaluation_code": raw_field(record, 156, 1),
             "jockey_expected_top2_rate": number_field(record, 157, 4),
             "longshot_index": number_field(record, 161, 3),
+            # KYI hidden-value fields: raw, neutral capture only.
+            "reference_previous_raw": raw_field(record, 528, 2),
+            "reference_jockey_code": raw_field(record, 530, 5),
+            "ticket_index": number_field(record, 535, 3),
+            "ticket_mark": raw_field(record, 538, 1),
+            "longshot_type": raw_field(record, 540, 2),
             "hoof_code": raw_field(record, 164, 2),
             "heavy_track_fit_code": raw_field(record, 166, 1),
             "jrdb_class_code": raw_field(record, 167, 2),

@@ -25,7 +25,8 @@ def make_sqlite(path: Path) -> None:
             "CREATE TABLE fact_entry_result_lite ("
             "race_date TEXT, year INTEGER, venue_code TEXT, race_no INTEGER, "
             "track_type TEXT, distance INTEGER, race_key BLOB, horse_no INTEGER, "
-            "horse_id TEXT, frame_no INTEGER, sire_name TEXT, jockey_name TEXT, "
+            "horse_id TEXT, frame_no INTEGER, sire_name TEXT, broodmare_sire_name TEXT, "
+            "sire_line_code TEXT, broodmare_sire_line_code TEXT, jockey_name TEXT, "
             "finish INTEGER, final_win_odds REAL, final_win_popularity INTEGER)"
         )
         connection.commit()

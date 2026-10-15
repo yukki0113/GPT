@@ -1,0 +1,80 @@
+{
+  "version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
+  "status": "PROMOTED_CURRENT",
+  "phase": "BLIND_RESEARCH_ACTIVE",
+  "role": "FORECAST_BLIND_RESEARCH",
+  "contract_revision": "v054-context-evidence-r1",
+  "predecessor": {
+    "logic_version": "RaceNote-Human-Context-Reader-0.5.3-candidate",
+    "contract_revision": "v053-boundary-safety-r2",
+    "freeze_assets_immutable": true
+  },
+  "prediction_invariants": [
+    "PROTECTED_ORDINARY_FIVE",
+    "WIN_FIRST_NOT_PLACE_FIRST",
+    "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+    "FIXED_LOWEST_NON_ANCHOR_BOUNDARY",
+    "KEEP_DEFAULT",
+    "NO_FIXED_WEIGHT_SCORE",
+    "NO_TARGET_RESULT_OR_FINAL_MARKET_BEFORE_FREEZE"
+  ],
+  "evidence_policy": {
+    "hierarchy": "DATA_TRENDS_GT_RACEREVIEW_GTE_ABILITY",
+    "rrdb_contract_version": "rrdb-recommendation-signals-v0.5",
+    "rrdb_grade_status": "DISABLED",
+    "rrdb_signal_count_is_score": false,
+    "race_lap_reader": "src/jrdb_race_lap_reader.py",
+    "race_lap_usage": "HISTORICAL_SOURCE_RUN_CONTEXT_ONLY",
+    "race_lap_individual_sectionals": false,
+    "hidden_value_lane": "JRDB_HIDDEN_VALUE_CONTEXT",
+    "hidden_value_role": "CORROBORATION_AND_RECHECK_ONLY",
+    "hidden_value_additive_score": false,
+    "reference_run_policy": "PROVIDER_SELECTED_ATTENTION_HINT_NOT_GROUND_TRUTH"
+  },
+  "decision_policy": {
+    "ordinary_five_first": true,
+    "honmei_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+    "shot_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+    "external_challenger_max": 1,
+    "challenger_target": "LOWEST_RANKED_NON_ANCHOR_ORDINARY_HORSE",
+    "boundary_default": "KEEP_ORDINARY_FIVE",
+    "route_diversity": "TIE_BREAK_ONLY"
+  },
+  "reader_facing_prose": {
+    "source": "ALREADY_AUTHORED_DECISION_CORE_ONLY",
+    "second_ranking_pass": false,
+    "target_sentences": "2-3",
+    "target_japanese_chars": "100-150_WHEN_SUPPORTED",
+    "must_include": [
+      "HONMEI_DISTINCTIVE_REASON",
+      "HONMEI_VS_SECOND_COMPARISON"
+    ],
+    "optional": [
+      "SHOT_ALTERNATE_WIN_ROUTE"
+    ],
+    "forbidden_internal_terms": [
+      "sealed Reader",
+      "ordinary five",
+      "r2",
+      "boundary KEEP"
+    ],
+    "cross_race_template_guard": true
+  },
+  "confidence_policy": {
+    "status": "UNCHANGED_RESEARCH_LAYER",
+    "meaning": "PAIRWISE_CERTAINTY_HONMEI_OVER_SECOND",
+    "automatic_upgrade_from_signal_count": false
+  },
+  "betting_policy": {
+    "status": "SEPARATE_FROM_FORECAST_LOGIC",
+    "bp2_unchanged_by_v054_promotion": true
+  },
+  "operation": {
+    "single_day_entrypoint": "src/racenote_v054_single_day.py",
+    "kyi_bundle_entrypoint": "src/racenote_v054_kyi_bundle.py",
+    "decision_validator": "src/racenote_decision_core_v054.py",
+    "reader": "src/racenote_reader_v054.py",
+    "runbook": "docs/racenote/RACENOTE_V054_SINGLE_DAY_RUNBOOK_v0_1.md",
+    "contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_4_CANDIDATE.md"
+  }
+}
