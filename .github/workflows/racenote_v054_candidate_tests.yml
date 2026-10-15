@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - 'horse-racing/jrdb/src/racenote_*v054*.py'
+      - 'horse-racing/jrdb/src/racenote_save_venue_batch_v046.py'
+      - 'horse-racing/jrdb/src/racenote_decision_core_v052.py'
+      - 'horse-racing/jrdb/src/racenote_decision_core_v053.py'
       - 'horse-racing/jrdb/src/jrdb_raw.py'
       - 'horse-racing/jrdb/tests/test_racenote_v054*.py'
       - 'horse-racing/jrdb/docs/racenote/*v0_5_4*'
@@ -11,6 +14,9 @@ on:
   push:
     paths:
       - 'horse-racing/jrdb/src/racenote_*v054*.py'
+      - 'horse-racing/jrdb/src/racenote_save_venue_batch_v046.py'
+      - 'horse-racing/jrdb/src/racenote_decision_core_v052.py'
+      - 'horse-racing/jrdb/src/racenote_decision_core_v053.py'
       - 'horse-racing/jrdb/src/jrdb_raw.py'
       - 'horse-racing/jrdb/tests/test_racenote_v054*.py'
       - '.github/workflows/racenote_v054_candidate_tests.yml'
@@ -34,6 +40,9 @@ jobs:
         run: |
           python -m py_compile \
             src/jrdb_raw.py \
+            src/racenote_save_venue_batch_v046.py \
+            src/racenote_decision_core_v052.py \
+            src/racenote_decision_core_v053.py \
             src/racenote_reader_v054.py \
             src/racenote_decision_core_v054.py \
             src/racenote_v054_evidence.py \
