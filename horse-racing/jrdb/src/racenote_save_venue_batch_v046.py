@@ -39,7 +39,11 @@ def canonical(value: Any) -> bytes:
     ).encode("utf-8")
 
 
-def load_clean(prep: Path) -> tuple[dict, dict, dict]:
+def load_clean(
+    prep: Path,
+    *,
+    expected_rrdb_contract: str = RRDB,
+) -> tuple[dict, dict, dict]:
     handoff = json.loads((prep / "day_prep_handoff.json").read_text(encoding="utf-8"))
     raw_manifest = (prep / "reader_stripped_manifest.json").read_bytes()
     manifest = json.loads(raw_manifest)
@@ -57,8 +61,11 @@ def load_clean(prep: Path) -> tuple[dict, dict, dict]:
         or manifest.get("race_count") != handoff.get("race_count")
     ):
         raise ValueError("clean Reader manifest identity/count mismatch")
-    if handoff.get("rrdb_contract") != RRDB:
-        raise ValueError("RRDB contract mismatch")
+    if handoff.get("rrdb_contract") != expected_rrdb_contract:
+        raise ValueError(
+            f"RRDB contract mismatch: expected {expected_rrdb_contract}, "
+            f"got {handoff.get('rrdb_contract')}"
+        )
 
     readers = {}
     expected = manifest.get("reader_sha256") or {}
@@ -88,7 +95,12 @@ def load_clean(prep: Path) -> tuple[dict, dict, dict]:
     return handoff, manifest, readers
 
 
-def validate_core(core: dict, reader: dict) -> None:
+def validate_core(
+    core: dict,
+    reader: dict,
+    *,
+    rrdb_contract: str = RRDB,
+) -> None:
     race = reader["race"]
     venue = str(race["venue"])
     race_no = int(race["race_no"])
@@ -175,8 +187,10 @@ def validate_core(core: dict, reader: dict) -> None:
         if ref.get("decision_role") not in ROLES:
             raise ValueError(f"{venue}{race_no}R: invalid RRDB decision role")
         recommendation = (horses[n].get("racereview") or {}).get("recommendation") or {}
-        if recommendation.get("contract_version") != RRDB:
-            raise ValueError(f"{venue}{race_no}R: cited RRDB horse lacks v0.3 evidence")
+        if recommendation.get("contract_version") != rrdb_contract:
+            raise ValueError(
+                f"{venue}{race_no}R: cited RRDB horse lacks {rrdb_contract} evidence"
+            )
 
     prose = str(core.get("reader_facing_reason") or "").strip()
     if len(prose) < 45 or "\n" in prose:
