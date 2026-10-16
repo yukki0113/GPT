@@ -1,0 +1,12 @@
+{
+  "gate_version": "racenote-v054-authoring-quality-gate-0.2",
+  "status": "PASS",
+  "race_count": 24,
+  "race_specific_case_count": 24,
+  "generic_case_count": 0,
+  "template_similarity_violations": 0,
+  "boundary_specificity_pass": 24,
+  "ranking_comparison_specificity_pass": 24,
+  "reader_facing_reason_safety_pass": 24,
+  "violations": []
+}
