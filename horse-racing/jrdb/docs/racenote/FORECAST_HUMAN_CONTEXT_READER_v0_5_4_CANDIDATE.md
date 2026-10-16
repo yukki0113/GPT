@@ -75,6 +75,18 @@ If KYI extraction is not available or a field is blank, record missing coverage;
 
 **F — Confidence.** A/B/C remains *pairwise certainty that ◎ outranks ○*, not the predictability or completeness of the five-horse set. More signals do not mechanically mean A. Study A purification separately; do not silently replace existing A/B/C policy or betting BP2 in v0.5.4.
 
+### Authoring execution boundary
+
+The decision sequence above is unchanged by checkpointing or conversation-management tooling. For every race, the model must inspect the complete bound Reader before authoring the Decision Core.
+
+A neutral authoring workspace may be generated after the sealed Reader is created. Its role is navigation and restart support only. It may contain race identity, Reader path/SHA, runner identity, coverage state, and a compact neutral projection of already-bound pre-race facts such as IDM, suitability, training, KYI, running style, forecast margins and RRDB coverage.
+
+The workspace is **not sufficient evidence for authoring** and never replaces the bound Reader. It must not preselect or suggest marks, ordinary-five membership, external challenger, boundary horse, confidence, Decision Core text, or reader-facing prose. In particular, a deterministic helper must not generate a `boundary candidate` or any other field that narrows the model's comparison task before the Reader is inspected.
+
+Model-authored race chunks may be committed as recovery checkpoints. A progress file may record session/manifest binding, completed chunk paths/hashes and lifecycle status, but it must not manufacture or reinterpret prediction meaning. Restarting in another chat/thread resumes from those bound artifacts; it is not a new prediction attempt.
+
+This separation is deliberate: reduce conversation-state pressure without reducing evidence available to the prediction model.
+
 ## 7. Decision Core and short newspaper prose
 
 Record race model, win cases, ranking reason, one external-challenger case, fixed boundary decision, non-▲ mainline cases, and ▲ single-shot case exactly once. Keep trace links to source-run identities and evidence provenance, including whether RRDB/SRB/KYI influenced **attention only**, **corroborated**, **contradicted**, or **contributed to the final decision**.
