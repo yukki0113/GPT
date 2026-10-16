@@ -99,10 +99,63 @@ Only actual past-race source keys are looked up; SRB is not interpreted as a
 horse sectional. New KYI reference details provide attention hints rather than
 winning votes.
 
-## 4. Author, save, Freeze and verify
+## 4. Author, checkpoint, Freeze and verify
 
-For each race, the model authors a complete Decision Core (the same r2
-five-horse structure, fixed challenger boundary and no rank score).
+For each race, the model authors a complete Decision Core (the same five-horse
+structure, fixed challenger boundary and no rank score) after inspecting that
+race's complete bound Reader.
+
+Conversation state is not a source of truth. New v0.5.4 BTDAY runs keep
+authoring/restart state in the operation directory so a long card can resume
+without carrying all prior Reader content in chat context.
+
+### 4.1 Neutral authoring workspace
+
+After T1/session sealing, an optional neutral workspace index may be written
+under `v054/` (for example `authoring_workspace.json`). It is navigation
+support only.
+
+Allowed content:
+- selection/session identity and Reader manifest SHA;
+- race identity and bound Reader path/SHA;
+- runner number/name;
+- coverage state;
+- compact neutral projections of already-bound pre-race facts such as IDM,
+  suitability, training, KYI, running style, forecast margins and RRDB coverage.
+
+The workspace must explicitly state that it is **not sufficient evidence for
+authoring**. Before authoring each race, the model still reads the complete
+bound Reader.
+
+Forbidden workspace content:
+- marks or rank order;
+- ordinary-five membership;
+- external challenger or boundary horse/candidate;
+- confidence;
+- Decision Core text;
+- reader-facing prose;
+- deterministic recommendations or scores not already part of the Reader.
+
+A helper may compress transport, but it may not narrow the prediction problem.
+
+### 4.2 Model-authored chunks and progress checkpoints
+
+Author in 3–4 race chunks by default, reading each Reader individually. Smaller
+chunks are allowed when needed; the number is an operational recovery unit, not
+a prediction feature.
+
+Each completed model-authored chunk may be committed immediately. A
+`T2_PROGRESS.json`-style file may record only operation state, for example:
+- selection_id / session_id / Reader manifest binding;
+- chunk race range;
+- status such as `NOT_STARTED`, `AUTHORED`, `VALIDATED`;
+- authored chunk path and SHA;
+- next unresolved chunk.
+
+The progress file does not contain a marks plan and must not reconstruct
+Decision Core or prose. A new chat/thread resumes from the progress file plus
+the referenced bound Reader/chunks. Completed chunks are not re-authored merely
+because the conversation changed.
 `reader_facing_reason` is authored **per race by the model**, using the already-authored Decision Core; it is not produced by a formatter or fallback template. It is a reader-facing editorial note, not a checklist summary. The model chooses the most useful race-specific point and is not required to cover ◎/○/▲ in a fixed order, mention every mark, or use a fixed sentence count.
 
 **Do not put Decision Core or newspaper-prose construction code in a workflow.**
@@ -124,6 +177,8 @@ Each new-r2 core includes:
 
 `basis` is non-empty but has no mandatory member in r3. Do not publish internal terms such as `ordinary five`, `sealed Reader`, contract/plumbing labels, or trivial mark enumeration.
 
+### 4.3 Save / Freeze / verify
+
 ```bash
 python horse-racing/jrdb/src/racenote_v054_single_day.py save \
   --root <operation-root>/v054 \
@@ -137,15 +192,48 @@ python horse-racing/jrdb/src/racenote_v054_single_day.py verify \
 ```
 
 Do not open target results before `verify` succeeds. The existing
-0.5.3 r2 validator still protects the five/◎○/▲ boundary rules; the
-v0.5.4 guard additionally rejects generic/internal newspaper prose.
+boundary validator protects the five/◎○/▲ rules; the v0.5.4 guard additionally
+rejects generic/internal newspaper prose.
+
+### 4.4 Confidence Freeze and result-unlock barrier
+
+For a prospective BTDAY that participates in confidence research, completing
+the prediction Freeze is not yet permission to open results. Before result
+acquisition, persist the pre-result confidence artifact (currently
+`v054/confidence_pre_result.json`) bound to the frozen records SHA.
+
+It records the confidence assignment and any separately defined prospective
+A-purification/shadow fields while:
+- `result_consulted=false`;
+- `payout_consulted=false`;
+- `target_market_consulted=false`.
+
+The lifecycle is therefore:
+
+```text
+T1_SEALED
+  -> AUTHORING_IN_PROGRESS
+  -> AUTHORING_COMPLETE
+  -> FROZEN
+  -> FORMAT_AUDIT_COMPLETE
+  -> CONFIDENCE_FROZEN
+  -> RESULT_UNLOCKED
+```
+
+If confidence is not part of the active research contract, the explicit
+confidence stage may be marked `NOT_APPLICABLE`; it must not be silently
+skipped for a cohort that is evaluating confidence. Result opening is
+fail-closed until the applicable pre-result artifact exists.
+
+This is an operational transaction barrier, not a change to horse selection or
+A/B/C semantics. Existing historical Freezes are not rewritten to add missing
+confidence artifacts.
 Validators cannot prove nuanced racing claims: inspect evidence fidelity
 and unsupported specificity on representative samples.
 
 ## Authoring Quality Gate (new prospective Freeze; BTDAY-0104+)
 
-For new `v054-authored-prose-r2` sessions, T2 must author in **3–4 race
-chunks**, reading the Reader individually. Common helpers may manage transport
+For new `v054-authored-prose-r3` sessions, T2 authors in small recovery chunks (normally **3–4 races**), reading the complete Reader individually. Common helpers may manage transport
 and validation but may **not construct marks, Decision Core, boundary comparison,
 ranking reasons, or reader-facing prose**. Saving a complete venue JSON is
 still permitted; the chunk limit applies to authoring, not the venue filename.
