@@ -87,6 +87,28 @@ jobs:
                   "source_url": source_url,
               })
 
+          # Sparse member predictions are fully validated and joined by the
+          # existing public projection; never infer a missing horse name.
+          predictions = request.get("momotaro_predictions", [])
+          if not isinstance(predictions, list):
+              raise SystemExit("momotaro_predictions must be an array")
+          if predictions:
+              import csv
+              keys = ["date", "venue_code", "race_no", "horse_no", "horse_name",
+                      "member", "mark", "confidence", "tag", "review_horse", "comment"]
+              with Path("/tmp/skeleton-request/momotaro_predictions.csv").open(
+                  "w", encoding="utf-8", newline=""
+              ) as handle:
+                  writer = csv.DictWriter(handle, fieldnames=keys)
+                  writer.writeheader()
+                  for row in predictions:
+                      if not isinstance(row, dict):
+                          raise SystemExit("invalid Momotaro prediction item")
+                      output = {key: row.get(key, "") for key in keys}
+                      output["date"] = date
+                      output["review_horse"] = "1" if row.get("review_horse") is True else ""
+                      writer.writerow(output)
+
           normalized = {
               "date": date,
               "base_run_id": base_run_id,
@@ -206,7 +228,16 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf /tmp/momotaro-current
-          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             > /tmp/skeleton-request/momotaro-result.json
+          MOMOTARO_ARGS=()
+          if [ -f /tmp/skeleton-request/momotaro_predictions.csv ]; then
+            MOMOTARO_ARGS+=(--momotaro-csv /tmp/skeleton-request/momotaro_predictions.csv)
+          fi
+          python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             "${MOMOTARO_ARGS[@]}" > /tmp/skeleton-request/momotaro-result.json
+
+      - name: Attach validated authors to personal current
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/jrdb_newspaper_attach_momotaro.py             --personal-dir /tmp/personal-current             --public-dir /tmp/momotaro-current             > /tmp/skeleton-request/personal-attach-result.json
 
       - name: Validate outputs
         run: |
@@ -232,6 +263,22 @@ jobs:
               raise SystemExit("Momotaro audit is not PASS")
           if (momotaro_manifest.get("projection") or {}).get("kind") != "momotaro_newspaper_public":
               raise SystemExit("Momotaro projection marker missing")
+          req = json.loads(Path("/tmp/skeleton-request/request.json").read_text(encoding="utf-8"))
+          attach_result = json.loads(Path("/tmp/skeleton-request/personal-attach-result.json").read_text(encoding="utf-8"))
+          projection_result = json.loads(Path("/tmp/skeleton-request/momotaro-result.json").read_text(encoding="utf-8"))
+          merge_result = json.loads(Path("/tmp/skeleton-request/external-merge-result.json").read_text(encoding="utf-8"))
+          expected_rows = len(req.get("momotaro_predictions") or [])
+          if projection_result.get("momotaro_rows") != expected_rows:
+              raise SystemExit("public prediction count mismatch")
+          if attach_result.get("explicit_rows") != expected_rows:
+              raise SystemExit("personal prediction count mismatch")
+          if expected_rows:
+              if attach_result.get("ryota", 0) < 1 or attach_result.get("oji", 0) != 4:
+                  raise SystemExit("member count mismatch (Ryota/Oji)")
+          iluka = merge_result.get("keibailuka") or {}
+          if req.get("keibailuka_entries"):
+              if iluka.get("merged") != len(req["keibailuka_entries"]):
+                  raise SystemExit(f"Iluka exact-match coverage mismatch: {iluka}")
 
           allowed_status = {"jrdb_base", "jrdb_history", "keibailuka", "momotaro"}
           unexpected_status = sorted(set(momotaro_manifest.get("source_status") or {}) - allowed_status)
@@ -254,6 +301,10 @@ jobs:
               "race_count": len(personal_manifest.get("races") or []),
               "personal_status": "PASS",
               "momotaro_status": "PASS",
+              "momotaro_rows": attach_result["explicit_rows"],
+              "ryota": attach_result["ryota"],
+              "oji": attach_result["oji"],
+              "iluka": iluka.get("merged", 0),
           }
           Path("/tmp/skeleton-request/validation-summary.json").write_text(
               json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
@@ -366,4 +417,4 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           gh issue comment "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --body "JRDB Newspaper skeleton publish failed. Workflow run: $RUN_URL"
-          gh issue close "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --reason not_planned
+          gh issue close "$ISSUE_NUMBER"             --repo "${{ github.repository }}"             --reason 'not planned'
