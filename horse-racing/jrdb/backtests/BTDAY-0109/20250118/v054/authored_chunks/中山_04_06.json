@@ -1,0 +1,228 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "race_model": "中山障害2880m未勝利。平地IDMではなく障害の直近実績を優先する。8番は3000m2着、2910m3着など障害で安定し、4番は直近2910m2着、9番も2850～3000mで2、2、3着歴がある。",
+    "marks": [
+      8,
+      4,
+      9,
+      3,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番カイトレッドは障害3000m2着、2910m3着、2860m3着があり、逃げ先行で障害実績の再現性が最も高い。KYI12.4も今回の事前材料として上位。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番ミラクルジニアは12月28日の障害2910mで2着。飛越に課題を残しつつも長く脚を使い、KYI15.5で直近内容は強い。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番ノアフェイスは12月15日の中山障害2880mで3着。今回と同舞台の直接実績とKYI13.2があり、前で運べれば再現可能。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番クリノオデッセイは障害2850m5着があり、9月の3000mは12着でも障害経験を積んでいる。KYI0.7ながら未経験組より直接材料がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9番ザスリーサーティは障害2850m2着、2890m2着、3000m3着と複数条件で上位。直近中山2880m6着からKYI14.8で巻き返せば差し切りまである。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "外部1番は平地重賞級で芝2500mIDM72の能力を持つ一方、障害実戦歴がない。境界7番は障害2850m5着と3000m経験があり、飛越を含む今回2880mへの直接材料で1番を上回るため維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "8カイトレッドは障害で2・3着を重ねた安定感を中心視。直近2着の4ミラクルジニアが相手で、9ザスリーサーティも障害での好走歴が豊富。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        4,
+        9,
+        3,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番ヒートオンビートは平地で芝2500mIDM72まであるが障害実戦は初。高い基礎能力だけで障害適性を代替はできない。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1番の平地能力は突出するが、境界7番には障害2850m5着の直接経験がある。障害未経験リスクを重く見て7番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 4,
+      "honmei_win_case": "8番は障害3000m2着、2910m3着、2860m3着と条件を跨いで好走を反復。前で運べる点も勝ち切りに直結する。",
+      "second_case": "4番は直近障害2910m2着でKYI15.5。最新内容では8番を逆転できる水準。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4番は直近2910m2着とKYI15.5が魅力だが、8番は3000m2着や2910m3着など障害好走を反復。再現性を優先して8番を◎、4番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "race_model": "中山芝2000m未勝利。17番は同距離3着IDM38、4着IDM37で予測中盤・上がり0。5番は芝1800m2着IDM39と末脚評価、6番も1800m2着IDM40。2000mの直接性と終いの質を比較する。",
+    "marks": [
+      17,
+      5,
+      6,
+      2,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 17,
+        "case": "17番ウアーシュプルングは芝2000m3着IDM38、4着IDM37を連続。KYI15.5、調教69で予測中盤・上がり0と今回条件への直接材料が最も揃う。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番アロンズロッドは芝1800m2着IDM39でREPEATED_FASTEST_LAST3FとRESULT_UNDERRATES_TIME。KYI18.0、調教67で2000m延長でも末脚を生かせる。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番コスモトロイメルは芝1800m4着IDM36、5着IDM31で、RESULT_UNDERRATES_TIMEとPACE_POSITION_AGAINST_GOOD_RUN。RRDB FRONT_SURVIVE_GAP05も補強する。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番ウインスティーガは前走芝1800m2着IDM34、逃げ脚質でKYI11.3。2000m延長でも前で楽に運べれば残り目がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6番マイネルアウルムは前走芝1800m2着IDM40でメンバー上位、芝2000mでも5着IDM35。後方から流れが向けばまとめて差し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 1,
+      "reason": "外部1番は芝1800m7着IDM31ながらLOSS_WITH_FASTEST_LAST3FとRESULT_UNDERRATES_TIME、KYI11.8がある。一方、境界14番は直近芝1800m2着IDM34、KYI11.3で逃げ脚質。現在の直接実績で14番が1番を上回るため維持する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 2,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      }
+    ],
+    "reader_facing_reason": "17ウアーシュプルングは2000mで3、4着と安定し、今回の事前値も良好。5アロンズロッドの末脚が相手で、6マイネルアウルムの差し切りも警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        17,
+        5,
+        6,
+        2,
+        14
+      ],
+      "external_challenger_horse_no": 1,
+      "external_challenger_case": "1番トレサフィールは芝1800m7着IDM31でも最速上がり系の再評価材料があるが、2000mの直接実績はまだない。",
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1番の末脚材料は評価するが、境界14番は直近1800m2着IDM34でKYI11.3。現在の実績と前受け性能を取り14番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 17,
+      "second_horse_no": 5,
+      "honmei_win_case": "17番は芝2000m3着IDM38、4着IDM37を続け、KYI15.5・調教69。今回条件で勝ち切る再現性が最も高い。",
+      "second_case": "5番は芝1800m2着IDM39と最速上がり系の強み、KYI18.0を持ち、延長で逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番はIDM39とKYI18.0で末脚の上限が魅力だが、17番は2000mで3着IDM38・4着IDM37を実証。距離の直接性を優先して17番を◎、5番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "race_model": "中山ダート1200m1勝クラス。逃げ先行が有利で、1番は同距離2着IDM43・3着IDM41、5番も同距離3着IDM44・47。10番は直近2着IDM42とRRDBシグナルがあり、前後の両経路を残す。",
+    "marks": [
+      1,
+      5,
+      10,
+      3,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1番ソーニャシュニクはダ1200mで直近2着IDM43、3着IDM41。逃げ脚質で予測着差0、KYI18.2、調教67・状態71と条件が揃う。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番タイセイピューマはダ1200mで3着IDM44、5着IDM43、3着IDM47。KYI13.4で中山向き評価もあり差しから安定する。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番クインズポラリスはダ1150m3着IDM48、ダ1200m6着IDM43。KYI13.0でPACE_POSITION_AGAINST_GOOD_RUNもあり、差しで流れに乗れる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番クールソルはダ1200m1着IDM47、2着IDM45があり先行型。直近5着IDM42でも同距離能力は十分。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 10,
+      "case": "10番オセアエクスプレスは1月6日のダ1200m2着IDM42、KYI16.4。RRDB FRONT_SURVIVE_GAP05があり、差しから前が止まれば一気に差し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 14,
+      "reason": "外部14番はダ1300m1着IDM45がある一方、直近ダ1400mで11着IDM22、14着IDM37。境界9番はダ1200m1着IDM47・2着IDM45があり、今回距離での直接実績が14番を明確に上回るため維持する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 10,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "1ソーニャシュニクは1200mで2、3着を続け、逃げられる点も強み。5タイセイピューマが差しで追い、10オセアエクスプレスも直近2着から圏内。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        5,
+        10,
+        3,
+        9
+      ],
+      "external_challenger_horse_no": 14,
+      "external_challenger_case": "14番グランプリショットはダ1300m1着IDM45があるが、近2走ダ1400mで大きく崩れている。",
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "14番の1300m勝ちはあるが、境界9番は1200mでIDM47の勝利とIDM45の2着を持つ。今回距離の再現性で9番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 5,
+      "honmei_win_case": "1番は同距離2着IDM43・3着IDM41で予測着差0、KYI18.2。逃げて自ら勝ち筋を作れる。",
+      "second_case": "5番は同距離3着IDM44・47を含む安定実績があり、差しで1番を捕まえる能力を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番はIDM47まである安定した差し馬だが、1番は直近2着IDM43・3着IDM41に予測着差0、KYI18.2。位置取り優位を重視し1番を◎、5番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
