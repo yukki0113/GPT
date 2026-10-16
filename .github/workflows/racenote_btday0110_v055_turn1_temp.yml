@@ -1,0 +1,179 @@
+name: RaceNote BTDAY-0110 v0.5.5 TURN 1 augment
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0110.v055-turn1'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-btday-0110-v055-turn1
+  cancel-in-progress: false
+
+jobs:
+  augment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      JRDB_USER: ${{ secrets.JRDB_USER }}
+      JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+      PYTHONPATH: horse-racing/jrdb/src
+      TARGET: horse-racing/jrdb/backtests/BTDAY-0110/20251206
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r tools/data-storage/requirements.txt
+          python -m pip install gdown jsonschema pandas numpy
+      - name: Verify canonical base TURN 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$TARGET/forecast_prep/day_prep_handoff.json"
+          test -f "$TARGET/forecast_prep/reader_stripped_manifest.json"
+          test -d "$TARGET/forecast_prep/reader"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['TARGET'])
+          h=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text())
+          o=json.loads((root/'operation_handoff.json').read_text())
+          assert h['selection_id']=='BTDAY-0110'
+          assert h['target_date']=='2025-12-06'
+          assert h['market_blind'] is True
+          assert h['stripped_at_input_bind'] is True
+          assert h['result_opened'] is False
+          assert h['target_market_opened'] is False
+          assert o['source_backend']=='historical_warehouse'
+          assert o['status']=='READY_FOR_V052_AUTHORING'
+          PY
+      - name: Fetch SHA-pinned KYI 2025
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v055-historical "$TARGET/v054_inputs" "$TARGET/source_audit"
+          python tools/gpt_io/public_drive/fetch.py \
+            --manifest horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json \
+            --artifact golden_04 \
+            --output-root /tmp/v055-historical \
+            --receipt "$TARGET/source_audit/v055_kyi_public_drive_receipt.json"
+      - name: Build canonical RaceLap snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/v055-racelap-raw /tmp/v055-racelap
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2024 --to-year 2025 \
+            --kinds SED \
+            --output-dir /tmp/v055-racelap-raw \
+            --sleep-seconds 0.2 \
+            --max-retries 5 \
+            --retry-backoff-seconds 2
+          python horse-racing/jrdb/src/jrdb_race_lap_dataset.py \
+            /tmp/v055-racelap-raw/SED/SED_2024.zip \
+            /tmp/v055-racelap-raw/SED/SED_2025.zip \
+            --output /tmp/v055-racelap/race_lap.parquet \
+            --audit /tmp/v055-racelap/race_lap.audit.json \
+            --replace
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          from jrdb_race_lap_reader import RaceLapReader
+          p=Path('/tmp/v055-racelap/race_lap.parquet')
+          reader=RaceLapReader.from_parquet(p)
+          h=hashlib.sha256()
+          with p.open('rb') as f:
+              for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+          receipt={
+            'status':'PASS',
+            'artifact_type':'rrdb_race_lap_current_equivalent',
+            'source_years':[2024,2025],
+            'builder':'src/jrdb_race_lap_dataset.py',
+            'reader':'src/jrdb_race_lap_reader.py',
+            'sha256':h.hexdigest(),
+            'reader_metadata':reader.store.metadata(),
+            'target_date':'2025-12-06',
+            'policy':'historical source-run context only; consumer enforces race_date < target_date'
+          }
+          Path('horse-racing/jrdb/backtests/BTDAY-0110/20251206/source_audit/race_lap_v055_receipt.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+      - name: Build KYI supplemental evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v054_kyi_bundle.py \
+            --prep-root "$TARGET/forecast_prep" \
+            --kyi-archive /tmp/v055-historical/raw/KYI/KYI_2025.zip \
+            --output "$TARGET/v054_inputs/kyi_bundle.json"
+      - name: Initialize sealed v0.5.5 Reader
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE_SHA="$(python - <<'PY'
+          import json, os
+          from pathlib import Path
+          h=json.loads((Path(os.environ['TARGET'])/'forecast_prep/day_prep_handoff.json').read_text())
+          print(h['main_sha'])
+          PY
+          )"
+          python horse-racing/jrdb/src/racenote_v055_single_day.py init \
+            --prep-root "$TARGET/forecast_prep" \
+            --root "$TARGET/v055" \
+            --base-main-sha "$BASE_SHA" \
+            --evidence-bundle "$TARGET/v054_inputs/kyi_bundle.json" \
+            --race-lap-parquet /tmp/v055-racelap/race_lap.parquet
+      - name: Validate v0.5.5 TURN 1 handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['TARGET'])
+          s=json.loads((root/'v055/session.json').read_text())
+          m=json.loads((root/'v055/reader_manifest.json').read_text())
+          h=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text())
+          assert s['status']=='SESSION_SEALED'
+          assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.5-candidate'
+          assert s['contract_revision']=='v055-win-confidence-lean-r1'
+          assert s['selection_id']=='BTDAY-0110'
+          assert s['target_date']=='2025-12-06'
+          assert s['market_blind'] is True
+          assert s['result_opened'] is False
+          assert s['target_market_opened'] is False
+          assert s['base_main_sha']==h['main_sha']
+          assert m['logic_version']=='RaceNote-Human-Context-Reader-0.5.5-candidate'
+          assert len(m['entries'])==len(s['race_roster'])
+          assert s.get('evidence_bundle_sha256')
+          assert s.get('race_lap_parquet_sha256')
+          print(json.dumps({
+            'status':'READY_FOR_V055_AUTHORING',
+            'selection_id':s['selection_id'],
+            'target_date':s['target_date'],
+            'race_count':len(s['race_roster']),
+            'venues':s['expected_venues'],
+            'session_id':s['session_id'],
+            'result_opened':s['result_opened'],
+            'target_market_opened':s['target_market_opened']
+          },ensure_ascii=False))
+          PY
+      - name: Commit immutable v0.5.5 TURN 1
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET/v054_inputs/kyi_bundle.json" "$TARGET/v055" "$TARGET/source_audit/v055_kyi_public_drive_receipt.json" "$TARGET/source_audit/race_lap_v055_receipt.json"
+          git commit -m "RaceNote: stage BTDAY-0110 v0.5.5 TURN 1"
+          git pull --rebase origin main
+          git push origin HEAD:main
