@@ -95,8 +95,20 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/racelap-raw /tmp/racelap
-          python horse-racing/jrdb/src/fetch_jrdb_history.py             --from-year 2024 --to-year 2026 --kinds SED             --output-dir /tmp/racelap-raw --sleep-seconds 0.2             --max-retries 5 --retry-backoff-seconds 2
-          python horse-racing/jrdb/src/jrdb_race_lap_dataset.py             /tmp/racelap-raw/SED/SED_2024.zip             /tmp/racelap-raw/SED/SED_2025.zip             /tmp/racelap-raw/SED/SED_2026.zip             --output /tmp/racelap/race_lap.parquet             --audit /tmp/racelap/race_lap.audit.json --replace
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2024 --to-year 2025 --kinds SED \
+            --output-dir /tmp/racelap-raw --sleep-seconds 0.2 \
+            --max-retries 5 --retry-backoff-seconds 2
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-date 20260104 --to-date 20261012 --kinds SED \
+            --output-dir /tmp/racelap-raw --sleep-seconds 0.05 \
+            --max-retries 3 --retry-backoff-seconds 1 --continue-on-error
+          mapfile -t SED_INPUTS < <(find /tmp/racelap-raw/SED -maxdepth 1 -type f -name 'SED*.zip' | sort)
+          test "${#SED_INPUTS[@]}" -gt 2
+          python horse-racing/jrdb/src/jrdb_race_lap_dataset.py \
+            "${SED_INPUTS[@]}" \
+            --output /tmp/racelap/race_lap.parquet \
+            --audit /tmp/racelap/race_lap.audit.json --replace
       - name: Build PACI market-blind forecast prep
         shell: bash
         run: |
