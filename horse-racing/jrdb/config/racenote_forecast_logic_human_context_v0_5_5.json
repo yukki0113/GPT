@@ -3,7 +3,7 @@
   "status": "CURRENT_CANDIDATE",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "role": "FORECAST_BLIND_RESEARCH",
-  "contract_revision": "v055-win-confidence-lean-reader-prose-r3",
+  "contract_revision": "v055-prediction-freeze-confidence-review-r4",
   "predecessor": {
     "logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
     "freeze_assets_immutable": true
@@ -45,15 +45,20 @@
   },
   "confidence_policy": {
     "meaning": "HONMEI_WIN_CONFIDENCE",
+    "operational_question": "HOW_STRONGLY_TO_SUPPORT_FROZEN_HONMEI_AS_WINNER_AND_SINGLE_WIN_AXIS",
     "grades": {
-      "A": "HIGH_WIN_CONFIDENCE",
-      "B": "MEDIUM_WIN_CONFIDENCE",
-      "C": "LOW_WIN_CONFIDENCE"
+      "A": "ACTIVE_WIN_SUPPORT",
+      "B": "PREFERRED_BUT_CONTESTED",
+      "C": "LOW_WIN_CONVICTION"
     },
+    "a_requires_near_certainty": false,
+    "a_quota_or_target_rate": false,
     "pairwise_honmei_over_second": "DIAGNOSTIC_ONLY",
     "fixed_idm_gap_gate": false,
     "signal_count_gate": false,
-    "separate_pre_result_confidence_artifact": false
+    "separate_pre_result_confidence_artifact": true,
+    "confidence_review_after_prediction_freeze": true,
+    "draft_reconsideration_before_confidence_freeze": true
   },
   "persistence_policy": {
     "decision_core": "LEAN",
@@ -62,7 +67,6 @@
       "candidate_selection",
       "honmei_win.evidence",
       "honmei_win.main_risk",
-      "honmei_win.confidence",
       "shot_case",
       "rrdb_refs",
       "reader_facing_reason"
@@ -74,7 +78,8 @@
       "ranking_reason",
       "selection_mode_constants",
       "reader_facing_reason_authorship",
-      "prediction_time_a5_a7"
+      "prediction_time_a5_a7",
+      "prediction_time_confidence"
     ],
     "recompute_later": [
       "pre_idm_gap",
@@ -120,6 +125,9 @@
     "authoring_quality_guard": "src/racenote_v055_authoring_quality.py",
     "reader": "src/racenote_reader_v055.py",
     "runbook": "docs/racenote/RACENOTE_V055_SINGLE_DAY_RUNBOOK_v0_1.md",
-    "contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_5_CANDIDATE.md"
+    "contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_5_CANDIDATE.md",
+    "prediction_freeze": "<output-root>/v055/frozen",
+    "confidence_draft": "<output-root>/v055/confidence_review.json",
+    "confidence_freeze": "<output-root>/v055/confidence_frozen"
   }
 }

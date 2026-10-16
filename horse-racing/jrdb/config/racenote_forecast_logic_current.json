@@ -12,7 +12,7 @@
     "contract_revision": "v054-authored-prose-r3",
     "status": "FROZEN_REPRODUCTION_PREDECESSOR"
   },
-  "change_reason": "RaceNote v0.5.5 r3 keeps r2 prediction/Reader semantics and rewrites reader-facing prose as editorial focus rather than Decision Core compression. The prose validator remains an accident guard and no longer imposes the former 35-character floor.",
+  "change_reason": "RaceNote v0.5.5 r4 separates immutable prediction Freeze from pre-result confidence review. A/B/C no longer lives in the Decision Core: the frozen ◎ is reviewed afterward as a win/single-win axis, may be reconsidered while results/market remain closed, and is frozen separately before result unlock.",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
   "calibration_protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
@@ -40,7 +40,7 @@
   "prospective_research_candidate": {
     "status": "CURRENT_FOR_NEW_CLEAN_BLIND_RUNS",
     "logic_version": "RaceNote-Human-Context-Reader-0.5.5-candidate",
-    "contract_revision": "v055-win-confidence-lean-reader-prose-r3",
+    "contract_revision": "v055-prediction-freeze-confidence-review-r4",
     "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_5_CANDIDATE.md",
     "logic_config": "config/racenote_forecast_logic_human_context_v0_5_5.json",
     "execution_contract": "RACENOTE_V055_SINGLE_DAY",
@@ -51,7 +51,7 @@
     "kyi_bundle_entrypoint": "src/racenote_v054_kyi_bundle.py",
     "single_day_entrypoint": "src/racenote_v055_single_day.py",
     "predecessor_logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
-    "design_note": "v0.5.5 r3 keeps the r2 Lean Reader, horse-selection and ◎ win-confidence semantics. Reader-facing prose is no longer treated as a Decision Core summary: after judgment, the model writes the single race-specific point most useful to the reader, without mandatory mark enumeration, sentence count or length target.",
+    "design_note": "v0.5.5 r4 keeps the r2 Lean Reader, r3 editorial short-comment policy and horse-selection semantics, but separates prediction Freeze from pre-result confidence review. A/B/C is assigned only after marks are immutable, may be reconsidered before confidence Freeze, and is required to Freeze before result unlock.",
     "same_day_ab": false,
     "production_pointer_unchanged": false,
     "freeze_artifact": "<output-root>/v055/frozen/records.json",
@@ -65,13 +65,15 @@
         "marks",
         "external_challenger",
         "boundary_candidate",
-        "confidence",
         "decision_core",
         "reader_facing_reason"
       ],
       "model_authored_chunk_checkpoints": true,
       "progress_state_role": "OPERATION_STATE_ONLY",
-      "confidence_freeze": "EMBEDDED_IN_DECISION_CORE_BEFORE_RESULT_UNLOCK"
-    }
+      "prediction_freeze": "BEFORE_CONFIDENCE_REVIEW",
+      "confidence_review": "SEPARATE_PRE_RESULT_RECONSIDERABLE_DRAFT",
+      "confidence_freeze": "REQUIRED_BEFORE_RESULT_UNLOCK"
+    },
+    "confidence_artifact": "<output-root>/v055/confidence_frozen/records.json"
   }
 }

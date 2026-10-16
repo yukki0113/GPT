@@ -43,7 +43,6 @@ def core():
         "honmei_win": {
             "evidence": "1番は東京ダート1400mを連勝し直近IDM58、先行して自ら勝ち筋を作れる。",
             "main_risk": "昇級戦で相手強化となり、前半で競られると末脚を失う可能性がある。",
-            "confidence": "A",
         },
         "shot_case": {
             "case": "3番は前走1600mで最速上がりを使っており、ハイペースなら差し切る別経路がある。"
@@ -57,9 +56,9 @@ def test_valid_lean_core():
     validate_core(core(), reader())
 
 
-def test_confidence_is_embedded_and_pairwise_fields_are_not_required():
+def test_r4_confidence_is_not_embedded_and_pairwise_fields_are_not_required():
     c = core()
-    assert c["honmei_win"]["confidence"] == "A"
+    assert "confidence" not in c["honmei_win"]
     assert "ranking_reason" not in c
     assert "second_case" not in c
     assert "race_model" not in c
@@ -219,4 +218,23 @@ def test_short_single_sentence_reader_note_is_valid_editorial_prose():
 
 
 def test_previous_r2_contract_remains_verifiable():
-    validate_core(core(), reader(), contract_revision="v055-win-confidence-lean-reader-r2")
+    c = core()
+    c["honmei_win"]["confidence"] = "A"
+    validate_core(c, reader(), contract_revision="v055-win-confidence-lean-reader-r2")
+
+
+def test_previous_r3_contract_remains_verifiable():
+    c = core()
+    c["honmei_win"]["confidence"] = "B"
+    validate_core(c, reader(), contract_revision="v055-win-confidence-lean-reader-prose-r3")
+
+
+def test_r4_rejects_embedded_confidence():
+    c = core()
+    c["honmei_win"]["confidence"] = "A"
+    try:
+        validate_core(c, reader())
+    except ValueError as exc:
+        assert "honmei_win fields mismatch" in str(exc)
+    else:
+        raise AssertionError("r4 must keep confidence outside Decision Core")

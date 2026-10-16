@@ -31,6 +31,9 @@ SESSION_VERSION = "racenote-v055-single-day-session-0.1"
 MANIFEST_VERSION = "racenote-v055-single-day-reader-manifest-0.1"
 AUTHORED_VERSION = "racenote-v055-single-day-authored-venue-0.1"
 FROZEN_VERSION = "racenote-v055-single-day-frozen-0.1"
+CONFIDENCE_REVIEW_VERSION = "racenote-v055-confidence-review-0.1"
+CONFIDENCE_FROZEN_VERSION = "racenote-v055-confidence-frozen-0.1"
+CONFIDENCE_MEANING = "HONMEI_WIN_CONFIDENCE"
 DEFAULT_POLICY = (
     Path(__file__).resolve().parents[1]
     / "docs" / "racenote" / "research-work" / "results" / "stage_c"
@@ -496,7 +499,11 @@ def build_freeze(root: Path) -> dict[str, Any]:
 
     handoff = {
         "schema_version": FROZEN_VERSION,
-        "status": "FROZEN_CLEAN_BLIND",
+        "status": (
+            "PREDICTION_FROZEN_CLEAN_BLIND"
+            if session.get("contract_revision") == CONTRACT_REVISION
+            else "FROZEN_CLEAN_BLIND"
+        ),
         "validator_status": "PASS",
         "validator": "racenote_decision_core_v055.validate_core + single-day session integrity",
         "session_id": session["session_id"],
@@ -512,8 +519,9 @@ def build_freeze(root: Path) -> dict[str, Any]:
         "market_blind": True,
         "target_market_opened": False,
         "result_opened": False,
-        "confidence_frozen": True,
-        "confidence_meaning": "HONMEI_WIN_CONFIDENCE",
+        "confidence_frozen": session.get("contract_revision") != CONTRACT_REVISION,
+        "confidence_meaning": CONFIDENCE_MEANING,
+        **({"confidence_pending": True} if session.get("contract_revision") == CONTRACT_REVISION else {}),
         "records_sha256": digest(encoded(records) + b"\n"),
         **({"authoring_quality_report_sha256": digest(encoded(quality_report) + b"\n")}
            if quality_report is not None else {}),
@@ -541,9 +549,12 @@ def verify_freeze(root: Path) -> dict[str, Any]:
     handoff = read_json(root / "frozen" / "day_handoff.json")
     raw = (root / "frozen" / "records.json").read_bytes()
     records = json.loads(raw)
+    is_r4 = session.get("contract_revision") == CONTRACT_REVISION
+    expected_status = "PREDICTION_FROZEN_CLEAN_BLIND" if is_r4 else "FROZEN_CLEAN_BLIND"
+    expected_confidence_frozen = False if is_r4 else True
     if (
         handoff.get("schema_version") != FROZEN_VERSION
-        or handoff.get("status") != "FROZEN_CLEAN_BLIND"
+        or handoff.get("status") != expected_status
         or handoff.get("validator_status") != "PASS"
         or handoff.get("session_id") != session["session_id"]
         or handoff.get("selection_id") != session["selection_id"]
@@ -558,8 +569,9 @@ def verify_freeze(root: Path) -> dict[str, Any]:
         or handoff.get("market_blind") is not True
         or handoff.get("target_market_opened") is not False
         or handoff.get("result_opened") is not False
-        or handoff.get("confidence_frozen") is not True
-        or handoff.get("confidence_meaning") != "HONMEI_WIN_CONFIDENCE"
+        or handoff.get("confidence_frozen") is not expected_confidence_frozen
+        or handoff.get("confidence_meaning") != CONFIDENCE_MEANING
+        or (is_r4 and handoff.get("confidence_pending") is not True)
         or handoff.get("records_sha256") != digest(raw)
     ):
         raise ValueError("single-day Freeze seal invalid")
@@ -598,6 +610,195 @@ def verify_freeze(root: Path) -> dict[str, Any]:
     return handoff
 
 
+
+def _prediction_records(root: Path) -> tuple[dict[str, Any], list[dict[str, Any]], str]:
+    handoff = verify_freeze(root)
+    if handoff.get("status") != "PREDICTION_FROZEN_CLEAN_BLIND":
+        raise ValueError("separate confidence review is available only for r4 prediction Freeze")
+    raw = (root / "frozen" / "records.json").read_bytes()
+    records = json.loads(raw)
+    return handoff, records, digest(raw)
+
+
+def save_confidence_review(root: Path, confidence_path: Path) -> dict[str, Any]:
+    session, _, _ = load_session(root)
+    if session.get("contract_revision") != CONTRACT_REVISION:
+        raise ValueError("separate confidence review is only valid for current r4 sessions")
+    if (root / "confidence_frozen").exists():
+        raise FileExistsError("confidence is already frozen")
+    prediction_handoff, prediction_records, prediction_sha = _prediction_records(root)
+    incoming = (root / "incoming").resolve()
+    path = confidence_path.resolve()
+    if path.parent != incoming or path.suffix != ".json":
+        raise ValueError("confidence input must be single-day incoming/<name>.json")
+    items = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(items, list):
+        raise ValueError("confidence review input must be a JSON array")
+
+    expected = {(x["venue"], int(x["race_no"])): x for x in prediction_records}
+    seen = set()
+    reviewed = []
+    for item in items:
+        if not isinstance(item, dict) or set(item) != {"venue", "race_no", "honmei", "confidence", "reason"}:
+            raise ValueError("confidence review fields mismatch")
+        key = (str(item["venue"]), int(item["race_no"]))
+        if key not in expected or key in seen:
+            raise ValueError(f"invalid or duplicate confidence race: {key}")
+        seen.add(key)
+        honmei = int(item["honmei"])
+        frozen_honmei = int(expected[key]["decision_core"]["marks"][0])
+        if honmei != frozen_honmei:
+            raise ValueError(f"{key}: confidence honmei must equal frozen ◎ {frozen_honmei}")
+        grade = str(item["confidence"])
+        if grade not in {"A", "B", "C"}:
+            raise ValueError(f"{key}: confidence must be A/B/C")
+        reason = str(item["reason"] or "").strip()
+        if len(reason) < 12:
+            raise ValueError(f"{key}: confidence reason too short")
+        reviewed.append({
+            "venue": key[0],
+            "race_no": key[1],
+            "honmei": honmei,
+            "confidence": grade,
+            "reason": reason,
+        })
+    if seen != set(expected):
+        raise ValueError("confidence review must cover every frozen prediction race")
+    reviewed.sort(key=lambda x: (x["venue"], x["race_no"]))
+    payload = {
+        "schema_version": CONFIDENCE_REVIEW_VERSION,
+        "status": "CONFIDENCE_REVIEW_DRAFT",
+        "session_id": session["session_id"],
+        "selection_id": session["selection_id"],
+        "target_date": session["target_date"],
+        "logic_version": LOGIC,
+        "contract_revision": CONTRACT_REVISION,
+        "confidence_meaning": CONFIDENCE_MEANING,
+        "prediction_records_sha256": prediction_sha,
+        "result_opened": False,
+        "target_market_opened": False,
+        "records": reviewed,
+    }
+    # Draft is intentionally replaceable before confidence Freeze.
+    write_json(root / "confidence_review.json", payload)
+    return payload
+
+
+def freeze_confidence(root: Path) -> dict[str, Any]:
+    session, _, _ = load_session(root)
+    if session.get("contract_revision") != CONTRACT_REVISION:
+        raise ValueError("separate confidence Freeze is only valid for current r4 sessions")
+    if (root / "confidence_frozen").exists():
+        raise FileExistsError("immutable confidence Freeze already exists")
+    prediction_handoff, prediction_records, prediction_sha = _prediction_records(root)
+    review = read_json(root / "confidence_review.json")
+    if (
+        review.get("schema_version") != CONFIDENCE_REVIEW_VERSION
+        or review.get("status") != "CONFIDENCE_REVIEW_DRAFT"
+        or review.get("session_id") != session["session_id"]
+        or review.get("selection_id") != session["selection_id"]
+        or review.get("target_date") != session["target_date"]
+        or review.get("logic_version") != LOGIC
+        or review.get("contract_revision") != CONTRACT_REVISION
+        or review.get("confidence_meaning") != CONFIDENCE_MEANING
+        or review.get("prediction_records_sha256") != prediction_sha
+        or review.get("result_opened") is not False
+        or review.get("target_market_opened") is not False
+    ):
+        raise ValueError("confidence review binding invalid")
+    expected = {
+        (x["venue"], int(x["race_no"])): int(x["decision_core"]["marks"][0])
+        for x in prediction_records
+    }
+    records = review.get("records")
+    if not isinstance(records, list) or len(records) != len(expected):
+        raise ValueError("confidence review race count mismatch")
+    seen = set()
+    for item in records:
+        key = (str(item.get("venue")), int(item.get("race_no")))
+        if key not in expected or key in seen or int(item.get("honmei")) != expected[key]:
+            raise ValueError(f"confidence review binding mismatch: {key}")
+        if item.get("confidence") not in {"A", "B", "C"} or len(str(item.get("reason") or "").strip()) < 12:
+            raise ValueError(f"invalid confidence review: {key}")
+        seen.add(key)
+    if seen != set(expected):
+        raise ValueError("confidence review coverage mismatch")
+
+    frozen_records = [dict(x) for x in records]
+    handoff = {
+        "schema_version": CONFIDENCE_FROZEN_VERSION,
+        "status": "CONFIDENCE_FROZEN_CLEAN_BLIND",
+        "session_id": session["session_id"],
+        "selection_id": session["selection_id"],
+        "target_date": session["target_date"],
+        "logic_version": LOGIC,
+        "contract_revision": CONTRACT_REVISION,
+        "confidence_meaning": CONFIDENCE_MEANING,
+        "confidence_frozen": True,
+        "prediction_freeze_status": prediction_handoff["status"],
+        "prediction_records_sha256": prediction_sha,
+        "record_count": len(frozen_records),
+        "confidence_records_sha256": digest(encoded(frozen_records) + b"\n"),
+        "market_blind": True,
+        "target_market_opened": False,
+        "result_opened": False,
+    }
+    frozen = root / "confidence_frozen"
+    with tempfile.TemporaryDirectory(prefix=".v055.confidence-", dir=root) as temp:
+        staging = Path(temp)
+        write_json(staging / "records.json", frozen_records)
+        write_json(staging / "day_handoff.json", handoff)
+        staging.rename(frozen)
+    return handoff
+
+
+def verify_confidence_freeze(root: Path) -> dict[str, Any]:
+    session, _, _ = load_session(root)
+    if session.get("contract_revision") != CONTRACT_REVISION:
+        return verify_freeze(root)
+    _, prediction_records, prediction_sha = _prediction_records(root)
+    handoff = read_json(root / "confidence_frozen" / "day_handoff.json")
+    raw = (root / "confidence_frozen" / "records.json").read_bytes()
+    records = json.loads(raw)
+    expected = {
+        (x["venue"], int(x["race_no"])): int(x["decision_core"]["marks"][0])
+        for x in prediction_records
+    }
+    if (
+        handoff.get("schema_version") != CONFIDENCE_FROZEN_VERSION
+        or handoff.get("status") != "CONFIDENCE_FROZEN_CLEAN_BLIND"
+        or handoff.get("session_id") != session["session_id"]
+        or handoff.get("selection_id") != session["selection_id"]
+        or handoff.get("target_date") != session["target_date"]
+        or handoff.get("logic_version") != LOGIC
+        or handoff.get("contract_revision") != CONTRACT_REVISION
+        or handoff.get("confidence_meaning") != CONFIDENCE_MEANING
+        or handoff.get("confidence_frozen") is not True
+        or handoff.get("prediction_records_sha256") != prediction_sha
+        or handoff.get("record_count") != len(records)
+        or handoff.get("confidence_records_sha256") != digest(raw)
+        or handoff.get("market_blind") is not True
+        or handoff.get("target_market_opened") is not False
+        or handoff.get("result_opened") is not False
+    ):
+        raise ValueError("confidence Freeze seal invalid")
+    seen = set()
+    for item in records:
+        key = (str(item.get("venue")), int(item.get("race_no")))
+        if (
+            key not in expected
+            or key in seen
+            or int(item.get("honmei")) != expected[key]
+            or item.get("confidence") not in {"A", "B", "C"}
+            or len(str(item.get("reason") or "").strip()) < 12
+        ):
+            raise ValueError(f"confidence frozen record invalid: {key}")
+        seen.add(key)
+    if seen != set(expected):
+        raise ValueError("confidence frozen coverage mismatch")
+    return handoff
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     sub = ap.add_subparsers(dest="action", required=True)
@@ -618,6 +819,16 @@ def main() -> int:
     p = sub.add_parser("freeze")
     p.add_argument("--root", type=Path, required=True)
 
+    p = sub.add_parser("verify-prediction")
+    p.add_argument("--root", type=Path, required=True)
+
+    p = sub.add_parser("save-confidence")
+    p.add_argument("--root", type=Path, required=True)
+    p.add_argument("--confidence", type=Path, required=True)
+
+    p = sub.add_parser("freeze-confidence")
+    p.add_argument("--root", type=Path, required=True)
+
     p = sub.add_parser("verify")
     p.add_argument("--root", type=Path, required=True)
 
@@ -631,8 +842,17 @@ def main() -> int:
     elif args.action == "freeze":
         result = build_freeze(args.root)
         summary = {"status": result["status"], "record_count": result["record_count"]}
-    else:
+    elif args.action == "verify-prediction":
         result = verify_freeze(args.root)
+        summary = {"status": "PREDICTION_VERIFIED", "record_count": result["record_count"]}
+    elif args.action == "save-confidence":
+        result = save_confidence_review(args.root, args.confidence)
+        summary = {"status": result["status"], "record_count": len(result["records"])}
+    elif args.action == "freeze-confidence":
+        result = freeze_confidence(args.root)
+        summary = {"status": result["status"], "record_count": result["record_count"]}
+    else:
+        result = verify_confidence_freeze(args.root)
         summary = {"status": "VERIFIED", "record_count": result["record_count"]}
     print(json.dumps(summary, ensure_ascii=False))
     return 0

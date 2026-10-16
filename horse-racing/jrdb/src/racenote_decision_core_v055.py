@@ -13,8 +13,8 @@ from typing import Any
 
 LOGIC = "RaceNote-Human-Context-Reader-0.5.5-candidate"
 VERSION = "racenote-decision-core-0.5.5"
-CONTRACT_REVISION = "v055-win-confidence-lean-reader-prose-r3"
-SUPPORTED_CONTRACT_REVISIONS = {"v055-win-confidence-lean-r1", "v055-win-confidence-lean-reader-r2", CONTRACT_REVISION}
+CONTRACT_REVISION = "v055-prediction-freeze-confidence-review-r4"
+SUPPORTED_CONTRACT_REVISIONS = {"v055-win-confidence-lean-r1", "v055-win-confidence-lean-reader-r2", "v055-win-confidence-lean-reader-prose-r3", CONTRACT_REVISION}
 
 DECISIONS = {"ADMIT_CHALLENGER", "KEEP_ORDINARY_FIVE", "NO_EXTERNAL_CHALLENGER"}
 CONFIDENCE = {"A", "B", "C"}
@@ -163,11 +163,16 @@ def validate_core(
             raise ValueError(f"{venue}{race_no}R: NO_EXTERNAL_CHALLENGER only valid in five-runner field")
 
     honmei_win = core.get("honmei_win")
-    if not isinstance(honmei_win, dict) or set(honmei_win) != {"evidence", "main_risk", "confidence"}:
+    expected_honmei_fields = (
+        {"evidence", "main_risk"}
+        if contract_revision == CONTRACT_REVISION
+        else {"evidence", "main_risk", "confidence"}
+    )
+    if not isinstance(honmei_win, dict) or set(honmei_win) != expected_honmei_fields:
         raise ValueError(f"{venue}{race_no}R: honmei_win fields mismatch")
     _text(honmei_win.get("evidence"), 18, f"{venue}{race_no}R ◎ win evidence")
     _text(honmei_win.get("main_risk"), 10, f"{venue}{race_no}R ◎ main risk")
-    if honmei_win.get("confidence") not in CONFIDENCE:
+    if contract_revision != CONTRACT_REVISION and honmei_win.get("confidence") not in CONFIDENCE:
         raise ValueError(f"{venue}{race_no}R: confidence must be A/B/C")
 
     shot_case = core.get("shot_case")

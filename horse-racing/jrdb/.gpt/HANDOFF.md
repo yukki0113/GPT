@@ -1,12 +1,13 @@
 # RaceNote v0.5.5 current clean-blind operation — 2026-10-16
 
-- Current new-clean-blind candidate: `RaceNote-Human-Context-Reader-0.5.5-candidate`, contract `v055-win-confidence-lean-reader-prose-r3`.
+- Current new-clean-blind candidate: `RaceNote-Human-Context-Reader-0.5.5-candidate`, contract `v055-prediction-freeze-confidence-review-r4`.
 - Canonical procedure: `docs/racenote/RACENOTE_V055_SINGLE_DAY_RUNBOOK_v0_1.md`.
-- T2 reads the complete bound `v055-lean-model-reader-r2` for each race. Full source evidence remains reconstructable from the sealed source assets.
-- A/B/C means confidence that ◎ wins the race and is embedded in the frozen Decision Core.
-- Reader-facing prose is **editorial focus**, not Decision Core compression: after the race judgment, write the single race-specific point most useful to the reader. There is no required mark coverage, opponent enumeration, sentence count or target length.
-- The prose validator is an accident guard only; it must not push all races into a common template.
-- Existing v0.5.x Freezes remain immutable; do not rewrite earlier sessions to the current revision.
+- T2 reads the complete bound `v055-lean-model-reader-r2`; source evidence remains sealed/reconstructable.
+- Prediction authoring persists ◎ ○ ▲ △ △, ◎ win evidence/risk, challenger boundary, ▲ case, RRDB refs and editorial short comment. It does **not** persist A/B/C in r4.
+- Prediction Freeze is immutable first: `PREDICTION_FROZEN_CLEAN_BLIND`.
+- Confidence Review is a separate pre-result stage against the frozen ◎. A means active support for ◎ as winner/single-win axis, not near-certainty; B means preferred but contested; C means low winner-selection conviction. There is no A quota.
+- The confidence draft may be reconsidered/overwritten while target result and target market remain closed. `CONFIDENCE_FROZEN_CLEAN_BLIND` is immutable and required before result unlock.
+- Existing r1/r2/r3 Freezes remain immutable reproduction evidence and are not migrated to r4.
 
 # JRDB Result Query fresh-runtime bootstrap — 2026-10-12
 
