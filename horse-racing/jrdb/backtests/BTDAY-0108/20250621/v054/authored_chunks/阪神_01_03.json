@@ -111,10 +111,7 @@
     "rrdb_refs": [
       {
         "horse_no": 6,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "1800mでの持続力を補助する材料として使用し、実際の3～5着反復を主根拠とした。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "4テイエムドリーマーは1800mでの安定実績を中心視。6コスモサンビタリアも同条件で堅実だが、12オーケアニスはダート適応なら事前評価どおり一変まである。",
