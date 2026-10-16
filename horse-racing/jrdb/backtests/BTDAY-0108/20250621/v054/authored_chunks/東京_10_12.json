@@ -1,0 +1,226 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "race_model": "東京芝1400m2勝クラス。5番はIDM60で芝適性◎、1600m4着IDM61の能力上限が抜ける。10番は1400mで1、2、2、3着を反復し、13番・4番・9番も同距離水準が高い。",
+    "marks": [
+      5,
+      10,
+      4,
+      13,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "5番プリティディーヴァは前走芝1600m4着IDM61、今回IDM60。芝1400mでも勝ち2回と3着があり、距離短縮で高い能力をそのまま使える。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番トラペジストは芝1400mで直近2、3、7、2、1着、IDM49～54。予測着差0・上がり0で同距離の再現性が最も高い。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番コンテネレッツアは芝1600mでIDM54の3着、調教77・状態72。1400m短縮でも高い仕上がりを生かせる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番クイックバイオは芝1400mでIDM50～52の4、5着があり、芝適性◎。調教66で差し込む力は維持。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番ハクサンイーグルは東京芝1400mを前走3着IDM50、その前に1着IDM53。先行して予測上がり1で、前めから上位能力馬を封じる勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部3番はIDM53、調教73で予測中盤・上がり0と魅力があるが、近走は1200m中心。境界9番は1400mでIDM50～52を複数回示しており今回距離への直接性が上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "5プリティディーヴァは1600mで示した高い能力を1400mでも評価。10トラペジストは同距離の安定感で迫り、4ハクサンイーグルは先行して押し切る形なら逆転まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        10,
+        13,
+        4,
+        9
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番は高い事前能力と前受け予測を持つが、1400mでの直接実績が上位五頭より薄い。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界9番は1400mでIDM50～52の実績を反復。3番の1200m中心の材料より今回距離への直接性を優先した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 10,
+      "honmei_win_case": "5番は芝1600m4着IDM61で今回IDM60、1400mでも勝利実績があり、絶対能力で押し切れる。",
+      "second_case": "10番は1400mで上位を反復し予測着差・上がり0。同距離の再現性で5番を逆転する可能性がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "10番は1400m実績で優位だが、5番は一段高いIDM60級の能力と同距離勝利歴を併せ持つ。勝ち切り能力を優先して5番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "race_model": "東京ダート2100mオープン。1番は同舞台を連勝しIDM60、65。2番は同舞台3着IDM63で逃げ、11番も2100m2着IDM61。東京2100mの直接実績を最優先する。",
+    "marks": [
+      1,
+      2,
+      5,
+      11,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1番カズタンジャーは東京ダ2100mを連勝し、IDM60から65へ上昇。REPEATED_FASTEST_LAST3FとPACE_POSITION_AGAINST_GOOD_RUNがあり、追込でも同舞台の勝ち筋を確立している。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ピュアキアンは前走東京ダ2100m3着IDM63。逃げて予測中盤・上がり0、ダート適性◎で1番を前から封じる直接経路がある。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番アイファーテイオーは前走東京ダ2100m2着IDM61。REPEATED_FASTEST_LAST3Fを持ち、同舞台で上位二頭に続く。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番ゼットリアンは1800～2000mでIDM60～62を安定して出し、REPEATED_ABOVE_CLASS_PERFORMANCE。2100m延長でも能力は通用する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番リアレストは2024年秋に東京ダ2100mを連勝しIDM61～62。近2走は低調でも、長距離適性と同舞台での先行差し性能を取り戻せば一変する余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "外部9番は東京2100m4着IDM59があるが、直近1800m11着IDM51。境界5番も近況不振だが同舞台2連勝という勝ち切り実績があり、非対称な復活経路がより強い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1カズタンジャーは東京2100m連勝の内容が明確に強い。2ピュアキアンが逃げて対抗し、同舞台2連勝歴のある5リアレストは近況からの反転が穴筋。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        2,
+        11,
+        6,
+        5
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9番は2100m実績を持つが、現在の能力推移と直近内容で五頭を越える決め手が弱い。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界5番は同舞台を連勝した勝ち実績がある。9番の4着歴より勝ち切りの条件適合が明確なため残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 2,
+      "honmei_win_case": "1番は東京2100mをIDM60、65で連勝し、追込から同舞台を勝ち切る形を反復している。",
+      "second_case": "2番は同舞台3着IDM63で逃げられ、1番の末脚が届く前に押し切る勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "2番は展開主導権を持つが、1番は同舞台で実際に二度勝ち切り、直近IDM65まで伸ばしている。直接の勝利再現性で1番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "race_model": "東京ダート1600m1勝クラス。2番は同距離で5戦連続2着、IDM45から55へ上昇し予測各値0。4番は同距離1着後3着、16番も直近同距離3・5着。1600m実績を中心に選ぶ。",
+    "marks": [
+      2,
+      4,
+      11,
+      16,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2番チザルピーノは東京ダ1600mを含め5戦連続2着、直近IDM55。逃げて予測着差・中盤・上がり0で、今回こそ押し切る材料が揃う。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番ファンタイムギフトは東京ダ1600mを勝った後、同距離3着IDM48。差しで同舞台の勝ち実績を持つ。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16番サムワンライクユーは東京ダ1600mで直近3、5着、IDM49・43。差しの再現性があり相手候補。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番ショウナンヤッホーは直近ダ1400m3着IDM49で今回IDM51、調教・状態73。1600mでも過去5着があり能力上昇で対応可能。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番レッドエウロスはキャリア1戦で東京ダ1600mを勝利。IDM39でも調教65、KYI18.1、状態66と上積み余地が大きく、未知の成長で既成勢を越える勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "外部12番は中距離ダートでIDM45～47を安定しているが1600mの直接実績がない。境界15番は1600m経験があり、直近1400m3着IDM49から今回51へ上昇。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 15,
+        "signal_ids": [
+          "FRONT_SURVIVE_GAP05"
+        ],
+        "interpretation": "直近短距離ダートの持続力を補助材料として扱い、距離延長の適否は既存1600m経験と能力上昇から判断。"
+      }
+    ],
+    "reader_facing_reason": "2チザルピーノは同舞台を中心に2着続きでも能力は上昇しており今度こそ。4ファンタイムギフトが同距離勝ち実績で相手、11レッドエウロスは一戦一勝の伸びしろが不気味。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        4,
+        16,
+        15,
+        11
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12番は中距離で堅実だが、東京1600mへ短縮して上位五頭を上回る直接材料に乏しい。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界11番は東京1600mを一戦一勝で、今回の仕上がりも良い。12番の安定した中距離実績より今回条件での上振れ経路を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 4,
+      "honmei_win_case": "2番は同距離を中心に5戦連続2着で直近IDM55、逃げて予測各値0。自ら押し切る条件が最も揃う。",
+      "second_case": "4番は東京1600m勝ち後に3着IDM48。同舞台で2番を差し切る実績型の勝ち筋がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4番は同距離勝利があるが、2番は直近IDM55まで能力を高めながら連続2着。今回の予測位置も最良で2番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
