@@ -1,0 +1,74 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 7,
+    "race_model": "中京ダート1900m1勝クラス。逃げだけでなく差しも届く条件。6番は1900m2着IDM46、1800m3着IDM54と近走が安定しKYI19.8。1番は1900m2着IDM55のピークがあり、持続力型を上位に取る。",
+    "marks": [
+      6,
+      1,
+      9,
+      12,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番レイワサンサンは前走ダ1900m2着IDM46、その前ダ1800m3着IDM54。KYI19.8、予測中盤・上がり0で先行から長く脚を使える。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番アンバードールはダ1900m2着IDM55があり、前走ダ1800m2着IDM46。REPEATED_FASTEST_LAST3Fを持ち、終いの再現性が高い。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番ウォーターリーダーはダ1800mで4着IDM44、過去2着IDM46。KYI12.5で差しから安定して脚を使える。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番アドマイヤソラはダ1800m1着IDM49、2着IDM47の実績。近走6着続きでも予測着差11で、能力ピークなら圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9番ブリオメンテは地方ダ1870m勝ちがあり、芝2400mでもIDM41。調教68・KYI12.5で、久々のダート1900mでスタミナを生かせば差し切りの別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "外部5番は前走ダ1800m5着IDM41で、10月には2着IDM41。一方、境界3番はダ1800m1着IDM49・2着IDM47の能力上限が高く、1900mでも5番より勝ち切りに必要な絶対値を持つため維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "6レイワサンサンは1900mと1800mで近走安定。1アンバードールの末脚が相手筆頭で、9ブリオメンテはダートへ戻ってスタミナを生かせれば面白い。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        1,
+        9,
+        12,
+        3
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5番ミントマークはダ1800mで2着IDM41があるが、能力上限は境界3番のIDM49に届かない。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "5番の近走安定は認めるが、境界3番はダ1800mでIDM49の勝利とIDM47の2着がある。絶対能力を優先して3番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 1,
+      "honmei_win_case": "6番はダ1900m2着、ダ1800m3着と連続好走しKYI19.8。先行して自ら勝ち筋を作れる。",
+      "second_case": "1番は1900m2着IDM55のピークと反復的な末脚があり、差し切り能力は高い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1番は1900mでIDM55のピークを持つが、6番は直近1900m2着に加え1800m3着IDM54、KYI19.8。現在の再現性を優先して6番を◎、1番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
