@@ -12,7 +12,7 @@ Use:
 - `audits/` for acceptance/revision decisions.
 
 Current parallel research lane: **RaceNote 0.5.x JRDB Feature Audit**.
-The current candidate for new clean-blind runs is v0.5.5 (`contract_revision=v055-win-confidence-lean-reader-prose-r3`). It keeps the v0.5.4 source evidence and horse-selection semantics, makes A/B/C the confidence that ◎ wins, and uses the r2 Lean Model Reader / Lean Decision Core. Reader-facing prose is editorial: it selects the one race-specific point most useful to the reader instead of summarizing every mark. Earlier v0.5.x assets remain immutable reproduction evidence.
+The current candidate for new clean-blind runs is v0.5.5 (`contract_revision=v055-prediction-freeze-confidence-review-r4`). It keeps the v0.5.4 source evidence, r2 Lean Model Reader, horse-selection semantics and r3 editorial short-comment policy. Prediction is frozen first; A/B/C is then reviewed separately against the frozen ◎, may be reconsidered before its own Freeze, and must be frozen before result unlock. Earlier v0.5.x assets remain immutable reproduction evidence.
 Historical feature analysis must start with **2023-2025** and may extend to **2021-2025** only if the three-year result is inconclusive. If five years still yield no stable practical signal, stop expanding the horizon and retain the 0.4.x Human-Context principle rather than forcing a new feature hierarchy.
 
 Current Stage A instruction:
@@ -23,7 +23,7 @@ Current Stage A instruction:
 For new clean-blind candidate predictions, use
 `RaceNote-Human-Context-Reader-0.5.5-candidate` through
 `docs/racenote/RACENOTE_V055_SINGLE_DAY_RUNBOOK_v0_1.md`.
-The complete bound **Lean Model Reader** is the T2 input. Its source evidence remains sealed/reconstructable from forecast_prep, KYI supplemental evidence and the bound RaceLap asset; repeated provenance and duplicate representations are not presented to the model. The v0.5.5 Freeze itself contains ◎ win confidence, so there is no separate confidence-authoring stage. Earlier v0.5.x Freezes remain immutable comparison/reproduction paths.
+The complete bound **Lean Model Reader** is the T2 input. Its source evidence remains sealed/reconstructable from forecast_prep, KYI supplemental evidence and the bound RaceLap asset. In r4, Prediction Freeze does not contain A/B/C; confidence is reviewed against the immutable ◎ afterward and frozen separately before result unlock. Earlier v0.5.x Freezes remain immutable comparison/reproduction paths.
 BTDAY source routing is unified: 2026 uses PACI and 2010–2025 uses the accepted
 Historical Warehouse according to the reserved row's `source_mode`.
 The production `current_logic_version` remains a separate pointer.
