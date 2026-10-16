@@ -23,7 +23,7 @@ from racenote_decision_core_v055 import (
 )
 from racenote_v055_authoring_quality import inspect as inspect_authoring_quality
 from racenote_reader_v050 import DEFAULT_BINDING
-from racenote_reader_v055 import VERSION as LOGIC, load_binding, transform
+from racenote_reader_v055 import READER_PROJECTION, VERSION as LOGIC, load_binding, transform
 from racenote_save_venue_batch_v046 import load_clean
 
 VERSION = "racenote-v055-single-day-0.1"
@@ -90,7 +90,9 @@ def session_identity(session: dict[str, Any]) -> dict[str, Any]:
             "logic_version", "binding_sha256", "policy_sha256",
         )
     }
-    # Every v0.5.5 session must bind the new contract revision explicitly.
+    # r2 binds the model Reader projection; r1 sessions predate this field.
+    if session.get("reader_projection") is not None:
+        result["reader_projection"] = session["reader_projection"]
 
     if session.get("contract_revision") is not None:
         result["contract_revision"] = session["contract_revision"]
@@ -173,6 +175,7 @@ def init_session(
         "base_main_sha": base_main_sha,
         "logic_version": LOGIC,
         "decision_core_version": "racenote-decision-core-0.5.5",
+        "reader_projection": READER_PROJECTION,
         "source_prep_root": os.path.relpath(prep_root.resolve(), root.resolve()),
         "clean_reader_manifest_sha256": clean_sha,
         "original_clean_reader_sha256": original_hashes,
@@ -256,6 +259,7 @@ def init_session(
                 )
             path = staging / "reader" / row["file"]
             write_json(path, candidate["normal_view"])
+            projection_meta = (candidate.get("provenance") or {}).get("v055_contract") or {}
             entries.append({
                 "venue": row["venue"],
                 "race_no": row["race_no"],
@@ -265,6 +269,10 @@ def init_session(
                 "derived_normal_filename": row["file"],
                 "derived_normal_sha256": digest(path.read_bytes()),
                 "candidate_version": LOGIC,
+                "reader_projection": READER_PROJECTION,
+                "full_normal_bytes_before_projection": projection_meta.get("full_normal_bytes_before_projection"),
+                "model_reader_bytes": projection_meta.get("model_reader_bytes"),
+                "model_reader_reduction_pct": projection_meta.get("model_reader_reduction_pct"),
                 "horse_nos": row["horse_nos"],
             })
         manifest = {
@@ -275,8 +283,9 @@ def init_session(
             "clean_reader_manifest_sha256": clean_sha,
             "logic_version": LOGIC,
             "contract_revision": session.get("contract_revision"),
-            "model_input": "normal_view_only",
-            "projection_equivalent_to": None,
+            "model_input": "lean_normal_view_only",
+            "reader_projection": READER_PROJECTION,
+            "projection_equivalent_to": "v0.5.4 evidence sources; deterministic lean field projection",
             "entries": entries,
         }
 
@@ -301,6 +310,10 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
         or session.get("status") != "SESSION_SEALED"
         or session.get("logic_version") != LOGIC
         or session.get("contract_revision") not in SUPPORTED_CONTRACT_REVISIONS
+        or (
+            session.get("contract_revision") == CONTRACT_REVISION
+            and session.get("reader_projection") != READER_PROJECTION
+        )
         or session.get("market_blind") is not True
         or session.get("target_market_opened") is not False
         or session.get("result_opened") is not False
@@ -335,7 +348,15 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
     if digest(manifest_path.read_bytes()) != session["reader_manifest_sha256"]:
         raise ValueError("v0.5.5 Reader manifest digest mismatch")
     manifest = read_json(manifest_path)
+    if (
+        session.get("contract_revision") == CONTRACT_REVISION
+        and manifest.get("reader_projection") != READER_PROJECTION
+    ):
+        raise ValueError("v0.5.5 lean Reader projection mismatch")
     entries = {(x["venue"], int(x["race_no"])): x for x in manifest["entries"]}
+    if session.get("contract_revision") == CONTRACT_REVISION:
+        if any(x.get("reader_projection") != READER_PROJECTION for x in manifest["entries"]):
+            raise ValueError("v0.5.5 Reader entry projection mismatch")
     if roster_from_readers(readers) != session["race_roster"] or set(entries) != set(readers):
         raise ValueError("v0.5.5 single-day race roster mismatch")
     for key, entry in entries.items():
@@ -381,6 +402,7 @@ def save_venue(root: Path, decisions_path: Path) -> dict[str, Any]:
         "target_date": session["target_date"],
         "logic_version": LOGIC,
         "contract_revision": session.get("contract_revision"),
+        "reader_projection": session.get("reader_projection"),
         "reader_manifest_sha256": session["reader_manifest_sha256"],
         "venue": venue,
         "race_nos": expected[venue],
@@ -456,6 +478,7 @@ def build_freeze(root: Path) -> dict[str, Any]:
                 "target_date": session["target_date"],
                 "logic_version": LOGIC,
                 "contract_revision": session.get("contract_revision"),
+                "reader_projection": session.get("reader_projection"),
                 "venue": key[0],
                 "race_no": key[1],
                 "horse_nos": entry["horse_nos"],
@@ -526,6 +549,7 @@ def verify_freeze(root: Path) -> dict[str, Any]:
         or handoff.get("target_date") != session["target_date"]
         or handoff.get("logic_version") != LOGIC
         or handoff.get("contract_revision") != session.get("contract_revision")
+        or handoff.get("reader_projection") != session.get("reader_projection")
         or handoff.get("reader_manifest_sha256") != session["reader_manifest_sha256"]
         or handoff.get("race_roster") != session["race_roster"]
         or handoff.get("expected_venues") != session["expected_venues"]
@@ -554,6 +578,7 @@ def verify_freeze(root: Path) -> dict[str, Any]:
             or row.get("target_date") != session["target_date"]
             or row.get("logic_version") != LOGIC
             or row.get("contract_revision") != session.get("contract_revision")
+            or row.get("reader_projection") != session.get("reader_projection")
             or row.get("reader_manifest_sha256") != session["reader_manifest_sha256"]
             or row.get("original_clean_reader_manifest_sha256") != session["clean_reader_manifest_sha256"]
             or row.get("original_clean_reader_sha256") != readers[key]["sha256"]
