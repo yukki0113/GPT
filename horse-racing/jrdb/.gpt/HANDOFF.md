@@ -1,11 +1,12 @@
-# RaceNote v0.5.4 current clean-blind operation — 2026-10-16
+# RaceNote v0.5.5 current clean-blind operation — 2026-10-16
 
-- Current new-clean-blind candidate: `RaceNote-Human-Context-Reader-0.5.4-candidate`, contract `v054-authored-prose-r3`.
-- Canonical procedure: `docs/racenote/RACENOTE_V054_SINGLE_DAY_RUNBOOK_v0_1.md`.
-- Every race still requires the complete bound Reader. Neutral authoring workspace data is navigation/restart support only and must not preselect marks, candidate sets, external challengers, boundary candidates, confidence, Decision Core or prose.
-- Long-card recovery state belongs in repository-backed model-authored chunks plus an operation-only progress record; chat context is not the source of truth and a thread restart is not a second prediction attempt.
-- Prospective result unlock is fail-closed: after prediction Freeze/format audit, persist the applicable pre-result confidence artifact before opening results when confidence/A-purification is under evaluation.
-- Existing historical Freezes are immutable; missing old confidence artifacts are not backfilled after results.
+- Current new-clean-blind candidate: `RaceNote-Human-Context-Reader-0.5.5-candidate`, contract `v055-win-confidence-lean-reader-prose-r3`.
+- Canonical procedure: `docs/racenote/RACENOTE_V055_SINGLE_DAY_RUNBOOK_v0_1.md`.
+- T2 reads the complete bound `v055-lean-model-reader-r2` for each race. Full source evidence remains reconstructable from the sealed source assets.
+- A/B/C means confidence that ◎ wins the race and is embedded in the frozen Decision Core.
+- Reader-facing prose is **editorial focus**, not Decision Core compression: after the race judgment, write the single race-specific point most useful to the reader. There is no required mark coverage, opponent enumeration, sentence count or target length.
+- The prose validator is an accident guard only; it must not push all races into a common template.
+- Existing v0.5.x Freezes remain immutable; do not rewrite earlier sessions to the current revision.
 
 # JRDB Result Query fresh-runtime bootstrap — 2026-10-12
 
