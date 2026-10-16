@@ -13,8 +13,8 @@ from typing import Any
 
 LOGIC = "RaceNote-Human-Context-Reader-0.5.5-candidate"
 VERSION = "racenote-decision-core-0.5.5"
-CONTRACT_REVISION = "v055-win-confidence-lean-r1"
-SUPPORTED_CONTRACT_REVISIONS = {CONTRACT_REVISION}
+CONTRACT_REVISION = "v055-win-confidence-lean-reader-r2"
+SUPPORTED_CONTRACT_REVISIONS = {"v055-win-confidence-lean-r1", CONTRACT_REVISION}
 
 DECISIONS = {"ADMIT_CHALLENGER", "KEEP_ORDINARY_FIVE", "NO_EXTERNAL_CHALLENGER"}
 CONFIDENCE = {"A", "B", "C"}

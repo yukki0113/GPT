@@ -371,7 +371,7 @@ RaceNote開発を再開する場合は、追加で次を読む。
 
 For new clean-blind BTDAY execution, the current candidate is
 `RaceNote-Human-Context-Reader-0.5.5-candidate` /
-`v055-win-confidence-lean-r1`.
+`v055-win-confidence-lean-reader-r2`.
 
 Canonical files:
 
@@ -383,7 +383,9 @@ Canonical files:
 
 Current meaning:
 
-- horse selection and Reader/evidence semantics are inherited from v0.5.4;
+- source evidence and horse-selection semantics are inherited from v0.5.4;
+- T2 reads the deterministic `v055-lean-model-reader-r2` projection, not the verbose enriched presentation;
+- full source evidence remains reconstructable from the sealed source assets;
 - A/B/C = confidence that ◎ wins the race;
 - confidence is persisted inside the Decision Core before Freeze;
 - pairwise ◎>○, IDM gap and A5/A7 are downstream diagnostics, not prediction-time gates;

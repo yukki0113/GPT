@@ -12,7 +12,7 @@
     "contract_revision": "v054-authored-prose-r3",
     "status": "FROZEN_REPRODUCTION_PREDECESSOR"
   },
-  "change_reason": "RaceNote v0.5.5 keeps v0.5.4 horse-selection and evidence semantics, replaces pairwise confidence with ◎ win confidence, and reduces the persisted Decision Core to irreducible forecast judgments. Confidence is frozen inside the prediction record, so the separate pre-result confidence artifact is no longer part of normal v0.5.5 operation.",
+  "change_reason": "RaceNote v0.5.5 r2 keeps v0.5.4 evidence sources and horse-selection semantics, but T2 now reads a deterministic lean model Reader instead of the verbose enriched full presentation. Repeated provenance and duplicate representations are removed from model input; confidence remains embedded as ◎ win confidence.",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
   "calibration_protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
@@ -40,7 +40,7 @@
   "prospective_research_candidate": {
     "status": "CURRENT_FOR_NEW_CLEAN_BLIND_RUNS",
     "logic_version": "RaceNote-Human-Context-Reader-0.5.5-candidate",
-    "contract_revision": "v055-win-confidence-lean-r1",
+    "contract_revision": "v055-win-confidence-lean-reader-r2",
     "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_5_CANDIDATE.md",
     "logic_config": "config/racenote_forecast_logic_human_context_v0_5_5.json",
     "execution_contract": "RACENOTE_V055_SINGLE_DAY",
@@ -51,13 +51,15 @@
     "kyi_bundle_entrypoint": "src/racenote_v054_kyi_bundle.py",
     "single_day_entrypoint": "src/racenote_v055_single_day.py",
     "predecessor_logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
-    "design_note": "The complete v0.5.4 evidence projection and horse-selection invariants are retained. Persisted authoring is lean: marks, one boundary decision, ◎ win evidence/risk/confidence, ▲ route, actual RRDB references and one reader-facing note. A/B/C means ◎ win confidence. Pairwise and IDM-gap diagnostics are downstream recomputations.",
+    "design_note": "v0.5.5 r2 keeps v0.5.4 source evidence and horse-selection invariants while reducing both authored output and model input. T2 reads the complete bound lean model Reader for each race; full source evidence remains reconstructable from forecast_prep, the sealed KYI bundle and the bound RaceLap asset. A/B/C means ◎ win confidence.",
     "same_day_ab": false,
     "production_pointer_unchanged": false,
     "freeze_artifact": "<output-root>/v055/frozen/records.json",
     "reader_facing_prose_policy": "MODEL_AUTHORED_FREE_FORM_ACCIDENT_GUARD_ONLY",
     "authoring_state_policy": {
-      "complete_reader_required_per_race": true,
+      "complete_model_reader_required_per_race": true,
+      "model_reader_projection": "v055-lean-model-reader-r2",
+      "source_evidence_reconstruction": "FORECAST_PREP_PLUS_SEALED_KYI_BUNDLE_PLUS_BOUND_RACELAP_ASSET",
       "neutral_workspace_role": "NAVIGATION_AND_RESTART_ONLY",
       "neutral_workspace_must_not_select": [
         "marks",
