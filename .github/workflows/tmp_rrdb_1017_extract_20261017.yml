@@ -34,8 +34,8 @@ jobs:
           gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/rrdb1017/input/RaceReviewDB_CURRENT.zip
           gdown 1ljLg_jxVdZtpJ_Aqku0L93y8nwnfXUTQ -O /tmp/rrdb1017/input/course_fit_part1.zip
           gdown 1yxP0EtPRmcTnrAgmgBMlAAj257r3pgYE -O /tmp/rrdb1017/input/course_fit_part2.zip
-          unzip -q /tmp/rrdb1017/input/course_fit_part1.zip -d /tmp/rrdb1017/course-fit
-          unzip -q /tmp/rrdb1017/input/course_fit_part2.zip -d /tmp/rrdb1017/course-fit
+          unzip -qo /tmp/rrdb1017/input/course_fit_part1.zip -d /tmp/rrdb1017/course-fit
+          unzip -qo /tmp/rrdb1017/input/course_fit_part2.zip -d /tmp/rrdb1017/course-fit
 
       - name: Download audited RaceLap snapshot
         uses: actions/download-artifact@v4
