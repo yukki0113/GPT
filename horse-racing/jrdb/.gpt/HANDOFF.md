@@ -367,6 +367,31 @@ RaceNote開発を再開する場合は、追加で次を読む。
 
 会話メモだけを根拠にsourceを変更しません。逆に、古いhandoffや古いdesign docが最新sourceと矛盾する場合は、latest source + current contractを優先します。
 
+## RaceNote current forecast operation — 2026-10-16
+
+For new clean-blind BTDAY execution, the current candidate is
+`RaceNote-Human-Context-Reader-0.5.5-candidate` /
+`v055-win-confidence-lean-r1`.
+
+Canonical files:
+
+- contract: `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_5_CANDIDATE.md`
+- runbook: `docs/racenote/RACENOTE_V055_SINGLE_DAY_RUNBOOK_v0_1.md`
+- pointer: `config/racenote_forecast_logic_current.json`
+- validator: `src/racenote_decision_core_v055.py`
+- single-day path: `src/racenote_v055_single_day.py`
+
+Current meaning:
+
+- horse selection and Reader/evidence semantics are inherited from v0.5.4;
+- A/B/C = confidence that ◎ wins the race;
+- confidence is persisted inside the Decision Core before Freeze;
+- pairwise ◎>○, IDM gap and A5/A7 are downstream diagnostics, not prediction-time gates;
+- v0.5.5 Decision Core is lean and does not persist race_model/mainline_cases/second_case/ranking_reason/authorship metadata;
+- result unlock occurs only after the v0.5.5 Freeze verifies with embedded confidence.
+
+Existing v0.5.4 and older Freezes remain immutable reproduction/evaluation assets.
+
 ## 2. Current architecture snapshot
 
 ```text
