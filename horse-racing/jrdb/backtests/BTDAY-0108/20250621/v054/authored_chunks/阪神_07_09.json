@@ -34,7 +34,7 @@
     },
     "boundary_review": {
       "alternative_horse_no": 1,
-      "reason": "外部1番は2400mを複数経験するが6、7、7着が中心。境界7番は同距離勝ち実績があり、逃げて予測中盤・上がり0という勝ち筋が明確。"
+      "reason": "1番は芝2400mを複数経験するが6、7、7着が中心。一方7番は同距離を勝ち、今回も逃げて予測中盤・上がり0。2400mでの勝ち切り実績では7番が1番を上回る。"
     },
     "rrdb_refs": [
       {
@@ -64,7 +64,7 @@
       "second_case": "10番は2200m1、2着で現在上昇中。持続力を2400mまで延ばせれば2番を逆転できる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "10番の近況は良いが、2番は実際に2400m勝ちと2600m2着を持つ。長距離への直接性で2番を◎。"
+      "ranking_reason": "10番は芝2200mを1、2着と上昇中だが、2番は芝2400m勝ちと2600m2着を実際に持つ。今回の長距離への直接性では2番が10番を上回るため◎とした。"
     },
     "reader_facing_reason_authorship": {
       "mode": "MODEL_AUTHORED_PER_RACE",
@@ -182,7 +182,7 @@
     },
     "boundary_review": {
       "alternative_horse_no": 9,
-      "reason": "外部9番は今回IDM58で直近1400m2着IDM53と高能力だが、距離適性は短距離寄りで1600mの直接実績が不足。境界11番は1600m2着IDM55を含む反復実績がある。"
+      "reason": "9番は直近芝1400m2着IDM53で今回IDM58と高能力だが、芝1600mの直接実績が不足する。一方11番はマイルで2着IDM55を含む反復実績があり、今回距離の証拠では11番を9番より優先する。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "12ハワイアンティアレは直近マイル3着と同距離勝ちの再現性を評価。5グラフィティアートは前走勝ちの勢いがあり、4メタルスピードは前で運べればしぶとい。",
@@ -207,7 +207,7 @@
       "second_case": "5番は前走1600m勝ちIDM51で今回54、速い上がりを反復しており昇級でも差し切れる。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "5番は上昇中だが、12番は同距離で既にIDM54を勝ち・3着で反復し、今回状態も良い。実績の完成度で12番を◎。"
+      "ranking_reason": "5番は前走芝1600m1着IDM51で上昇中。一方12番は同距離をIDM54で勝ち、直近も3着IDM54、状態69と高水準を反復しているため、12番が5番を上回る。"
     },
     "reader_facing_reason_authorship": {
       "mode": "MODEL_AUTHORED_PER_RACE",
