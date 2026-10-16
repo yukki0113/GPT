@@ -3,7 +3,7 @@
   "status": "CURRENT_CANDIDATE",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "role": "FORECAST_BLIND_RESEARCH",
-  "contract_revision": "v055-win-confidence-lean-reader-r2",
+  "contract_revision": "v055-win-confidence-lean-reader-prose-r3",
   "predecessor": {
     "logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
     "freeze_assets_immutable": true
@@ -85,10 +85,24 @@
     ]
   },
   "reader_facing_prose": {
-    "source": "MODEL_AUTHORED_FROM_COMPLETED_RACE_JUDGMENT",
+    "purpose": "EDITORIAL_FOCUS_ONE_MOST_USEFUL_RACE_POINT",
+    "source": "MODEL_AUTHORED_AFTER_COMPLETED_RACE_JUDGMENT",
+    "decision_core_summary_required": false,
+    "marked_horse_enumeration_required": false,
+    "opponent_enumeration_default": false,
+    "allowed_focus": [
+      "HONMEI_WIN_CASE",
+      "HONMEI_MAIN_RISK",
+      "PACE_OR_POSITION",
+      "SHOT_ROUTE",
+      "UNCERTAINTY",
+      "OTHER_RACE_SPECIFIC_USEFUL_POINT"
+    ],
     "fixed_sentence_count": false,
     "fixed_length_target": false,
+    "one_sentence_allowed": true,
     "cross_race_template_guard": true,
+    "validator_role": "ACCIDENT_GUARD_ONLY",
     "programmatic_template_generation": false
   },
   "betting_policy": {
