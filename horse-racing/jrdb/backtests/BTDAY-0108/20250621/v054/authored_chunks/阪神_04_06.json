@@ -39,10 +39,7 @@
     "rrdb_refs": [
       {
         "horse_no": 5,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "中距離ダートでの持続力確認として用い、直近1900mIDM34とレースレビューを主根拠にした。"
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
       }
     ],
     "reader_facing_reason": "11マーウォルスは1800mでの2着反復と今回の能力評価が明確に上。9エイシンキャロッツが位置取りで迫り、5ハックルベリーは距離短縮で末脚を生かせれば一発。",
@@ -190,18 +187,12 @@
     },
     "rrdb_refs": [
       {
-        "horse_no": 8,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "2000mでの先行持続を補強する材料として用い、同距離の2・3着実績を主根拠にした。"
+        "horse_no": 3,
+        "decision_role": "UPGRADE_RECENT_FORM"
       },
       {
-        "horse_no": 3,
-        "signal_ids": [
-          "HV02_Q85_Q90"
-        ],
-        "interpretation": "過去時計の再評価材料として扱い、現在の調教状態と2000m4着実績に重ねた。"
+        "horse_no": 8,
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "8フララナキラは2000mでの安定した先行実績を中心視。ピーク能力では4テレプシコーラが迫り、11リビングストンは久々でも単騎なら粘り込みがある。",
