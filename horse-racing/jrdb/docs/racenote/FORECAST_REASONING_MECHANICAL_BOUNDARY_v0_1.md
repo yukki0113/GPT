@@ -74,6 +74,36 @@ The prepared record must declare:
 - research.authoring_mode = MODEL_RACE_BY_RACE_REASONING
 - research.prose_origin = MODEL_AUTHORED_NOT_SCRIPT_GENERATED
 
+## 3.1 Pre-Freeze mechanical preflight
+
+Before the first production save / Freeze run for a completed card, mechanical
+validation should be exercised once against the authored artifacts while the
+result firewall is still closed.
+
+The preflight may:
+
+- load the active Decision Core validator and persisted schema;
+- load the active authoring quality guard;
+- validate every authored core across the full card;
+- report exact race/field violations;
+- confirm venue completeness and session binding.
+
+The preflight must not:
+
+- choose or reorder marks;
+- invent missing comparison facts;
+- synthesize Decision Core text;
+- rewrite prose to satisfy a heuristic;
+- re-run completed model reasoning automatically.
+
+If a violation is found, the reasoning layer may reopen only the affected bound
+Reader and revise that still-unfrozen race from Reader-supported evidence.
+After the full-card preflight is clean, one mechanical save / Freeze / verify
+run is preferred.
+
+Schema discovery belongs here, before expensive workflow retries. The execution
+owner should not learn basic persisted-field semantics by repeatedly failing
+Actions jobs.
 ## 4. Mechanical FREEZE may do
 
 After complete records exist, deterministic tooling may:
