@@ -2,7 +2,7 @@
 
 Status: **CURRENT CANDIDATE FOR NEW CLEAN-BLIND RUNS**  
 Logic ID: `RaceNote-Human-Context-Reader-0.5.5-candidate`  
-Contract revision: `v055-win-confidence-lean-reader-r2`
+Contract revision: `v055-win-confidence-lean-reader-prose-r3`
 
 ## 1. Purpose
 
@@ -157,7 +157,30 @@ Normal display is:
 - confidence A/B/C
 - one short reader-facing note
 
-The note is model-authored from the completed race judgment. It has no fixed sentence count or fixed character target and must not be constructed by a deterministic template.
+The note is **not a summary of the Decision Core**.
+
+Its job is editorial:
+
+> **write the one point from this race that is most useful for a reader to notice.**
+
+The model first completes the race judgment, then chooses the most useful reader-facing angle. Depending on the race, that may be:
+
+- why ◎ can win;
+- the main risk to ◎;
+- a pace or position feature that controls the race;
+- why ▲ is genuinely interesting;
+- why the race is more uncertain than the marks appear;
+- another race-specific point that materially helps the reader understand the forecast.
+
+The note does not need to explain ◎, ○ and ▲ together. It does not need to mention every marked horse, reproduce the candidate order, restate confidence, or compress all audit fields.
+
+In particular, **do not default to opponent enumeration** such as "◎を評価。○も～、▲も～". Other horses should appear only when they are part of the most useful point.
+
+There is no target sentence count and no target character count. One concise sentence is valid when it says enough; a longer paragraph is valid when the race genuinely needs it. Horse numbers or horse names may be used naturally.
+
+The note must be model-authored from the completed race judgment, must remain consistent with the frozen evidence and marks, and must not be constructed by a deterministic template.
+
+Validation is an accident guard only: non-empty compact prose, no internal contract/plumbing terms, and no near-duplicate cross-race template. The validator must not reward a fixed structure.
 
 ## 7. Freeze and result unlock
 
