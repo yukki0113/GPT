@@ -1,0 +1,49 @@
+name: RaceNote BTDAY-0114 v0.5.5 r4 T2 preflight
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0114.v055r4-t2-preflight'
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+      ROOT: horse-racing/jrdb/backtests/BTDAY-0114/20250913/v055
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run full-card r4 schema and quality preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from racenote_decision_core_v055 import validate_core, validate_prose_collection
+          from racenote_v055_authoring_quality import require_pass
+          from racenote_v055_single_day import load_session, _validator_reader
+          root=Path(os.environ['ROOT'])
+          session, _, entries = load_session(root)
+          all_cores=[]
+          for venue in session['expected_venues']:
+              cards=json.loads((root/'incoming'/f'{venue}.json').read_text(encoding='utf-8'))
+              expected=[x for x in session['race_roster'] if x['venue']==venue]
+              assert len(cards)==len(expected)
+              for core in cards:
+                  key=(venue,int(core['race_no']))
+                  normal=json.loads((root/'reader'/entries[key]['derived_normal_filename']).read_text(encoding='utf-8'))
+                  validate_core(core,_validator_reader(normal),contract_revision=session['contract_revision'])
+                  all_cores.append(core)
+          validate_prose_collection(all_cores)
+          report=require_pass(all_cores)
+          assert len(all_cores)==24
+          assert session['result_opened'] is False and session['target_market_opened'] is False
+          print(json.dumps({'status':'PASS','race_count':len(all_cores),'quality':report,'result_opened':False,'target_market_opened':False},ensure_ascii=False))
+          PY
