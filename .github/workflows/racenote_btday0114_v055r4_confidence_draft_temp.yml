@@ -32,7 +32,7 @@ jobs:
           c=json.loads((root/'confidence_review.json').read_text(encoding='utf-8'))
           assert p['status']=='PREDICTION_FROZEN_CLEAN_BLIND'
           assert p['result_opened'] is False and p['target_market_opened'] is False
-          assert c['status']=='CONFIDENCE_REVIEW'
+          assert c['status']=='CONFIDENCE_REVIEW_DRAFT'
           assert len(c['records'])==24
           counts={g:sum(1 for x in c['records'] if x['confidence']==g) for g in ('A','B','C')}
           print(json.dumps({'status':c['status'],'count':len(c['records']),'grades':counts,'prediction_sha':c['prediction_records_sha256'],'result_opened':False,'target_market_opened':False},ensure_ascii=False))
