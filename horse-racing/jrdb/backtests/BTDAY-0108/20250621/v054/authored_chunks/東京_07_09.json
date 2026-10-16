@@ -1,0 +1,225 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "race_model": "東京ダート1300m未勝利。3番は同距離で2、2、3着、IDM38～43を反復し中心。13番も一週前の同距離2着IDM39で逃げ、15番・8番・12番までが短距離ダートで上位。",
+    "marks": [
+      3,
+      13,
+      15,
+      8,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3番シルフレイは東京ダ1300mで直近3、2、2着、IDM38～43。REPEATED_ABOVE_CLASS_PERFORMANCEもあり、同条件の勝ち切りに最も近い。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番アイドルは一週前の東京ダ1300m2着IDM39。逃げ脚質、調教61・KYI18.5で前から3番を封じる勝ち筋がある。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番エテオクロスはダ1200m3着IDM40、予測中盤3・上がり2。1300mでも先行して運べる。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番アイアンオバーカムは直近ダ1200m5着IDM36。短距離で先行を続けており相手候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "15番タブローはダ1200mで2、3、3着を含む安定した先行歴があり、予測中盤・上がり0。1300m延長で楽に先手圏へ入れば押し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10番は過去東京ダ1300m2着IDM35があるが最終出走が2024年12月。境界12番は直近2025年5月にダ1200m5着IDM36で現在性が高い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "3シルフレイは1300mでの連続好走が強い軸。13アイドルも同舞台2着直後で、前が楽なら15タブローの先行持続も侮れない。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        13,
+        8,
+        12,
+        15
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10番は1300m好走歴があるものの長期休養明けで現在状態の競走裏付けが不足する。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界15番は近い短距離で複数の上位着順と現在の予測中盤・上がり0を持つ。10番の古い実績より現状の勝ち筋を優先。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 13,
+      "honmei_win_case": "3番は東京1300mで2、2、3着、IDM43を二度出しており、同条件の勝ち筋を最も反復している。",
+      "second_case": "13番は直近同距離2着IDM39で逃げられる。主導権を握れば3番を前で封じられる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "13番は直近性が高いが、3番は同距離でより高いIDM43を含む連続上位を反復。能力と再現性で3番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "race_model": "東京芝1800m1勝クラス。9番は同距離で直近2、2、3着、IDM43～51。8番はIDM50、調教75、予測着差0で上昇余地が大きく、14番・7番・10番まで高水準。",
+    "marks": [
+      9,
+      8,
+      14,
+      7,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9番アドミラルシップは芝1800mで直近2、2、3着、IDM51を連続。REPEATED_ABOVE_CLASS_PERFORMANCEがあり、現在の同距離再現性は最上位。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番ブルーマエストロはIDM50、調教75、KYI15.1、状態69、予測着差0。キャリア2戦で伸びしろもあり、勝ち切り能力は9番と互角圏。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番イージーブリージーは直近同距離4着IDM48。先行できて中距離適性○、現級で安定した能力を持つ。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番トゥルーサクセサーは前走芝1800m2着IDM47。差しで今回も大崩れしにくい。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14番コスモイシュタルは直近芝1800m4着IDM50で、先行してRESULT_UNDERRATES_TIME。前めの位置を取りながら能力を出し切れば上位二頭を押し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "外部6番は過去芝1800m2着IDM51など高い能力を持つが、最終出走2024年12月は2000m16着IDM36で長期休養明け。境界10番は直近1800m2着IDM47で現在性が明確。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "9アドミラルシップは1800mで高水準を連続しており軸向き。8ブルーマエストロは仕上がりと伸びしろで逆転候補、14コスモイシュタルは先行してもう一押し可能。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        8,
+        14,
+        7,
+        10
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番は過去の高能力実績があるが長期休養と直前の大敗で今回再現性に不確実性が大きい。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界10番は直近1800m2着IDM47。6番の過去ピークより現在の同距離好走を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 8,
+      "honmei_win_case": "9番は芝1800mで直近2、2、3着、IDM51を連続しており、同距離で勝ち切る能力を最も安定して示す。",
+      "second_case": "8番はIDM50、調教75、予測着差0でキャリアの浅さを含め上積みが大きく、能力を伸ばせば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8番の上積みは大きいが、9番は同距離で高いIDMと上位着順を連続している。実戦再現性を優先して9番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "race_model": "東京芝2400m2勝クラス。9番は芝2200mを連勝し今回IDM60、予測着差0。5番は2400m1勝後に4、2着IDM49～55。6番・4番も長距離で高水準を続け、上位は能力型で明確。",
+    "marks": [
+      9,
+      5,
+      6,
+      4,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9番ピックデムッシュは芝2200mを連勝し、前走IDM56から今回60。REPEATED_ABOVE_CLASS_PERFORMANCEとREPEATED_FASTEST_LAST3Fを持ち、予測着差・上がり0。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番アメジストブラックは芝2400mで1、4、2着、IDM49～55。直近同距離2着IDM55で今回条件の経験値が最も高い相手。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番サトノスカイターフは2400mで3、5、4着、2600m2着IDM54。追込ながら長距離の安定性が高い。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番ヤマニンブークリエは2400m8着IDM49ながら今回IDM52.1、KYI19.4。予測中盤0で流れに乗れれば相手圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6番クロシェットノエルはIDM55、近走2000m2着IDM55など能力が高く、RRDB TIME_CLASS_PLUS1を持つ。追込で前が止まる形なら距離延長でも一気に突き抜ける余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "外部8番は逃げて予測上がり0、過去IDM53があるが2400mの直接実績がない。境界3番は実際に2400mを経験し今回IDM52.1、予測中盤0で長距離への直接性が上。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 6,
+        "signal_ids": [
+          "TIME_CLASS_PLUS1"
+        ],
+        "interpretation": "過去時計のクラス価値を補助する材料として扱い、現在のIDM55と近走内容に重ねて差し切り経路を評価。"
+      }
+    ],
+    "reader_facing_reason": "9ピックデムッシュは連勝内容と今回の能力評価が抜ける。2400m実績では5アメジストブラックが相手筆頭で、差しが利けば6クロシェットノエルの時計能力も怖い。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        5,
+        6,
+        4,
+        3
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8番は前受けの展開利を持つが、2400mで上位五頭に対抗できる直接長距離実績が不足する。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界3番は2400m経験があり今回IDM52.1。8番の位置取り利だけでは長距離の能力証拠を上回らない。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 5,
+      "honmei_win_case": "9番は2200m連勝からIDM60、予測着差0・上がり0。昇級しても勝ち切る能力評価が一段上。",
+      "second_case": "5番は2400mで1、4、2着と条件適性が明確で、9番の距離延長に対して直接実績で逆転を狙える。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番は2400m適性で優位だが、9番は連勝時の伸びと今回IDM60が大きく上回る。能力上昇を優先して9番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
