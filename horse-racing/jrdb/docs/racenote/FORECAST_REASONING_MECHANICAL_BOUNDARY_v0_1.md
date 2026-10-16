@@ -30,6 +30,13 @@ MECHANICAL PREP
 
 PREP must not assign marks or write forecast prose.
 
+PREP may additionally emit a neutral authoring index for navigation/restart.
+That index may expose Reader paths/hashes, runner identities, coverage states
+and compact projections of already-bound pre-race facts. It must not select or
+suggest marks, candidate sets, external challengers, boundary horses,
+confidence or prose. A field such as a mechanically chosen `boundary_candidate`
+is prediction reasoning and is therefore prohibited.
+
 ## 3. REASONING CHECKPOINT must remain model-authored
 
 For every race, the reasoning layer must inspect the full field and author the final forecast record content before Freeze.
@@ -46,6 +53,12 @@ It must decide and write:
 - reader_facing_reason
 
 The ▲ selection remains an independent asymmetric rescan, not automatic rank 3.
+
+Model-authored race/chunk files may be committed as recovery checkpoints.
+A mechanical progress file may record session binding, completed chunk
+path/hash/status and the next unresolved chunk. It may not create missing
+Decision Core fields or reinterpret completed predictions. Chat/thread changes
+do not trigger a second prediction attempt.
 
 No script may:
 
@@ -75,6 +88,7 @@ After complete records exist, deterministic tooling may:
 - write canonical files
 - publish the archive
 - report status
+- advance an operational lifecycle/progress state after successful validation
 
 It must not create or rewrite prediction meaning.
 
@@ -127,6 +141,11 @@ The validator may reject:
 The validator must never rewrite the prose to make it pass.
 
 ## 8. Operational target
+
+For prospective research with confidence evaluation, result opening occurs only
+after the prediction Freeze/format audit and the applicable pre-result
+confidence artifact are persisted. This is a transaction barrier; it does not
+make confidence part of mechanical mark generation.
 
 For BTDAY-0024+ the preferred user interaction is still:
 
