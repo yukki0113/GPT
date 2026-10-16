@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "rrdb_current_20261013",
+      "file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
+      "destination": "rrdb.zip",
+      "expected_name": "rrdb.zip",
+      "expected_size": 47451277,
+      "sha256": "ea1d4e1f3f0efdebee512a3ba09f7f9fd253a3851b42c562698bc11102fb011a"
+    }
+  ]
+}
