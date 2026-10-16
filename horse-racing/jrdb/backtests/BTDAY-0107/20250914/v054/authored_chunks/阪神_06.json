@@ -1,0 +1,73 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 6,
+    "race_model": "阪神ダート1800m新馬。8番がIDM38.5・KYI22・予測着差0、11番32.5、4番30.9が続く。完成度の高い8番を中心にする。",
+    "marks": [
+      8,
+      11,
+      4,
+      1,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番ウェイニースーはIDM38.5、調教56、KYI22で上昇し予測着差0。初戦から総合力が最上位。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番ピードモントはIDM32.5、調教55、KYI14.9。二番手の能力と状態。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番シャンドラファールはIDM25.1、KYI12、予測着差6。新馬の中位群では完成度が高い。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番ウンナターシャはIDM21.3、調教46、KYI1.1。予測着差10で五頭目候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番メイショウシンガンはIDM30.9、調教63、KYI11.8で上昇。調教の良さが能力差を埋めれば上位へ食い込める。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "外部7番はIDM21、KYI3.8。固定境界3番はIDM21.3、予測着差10で、数値差は小さいが直接予測を優先。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "8ウェイニースーは能力・状態・予測が揃う。11が相手本線で、4メイショウシンガンは調教63の上昇が魅力。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        11,
+        4,
+        1,
+        3
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7番はIDM21、KYI3.8で中位水準だが、五頭目より予測材料に乏しい。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "ダート新馬の五頭目は3番。外部7番とIDM21.3対21で僅差だが、3番の予測着差10を具体的な比較材料として残した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 11,
+      "honmei_win_case": "8番はIDM38.5、KYI22で上昇し予測着差0。新馬戦で勝ち切る現在値が一段高い。",
+      "second_case": "11番はIDM32.5、調教55、KYI14.9。8番に次ぐ能力と完成度。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8番は11番よりIDMで6上、KYI22対14.9、予測着差0対6。三つの直接材料すべてで8番を上位にした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "single_shot_case"
+      ]
+    }
+  }
+]
