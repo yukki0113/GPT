@@ -1,0 +1,232 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "race_model": "中山ダート1800m3勝クラス。7番は直近同距離2着IDM63、5番は同距離3着IDM61と1着IDM54。前受けの4番も2着IDM57で、能力上位と展開経路を両立して比較する。",
+    "marks": [
+      7,
+      5,
+      9,
+      4,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7番アスクビックスターは1月5日のダ1800m2着IDM63で事前IDM65、KYI16.1。差しから直近で現クラス上位の能力を示した。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番バンドマスターはダ1800m3着IDM61、1着IDM54、2着IDM55。KYI24.0で先行力が高く、RRDB FRONT_SURVIVE_GAP05もある。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番マーブルロックは前走ダ1800m2着IDM57で逃げ脚質、予測着差0。自分のペースなら上位差し勢より前で粘り込める。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ビップスコーピオンはダ2100m2着IDM61、ダ1900m3着IDM59。1800m短縮でも差しの持続力と事前IDM60で圏内能力がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9番サノノエスポはダ1700m1着IDM61、ダ1800m2着IDM59の実績。直近1700m5着IDM56から好位で流れに乗れば、距離短縮組とは異なる機動力で勝ち切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "固定境界6番はダ1800mでIDM65の1着と61の2着があるが、直近は14着IDM49。一方、外部9番は直近ダ1700m5着IDM56にダ1800m2着IDM59があり、現在値と近距離の再現性で6番を上回るため入替を認める。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 5,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "7アスクビックスターは直近中山1800m2着IDM63で中心。5バンドマスターは先行力と仕上がりが強く、9サノノエスポも近走の機動力なら上位へ食い込める。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        5,
+        4,
+        2,
+        6
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9番サノノエスポはダ1700m1着IDM61、ダ1800m2着IDM59があり、直近も1700m5着IDM56で現在値を保つ。",
+      "excluded_horse_no": 6,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "6番は過去IDM65の上限があるが直近14着IDM49。9番は直近IDM56と1800m2着IDM59で現在の競争力が上とみて境界を越える。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 5,
+      "honmei_win_case": "7番は直近中山ダ1800m2着IDM63、事前IDM65。差しから現クラスを勝ち切る能力を最も直近で示した。",
+      "second_case": "5番は同距離3着IDM61にKYI24.0、先行力とRRDB材料を持ち、前から7番を封じる余地がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番はIDM61とKYI24.0、先行力が強いが、7番は直近同距離2着IDM63で事前IDM65。直近の絶対能力を優先して7番を◎、5番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "boundary_review"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "race_model": "中山芝1200mオープン。14番は前走同距離2着IDM63、6番は前走3着IDM61でKYI23.5。3番は1200mでIDM67・65・63、4番は前受けで62～64を持ち、現況とコース適性を重視する。",
+    "marks": [
+      14,
+      6,
+      4,
+      3,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 14,
+        "case": "14番ナナオは前走芝1200m2着IDM63、KYI16.7。小回り向き評価があり、同距離で1着IDM55・3着IDM55も持つ。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番バースクライは前走芝1200m3着IDM61、過去同距離3着IDM65。KYI23.5、調教76・状態72で仕上がりが最上位級。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番モリノドリームは芝1200mでIDM67の4着、IDM65の1着、IDM63の2着。直近11着でも能力上限は高く、小回り実績もある。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番ジャスティンスカイは芝1200m1着IDM66、5着IDM62、6着IDM59。調教72・状態73で近走から上積みできる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番カンティーユは芝1200mで2着IDM62・63・64、3着IDM59と先行実績が豊富。KYI14.2で、逃げ先行有利の中山なら前から押し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "外部15番は芝1200mで1着IDM60、4着IDM65、9着IDM59と末脚能力が高い。一方、境界9番は同距離1着IDM66、5着IDM62、直近6着IDM59に調教72・状態73があり、現在の仕上がりと能力上限で15番を上回るため維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "14ナナオは前走1200m2着IDM63を素直に評価。6バースクライは仕上がりが良く、4カンティーユは中山の先行力を生かせれば押し切りまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        14,
+        6,
+        4,
+        3,
+        9
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15番サウザンサニーは芝1200mIDM65の4着やIDM60の勝利があるが、直近8着IDM54で現在値にやや間がある。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "15番の末脚上限は高いが、境界9番は芝1200m勝ちIDM66と直近IDM59、調教72・状態73。現況を優先して9番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 14,
+      "second_horse_no": 6,
+      "honmei_win_case": "14番は前走芝1200m2着IDM63でKYI16.7。中山向きの小回り適性を含め、現在の勝ち筋が最も明確。",
+      "second_case": "6番は前走3着IDM61、過去IDM65にKYI23.5と調教76。仕上がりで14番を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6番はKYI23.5・調教76で仕上がりが上だが、14番は直近同距離2着IDM63で小回り適性も明確。現条件の直近実績を取り14番を◎、6番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "race_model": "中山芝2000m1勝クラス。3番は芝2000mで1着IDM45、2着IDM47・48を続け、4番も芝2000mでIDM58の実績に直近1800m2着IDM48。8番は2000m2着を連続し、直接距離実績を中心に比較する。",
+    "marks": [
+      3,
+      4,
+      8,
+      9,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3番トライデントスピアは芝2000m1着IDM45、2着IDM47・48を持ち、KYI23.2、事前IDM49.9。RRDB FRONT_SURVIVE_GAP05もあり再現性が高い。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番テリオスサラは芝2000m7着ながらIDM58の能力上限があり、前走芝1800m2着IDM48。KYI18.5で先行から予測着差0。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番タッチアンドムーブは芝1800m1着IDM41、5着IDM46でKYI13.7。2000mは未経験だが中距離での能力と差し脚がある。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番パストラーレは芝1600m6着IDM45、芝1400m3着IDM45を続け、KYI11.4。2000m延長は課題でも先行力と現況の指数を残す。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "8番タルタロスは芝2000mで2着IDM44、2着IDM43を連続し、芝2600mでも2着IDM42。スタミナと2000m適性を生かせば上位2頭を押し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "外部12番は芝1600mでIDM43前後、芝1800m5着IDM46がある。一方、境界7番は直近芝1600m6着IDM45と芝1400m3着IDM45を続けKYI11.4。距離延長リスクはあるが現在値と仕上がりで12番を上回るため維持する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 3,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 4,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "3トライデントスピアは2000mで1・2・2着と安定し、事前評価も最上位。4テリオスサラの能力上限が相手で、8タルタロスも2000m連続2着から侮れない。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        4,
+        8,
+        9,
+        7
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12番ビジューブリランテは芝1800m5着IDM46、芝1600mでIDM43前後を持つが、近走は1600m11着・10着で上昇材料が弱い。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "12番の中距離能力はあるが、境界7番は直近IDM45を2走続けKYI11.4。現在値を優先して7番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 4,
+      "honmei_win_case": "3番は芝2000mで1着IDM45、2着IDM47・48を反復しKYI23.2。今回距離で勝ち切る再現性が最も高い。",
+      "second_case": "4番は芝2000mIDM58の能力上限と直近1800m2着IDM48、KYI18.5を持ち先行から逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4番は芝2000mでIDM58の上限を持つが、3番は同距離で1・2・2着を反復しKYI23.2。安定した直接実績を優先して3番を◎、4番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
