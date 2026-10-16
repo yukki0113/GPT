@@ -1,3 +1,12 @@
+# RaceNote v0.5.4 current clean-blind operation — 2026-10-16
+
+- Current new-clean-blind candidate: `RaceNote-Human-Context-Reader-0.5.4-candidate`, contract `v054-authored-prose-r3`.
+- Canonical procedure: `docs/racenote/RACENOTE_V054_SINGLE_DAY_RUNBOOK_v0_1.md`.
+- Every race still requires the complete bound Reader. Neutral authoring workspace data is navigation/restart support only and must not preselect marks, candidate sets, external challengers, boundary candidates, confidence, Decision Core or prose.
+- Long-card recovery state belongs in repository-backed model-authored chunks plus an operation-only progress record; chat context is not the source of truth and a thread restart is not a second prediction attempt.
+- Prospective result unlock is fail-closed: after prediction Freeze/format audit, persist the applicable pre-result confidence artifact before opening results when confidence/A-purification is under evaluation.
+- Existing historical Freezes are immutable; missing old confidence artifacts are not backfilled after results.
+
 # JRDB Result Query fresh-runtime bootstrap — 2026-10-12
 
 - Completed-race result/payout lookup in a new Chat / Work runtime must follow `docs/JRDB_RESULT_QUERY_GPT_RUNTIME_RUNBOOK_v0_1.md`.
