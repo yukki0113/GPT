@@ -1,0 +1,145 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 4,
+    "race_model": "阪神ダート1200m未勝利。6番IDM42、14番41.1、8番41が上位。6番はKYI19.1で上昇、14番は予測着差3、8番は差しで着差4。",
+    "marks": [
+      6,
+      14,
+      16,
+      8,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番オオデンタはIDM42で能力最上位、KYI19.1で上昇する追込馬。状態面も強い。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番ステラノヴァはIDM41.1、短距離適性○、KYI12.5の差し馬で予測着差3。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番リリードリーマーはIDM41、適性○、調教60の差し馬。能力帯では主力。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番テーオーテバルディはIDM37、短距離適性○の差し馬で予測着差0。今回の適合度を評価。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "16番トップレディーはIDM39の逃げ馬で上がり予測0。差し・追込の上位勢が構えれば前残りの勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部3番はIDM38、短距離適性○の逃げ馬。固定境界4番はIDM37でも予測着差0で、今回レースへの直接適合を優先。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "6オオデンタは能力と上昇度が中心。14と8が差しで続くが、16トップレディーの逃げが展開上の一発。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        14,
+        16,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番はIDM38の逃げ馬で適性○だが予測着差8。五頭目より今回の着順予測が弱い。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界4番はIDM37ながら予測着差0、外部3番はIDM38でも着差8。短距離戦の現在予測を能力1差より重く見た。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 14,
+      "honmei_win_case": "6番はIDM42、KYI19.1で上昇する追込馬。能力最上位で差し切る余地が大きい。",
+      "second_case": "14番はIDM41.1、適性○、KYI12.5で予測着差3。安定した差しで逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6番は14番よりIDMで0.9上、KYI19.1対12.5。14番の予測着差3を考慮しても状態と能力で6番を上位。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 5,
+    "race_model": "阪神芝2000m新馬。4番がIDM45.6・KYI22.5でデキ抜群、5番36.9、1番32.6が続く。完成度の差が大きい。",
+    "marks": [
+      4,
+      5,
+      3,
+      1,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4番ジャスティンルマンはIDM45.6、調教54、KYI22.5でデキ抜群。予測着差0と素質・完成度が突出。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番ブルースカイブルーはIDM36.9、KYI16.7で上昇。二番手の素質と状態を持つ。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番プレイザリードはIDM32.6、KYI11.5。予測着差8で中位勢では直接材料がある。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番テイエムプレミランはIDM19.8、KYI-0.1で大崩れの状態ではなく五頭目候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3番ナムラヴンダーはIDM31.6、KYI11.4で上昇。4番が初戦で取りこぼすなら上昇度から割り込む余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "外部2番はIDM15.4、KYI-9.5。固定境界6番はIDM19.8、KYI-0.1で新馬の完成度比較では6番が上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "4ジャスティンルマンはデキ抜群で素質値も一枚上。5が相手本線、3ナムラヴンダーは上昇度から一発候補。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        5,
+        3,
+        1,
+        6
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番は新馬IDM15.4、KYI-9.5で、五頭目を押し出す完成度材料が乏しい。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "新馬の境界は6番と2番。IDM19.8対15.4、KYI-0.1対-9.5で6番が能力・状態の両方を上回る。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 5,
+      "honmei_win_case": "4番はIDM45.6、KYI22.5、デキ抜群、予測着差0。初戦から勝ち切る準備が整う。",
+      "second_case": "5番はIDM36.9、KYI16.7で上昇。完成度で4番に次ぐ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4番は5番よりIDMで8.7上、KYIも22.5対16.7。新馬戦の素質と仕上がり双方で明確に4番を上位。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
