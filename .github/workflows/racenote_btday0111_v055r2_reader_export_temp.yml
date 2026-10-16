@@ -1,0 +1,39 @@
+name: RaceNote BTDAY-0111 v055r2 reader export
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0111.v055r2-reader-export'
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Verify sealed lean readers
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0111/20250726/v055')
+          s=json.loads((root/'session.json').read_text())
+          m=json.loads((root/'reader_manifest.json').read_text())
+          assert s['contract_revision']=='v055-win-confidence-lean-reader-r2'
+          assert s['reader_projection']=='v055-lean-model-reader-r2'
+          assert s['result_opened'] is False and s['target_market_opened'] is False
+          for e in m['entries']:
+              p=root/'reader'/e['derived_normal_filename']
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==e['derived_normal_sha256']
+          print(len(m['entries']))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: btday0111-v055r2-readers
+          path: |
+            horse-racing/jrdb/backtests/BTDAY-0111/20250726/v055/session.json
+            horse-racing/jrdb/backtests/BTDAY-0111/20250726/v055/reader_manifest.json
+            horse-racing/jrdb/backtests/BTDAY-0111/20250726/v055/reader/
+          retention-days: 7
