@@ -78,9 +78,9 @@ jobs:
           if not isinstance(kinds,list) or not kinds:
               raise SystemExit('kinds must be non-empty list')
           kinds=[str(x).upper() for x in kinds]
-          allowed={'PACI','SED','HJC'}
+          allowed={'PACI','SED','HJC','SKB'}
           if any(x not in allowed for x in kinds):
-              raise SystemExit('supported kinds: PACI, SED, HJC')
+              raise SystemExit('supported kinds: PACI, SED, HJC, SKB')
           Path('/tmp/request.json').write_text(json.dumps({'date':date,'kinds':kinds},indent=2),encoding='utf-8')
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
               f.write(f'date={date}\n')
