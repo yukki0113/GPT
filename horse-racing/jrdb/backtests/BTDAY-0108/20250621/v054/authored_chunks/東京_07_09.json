@@ -182,10 +182,7 @@
     "rrdb_refs": [
       {
         "horse_no": 6,
-        "signal_ids": [
-          "TIME_CLASS_PLUS1"
-        ],
-        "interpretation": "過去時計のクラス価値を補助する材料として扱い、現在のIDM55と近走内容に重ねて差し切り経路を評価。"
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
       }
     ],
     "reader_facing_reason": "9ピックデムッシュは連勝内容と今回の能力評価が抜ける。2400m実績では5アメジストブラックが相手筆頭で、差しが利けば6クロシェットノエルの時計能力も怖い。",
