@@ -34,7 +34,7 @@
     },
     "boundary_review": {
       "alternative_horse_no": 10,
-      "reason": "外部10番は過去に東京ダ1600m4着IDM32があるが、直近1400m13着で状態面が後退。境界15番は直近3着IDM35で現在の上向きが明確。"
+      "reason": "10番は過去に東京ダ1600m4着IDM32があるが、近走1400m13着で状態面が後退。一方15番は直近ダ1400m3着IDM35と上向いており、現在の走りでは15番を10番より優先する。"
     },
     "rrdb_refs": [
       {
@@ -64,7 +64,7 @@
       "second_case": "7番は予測着差0・上がり0で、1800mIDM40の地力を前受けで生かせば逆転可能。",
       "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
       "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
-      "ranking_reason": "7番の能力上限は高いが、13番は直近同距離3着という直接性とRRDBの先行持続材料があるため13番を上位にした。"
+      "ranking_reason": "7番はダ1800m4着IDM40と予測着差0を持つ一方、13番は直近東京ダ1600m3着IDM38にFRONT_SURVIVE_GAP05が重なる。同舞台への直接性では13番が7番を上回る。"
     },
     "reader_facing_reason_authorship": {
       "mode": "MODEL_AUTHORED_PER_RACE",
@@ -187,7 +187,7 @@
     },
     "boundary_review": {
       "alternative_horse_no": 9,
-      "reason": "外部9番は同距離6着IDM29で直接実績があるが、境界6番は先行して予測中盤・上がり0、ダ1400mIDM31。勝ち筋の位置取り優位を残す。"
+      "reason": "9番は東京ダ1600m6着IDM29の経験がある一方、6番はダ1400mIDM31で予測中盤・上がり0と前受けの勝ち筋が明確。今回の位置取り材料では6番を9番より優先する。"
     },
     "rrdb_refs": [],
     "reader_facing_reason": "10カフェロワドールは前走同舞台2着の内容と先行力が強い。8コーシューパンジャの末脚が相手で、安定感では12オオタチも差は小さい。",
