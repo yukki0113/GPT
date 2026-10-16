@@ -87,7 +87,7 @@ def session_identity(session: dict[str, Any]) -> dict[str, Any]:
         for k in (
             "schema_version", "selection_id", "target_date", "base_main_sha",
             "clean_reader_manifest_sha256", "race_roster", "expected_venues",
-            "logic_version", "binding_sha256", "policy_sha256",
+            "logic_version", "reader_projection", "binding_sha256", "policy_sha256",
         )
     }
     # Every v0.5.5 session must bind the new contract revision explicitly.
