@@ -1,6 +1,6 @@
 {
   "version": "RaceNote-Forecast-Logic-Current-0.1",
-  "updated_at": "2026-10-15",
+  "updated_at": "2026-10-16",
   "current_logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
   "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_4_CANDIDATE.md",
   "logic_config": "config/racenote_forecast_logic_human_context_v0_5_4.json",
@@ -12,7 +12,7 @@
     "contract_revision": "v053-boundary-safety-r2",
     "status": "FROZEN_REPRODUCTION_PREDECESSOR"
   },
-  "change_reason": "RaceNote v0.5.4 r3: retain prediction/evidence semantics and strict Decision Core auditability while reducing reader-facing prose validation to provenance and obvious operational-accident prevention; no fixed comment composition is prescribed.",
+  "change_reason": "RaceNote v0.5.4 r3 prediction semantics remain unchanged. Operational authoring state is externalized to repository checkpoints so long-card execution can resume without chat-context dependence; the complete bound Reader remains mandatory evidence, and prospective confidence must be frozen before result unlock when confidence is under evaluation.",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
   "calibration_protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
@@ -51,10 +51,26 @@
     "single_day_entrypoint": "src/racenote_v054_single_day.py",
     "predecessor_logic_version": "RaceNote-Human-Context-Reader-0.5.3-candidate",
     "promoted_baseline_logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
-    "design_note": "v0.5.3 r2 decision invariants retained; RRDB v0.5/SRB/KYI semantics unchanged; Decision Core remains strictly race-specific, while reader-facing prose is model-authored per race with no fixed mark coverage, sentence order/count, comparison-word, or narrow length target. Legacy r2/r1 Freeze verification remains supported.",
+    "design_note": "v0.5.3 r2 decision invariants retained; RRDB v0.5/SRB/KYI semantics unchanged; Decision Core remains strictly race-specific and reader-facing prose remains free-form model-authored per race. Long-card operation may persist neutral navigation/progress checkpoints, but every race still requires the complete bound Reader and deterministic helpers may not narrow candidate/boundary/mark decisions.",
     "same_day_ab": false,
     "production_pointer_unchanged": false,
     "freeze_artifact": "<output-root>/v054/frozen/records.json",
-    "reader_facing_prose_policy": "MODEL_AUTHORED_PER_RACE_FREE_FORM_ACCIDENT_GUARD_ONLY"
+    "reader_facing_prose_policy": "MODEL_AUTHORED_PER_RACE_FREE_FORM_ACCIDENT_GUARD_ONLY",
+    "authoring_state_policy": {
+      "complete_reader_required_per_race": true,
+      "neutral_workspace_role": "NAVIGATION_AND_RESTART_ONLY",
+      "neutral_workspace_must_not_select": [
+        "marks",
+        "ordinary_five",
+        "external_challenger",
+        "boundary_candidate",
+        "confidence",
+        "decision_core",
+        "reader_facing_reason"
+      ],
+      "model_authored_chunk_checkpoints": true,
+      "progress_state_role": "OPERATION_STATE_ONLY",
+      "confidence_pre_result_barrier": "REQUIRED_WHEN_CONFIDENCE_IS_EVALUATED_BEFORE_RESULT_UNLOCK"
+    }
   }
 }
