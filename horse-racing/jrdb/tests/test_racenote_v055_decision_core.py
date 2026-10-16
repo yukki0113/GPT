@@ -208,3 +208,15 @@ def test_lean_reader_removes_duplicate_provenance_but_keeps_race_evidence():
     assert "lookback_days" not in horse["rrdb_v05"]
     assert "policy" not in horse["historical_race_lap_contexts"][0]
     assert "race_lap_provenance" not in horse["historical_race_lap_contexts"][0]
+
+
+def test_short_single_sentence_reader_note_is_valid_editorial_prose():
+    c = core()
+    c["reader_facing_reason"] = "前が競れば3番の差し込みが怖い。"
+    validate_core(c, reader())
+    report = inspect([c])
+    assert report["status"] == "PASS"
+
+
+def test_previous_r2_contract_remains_verifiable():
+    validate_core(core(), reader(), contract_revision="v055-win-confidence-lean-reader-r2")
