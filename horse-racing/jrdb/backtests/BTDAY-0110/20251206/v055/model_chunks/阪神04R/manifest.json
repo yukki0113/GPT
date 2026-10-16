@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "venue": "阪神",
+  "race_no": 4,
+  "source_reader_file": "racenote_reader_20251206_阪神4R.json",
+  "source_reader_sha256": "18f68a6747a11a0678755065c56fe9d9b8fe41abb4bc907d3a5c243f1b174315",
+  "source_semantic_sha256": "637a567303df437e088a388e9d94091331cf7d89988592c7d7a47c4895674c03",
+  "reassembled_semantic_sha256": "637a567303df437e088a388e9d94091331cf7d89988592c7d7a47c4895674c03",
+  "context_file": "race_context.json",
+  "context_sha256": "e542955e0f2a142bdf4a6502e2fcdfa2a7b6f460b13d40f0b005cd98e7fa687b",
+  "horse_count": 9,
+  "chunk_count": 5,
+  "chunks": [
+    {
+      "file": "chunk_001.json",
+      "sha256": "7a9d11ea282e3289db5fa716d52528f6344470b9bda371a39a9f1ecec5584cb0",
+      "horse_nos": [
+        1,
+        2
+      ],
+      "size_bytes": 28599
+    },
+    {
+      "file": "chunk_002.json",
+      "sha256": "ba6693f09a6a84fe394837183abb160e91235d73e901fba31501e37e09a6e326",
+      "horse_nos": [
+        3,
+        4
+      ],
+      "size_bytes": 22481
+    },
+    {
+      "file": "chunk_003.json",
+      "sha256": "d1437a0f0bd2fb6a59dec64eaf93521e74ffd8487bb123331c28077dd7cb92da",
+      "horse_nos": [
+        5,
+        6
+      ],
+      "size_bytes": 24370
+    },
+    {
+      "file": "chunk_004.json",
+      "sha256": "3b8011bc5caceeaf4840419f9b214c24e31575531976a08a665a8fea9027f41b",
+      "horse_nos": [
+        7,
+        8
+      ],
+      "size_bytes": 26909
+    },
+    {
+      "file": "chunk_005.json",
+      "sha256": "d434d11808b2ac4cab04e8a9f8b2233c8d1982babc6fbf23a3d774261c6f1975",
+      "horse_nos": [
+        9
+      ],
+      "size_bytes": 14521
+    }
+  ]
+}

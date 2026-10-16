@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "venue": "中京",
+  "race_no": 9,
+  "source_reader_file": "racenote_reader_20251206_中京9R.json",
+  "source_reader_sha256": "61d5e97dfa142b7bcf2f1ee975d6526183931a361241d9d1a402692019f861dc",
+  "source_semantic_sha256": "b0ab929113fadd90d9a6149f25ffeb0e0d37f2c457f326ec81bce3f6c8c1803f",
+  "reassembled_semantic_sha256": "b0ab929113fadd90d9a6149f25ffeb0e0d37f2c457f326ec81bce3f6c8c1803f",
+  "context_file": "race_context.json",
+  "context_sha256": "5137bdb77c6074b3c10a5a2584156adb5b21d320a8838e1216bc95a91b35c74d",
+  "horse_count": 8,
+  "chunk_count": 5,
+  "chunks": [
+    {
+      "file": "chunk_001.json",
+      "sha256": "1c2c725299f56d97bcc189a43ab0c3189ffc8cd5cc7e46028aa9abb08ec77144",
+      "horse_nos": [
+        1
+      ],
+      "size_bytes": 19557
+    },
+    {
+      "file": "chunk_002.json",
+      "sha256": "7db4c33da17ca669ef7a6470d0cbcb7f488adc3c0450530248d1a94d11a9da14",
+      "horse_nos": [
+        2,
+        3
+      ],
+      "size_bytes": 26534
+    },
+    {
+      "file": "chunk_003.json",
+      "sha256": "f0f7c4f80d1e186e61821bdd61bb158f09b689233a8211ba1df5854f61be22d9",
+      "horse_nos": [
+        4,
+        5
+      ],
+      "size_bytes": 26238
+    },
+    {
+      "file": "chunk_004.json",
+      "sha256": "8156027b94b73b5ceca15a652ce681fedcb41b8eef9f3ed552d280d1c72610c6",
+      "horse_nos": [
+        6,
+        7
+      ],
+      "size_bytes": 28998
+    },
+    {
+      "file": "chunk_005.json",
+      "sha256": "a9e0ba33bd8a206f9e1a13cedf0d948378a530d8e38021e39831fa50cdce3e3b",
+      "horse_nos": [
+        8
+      ],
+      "size_bytes": 10891
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "venue": "中山",
+  "race_no": 2,
+  "source_reader_file": "racenote_reader_20251206_中山2R.json",
+  "source_reader_sha256": "b65f0770cf9f84e646a72f35a1f7602d61f681b9000d75121d6fd9cd3071275c",
+  "source_semantic_sha256": "cc694b7078fab87b5a799098780bd988b5c70c8fcfcab71da2c30222ab2692f7",
+  "reassembled_semantic_sha256": "cc694b7078fab87b5a799098780bd988b5c70c8fcfcab71da2c30222ab2692f7",
+  "context_file": "race_context.json",
+  "context_sha256": "4364d5f27f79ce0be4694ab49b05bd5533f72b216767fa936bc0123da52ad998",
+  "horse_count": 13,
+  "chunk_count": 7,
+  "chunks": [
+    {
+      "file": "chunk_001.json",
+      "sha256": "987c7ba84082e4041a22b2357ed60bc486c4d0ba30e6c6c6f3328eac91f7daa9",
+      "horse_nos": [
+        1,
+        2
+      ],
+      "size_bytes": 24261
+    },
+    {
+      "file": "chunk_002.json",
+      "sha256": "489322fe5079eb682ded2da9a54e174962ec8df44691df0051a780cff9f74bbd",
+      "horse_nos": [
+        3,
+        4
+      ],
+      "size_bytes": 29672
+    },
+    {
+      "file": "chunk_003.json",
+      "sha256": "a01e4549aaa5f37210e6ca2a6b34f866a79c0c94b92c25acbe33ed8871954c06",
+      "horse_nos": [
+        5,
+        6
+      ],
+      "size_bytes": 25088
+    },
+    {
+      "file": "chunk_004.json",
+      "sha256": "1113893852d7ccc0e2171a0d4aac98bf3aeed24f89fe2963ea049cfac9e80004",
+      "horse_nos": [
+        7,
+        8
+      ],
+      "size_bytes": 22528
+    },
+    {
+      "file": "chunk_005.json",
+      "sha256": "817520af877975782ee23de80ae0c0d16b72b1dc4323289004bd1a48a230f942",
+      "horse_nos": [
+        9,
+        10
+      ],
+      "size_bytes": 21803
+    },
+    {
+      "file": "chunk_006.json",
+      "sha256": "0ff9c5953bafdb1ffd65ea08716f98bd96a13907f017d1a410f707d2008bb397",
+      "horse_nos": [
+        11,
+        12
+      ],
+      "size_bytes": 25937
+    },
+    {
+      "file": "chunk_007.json",
+      "sha256": "5942047d80a786e45cd7b8971e75af82c17c1c0232b0847432d433681e7bc764",
+      "horse_nos": [
+        13
+      ],
+      "size_bytes": 11609
+    }
+  ]
+}

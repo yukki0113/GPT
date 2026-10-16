@@ -1,0 +1,143 @@
+{
+  "status": "PASS",
+  "venue": "中山",
+  "race_no": 7,
+  "source_reader_file": "racenote_reader_20251206_中山7R.json",
+  "source_reader_sha256": "07b2a03d24d0d0d4ebb2b9ddeb2d1573c19532f3bcba9dfd5018911e3641dee6",
+  "source_semantic_sha256": "686407e0e3b44736569577ef74a6c73d29240f8e342696102e907999945fe480",
+  "reassembled_semantic_sha256": "686407e0e3b44736569577ef74a6c73d29240f8e342696102e907999945fe480",
+  "context_file": "race_context.json",
+  "context_sha256": "9e13647bdc3c9420532bcb965b9aaa946a2599c53561bf9bebfdc954cfa9223a",
+  "horse_count": 16,
+  "chunk_count": 16,
+  "chunks": [
+    {
+      "file": "chunk_001.json",
+      "sha256": "15242a867a5f2eebb99a9c9c855f382a59288b1ccef872ebbaf006b758a457cc",
+      "horse_nos": [
+        1
+      ],
+      "size_bytes": 19222
+    },
+    {
+      "file": "chunk_002.json",
+      "sha256": "03d0985fdf5a0369dde8c86fc55f27f960f3511c0ff87ccb5d6a570de9c03d75",
+      "horse_nos": [
+        2
+      ],
+      "size_bytes": 21049
+    },
+    {
+      "file": "chunk_003.json",
+      "sha256": "a871642d567ebff3ecc57046bd3a1c64cb133ed973e58eae5224fd717241e799",
+      "horse_nos": [
+        3
+      ],
+      "size_bytes": 22404
+    },
+    {
+      "file": "chunk_004.json",
+      "sha256": "2f4ce2dee6792a720da57207a6a55fb19c33b0f71be69361f7197eff8aa8fc3e",
+      "horse_nos": [
+        4
+      ],
+      "size_bytes": 18090
+    },
+    {
+      "file": "chunk_005.json",
+      "sha256": "e5be8680f4ced4dc453bff8eadc142f6b7b6e4f579884c56bf5aee91bcc6817b",
+      "horse_nos": [
+        5
+      ],
+      "size_bytes": 24205
+    },
+    {
+      "file": "chunk_006.json",
+      "sha256": "83d8952d1299a0b763d81c77959d83eafa5882c629c070afb46a6747167ff5dc",
+      "horse_nos": [
+        6
+      ],
+      "size_bytes": 23971
+    },
+    {
+      "file": "chunk_007.json",
+      "sha256": "61d67e588e7d42bca5792f5ff5e97ad5e0c1fd69a6b8960e9f7838e675151a42",
+      "horse_nos": [
+        7
+      ],
+      "size_bytes": 22251
+    },
+    {
+      "file": "chunk_008.json",
+      "sha256": "a3f761428554286136bfb03fc12c15b76582ccd9da3309cf6b58c3bc1c839291",
+      "horse_nos": [
+        8
+      ],
+      "size_bytes": 23110
+    },
+    {
+      "file": "chunk_009.json",
+      "sha256": "4bd463ea0c29884c5043c3addfb385f93200d5697857d1ea0c6e12b78c59d1bf",
+      "horse_nos": [
+        9
+      ],
+      "size_bytes": 22780
+    },
+    {
+      "file": "chunk_010.json",
+      "sha256": "5778d34ac9cfaee8cf26e7135c0e83f628b676d72e8e2aa221fd2467ca386f99",
+      "horse_nos": [
+        10
+      ],
+      "size_bytes": 22156
+    },
+    {
+      "file": "chunk_011.json",
+      "sha256": "3bd65c9cb4bd83a1c98f294703ca996cce56f9ed7092fe97cb9f7593a38ef80f",
+      "horse_nos": [
+        11
+      ],
+      "size_bytes": 22589
+    },
+    {
+      "file": "chunk_012.json",
+      "sha256": "4f387aa7d8dfbfba3b6692492a89364ac0bb19fe04a39237f7ed1a8aa9eb5da7",
+      "horse_nos": [
+        12
+      ],
+      "size_bytes": 23125
+    },
+    {
+      "file": "chunk_013.json",
+      "sha256": "758b8320b0ce74dcede4a6407f95acb5b61ccf3678f1166cad72c76015d2ce98",
+      "horse_nos": [
+        13
+      ],
+      "size_bytes": 22400
+    },
+    {
+      "file": "chunk_014.json",
+      "sha256": "422eab581e45d229f1fb01544fe745b36414901524a3f2a648666b5bd359f4dd",
+      "horse_nos": [
+        14
+      ],
+      "size_bytes": 19411
+    },
+    {
+      "file": "chunk_015.json",
+      "sha256": "c1e1d51e4ee4d46b5b6091f5654f73814907c301500b721e4ded0bf41d2532e5",
+      "horse_nos": [
+        15
+      ],
+      "size_bytes": 22722
+    },
+    {
+      "file": "chunk_016.json",
+      "sha256": "8741aaf8c3ce7e2e1a112085c5054a4ebb4551bb96c1930b4b1d75ba7ca3c009",
+      "horse_nos": [
+        16
+      ],
+      "size_bytes": 22241
+    }
+  ]
+}

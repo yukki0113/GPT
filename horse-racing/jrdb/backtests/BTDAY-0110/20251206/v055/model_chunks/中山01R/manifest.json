@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "venue": "中山",
+  "race_no": 1,
+  "source_reader_file": "racenote_reader_20251206_中山1R.json",
+  "source_reader_sha256": "3348d5eafdce150734c52910bac9c8e0cc7b3c61c4da314fec22ac50ef255d0c",
+  "source_semantic_sha256": "a8bfbd5bebf11808ef71b05d07fdf966ca7cc3f3e9374f1b39aa064927639132",
+  "reassembled_semantic_sha256": "a8bfbd5bebf11808ef71b05d07fdf966ca7cc3f3e9374f1b39aa064927639132",
+  "context_file": "race_context.json",
+  "context_sha256": "c57e1b84aa7e53ff73b70c5bdb711737b0a4319d8e27159d0568b76df43c07b4",
+  "horse_count": 15,
+  "chunk_count": 9,
+  "chunks": [
+    {
+      "file": "chunk_001.json",
+      "sha256": "3b6b4607bb9bd1e3e078b3035bd684eaa5351b3937cdfdb0a88cc478031e1ab4",
+      "horse_nos": [
+        1,
+        2
+      ],
+      "size_bytes": 28607
+    },
+    {
+      "file": "chunk_002.json",
+      "sha256": "6c561938cf5604cf1a59bac249c717d8c796090bcd682f2b267bc2446f21c879",
+      "horse_nos": [
+        3,
+        4
+      ],
+      "size_bytes": 28899
+    },
+    {
+      "file": "chunk_003.json",
+      "sha256": "ae456b96c1da974b217bb66bc36e59379614a0ae6c55732195a4e3ee7cd0ca50",
+      "horse_nos": [
+        5
+      ],
+      "size_bytes": 13197
+    },
+    {
+      "file": "chunk_004.json",
+      "sha256": "7323ecb2123b799ee95b8beac89934d2dd9e676025700a3ea8b130f32becaeb7",
+      "horse_nos": [
+        6
+      ],
+      "size_bytes": 19972
+    },
+    {
+      "file": "chunk_005.json",
+      "sha256": "7b8dd920165b29b8f54fc62dbd80cb1fde3f5b1bda165bbfb9d2accfcf196dac",
+      "horse_nos": [
+        7,
+        8
+      ],
+      "size_bytes": 29359
+    },
+    {
+      "file": "chunk_006.json",
+      "sha256": "92e0b4c02e64519519a4e7d8dd3c9b07bd6df4c717ea83780b65826a77f39667",
+      "horse_nos": [
+        9,
+        10
+      ],
+      "size_bytes": 22858
+    },
+    {
+      "file": "chunk_007.json",
+      "sha256": "c49a459dc570e2b534febed9dba7b58cdabfba694bda799cd15aa78dc867782b",
+      "horse_nos": [
+        11
+      ],
+      "size_bytes": 19362
+    },
+    {
+      "file": "chunk_008.json",
+      "sha256": "60fe843f8e9b11c866c43e3d779c88991628d74a6607b2761813c649c3631a72",
+      "horse_nos": [
+        12,
+        13
+      ],
+      "size_bytes": 27204
+    },
+    {
+      "file": "chunk_009.json",
+      "sha256": "063adc76b28c35d8d32a585e0ef82cb44bd6f98a099b2b423efff3a384438a42",
+      "horse_nos": [
+        14,
+        15
+      ],
+      "size_bytes": 24263
+    }
+  ]
+}

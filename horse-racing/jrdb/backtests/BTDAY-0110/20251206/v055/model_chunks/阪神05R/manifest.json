@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "venue": "阪神",
+  "race_no": 5,
+  "source_reader_file": "racenote_reader_20251206_阪神5R.json",
+  "source_reader_sha256": "c21c2076035adc797566894b007a112da26c9859dcfc29f1734573681f212b22",
+  "source_semantic_sha256": "88e8c3df3e8910e75de3c8c4cec8924454cdb37dc9884cdfec572715083ac667",
+  "reassembled_semantic_sha256": "88e8c3df3e8910e75de3c8c4cec8924454cdb37dc9884cdfec572715083ac667",
+  "context_file": "race_context.json",
+  "context_sha256": "c090c5d6343bb45c4d89ca41fde75a174f1a97bc26deac5ae6d68753859c0843",
+  "horse_count": 10,
+  "chunk_count": 2,
+  "chunks": [
+    {
+      "file": "chunk_001.json",
+      "sha256": "b3d4762e796deb7e44247202fb67a96bd3e7d0582248d90e9c1bb0b87e2b3203",
+      "horse_nos": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "size_bytes": 28908
+    },
+    {
+      "file": "chunk_002.json",
+      "sha256": "4875dcd17de33382e0b4bb10a5470bbaaa0c6e3d7694da85220029a49211af3a",
+      "horse_nos": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "size_bytes": 28939
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "venue": "中山",
+  "race_no": 6,
+  "source_reader_file": "racenote_reader_20251206_中山6R.json",
+  "source_reader_sha256": "262551819d633ceb5cafee66a689fdeb6f7de11d4df84bff6cb2057eb3efdecd",
+  "source_semantic_sha256": "f3814e41e5e7a165819f5af61d9e3683c9622a5bb77602cb27712cee2a4094b1",
+  "reassembled_semantic_sha256": "f3814e41e5e7a165819f5af61d9e3683c9622a5bb77602cb27712cee2a4094b1",
+  "context_file": "race_context.json",
+  "context_sha256": "93f3bd43d3ea782484f9bbe9bd5b8052d1902491db446ef547c88195ce786ce7",
+  "horse_count": 16,
+  "chunk_count": 4,
+  "chunks": [
+    {
+      "file": "chunk_001.json",
+      "sha256": "2050f442eeaa896ee21fa9e07356b7c49d8e5989e755bbff703c1356bdc0e325",
+      "horse_nos": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "size_bytes": 28874
+    },
+    {
+      "file": "chunk_002.json",
+      "sha256": "eb1f4b84288749f12c51bfedad0bdb5a63a927df47ed667e608de156ff2c052c",
+      "horse_nos": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "size_bytes": 28914
+    },
+    {
+      "file": "chunk_003.json",
+      "sha256": "b0fd98e5745fd6cbab7f735bcc3b79e0d2ce5ede91f2f86fcbc50475bbdee2ca",
+      "horse_nos": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "size_bytes": 28994
+    },
+    {
+      "file": "chunk_004.json",
+      "sha256": "7ed8ff6113518d503c6c35e5836ecb0945a42781ca1216ade9df7c498c541647",
+      "horse_nos": [
+        16
+      ],
+      "size_bytes": 5803
+    }
+  ]
+}
