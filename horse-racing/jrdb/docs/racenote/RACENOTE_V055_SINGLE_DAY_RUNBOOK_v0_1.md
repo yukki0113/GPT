@@ -172,6 +172,26 @@ Both:
 
 Only after final `verify` succeeds may result evaluation begin.
 
+## 7.1 Completion report to the forecast execution thread
+
+After Prediction Freeze, Confidence Freeze, and final `verify` succeed, keep the chat completion report compact.
+
+The canonical frozen artifacts already contain the full race-by-race marks, comments, and Confidence review. Therefore, the normal completion report must summarize only:
+
+- race / frozen counts;
+- Prediction / Confidence final statuses;
+- A/B/C counts;
+- prediction / confidence hashes;
+- `result_opened=false`;
+- `target_market_opened=false`;
+- material technical observations, if any.
+
+Do **not** print the full card of ◎ ○ ▲ △ △, short comments, or per-race Confidence back into the conversation after successful completion.
+
+Only reproduce a full or partial marks table when the user explicitly asks to see it.
+
+This is a conversation-volume control only. It does not reduce or alter any repository artifact, Freeze record, handoff, or downstream publication requirement.
+
 ## 8. Result evaluation
 
 After result unlock report:
