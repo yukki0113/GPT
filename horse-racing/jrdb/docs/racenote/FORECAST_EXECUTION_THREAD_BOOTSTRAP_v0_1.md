@@ -1,6 +1,6 @@
 # RaceNote Forecast Execution Thread Bootstrap v0.1
 
-Status: CURRENT — v0.5.3 rebuilt r2 (2026-10-14)
+Status: CURRENT — v0.5.4 authored-prose r3 (2026-10-16)
 
 このスレッドはRaceNoteの **pre-result prediction execution専用** とする。
 
@@ -13,33 +13,35 @@ Status: CURRENT — v0.5.3 rebuilt r2 (2026-10-14)
 - `current_logic_version`: 別管理のproduction pointer。新規candidate予想を選ぶフィールドではない。
 - `prospective_research_candidate`: 新規clean-blind candidate予想の入口。
 
-新規予想では `prospective_research_candidate.logic_contract` と `runbook` を一組として読み、v0.5.3 r2 contract revisionを確認する。過去versionの手順を混ぜない。歴史再現を明示された場合だけ対象versionのfrozen contractを使う。
+新規予想では `prospective_research_candidate.logic_contract` と `runbook` を一組として読み、現在の contract revision を確認する。2026-10-16時点の新規clean-blind入口は v0.5.4 r3。過去versionの手順を混ぜない。歴史再現を明示された場合だけ対象versionのfrozen contractを使う。
 
 ## 2. Current candidate route
 
-- Logic: `RaceNote-Human-Context-Reader-0.5.3-candidate`
-- Contract revision: `v053-boundary-safety-r2`
-- Logic: `FORECAST_HUMAN_CONTEXT_READER_v0_5_3_CANDIDATE.md`
-- Operation: `RACENOTE_V053_SINGLE_DAY_RUNBOOK_v0_1.md`
-- Promoted baseline / historical reproduction: v0.5.2
-- Reader-facing language: `FORECAST_READER_FACING_PROSE_v0_1.md`
+- Logic: `RaceNote-Human-Context-Reader-0.5.4-candidate`
+- Contract revision: `v054-authored-prose-r3`
+- Logic contract: `FORECAST_HUMAN_CONTEXT_READER_v0_5_4_CANDIDATE.md`
+- Operation: `RACENOTE_V054_SINGLE_DAY_RUNBOOK_v0_1.md`
+- Predecessor / historical reproduction: v0.5.3 r2
+- Reader-facing prose: model-authored per race; no programmatic fallback
 
 対象日指定またはBTDAY抽選後、source mode（2026 PACI / accepted Historical Warehouse）を解決し、canonical入力からDAY PREP、market-blind forecast_prep、sealed v0.5.3 Reader/sessionまで構築する。必要な依存が現runtimeに無い場合はcanonical pipelineを実行可能な環境へrouteし、代替Reader・暫定Freezeを作らない。
 
 ```text
 source resolve / pre-race canonical input
   -> day prep + forecast prep
-  -> SEALED v0.5.3 r2 Reader (READY_FOR_V053_AUTHORING)
-  -> complete-Reader model authoring, all expected venues
+  -> SEALED v0.5.4 r3 Reader (READY_FOR_V054_AUTHORING)
+  -> contract/schema preflight
+  -> complete-Reader model authoring in 3-4R chunks
+  -> full-card schema/quality preflight
   -> venue immutable save
   -> FROZEN_CLEAN_BLIND
   -> verify
   -> downstream publication; results only after Freeze/Verify
 ```
 
-BTDAY予約、PACI / Warehouse準備、全会場の予想、Freeze/Verifyは同一予想依頼の内部工程である。会場保存後に確認待ちで止まらない。v0.5.2用workflowをv0.5.3に無審査で複製しない。
+BTDAY予約、PACI / Warehouse準備、全会場の予想、Freeze/Verifyは同一予想依頼の内部工程である。会場保存後に確認待ちで止まらない。過去version用workflowをv0.5.4へ無審査で複製しない。
 
-## 3. v0.5.3 r2 model judgment
+## 3. v0.5.4 r3 model judgment
 
 Readerの全馬を読み、固定weightではなくレース全体の展開・能力・適性・状態・再現性・履歴を横比較する。
 
@@ -54,9 +56,13 @@ Decision Coreの`ranking_reason`は◎と○の比較だけ、`boundary_review.r
 
 ## 4. Save / Freeze / recovery
 
-正式な保存先は `<output-root>/v053/incoming/<venue>.json`、復旧点はv0.5.3 `save` 済み会場。対象venueを保存したら次会場へ自動継続する。
+正式な保存先は `<output-root>/v054/incoming/<venue>.json`、復旧点はmodel-authored 3–4R chunk checkpointおよびv0.5.4 `save` 済み会場。
 
-全会場分を保存してから `racenote_v053_single_day.py freeze` → `verify` を実行。検証後のみpublicationや結果照合を行う。保存済み会場は障害復旧時に再予想・上書きしない。
+T2開始時に active validator / persisted schema / authoring quality guard を一度確認する。全chunk執筆後、最初のActions Freezeを投げる前に全レースへ同じschema/quality条件のpreflightを一括適用し、違反をFreeze前に解消する。schemaやqualityをActions実行後に逐次発見する運用を避ける。
+
+全会場分を保存してから `racenote_v054_single_day.py freeze` → `verify` を実行。技術retryでは完了chunkを再予想せず、失敗step/logを一度確認してschema / quality / infrastructureへ分類し、該当箇所だけ修正する。Reader manifestは一度解決し、各raceのcomplete Readerは通常のauthoring passで一度読む。意味のない再取得・tight pollingを避ける。
+
+検証後のみpublicationや結果照合を行う。保存済み予想を障害復旧の都合で再予想・上書きしない。
 
 ## 5. Clean-blind / stop conditions
 
