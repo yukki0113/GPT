@@ -405,7 +405,7 @@
       "external_challenger_case": "外部1番はIDM47の先行馬だが、五頭目より能力と状態の直接支持が弱い。",
       "excluded_horse_no": 1,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "1番と固定境界3番をIDM47対49、KYI2.8対16.1で比較し3番を優先した。"
+      "reason": "東京芝2400mの固定境界3番はIDM49にKYI16.1でデキ抜群。外部1番はIDM47・KYI2.8の先行馬で、長距離戦でも状態差と2ポイントの能力差を重く見て3番を維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 6,
@@ -476,7 +476,7 @@
       "external_challenger_case": "外部8番はIDM44、予測着差1の差し馬だが調教33で状態支持が弱い。",
       "excluded_horse_no": 8,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "8番と固定境界1番をIDM44対46、調教33対59で比較し1番を優先した。"
+      "reason": "東京ダート1400mでは固定境界1番がIDM46・調教59の追込、外部8番はIDM44・調教33の差し。短距離戦での地力と仕上がりの両面から1番を残した。"
     },
     "role_assignment": {
       "honmei_horse_no": 2,
@@ -547,7 +547,7 @@
       "external_challenger_case": "外部10番はIDM40、適性○の差し馬だが、五頭目より能力と状態の直接支持が弱い。",
       "excluded_horse_no": 10,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "10番と固定境界2番をIDM40対41、調教55対59、予測着差4対1で比較し2番を優先した。"
+      "reason": "東京ダート1600mの固定境界2番はIDM41、調教59、予測着差1。外部10番はIDM40、調教55、予測着差4で、現在値を並べると2番が上回るため五頭目を維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 13,
@@ -618,7 +618,7 @@
       "external_challenger_case": "外部4番はIDM53、調教59の差し馬だが、五頭目より能力と上昇度で僅かに劣る。",
       "excluded_horse_no": 4,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "4番と固定境界3番をIDM53対53.3、状態評価で比較し3番を優先した。"
+      "reason": "東京芝1800mの固定境界3番はIDM53.3で上昇気配、外部4番はIDM53・調教59。能力差は僅少でも上向き評価を持つ3番をこの条件では残した。"
     },
     "role_assignment": {
       "honmei_horse_no": 8,
@@ -757,10 +757,10 @@
         2
       ],
       "external_challenger_horse_no": 9,
-      "external_challenger_case": "外部9番はIDM56、適性◎の先行馬だが、五頭目より能力と状態の直接支持が弱い。",
+      "external_challenger_case": "外部9番はIDM56、芝2400m適性◎の先行馬。ただしKYI-5.2で状態支持が弱く、長距離戦の五頭目を押し出す直接材料には届かない。",
       "excluded_horse_no": 9,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "9番と固定境界2番をIDM56対57.1、KYI-5.2対16.6で比較し2番を優先した。"
+      "reason": "東京芝2400mの固定境界2番はIDM57.1、KYI16.6で上昇する差し馬。外部9番はIDM56・KYI-5.2の先行馬で、長距離戦の現状態を比べて2番を残した。"
     },
     "role_assignment": {
       "honmei_horse_no": 8,
