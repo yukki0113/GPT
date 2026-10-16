@@ -1,0 +1,319 @@
+name: RaceNote BTDAY-0107 v0.5.4 T1
+
+on:
+  push:
+    branches: [run/btday0107-v054-t1]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0107/V054_PREPARE_TRIGGER'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      JRDB_USER: ${{ secrets.JRDB_USER }}
+      JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: run/btday0107-v054-t1
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: python -m pip install 'duckdb==1.1.3' pyarrow pandas numpy jsonschema gdown
+
+      - name: Materialize accepted historical inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/historical
+          for attempt in 1 2 3; do
+            if python tools/gpt_io/public_drive/fetch.py \
+              --manifest horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json \
+              --output-root /tmp/historical \
+              --receipt /tmp/historical/public_drive_fetch_receipt.json; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then exit 1; fi
+            sleep 10
+          done
+          mkdir -p /tmp/historical/analysis /tmp/historical/rrdb
+          tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
+          unzip -q /tmp/historical/rrdb.zip -d /tmp/historical/rrdb
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11799761734/zip > /tmp/historical/course-fit.zip
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('/tmp/historical/course-fit.zip')
+          assert p.stat().st_size == 170365515
+          assert hashlib.sha256(p.read_bytes()).hexdigest() == '18570ef9c366f78b2f8bb60c380e24b70f1b80e070ddf1961acaed7bde35627d'
+          PY
+          mkdir -p /tmp/historical/course-fit
+          unzip -q /tmp/historical/course-fit.zip -d /tmp/historical/course-fit
+
+      - name: Build canonical 2024-2025 RaceLap snapshot
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2024 --to-year 2025 \
+            --kinds SED \
+            --output-dir /tmp/racelap-raw \
+            --sleep-seconds 0.2 \
+            --max-retries 5 \
+            --retry-backoff-seconds 2
+          mkdir -p /tmp/racelap
+          python horse-racing/jrdb/src/jrdb_race_lap_dataset.py \
+            /tmp/racelap-raw/SED/SED_2024.zip \
+            /tmp/racelap-raw/SED/SED_2025.zip \
+            --output /tmp/racelap/race_lap.parquet \
+            --audit /tmp/racelap/race_lap.audit.json \
+            --replace
+          PYTHONPATH=horse-racing/jrdb/src python - <<'PY'
+          import json
+          from pathlib import Path
+          from jrdb_race_lap_reader import RaceLapReader
+          root=Path('/tmp/racelap')
+          reader=RaceLapReader.from_parquet(root/'race_lap.parquet')
+          receipt={
+            'status':'PASS',
+            'artifact_type':'btday0107_v054_race_lap_input',
+            'coverage':'2024-2025 annual SED',
+            'reader_metadata':reader.store.metadata(),
+            'frozen_rear_srb_contract':'rrdb-rear-srb-q20-v0.1',
+          }
+          (root/'receipt.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(receipt,ensure_ascii=False))
+          PY
+
+      - name: Build RaceNote and seal v0.5.4 prediction input
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from __future__ import annotations
+          import hashlib, json, tempfile
+          from datetime import date
+          from pathlib import Path
+          import subprocess
+
+          from build_racenote_daily import (
+              build_reader_views, enrich_history_bundles, enrich_rrdb_bundles,
+              validate_daily_bundles, write_daily_package,
+          )
+          from racenote_analysis_backend import open_analysis_backend
+          from racenote_prepare_forecast_input import bind
+          from racenote_request import RaceNoteRequest, build_historical_warehouse_base
+          from racenote_v053_from_historical_warehouse import validate_gate
+          from racenote_v054_kyi_bundle import build_bundle
+          from racenote_v054_single_day import init_session
+
+          TARGET_DATE='2025-09-14'
+          SELECTION_ID='BTDAY-0107'
+          target=Path('horse-racing/jrdb/backtests/BTDAY-0107/20250914')
+          if target.exists():
+              raise FileExistsError(target)
+          source_sha=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          day=date.fromisoformat(TARGET_DATE)
+
+          warehouse_current=Path('/tmp/historical/warehouse/current.json')
+          warehouse_root=Path('/tmp/historical/warehouse')
+          analysis_root=Path('/tmp/historical/analysis')
+          rrdb_root=Path('/tmp/historical/rrdb/postrace_review/v0_1')
+          course_fit_root=Path('/tmp/historical/course-fit')
+          target_bac=Path('/tmp/historical/raw/BAC/BAC_2025.zip')
+          target_kyi=Path('/tmp/historical/raw/KYI/KYI_2025.zip')
+          race_lap=Path('/tmp/racelap/race_lap.parquet')
+          equivalence=Path('horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json')
+
+          gate=validate_gate(equivalence, warehouse_current)
+          target.mkdir(parents=True)
+
+          with tempfile.TemporaryDirectory(prefix='btday0107-v054-') as tmp:
+              work=Path(tmp)
+              request=RaceNoteRequest(day,None,None,date.today())
+              base_dir, warehouse_report=build_historical_warehouse_base(
+                  request, warehouse_current,
+                  [f'{family}={warehouse_root}' for family in ('BAC','KYI','CHA','CYB','ZED','ZKB')],
+                  work/'base',
+              )
+              warehouse={}
+              for p in sorted(base_dir.glob('race_bundle_*.json')):
+                  bundle=json.loads(p.read_text(encoding='utf-8'))
+                  race=bundle['race']
+                  key=(race['venue'],race['race_no'])
+                  if key in warehouse: raise ValueError(f'duplicate Warehouse race: {key}')
+                  warehouse[key]=bundle
+
+              for bundle in warehouse.values():
+                  if bundle['race']['date'] != TARGET_DATE:
+                      raise ValueError('Warehouse race date differs from target')
+                  for horse in bundle['horses']:
+                      for run in horse.get('recent_runs') or []:
+                          run_date=(run.get('race') or {}).get('date')
+                          if isinstance(run_date,str) and run_date >= TARGET_DATE:
+                              raise ValueError('target/future result in Warehouse recent_runs')
+
+              analysis=open_analysis_backend(analysis_root=analysis_root,backend='parquet')
+              try:
+                  bases=[warehouse[k] for k in sorted(warehouse)]
+                  history_bundles,history_report=enrich_history_bundles(bases,analysis)
+              finally:
+                  analysis.close()
+
+              enriched,rrdb_report=enrich_rrdb_bundles(
+                  history_bundles,
+                  paci_path=target_bac,
+                  course_fit_root=course_fit_root,
+                  race_lap_parquet=race_lap,
+                  racereview_root=rrdb_root,
+                  racereview_current_cache=None,
+                  next_watch_rules=None,
+                  work_root=work/'rrdb',
+              )
+              views,reader_report=build_reader_views(enriched)
+              report={
+                  'base':{
+                      'target_date':TARGET_DATE,
+                      'date_raw':day.strftime('%Y%m%d'),
+                      'race_count':len(bases),
+                      'target_result_contamination':0,
+                      'record_counts':warehouse_report['record_counts'],
+                  },
+                  'history':history_report,
+                  'rrdb':rrdb_report,
+                  'reader':reader_report,
+              }
+              validation=validate_daily_bundles(enriched,views,report,TARGET_DATE)
+              package=write_daily_package(
+                  bundles=enriched,views=views,report=report,validation=validation,
+                  target_date=TARGET_DATE,output_root=target/'day_prep',
+              )
+
+          if warehouse_report['generation_id'] != gate['warehouse_reconstruction']['generation_id']:
+              raise ValueError('Warehouse generation changed after acceptance gate')
+
+          daily=target/'day_prep'/f'RaceNote_{day:%Y%m%d}'
+          manifest_path=Path(package['manifest'])
+          manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
+          manifest['sources'].pop('paci',None)
+          manifest['sources']['historical_warehouse']={
+              'generation_id':warehouse_report['generation_id'],
+              'target_date':TARGET_DATE,
+              'as_of_exclusive':TARGET_DATE,
+              'record_counts':warehouse_report['record_counts'],
+          }
+          manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          prep=target/'forecast_prep'
+          handoff=bind(daily,prep,SELECTION_ID,TARGET_DATE,source_sha)
+
+          evidence=build_bundle(prep,[target_kyi])
+          evidence_path=target/'v054_inputs'/'kyi_bundle.json'
+          evidence_path.parent.mkdir(parents=True)
+          evidence_path.write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+
+          session=init_session(
+              prep,target/'v054',source_sha,
+              evidence_bundle=evidence_path,
+              race_lap_parquet=race_lap,
+          )
+
+          (target/'day_prep'/'manifest.json').write_text(manifest_path.read_text(encoding='utf-8'),encoding='utf-8')
+          validation_path=daily/'validation_report.json'
+          (target/'day_prep'/'validation_report.json').write_text(validation_path.read_text(encoding='utf-8'),encoding='utf-8')
+
+          source_audit=target/'source_audit'
+          source_audit.mkdir(parents=True)
+          for src,name in [
+              (Path('/tmp/historical/public_drive_fetch_receipt.json'),'public_drive_fetch_receipt.json'),
+              (Path('/tmp/racelap/race_lap.audit.json'),'race_lap.audit.json'),
+              (Path('/tmp/racelap/receipt.json'),'race_lap_receipt.json'),
+          ]:
+              (source_audit/name).write_bytes(src.read_bytes())
+
+          sha=lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+          operation={
+              'schema_version':'racenote-v054-from-historical-warehouse-0.1',
+              'status':'READY_FOR_V054_AUTHORING',
+              'source_backend':'historical_warehouse',
+              'source_generation_id':warehouse_report['generation_id'],
+              'source_current_sha256':sha(warehouse_current),
+              'equivalence_report_sha256':sha(equivalence),
+              'golden_day':gate['target_date'],
+              'selection_id':SELECTION_ID,
+              'target_date':TARGET_DATE,
+              'as_of_exclusive':TARGET_DATE,
+              'logic_version':session['logic_version'],
+              'contract_revision':session.get('contract_revision'),
+              'session_id':session['session_id'],
+              'forecast_prep':str(prep),
+              'v054_root':str(target/'v054'),
+              'race_count':len(session['race_roster']),
+              'expected_venues':session['expected_venues'],
+              'market_blind':handoff['market_blind'],
+              'result_opened':handoff['result_opened'],
+              'target_market_opened':handoff['target_market_opened'],
+              'rrdb_contract_version':rrdb_report['recommendation_contract_version'],
+              'kyi_coverage':evidence['coverage'],
+              'race_lap_parquet_sha256':session['race_lap_parquet_sha256'],
+              'evidence_bundle_sha256':session['evidence_bundle_sha256'],
+          }
+          (target/'operation_handoff.json').write_text(
+              json.dumps(operation,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'
+          )
+          print(json.dumps(operation,ensure_ascii=False,indent=2))
+          PY
+
+      - name: Validate T1 gates
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0107/20250914')
+          m=json.loads((root/'day_prep/manifest.json').read_text())
+          v=json.loads((root/'day_prep/validation_report.json').read_text())
+          p=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text())
+          o=json.loads((root/'operation_handoff.json').read_text())
+          s=json.loads((root/'v054/session.json').read_text())
+          rm=json.loads((root/'v054/reader_manifest.json').read_text())
+          assert m['status']=='PASS' and v['status']=='PASS'
+          assert o['status']=='READY_FOR_V054_AUTHORING'
+          assert o['source_backend']=='historical_warehouse'
+          assert o['rrdb_contract_version']=='rrdb-recommendation-signals-v0.5'
+          assert o['logic_version']=='RaceNote-Human-Context-Reader-0.5.4-candidate'
+          assert o['contract_revision']=='v054-authored-prose-r3'
+          assert o['market_blind'] is True and o['result_opened'] is False and o['target_market_opened'] is False
+          assert s['status']=='SESSION_SEALED'
+          assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.4-candidate'
+          assert s['contract_revision']=='v054-authored-prose-r3'
+          assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
+          assert len(s['race_roster'])==m['counts']['races_built']==p['race_count']==o['race_count']==len(rm['entries'])
+          assert o['race_count'] > 0
+          assert s['evidence_bundle_sha256']==o['evidence_bundle_sha256']
+          assert s['race_lap_parquet_sha256']==o['race_lap_parquet_sha256']
+          assert o['kyi_coverage']['reader_horse_count'] >= o['kyi_coverage']['kyi_matched_count']
+          assert not (root/'v054'/'frozen').exists()
+          PY
+
+      - name: Commit T1
+        run: |
+          set -euo pipefail
+          TARGET='horse-racing/jrdb/backtests/BTDAY-0107/20250914'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET"
+          git commit -m 'RaceNote: stage BTDAY-0107 v0.5.4 T1'
+          git push origin HEAD:run/btday0107-v054-t1
