@@ -622,7 +622,7 @@
       "external_challenger_case": "外部6番はIDM42.1とRRDB FRONT_SURVIVE_GAP05の文脈を持つが、上位五頭より直接能力が低い。",
       "excluded_horse_no": 6,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "6番と固定境界10番をIDM42.1対47、KYI-2.5対12.4で比較し10番を優先した。"
+      "reason": "京都芝2000mでは10番のIDM47とKYI12.4の上昇を重視。6番はIDM42.1でRRDBのFRONT_SURVIVE_GAP05はあるが、固定境界10番の直接能力が明確に上回るため維持した。"
     },
     "role_assignment": {
       "honmei_horse_no": 4,
@@ -838,7 +838,7 @@
       "external_challenger_case": "外部4番はIDM50の逃げ馬だがKYI-10.1で状態支持が弱く、五頭目より直接材料が不足する。",
       "excluded_horse_no": 4,
       "decision": "KEEP_ORDINARY_FIVE",
-      "reason": "4番と固定境界1番をIDM50対52.3、KYI-10.1対11.2で比較し、1番を優先した。"
+      "reason": "京都ダート1800mの固定境界1番はIDM52.3、KYI11.2。外部4番はIDM50にKYI-10.1の逃げ馬で、能力と状態を比較すると1番が上回るため入れ替えない。"
     },
     "role_assignment": {
       "honmei_horse_no": 3,
