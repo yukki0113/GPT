@@ -371,7 +371,8 @@ def project_horse(
         explicit = {
             "mark": row["mark"] or None,
             "confidence": row["confidence"] or None,
-            "tag": row["tag"] or None,
+            # Import matching strategy is internal metadata, not a reader tag.
+            "tag": None if (member == "ryota" and row["tag"] == "馬番照合") else (row["tag"] or None),
             "review_horse": row["review_horse"],
             "comment": row["comment"] or None,
         }
