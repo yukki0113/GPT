@@ -70,5 +70,82 @@
         "single_shot_case"
       ]
     }
+  },
+  {
+    "venue": "中京",
+    "race_no": 8,
+    "race_model": "中京ダート1200m1勝クラス。逃げ先行優位だが、11番はダ1200m勝ちIDM47と最速上がり反復、RRDB FRONT_SURVIVE_GAP05。2番は直近同距離5着IDM47で、能力上位を軸に前残りを組み込む。",
+    "marks": [
+      11,
+      2,
+      4,
+      6,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11番ゼンカイパイロはダ1200m1着IDM47、3着IDM35でREPEATED_FASTEST_LAST3F。事前IDM50.1・KYI14.6にRRDB FRONT_SURVIVE_GAP05が重なる。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番サクラトップヒルは1月12日のダ1200m5着IDM47。予測着差0、KYI16.7で直近同条件の能力値が高い。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番テイエムタリスマはダ1000m1着IDM40、1200mでも前走IDM39。先行脚質で予測着差1と前残り条件に合う。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番ジークシュベルトはダ1400m5着IDM42、1200m5着IDM38の実績。PACE_POSITION_AGAINST_GOOD_RUNがあり差しで展開に対応できる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番ダズリングダンスは逃げ脚質で予測中盤・上がり0、KYI13.7。前走1400m6着IDM39で、1200m短縮から先手を奪えば押し切る非対称な勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "外部15番はダ1200m勝ちIDM43があるが、直近同距離10着IDM38でKYI4.6。境界10番は直近ダ1400m5着IDM42とPACE_POSITION_AGAINST_GOOD_RUNを持ち、差しの再現性で15番を上回るため維持する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 11,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "11ゼンカイパイロは1200mでの末脚と事前能力を中心視。2サクラトップヒルも直近同距離IDM47で有力で、4ダズリングダンスの単騎逃げには注意。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        2,
+        4,
+        6,
+        10
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15番ピカリはダ1200m勝ちIDM43があるが、前走同距離10着IDM38で現在値は上位に一歩譲る。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "15番の過去勝ちは評価するが、境界10番は近走IDM42と展開逆風への耐性材料を持つため10番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 2,
+      "honmei_win_case": "11番はダ1200m勝ちIDM47、REPEATED_FASTEST_LAST3F、事前IDM50.1にRRDBシグナルまで揃う。",
+      "second_case": "2番は直近ダ1200m5着IDM47で予測着差0、KYI16.7。現条件への直接性が高い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "2番は直近同距離IDM47で強いが、11番は1200m勝ちにREPEATED_FASTEST_LAST3Fと事前IDM50.1、RRDB FRONT_SURVIVE_GAP05が重なる。勝ち切り上限を取り11番を◎、2番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
   }
 ]
