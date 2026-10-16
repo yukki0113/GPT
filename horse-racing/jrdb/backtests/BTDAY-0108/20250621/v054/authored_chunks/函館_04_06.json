@@ -39,10 +39,7 @@
     "rrdb_refs": [
       {
         "horse_no": 12,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "過去走の前受け持続力を補強する材料として扱い、単独で順位を決めてはいない。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "2メイショウキンタイは中距離での安定した高水準実績が抜ける。前で運べる12アオイタケルが相手で、短縮が嵌れば13ヤマニンヒストリアの差し切りも。",
