@@ -183,10 +183,7 @@
     "rrdb_refs": [
       {
         "horse_no": 15,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "直近短距離ダートの持続力を補助材料として扱い、距離延長の適否は既存1600m経験と能力上昇から判断。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "2チザルピーノは同舞台を中心に2着続きでも能力は上昇しており今度こそ。4ファンタイムギフトが同距離勝ち実績で相手、11レッドエウロスは一戦一勝の伸びしろが不気味。",
