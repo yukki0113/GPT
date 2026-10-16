@@ -1,0 +1,35 @@
+name: RaceNote BTDAY-0110 v055 reader export temp
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0110.v055-reader-export'
+permissions:
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Verify reader hashes
+        run: |
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0110/20251206/v055')
+          m=json.loads((root/'reader_manifest.json').read_text())
+          for e in m['entries']:
+              p=root/'reader'/e['derived_normal_filename']
+              assert hashlib.sha256(p.read_bytes()).hexdigest()==e['derived_normal_sha256']
+          print(len(m['entries']))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: btday0110-v055-readers
+          path: |
+            horse-racing/jrdb/backtests/BTDAY-0110/20251206/v055/session.json
+            horse-racing/jrdb/backtests/BTDAY-0110/20251206/v055/reader_manifest.json
+            horse-racing/jrdb/backtests/BTDAY-0110/20251206/v055/reader/
+          retention-days: 7
