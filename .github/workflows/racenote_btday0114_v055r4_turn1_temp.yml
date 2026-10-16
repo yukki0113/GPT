@@ -1,0 +1,224 @@
+name: RaceNote BTDAY-0114 v0.5.5 r4 TURN 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0114.v055r4-turn1'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: racenote-btday-0114-v055r4-turn1
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      JRDB_USER: ${{ secrets.JRDB_USER }}
+      JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+      PYTHONPATH: horse-racing/jrdb/src
+      TARGET: horse-racing/jrdb/backtests/BTDAY-0114/20250913
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r tools/data-storage/requirements.txt
+          python -m pip install gdown jsonschema pandas numpy
+      - name: Confirm immutable target is new
+        run: test ! -e "$TARGET"
+      - name: Materialize accepted Historical Warehouse inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/historical
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          manifest=Path('horse-racing/jrdb/config/public_drive/racenote_historical_golden_20251228_v1.json')
+          data=json.loads(manifest.read_text())
+          wanted={'golden_01','golden_02','golden_03','golden_04','golden_11','golden_12','golden_13','golden_14','golden_15','golden_16','golden_17','golden_18','golden_19'}
+          wanted.update(f'golden_{i:02d}' for i in range(21,49))
+          for row in data['artifacts']:
+              if row['artifact_id'] not in wanted:
+                  continue
+              subprocess.run(['python','tools/gpt_io/public_drive/fetch.py','--manifest',str(manifest),'--artifact',row['artifact_id'],'--output-root','/tmp/historical'],check=True)
+          PY
+          mkdir -p /tmp/historical/analysis
+          tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
+      - name: Materialize SHA-pinned current RRDB
+        run: |
+          python tools/gpt_io/public_drive/fetch.py \
+            --manifest horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json \
+            --artifact golden_20 \
+            --output-root /tmp/current-rrdb \
+            --receipt /tmp/current-rrdb/receipt.json
+          mkdir -p /tmp/rrdb
+          unzip -q /tmp/current-rrdb/rrdb.zip -d /tmp/rrdb
+          test -f /tmp/rrdb/postrace_review/v0_1/current.json
+      - name: Materialize approved Course Fit v0.1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11799761734/zip > /tmp/approved-fit.zip
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('/tmp/approved-fit.zip')
+          assert p.stat().st_size==170365515
+          h=hashlib.sha256()
+          with p.open('rb') as f:
+              for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+          assert h.hexdigest()=='18570ef9c366f78b2f8bb60c380e24b70f1b80e070ddf1961acaed7bde35627d'
+          PY
+          mkdir -p /tmp/course-fit
+          unzip -q /tmp/approved-fit.zip -d /tmp/course-fit
+          test -f /tmp/course-fit/fit/research/candidate_fit_view.parquet
+      - name: Build canonical RaceLap snapshot
+        run: |
+          mkdir -p /tmp/racelap-raw /tmp/racelap
+          python horse-racing/jrdb/src/fetch_jrdb_history.py \
+            --from-year 2024 --to-year 2025 --kinds SED \
+            --output-dir /tmp/racelap-raw --sleep-seconds 0.2 \
+            --max-retries 5 --retry-backoff-seconds 2
+          python horse-racing/jrdb/src/jrdb_race_lap_dataset.py \
+            /tmp/racelap-raw/SED/SED_2024.zip \
+            /tmp/racelap-raw/SED/SED_2025.zip \
+            --output /tmp/racelap/race_lap.parquet \
+            --audit /tmp/racelap/race_lap.audit.json --replace
+      - name: Build historical market-blind forecast prep
+        shell: bash
+        run: |
+          MAIN_SHA="$(git rev-parse HEAD)"
+          export MAIN_SHA
+          python - <<'PY'
+          import json, os, tempfile
+          from datetime import date
+          from pathlib import Path
+          from racenote_v053_from_historical_warehouse import validate_gate
+          from racenote_request import RaceNoteRequest, build_historical_warehouse_base
+          from racenote_analysis_backend import open_analysis_backend
+          from build_racenote_daily import enrich_history_bundles, enrich_rrdb_bundles, build_reader_views, validate_daily_bundles, write_daily_package
+          from racenote_prepare_forecast_input import bind
+
+          target=Path(os.environ['TARGET']); target.mkdir(parents=True)
+          target_date='2025-09-13'; day=date.fromisoformat(target_date)
+          current=Path('/tmp/historical/warehouse/current.json')
+          validate_gate(Path('horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json'),current)
+          request=RaceNoteRequest(day,None,None,date.today())
+          base_work=Path('/tmp/btday114-base'); base_work.mkdir(parents=True,exist_ok=True)
+          base_dir, warehouse_report=build_historical_warehouse_base(
+              request,current,[f"{family}=/tmp/historical/warehouse" for family in ('BAC','KYI','CHA','CYB','ZED','ZKB')],base_work)
+          warehouse={}
+          for path in sorted(base_dir.glob('race_bundle_*.json')):
+              bundle=json.loads(path.read_text(encoding='utf-8'))
+              warehouse[(bundle['race']['venue'],bundle['race']['race_no'])]=bundle
+          bases=[warehouse[k] for k in sorted(warehouse)]
+          if not bases: raise SystemExit('no target races reconstructed')
+          for bundle in bases:
+              assert bundle['race']['date']==target_date
+              for horse in bundle['horses']:
+                  for run in horse.get('recent_runs') or []:
+                      rd=(run.get('race') or {}).get('date')
+                      if isinstance(rd,str): assert rd < target_date
+          analysis=open_analysis_backend(analysis_root=Path('/tmp/historical/analysis'),backend='parquet')
+          try:
+              history_bundles, history_report=enrich_history_bundles(bases,analysis)
+          finally:
+              analysis.close()
+          with tempfile.TemporaryDirectory(prefix='btday114-rrdb-') as tmp:
+              enriched, rrdb_report=enrich_rrdb_bundles(
+                  history_bundles,
+                  paci_path=Path('/tmp/historical/raw/BAC/BAC_2025.zip'),
+                  course_fit_root=Path('/tmp/course-fit'),
+                  race_lap_parquet=Path('/tmp/racelap/race_lap.parquet'),
+                  racereview_root=Path('/tmp/rrdb/postrace_review/v0_1'),
+                  racereview_current_cache=None,next_watch_rules=None,work_root=Path(tmp))
+          views, reader_report=build_reader_views(enriched)
+          report={'base':{'target_date':target_date,'date_raw':'20250913','race_count':len(bases),'target_result_contamination':0,'record_counts':warehouse_report['record_counts'],'warnings':[]},'history':history_report,'rrdb':rrdb_report,'reader':reader_report}
+          validation=validate_daily_bundles(enriched,views,report,target_date)
+          if validation['status']!='PASS': raise SystemExit(repr(validation['errors']))
+          package=write_daily_package(bundles=enriched,views=views,report=report,validation=validation,target_date=target_date,output_root=target/'day_prep')
+          manifest_path=Path(package['manifest']); manifest=json.loads(manifest_path.read_text())
+          manifest['sources'].pop('paci',None)
+          manifest['sources']['historical_warehouse']={'generation_id':warehouse_report['generation_id'],'target_date':target_date,'as_of_exclusive':target_date,'record_counts':warehouse_report['record_counts']}
+          manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          handoff=bind(target/'day_prep'/'RaceNote_20250913',target/'forecast_prep','BTDAY-0114',target_date,os.environ['MAIN_SHA'])
+          assert handoff['market_blind'] is True and handoff['stripped_at_input_bind'] is True
+          assert handoff['result_opened'] is False and handoff['target_market_opened'] is False
+          (target/'day_prep'/'manifest.json').write_text(manifest_path.read_text(encoding='utf-8'),encoding='utf-8')
+          (target/'day_prep'/'validation_report.json').write_text((target/'day_prep'/'RaceNote_20250913'/'validation_report.json').read_text(encoding='utf-8'),encoding='utf-8')
+          PY
+      - name: Build KYI evidence and seal v0.5.5 r4 Lean Reader
+        run: |
+          mkdir -p "$TARGET/v054_inputs" "$TARGET/source_audit"
+          python horse-racing/jrdb/src/racenote_v054_kyi_bundle.py \
+            --prep-root "$TARGET/forecast_prep" \
+            --kyi-archive /tmp/historical/raw/KYI/KYI_2025.zip \
+            --output "$TARGET/v054_inputs/kyi_bundle.json"
+          python horse-racing/jrdb/src/racenote_v055_single_day.py init \
+            --prep-root "$TARGET/forecast_prep" \
+            --root "$TARGET/v055" \
+            --base-main-sha "$(git rev-parse HEAD)" \
+            --evidence-bundle "$TARGET/v054_inputs/kyi_bundle.json" \
+            --race-lap-parquet /tmp/racelap/race_lap.parquet
+          cp /tmp/current-rrdb/receipt.json "$TARGET/source_audit/rrdb_current_receipt.json"
+          cp /tmp/racelap/race_lap.audit.json "$TARGET/source_audit/race_lap.audit.json"
+      - name: Validate r4 TURN 1 final state
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['TARGET'])
+          s=json.loads((root/'v055/session.json').read_text())
+          m=json.loads((root/'v055/reader_manifest.json').read_text())
+          h=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text())
+          assert s['status']=='SESSION_SEALED'
+          assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.5-candidate'
+          assert s['contract_revision']=='v055-prediction-freeze-confidence-review-r4'
+          assert s['reader_projection']=='v055-lean-model-reader-r2'
+          assert s['selection_id']=='BTDAY-0114' and s['target_date']=='2025-09-13'
+          assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
+          assert s['base_main_sha']==h['main_sha']
+          assert m['contract_revision']=='v055-prediction-freeze-confidence-review-r4'
+          assert m['reader_projection']=='v055-lean-model-reader-r2'
+          assert len(m['entries'])==len(s['race_roster'])
+          op={
+            'schema_version':'racenote-v055-r4-turn1-handoff-0.1',
+            'status':'READY_FOR_V055_AUTHORING',
+            'selection_id':'BTDAY-0114','target_date':'2025-09-13',
+            'source_backend':'historical_warehouse',
+            'source_generation_id':'jrdb_normalized_warehouse_v1_2010_2025_g20260921',
+            'logic_version':s['logic_version'],'contract_revision':s['contract_revision'],
+            'reader_projection':s['reader_projection'],'session_id':s['session_id'],
+            'race_count':len(s['race_roster']),'expected_venues':s['expected_venues'],
+            'market_blind':True,'result_opened':False,'target_market_opened':False,
+            'rrdb_contract_version':'rrdb-recommendation-signals-v0.5',
+            'reader_reduction':{
+              'full_normal_bytes_total':sum(e['full_normal_bytes_before_projection'] for e in m['entries']),
+              'model_reader_bytes_total':sum(e['model_reader_bytes'] for e in m['entries']),
+              'mean_reduction_pct':round(sum(e['model_reader_reduction_pct'] for e in m['entries'])/len(m['entries']),1)
+            }
+          }
+          (root/'operation_handoff.json').write_text(json.dumps(op,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(op,ensure_ascii=False))
+          PY
+      - name: Commit immutable TURN 1
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET"
+          git commit -m "RaceNote: stage BTDAY-0114 v0.5.5 r4 TURN 1"
+          git pull --rebase origin main
+          git push origin HEAD:main
