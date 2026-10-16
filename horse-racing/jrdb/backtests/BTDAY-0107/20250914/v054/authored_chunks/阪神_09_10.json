@@ -1,0 +1,145 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 9,
+    "race_model": "阪神芝2000m2勝クラス。5番がIDM58・KYI23.5・予測着差0で中心。8番53、6番52、4番50が続く。逃げる5番の完成度が抜ける。",
+    "marks": [
+      5,
+      8,
+      4,
+      6,
+      3
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "5番エコロディノスはIDM58、適性○、調教61、KYI23.5で上昇し逃げて予測着差0。中心。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番カリーニョはIDM53、適性○、KYI15.4で上昇する差し馬。地力で二番手。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番アレナリアはIDM52、適性○、KYI10.7の先行馬。前で運んで圏内を狙える。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番パーサヴィアランスはIDM47の追込馬。マイル寄りでも地力で五頭目候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番ヤマニンループはIDM50、調教59、KYI19.1で上昇する追込馬。前が速くなれば末脚で上位へ届く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "外部2番はIDM45、短距離寄りの追込馬。固定境界3番はIDM47で、2000mでは直接能力差を優先して残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "5エコロディノスは能力・状態・逃げ予測が揃って中心。8が差しで追い、前が流れれば4ヤマニンループの追い込み。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        8,
+        4,
+        6,
+        3
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番はIDM45の追込馬だが短距離寄りで、2000mの五頭目を押し出す直接材料が弱い。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界3番はIDM47、外部2番はIDM45で短距離寄り。阪神芝2000mへの能力と距離適合を合わせて3番を維持した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 8,
+      "honmei_win_case": "5番はIDM58、KYI23.5、逃げで予測着差0。前から自力で押し切る材料が最も強い。",
+      "second_case": "8番はIDM53、KYI15.4で上昇する差し馬。流れが向けば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番は8番よりIDMで5上、KYI23.5対15.4、予測着差0対7。能力・状態・位置のすべてで5番を上位にした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 10,
+    "race_model": "阪神芝1600m3勝クラス。8番IDM66・KYI21.9でデキ抜群、1番60.1、10番60、7番58が続く。8番の絶対能力を中心にする。",
+    "marks": [
+      8,
+      1,
+      7,
+      10,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番ラヴァンダはIDM66、マイル適性◎、調教69、KYI21.9でデキ抜群。能力値が一段上。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番ハワイアンティアレはIDM60.1、適性◎、調教63、KYI13の差し馬で予測着差1。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番マイネルチケットはIDM60、適性◎、KYI13.8の差し馬。能力二番手群。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番モンテシートはIDM56の先行馬で予測着差2、上がり予測0。前から流れに乗れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7番ダズリングブレイヴはIDM58、KYI12.6の差し馬で予測着差0。8番が取りこぼす流れなら最も直接的に差し切れる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "外部6番はIDM55.1、適性◎の差し馬。固定境界4番はIDM56、先行で予測着差2・上がり0のため今回の位置取りを優先。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "8ラヴァンダは能力と仕上がりが一枚上。1が差しで追う。7ダズリングブレイヴは予測着差0で展開次第の一発。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        1,
+        7,
+        10,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番はIDM55.1、マイル適性◎の差し馬だが、五頭目より能力と予測位置の押しが弱い。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "阪神マイルの境界は4番IDM56・先行着差2と外部6番IDM55.1・差し着差16。位置取りと0.9の能力差で4番を残した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 1,
+      "honmei_win_case": "8番はIDM66、適性◎、調教69、KYI21.9でデキ抜群。差しでも能力で抜け出せる。",
+      "second_case": "1番はIDM60.1、適性◎、調教63、予測着差1。地力と状態で追う。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8番は1番よりIDMで5.9上、KYI21.9対13。1番の着差予測1を見ても絶対能力と仕上がりで8番を◎にした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
