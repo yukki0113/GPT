@@ -12,7 +12,7 @@ Use:
 - `audits/` for acceptance/revision decisions.
 
 Current parallel research lane: **RaceNote 0.5.x JRDB Feature Audit**.
-The current candidate for new clean-blind runs is v0.5.5 (`contract_revision=v055-win-confidence-lean-reader-r2`). It keeps the v0.5.4 source evidence and horse-selection semantics, makes A/B/C the confidence that ◎ wins, and reduces both model input and persisted Decision Core. T2 reads a deterministic Lean Model Reader rather than the former verbose enriched presentation. Earlier v0.5.x assets remain immutable reproduction evidence.
+The current candidate for new clean-blind runs is v0.5.5 (`contract_revision=v055-win-confidence-lean-reader-prose-r3`). It keeps the v0.5.4 source evidence and horse-selection semantics, makes A/B/C the confidence that ◎ wins, and uses the r2 Lean Model Reader / Lean Decision Core. Reader-facing prose is editorial: it selects the one race-specific point most useful to the reader instead of summarizing every mark. Earlier v0.5.x assets remain immutable reproduction evidence.
 Historical feature analysis must start with **2023-2025** and may extend to **2021-2025** only if the three-year result is inconclusive. If five years still yield no stable practical signal, stop expanding the horizon and retain the 0.4.x Human-Context principle rather than forcing a new feature hierarchy.
 
 Current Stage A instruction:
