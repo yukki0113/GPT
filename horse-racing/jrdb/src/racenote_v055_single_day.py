@@ -87,10 +87,12 @@ def session_identity(session: dict[str, Any]) -> dict[str, Any]:
         for k in (
             "schema_version", "selection_id", "target_date", "base_main_sha",
             "clean_reader_manifest_sha256", "race_roster", "expected_venues",
-            "logic_version", "reader_projection", "binding_sha256", "policy_sha256",
+            "logic_version", "binding_sha256", "policy_sha256",
         )
     }
-    # Every v0.5.5 session must bind the new contract revision explicitly.
+    # r2 binds the model Reader projection; r1 sessions predate this field.
+    if session.get("reader_projection") is not None:
+        result["reader_projection"] = session["reader_projection"]
 
     if session.get("contract_revision") is not None:
         result["contract_revision"] = session["contract_revision"]
@@ -307,8 +309,11 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
         session.get("schema_version") != SESSION_VERSION
         or session.get("status") != "SESSION_SEALED"
         or session.get("logic_version") != LOGIC
-        or session.get("reader_projection") != READER_PROJECTION
         or session.get("contract_revision") not in SUPPORTED_CONTRACT_REVISIONS
+        or (
+            session.get("contract_revision") == CONTRACT_REVISION
+            and session.get("reader_projection") != READER_PROJECTION
+        )
         or session.get("market_blind") is not True
         or session.get("target_market_opened") is not False
         or session.get("result_opened") is not False
