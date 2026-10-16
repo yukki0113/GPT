@@ -1,0 +1,66 @@
+name: RaceNote BTDAY-0114 v0.5.5 r4 Confidence Freeze
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0114.v055r4-confidence-freeze'
+permissions:
+  contents: write
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+      ROOT: horse-racing/jrdb/backtests/BTDAY-0114/20250913/v055
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Re-save final Confidence Review
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_single_day.py save-confidence --root "$ROOT" --confidence "$ROOT/incoming/confidence.json"
+      - name: Confidence Freeze and final verify
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_single_day.py freeze-confidence --root "$ROOT"
+          python horse-racing/jrdb/src/racenote_v055_single_day.py verify --root "$ROOT"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['ROOT'])
+          p=json.loads((root/'frozen/day_handoff.json').read_text(encoding='utf-8'))
+          c=json.loads((root/'confidence_frozen/day_handoff.json').read_text(encoding='utf-8'))
+          records=json.loads((root/'confidence_frozen/records.json').read_text(encoding='utf-8'))
+          assert p['status']=='PREDICTION_FROZEN_CLEAN_BLIND'
+          assert p['record_count']==24
+          assert c['status']=='CONFIDENCE_FROZEN_CLEAN_BLIND'
+          assert c['record_count']==24
+          assert c['confidence_frozen'] is True
+          assert c['confidence_meaning']=='HONMEI_WIN_CONFIDENCE'
+          assert c['prediction_records_sha256']==p['records_sha256']
+          assert c['result_opened'] is False and c['target_market_opened'] is False
+          counts={g:sum(1 for x in records if x['confidence']==g) for g in ('A','B','C')}
+          print(json.dumps({
+            'prediction_status':p['status'],
+            'confidence_status':c['status'],
+            'count':len(records),
+            'grades':counts,
+            'prediction_records_sha256':p['records_sha256'],
+            'confidence_records_sha256':c['confidence_records_sha256'],
+            'result_opened':False,
+            'target_market_opened':False
+          },ensure_ascii=False))
+          PY
+      - name: Commit Confidence Freeze
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$ROOT/confidence_review.json" "$ROOT/confidence_frozen"
+          git commit -m "RaceNote: freeze BTDAY-0114 v0.5.5 r4 confidence"
+          git pull --rebase origin main
+          git push origin HEAD:main
