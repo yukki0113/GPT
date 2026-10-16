@@ -80,6 +80,26 @@ target days selected / confirmed
   -> logic adjustment
 ```
 
+## 4.1 Chat completion-report policy
+
+Forecast execution threadは、予想出力完了後のチャット報告を**要約中心**にする。
+
+Git上のcanonical frozen artifactsへ全レースの印・短評が保存済みであるため、通常の完了報告では次だけを返す。
+
+- target / logic version / contract revision
+- usable race count / frozen count / technical skips
+- Prediction Freeze / Confidence Freeze / Verify status
+- A/B/C件数などの集計
+- prediction / confidence hash
+- `result_opened=false` / `target_market_opened=false`
+- 必要最小限のexecution observation
+
+**全レースの ◎ ○ ▲ △ △、短評、Confidenceをチャットへ再掲しない。**
+ユーザーが明示的に一覧表示を求めた場合だけ、必要な範囲をGit正本から再掲する。
+
+これは会話量を節約し、長いT2 execution threadを継続可能にするための運用規則であり、
+canonical prediction artifactやhandoff packageの保存内容を省略する規則ではない。
+
 ## 5. Required handoff package
 
 Forecast execution threadからResearch threadへ最低限返す:
