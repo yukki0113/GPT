@@ -24,7 +24,7 @@ Status: CURRENT — v0.5.4 authored-prose r3 (2026-10-16)
 - Predecessor / historical reproduction: v0.5.3 r2
 - Reader-facing prose: model-authored per race; no programmatic fallback
 
-対象日指定またはBTDAY抽選後、source mode（2026 PACI / accepted Historical Warehouse）を解決し、canonical入力からDAY PREP、market-blind forecast_prep、sealed v0.5.3 Reader/sessionまで構築する。必要な依存が現runtimeに無い場合はcanonical pipelineを実行可能な環境へrouteし、代替Reader・暫定Freezeを作らない。
+対象日指定またはBTDAY抽選後、source mode（2026 PACI / accepted Historical Warehouse）を解決し、canonical入力からDAY PREP、market-blind forecast_prep、sealed v0.5.4 Reader/sessionまで構築する。必要な依存が現runtimeに無い場合はcanonical pipelineを実行可能な環境へrouteし、代替Reader・暫定Freezeを作らない。
 
 ```text
 source resolve / pre-race canonical input
