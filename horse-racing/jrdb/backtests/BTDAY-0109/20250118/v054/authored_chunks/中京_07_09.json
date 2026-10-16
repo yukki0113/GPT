@@ -147,5 +147,77 @@
         "single_shot_case"
       ]
     }
+  },
+  {
+    "venue": "中京",
+    "race_no": 9,
+    "race_model": "中京ダート1800m2勝クラス。先行優位の条件で、11番は同距離をIDM56で1着・2着、3番も3着IDM54から1着IDM50。高水準の先行勢を軸に、前で運べる14番を変化球に置く。",
+    "marks": [
+      11,
+      3,
+      14,
+      13,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11番マーブルマウンテンはダ1800mでIDM56の1着・2着を連続し、事前IDM57・KYI19.4。REPEATED_FASTEST_LAST3Fもあり能力と再現性が最上位。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番シャパリュは前走ダ1800m3着IDM54、その前1着IDM50。KYI15.7、調教69・状態73で好位から安定して運べる。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番バロンドールは前走ダ1800m3着IDM51、過去にはIDM60の4着。KYI18.7、状態64で差しから能力上限を生かせる。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番チカミリオンはダ1800mでIDM52、過去1着IDM49・2着IDM49。調教77・状態65で近走6着からの上積みが見込める。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 14,
+      "case": "14番イモータルバードはダ1800m1着IDM50で、近走も先行を継続。予測中盤・上がり0で、上位差し勢より前で楽に運べればそのまま押し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "外部12番はダ1800mでIDM50～55を安定して出しREPEATED_FASTEST_LAST3Fもある。一方、境界4番は直近IDM52に調教77・状態65、過去同距離1着IDM49があり、現在の仕上がりと位置取りの自由度で12番を僅かに上回るため維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "11マーブルマウンテンは同距離IDM56を連続しており軸が明確。3シャパリュも近走安定し、14イモータルバードが前で楽をできれば粘り込みがある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        3,
+        14,
+        13,
+        4
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12番メイショウジェンマはダ1800mでIDM50～55を反復し末脚も安定するが、予測着差13で上位五頭より一段後ろ。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "12番の末脚は強いが、境界4番はIDM52と調教77・状態65。現在の仕上がりを優先し4番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 3,
+      "honmei_win_case": "11番はダ1800mでIDM56の1着・2着を連続し、事前IDM57・KYI19.4。先行して押し切る勝ち筋が最も太い。",
+      "second_case": "3番は同距離で3着IDM54、1着IDM50。調教69・状態73で11番を追う再現性が高い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "3番も前走3着IDM54と高いが、11番はIDM56の1着・2着を連続し事前IDM57。能力水準と反復性で11番を◎、3番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
   }
 ]
