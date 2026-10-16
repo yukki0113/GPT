@@ -13,8 +13,8 @@ from typing import Any
 
 LOGIC = "RaceNote-Human-Context-Reader-0.5.5-candidate"
 VERSION = "racenote-decision-core-0.5.5"
-CONTRACT_REVISION = "v055-win-confidence-lean-reader-r2"
-SUPPORTED_CONTRACT_REVISIONS = {"v055-win-confidence-lean-r1", CONTRACT_REVISION}
+CONTRACT_REVISION = "v055-win-confidence-lean-reader-prose-r3"
+SUPPORTED_CONTRACT_REVISIONS = {"v055-win-confidence-lean-r1", "v055-win-confidence-lean-reader-r2", CONTRACT_REVISION}
 
 DECISIONS = {"ADMIT_CHALLENGER", "KEEP_ORDINARY_FIVE", "NO_EXTERNAL_CHALLENGER"}
 CONFIDENCE = {"A", "B", "C"}
@@ -198,7 +198,7 @@ def validate_core(
         if recommendation.get("contract_version") != "rrdb-recommendation-signals-v0.5":
             raise ValueError(f"{venue}{race_no}R: cited horse lacks RRDB v0.5 evidence")
 
-    prose = _text(core.get("reader_facing_reason"), 35, f"{venue}{race_no}R reader-facing reason")
+    prose = _text(core.get("reader_facing_reason"), 12, f"{venue}{race_no}R reader-facing reason")
     if len(prose) > 240 or "\n" in prose:
         raise ValueError(f"{venue}{race_no}R: reader-facing reason must be one compact paragraph")
     for bad in _INTERNAL:

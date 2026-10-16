@@ -12,7 +12,7 @@
     "contract_revision": "v054-authored-prose-r3",
     "status": "FROZEN_REPRODUCTION_PREDECESSOR"
   },
-  "change_reason": "RaceNote v0.5.5 r2 keeps v0.5.4 evidence sources and horse-selection semantics, but T2 now reads a deterministic lean model Reader instead of the verbose enriched full presentation. Repeated provenance and duplicate representations are removed from model input; confidence remains embedded as ◎ win confidence.",
+  "change_reason": "RaceNote v0.5.5 r3 keeps r2 prediction/Reader semantics and rewrites reader-facing prose as editorial focus rather than Decision Core compression. The prose validator remains an accident guard and no longer imposes the former 35-character floor.",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "teacher_evidence": "racenote/evidence/human_forecast_evidence_202301.md",
   "calibration_protocol": "docs/racenote/FORECAST_AXIS_CALIBRATION_PROTOCOL_v0_1.md",
@@ -40,7 +40,7 @@
   "prospective_research_candidate": {
     "status": "CURRENT_FOR_NEW_CLEAN_BLIND_RUNS",
     "logic_version": "RaceNote-Human-Context-Reader-0.5.5-candidate",
-    "contract_revision": "v055-win-confidence-lean-reader-r2",
+    "contract_revision": "v055-win-confidence-lean-reader-prose-r3",
     "logic_contract": "docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_5_CANDIDATE.md",
     "logic_config": "config/racenote_forecast_logic_human_context_v0_5_5.json",
     "execution_contract": "RACENOTE_V055_SINGLE_DAY",
@@ -51,11 +51,11 @@
     "kyi_bundle_entrypoint": "src/racenote_v054_kyi_bundle.py",
     "single_day_entrypoint": "src/racenote_v055_single_day.py",
     "predecessor_logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
-    "design_note": "v0.5.5 r2 keeps v0.5.4 source evidence and horse-selection invariants while reducing both authored output and model input. T2 reads the complete bound lean model Reader for each race; full source evidence remains reconstructable from forecast_prep, the sealed KYI bundle and the bound RaceLap asset. A/B/C means ◎ win confidence.",
+    "design_note": "v0.5.5 r3 keeps the r2 Lean Reader, horse-selection and ◎ win-confidence semantics. Reader-facing prose is no longer treated as a Decision Core summary: after judgment, the model writes the single race-specific point most useful to the reader, without mandatory mark enumeration, sentence count or length target.",
     "same_day_ab": false,
     "production_pointer_unchanged": false,
     "freeze_artifact": "<output-root>/v055/frozen/records.json",
-    "reader_facing_prose_policy": "MODEL_AUTHORED_FREE_FORM_ACCIDENT_GUARD_ONLY",
+    "reader_facing_prose_policy": "EDITORIAL_FOCUS_ONE_MOST_USEFUL_RACE_POINT_ACCIDENT_GUARD_ONLY",
     "authoring_state_policy": {
       "complete_model_reader_required_per_race": true,
       "model_reader_projection": "v055-lean-model-reader-r2",

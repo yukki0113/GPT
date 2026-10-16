@@ -2,7 +2,7 @@
 
 Status: **CURRENT CANDIDATE / NEW v0.5.5 SESSIONS**  
 Logic: `RaceNote-Human-Context-Reader-0.5.5-candidate`  
-Revision: `v055-win-confidence-lean-reader-r2`
+Revision: `v055-win-confidence-lean-reader-prose-r3`
 
 ## 1. Prepare market-blind source
 
@@ -81,6 +81,14 @@ For a five-runner race use `NO_EXTERNAL_CHALLENGER`, null challenger/excluded fi
 A/B/C is assigned in the same race judgment and means confidence that ◎ wins.
 
 Do not calculate pairwise grades, A5/A7 or IDM-gap gates during authoring.
+
+### Reader-facing note
+
+Write `reader_facing_reason` only after the race judgment is complete.
+
+Do **not** summarize the whole Decision Core and do **not** routinely enumerate ○ / ▲ / other marked horses. Choose the single race-specific point that is most useful to the reader: ◎'s winning case, its main risk, the controlling pace/position issue, an interesting ▲ route, uncertainty, or another genuinely useful angle.
+
+One sentence is allowed. More than two sentences is allowed. There is no sentence-count or character-count target. Natural variation between races is desirable; repeated "◎を評価。○は～、▲は～" compression is not the intended product.
 
 ## 4. Checkpoints and restart
 
