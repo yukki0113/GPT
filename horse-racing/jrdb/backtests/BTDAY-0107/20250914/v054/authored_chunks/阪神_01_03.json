@@ -1,0 +1,215 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 1,
+    "race_model": "阪神ダート1400m未勝利。10番がIDM23.2・KYI19.9で中心、4番は上昇先行、7番は予測着差0の差し。能力と位置取りの両面から10番を軸にする。",
+    "marks": [
+      10,
+      4,
+      7,
+      13,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10番ラブルラウザーはIDM23.2、調教64、KYI19.9の先行馬。能力と状態が最上位。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番アンジュプロミスはIDM22、KYI14.1で上昇し先行で予測着差3。相手本線。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番ビタールートはIDM17.3、KYI17.3の先行馬。状態面の後押しが強い。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番フェスティヴドレスはIDM19、調教58、KYI10.9の追込馬。前が流れれば差し込める。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7番エボニードールはIDM17.2ながら差しで予測着差0。上位先行勢が競るなら終盤で頭まで届く経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "外部12番はIDM17の追込馬でKYI4。固定境界9番はIDM19、調教58、KYI10.9で、同じ後方型なら9番の直接材料が上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "10ラブルラウザーは能力と状態が揃う。4が前から追い、流れが締まれば7エボニードールの差しが面白い。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        4,
+        7,
+        13,
+        9
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12番は追込で予測着差5だがIDM17、KYI4。五頭目より能力と状態の押しが弱い。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "阪神1400mの境界は9番と12番。IDM19対17、KYI10.9対4、調教58対38で9番が三項目とも上回る。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 4,
+      "honmei_win_case": "10番はIDM23.2、調教64、KYI19.9の先行馬。自分から位置を取って押し切れる。",
+      "second_case": "4番はIDM22、KYI14.1で上昇し予測着差3。好位から逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "10番は4番よりIDMで1.2上、KYI19.9対14.1、調教64対55。先行同士なら10番の現在値を優先する。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 2,
+    "race_model": "阪神芝1400m未勝利。1番IDM35が能力最上位、10番はKYI19.7でデキ抜群かつ予測着差0。6番も逃げて着差1で、前のスピードを重視する。",
+    "marks": [
+      10,
+      1,
+      6,
+      5,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10番フォーゲルはIDM30.3、KYI19.7でデキ抜群、先行で予測着差0。現在値が高い。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番シャローアロスはIDM35で能力最上位、逃げて予測着差2。地力で対抗。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番ダイヤモンドノットはIDM28、調教63の先行馬で上がり予測0。状態から主線に残す。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番プレセピオはIDM29.1の差し馬で予測着差2。前がやり合えば圏内へ届く。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6番ルビーエクリプスはIDM30の逃げ馬で予測着差1、上がり予測0。単騎なら前から押し切る別線がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "外部8番はIDM29、KYI11の差し馬。固定境界9番はIDM29.1、予測着差2で、能力とレース予測を僅かに優先。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "10フォーゲルはデキ抜群と予測着差0が魅力。1は地力最上位。6が楽に逃げると前残りの形まである。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        1,
+        6,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8番はIDM29、KYI11の差し馬で状態は悪くないが、五頭目より今回予測の直接支持が弱い。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "1400mの五頭目は9番。8番とIDM29対29.1でほぼ同じだが、9番は予測着差2、8番は9でレース適合を取った。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 1,
+      "honmei_win_case": "10番はIDM30.3でもKYI19.7のデキ抜群、予測着差0。先行から勝ち切る現在値が高い。",
+      "second_case": "1番はIDM35で能力最上位の逃げ馬。地力だけなら逆転十分。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "1番はIDMで4.7上だが10番はKYI19.7対15.8、予測着差0対2。未勝利戦では現在状態と予測適合を重視して10番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 3,
+    "race_model": "阪神ダート1800m未勝利。10番IDM44・KYI20.7・予測着差0が中心。14番はIDM40.4の逃げ、4番38の追込が続く。前後両方の勝ち筋を残す。",
+    "marks": [
+      10,
+      14,
+      4,
+      8,
+      7
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10番フランキーバローズはIDM44、適性○、調教59、KYI20.7。先行して予測着差0で中心。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番アルデフォックスはIDM40.4、中距離評価の逃げ馬で上がり予測0。前から逆転可能。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番メイショウカジボウはIDM36、適性○、KYI9.6の差し馬。中距離条件の直接材料を持つ。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番クインズマカロンはIDM33、適性○の追込馬。前崩れなら終盤に浮上する。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番ラテライトはIDM38、適性○の追込馬。上位二頭が早めに動く消耗戦なら直線でまとめて差せる。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "外部9番はIDM31、短距離寄りの差し馬。固定境界7番はIDM33・中距離適性○で、1800mへの直接適合が上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "10フランキーバローズは能力と状態が揃う。14の逃げが相手本線で、前が厳しくなれば4ラテライトの追い込み。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        14,
+        4,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9番はIDM31の差し馬で上昇気配はあるが、距離適性が短距離寄りで1800mの支持が弱い。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "固定境界7番はIDM33・中距離適性○、外部9番はIDM31・短距離寄り。阪神1800mへの条件適合と2ポイントの能力差で7番を残した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 14,
+      "honmei_win_case": "10番はIDM44、適性○、KYI20.7、予測着差0。先行から自力で勝ち切れる。",
+      "second_case": "14番はIDM40.4の逃げ馬で上がり予測0。展開を支配すれば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "10番は14番よりIDMで3.6上、KYI20.7対6.6。14番の逃げ利を考慮しても能力と状態で10番を上位にした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
