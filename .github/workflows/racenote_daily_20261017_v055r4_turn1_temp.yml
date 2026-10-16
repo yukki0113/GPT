@@ -135,7 +135,7 @@ jobs:
         run: |
           set -euo pipefail
           MAIN_SHA="$(git rev-parse HEAD)"
-          python horse-racing/jrdb/src/racenote_v053_from_paci.py             --date 2026-10-17             --paci /tmp/input/PACI261017.zip             --selection-id DAILY-20261017             --main-sha "$MAIN_SHA"             --analysis-root /tmp/analysis             --course-fit-root /tmp/course-fit             --racereview-root /tmp/rrdb/postrace_review/v0_1             --output-root "$TARGET"
+          python horse-racing/jrdb/src/racenote_v053_from_paci.py             --date 2026-10-17             --paci /tmp/input/PACI261017.zip             --selection-id DAILY-20261017             --main-sha "$MAIN_SHA"             --analysis-root /tmp/analysis             --course-fit-root /tmp/course-fit             --race-lap-parquet /tmp/racelap/race_lap.parquet             --racereview-root /tmp/rrdb/postrace_review/v0_1             --output-root "$TARGET"
           rm -rf "$TARGET/v053"
           cp "$TARGET/day_prep/RaceNote_20261017/manifest.json" "$TARGET/day_prep/manifest.json"
           cp "$TARGET/day_prep/RaceNote_20261017/validation_report.json" "$TARGET/day_prep/validation_report.json"
