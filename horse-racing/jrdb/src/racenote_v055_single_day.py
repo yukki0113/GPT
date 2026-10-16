@@ -348,7 +348,15 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
     if digest(manifest_path.read_bytes()) != session["reader_manifest_sha256"]:
         raise ValueError("v0.5.5 Reader manifest digest mismatch")
     manifest = read_json(manifest_path)
+    if (
+        session.get("contract_revision") == CONTRACT_REVISION
+        and manifest.get("reader_projection") != READER_PROJECTION
+    ):
+        raise ValueError("v0.5.5 lean Reader projection mismatch")
     entries = {(x["venue"], int(x["race_no"])): x for x in manifest["entries"]}
+    if session.get("contract_revision") == CONTRACT_REVISION:
+        if any(x.get("reader_projection") != READER_PROJECTION for x in manifest["entries"]):
+            raise ValueError("v0.5.5 Reader entry projection mismatch")
     if roster_from_readers(readers) != session["race_roster"] or set(entries) != set(readers):
         raise ValueError("v0.5.5 single-day race roster mismatch")
     for key, entry in entries.items():
@@ -394,6 +402,7 @@ def save_venue(root: Path, decisions_path: Path) -> dict[str, Any]:
         "target_date": session["target_date"],
         "logic_version": LOGIC,
         "contract_revision": session.get("contract_revision"),
+        "reader_projection": session.get("reader_projection"),
         "reader_manifest_sha256": session["reader_manifest_sha256"],
         "venue": venue,
         "race_nos": expected[venue],
@@ -469,6 +478,7 @@ def build_freeze(root: Path) -> dict[str, Any]:
                 "target_date": session["target_date"],
                 "logic_version": LOGIC,
                 "contract_revision": session.get("contract_revision"),
+                "reader_projection": session.get("reader_projection"),
                 "venue": key[0],
                 "race_no": key[1],
                 "horse_nos": entry["horse_nos"],
@@ -539,6 +549,7 @@ def verify_freeze(root: Path) -> dict[str, Any]:
         or handoff.get("target_date") != session["target_date"]
         or handoff.get("logic_version") != LOGIC
         or handoff.get("contract_revision") != session.get("contract_revision")
+        or handoff.get("reader_projection") != session.get("reader_projection")
         or handoff.get("reader_manifest_sha256") != session["reader_manifest_sha256"]
         or handoff.get("race_roster") != session["race_roster"]
         or handoff.get("expected_venues") != session["expected_venues"]
@@ -567,6 +578,7 @@ def verify_freeze(root: Path) -> dict[str, Any]:
             or row.get("target_date") != session["target_date"]
             or row.get("logic_version") != LOGIC
             or row.get("contract_revision") != session.get("contract_revision")
+            or row.get("reader_projection") != session.get("reader_projection")
             or row.get("reader_manifest_sha256") != session["reader_manifest_sha256"]
             or row.get("original_clean_reader_manifest_sha256") != session["clean_reader_manifest_sha256"]
             or row.get("original_clean_reader_sha256") != readers[key]["sha256"]
