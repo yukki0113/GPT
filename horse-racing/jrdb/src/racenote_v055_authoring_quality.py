@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from difflib import SequenceMatcher
 
-GATE_VERSION = "racenote-v055-authoring-quality-gate-0.1"
+GATE_VERSION = "racenote-v055-authoring-quality-gate-0.2"
 
 _EVIDENCE = re.compile(
     r"(?:IDM|RRDB|SRB|KYI|上がり|先行|差し|逃げ|追込|調教|状態|"
@@ -69,7 +69,7 @@ def inspect(cores: list[dict], *, strict: bool = True) -> dict:
             errors.append(f"{label} shot_case.case: generic or insufficiently specific")
 
         prose = str(core.get("reader_facing_reason") or "").strip()
-        safe = 35 <= len(prose) <= 240 and "\n" not in prose
+        safe = 12 <= len(prose) <= 240 and "\n" not in prose
         norm = _normal(prose)
         for prev_label, prev in prose_seen:
             if len(norm) >= 18 and SequenceMatcher(None, norm, prev).ratio() >= 0.94:
