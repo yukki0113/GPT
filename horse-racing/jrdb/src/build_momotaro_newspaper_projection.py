@@ -361,10 +361,12 @@ def project_horse(
         if row is None:
             continue
         if row["horse_name"] != horse_name:
-            raise ValueError(
-                f"Momotaro horse-name mismatch for {key}: "
-                f"{row['horse_name']!r} != {horse_name!r}"
-            )
+            # Explicitly authored Ryota imports may use race + horse number.
+            if not (member == "ryota" and row["tag"] == "馬番照合"):
+                raise ValueError(
+                    f"Momotaro horse-name mismatch for {key}: "
+                    f"{row['horse_name']!r} != {horse_name!r}"
+                )
 
         explicit = {
             "mark": row["mark"] or None,
