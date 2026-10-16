@@ -1,0 +1,435 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 1,
+    "marks": [
+      16,
+      2,
+      11,
+      9,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        16,
+        2,
+        11,
+        9,
+        14
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は先行力と調教指数66が魅力だが、ダート前走IDM26で終い甘さも残り、1400m前走IDM25の14を押し出すだけの裏付けには届かない。"
+    },
+    "honmei_win": {
+      "evidence": "前走ダート1400mでIDM34、出遅れながら上がり36.6秒で5着まで詰め、RRDBでもLOSS_WITH_FASTEST_LAST3Fが確認できる16を勝ち切り候補の最上位とする。",
+      "main_risk": "スタート悪化と勝負所でモタつく履歴があり、差し届かずの形は残る。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "11はダート1400mでIDM31の実績があり、直近も上がり面の反復好走材料とKYI調教指数17.7があるため、流れが速まれば差し切りまで狙える。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "16は前走1400mで出遅れながら上がり36.6秒、IDM34まで伸ばした内容を評価。2の安定感を相手本線に置きつつ、末脚を繰り返している11まで勝ち筋を持つ。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 2,
+    "marks": [
+      2,
+      4,
+      13,
+      12,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        4,
+        13,
+        12,
+        11
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は10月の1200mでIDM41がある一方、直近1150mは14着・IDM29まで落としており、1200m勝ち実績とIDM40を持つ11を外すほどの現況優位はない。"
+    },
+    "honmei_win": {
+      "evidence": "2は1400mでIDM44～45を続け、過去にはIDM53で2着。直近2走も上がり35秒台～36.2秒で差しており、調教指数67・KYI16.9と状態面も強い。",
+      "main_risk": "近走は1400m中心で1200mへの短縮となり、差し脚質だけに前が止まらない流れでは取りこぼしがある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "13は1000mでIDM42の2、3着があり、1200mでもIDM41を連続。KYI調教指数17.0で、好位から短距離の持続力を生かす勝ち筋がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2の末脚水準と調教気配を最上位に評価。4も1200mで連続3着と安定しており、短距離実績がぶれない13を単穴に置く。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 3,
+    "marks": [
+      14,
+      2,
+      15,
+      11,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        2,
+        15,
+        11,
+        13
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は10月の1800mでIDM45まで出したが直近同距離はIDM34。13は1700mでIDM44の2着を含め近走40前後を保っており、現況比較では入れ替えない。"
+    },
+    "honmei_win": {
+      "evidence": "14は1700mでIDM43→45→47→45と高水準を反復し、先行して2・3着を続ける。KYI調教指数20.6で陣営評価も超強気、RRDB v0.5のFRONT_SURVIVE_GAP05も先行持続力を補強する。",
+      "main_risk": "主戦場が1700mで今回は1800mへ延長し、RRDBには結果が時計以上に見える履歴もあるため、最後の100mで甘くなる余地は残る。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "15は1700mでIDM40～44を安定して刻み、直近も4着IDM43。前が競れば差しの持続力で上位勢をまとめて捕らえる余地がある。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 14,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "近走の安定した先行力と状態気配から14を中心視。2は直近1700m3着のIDM46を評価し、崩れにくい15を差しの勝ち筋として押さえる。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 4,
+    "marks": [
+      7,
+      2,
+      13,
+      6,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        2,
+        13,
+        6,
+        14
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は1600mからの大幅短縮で逃げ脚を生かす余地はあるが、前走IDM28止まり。1200mで3着IDM34の14を押し出すほどの直接的な短距離実績はない。"
+    },
+    "honmei_win": {
+      "evidence": "7は芝1200mで3戦連続2着、IDM33・37・35と崩れず、直近も立ち回り良く2着。調教指数66、KYI調教指数16.5で今回も勝ち負けまで詰められる状態とみる。",
+      "main_risk": "2着続きで決め手が抜けておらず、前受け勢が多い18頭立てでは位置取りや進路の小さな差が勝敗に直結する。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "13は前走1200mで接触とスムーズさを欠きながら5着IDM36。今回の予測IDM38が上位で、流れに乗れれば先行から押し切る余地がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1200mで安定して2着を重ねる7を中心。2も同距離で2着を二度持ち、13は前走の不利を踏まえると上積み余地が大きい。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 5,
+    "marks": [
+      8,
+      1,
+      4,
+      9,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        1,
+        4,
+        9,
+        13
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6は初戦1800mでゴチャつきながら調教指数64と上積み余地はあるが、実戦IDM26。1800mを連続IDM31で走る13を現時点で逆転する材料まではない。"
+    },
+    "honmei_win": {
+      "evidence": "8は初戦2000mで逃げて展開厳しい中2着・IDM32。今回KYI調教指数25.1、陣営評価も超強気で、同距離を経験済みの先行力と状態上昇を最も買う。",
+      "main_risk": "キャリア1戦で比較材料が少なく、前走は瞬発力不足も示しているため、道中で絡まれて脚を使うと押し切れない可能性がある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "4は2000mで2着IDM34があり、前走5着も道中外々・大外回り。KYI調教指数15.0で、ロスを抑えれば差し切りまで届く。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "同距離初戦で厳しい流れを粘った8の上積みを中心視。2000mで内容を上げてきた1を対抗、ロスの大きかった前走から巻き返せる4を単穴とする。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 6,
+    "marks": [
+      3,
+      9,
+      10,
+      6,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        9,
+        10,
+        6,
+        13
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15は1900m4着IDM42と未勝利勝ちIDM46があるが、今回の調教指数11と直近8着を考えると、1800～1900mでIDM45前後を反復する13を上回る現況根拠に乏しい。"
+    },
+    "honmei_win": {
+      "evidence": "3は前走2400mを展開厳しい中3着・IDM50まで上げ、予測IDM52が最上位。RRDB v0.5でもTIME_CLASS_PLUS1が出ており、1900mへの短縮で追走負荷が下がれば勝ち切りに最も近い。",
+      "main_risk": "2400mからの大幅短縮で流れへの対応が必要で、後方寄りになれば中京1900mで位置取り差を埋め切れないリスクがある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "10は1800～2000mでIDM48を連続して2着した実績があり、先行できるのが強み。前走9着から立て直せれば、自分で早めに動いて押し切る勝ち筋がある。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 3,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "長距離でIDM50まで引き上げた3を中心に、1900m勝ちのある9を対抗。先行して高いIDMを出せる10は展開を自力で作れる点を評価する。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 7,
+    "marks": [
+      1,
+      14,
+      16,
+      12,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        14,
+        16,
+        12,
+        4
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15は直近1800m2着・IDM42まで戻したが、その前に1700mで大敗しており振れ幅が大きい。1800mで2、3着を続けIDM41～43の4を外すには安定性が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "1は前走1700m2着でIDM50、1800mでも過去に2着IDM50。今回予測IDM51に加え調教指数70、KYI22.0と状態面も抜けており、先行力を生かして勝ち切れる可能性が高い。",
+      "main_risk": "4や13など前に行きたい馬が複数おり、逃げ・先行争いが激しくなって早めに脚を使わされると最後に差される余地がある。",
+      "confidence": "A"
+    },
+    "shot_case": {
+      "case": "16は前走1800mで不利がありながらIDM48、同距離でIDM46の好走歴も複数。前が流れれば追込から一気に差し切るルートがある。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 14,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "近走内容と調教気配がそろう1を明確に中心。1700mで2着続きの14を相手筆頭とし、前崩れなら高いIDMを持つ16の末脚が浮上する。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 8,
+    "marks": [
+      9,
+      7,
+      16,
+      18,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        7,
+        16,
+        18,
+        8
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4は1800mでIDM48の2着とRRDBのFRONT_SURVIVE_GAP05があるが、2000mの直接実績では8が3着IDM46を含め43～46を反復しており、距離適性を優先して据え置く。"
+    },
+    "honmei_win": {
+      "evidence": "9は前走2000mで2着・IDM48まで上昇し、予測IDM50が最上位。荒れ馬場でも立ち回っており、先行して自力で位置を取れる点を18頭立てで高く評価する。",
+      "main_risk": "前走は減量効果もあり、今回は同じ条件で再現できるとは限らない。先行勢が多く早めに動かされると末の甘さが出る可能性がある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "16は2000mでIDM47、46の連続2着があり、長く脚を使えるタイプ。前が流れて差しやすくなれば、同距離実績を生かして勝ち切るルートがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前走2000mで内容を一段上げた9を中心に、末脚の再現性が高い7を対抗。2000mで高いIDMを持つ16を単穴にして距離実績を重視する。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 9,
+    "marks": [
+      2,
+      6,
+      5,
+      4,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        6,
+        4,
+        5,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は前走1600mを勝ったがIDM37で一戦のみ。1は1800m勝ちIDM39に加え1600m経験もあり、複数戦で内容を積み上げているため現段階では入れ替えない。"
+    },
+    "honmei_win": {
+      "evidence": "2は1800mを上がり33秒台で連続好走し、前走はIDM48で勝利。RRDBでもREPEATED_FASTEST_LAST3Fが示す末脚の再現性があり、KYI調教指数19.4も高い。",
+      "main_risk": "2戦とも1800mで今回は1600mへの短縮。追込脚質のため8頭立てで流れが落ち着くと、前を捕まえる距離が不足するリスクがある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "5は1600m初戦を逃げて完勝しIDM39、KYI調教指数17.0。少頭数で自分のリズムに持ち込めれば、そのまま押し切る明確な勝ち筋がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "末脚性能で2を中心に据え、マイル勝ちIDM46の6を対抗。展開を自分で作れる5は少頭数の利を生かす単穴とする。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 10,
+    "marks": [
+      4,
+      13,
+      12,
+      11,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        13,
+        12,
+        11,
+        9
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は直近1200m4着IDM51で差し脚は堅実だが、9は1150m2着IDM52に加えて短距離で2着を重ね、予測IDM53.1。現状の短距離性能では9を残す。"
+    },
+    "honmei_win": {
+      "evidence": "4は前走1200mをIDM61で完勝し、その前も同距離2着IDM49、さらに未勝利勝ちIDM57。調教指数71・KYI22.0と仕上がりも強く、この組み合わせでは勝ち能力が一段上。",
+      "main_risk": "約3か月ぶりの実戦で、逃げ先行馬が多い組み合わせ。前半から競られて息を入れられないと、休み明けだけに最後の一押しが鈍る可能性はある。",
+      "confidence": "A"
+    },
+    "shot_case": {
+      "case": "12は1400mでIDM58、55と連続好走し、1200mでも上がり35.9秒で差した経験がある。前が速くなれば追込からまとめて差し切る勝ち筋が明確。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 13,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "前走IDM61で完勝した4を素直に中心視。1200mで2着を連ねる13が相手本線で、前が競る形なら高い末脚水準を持つ12の差し切りまで警戒する。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 11,
+    "marks": [
+      2,
+      6,
+      12,
+      10,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        6,
+        12,
+        10,
+        1
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は前走1400m勝ちIDM57で先行力があるが、昇級戦かつ調教指数29。3勝クラスで1600mIDM60～61を示してきた1の地力を押し出すほどではない。"
+    },
+    "honmei_win": {
+      "evidence": "2は1400mで直近3着IDM60、その前も2着IDM61。上がり32.8～33.2秒の末脚を連続して使い、KYI調教指数19.1と状態面も高水準で、同距離なら勝ち切り候補の筆頭。",
+      "main_risk": "追込脚質で展開待ちの面があり、先行勢が息を入れられる流れでは直線の短い中京1400mで届かない可能性がある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "12は1500mを連勝した先行力があり、前走1400mも5着IDM56。調教指数63・状態指数70で、好位から早めに抜け出す形なら押し切りまである。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1400mでIDM60超を続ける2を中心に、同距離でIDM58～60を反復する6を対抗。前で運べて状態も良い12を単穴に置く。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 12,
+    "marks": [
+      10,
+      1,
+      7,
+      15,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        1,
+        7,
+        15,
+        3
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6は1800mでIDM46、43の好走があるものの直近は15着IDM38。3は1600mでIDM45前後を4走続け、調教指数80もあるため、現状では3を残す。"
+    },
+    "honmei_win": {
+      "evidence": "10は直近1600mで2着・IDM52、その前も同距離IDM49。追って確実に伸びる内容が続き、KYI調教指数16.7で距離適性と状態の両方がそろう。",
+      "main_risk": "差し脚質で前半の位置が後ろになりやすく、先行馬が楽に運ぶ流れでは直線だけで届かないリスクがある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "7は前走1600m3着IDM48、上がり32.9秒。RRDB v0.5のREAR_HIGH_LAST3F90も末脚を裏付け、前が流れれば一気に差し切る勝ち筋がある。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 7,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "同距離で内容を上げた10を中心。1600m2着IDM49と調教気配の良い1が対抗で、末脚の質が高い7を単穴に据える。"
+  }
+]

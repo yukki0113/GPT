@@ -1,0 +1,429 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "marks": [
+      6,
+      5,
+      4,
+      11,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        5,
+        4,
+        11,
+        10
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14は1200mで先行できるが直近同距離7着IDM17で、息を入れられない弱点もある。芝初戦IDM25で調教指数68・KYI15.4の10の上積み余地を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "6はダート1200～1300mで2、2、4着と先行して安定し、IDM26～28を反復。今回も調教指数66、KYI21.6と状態が良く、前で運べる強みを最上位に取る。",
+      "main_risk": "勝ち切り実績はなく、近走は結果が時計以上に見えるRRDB懸念もある。前半で競られると一本調子の弱点が出やすい。",
+      "confidence": "C"
+    },
+    "shot_case": {
+      "case": "4は1000mで2着IDM33があり、二の脚の速さはこの組み合わせでは上位。近2走大敗からでも1200mで前に行き切れれば押し切りの余地がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "安定して先行できる6を中心に、1150mで3着まで戻した5を対抗。4は近走不振でも短距離の初速に明確な上振れ余地がある。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "marks": [
+      13,
+      12,
+      6,
+      7,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        12,
+        6,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は調教指数67で先行力の余地はあるがダート実戦がなく、芝1800mでもIDM25～28。ダート1800m3着IDM26のある4を押し出すだけの直接材料はまだない。"
+    },
+    "honmei_win": {
+      "evidence": "13は初ダート1600mで3着・IDM31。立ち回って先行できた内容がこの低調な組み合わせでは最も確かで、1800mへの延長でも前で主導権を取れる点を評価する。",
+      "main_risk": "キャリア1戦で1800mは未経験。前走は立ち回りに助けられた面もあり、距離延長で最後に甘くなる可能性がある。",
+      "confidence": "C"
+    },
+    "shot_case": {
+      "case": "6は初ダート1600mでスタートが悪く外を回りながら4着IDM29、RRDBでもLOSS_WITH_FASTEST_LAST3F。距離延長で追走が楽になれば差し切りまで届く。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "初ダートで最も高いIDMを出した13を中心に、1700mで4着まで来て状態気配の強い12を対抗。末脚の余地が大きい6を単穴とする。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "marks": [
+      14,
+      11,
+      12,
+      8,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        11,
+        12,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10は1600m2着IDM31があるが直近1800mは16着IDM27。4は1600m3着IDM33と1800m3着IDM31を持ち、近況の再現性で上回るため残す。"
+    },
+    "honmei_win": {
+      "evidence": "14は前走1800m3着でIDM40とこの組み合わせの最高水準。KYI調教指数23.2も抜けており、1800mで示した持続力を1600m短縮で生かせるとみる。",
+      "main_risk": "前走は後方からの競馬で、1600mでは流れが速くなる分だけ位置取りが後ろになり過ぎる可能性がある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "12は前走1600mで5着IDM35、上がり33.9秒でお終い確実。RRDBでもREPEATED_FASTEST_LAST3Fがあり、前がやり合えば差し切る余地がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前走内容と高い調教気配から14を中心。1800m2着IDM38の11を対抗とし、1600mで末脚を見せた12を単穴に置く。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "marks": [
+      8,
+      9,
+      5,
+      12,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        9,
+        5,
+        12,
+        3
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15は芝2000mで2着IDM37など地力はあるがダート実績がない。3も初ダートだが芝1600mで連続3着、二の脚と調教指数65・KYI16.7があり、前で運べる転戦余地を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "8はダート1800m2着IDM33、続く1600mでも2着IDM35。今回KYI調教指数21.4で、距離をまたいでも先団から安定して運べる実戦内容を最上位に評価する。",
+      "main_risk": "近2走は立ち回りの良さに助けられた面があり、決め手自体は突出していない。外から早めに動かれると押し切れない可能性がある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "5は初戦のダート1800mで3着IDM28。スタート後にスムーズさを欠きながら粘っており、KYI16.9の上積みで先行できれば勝ち筋がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1800mで既に2着している8を中心に、1600m初戦4着から延長する9を対抗。距離経験のある5を単穴にしてダート実績を優先する。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "marks": [
+      14,
+      7,
+      6,
+      10,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        7,
+        6,
+        10,
+        3
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は騎手・血統実績と調教指数58が魅力だが予測IDM29.1。3は予測IDM32.8で厩舎指数12.6もあり、新馬同士の比較では基礎能力見立てを優先して残す。"
+    },
+    "honmei_win": {
+      "evidence": "14は予測IDM42.9が最上位で、調教指数70・KYI21.2・状態指数63、騎手指数3.0と事前材料がそろう。初戦から2000mを勝ち切れる完成度を最も高く見る。",
+      "main_risk": "全馬初出走で実戦の折り合い・スタート・2000m適性は未確認。高い事前指数がそのまま競馬で再現されない不確実性は大きい。",
+      "confidence": "C"
+    },
+    "shot_case": {
+      "case": "6は予測IDM41.0、情報指数3.1、厩舎指数20.0と陣営・能力見立てが強い。前受けできる形なら初戦から押し切る可能性がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "事前指数と調教気配が最もそろう14を中心に、KYI21.0の7を対抗。厩舎評価の高い6までを勝ち切り候補として重く見る。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "marks": [
+      11,
+      4,
+      5,
+      14,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        4,
+        5,
+        14,
+        2
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9は予測IDM22.6、KYI6.5で一定の初戦気配はあるが、2は予測IDM25.1・KYI9.2と一段上。新馬同士の事前比較で逆転させる根拠は不足する。"
+    },
+    "honmei_win": {
+      "evidence": "11は予測IDM35.7に加え調教指数70、KYI15.6、状態指数62と仕上がりが高水準。予測位置取りも最上位で、1200m新馬を前から押し切る完成度を最も評価する。",
+      "main_risk": "全馬初出走でゲートと実戦スピードは未知。短距離新馬だけに出遅れ一つで事前能力評価が機能しないリスクが大きい。",
+      "confidence": "C"
+    },
+    "shot_case": {
+      "case": "5は予測IDM31.3、KYI16.1と仕上がりが良く、予測の前半・終い位置も上位。好位を確保できれば初戦から抜け出す勝ち筋がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "調教・状態と予測位置取りがそろう11を中心。能力予測では4も僅差で、KYI16.1の5まで初戦から勝ち切れる組とみる。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "marks": [
+      5,
+      3,
+      6,
+      2,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        3,
+        6,
+        2,
+        9
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15は1400mでIDM44まであるが、1200mの直近実績は11着IDM35。9は1200mでIDM39～42を反復しており、短距離の直接実績では9を押し出すほどではない。"
+    },
+    "honmei_win": {
+      "evidence": "5は1200mで2着IDM52、1150mでもIDM51の2着があり、短距離の先行持続力がこの組み合わせでは最上位。KYI調教指数21.6、状態指数62と仕上がりも強い。",
+      "main_risk": "1400mでは近2走IDM41、44に留まり、RRDBには結果が時計以上に見える履歴もある。前半で競られて脚を使うと最後に甘くなる余地がある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "6は1200m2着IDM44があり、RRDBでもREPEATED_FASTEST_LAST3Fを確認。前が流れて差しの形になれば末脚で一気に逆転する勝ち筋がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "短距離で高いIDMを続ける5を中心に、1200mでクラス水準を示す3を対抗。前が競る展開なら末脚の反復性がある6の差し切りまで見る。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "marks": [
+      6,
+      5,
+      1,
+      9,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        5,
+        1,
+        9,
+        2
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4は3570mで5着、3100mで3着と長距離障害の経験はあるが、飛越や追い通しの課題も残る。2は3210m3着を含め近5走すべて2着以内か3着で、安定性を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "6は障害3000～3330mで連勝後、3170mでも2着。近3走すべて先行して崩れず、KYI調教指数21.5と今回の状態気配も最上位で、長丁場でも勝ち切れる持続力を評価する。",
+      "main_risk": "3570mは未経験で、中山特有のバンケットを含む長距離戦への対応は未知。先行して早めに脚を使うと最後のスタミナ比べで甘くなる可能性がある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "1は障害2850～3000mで1、2、3、2、2着と極めて安定。逃げ先行から自分のリズムを作れれば、距離延長でも粘り込んで勝ち切るルートがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "障害戦で連勝後も2着した6の勢いと状態を中心視。中山3200mで4着、3210m2着の5を相手本線に置き、安定先行型の1まで勝ち筋を持つ。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "marks": [
+      1,
+      8,
+      2,
+      4,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        8,
+        2,
+        4,
+        5
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は前走2000mを勝ってIDM41まで上げたが、1は同距離の1勝クラスで2着IDM47、8も3着IDM47。5も前走2000mを完勝しており、昇級比較では5を押し出す決め手に欠ける。"
+    },
+    "honmei_win": {
+      "evidence": "1は前走2000mの1勝クラスで2着IDM47。1800m未勝利勝ちから着実に内容を上げ、スタミナと先行持続力を示しており、同条件で最も勝ちに近いとみる。",
+      "main_risk": "前走は上がりの掛かる流れが向いた面があり、瞬発力勝負に寄ると差し馬の決め手に屈する余地がある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "2は2000m勝ちで後方から大外を回して差し切り、RRDB v0.5でもREAR_HIGH_LAST3F90が出る。前が流れれば末脚でまとめて逆転する勝ち筋がある。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 2,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "同距離の1勝クラスで2着した1を中心に、前走3着IDM47の8を対抗。2000mで強い末脚を見せた2は展開が向けば一気の差し切りまである。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "marks": [
+      4,
+      3,
+      7,
+      1,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        3,
+        7,
+        1,
+        10
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は1700mでIDM50～51を反復し先行力もあるが、直近は5着IDM48。10は1800mを連勝して直近IDM49、同距離適性の直接性を優先して据え置く。"
+    },
+    "honmei_win": {
+      "evidence": "4は1800mで3着IDM61、続く前走も4着IDM56と高水準。RRDBでもREPEATED_FASTEST_LAST3Fがあり、後方からでも確実に脚を使える点をこの組み合わせの勝ち能力最上位とみる。",
+      "main_risk": "追込型でスタートが遅い履歴があり、中山1800mで前が止まらない流れになると位置取り差を埋め切れないリスクがある。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "7は1700mで2着IDM59、1600mでも3着IDM53。先行して長く脚を使えるため、4や3が後ろから運ぶ形なら早め抜け出しで押し切る勝ち筋がある。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 4,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "1800mでIDM61まで上げた4の末脚を中心に、前走同距離3着の3を対抗。1700mでIDM59を持つ7は先行持続力を生かす形なら押し切りまである。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "marks": [
+      7,
+      14,
+      3,
+      11,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        14,
+        3,
+        11,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4は2500mでIDM65、2600mでも60～61と長距離適性が高いが、1も2400mでIDM65、2200m勝ちIDM60を持つ。近走の末脚内容を含めると1を押し出すほどの差はない。"
+    },
+    "honmei_win": {
+      "evidence": "7は2500mでIDM65～68を反復し、重賞級の長距離戦で2、3着を続けた実績が最も厚い。調教指数69、KYI16.9と状態も良く、3600mでもスタミナを生かして勝ち切れるとみる。",
+      "main_risk": "3600m自体は未経験で、近走2200mでは10着。距離延長が大きく、折り合いや長丁場での消耗が想定以上になる不確実性は残る。",
+      "confidence": "C"
+    },
+    "shot_case": {
+      "case": "3は2500mで2着IDM66、直近も2500m6着IDM65。先行して長く脚を使えるため、後方勢が仕掛け遅れる展開なら早め抜け出しから押し切る勝ち筋がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2500m重賞で高いIDMを重ねる7を中心に、2200mでIDM70の14を対抗。長距離で安定する3は先行力を生かして早めに動けば勝ち切りまである。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "marks": [
+      3,
+      16,
+      1,
+      13,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        16,
+        1,
+        13,
+        5
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は1200mで2着IDM54を持つが近2走は4着、12着と振れがある。5は1400m3着IDM55、1200mでもIDM52の実績があり、現況の安定性で5を残す。"
+    },
+    "honmei_win": {
+      "evidence": "3は1200mで2着を三度含む高水準の好走を重ね、IDM53～56を反復。前走も2着IDM55でKYI調教指数19.3、RRDBのREPEATED_ABOVE_CLASS_PERFORMANCEも安定性を裏付ける。",
+      "main_risk": "勝ち切れず2着が多く、追って頭が高くなる癖もある。先行勢を捕らえてから別の差し馬に差される形は残る。",
+      "confidence": "B"
+    },
+    "shot_case": {
+      "case": "1は前走1200m4着IDM54で上がり32.3秒、RRDBでもLOSS_WITH_FASTEST_LAST3F。前が競って流れれば末脚でまとめて差し切るルートがある。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 3,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 1,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "1200mで高水準の好走を重ねる3を中心に、同距離でIDM56を持つ16を対抗。前が速くなれば上がり32.3秒を使った1の末脚が浮上する。"
+  }
+]
