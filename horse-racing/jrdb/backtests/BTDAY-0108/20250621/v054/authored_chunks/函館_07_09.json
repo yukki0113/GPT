@@ -110,10 +110,7 @@
     "rrdb_refs": [
       {
         "horse_no": 7,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "前受けの持続性能を補強する材料。近走IDMと予測位置が先にあり、信号だけで印を決めていない。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "7モンシェリは近走の高水準を保ったまま1000mへ短縮。2サウンドモリアーナの逃げが相手だが、前が競れば3オンマガトオルの末脚が怖い。",
@@ -190,10 +187,7 @@
     "rrdb_refs": [
       {
         "horse_no": 9,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "過去の前受け持続力を、芝短距離の既存能力実績と今回の仕上がりに重ねて評価。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "9マキシマムドライブは芝実績に加えて今回の仕上がりが際立つ。安定感では5ラブディーヴァ、単騎気味なら4カウスリップの逃げ残りも。",
