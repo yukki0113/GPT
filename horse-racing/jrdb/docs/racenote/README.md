@@ -12,7 +12,7 @@ Use:
 - `audits/` for acceptance/revision decisions.
 
 Current parallel research lane: **RaceNote 0.5.x JRDB Feature Audit**.
-The preserved promoted baseline is v0.5.2. The current candidate is v0.5.3 rebuilt r2 (`contract_revision=v053-boundary-safety-r2`). r2 keeps the v0.5.2 Reader evidence surface and win-first/asymmetric-role semantics, restores v0.5.2 ordinary-five protection, and adds only a narrow deterministic boundary challenge. Pre-rebuild BTDAY-0077/0078 are closed unprocessed and are not r2 performance evidence.
+The current candidate for new clean-blind runs is v0.5.4 (`contract_revision=v054-authored-prose-r3`). It retains the v0.5.3 r2 prediction/boundary semantics, adds the current RRDB/SRB/KYI Reader context, keeps Decision Core audit strict, and leaves reader-facing prose model-authored/free-form behind an accident guard. Earlier v0.5.2/v0.5.3 assets remain immutable reproduction evidence.
 Historical feature analysis must start with **2023-2025** and may extend to **2021-2025** only if the three-year result is inconclusive. If five years still yield no stable practical signal, stop expanding the horizon and retain the 0.4.x Human-Context principle rather than forcing a new feature hierarchy.
 
 Current Stage A instruction:
@@ -21,9 +21,9 @@ Current Stage A instruction:
 # RaceNote current guide
 
 For new clean-blind candidate predictions, use
-`RaceNote-Human-Context-Reader-0.5.3-candidate` (rebuilt r2) through
-`docs/racenote/RACENOTE_V053_SINGLE_DAY_RUNBOOK_v0_1.md`.
-The promoted v0.5.2 baseline and its runbook remain the immutable comparison/reproduction path.
+`RaceNote-Human-Context-Reader-0.5.4-candidate` through
+`docs/racenote/RACENOTE_V054_SINGLE_DAY_RUNBOOK_v0_1.md`.
+The complete bound Reader remains the prediction evidence source. Repository-side neutral workspace/progress artifacts exist only to preserve restart state; they must not narrow marks/boundary decisions. When confidence is part of prospective evaluation, its pre-result artifact is frozen before result unlock. Earlier v0.5.x Freezes remain immutable comparison/reproduction paths.
 BTDAY source routing is unified: 2026 uses PACI and 2010–2025 uses the accepted
 Historical Warehouse according to the reserved row's `source_mode`.
 The production `current_logic_version` remains a separate pointer.
