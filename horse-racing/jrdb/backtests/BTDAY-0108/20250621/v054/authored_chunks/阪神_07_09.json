@@ -39,10 +39,7 @@
     "rrdb_refs": [
       {
         "horse_no": 10,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "近走中距離での持続力を距離延長の補助材料として扱い、2200mの1・2着を主根拠にした。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "2シャインバオバブは2400m勝ちと2600m2着の長距離実績を素直に評価。10レーヌマロンが近況の勢いで迫り、8サンライズバブルは一戦一勝の伸びしろが魅力。",
