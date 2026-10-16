@@ -1,0 +1,218 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "race_model": "中山ダート1200m未勝利。逃げ・先行優位が明確。12番は前走同距離2着IDM41、予測着差0・KYI26.3で中心。2番と7番も中山1200mで先行して上位を続けており、前受け勢を重視する。",
+    "marks": [
+      12,
+      2,
+      7,
+      16,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 12,
+        "case": "12番ペイシャマリーンは1月11日の中山ダ1200mで2着IDM41。逃げ脚質、予測着差0、KYI26.3で今回も主導権を握れる。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番レイオーバーは中山ダ1200mで2着2回、3着、4着と安定し、直近IDM34。KYI13.3で先行から再現しやすい。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16番ダイチラポールは中山ダ1200mで3、4、5着を続けIDM28～29。予測中盤・上がり5で、先手争いに加われれば残り目がある。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番ニシノヒミチュは芝1200m8着IDM32から初ダート。KYI10.1で、先行型としてダート替わりで前進する余地がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7番サラサエンペラーは中山ダ1200mで4着IDM27、別条件のダ1300mでも4着IDM33。先行力があり、12・2番が競り合えば好位から抜け出す別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "外部4番は芝1200m4着IDM21と最速上がり評価、KYI15.2があるがダート実績はない。一方、境界11番は芝1200m8着IDM32で先行型かつKYI10.1。基礎能力値で11番が4番を上回るため維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "12ペイシャマリーンは前走同舞台2着で軸が明確。2レイオーバーも中山1200mで安定し、7サラサエンペラーまで前受け勢を厚く見る。",
+    "candidate_compression": {
+      "ordinary_five": [
+        12,
+        2,
+        7,
+        16,
+        11
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番ユイノマホウジンは芝1200m4着IDM21とKYI15.2があるが、ダートでの直接材料がない。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4番のKYIは高いが、境界11番は芝1200mIDM32で先行型。能力予測を優先して11番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 12,
+      "second_horse_no": 2,
+      "honmei_win_case": "12番は中山ダ1200m2着IDM41、予測着差0、KYI26.3。逃げて勝ち切る形が最も明確。",
+      "second_case": "2番は同舞台で2着2回を含む安定実績があり、KYI13.3で先行から12番を追える。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "2番は中山1200mの安定感が高いが、12番は直近2着IDM41に予測着差0・KYI26.3。現在の能力と先行力で12番を◎、2番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "race_model": "中山ダート1800m未勝利。逃げ先行の好走率が高い。8番は同距離3着IDM38で予測着差0、14番は同距離3着IDM37・KYI16.1。1番もダ1800m3着IDM34で、直接ダート実績を軸にする。",
+    "marks": [
+      8,
+      14,
+      13,
+      1,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番カージオイドは中山ダ1800m3着IDM38、2着歴もあり、逃げ脚質で予測着差0。KYI16.8、調教64・状態65で主導権を握りやすい。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番フジレイメイは前走中山ダ1800m3着IDM37、その前5着IDM36。KYI16.1で追込から着実に内容を上げている。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番イトウはダ1800m3着IDM34でダート向き評価。KYI17.2、状態66で差しから安定した伸びを期待できる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番ヌンボラは1月5日の中山ダ1800m3着IDM23。指数は低いが同舞台の直近好走と先行力は残す価値がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13番イスキオスは芝1800m2着IDM35など芝で能力を示し、REPEATED_ABOVE_CLASS_PERFORMANCE。初ダートでもKYI6.8・状態67で、適性が出れば差し切る非対称な勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "固定境界10番は未出走で事前IDM24.8・KYI9.9。一方、外部13番は芝1800m2着IDM35、REPEATED_ABOVE_CLASS_PERFORMANCEと状態67があり、実戦で示した能力上限が10番を上回るため入替を認める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "8カージオイドは中山1800mの先行実績を中心視。14フジレイメイも同舞台で安定し、芝から替わる13イスキオスは適性が出れば一変まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        14,
+        1,
+        11,
+        10
+      ],
+      "external_challenger_horse_no": 13,
+      "external_challenger_case": "13番イスキオスは芝1800m2着IDM35と反復的な上級水準を持ち、初ダートでも状態67で能力の裏付けがある。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "10番は事前IDM24.8とKYI9.9で未知数。13番は芝ながらIDM35の2着実績があり、実戦能力を優先して境界を越える。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 14,
+      "honmei_win_case": "8番はダ1800m3着IDM38で予測着差0、逃げ脚質とKYI16.8。自らレースを作る勝ち筋が最も明確。",
+      "second_case": "14番は同距離3着IDM37、5着IDM36と近走安定しKYI16.1。追込から8番を捕まえる余地がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "14番は末脚と近走安定が魅力だが、8番は同距離3着IDM38で予測着差0、逃げ脚質。位置取りの優位を含め8番を◎、14番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "boundary_review"
+      ]
+    }
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "race_model": "中山ダート1800m新馬。既走歴がないため事前IDM・KYI・調教・予測着差を比較。8番はIDM29・KYI14.7、4番はIDM27.8・KYI16.3で上位。9・11番もIDM27台で続く。",
+    "marks": [
+      8,
+      4,
+      15,
+      9,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番ロジリッキーは事前IDM29で最上位、KYI14.7、調教69・状態65。予測着差1で初戦から勝ち負けの材料が揃う。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番ミッキーサンズは事前IDM27.8、KYI16.3、調教60で予測着差0。8番より前で運べる想定があり逆転候補。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番リヴァーブは事前IDM27.6、KYI14.9で予測中盤・上がり0。事前値が上位で、先行できれば安定して運べる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番ヴォーパルソードは事前IDM27.7、調教61で上位水準。KYI-0.4は弱いが能力予測は9番とほぼ互角。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "15番マウントバーノンは事前IDM23.5ながらKYI10.2。上位より能力予測は下だが、初戦の変動幅と前向きなKYIから一気に差を詰める別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "固定境界10番は事前IDM23.6・KYI0.8。一方、外部15番はIDM23.5とほぼ同等でKYI10.2が大きく上回り、初戦時点の前向きな事前評価で10番より競争力があるため入替を認める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "新馬戦は不確実だが、8ロジリッキーは事前IDMと調教が最上位。4ミッキーサンズもKYI16.3で差は小さく、15マウントバーノンの上振れも警戒。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        4,
+        9,
+        11,
+        10
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15番マウントバーノンは事前IDM23.5で上位には届かないが、KYI10.2が境界候補より明確に高い。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "10番と15番のIDMは23.6対23.5で互角だが、KYIは0.8対10.2。初戦の前向き材料を取り15番を境界内へ入れる。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 4,
+      "honmei_win_case": "8番は事前IDM29、調教69・状態65、KYI14.7で新馬の総合事前値が最上位。",
+      "second_case": "4番はIDM27.8、KYI16.3、予測着差0で8番と僅差。前で運べれば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4番はKYI16.3と予測着差0で強いが、8番は事前IDM29と調教69・状態65で総合能力予測が上。8番を◎、4番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
