@@ -1,0 +1,240 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 4,
+    "race_model": "阪神ダート1800m未勝利。11番は同距離2、2、4着でIDM31～39と一段上。9番は直近同距離5着IDM32で予測中盤・上がり0、5番は1900m6着IDM34と持続力材料を持つ。",
+    "marks": [
+      11,
+      9,
+      5,
+      1,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 11,
+        "case": "11番マーウォルスはダ1800mで2、2、4着、IDM31～39。今回IDM40、KYI22.5、予測着差0で勝ち切りへの直接材料が最も強い。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番エイシンキャロッツは前走ダ1800m5着IDM32。調教68、KYI11.7、予測中盤・上がり0で前進余地が大きい。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番クラヴィウスは過去ダ1800m4着があり、近走大敗後でも同距離経験を持つ。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番エテルノレガーメはダート実績はないが芝2000m5着の内容が結果以上で、調教67・KYI13.5。距離適応なら相手圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番ハックルベリーは直近ダ1900m6着IDM34で、LOSS_WITH_FASTEST_LAST3FとPACE_POSITION_AGAINST_GOOD_RUN。RRDB FRONT_SURVIVE_GAP05もあり、1800m短縮で脚を使い切れば差し切りまで。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 12,
+      "reason": "外部12番はダ1800m7着IDM14で現状の能力材料が弱い。境界6番はダート未知でも芝中距離で結果以上の走りと高い調教評価があり、上振れ経路がより明確。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 5,
+        "signal_ids": [
+          "FRONT_SURVIVE_GAP05"
+        ],
+        "interpretation": "中距離ダートでの持続力確認として用い、直近1900mIDM34とレースレビューを主根拠にした。"
+      }
+    ],
+    "reader_facing_reason": "11マーウォルスは1800mでの2着反復と今回の能力評価が明確に上。9エイシンキャロッツが位置取りで迫り、5ハックルベリーは距離短縮で末脚を生かせれば一発。",
+    "candidate_compression": {
+      "ordinary_five": [
+        11,
+        9,
+        5,
+        1,
+        6
+      ],
+      "external_challenger_horse_no": 12,
+      "external_challenger_case": "12番は1800m経験があるものの能力値が低く、五頭を押しのける直接材料がない。",
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界6番は中距離芝での内容と今回の調教評価から未知の上振れ余地があり、12番の既知の低水準より勝ち筋を持つ。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 11,
+      "second_horse_no": 9,
+      "honmei_win_case": "11番はダ1800mで2、2、4着を反復し今回IDM40・予測着差0。同距離で勝ちへ最も近い。",
+      "second_case": "9番は直近1800m5着IDM32から調教68、予測中盤・上がり0で前進できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9番の今回予測は良いが、11番は1800mで複数2着とより高いIDM39を実際に示しているため◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 5,
+    "race_model": "阪神芝1400m新馬。8番IDM42.4が予測各値0で抜け、11番34.6、7番30.8、6番30、5番29.9が続く。初出走のため事前能力・仕上がり・予測位置だけで比較する。",
+    "marks": [
+      8,
+      11,
+      7,
+      6,
+      5
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番タイセイボーグはIDM42.4、KYI19.3、予測着差・中盤・上がり0。初戦の総合事前評価が一頭抜ける。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番ビッグヒーローはIDM34.6、調教55、KYI15.3、状態56。予測中盤2・上がり1で次位。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番ディーリライズはIDM30、KYI15.1、予測中盤2・上がり1。上位二頭の後ろから運べる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番ジェイストリークはIDM29.9、KYI8.4。予測着差7で大差なく、初戦の相手候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7番ダイシンデリーはIDM30.8、予測着差1・中盤2・上がり1。能力値以上に着差予測が良く、初戦で流れに乗れば上位二頭へ迫る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部3番はIDM22.2、調教51。境界5番はIDM29.9で直接能力評価が7点以上上回り、予測値も大きく劣らない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "8タイセイボーグは能力値と予測がともに抜けた初戦評価。11ビッグヒーローが対抗で、着差予測の良い7ダイシンデリーは上位へ食い込む余地がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        11,
+        7,
+        6,
+        5
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番は初戦の仕上がりは標準的だが、能力評価で五頭との差が大きい。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界5番はIDM29.9で3番より明確に上。初出走同士では直接の事前能力を優先した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 11,
+      "honmei_win_case": "8番はIDM42.4、KYI19.3、予測各値0で初戦から勝ち切る評価が最も高い。",
+      "second_case": "11番はIDM34.6と次位で、予測上がり1。8番が取りこぼす場合の最有力。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11番も一定水準だが、8番はIDMで約8点上回り予測各値も0。事前能力差を優先して8番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 6,
+    "race_model": "阪神芝2000m未勝利。8番は2000mで2、7、3着IDM36～37、予測着差0で中心。4番は同距離2着IDM40のピーク、3番は4着IDM36、11番は2000mで2、3着歴がある。",
+    "marks": [
+      8,
+      4,
+      11,
+      3,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 8,
+        "case": "8番フララナキラは芝2000mで2、7、3着、IDM36～37。先行して予測着差0、RRDB FRONT_SURVIVE_GAP05もあり同距離の安定性が最上位。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番テレプシコーラは芝2000m2着IDM40がメンバー最高の直接実績。追込でREPEATED_FASTEST_LAST3Fがあり、前走9着から戻れば逆転可能。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番ウインヘリオドールは芝2000m4着IDM36、2200m6着36。調教67・状態65で今回の仕上がりが良い。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番ヴァリラプトルは2400mでIDM35～37を出し、LOSS_WITH_FASTEST_LAST3FとRESULT_UNDERRATES_TIME。2000m短縮で末脚が生きれば相手圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番リビングストンは休養前に芝2000mで2、3、5着、逃げて予測上がり0。久々でもKYI17.6で、単騎気味ならそのまま粘り込む勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "外部7番は芝2000m4着を2回持つがIDM34、22。境界10番は2400mでIDM35～37と末脚評価があり、短縮で能力を出す経路がより強い。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 8,
+        "signal_ids": [
+          "FRONT_SURVIVE_GAP05"
+        ],
+        "interpretation": "2000mでの先行持続を補強する材料として用い、同距離の2・3着実績を主根拠にした。"
+      },
+      {
+        "horse_no": 3,
+        "signal_ids": [
+          "HV02_Q85_Q90"
+        ],
+        "interpretation": "過去時計の再評価材料として扱い、現在の調教状態と2000m4着実績に重ねた。"
+      }
+    ],
+    "reader_facing_reason": "8フララナキラは2000mでの安定した先行実績を中心視。ピーク能力では4テレプシコーラが迫り、11リビングストンは久々でも単騎なら粘り込みがある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        8,
+        4,
+        3,
+        11,
+        10
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7番は同距離4着歴があるが能力値が低く、上位五頭を越える近況材料に乏しい。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界10番は長距離でIDM35～37と結果以上の末脚を示し、短縮による上振れ経路が7番より具体的。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 8,
+      "second_horse_no": 4,
+      "honmei_win_case": "8番は2000mで2、3着を含む反復実績と予測着差0、前受け持続の裏付けがある。",
+      "second_case": "4番は同距離2着IDM40という最高ピークを持ち、末脚が戻れば8番を差し切れる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "4番のピークは上だが、8番は2000mでの好走を複数回反復し今回予測も最良。現在の再現性で8番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
