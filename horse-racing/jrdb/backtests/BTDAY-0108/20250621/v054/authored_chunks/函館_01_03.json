@@ -33,7 +33,7 @@
       "case": "16番シルフラは逃げ脚質で予測中盤1・上がり0。前走芝1400mは逃げてIDM34ながらRESULT_UNDERRATES_TIMEと反復的なPACE_POSITION_AGAINSTがあり、距離短縮で粘り込みの非対称な勝ち筋がある。"
     },
     "boundary_review": {
-      "alternative_horse_no": 16,
+      "alternative_horse_no": 2,
       "reason": "通常五頭の境界2番は芝1200mでIDM41の好走歴がある一方、直近12着でREPEATED_BELOW_CLASS_PERFORMANCEも強い。16番は芝替わりの前走で逃げて不利な流れを受けつつ時計内容が結果以上で、1200m短縮と先行有利傾向が今回条件へ直接つながるため入替を認める。"
     },
     "rrdb_refs": [],
@@ -111,10 +111,7 @@
     "rrdb_refs": [
       {
         "horse_no": 9,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "前走の前受け性能を補強するが、単独加点ではなく1000mの位置取り適合と合わせて評価。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "1メイショウホダワラは先手を取れる近走内容と仕上がりが揃う。9フォレストオールも前受けの裏付けが強く、流れが想定以上に速ければ4テーオーテバルディの末脚が浮上。",
