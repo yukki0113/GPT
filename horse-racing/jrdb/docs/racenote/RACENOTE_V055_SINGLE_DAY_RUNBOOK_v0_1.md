@@ -1,13 +1,12 @@
 # RaceNote v0.5.5 Candidate — Single-Day Runbook
 
-Status: **CURRENT CANDIDATE / NEW v0.5.5 SESSIONS**
-Logic: `RaceNote-Human-Context-Reader-0.5.5-candidate`
-Contract: `FORECAST_HUMAN_CONTEXT_READER_v0_5_5_CANDIDATE.md`
-Revision: `v055-win-confidence-lean-r1`
+Status: **CURRENT CANDIDATE / NEW v0.5.5 SESSIONS**  
+Logic: `RaceNote-Human-Context-Reader-0.5.5-candidate`  
+Revision: `v055-win-confidence-lean-reader-r2`
 
 ## 1. Prepare market-blind source
 
-Use the existing canonical forecast preparation path with RRDB v0.5 enrichment.
+Use the canonical forecast preparation path with RRDB v0.5 enrichment.
 
 Required preconditions:
 
@@ -18,9 +17,9 @@ result_opened=false
 target_market_opened=false
 ```
 
-Use the same verified KYI supplemental bundle and RaceLap Parquet sources used by the v0.5.4 evidence projection. v0.5.5 does not add a new evidence source.
+Use the existing KYI supplemental bundle and verified RaceLap Parquet. v0.5.5 r2 changes presentation to the model, not the underlying evidence sources.
 
-## 2. Initialize the sealed Reader
+## 2. Initialize the sealed Lean Model Reader
 
 ```bash
 python horse-racing/jrdb/src/racenote_v055_single_day.py init \
@@ -31,15 +30,26 @@ python horse-racing/jrdb/src/racenote_v055_single_day.py init \
   --race-lap-parquet <verified-lap-store>/race_lap.parquet
 ```
 
-The upstream KYI supplemental schema remains the existing v0.5.4 supplemental format because the evidence projection itself is unchanged.
+Initialization binds the source evidence and writes one model-facing Reader per race using:
 
-Initialization writes the sealed v0.5.5 Reader, manifest, evidence snapshot and session identity.
+`v055-lean-model-reader-r2`
+
+The projection is deterministic. It removes repeated provenance and duplicate representations but does not author summaries, scores, candidates or marks.
+
+The Reader manifest records, per race:
+
+- full enriched presentation byte size before projection;
+- model Reader byte size;
+- reduction percentage;
+- Reader projection version.
 
 ## 3. Author each race
 
-Read the complete bound Reader for the race.
+Read the **complete bound Lean Model Reader for that race**.
 
-Author only the v0.5.5 Lean Decision Core:
+Do not reopen or reconstruct the verbose source presentation during normal T2 authoring. The lean Reader is the intended complete model input.
+
+Author:
 
 ```json
 {
@@ -54,44 +64,48 @@ Author only the v0.5.5 Lean Decision Core:
     "boundary_reason": "..."
   },
   "honmei_win": {
-    "evidence": "...why ◎ can win...",
-    "main_risk": "...largest reason ◎ may fail to win...",
+    "evidence": "...",
+    "main_risk": "...",
     "confidence": "A"
   },
   "shot_case": {
-    "case": "...why ▲ has a distinct winning route..."
+    "case": "..."
   },
   "rrdb_refs": [],
   "reader_facing_reason": "..."
 }
 ```
 
-For a five-runner race, use `NO_EXTERNAL_CHALLENGER`, null challenger/excluded fields and an empty boundary reason.
+For a five-runner race use `NO_EXTERNAL_CHALLENGER`, null challenger/excluded fields and an empty boundary reason.
 
-### Confidence
+A/B/C is assigned in the same race judgment and means confidence that ◎ wins.
 
-Assign A/B/C during this same authoring pass.
+Do not calculate pairwise grades, A5/A7 or IDM-gap gates during authoring.
 
-A/B/C expresses only confidence that ◎ wins. Do not calculate pairwise grades, A5/A7 or IDM-gap gates during authoring.
+## 4. Checkpoints and restart
 
-### Checkpoints
+3–4 races are a practical checkpoint size only.
 
-3–4 race model-authored chunks remain a practical recovery unit, not a prediction rule. A restart resumes from persisted chunks and the sealed Reader.
+A restart resumes from:
 
-A neutral workspace may contain identity, Reader path/SHA and compact neutral facts, but it must not preselect marks, confidence, boundary decisions or prose.
+- sealed Lean Reader;
+- immutable saved venue/chunk artifacts;
+- neutral progress state.
 
-## 4. Preflight once
+Neutral helpers may track identity, paths, hashes and progress. They must not select marks, confidence, boundary decisions or prose.
 
-Before the first save/Freeze execution:
+## 5. Preflight and validation
+
+Before Freeze:
 
 1. read `src/racenote_decision_core_v055.py`;
 2. read `src/racenote_v055_authoring_quality.py`;
-3. validate the complete authored card once;
+3. validate the authored card;
 4. correct only genuine pre-result schema/evidence issues.
 
-Do not build deterministic code that authors or fills prediction meaning.
+Do not introduce deterministic prediction logic to satisfy the validator.
 
-## 5. Save, Freeze and verify
+## 6. Save, Freeze and verify
 
 ```bash
 python horse-racing/jrdb/src/racenote_v055_single_day.py save \
@@ -105,9 +119,9 @@ python horse-racing/jrdb/src/racenote_v055_single_day.py verify \
   --root <operation-root>/v055
 ```
 
-A verified Freeze contains confidence already. There is no separate confidence-authoring stage.
+Do not open target results before verify succeeds.
 
-Do not open results until verify succeeds and the frozen day handoff confirms:
+Required frozen state:
 
 ```text
 status=FROZEN_CLEAN_BLIND
@@ -117,9 +131,9 @@ result_opened=false
 target_market_opened=false
 ```
 
-## 6. Result evaluation
+## 7. Result evaluation
 
-After result unlock, report at minimum:
+After result unlock report:
 
 - total ◎ win / top2 / top3;
 - winner-in-five and top3 capture;
@@ -127,4 +141,8 @@ After result unlock, report at minimum:
 - A/B/C ◎ win rates;
 - A/B/C ◎ single-win return when HJC payout data are available.
 
-Optional diagnostics may recompute IDM gaps, ◎>○ pairwise outcomes, debut/obstacle groups or historical A5/A7-style thresholds from the frozen Reader and results. Those diagnostics do not alter the frozen prediction.
+Pairwise ◎>○, IDM gaps, debut/obstacle grouping and old A5/A7-style analysis may be recomputed later as diagnostics.
+
+## 8. Existing r1 session
+
+Do not mutate an already initialized r1 session into r2. If T2 was started under r1 and results remain unopened, preserve that r1 work as abandoned/reproduction material and initialize a fresh r2 session from the same clean pre-result sources.
