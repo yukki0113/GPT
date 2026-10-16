@@ -1,0 +1,53 @@
+name: RaceNote BTDAY-0114 v0.5.5 r4 Prediction Freeze
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0114.v055r4-prediction-freeze'
+permissions:
+  contents: write
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+      ROOT: horse-racing/jrdb/backtests/BTDAY-0114/20250913/v055
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Save immutable venue checkpoints
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/中山.json"
+          python horse-racing/jrdb/src/racenote_v055_single_day.py save --root "$ROOT" --decisions "$ROOT/incoming/阪神.json"
+      - name: Prediction Freeze and verify
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_single_day.py freeze --root "$ROOT"
+          python horse-racing/jrdb/src/racenote_v055_single_day.py verify-prediction --root "$ROOT"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          root=Path(os.environ['ROOT'])
+          h=json.loads((root/'frozen/day_handoff.json').read_text(encoding='utf-8'))
+          q=json.loads((root/'frozen/authoring_quality_report.json').read_text(encoding='utf-8'))
+          assert h['status']=='PREDICTION_FROZEN_CLEAN_BLIND'
+          assert h['record_count']==24
+          assert h['confidence_frozen'] is False and h['confidence_pending'] is True
+          assert h['result_opened'] is False and h['target_market_opened'] is False
+          assert q['status']=='PASS' and q['race_count']==24
+          print(json.dumps({'status':h['status'],'count':h['record_count'],'records_sha256':h['records_sha256'],'quality':q['status'],'result_opened':False,'target_market_opened':False},ensure_ascii=False))
+          PY
+      - name: Commit Prediction Freeze
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$ROOT/authored_decisions" "$ROOT/frozen" "$ROOT/authoring_quality_report.json"
+          git commit -m "RaceNote: freeze BTDAY-0114 v0.5.5 r4 prediction"
+          git pull --rebase origin main
+          git push origin HEAD:main
