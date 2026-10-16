@@ -1,0 +1,898 @@
+[
+  {
+    "venue": "函館",
+    "race_no": 1,
+    "race_model": "函館芝1200m未勝利。逃げ・先行優位の傾向があり、5番は前走同条件でIDM41かつCLASS_1相当、12番も1200mで安定して上位。前受け勢を軸にしつつ、ハイ想定で差しの余地も残す。",
+    "marks": [
+      5,
+      12,
+      16,
+      9,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 5,
+        "case": "5番ゴールドサニーデイは前走函館芝1200mでIDM41、4着でもRESULT_UNDERRATES_TIME。今回も予測着差0で、先行から勝ち切る直接材料が最も強い。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番グリフォンは芝1200mで2、5、3、5着と安定し、IDM38。先行できて予測着差0、芝適性○で大崩れしにくい。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番ロネットは芝1200mで3、4着、IDM36～37。先行でき、調教60とKYI10.9もあり前で流れに乗れる。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番ニシノコイブミは短距離適性○で、過去にOPEN相当の時計評価とREPEATED_ABOVE_CLASS_PERFORMANCEがある。1200m短縮で地力を出せれば圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 16,
+      "case": "16番シルフラは逃げ脚質で予測中盤1・上がり0。前走芝1400mは逃げてIDM34ながらRESULT_UNDERRATES_TIMEと反復的なPACE_POSITION_AGAINSTがあり、距離短縮で粘り込みの非対称な勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "通常五頭の境界2番は芝1200mでIDM41の好走歴がある一方、直近12着でREPEATED_BELOW_CLASS_PERFORMANCEも強い。16番は芝替わりの前走で逃げて不利な流れを受けつつ時計内容が結果以上で、1200m短縮と先行有利傾向が今回条件へ直接つながるため入替を認める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "5ゴールドサニーデイは前走同舞台の時計内容を最上位評価。12グリフォンが安定感で続くが、距離短縮で先手を取れる16シルフラには粘り込みの余地がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        5,
+        12,
+        9,
+        15,
+        2
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16番は前走芝1400mで逃げ、結果以上の時計評価と反復的な展開不利が残る。函館1200mへの短縮で先行力を直接生かせる。",
+      "excluded_horse_no": 2,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "2番の1200m実績は評価するが近況の振れが大きい。16番は今回の短縮と逃げ脚質がコース傾向に合い、前走内容にも結果以上の裏付けがあるため境界を越える。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 5,
+      "second_horse_no": 12,
+      "honmei_win_case": "5番は函館1200mの前走でIDM41、CLASS_1相当かつRESULT_UNDERRATES_TIME。今回の予測着差0も含め先行から最も明確に勝ちに行ける。",
+      "second_case": "12番は同距離で複数回上位に入りIDM38、先行可能で芝適性○。安定した勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "12番の安定感は高いが、5番は直近の函館1200mで時計評価が一段上。今回条件への直接性を優先して5番を◎とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 2,
+    "race_model": "函館ダート1000m未勝利。逃げ・先行の勝率が高く、1番がIDM40、調教72、予測着差0で明確な中心。9番はIDM39にRRDB FRONT_SURVIVE_GAP05が重なり、短距離で前へ運べる組を重視する。",
+    "marks": [
+      1,
+      9,
+      4,
+      7,
+      10
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 1,
+        "case": "1番メイショウホダワラは近4走すべて逃げ、ダート短距離でIDM35～42。調教72、KYI22.5、予測着差0で自分の形に持ち込みやすい。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番フォレストオールはIDM39、調教74で、前走ダ1200m4着の内容にRRDB FRONT_SURVIVE_GAP05が付く。1000mで先行力を生かす勝ち筋がある。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番バースフラワーは一週前の函館ダ1000mで3着、IDM34。先行型でKYI14.5、同舞台経験をそのまま生かせる。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番ハイエンドモデルは逃げ型で調教67、KYI16.5。ダ1200mで3着IDM36があり、1000mで前残りなら圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番テーオーテバルディは差し型だが、短距離適性がありLOSS_WITH_FASTEST_LAST3FとPACE_POSITION_AGAINST_GOOD_RUNを持つ。前がやり合えば1000mでも一気に差し込む別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "6番は近走IDM28～29の追込で函館1000mへの強い直接材料がない。一方10番はダ1200m3着IDM36に調教67、逃げ脚質で1000mの前受けに直結するため、6番より10番を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 9,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "1メイショウホダワラは先手を取れる近走内容と仕上がりが揃う。9フォレストオールも前受けの裏付けが強く、流れが想定以上に速ければ4テーオーテバルディの末脚が浮上。",
+    "candidate_compression": {
+      "ordinary_five": [
+        1,
+        9,
+        4,
+        7,
+        10
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番は差し追込で安定して脚を使うが、1000mで勝ち切るための位置取り・能力の直接材料は上位五頭より弱い。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "函館1000mは逃げ先行優位が明確。境界10番は前で運べる上に調教67と過去IDM36があり、追込6番より今回条件に直結する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 1,
+      "second_horse_no": 9,
+      "honmei_win_case": "1番は逃げ脚質で予測着差0、IDM40、調教72、KYI22.5。1000mで主導権を握る勝ち筋が最も具体的。",
+      "second_case": "9番はIDM39、調教74に加え前走のFRONT_SURVIVE_GAP05があり、先行して1番を捕まえる経路を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "能力は近いが、1番は近4走一貫して先手を取れて予測着差0。9番の前受け性能を認めても、1000mで自らレースを作れる1番を上位にした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 3,
+    "race_model": "函館ダート1700m未勝利。逃げ・先行が優勢だが、上位能力は差し勢にも分布。9番は1800mで2、4、3着と再現性が高く、13番は1600mでIDM41のピークがある。持続力と位置取りの両面から比較する。",
+    "marks": [
+      9,
+      13,
+      3,
+      10,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9番メイショウタイピンはダ1800mで直近2、4、3着、IDM34～38。REPEATED_FASTEST_LAST3Fがあり、KYI17.7で今回も末脚を再現しやすい。"
+      },
+      {
+        "horse_no": 13,
+        "case": "13番ジョードリウムは東京ダ1600m3着時IDM41がメンバー上位。予測着差0で、1700mでも能力ピークを持ち込めれば逆転可能。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番サンライズバレットは2走前のダ1800m3着でIDM40。差しながら4角2番手まで押し上げた内容があり、調教53・KYI13.6で巻き返し余地がある。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番キンセンオーはダ1800mで2、3着と近走安定し、先行できる。時計評価には懸念があるが函館1700mの前有利を生かせる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3番トモジャイブは追込型で休養明けだが、過去ダ1800m2着IDM37があり、直線まで脚を温存する形なら前が苦しくなった時にまとめて差す勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 8,
+      "reason": "外部8番は先行力と反復的なPACE_POSITION_AGAINSTを持つが、近走IDM28～34で未勝利。境界1番は直近ダ1800mで2、3着と結果再現性が高く、1700mの先行優位へより直接つながる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "9メイショウタイピンは近3走の安定した末脚を中心視。13ジョードリウムは1600mでの高い能力値が怖く、前が厳しくなれば3トモジャイブの差し切りまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        13,
+        3,
+        10,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "external_challenger_case": "8番は1700～1800mで前へ進出する形を何度か見せ、展開不利の再評価材料もあるが、近走の絶対能力は境界1番に及ばない。",
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "8番の先行適性は認めるが、1番は直近二戦で2、3着と同系距離での再現性が高い。境界では直接の近走実績を優先する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 13,
+      "honmei_win_case": "9番はダ1800mで2、4、3着と崩れず、終いの反復性も高い。1700mでも勝ち切りまで最も安定して届く。",
+      "second_case": "13番はダ1600m3着時IDM41が高く、能力上限では9番を上回る。近走の振れを抑えられれば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "13番のピーク値は魅力だが、9番は近3走で34～38のIDMと上位着順を反復している。今回の勝ち筋の再現性を優先して9番を◎とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 4,
+    "race_model": "函館芝2000m未勝利。2番が近5走すべて上位かつIDM39～48で能力・再現性とも抜ける。12番は先行してIDM43、RRDB FRONT_SURVIVE_GAP05があり、13番・6番までが相手本線。",
+    "marks": [
+      2,
+      12,
+      13,
+      6,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2番メイショウキンタイは芝2000～2200mで2着を重ね、前走IDM48。REPEATED_ABOVE_CLASS_PERFORMANCEとREPEATED_FASTEST_LAST3Fもあり、差し切りの再現性が最上位。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番アオイタケルは芝2000m2着IDM39の一戦だけでも内容が濃く、IDM43、調教66、KYI20.7。先行力にRRDB FRONT_SURVIVE_GAP05が重なる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番ドルチェリターンは前走芝2000m3着IDM36で先行。過去走にG3相当の時計評価があり、前で運べる点がこの距離で強み。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番キタノアンシェルは芝2000mで連続5着IDM37。追込ながらPACE_POSITION_AGAINST_GOOD_RUNがあり、流れが締まれば圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 13,
+      "case": "13番ヤマニンヒストリアは芝2400mで連続2着、直近IDM42。2000mへの短縮で差しの反応が上がれば、前をまとめて捕える勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5番は芝2000m4着や2600m6着がある一方、4番は芝2000mで連続5着・IDM37を示している。今回と同じ2000mでの反復性では4番が5番を上回るため、4番を境界に残す。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 12,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "2メイショウキンタイは中距離での安定した高水準実績が抜ける。前で運べる12アオイタケルが相手で、短縮が嵌れば13ヤマニンヒストリアの差し切りも。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        12,
+        13,
+        6,
+        4
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5番は2000m4着と長距離での粘りがあるが、今回2000mで上位五頭を押しのけるだけの能力差は示していない。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界4番は芝2000mで連続5着IDM37と今回条件に近い実績がある。5番の展開不利再評価より直接の同距離再現性を優先。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 12,
+      "honmei_win_case": "2番は芝2000～2200mで2着を反復し前走IDM48。終いの強さを何度も再現しており勝ち切り像が最も明確。",
+      "second_case": "12番はIDM43と高い先行力に調教66、RRDBの前受け持続材料があり、2番より前で押し切る経路を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "12番の先行力は魅力だが、2番は複数条件でIDM39～48を反復し、2000mでも2着実績がある。能力の再現性を優先して2番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 5,
+    "race_model": "函館芝1200m新馬。全馬初出走で過去走比較はできないため、事前能力・調教・予測位置を中心に判断。4番がIDM50、KYI30、予測着差0で大きく抜け、11番・5番・9番・15番が続く。",
+    "marks": [
+      4,
+      11,
+      15,
+      5,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4番トウカイマシェリはIDM50、KYI30、予測着差・中盤・上がりすべて0。初戦段階の基礎評価で一頭抜けている。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番ショウナンカリスはIDM41.7、KYI18で次位。予測中盤3・上がり1で、4番を追う能力帯。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番セレーノはIDM37.1、KYI11.8、予測上がり1。大きな弱点がなく初戦から流れに乗れる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番シャインフォーミーはIDM36.4、状態指数58、予測上がり1。終盤まで脚を残す想定で相手候補。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "15番ラインカシウスはIDM35.3ながら調教64、KYI12.4、状態59。初出走同士なら仕上がりの良さで能力差を詰める余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "10番はIDM30.1・調教58で初戦水準として悪くないが、9番はIDM36.4で状態58、予測上がり1。事前能力で6点以上上回る9番を10番より優先する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "初出走同士でも4トウカイマシェリの事前能力値が大きく抜ける。11ショウナンカリスが対抗で、仕上がりの良い15ラインカシウスを一段上の穴候補に取る。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        11,
+        15,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10番は調教58で一定の仕上がりを示すが、IDM30.1で上位五頭との能力差が残る。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界9番はIDM36.4、状態58、予測上がり1。10番より初戦能力の直接材料が強く五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 11,
+      "honmei_win_case": "4番はIDM50、KYI30、全予測マージン0で初戦から主導できる評価。",
+      "second_case": "11番はIDM41.7、KYI18で二番手の能力帯。4番を追走して逆転を狙う。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "11番も初戦水準として高いが、4番はIDMで8点以上上回り予測各項目も0。事前能力差をそのまま勝ち切り評価へ反映した。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 6,
+    "race_model": "函館ダート1000m新馬。初出走で履歴はなく、1000mらしく予測位置と事前能力を重視。4番がIDM35.6・予測中盤0、7番がIDM31.2・予測着差0で続く。",
+    "marks": [
+      4,
+      7,
+      9,
+      1,
+      2
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4番タイセイガナールはIDM35.6、KYI13.5、予測着差1・中盤0・上がり0。短距離初戦で前へ行ける評価が最も整う。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番ワイドアルバはIDM31.2、KYI13.9、予測着差0。4番との差は小さく、位置取り次第で押し切りまで。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番スターオブロンドンはIDM27.5、予測着差3・中盤2・上がり1。内から流れに乗れれば相手圏。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ジェムはIDM23でもKYI8.5、予測着差2。初戦で前目を取れる想定なら1000mの形に合う。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 9,
+      "case": "9番ウレシイゴサンはIDM30.9にKYI19.6と高い仕上がり評価。予測中盤2・上がり1で、初戦の完成度が走りへ直結すれば逆転可能。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 3,
+      "reason": "外部3番は調教55だがIDM13.6、予測着差15。境界2番はIDM23、予測着差2で1000mの位置取り想定が大きく上回る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "4タイセイガナールは能力と前受け予測が最も噛み合う。7ワイドアルバも着差予測0で互角圏、仕上がりの高さでは9ウレシイゴサンが不気味。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        7,
+        9,
+        1,
+        2
+      ],
+      "external_challenger_horse_no": 3,
+      "external_challenger_case": "3番は調教自体は悪くないが、初戦能力と予測位置で上位五頭に差がある。",
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界2番は予測着差2で前受けが見込める。3番はIDM13.6・予測着差15で、1000mの直接材料が不足する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 7,
+      "honmei_win_case": "4番はIDM35.6と予測中盤・上がり0。1000mで先に主導する勝ち筋が明確。",
+      "second_case": "7番はIDM31.2、予測着差0で4番を上回る着差評価を持ち、前で競り合えば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7番の着差予測0は強いが、4番はIDMで4点以上上回り中盤・上がりとも0。総合的な先行性能を優先して4番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 7,
+    "race_model": "函館芝1800m未勝利。4番が芝1800mで連続2着、IDM39～43と安定して抜ける。5番・6番が先行して続き、12番と16番の差しが展開次第で迫る構図。",
+    "marks": [
+      4,
+      5,
+      12,
+      6,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4番ハートメテオは芝1800mで2、2、4着、IDM39～43。調教74、KYI19.5、芝適性○で今回も勝ち負けの再現性が最も高い。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番デルマケセラセラは芝1800mで3、4着、前走IDM41。逃げ脚質で自分から運べるため4番を前から封じる勝ち筋がある。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番グラツィオーソは芝1800m2着IDM38、前走2000m3着。先行可能で調教62、今回も崩れにくい。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16番フューチャーファンは芝1600mでIDM38、35の4着があり、今回の予測着差0。差しに回って終いを伸ばす形なら相手圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12番パーフェクトパールは近走1600m5着IDM38でRESULT_UNDERRATES_TIMEとPACE_POSITION_AGAINST_GOOD_RUN。1800m延長で流れに余裕が出れば差し切りまで届く。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 15,
+      "reason": "外部15番は1600mでIDM37の走りがあるが、境界16番は予測着差0で過去にIDM38、35の4着を反復。今回の勝ち筋に近い直接材料で16番を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "4ハートメテオは1800mでの安定度と仕上がりが一枚上。5デルマケセラセラの逃げが相手本線で、差しに展開が向けば12パーフェクトパール。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        5,
+        12,
+        6,
+        16
+      ],
+      "external_challenger_horse_no": 15,
+      "external_challenger_case": "15番は1600mで一定の末脚を示すが、1800mで上位五頭を上回る直接材料は不足する。",
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界16番は予測着差0と過去IDM38の裏付けがあり、15番より今回条件での勝ち筋が具体的。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 5,
+      "honmei_win_case": "4番は芝1800mで連続2着、IDM39～43、調教74。先行して自分から勝ちに行ける。",
+      "second_case": "5番は逃げて前走1800m3着IDM41。主導権を握れば4番を封じる余地がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番の逃げ利はあるが、4番は1800mで連続上位と能力値を反復し、仕上がりも上。再現性を優先して4番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 8,
+    "race_model": "函館ダート1000m1勝クラス。1000mは前有利で、7番は近走ダ1400mでIDM44～47を反復し予測着差0、RRDB FRONT_SURVIVE_GAP05。2番もIDM47.1の逃げで能力上限が高い。",
+    "marks": [
+      7,
+      2,
+      3,
+      12,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7番モンシェリはダ1400mで4、2、2着、IDM44～47。予測着差0で先行でき、RRDB FRONT_SURVIVE_GAP05とRESULT_UNDERRATES_TIMEも今回の前受けを補強する。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番サウンドモリアーナはIDM47.1の逃げ馬で、ダ1200m1着IDM45と2着IDM40がある。前走15着からの立て直しが鍵だが能力上限は高い。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番テイエムタリスマはダ1200mでIDM41～46を安定して出し、KYI21.1。先行して1000mへ短縮できるのはプラス。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番ナリノエンブレムはダ1200m勝ちIDM46があり、調教68。逃げ脚質で1000mの位置取り優位を取りやすい。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3番オンマガトオルは追込型だが一週前の函館ダ1000m3着IDM45、状態指数84。REPEATED_FASTEST_LAST3Fもあり、前が競れば終いで一気に差す別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "外部9番は1000mで1、4、2着の実績があるが直近同舞台12着IDM11。境界6番は過去1200m勝ちIDM46と調教68があり、現状の直接材料を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "7モンシェリは近走の高水準を保ったまま1000mへ短縮。2サウンドモリアーナの逃げが相手だが、前が競れば3オンマガトオルの末脚が怖い。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        2,
+        3,
+        12,
+        6
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9番は1000m適性を実績で示すが、直近同舞台の大敗と能力低下が大きく、現状では境界を越えにくい。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6番にはダ1200m勝ちIDM46と調教68があり、9番の過去1000m実績より現在の状態と能力の直接材料を優先。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 2,
+      "honmei_win_case": "7番はIDM44～47を近走で反復し、予測着差0、先行、RRDBの前受け裏付けまで揃う。",
+      "second_case": "2番は逃げてIDM45の勝ち実績があり能力上限は互角。1000mで主導権を奪えば逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "2番はダ1200m勝ちIDM45など能力上限が高い一方、直近は15着まで崩れた。7番はダ1400mで4、2、2着・IDM44～47を反復し今回も予測着差0で、現在の再現性では7番が2番を上回る。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 9,
+    "race_model": "函館芝1200m1勝クラス。9番は芝でもIDM46～47の実績があり、調教・状態82、予測着差0、RRDB FRONT_SURVIVE_GAP05。5番・7番・1番も1200mで安定しており上位は接戦。",
+    "marks": [
+      9,
+      5,
+      4,
+      7,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9番マキシマムドライブは過去芝1200～1400mでIDM46～47、今回調教82・状態82、予測着差0。近走ダート経由でも基礎能力は高く、前受けできる。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番ラブディーヴァは函館芝1200m3着IDM45を含め近2走連続3着。芝短距離適性○で再現性が高い。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番ミクストベリーズは芝1200mで4、3、3、1着、IDM40～43。調教68、KYI18.1で安定して差せる。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番ナムラトロムは芝1200mでIDM43前後を繰り返し、RESULT_UNDERRATES_TIMEもある。追込でも展開が速くなれば届く。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番カウスリップはダート中心だが芝1200m3着経験があり、逃げ脚質で予測上がり0。調教67、KYI18.1で先手を取ればそのまま残る非対称な経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10番は芝1200mでIDM45の3、4着歴があるが直近函館1200m10着IDM35。境界1番は直近同舞台6着IDM43で結果以上の時計評価があり、現状を優先。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 9,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "9マキシマムドライブは芝実績に加えて今回の仕上がりが際立つ。安定感では5ラブディーヴァ、単騎気味なら4カウスリップの逃げ残りも。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        5,
+        4,
+        7,
+        1
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10番は過去に芝1200mIDM45があるが、直近同舞台の内容が後退しており今回の五頭を越える新しい直接材料に乏しい。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界1番は直近函館1200mでIDM43、結果以上の時計評価があり、10番より現在の同舞台再現性を評価。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 5,
+      "honmei_win_case": "9番は芝でIDM46～47を出した実績に、調教・状態82と予測着差0が重なる。先行から勝ち切る条件が揃う。",
+      "second_case": "5番は函館1200m3着IDM45を含む連続3着で、芝短距離の再現性が高い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番は安定しているが、9番は芝での能力上限が上で今回の仕上がり差も大きい。勝ち切り性能を優先して9番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 10,
+    "race_model": "函館芝2600m1勝クラス。3番は2600mでIDM52の4着と51の2着があり、この距離で能力上限が最上位。5番は2600m5着IDM51に加え近走安定、2番も2600m3着IDM47。長距離の直接実績を中心に組み立てる。",
+    "marks": [
+      3,
+      5,
+      7,
+      2,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 3,
+        "case": "3番ビッグベルーガは芝2600mで2着IDM51、直近も同距離4着IDM52。REPEATED_ABOVE_CLASS_PERFORMANCEがあり、今回条件での能力上限が最も高い。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番マイファミリーは2600m5着IDM51を含め中長距離で上位を反復。2200m3着の内容にRRDB FRONT_SURVIVE_GAP05もあり、持続力を保って差せる。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番イゾレエオリアは2600m3着IDM47があり、2200mではIDM53。予測着差0、KYI21.8で距離対応と状態が揃う。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番オールデュスヴランは2600mでIDM50の4着など同距離実績が豊富。調教69、状態63で追込から展開が向けば圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 7,
+      "case": "7番オロスコピオは前走芝2600mを勝利。昇級で絶対値は上位に劣るが、REPEATED_FASTEST_LAST3FとRESULT_UNDERRATES_TIMEがあり、長距離で終いの再現が続けば一気の突破もある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "4番はRRDB HV02_Q85_Q90の時計再評価材料を持つが、近走2400m7着で2600mの直接実績が薄い。一方7番は直近芝2600mを勝っており、今回距離への直接性では7番が4番を上回る。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 5,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 7,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      }
+    ],
+    "reader_facing_reason": "3ビッグベルーガは2600mでの能力値と実績が一段上。5マイファミリーが安定感で続き、昇級初戦でも前走同距離を勝った7オロスコピオには上積み余地がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        3,
+        5,
+        2,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番は時計面の隠れた強さを示すRRDB材料があるが、今回の2600mへ直結する好走実績は上位五頭より薄い。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界7番は直近2600m勝ちで距離適性を結果で示している。4番の補助的な時計材料より今回条件への直接性を優先した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 3,
+      "second_horse_no": 5,
+      "honmei_win_case": "3番は2600mでIDM52の4着と51の2着があり、同距離で最も高い能力を繰り返している。",
+      "second_case": "5番は2600m5着IDM51に加え近走の中長距離で安定し、展開に左右されにくい勝ち筋を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番の安定感は高いが、3番は2600mそのもののピーク値と好走実績で上回る。同距離の勝ち切り能力を優先して3番を◎とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 11,
+    "race_model": "函館芝1200m2勝クラス。13番は1200mで勝ち2回、直近も2・3着IDM50～51で逃げて予測着差0。9番は一週前の同舞台2着IDM52。前の二頭を主軸に、差し勢では3番の末脚を別経路として評価する。",
+    "marks": [
+      13,
+      9,
+      3,
+      10,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "13番ファイツオンは芝1200mで勝ち実績を重ね、直近2走も2、3着でIDM50～51。逃げ脚質、KYI21.1、予測着差0で自ら勝ちに行ける。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番ゴキゲンサンは一週前の函館芝1200m2着IDM52。逃げ脚質で現在の同舞台適性が高く、13番より外から先手を取れれば逆転可能。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番スミレファーストは芝1200mでIDM49～52を繰り返す差し馬。LOSS_WITH_FASTEST_LAST3Fがあり、前が苦しくなれば安定した末脚を使える。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番アップストロークは芝1200mでIDM48～51を安定して出し、調教67・状態65。勝ち切れていないが能力帯は上位。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 3,
+      "case": "3番マルプリは追込ながらIDM51で、RRDB REAR_HIGH_LAST3F90とLOSS_WITH_FASTEST_LAST3Fが一致する。前の13番と9番が競り合えば、終いに特化した別経路で差し切る余地がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "7番は芝1200m・1400mの連勝歴がある一方、最終出走は2024年11月で現在の再現性に不確実さがある。3番は近いクラスでIDM49～51を継続しREAR_HIGH_LAST3F90もあるため、現在材料では3番を7番より優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 3,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      }
+    ],
+    "reader_facing_reason": "13ファイツオンは1200mでの先行実績と近走内容が最も安定。9ゴキゲンサンも同舞台2着直後で強敵だが、前がやり合えば3マルプリの末脚が一気に届く可能性もある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        9,
+        10,
+        12,
+        3
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7番は短距離で連勝歴があり地力は侮れないが、長期休養明けで今回状態を裏付ける直近競走がない。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界3番は現級近辺でIDM49～51を反復し、今回の差し筋にもRRDBの具体的な裏付けがある。休養明け7番より現在条件の証拠を優先した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 9,
+      "honmei_win_case": "13番は芝1200mで勝ち実績を持ち、直近2・3着IDM50～51、逃げて予測着差0。今回も主導権から押し切れる。",
+      "second_case": "9番は一週前の函館1200m2着IDM52で現在の能力は最上位級。先手争いを制すれば13番を逆転できる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9番は直近値でわずかに上だが、13番は1200mで勝利を複数回持ち直近も連続好走。勝ち切りの反復性と予測着差0を優先して13番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "函館",
+    "race_no": 12,
+    "race_model": "函館ダート1700m1勝クラス。2番は1800mで1、2、2、2着、IDM46～57を反復し、今回IDM58で能力差が大きい。相手は近走勝ちの7番、1700m実績の1番・6番、先行安定の4番。",
+    "marks": [
+      2,
+      7,
+      1,
+      6,
+      4
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2番サムシャインはダ1800mで1勝後も連続2着、IDM51～57。REPEATED_ABOVE_CLASS_PERFORMANCEとREPEATED_FASTEST_LAST3Fがあり、今回IDM58・KYI22.1で中心。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番ロングウェイホームは前走ダ1800m1着IDM43。調教64、KYI16.8、状態66で、先行から昇級でも自分の形を作れる。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番ガラスノブルースはダ1700mで2着IDM46、4着IDM45があり距離経験は十分。差しに回って上位二頭の後ろから詰める。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番トモジャザーンはダ1800mで1勝、3着を反復しIDM44～48。先行力とREPEATED_FASTEST_LAST3Fがあり、同系距離で安定。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1番リーゼノアールは直近1700m4着IDM41だが、過去同距離でIDM56の2着と50の3着がある。調教73で過去の高い1700m性能を戻せれば、一気に2番へ迫る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 5,
+      "reason": "5番は予測中盤・上がり0で先行できるが、直近函館1700mは11着IDM27。一方4番はダ1800mで1勝と複数の3着、IDM44～48を示しており、近い条件の再現性で4番が5番を上回る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2サムシャインは近走の能力値と安定感が明確に上。7ロングウェイホームの昇級勢が相手だが、1リーゼノアールは過去の1700m高水準を戻せれば一変まである。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        7,
+        1,
+        6,
+        4
+      ],
+      "external_challenger_horse_no": 5,
+      "external_challenger_case": "5番は先行予測は良いものの、直近同舞台の大敗で現在の1700m能力に強い裏付けがない。",
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界4番は近い距離で勝利とIDM44～48の好走を反復している。5番の位置予測だけでは境界を越える直接証拠として不足する。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 7,
+      "honmei_win_case": "2番はダ1800mで1、2、2、2着、IDM46～57を反復し今回58。差して勝ち切る能力が一頭抜けている。",
+      "second_case": "7番は前走1800m勝ちで状態も良く、前で運んで2番の追撃を封じる勝ち筋がある。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7番は上昇中だが、2番は昇級後を含む高い能力値と上位着順を繰り返している。絶対能力と再現性の差から2番を◎とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
