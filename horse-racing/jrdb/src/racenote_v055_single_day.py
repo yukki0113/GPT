@@ -23,7 +23,7 @@ from racenote_decision_core_v055 import (
 )
 from racenote_v055_authoring_quality import inspect as inspect_authoring_quality
 from racenote_reader_v050 import DEFAULT_BINDING
-from racenote_reader_v055 import VERSION as LOGIC, load_binding, transform
+from racenote_reader_v055 import READER_PROJECTION, VERSION as LOGIC, load_binding, transform
 from racenote_save_venue_batch_v046 import load_clean
 
 VERSION = "racenote-v055-single-day-0.1"
@@ -173,6 +173,7 @@ def init_session(
         "base_main_sha": base_main_sha,
         "logic_version": LOGIC,
         "decision_core_version": "racenote-decision-core-0.5.5",
+        "reader_projection": READER_PROJECTION,
         "source_prep_root": os.path.relpath(prep_root.resolve(), root.resolve()),
         "clean_reader_manifest_sha256": clean_sha,
         "original_clean_reader_sha256": original_hashes,
@@ -256,6 +257,7 @@ def init_session(
                 )
             path = staging / "reader" / row["file"]
             write_json(path, candidate["normal_view"])
+            projection_meta = (candidate.get("provenance") or {}).get("v055_contract") or {}
             entries.append({
                 "venue": row["venue"],
                 "race_no": row["race_no"],
@@ -265,6 +267,10 @@ def init_session(
                 "derived_normal_filename": row["file"],
                 "derived_normal_sha256": digest(path.read_bytes()),
                 "candidate_version": LOGIC,
+                "reader_projection": READER_PROJECTION,
+                "full_normal_bytes_before_projection": projection_meta.get("full_normal_bytes_before_projection"),
+                "model_reader_bytes": projection_meta.get("model_reader_bytes"),
+                "model_reader_reduction_pct": projection_meta.get("model_reader_reduction_pct"),
                 "horse_nos": row["horse_nos"],
             })
         manifest = {
@@ -275,8 +281,9 @@ def init_session(
             "clean_reader_manifest_sha256": clean_sha,
             "logic_version": LOGIC,
             "contract_revision": session.get("contract_revision"),
-            "model_input": "normal_view_only",
-            "projection_equivalent_to": None,
+            "model_input": "lean_normal_view_only",
+            "reader_projection": READER_PROJECTION,
+            "projection_equivalent_to": "v0.5.4 evidence sources; deterministic lean field projection",
             "entries": entries,
         }
 
@@ -300,6 +307,7 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
         session.get("schema_version") != SESSION_VERSION
         or session.get("status") != "SESSION_SEALED"
         or session.get("logic_version") != LOGIC
+        or session.get("reader_projection") != READER_PROJECTION
         or session.get("contract_revision") not in SUPPORTED_CONTRACT_REVISIONS
         or session.get("market_blind") is not True
         or session.get("target_market_opened") is not False
