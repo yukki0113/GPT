@@ -1,0 +1,74 @@
+name: RaceNote BTDAY-0109 v0.5.4 T2 Preflight
+
+on:
+  push:
+    branches: [run/btday0109-v054-t1]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0109/V054_T2_PREFLIGHT_TRIGGER'
+
+permissions:
+  contents: write
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: run/btday0109-v054-t1
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate full authored card before Freeze
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from racenote_decision_core_v054 import validate_core, validate_prose_collection
+          from racenote_v054_authoring_quality import inspect
+          from racenote_v054_single_day import _validator_reader
+
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0109/20250118/v054')
+          session=json.loads((root/'session.json').read_text(encoding='utf-8'))
+          manifest=json.loads((root/'reader_manifest.json').read_text(encoding='utf-8'))
+          entries={(x['venue'],int(x['race_no'])):x for x in manifest['entries']}
+          chunks=sorted((root/'authored_chunks').glob('*.json'))
+          cores=[]
+          for path in chunks:
+              value=json.loads(path.read_text(encoding='utf-8'))
+              if not isinstance(value,list):
+                  raise ValueError(f'chunk not list: {path}')
+              cores.extend(value)
+
+          expected={(x['venue'],int(x['race_no'])) for x in session['race_roster']}
+          actual={(x['venue'],int(x['race_no'])) for x in cores}
+          assert len(cores)==24, len(cores)
+          assert actual==expected, (sorted(expected-actual),sorted(actual-expected))
+          assert len(actual)==len(cores)
+
+          for core in cores:
+              key=(core['venue'],int(core['race_no']))
+              entry=entries[key]
+              normal=json.loads((root/'reader'/entry['derived_normal_filename']).read_text(encoding='utf-8'))
+              validate_core(core,_validator_reader(normal),contract_revision=session.get('contract_revision'))
+
+          validate_prose_collection(cores)
+          report=inspect(cores)
+          out=root/'preflight_report.json'
+          out.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(report,ensure_ascii=False,indent=2))
+          if report['status']!='PASS':
+              raise SystemExit('T2 preflight quality FAIL')
+          PY
+      - name: Commit preflight report
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0109/20250118/v054/preflight_report.json
+          git commit -m 'RaceNote: pass BTDAY-0109 v0.5.4 T2 preflight'
+          git push origin HEAD:run/btday0109-v054-t1
