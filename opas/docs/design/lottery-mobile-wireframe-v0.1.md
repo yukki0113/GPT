@@ -1,3 +1,5 @@
+> **Superseded by `lottery-mobile-wireframe-v0.2.md` (2026-10-16).** 後続GPT/Codexはv0.2を正本として参照すること。
+
 # OPAS 抽選申込スマホワイヤーフレーム仕様 v0.1
 
 更新日: 2026-10-15
