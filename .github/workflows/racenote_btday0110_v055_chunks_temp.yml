@@ -1,0 +1,87 @@
+name: RaceNote BTDAY-0110 v055 lossless model chunks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0110.v055-chunks'
+permissions:
+  contents: write
+jobs:
+  chunk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build lossless v055 chunks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import copy, hashlib, json
+          from pathlib import Path
+          ROOT=Path('horse-racing/jrdb/backtests/BTDAY-0110/20251206/v055')
+          OUT=ROOT/'model_chunks'
+          if OUT.exists():
+              raise SystemExit('model_chunks already exists')
+          manifest=json.loads((ROOT/'reader_manifest.json').read_text(encoding='utf-8'))
+          entries={(x['venue'],int(x['race_no'])):x for x in manifest['entries']}
+          def canonical(v):
+              return json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+          def sha(b): return hashlib.sha256(b).hexdigest()
+          top=[]
+          OUT.mkdir()
+          for key,entry in sorted(entries.items()):
+              p=ROOT/'reader'/entry['derived_normal_filename']
+              raw=p.read_bytes()
+              if hashlib.sha256(raw).hexdigest()!=entry['derived_normal_sha256']:
+                  raise SystemExit(f'reader hash mismatch {p}')
+              reader=json.loads(raw)
+              ctx=copy.deepcopy(reader); horses=ctx.pop('horses')
+              d=OUT/f'{key[0]}{key[1]:02d}R'; d.mkdir()
+              cb=canonical(ctx)+b'\n'; (d/'race_context.json').write_bytes(cb)
+              chunks=[]; cur=[]; size=2; target=32000
+              for h in horses:
+                  hs=len(canonical(h))+1
+                  if cur and size+hs>target:
+                      chunks.append(cur); cur=[]; size=2
+                  cur.append(h); size+=hs
+              if cur: chunks.append(cur)
+              rebuilt=[]
+              metas=[]
+              for i,ch in enumerate(chunks,1):
+                  payload={'chunk_index':i,'chunk_total':len(chunks),'horse_nos':[int(h['identity']['horse_no']) for h in ch],'horses':ch}
+                  b=canonical(payload)+b'\n'
+                  fn=f'chunk_{i:03d}.json'; (d/fn).write_bytes(b)
+                  rebuilt.extend(ch)
+                  metas.append({'file':fn,'sha256':sha(b),'horse_nos':payload['horse_nos'],'size_bytes':len(b)})
+              r2=copy.deepcopy(ctx); r2['horses']=rebuilt
+              if sha(canonical(reader))!=sha(canonical(r2)):
+                  raise SystemExit(f'semantic mismatch {key}')
+              rm={
+                'status':'PASS','venue':key[0],'race_no':key[1],
+                'source_reader_file':p.name,
+                'source_reader_sha256':entry['derived_normal_sha256'],
+                'source_semantic_sha256':sha(canonical(reader)),
+                'reassembled_semantic_sha256':sha(canonical(r2)),
+                'context_file':'race_context.json','context_sha256':sha(cb),
+                'horse_count':len(horses),'chunk_count':len(metas),'chunks':metas
+              }
+              mb=json.dumps(rm,ensure_ascii=False,indent=2).encode()+b'\n'
+              (d/'manifest.json').write_bytes(mb)
+              top.append({'venue':key[0],'race_no':key[1],'directory':d.name,'manifest_sha256':sha(mb),'chunk_count':len(metas),'horse_count':len(horses)})
+          out={'status':'PASS','selection_id':'BTDAY-0110','target_date':'2025-12-06','logic_version':manifest['logic_version'],'reader_manifest_sha256':hashlib.sha256((ROOT/'reader_manifest.json').read_bytes()).hexdigest(),'races':top}
+          (OUT/'manifest.json').write_text(json.dumps(out,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps({'status':'PASS','race_count':len(top),'chunk_count':sum(x['chunk_count'] for x in top)},ensure_ascii=False))
+          PY
+      - name: Commit chunks
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add horse-racing/jrdb/backtests/BTDAY-0110/20251206/v055/model_chunks
+          git commit -m "RaceNote: add BTDAY-0110 v055 lossless model chunks"
+          git pull --rebase origin main
+          git push origin HEAD:main
