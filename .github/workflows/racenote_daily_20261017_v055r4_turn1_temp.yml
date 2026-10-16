@@ -99,10 +99,31 @@ jobs:
             --from-year 2024 --to-year 2025 --kinds SED \
             --output-dir /tmp/racelap-raw --sleep-seconds 0.2 \
             --max-retries 5 --retry-backoff-seconds 2
-          python horse-racing/jrdb/src/fetch_jrdb_history.py \
-            --from-date 20260104 --to-date 20261012 --kinds SED \
-            --output-dir /tmp/racelap-raw --sleep-seconds 0.05 \
-            --max-retries 3 --retry-backoff-seconds 1 --continue-on-error
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import duckdb
+          root=Path('/tmp/analysis')
+          cur=json.loads((root/'current.json').read_text(encoding='utf-8'))
+          man=json.loads((root/cur['manifest']).read_text(encoding='utf-8'))
+          part=next(x for x in man['fact_table']['partitions'] if int(x['year'])==2026)
+          pq=root/part['relative_path']
+          rows=duckdb.connect().execute(
+              "select distinct replace(cast(race_date as varchar), '-', '') as d "
+              "from read_parquet(?) where race_date < date '2026-10-17' order by d",
+              [str(pq)]
+          ).fetchall()
+          dates=[r[0] for r in rows if r[0] and len(r[0])>=8]
+          assert dates and dates[-1]=='20261012', dates[-5:]
+          Path('/tmp/racelap-2026-dates.txt').write_text('\n'.join(dates)+'\n',encoding='utf-8')
+          print(f'2026 completed race dates: {len(dates)}; latest={dates[-1]}')
+          PY
+          while IFS= read -r d; do
+            python horse-racing/jrdb/src/fetch_jrdb_history.py \
+              --from-date "$d" --to-date "$d" --kinds SED \
+              --output-dir /tmp/racelap-raw --sleep-seconds 0.15 \
+              --max-retries 6 --retry-backoff-seconds 2
+          done < /tmp/racelap-2026-dates.txt
           mapfile -t SED_INPUTS < <(find /tmp/racelap-raw/SED -maxdepth 1 -type f -name 'SED*.zip' | sort)
           test "${#SED_INPUTS[@]}" -gt 2
           python horse-racing/jrdb/src/jrdb_race_lap_dataset.py \
