@@ -39,17 +39,11 @@
     "rrdb_refs": [
       {
         "horse_no": 5,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "中長距離での既存実績を補強する持続力材料として使用し、信号単独では順位を決めない。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       },
       {
         "horse_no": 7,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "前走2600m勝利の内容確認に用い、昇級後の能力差とは別に評価した。"
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
       }
     ],
     "reader_facing_reason": "3ビッグベルーガは2600mでの能力値と実績が一段上。5マイファミリーが安定感で続き、昇級初戦でも前走同距離を勝った7オロスコピオには上積み余地がある。",
@@ -126,10 +120,7 @@
     "rrdb_refs": [
       {
         "horse_no": 3,
-        "signal_ids": [
-          "REAR_HIGH_LAST3F90"
-        ],
-        "interpretation": "追込の末脚が過去レース形状を踏まえて成立した材料として、前崩れ時の非対称な勝ち筋を補強する。"
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
       }
     ],
     "reader_facing_reason": "13ファイツオンは1200mでの先行実績と近走内容が最も安定。9ゴキゲンサンも同舞台2着直後で強敵だが、前がやり合えば3マルプリの末脚が一気に届く可能性もある。",
