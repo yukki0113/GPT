@@ -145,13 +145,14 @@ jobs:
               current,
           )
           request=RaceNoteRequest(day,None,None,date.today())
-          with tempfile.TemporaryDirectory(prefix='btday110-base-') as tmp:
-              base_dir, warehouse_report = build_historical_warehouse_base(
-                  request,
-                  current,
-                  [f"{family}=/tmp/historical/warehouse" for family in ('BAC','KYI','CHA','CYB','ZED','ZKB')],
-                  Path(tmp),
-              )
+          base_work=Path('/tmp/btday110-base')
+          base_work.mkdir(parents=True, exist_ok=True)
+          base_dir, warehouse_report = build_historical_warehouse_base(
+              request,
+              current,
+              [f"{family}=/tmp/historical/warehouse" for family in ('BAC','KYI','CHA','CYB','ZED','ZKB')],
+              base_work,
+          )
           warehouse={}
           for path in sorted(base_dir.glob('race_bundle_*.json')):
               bundle=json.loads(path.read_text(encoding='utf-8'))
