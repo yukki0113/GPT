@@ -3,7 +3,7 @@
   "status": "CURRENT_CANDIDATE",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "role": "FORECAST_BLIND_RESEARCH",
-  "contract_revision": "v055-win-confidence-lean-r1",
+  "contract_revision": "v055-win-confidence-lean-reader-r2",
   "predecessor": {
     "logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
     "freeze_assets_immutable": true
@@ -19,11 +19,21 @@
   ],
   "evidence_policy": {
     "hierarchy": "DATA_TRENDS_GT_RACEREVIEW_GTE_ABILITY",
-    "projection": "UNCHANGED_FROM_V054",
+    "projection": "LEAN_MODEL_READER_FROM_V054_SOURCES",
     "rrdb_contract_version": "rrdb-recommendation-signals-v0.5",
     "race_lap_usage": "HISTORICAL_SOURCE_RUN_CONTEXT_ONLY",
     "hidden_value_role": "CORROBORATION_AND_RECHECK_ONLY",
-    "additive_score": false
+    "additive_score": false,
+    "model_reader_projection": "v055-lean-model-reader-r2",
+    "full_source_evidence": "BOUND_OUTSIDE_MODEL_READER_FOR_REPRODUCTION",
+    "projection_method": "DETERMINISTIC_FIELD_SELECTION_NO_MODEL_SUMMARY",
+    "model_reader_removes": [
+      "REPEATED_PROVENANCE_AND_POLICY",
+      "RACEREVIEW_SOURCE_RUN_DUPLICATION",
+      "PEDIGREE_STAT_DUPLICATION",
+      "VERBOSE_HISTORY_COVERAGE",
+      "DUPLICATE_HIDDEN_VALUE_FIELDS"
+    ]
   },
   "decision_policy": {
     "ordinary_five_first": true,
