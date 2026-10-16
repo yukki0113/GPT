@@ -177,7 +177,81 @@ Each new-r2 core includes:
 
 `basis` is non-empty but has no mandatory member in r3. Do not publish internal terms such as `ordinary five`, `sealed Reader`, contract/plumbing labels, or trivial mark enumeration.
 
-### 4.3 Save / Freeze / verify
+### 4.3 Pre-Freeze execution preflight
+
+Before invoking the first save / Freeze workflow for a new T2 card, the
+execution owner must validate the current implementation contracts once
+against latest `main`. This is an operational preflight, not prediction
+reasoning.
+
+Required checks:
+
+1. Read the active v0.5.4 Decision Core validator and authoring quality guard:
+   - `src/racenote_decision_core_v054.py`;
+   - its inherited boundary/schema validators;
+   - `src/racenote_v054_authoring_quality.py`.
+2. Confirm the exact persisted schema before authoring is finalized. In
+   particular:
+   - `ADMIT_CHALLENGER`: `boundary_review.alternative_horse_no` is the
+     **displaced ordinary boundary horse**;
+   - `KEEP_ORDINARY_FIVE`: it is the **external challenger**;
+   - `rrdb_refs` uses the active persisted RRDB reference schema and must not
+     be replaced by an ad-hoc signal-description structure.
+3. Confirm the deterministic quality conditions that will be applied at
+   Freeze. The model must express genuine race-specific comparisons from the
+   Reader; do not add unsupported keywords merely to satisfy the guard.
+4. After all chunks are authored but **before the first Actions Freeze run**,
+   run one full-card preflight over all Decision Cores using the same schema and
+   quality rules as the production Freeze path. Resolve all violations while
+   results remain unopened.
+5. Only after the full-card preflight is clean should the execution owner run
+   venue save -> Freeze -> verify.
+
+The purpose is to prevent avoidable retry loops such as:
+
+```text
+author
+  -> Actions
+  -> schema FAIL
+  -> edit
+  -> Actions
+  -> quality FAIL
+  -> edit
+  -> Actions again
+```
+
+The preferred path is:
+
+```text
+contract/schema preflight once
+  -> 3-4R Reader authoring chunks + checkpoints
+  -> full-card schema/quality preflight once
+  -> one mechanical save / Freeze / verify run
+```
+
+### 4.4 Transport and retry efficiency
+
+The complete bound Reader remains mandatory per race, but execution should
+avoid redundant retrieval and polling.
+
+- Resolve the Reader file list/manifest once per card.
+- Fetch each race's complete Reader once for the authoring pass unless a
+  specific validation failure requires reopening it.
+- Do not repeatedly fetch alternate compact projections of the same Reader
+  merely to rediscover its schema; schema belongs to the validator/preflight.
+- Commit 3-4 race model-authored chunks as recovery checkpoints, but do not
+  re-author completed chunks on a technical retry.
+- When an Actions retry is necessary, inspect the failing step/log once,
+  classify it as schema / quality / infrastructure, and correct only the
+  affected pre-Freeze artifact or execution plumbing.
+- Avoid tight repeated workflow polling; query at meaningful state
+  transitions (queued -> running -> save -> Freeze/verify -> completed).
+- A technical retry must preserve prediction meaning unless the pre-Freeze
+  validator identifies a genuine Reader-grounded Decision Core defect.
+
+These rules optimize execution time without relaxing clean-blind integrity,
+complete-Reader authoring, or the v0.5.4 quality gate.
+### 4.5 Save / Freeze / verify
 
 ```bash
 python horse-racing/jrdb/src/racenote_v054_single_day.py save \
@@ -195,7 +269,7 @@ Do not open target results before `verify` succeeds. The existing
 boundary validator protects the five/◎○/▲ rules; the v0.5.4 guard additionally
 rejects generic/internal newspaper prose.
 
-### 4.4 Confidence Freeze and result-unlock barrier
+### 4.6 Confidence Freeze and result-unlock barrier
 
 For a prospective BTDAY that participates in confidence research, completing
 the prediction Freeze is not yet permission to open results. Before result
