@@ -1,0 +1,27 @@
+name: RaceNote BTDAY-0110 T2 temp cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0110.t2-cleanup'
+permissions:
+  contents: write
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - name: Remove T2 temporary orchestration assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -r --ignore-unmatch horse-racing/jrdb/backtests/BTDAY-0110/20251206/v055/model_chunks
+          git rm --ignore-unmatch             .github/workflows/racenote_btday0110_v055_chunks_temp.yml             .github/workflows/racenote_btday0110_v055_reader_export_temp.yml             .github/workflows/racenote_btday0110_v055_t2_freeze_temp.yml             .github/workflows/racenote_btday0110_t2_cleanup_temp.yml             horse-racing/jrdb/backtests/requests/BTDAY-0110.v055-chunks             horse-racing/jrdb/backtests/requests/BTDAY-0110.v055-reader-export             horse-racing/jrdb/backtests/requests/BTDAY-0110.v055-t2-freeze             horse-racing/jrdb/backtests/requests/BTDAY-0110.t2-cleanup
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "RaceNote: clean BTDAY-0110 T2 temporary assets"
+          git pull --rebase origin main
+          git push origin HEAD:main
