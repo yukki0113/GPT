@@ -43,8 +43,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/input /tmp/rrdb
-          curl --fail --location --retry 3 'https://sdmntprjapaneast.oaiusercontent.com/files/00000000-b034-8209-b2b4-5a28b0b0aeea/raw?se=2026-10-16T23%3A57%3A16Z&sp=r&sv=2026-02-06&sr=b&scid=be292203-fcd3-51a1-b0c3-dd56fe696a47&skoid=bb372dd6-3b2a-4af2-b355-c26497ba23cd&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-16T20%3A43%3A26Z&ske=2026-10-17T20%3A43%3A26Z&sks=b&skv=2026-02-06&sig=y0h%2BaqyLLisHMQ7Fh3lQwBshtYgeO0eqQmNUAdwqc6I%3D' -o /tmp/input/PACI261017.zip
-          curl --fail --location --retry 3 'https://sdmntprjapaneast.oaiusercontent.com/files/00000000-81c8-8209-b987-2a08de112b56/raw?se=2026-10-16T23%3A57%3A22Z&sp=r&sv=2026-02-06&sr=b&scid=dae89b8c-e609-58d5-a178-f727fb5b2ce1&skoid=bb372dd6-3b2a-4af2-b355-c26497ba23cd&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-16T23%3A32%3A39Z&ske=2026-10-17T23%3A32%3A39Z&sks=b&skv=2026-02-06&sig=66IkFlnRzc/TPqAV/qbtsI5SZ9vtkYKOfFHQut6IqMQ%3D' -o /tmp/input/RaceReviewDB_CURRENT.zip
+          curl --fail --location --retry 3 'https://sdmntprjapaneast.oaiusercontent.com/files/00000000-00e8-8209-9fe6-124b53976b58/raw?se=2026-10-16T23%3A59%3A14Z&sp=r&sv=2026-02-06&sr=b&scid=778e0271-2418-5029-a9ab-3af0f9319580&skoid=bb372dd6-3b2a-4af2-b355-c26497ba23cd&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-16T20%3A40%3A31Z&ske=2026-10-17T20%3A40%3A31Z&sks=b&skv=2026-02-06&sig=2ss%2BIUdfhSADDJ1Z8I86xMQL21rdsEB0OpssmzXK7aU%3D' -o /tmp/input/PACI261017.zip
+          curl --fail --location --retry 3 'https://sdmntprjapaneast.oaiusercontent.com/files/00000000-3f58-8209-b0a5-540cc4e41d28/raw?se=2026-10-16T23%3A59%3A20Z&sp=r&sv=2026-02-06&sr=b&scid=49e0be4a-bb08-5c97-82f2-6f0a5ac22267&skoid=bb372dd6-3b2a-4af2-b355-c26497ba23cd&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-16T20%3A32%3A01Z&ske=2026-10-17T20%3A32%3A01Z&sks=b&skv=2026-02-06&sig=Gu7lK3VnhSUDiVk2x7zbgyEQA3gbGmdgatQmdIZV6Kk%3D' -o /tmp/input/RaceReviewDB_CURRENT.zip
           unzip -t /tmp/input/PACI261017.zip >/dev/null
           unzip -t /tmp/input/RaceReviewDB_CURRENT.zip >/dev/null
           unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
@@ -110,7 +110,7 @@ jobs:
           pq=root/part['relative_path']
           rows=duckdb.connect().execute(
               "select distinct replace(cast(race_date as varchar), '-', '') as d "
-              "from read_parquet(?) where race_date < date '2026-10-17' order by d",
+              "from read_parquet(?) where race_date < '2026-10-17' order by d",
               [str(pq)]
           ).fetchall()
           dates=[r[0] for r in rows if r[0] and len(r[0])>=8]
