@@ -115,6 +115,7 @@ jobs:
               "artifact_name": artifact_name,
               "revision": revision,
               "keibailuka_entries": normalized_entries,
+              "momotaro_predictions": predictions,
           }
           Path("/tmp/skeleton-request/request.json").write_text(
               json.dumps(normalized, ensure_ascii=False, indent=2) + "\n",
@@ -237,7 +238,11 @@ jobs:
       - name: Attach validated authors to personal current
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/jrdb_newspaper_attach_momotaro.py             --personal-dir /tmp/personal-current             --public-dir /tmp/momotaro-current             > /tmp/skeleton-request/personal-attach-result.json
+          if [ -f /tmp/skeleton-request/momotaro_predictions.csv ]; then
+            python horse-racing/jrdb/src/jrdb_newspaper_attach_momotaro.py             --personal-dir /tmp/personal-current             --public-dir /tmp/momotaro-current             > /tmp/skeleton-request/personal-attach-result.json
+          else
+            printf '%s\n' '{"status":"SKIPPED","explicit_rows":0,"ryota":0,"oji":0}' > /tmp/skeleton-request/personal-attach-result.json
+          fi
 
       - name: Validate outputs
         run: |
@@ -272,9 +277,14 @@ jobs:
               raise SystemExit("public prediction count mismatch")
           if attach_result.get("explicit_rows") != expected_rows:
               raise SystemExit("personal prediction count mismatch")
-          if expected_rows:
-              if attach_result.get("ryota", 0) < 1 or attach_result.get("oji", 0) != 4:
-                  raise SystemExit("member count mismatch (Ryota/Oji)")
+          expected_members = {"ryota":0, "oji":0}
+          for row in req.get("momotaro_predictions") or []:
+              member = row.get("member")
+              if member in expected_members:
+                  expected_members[member] += 1
+          for member, total in expected_members.items():
+              if int(attach_result.get(member, 0)) != total:
+                  raise SystemExit(f"member count mismatch: {member}: expected={total} actual={attach_result.get(member)}")
           iluka = merge_result.get("keibailuka") or {}
           if req.get("keibailuka_entries"):
               if iluka.get("merged") != len(req["keibailuka_entries"]):
