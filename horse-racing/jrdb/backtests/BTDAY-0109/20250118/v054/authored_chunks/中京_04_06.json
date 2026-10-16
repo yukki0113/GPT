@@ -1,0 +1,228 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 4,
+    "race_model": "中京ダート1800m1勝クラス。先行有利だが上位には差し・追込の高能力馬も揃う。15番はダ1800mで3着IDM55、9番は同距離3着IDM52。能力ピークと同条件実績を優先する。",
+    "marks": [
+      15,
+      9,
+      4,
+      11,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 15,
+        "case": "15番マテンロウブレイブは前走ダ1800m3着IDM55で、REPEATED_ABOVE_CLASS_PERFORMANCEとREPEATED_FASTEST_LAST3F。予測着差0で勝ち切り能力が最上位。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番タガノマカシヤは前走ダ1800m3着IDM52、その前は同距離1着IDM47。逃げ脚質で予測着差6、先行有利の条件に直接合う。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番ロードラビリンスはダ1800m2着時IDM57のピークがあり、逃げ脚質。前走9着IDM38でも展開厳しい評価があり、自分のペースなら巻き返せる。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番ゴッドエスパーダは前走ダ1800m2着IDM48でRESULT_UNDERRATES_TIME、PACE_POSITION_AGAINST_GOOD_RUN。KYI16.1で差しから安定して伸びる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番ロードシュヴァリエは前走ダ1800m1着IDM44、ブリンカー効果後に内容が上向き、RRDBもFRONT_SURVIVE_GAP05を検出。昇級でも好位差しで一気に通用する別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 13,
+      "reason": "固定境界13番は前走ダ1800m1着IDM46だが、PACE_POSITION_AIDED_RESULTが反復している。一方、外部4番は同距離1着IDM44にPACE_POSITION_AGAINST_GOOD_RUNとRRDB FRONT_SURVIVE_GAP05が重なり、展開依存の小ささで13番を上回るため入替を認める。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 4,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      }
+    ],
+    "reader_facing_reason": "15マテンロウブレイブは同距離IDM55の末脚を最上位評価。9タガノマカシヤの先行力が相手で、昇級でも4ロードシュヴァリエの近走上昇は見逃せない。",
+    "candidate_compression": {
+      "ordinary_five": [
+        15,
+        9,
+        11,
+        8,
+        13
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番は前走ダ1800m1着IDM44で、ブリンカー後の上昇に加えPACE_POSITION_AGAINST_GOOD_RUNとRRDB FRONT_SURVIVE_GAP05がある。",
+      "excluded_horse_no": 13,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "13番も前走1着IDM46だが位置取り恩恵の懸念が強い。4番は直近勝利に逆風耐性の材料が重なり、境界を越える。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 15,
+      "second_horse_no": 9,
+      "honmei_win_case": "15番はダ1800m3着IDM55で予測着差0、反復的な上級水準と末脚材料を持ち、差し切る勝ち筋が最も強い。",
+      "second_case": "9番はダ1800mでIDM52・47と高水準を続け、逃げ先行で展開利も見込める。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "9番は逃げてIDM52と高いが、15番は同距離でIDM55に加えREPEATED_FASTEST_LAST3F。能力上限と差し切り性能を優先して15番を◎、9番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "boundary_review"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 5,
+    "race_model": "中京芝2000m未勝利。先行の勝率が高いが、上位は差し追込にも揃う。10番はIDM40.2で末脚材料とRRDB後方型シグナル、3番は前走3着IDM40。終いの質と同距離再現性を重視する。",
+    "marks": [
+      10,
+      3,
+      15,
+      14,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10番シャルクハフトは前走芝2000m6着IDM38、過去2着歴があり、LOSS_WITH_FASTEST_LAST3FとPACE_POSITION_AGAINST_GOOD_RUN。調教66でRRDB REAR_HIGH_LAST3F90も後押しする。"
+      },
+      {
+        "horse_no": 3,
+        "case": "3番ドラギニャンは前走芝2000m3着IDM40でRESULT_UNDERRATES_TIME。予測着差4、KYI8.6で同距離の直近実績が明確。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番バズアップビートは芝2000m2着IDM38があり、REPEATED_ABOVE_CLASS_PERFORMANCEとREPEATED_FASTEST_LAST3F。KYI14.3で巻き返し余地が大きい。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番ウインベラーノは芝2000m5着IDM38、逃げ脚質で予測着差0。過去芝1800mでも3着を続け、前で自分の形を作れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 15,
+      "case": "15番トッピボーンは前走芝2000m4着IDM37で、最後方18番手からLOSS_WITH_FASTEST_LAST3FとRESULT_UNDERRATES_TIME。調教74・KYI16.9で、流れが向けば一気の差し切りがある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 6,
+      "reason": "外部6番は芝1800m2着IDM33で先行できるが、境界1番は前走芝2000m5着IDM38、予測着差0で同距離かつ逃げの直接材料が上。6番より1番の今回条件への再現性を優先して維持する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 10,
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
+      }
+    ],
+    "reader_facing_reason": "10シャルクハフトは終いの内容と調教の上昇を評価。3ドラギニャンは前走同距離3着で安定し、15トッピボーンは最後方からの末脚に一発がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        3,
+        15,
+        14,
+        1
+      ],
+      "external_challenger_horse_no": 6,
+      "external_challenger_case": "6番メイショウビストロは芝1800m2着IDM33で先行できるが、2000mへの延長で上位の同距離実績には一歩譲る。",
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "6番の先行力はあるが、境界1番は同距離5着IDM38で予測着差0。2000mの直接性で1番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 3,
+      "honmei_win_case": "10番は芝2000mで最速上がり系の裏付けがあり、調教66とRRDB REAR_HIGH_LAST3F90。差し切りの上限を最も高く取る。",
+      "second_case": "3番は前走芝2000m3着IDM40で予測着差4。直近同条件の安定性が高い。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "3番は前走3着IDM40で堅実だが、10番は末脚のLOSS_WITH_FASTEST_LAST3FにRRDB REAR_HIGH_LAST3F90と調教66が重なる。勝ち切りの伸び代を優先して10番を◎、3番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case",
+        "race_model"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 6,
+    "race_model": "中京芝1600m未勝利。先行の勝率・複勝率が高い。6番は芝1600mで2着2回、IDM39～40、7番は未出走ながら事前IDM40.5・KYI19.9。実戦再現性を軸に新馬の能力予測を対抗させる。",
+    "marks": [
+      6,
+      7,
+      8,
+      2,
+      14
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 6,
+        "case": "6番ルクスジニアは芝1600mで2着を連続しIDM39・40。KYI19.4、予測着差0で、先行から勝ち切る形を既に二度示している。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番エコロアテナは未出走だが事前IDM40.5、KYI19.9、調教64で予測着差4。既走上位と同等の能力予測を持つ。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番ステアハートは前走芝1600m5着IDM31でPACE_POSITION_AGAINST_GOOD_RUN。KYI4.5、調教62で先行から前進可能。"
+      },
+      {
+        "horse_no": 14,
+        "case": "14番マテンロウカナロアは芝1800m7着IDM31。KYI5.0、状態指数60で、1600m短縮により差し脚を使いやすくなる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "8番セクシーマージュは芝1600m2着IDM37、4着IDM36と先行して高水準。REPEATED_ABOVE_CLASS_PERFORMANCEがあり、逃げてマイペースなら6・7番を押し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "外部4番は芝1400m6着IDM29でLOSS_WITH_FASTEST_LAST3Fがある。一方、境界14番は芝1800m7着IDM31、KYI5.0・状態指数60で1600m短縮の直接的な前進材料があり、4番より現条件への接続を評価して維持する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "6ルクスジニアは1600mで2着を続けた実戦力を信頼。未出走7エコロアテナの事前評価も高く、8セクシーマージュが逃げ切る形まで押さえる。",
+    "candidate_compression": {
+      "ordinary_five": [
+        6,
+        7,
+        8,
+        2,
+        14
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番タガノアビーは芝1400m6着IDM29で最速上がり評価があるが、1600mでの直接実績はまだない。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4番の末脚は評価するが、境界14番はIDM31にKYI5.0・状態指数60。距離短縮の余地も含め14番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 6,
+      "second_horse_no": 7,
+      "honmei_win_case": "6番は芝1600mで2着2回、IDM39～40、予測着差0。実戦で勝ち負けの形を繰り返している。",
+      "second_case": "7番は未出走でも事前IDM40.5、KYI19.9、調教64と高水準で、初戦から6番を逆転できる能力予測。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7番は事前IDM40.5・KYI19.9で能力予測は僅かに上だが、6番は芝1600mで2着を2回、IDM39～40を実証済み。再現性を優先し6番を◎、7番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
