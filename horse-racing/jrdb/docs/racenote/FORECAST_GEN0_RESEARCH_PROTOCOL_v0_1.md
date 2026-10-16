@@ -122,6 +122,51 @@ exists before its results are opened. After result open, that same turn becomes
 development evidence for the next version. Separate historical holdout blocks
 may be reserved later, but are not required for the normal iteration cadence.
 
+### 3.1 Authoring-state persistence
+
+Long-card execution must not depend on one chat retaining every Reader and every
+intermediate judgment.
+
+The canonical evidence remains the sealed/full Reader. A repository-side
+authoring workspace may expose only neutral navigation/coverage data and a
+compact projection of already-bound pre-race facts. It does not replace the
+Reader and must not contain mechanically selected marks, candidate sets,
+external challengers, boundary candidates, confidence or generated prose.
+
+Model-authored chunks are valid recovery checkpoints. A progress record may
+bind completed chunk paths/hashes and the next unresolved chunk. Resuming from
+another chat/thread reads that persisted state and the complete Readers needed
+for the next chunk; it does not re-run already completed predictions.
+
+The purpose is to externalize **work state**, not to compress away prediction
+evidence or delegate reasoning to deterministic tooling.
+
+### 3.2 Backtest lifecycle / result unlock
+
+For current Human-Context prospective runs, use the following conceptual state
+transition:
+
+```text
+T1_SEALED
+-> AUTHORING_IN_PROGRESS
+-> AUTHORING_COMPLETE
+-> FROZEN
+-> FORMAT_AUDIT_COMPLETE
+-> CONFIDENCE_FROZEN (or explicit NOT_APPLICABLE)
+-> RESULT_UNLOCKED
+-> RESULT_EVALUATED
+```
+
+Result acquisition is fail-closed before the applicable pre-result artifacts
+are complete. In particular, if A/B/C or an A-purification experiment is part
+of the cohort, its confidence artifact must be persisted before result open.
+Missing historical confidence artifacts are not backfilled after results are
+known; those days remain prediction-valid but are excluded from prospective
+confidence evaluation.
+
+This lifecycle controls experimental integrity only. It does not change the
+candidate's mark-selection semantics.
+
 ## 4. Day selection
 
 Canonical state:
