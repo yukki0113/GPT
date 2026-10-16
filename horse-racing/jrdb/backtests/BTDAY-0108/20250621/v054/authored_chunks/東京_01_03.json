@@ -39,10 +39,7 @@
     "rrdb_refs": [
       {
         "horse_no": 13,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "直近同距離での先行持続力を補強する材料として用い、同距離3着IDM38を主根拠とした。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "13ミヤグリフォンは直近の東京1600m好走をそのまま評価。7デルマエアロールも前で運べる強みがあり、流れが厳しくなれば2アイスリーディングの差し込み。",
@@ -118,10 +115,7 @@
     "rrdb_refs": [
       {
         "horse_no": 5,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "過去の短距離持続力の補助材料。休養明けのため信号だけで評価を上げず、既存の3着実績と併せた。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "2ガンバレベアーは1400mでの安定した近走を中心視。5メイユウは久々でも能力評価が高く、展開が差し向きなら1ウインレアリゼの末脚まで。",
