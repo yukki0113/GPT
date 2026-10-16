@@ -3,7 +3,8 @@
 Status: **PROMOTED CURRENT — NEW v0.5.4 FREEZES ONLY / EXISTING v0.5.3 FREEZES IMMUTABLE**
 Date: 2026-10-15
 Logic ID: `RaceNote-Human-Context-Reader-0.5.4-candidate`
-Contract revision: `v054-authored-prose-r2`\nLegacy verification support: `v054-context-evidence-r1`
+Contract revision: `v054-authored-prose-r3`
+Legacy verification support: `v054-authored-prose-r2`, `v054-context-evidence-r1`
 Predecessor: `RaceNote-Human-Context-Reader-0.5.3-candidate` / `v053-boundary-safety-r2`
 
 ## 1. Objective and invariant
