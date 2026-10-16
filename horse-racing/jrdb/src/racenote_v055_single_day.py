@@ -504,6 +504,7 @@ def build_freeze(root: Path) -> dict[str, Any]:
         "target_date": session["target_date"],
         "logic_version": LOGIC,
         "contract_revision": session.get("contract_revision"),
+        "reader_projection": session.get("reader_projection"),
         "reader_manifest_sha256": session["reader_manifest_sha256"],
         "race_roster": session["race_roster"],
         "expected_venues": session["expected_venues"],
