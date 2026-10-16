@@ -37,6 +37,7 @@ def main() -> int:
     ap.add_argument("--main-sha", required=True)
     ap.add_argument("--analysis-root", type=Path, required=True)
     ap.add_argument("--course-fit-root", type=Path, required=True)
+    ap.add_argument("--race-lap-parquet", type=Path, required=True)
     rrdb = ap.add_mutually_exclusive_group(required=True)
     rrdb.add_argument("--racereview-root", type=Path)
     rrdb.add_argument("--racereview-current-cache", type=Path)
@@ -46,6 +47,8 @@ def main() -> int:
 
     if not args.paci.is_file():
         raise FileNotFoundError(args.paci)
+    if not args.race_lap_parquet.is_file():
+        raise FileNotFoundError(args.race_lap_parquet)
     if args.output_root.exists():
         raise FileExistsError(f"output root already exists: {args.output_root}")
     if len(args.main_sha) != 40 or any(c not in "0123456789abcdef" for c in args.main_sha):
@@ -59,6 +62,7 @@ def main() -> int:
             target_date=args.date,
             analysis_root=args.analysis_root,
             course_fit_root=args.course_fit_root,
+            race_lap_parquet=args.race_lap_parquet,
             racereview_root=args.racereview_root,
             racereview_current_cache=args.racereview_current_cache,
             next_watch_rules=args.next_watch_rules,
