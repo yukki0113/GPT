@@ -39,17 +39,11 @@
     "rrdb_refs": [
       {
         "horse_no": 4,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "先行持続力を今回の逃げ筋の補助材料として使用。"
+        "decision_role": "SUPPORT_COUNTERARGUMENT"
       },
       {
         "horse_no": 5,
-        "signal_ids": [
-          "FRONT_SURVIVE_GAP05"
-        ],
-        "interpretation": "1600mでの反復好走を補強するが、順位は同距離実績を主に決定。"
+        "decision_role": "SUPPORT_REPEATABILITY"
       }
     ],
     "reader_facing_reason": "13ジャサルディアは前走同舞台2着と末脚の質を最上位評価。11テンフレッシュが前から対抗し、4ガジュノリホワイトは展開利を取れれば逃げ残りまで。",
