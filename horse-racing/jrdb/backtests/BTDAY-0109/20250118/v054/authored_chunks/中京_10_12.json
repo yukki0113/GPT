@@ -1,0 +1,237 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 10,
+    "race_model": "中京芝1400mの紅梅S。先行勢が優位で、2番は同距離2勝かつ前走IDM47、5番は芝1600m1着IDM44でKYI19.4。ダート高指数の9番は芝適性が未証明のため能力だけで最上位には置かない。",
+    "marks": [
+      2,
+      5,
+      4,
+      9,
+      8
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2番キャッスルレイクは芝1400mで2勝、前走1着IDM47。先行脚質でKYI12.1、同距離の直接実績がメンバー最上位級。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番アイサンサンは芝1600m1着IDM44、2着IDM38でREPEATED_ABOVE_CLASS_PERFORMANCE。KYI19.4、調教72・状態68で距離短縮にも対応できる。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番アメリカンビキニはダ1400m1着IDM56、ダ1000m1着IDM50で能力値は最上位。芝替わりは未知だが、逃げ脚質と予測着差0から押し切る余地を残す。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番ナムラクララは芝1400mで1着・4着・2着、直近2着IDM43。KYI18.3にRRDB FRONT_SURVIVE_GAP05があり、先行して安定しやすい。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 4,
+      "case": "4番フェルシナは前走芝1400m1着IDM41、渋馬場でも走れて1600m2着歴もある。上位より指数は低いが、同距離勝ちから成長分を出せば一気に突き抜ける別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "固定境界10番は前走芝1400m1着IDM38にRRDB FRONT_SURVIVE_GAP05がある。一方、外部4番は同距離1着IDM41で1600m2着IDM34もあり、直接指数と距離実績で10番を上回るため入替を認める。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 8,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "2キャッスルレイクは1400mでの実績を素直に評価。5アイサンサンは仕上がりが良く、4フェルシナも同距離勝ちからの上積みがあれば差はない。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        5,
+        9,
+        8,
+        10
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番フェルシナは芝1400m1着IDM41で、1600m2着歴もあり距離適性と実戦指数が境界候補より高い。",
+      "excluded_horse_no": 10,
+      "decision": "ADMIT_CHALLENGER",
+      "reason": "10番も1400m勝ちIDM38とRRDB材料を持つが、4番は同距離IDM41でより高い直接実績があるため境界を越える。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 5,
+      "honmei_win_case": "2番は芝1400mで2勝、前走1着IDM47。先行して現条件を勝ち切る再現性が最も高い。",
+      "second_case": "5番は芝1600m1着IDM44、KYI19.4、調教72・状態68で距離短縮から逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番はKYI19.4と調教72で仕上がりが上だが、2番は芝1400mで2勝し前走IDM47。現条件の実証を優先して2番を◎、5番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "boundary_review"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 11,
+    "race_model": "中京ダート1400m3勝クラス。16番は同距離でIDM61・62の2着3着、15番はIDM61の2着を反復。8番も1400m連勝からRRDB TIME_CLASS_PLUS1を持ち、先行勢と強い末脚勢の高水準戦。",
+    "marks": [
+      16,
+      15,
+      8,
+      5,
+      9
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 16,
+        "case": "16番コンクイスタはダ1400mで2着IDM61、3着IDM62、1着IDM56。KYI19.0で先行力があり、近走の能力水準が最も安定して高い。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番ローズスターはダ1400mでIDM61の2着を2回、前走3着IDM55。REPEATED_FASTEST_LAST3FとPACE_POSITION_AGAINSTがあり、差しの上限が高い。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番モズミギカタアガリはダ1400mで直近2着IDM56、その前2着IDM62。KYI14.8で好位差しの再現性が高い。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番ジョディーズマロンはダ1400m2着IDM60、ダ1600m2着IDM63。追込でもKYI11.9があり、流れが速くなれば強烈な末脚を使える。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 8,
+      "case": "8番ラブコメディはダ1400mをIDM54・57で連勝し、事前IDM61.3。RRDB TIME_CLASS_PLUS1とFRONT_SURVIVE_GAP05が重なり、先行して一段上のクラスも突破する別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 4,
+      "reason": "外部4番はダ1400m1着IDM56、1300m3着IDM58と高水準。一方、境界9番は直近1400m2着IDM60、1600m2着IDM63を続け、末脚の反復性も高い。現在の絶対値で9番が4番を上回るため維持する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 8,
+        "decision_role": "UPGRADE_RECENT_FORM"
+      }
+    ],
+    "reader_facing_reason": "16コンクイスタは1400mで高指数を続けており中心。15ローズスターの末脚も互角級で、昇級でも8ラブコメディの連勝内容には勢いがある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        16,
+        15,
+        8,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 4,
+      "external_challenger_case": "4番リンドラゴはダ1400m1着IDM56、1300m3着IDM58で能力は高いが、直近の指数比較では境界9番に一歩譲る。",
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "4番の先行実績は十分だが、境界9番は1400mIDM60と1600mIDM63の2着を連続。絶対能力を優先して9番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 16,
+      "second_horse_no": 15,
+      "honmei_win_case": "16番はダ1400mでIDM61・62を連続しKYI19.0。先行して自ら勝ち筋を作れる点を最上位評価。",
+      "second_case": "15番はIDM61の2着を反復し最速上がり系の強みを持つ。差し切り性能では16番に迫る。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "15番は末脚の反復性が高いが、16番は直近1400mでIDM61・62を出し先行力とKYI19.0も備える。展開依存の小ささを優先して16番を◎、15番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "中京",
+    "race_no": 12,
+    "race_model": "中京芝1600m2勝クラス。7番は直近同距離3着IDM53と前走前の1着、2番は同距離3着IDM53・1着IDM55。5番も前走2着IDM55で、1600mの直接実績を中心に比較する。",
+    "marks": [
+      7,
+      2,
+      5,
+      4,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 7,
+        "case": "7番アルトゥームは1月6日の芝1600m3着IDM53、12月には同距離1着IDM49。事前IDM56、KYI17.4で現況が最も充実する。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番レディントンは芝1600m3着IDM53、1着IDM55。REPEATED_ABOVE_CLASS_PERFORMANCEとRRDB FRONT_SURVIVE_GAP05があり、KYI15.4で安定。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番パンドレアは前走芝1600m4着IDM50で、LOSS_WITH_FASTEST_LAST3FとRESULT_UNDERRATES_TIME。KYI7.7、調教61で差し込み余地がある。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番アルゲンテウスは芝1600m6着IDM51、過去1着IDM49・2着IDM48。近況は振れるが同距離での能力水準は保つ。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 5,
+      "case": "5番ケイデンシーマークは前走芝1600m2着IDM55、KYI20.5、調教69。REPEATED_ABOVE_CLASS_PERFORMANCEにRRDB FRONT_SURVIVE_GAP05もあり、先行して押し切る別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "外部9番は芝1600m1着IDM51や4着IDM54があるが、直近11着IDM48で近況が下降。一方、境界6番は前走6着IDM51に過去同距離1着IDM49・2着IDM48があり、直近値と差しの安定性で9番を上回るため維持する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 2,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      },
+      {
+        "horse_no": 5,
+        "decision_role": "SUPPORT_REPEATABILITY"
+      }
+    ],
+    "reader_facing_reason": "7アルトゥームは直近1600m3着で状態も安定。2レディントンも同距離実績が強く、5ケイデンシーマークは前走2着と仕上がりの良さで押し切りまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        7,
+        2,
+        5,
+        4,
+        6
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9番ウインアイオライトは芝1600m勝ちIDM51があるが、直近同距離11着IDM48で現在の再現性に課題がある。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "9番の過去実績は認めるが、境界6番は前走同距離IDM51で過去にも1着・2着。直近の直接値を優先して6番を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 7,
+      "second_horse_no": 2,
+      "honmei_win_case": "7番は直近芝1600m3着IDM53、前走前は同距離1着で、事前IDM56・KYI17.4。現在の勝ち筋が明確。",
+      "second_case": "2番は芝1600m1着IDM55と3着IDM53にRRDBシグナルもあり、安定した対抗軸。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "2番はIDM55の勝利とRRDB材料を持つが、7番は直近3着IDM53に事前IDM56・KYI17.4で現在値が僅かに上。近況を優先して7番を◎、2番を○とした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
