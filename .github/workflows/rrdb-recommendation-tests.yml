@@ -96,10 +96,10 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/rrdb1017/input /tmp/rrdb1017/course-fit
-          gdown --id 1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA -O /tmp/rrdb1017/input/PACI261017.zip
-          gdown --id 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/rrdb1017/input/RaceReviewDB_CURRENT.zip
-          gdown --id 1ljLg_jxVdZtpJ_Aqku0L93y8nwnfXUTQ -O /tmp/rrdb1017/input/course_fit_part1.zip
-          gdown --id 1yxP0EtPRmcTnrAgmgBMlAAj257r3pgYE -O /tmp/rrdb1017/input/course_fit_part2.zip
+          gdown 1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA -O /tmp/rrdb1017/input/PACI261017.zip
+          gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/rrdb1017/input/RaceReviewDB_CURRENT.zip
+          gdown 1ljLg_jxVdZtpJ_Aqku0L93y8nwnfXUTQ -O /tmp/rrdb1017/input/course_fit_part1.zip
+          gdown 1yxP0EtPRmcTnrAgmgBMlAAj257r3pgYE -O /tmp/rrdb1017/input/course_fit_part2.zip
           unzip -q /tmp/rrdb1017/input/course_fit_part1.zip -d /tmp/rrdb1017/course-fit
           unzip -q /tmp/rrdb1017/input/course_fit_part2.zip -d /tmp/rrdb1017/course-fit
       - name: Download audited RaceLap snapshot
