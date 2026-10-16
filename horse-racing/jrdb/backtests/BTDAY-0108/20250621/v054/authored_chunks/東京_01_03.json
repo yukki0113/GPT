@@ -1,0 +1,233 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "race_model": "東京ダート1600m未勝利。13番は直近同距離3着IDM38でRRDB FRONT_SURVIVE_GAP05、7番は1400～1800mで先行してIDM32～40。16番・2番の差し追込も同距離実績があり、前受け二頭を中心に見る。",
+    "marks": [
+      13,
+      7,
+      2,
+      16,
+      15
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 13,
+        "case": "13番ミヤグリフォンは一週前の東京ダ1600m3着IDM38。先行して予測中盤0、RRDB FRONT_SURVIVE_GAP05もあり、同条件の直接材料が最も新しい。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番デルマエアロールはダ1800mでIDM40の4着、直近1400m4着。先行して予測着差0・上がり0で、自分から勝ちに行ける。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16番センジュコスモスは直近東京ダ1600m4着IDM37。差しで予測着差6と安定した同距離材料を持つ。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番モリノアミーゴは直近ダ1400m3着IDM35。追込ながら終いを伸ばせており、距離延長で流れが落ち着けば圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 2,
+      "case": "2番アイスリーディングは直近東京ダ1600m5着IDM37、前走まで追込で位置を上げる内容がありPACE_POSITION_AGAINST_GOOD_RUN。前が消耗すれば後方からまとめて届く別経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10番は過去に東京ダ1600m4着IDM32があるが、直近1400m13着で状態面が後退。境界15番は直近3着IDM35で現在の上向きが明確。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 13,
+        "signal_ids": [
+          "FRONT_SURVIVE_GAP05"
+        ],
+        "interpretation": "直近同距離での先行持続力を補強する材料として用い、同距離3着IDM38を主根拠とした。"
+      }
+    ],
+    "reader_facing_reason": "13ミヤグリフォンは直近の東京1600m好走をそのまま評価。7デルマエアロールも前で運べる強みがあり、流れが厳しくなれば2アイスリーディングの差し込み。",
+    "candidate_compression": {
+      "ordinary_five": [
+        13,
+        7,
+        16,
+        2,
+        15
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10番は過去の1600m好走がある一方、近走の状態と能力推移が上位五頭より弱い。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界15番は直近ダ1400m3着IDM35で現在の走りが上向く。10番の古い同距離実績より直近状態を優先した。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 13,
+      "second_horse_no": 7,
+      "honmei_win_case": "13番は直近東京ダ1600m3着IDM38、先行して予測中盤0。同条件で最も具体的な勝ち筋を持つ。",
+      "second_case": "7番は予測着差0・上がり0で、1800mIDM40の地力を前受けで生かせば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "7番の能力上限は高いが、13番は直近同距離3着という直接性とRRDBの先行持続材料があるため13番を上位にした。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "race_model": "東京ダート1400m未勝利。2番は同距離で3、3、4着とIDM36～40を反復。5番は予測着差0でダ短距離3着歴、9番・16番も直近同距離上位。差し優勢の上位組から選ぶ。",
+    "marks": [
+      2,
+      5,
+      1,
+      9,
+      16
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2番ガンバレベアーは東京ダ1400mで直近3、3着、過去にも4着IDM38。今回IDM40、KYI16.8で能力と再現性が最も整う。"
+      },
+      {
+        "horse_no": 5,
+        "case": "5番メイユウは休養明けでもIDM39.2、予測着差0。ダ1200mで連続3着があり、RRDB FRONT_SURVIVE_GAP05も短距離での持続力を補強する。"
+      },
+      {
+        "horse_no": 9,
+        "case": "9番アシャカルークは直近東京ダ1400m3着IDM33。先行して運べるため上位差し勢より前で残る経路がある。"
+      },
+      {
+        "horse_no": 16,
+        "case": "16番サクラパステルは直近東京ダ1400m4着IDM36。先行気味に運べて今回も予測上がり3で相手圏。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 1,
+      "case": "1番ウインレアリゼは一週前の同距離2着で、REPEATED_FASTEST_LAST3Fを持つ追込馬。前が競れば後方から一気に差し切る勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 7,
+      "reason": "外部7番は1400m4着を反復し末脚材料もあるがIDM30～32。境界16番は直近同距離4着IDM36で、今回の直接能力が上回る。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 5,
+        "signal_ids": [
+          "FRONT_SURVIVE_GAP05"
+        ],
+        "interpretation": "過去の短距離持続力の補助材料。休養明けのため信号だけで評価を上げず、既存の3着実績と併せた。"
+      }
+    ],
+    "reader_facing_reason": "2ガンバレベアーは1400mでの安定した近走を中心視。5メイユウは久々でも能力評価が高く、展開が差し向きなら1ウインレアリゼの末脚まで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ],
+      "external_challenger_horse_no": 7,
+      "external_challenger_case": "7番は末脚の反復性があるが、1400mでの絶対能力は境界16番より一段低い。",
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "16番は直近東京1400m4着IDM36。7番の複数4着より現在の能力値が明確に上で五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 5,
+      "honmei_win_case": "2番は同距離で3、3、4着と崩れず今回IDM40。差しから勝ち切る再現性が最も高い。",
+      "second_case": "5番は予測着差0とIDM39.2を持ち、短距離3着歴を再現できれば2番より先に抜け出せる。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "5番の予測値は魅力だが休養明け。2番は直近同距離で上位を連続しているため、現在の再現性を優先して◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "race_model": "東京ダート1600m未勝利。10番は直近同距離2着IDM44で逃げ、8番も一週前の同距離2着IDM42。12番はダートで2～3着を反復しており、上位三頭が明確。",
+    "marks": [
+      10,
+      8,
+      12,
+      2,
+      6
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 10,
+        "case": "10番カフェロワドールは直近東京ダ1600m2着IDM44。逃げ脚質でKYI23、予測中盤・上がり0と今回も主導権を取れる。"
+      },
+      {
+        "horse_no": 8,
+        "case": "8番コーシューパンジャは一週前の東京ダ1600m2着IDM42。追込でREPEATED_FASTEST_LAST3FとPACE_POSITION_AGAINST_GOOD_RUNがあり、末脚の質が高い。"
+      },
+      {
+        "horse_no": 2,
+        "case": "2番スターエンブレムは芝からダート替わりだが、芝1600mで2着・4着と先行してIDM33～40。先行力がダートでも生きれば相手候補。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番グールマンはダ1400mでIDM31、先行して予測中盤・上がり0。距離延長でも前で運べる利点がある。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12番オオタチはダ1600～1800mで2着1回・3着4回と安定し、REPEATED_FASTEST_LAST3F。予測着差0で、前二頭が牽制し合えば差し切る勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 9,
+      "reason": "外部9番は同距離6着IDM29で直接実績があるが、境界6番は先行して予測中盤・上がり0、ダ1400mIDM31。勝ち筋の位置取り優位を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "10カフェロワドールは前走同舞台2着の内容と先行力が強い。8コーシューパンジャの末脚が相手で、安定感では12オオタチも差は小さい。",
+    "candidate_compression": {
+      "ordinary_five": [
+        10,
+        8,
+        12,
+        2,
+        6
+      ],
+      "external_challenger_horse_no": 9,
+      "external_challenger_case": "9番は東京1600m経験があるがIDM29で、上位五頭を上回る能力または展開上の決め手が不足する。",
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界6番は先行して予測中盤・上がり0。9番の同距離6着より勝ち切る位置取り経路が具体的。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 10,
+      "second_horse_no": 8,
+      "honmei_win_case": "10番は東京ダ1600m2着IDM44、逃げて予測中盤・上がり0。前からそのまま押し切る形が最も明確。",
+      "second_case": "8番は同距離2着IDM42で追込の末脚に反復性があり、10番を直線で捕える経路を持つ。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "8番の末脚は強いが、10番は同距離で能力値が上かつ自らレースを作れる。勝ち切りの主導権を優先して10番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
