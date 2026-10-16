@@ -1,0 +1,226 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 1,
+    "race_model": "阪神障害3110mオープン。障害戦のため平地IDMや通常の予測マージンは主材料にせず、障害での直近着順とオープン経験を中心に判断。9番は直近障害1、4、2着、10番はオープンで3着歴、11番は未勝利を1着・2着で上昇中。",
+    "marks": [
+      9,
+      10,
+      11,
+      4,
+      12
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 9,
+        "case": "9番シホノスペランツァは障害で直近1、4、2着と最も安定し、KYI21.7。前走2880m勝ちからオープンでも上位へつながる形。"
+      },
+      {
+        "horse_no": 10,
+        "case": "10番インディゴブラックは障害3170～3200mで3着を2回、3170m勝ちもあり、今回距離に近い実績が豊富。"
+      },
+      {
+        "horse_no": 4,
+        "case": "4番アルマーザアミールは前走2910mを勝利。オープン初戦でも先行して障害のリズムを維持できれば相手圏。"
+      },
+      {
+        "horse_no": 12,
+        "case": "12番ゴールドブリーズは障害3170m4着、2750m1着などオープン長距離経験があり、逃げて自分の形を取れる。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 11,
+      "case": "11番ヒルズカーンは障害転向後に5、2、1着と明確に上昇。オープン初戦でも現在の伸びをそのまま持ち込めれば既成勢を越える勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 2,
+      "reason": "外部2番は2910m勝ち後に3900m7着で経験はあるが、境界12番は3170m4着を含むオープン実績と逃げの形を持つ。今回3110mへの直接性で12番を残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "9シホノスペランツァは障害で1、4、2着と安定しており中心。長めの障害実績では10インディゴブラックが続き、上昇中の11ヒルズカーンは昇級でも一発がある。",
+    "candidate_compression": {
+      "ordinary_five": [
+        9,
+        10,
+        4,
+        12,
+        11
+      ],
+      "external_challenger_horse_no": 2,
+      "external_challenger_case": "2番は障害勝ちがあるが直近3900m7着で、今回距離のオープン実績では既存五頭に一歩譲る。",
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界11番は障害5、2、1着と現在の上昇が明確。2番の過去勝利より直近の成長経路を残す。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 9,
+      "second_horse_no": 10,
+      "honmei_win_case": "9番は障害で直近1、4、2着と結果を反復し、現在の安定性が最上位。",
+      "second_case": "10番は3170～3200mで複数3着と勝利歴があり、3110mでも距離経験を生かして逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "10番の長距離経験は強いが、9番はより直近の障害戦で1、4、2着と上向きを維持。現在の再現性を優先して9番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 2,
+    "race_model": "阪神ダート1800m未勝利。4番は同距離で2、5、5着IDM30～33、6番も1800mで3、4、5着を反復。12番はダート初出走だが事前能力37.2・予測各値0で上振れ余地が大きい。",
+    "marks": [
+      4,
+      6,
+      12,
+      1,
+      11
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 4,
+        "case": "4番テイエムドリーマーはダ1800mで2、5、5着、IDM30～33。今回条件の実戦再現性が最も高い。"
+      },
+      {
+        "horse_no": 6,
+        "case": "6番コスモサンビタリアは直近ダ1800m4着IDM33、過去3着IDM32もある。状態71で、RRDB FRONT_SURVIVE_GAP05が持続力を補う。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番フランコジャポネはダ1800m6着IDM32があり、ダート適性○。予測着差2で差しから前二頭へ迫れる。"
+      },
+      {
+        "horse_no": 11,
+        "case": "11番ドマーネはダ1800m初戦6着IDM31。調教62、KYI10.1で二戦目の上積みが見込める。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 12,
+      "case": "12番オーケアニスはダート実戦歴こそないが、芝1800m3着IDM38から今回IDM37.2、予測着差・中盤・上がり0。ダート適応さえできれば前で一気に押し切る未知の勝ち筋がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 10,
+      "reason": "外部10番は初出走でIDM28、調教59。境界11番は実際にダ1800mを経験してIDM31、調教62で二戦目。直接のダート経験を優先する。"
+    },
+    "rrdb_refs": [
+      {
+        "horse_no": 6,
+        "signal_ids": [
+          "FRONT_SURVIVE_GAP05"
+        ],
+        "interpretation": "1800mでの持続力を補助する材料として使用し、実際の3～5着反復を主根拠とした。"
+      }
+    ],
+    "reader_facing_reason": "4テイエムドリーマーは1800mでの安定実績を中心視。6コスモサンビタリアも同条件で堅実だが、12オーケアニスはダート適応なら事前評価どおり一変まである。",
+    "candidate_compression": {
+      "ordinary_five": [
+        4,
+        6,
+        1,
+        11,
+        12
+      ],
+      "external_challenger_horse_no": 10,
+      "external_challenger_case": "10番は初出走で一定の事前評価はあるが、ダ1800mの実戦裏付けを持つ境界馬を越える材料が不足。",
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界12番はダート未経験でもIDM37.2・予測各値0という明確な上振れ経路を持つ。10番より能力評価が高く五頭を維持。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 4,
+      "second_horse_no": 6,
+      "honmei_win_case": "4番はダ1800mで2着IDM33を含み、同距離で上位を繰り返している。",
+      "second_case": "6番は直近同距離4着IDM33、状態71で、持続力の補助材料もあり逆転圏。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "6番の状態は良いが、4番は同距離2着を含むより高い着順実績を持つ。直接の勝ちへの近さで4番を◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "race_model",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 3,
+    "race_model": "阪神ダート1200m未勝利。2番は同距離2着IDM43、7番は2着IDM39を含む連続上位、6番は2着IDM40・3着37。15番も1200m4着38と1000m2着43があり、短距離実績上位が明確。",
+    "marks": [
+      2,
+      15,
+      6,
+      7,
+      1
+    ],
+    "mainline_cases": [
+      {
+        "horse_no": 2,
+        "case": "2番アンピュルシオンはダ1200mで2着IDM43、4着・5着もあり今回IDM39。短距離適性○で勝ち切りに最も近い実績。"
+      },
+      {
+        "horse_no": 15,
+        "case": "15番シュテルンビルトはダ1200m4着IDM38、2着IDM36、1000m2着IDM43。今回予測着差0、調教59・状態63で差し切り可能。"
+      },
+      {
+        "horse_no": 7,
+        "case": "7番キーガッツはダ1200mで2、4、5着、IDM36～39を反復。大崩れが少なく相手本線。"
+      },
+      {
+        "horse_no": 1,
+        "case": "1番テーオーヴァルナイは直近ダ1400m2着IDM36で、過去1200m4着IDM33。短縮で流れに乗れれば圏内。"
+      }
+    ],
+    "single_shot_case": {
+      "horse_no": 6,
+      "case": "6番メイショウサトノヒはダ1200mで2着IDM40、3着IDM37があり、予測着差3・中盤4・上がり2。先行して上位差し勢より前で押し切る経路がある。"
+    },
+    "boundary_review": {
+      "alternative_horse_no": 16,
+      "reason": "外部16番はダ1200m3着IDM35があり展開不利材料も持つが、境界1番は直近1400m2着IDM36と過去1200m4着があり現在性で上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2アンピュルシオンは1200m2着時の能力を最上位評価。15シュテルンビルトの差しが相手で、6メイショウサトノヒは先行して流れを味方につければ押し切りまで。",
+    "candidate_compression": {
+      "ordinary_five": [
+        2,
+        15,
+        7,
+        6,
+        1
+      ],
+      "external_challenger_horse_no": 16,
+      "external_challenger_case": "16番は1200m3着実績があるが、直近6着IDM32で上位五頭を越える直接材料は弱い。",
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "reason": "境界1番は直近ダ1400m2着IDM36で状態が上向き、1200m4着歴もある。16番より現在の勝ち筋が具体的。"
+    },
+    "role_assignment": {
+      "honmei_horse_no": 2,
+      "second_horse_no": 15,
+      "honmei_win_case": "2番はダ1200m2着IDM43というメンバー上位の直接実績を持ち、今回も短距離適性○。",
+      "second_case": "15番は予測着差0で、1200m・1000mで複数2着を持つ。差しが届けば逆転可能。",
+      "honmei_selection_mode": "WIN_FIRST_NOT_PLACE_FIRST",
+      "shot_selection_mode": "ASYMMETRIC_PAYOUT_ROUTE_NOT_ORDINARY_RANK",
+      "ranking_reason": "15番の今回予測は良いが、2番は同距離でIDM43の2着というより高い直接能力を示しているため◎。"
+    },
+    "reader_facing_reason_authorship": {
+      "mode": "MODEL_AUTHORED_PER_RACE",
+      "programmatic_template": false,
+      "basis": [
+        "honmei_win_case",
+        "ranking_reason",
+        "single_shot_case"
+      ]
+    }
+  }
+]
