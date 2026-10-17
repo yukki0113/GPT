@@ -38,6 +38,27 @@ race_lap.period_to == analysis.period_to
 
 The exact RaceLap Parquet SHA-256 is still bound into the v0.5.5 session, so reuse of the canonical current asset does not weaken input immutability.
 
+
+RaceLap is exposed to the model through the common Reader contract, not through
+consumer-side Parquet SQL. PACI recent runs retain their canonical `race_key`;
+the daily RRDB/RaceNote enrichment performs one batch lookup and attaches:
+
+```text
+horses[].recent_runs[].race.race_key
+  -> RaceLapReader.get_race_contexts(...)
+  -> recent_runs[].race_structure
+       source = JRDB_RaceLapReader_v0.1
+       coverage
+       lap_shape
+       srb_context
+       policy
+       provenance
+```
+
+`lap_shape` is source-race context, not an individual-horse sectional or an
+additive score. Missing RaceLap coverage is represented explicitly as
+`coverage.status=NOT_FOUND`; target-date or future source rows fail closed.
+
 ## 2. Initialize the sealed Lean Model Reader
 
 ```bash
