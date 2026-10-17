@@ -95,10 +95,21 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/racelap-raw /tmp/racelap
-          python horse-racing/jrdb/src/fetch_jrdb_history.py \
-            --from-year 2024 --to-year 2025 --kinds SED \
-            --output-dir /tmp/racelap-raw --sleep-seconds 0.2 \
-            --max-retries 5 --retry-backoff-seconds 2
+          for y in 2024 2025; do
+            ok=0
+            for attempt in 1 2 3 4 5; do
+              if python horse-racing/jrdb/src/fetch_jrdb_history.py \
+                --from-year "$y" --to-year "$y" --kinds SED \
+                --output-dir /tmp/racelap-raw --sleep-seconds 0.2 \
+                --max-retries 5 --retry-backoff-seconds 3; then
+                ok=1
+                break
+              fi
+              sleep $((attempt * 10))
+            done
+            test "$ok" -eq 1
+            sleep 5
+          done
           python - <<'PY'
           import json
           from pathlib import Path
