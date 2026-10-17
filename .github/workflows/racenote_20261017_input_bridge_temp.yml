@@ -23,8 +23,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/inputs
-          gdown --id 1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA -O /tmp/inputs/PACI261017.zip
-          gdown --id 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/inputs/RaceReviewDB_CURRENT.zip
+          gdown 1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA -O /tmp/inputs/PACI261017.zip
+          gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/inputs/RaceReviewDB_CURRENT.zip
           unzip -t /tmp/inputs/PACI261017.zip >/dev/null
           unzip -t /tmp/inputs/RaceReviewDB_CURRENT.zip >/dev/null
       - uses: actions/upload-artifact@v4
