@@ -1,0 +1,237 @@
+name: RaceNote DAILY-20261017 v0.5.5 r4 TURN 1 Recovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/requests/racenote_20261017_recovery.trigger'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: racenote-daily-20261017-v055r4-turn1
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      JRDB_USER: ${{ secrets.JRDB_USER }}
+      JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+      PYTHONPATH: horse-racing/jrdb/src
+      TARGET: horse-racing/jrdb/daily/20261017/v055_day
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r tools/data-storage/requirements.txt
+          python -m pip install jsonschema pandas numpy
+      - name: Confirm immutable target is new
+        run: test ! -e "$TARGET"
+      - name: Materialize GPT-routed PACI and RRDB inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/input /tmp/rrdb
+          curl --fail --location --retry 3 'https://sdmntprnznorth.oaiusercontent.com/files/00000000-2fac-820b-8f9b-f437a3f2a418/raw?se=2026-10-17T06%3A44%3A00Z&sp=r&sv=2026-02-06&sr=b&scid=9cc4008f-9f29-5458-9426-1b2571c37476&skoid=4aa315bb-5bf6-44d7-aaa9-381a9cb823c8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-16T23%3A19%3A02Z&ske=2026-10-17T23%3A19%3A02Z&sks=b&skv=2026-02-06&sig=ub2PNMeD4YwgZh2wBzpE/KlS4Y9a%2Bbn4gyB77Glcm%2B0%3D' -o /tmp/input/PACI261017.zip
+          curl --fail --location --retry 3 'https://sdmntprnznorth.oaiusercontent.com/files/00000000-00c0-820b-a890-7e92ff9162ba/raw?se=2026-10-17T06%3A44%3A09Z&sp=r&sv=2026-02-06&sr=b&scid=732aa992-448a-5cc6-b675-4936abdbe88c&skoid=4aa315bb-5bf6-44d7-aaa9-381a9cb823c8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-16T19%3A21%3A03Z&ske=2026-10-17T19%3A21%3A03Z&sks=b&skv=2026-02-06&sig=J5iTosIK4Bi3jlR3wgqUP%2B%2BDVzP%2BsmxdREJZHTXEn7I%3D' -o /tmp/input/RaceReviewDB_CURRENT.zip
+          unzip -t /tmp/input/PACI261017.zip >/dev/null
+          unzip -t /tmp/input/RaceReviewDB_CURRENT.zip >/dev/null
+          unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+          test -f /tmp/rrdb/postrace_review/v0_1/current.json
+      - name: Materialize 2026-10-12 Analysis v1.4 candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/analysis-art /tmp/analysis
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11782694052/zip > /tmp/analysis-art/refresh.zip
+          unzip -q /tmp/analysis-art/refresh.zip -d /tmp/analysis-art
+          tar -xJf /tmp/analysis-art/analysis-parquet-candidate.tar.xz -C /tmp/analysis
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/analysis')
+          gen='analysis-v1_4-canonical-20261013-02'
+          m=root/'generations'/gen/'manifest.json'
+          data=json.loads(m.read_text(encoding='utf-8'))
+          assert data['validation_status']=='PASS'
+          assert data['period_to']=='2026-10-12'
+          (root/'current.json').write_text(
+              json.dumps({'status':'CURRENT','generation_id':gen,'manifest':f'generations/{gen}/manifest.json'},indent=2)+'\n',
+              encoding='utf-8')
+          PY
+      - name: Materialize approved Course Fit v0.1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11799761734/zip > /tmp/approved-fit.zip
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('/tmp/approved-fit.zip')
+          assert p.stat().st_size==170365515
+          h=hashlib.sha256()
+          with p.open('rb') as f:
+              for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+          assert h.hexdigest()=='18570ef9c366f78b2f8bb60c380e24b70f1b80e070ddf1961acaed7bde35627d'
+          PY
+          mkdir -p /tmp/course-fit
+          unzip -q /tmp/approved-fit.zip -d /tmp/course-fit
+          test -f /tmp/course-fit/fit/research/candidate_fit_view.parquet
+      - name: Materialize verified RaceLap forward current (no JRDB history fetch)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RACELAP_CURRENT_ARTIFACT_ID: ${{ vars.RACELAP_CURRENT_ARTIFACT_ID }}
+        run: |
+          set -euo pipefail
+          if test -z "$RACELAP_CURRENT_ARTIFACT_ID" && test -f horse-racing/jrdb/config/racenote_racelap_forward_current_binding.json; then
+            RACELAP_CURRENT_ARTIFACT_ID="$(python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('horse-racing/jrdb/config/racenote_racelap_forward_current_binding.json')
+          print(json.loads(p.read_text(encoding='utf-8'))['artifact_id'])
+          PY
+          )"
+          fi
+          test -n "$RACELAP_CURRENT_ARTIFACT_ID" || {
+            echo "::error::RaceLap forward current not promoted/configured"; exit 1;
+          }
+          mkdir -p /tmp/racelap-materialized /tmp/racelap
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${RACELAP_CURRENT_ARTIFACT_ID}/zip" > /tmp/racelap-materialized/current.zip
+          unzip -q /tmp/racelap-materialized/current.zip -d /tmp/racelap-materialized
+          test "$(find /tmp/racelap-materialized -type f -name 'race_lap.parquet' | wc -l)" -eq 1
+          test "$(find /tmp/racelap-materialized -type f -name 'manifest.json' | wc -l)" -eq 1
+          cp "$(find /tmp/racelap-materialized -type f -name 'race_lap.parquet' -print -quit)" /tmp/racelap/race_lap.parquet
+          cp "$(find /tmp/racelap-materialized -type f -name 'manifest.json' -print -quit)" /tmp/racelap/manifest.json
+          if test "$(find /tmp/racelap-materialized -type f -name 'audit.json' | wc -l)" -eq 1; then
+            cp "$(find /tmp/racelap-materialized -type f -name 'audit.json' -print -quit)" /tmp/racelap/race_lap.audit.json
+          else
+            cp /tmp/racelap/manifest.json /tmp/racelap/race_lap.audit.json
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          current=json.loads(Path('/tmp/analysis/current.json').read_text(encoding='utf-8'))
+          manifest=json.loads((Path('/tmp/analysis')/current['manifest']).read_text(encoding='utf-8'))
+          Path('/tmp/analysis_period_to.txt').write_text(manifest['period_to'],encoding='utf-8')
+          PY
+          python horse-racing/jrdb/src/jrdb_race_lap_forward_current.py \
+            --parquet /tmp/racelap/race_lap.parquet \
+            --manifest /tmp/racelap/manifest.json \
+            --target-date 2026-10-17 \
+            --analysis-period-to "$(cat /tmp/analysis_period_to.txt)"
+      - name: Build PACI market-blind forecast prep
+        shell: bash
+        run: |
+          set -euo pipefail
+          MAIN_SHA="$(git rev-parse HEAD)"
+          python horse-racing/jrdb/src/racenote_v053_from_paci.py             --date 2026-10-17             --paci /tmp/input/PACI261017.zip             --selection-id DAILY-20261017             --main-sha "$MAIN_SHA"             --analysis-root /tmp/analysis             --course-fit-root /tmp/course-fit             --race-lap-parquet /tmp/racelap/race_lap.parquet             --racereview-root /tmp/rrdb/postrace_review/v0_1             --output-root "$TARGET" --prep-only
+          rm -rf "$TARGET/v053"
+          cp "$TARGET/day_prep/RaceNote_20261017/manifest.json" "$TARGET/day_prep/manifest.json"
+          cp "$TARGET/day_prep/RaceNote_20261017/validation_report.json" "$TARGET/day_prep/validation_report.json"
+      - name: Build KYI evidence and seal v0.5.5 r4 Lean Reader
+        shell: bash
+        run: |
+          set -euo pipefail
+          MAIN_SHA="$(git rev-parse HEAD)"
+          mkdir -p "$TARGET/v054_inputs" "$TARGET/source_audit"
+          python horse-racing/jrdb/src/racenote_v054_kyi_bundle.py             --prep-root "$TARGET/forecast_prep"             --kyi-archive /tmp/input/PACI261017.zip             --output "$TARGET/v054_inputs/kyi_bundle.json"
+          python horse-racing/jrdb/src/racenote_v055_single_day.py init             --prep-root "$TARGET/forecast_prep"             --root "$TARGET/v055"             --base-main-sha "$MAIN_SHA"             --evidence-bundle "$TARGET/v054_inputs/kyi_bundle.json"             --race-lap-parquet /tmp/racelap/race_lap.parquet
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          target=Path(os.environ['TARGET'])
+          def sha(p):
+              h=hashlib.sha256()
+              with Path(p).open('rb') as f:
+                  for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
+              return h.hexdigest()
+          s=json.loads((target/'v055/session.json').read_text(encoding='utf-8'))
+          rm=json.loads((target/'v055/reader_manifest.json').read_text(encoding='utf-8'))
+          ky=json.loads((target/'v054_inputs/kyi_bundle.json').read_text(encoding='utf-8'))
+          an=json.loads(Path('/tmp/analysis/current.json').read_text(encoding='utf-8'))
+          anm=json.loads((Path('/tmp/analysis')/an['manifest']).read_text(encoding='utf-8'))
+          rr=json.loads(Path('/tmp/rrdb/postrace_review/v0_1/current.json').read_text(encoding='utf-8'))
+          handoff={
+            'schema_version':'racenote-v055-r4-daily-turn1-handoff-0.1',
+            'status':'READY_FOR_V055_AUTHORING',
+            'selection_id':'DAILY-20261017',
+            'target_date':'2026-10-17',
+            'source_mode':'paci',
+            'logic_version':s['logic_version'],
+            'contract_revision':s['contract_revision'],
+            'reader_projection':s['reader_projection'],
+            'session_id':s['session_id'],
+            'base_main_sha':s['base_main_sha'],
+            'paci':{'filename':'PACI261017.zip','drive_file_id':'1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA','sha256':sha('/tmp/input/PACI261017.zip')},
+            'analysis':{'generation_id':an['generation_id'],'period_to':anm['period_to'],'validation_status':anm['validation_status']},
+            'rrdb':{'generation_id':rr['generation_id'],'updated_at':rr.get('updated_at')},
+            'race_lap':{'sha256':sha('/tmp/racelap/race_lap.parquet')},
+            'kyi_coverage':ky['coverage'],
+            'race_count':len(s['race_roster']),
+            'expected_venues':s['expected_venues'],
+            'reader_count':len(rm['entries']),
+            'market_blind':True,
+            'stripped_at_input_bind':True,
+            'result_opened':False,
+            'target_market_opened':False,
+          }
+          (target/'operation_handoff.json').write_text(json.dumps(handoff,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          (target/'source_audit/racelap.audit.json').write_text(Path('/tmp/racelap/race_lap.audit.json').read_text(encoding='utf-8'),encoding='utf-8')
+          PY
+      - name: Validate v0.5.5 r4 TURN 1 final state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          root=Path(os.environ['TARGET'])
+          o=json.loads((root/'operation_handoff.json').read_text(encoding='utf-8'))
+          s=json.loads((root/'v055/session.json').read_text(encoding='utf-8'))
+          m=json.loads((root/'v055/reader_manifest.json').read_text(encoding='utf-8'))
+          d=json.loads((root/'day_prep/manifest.json').read_text(encoding='utf-8'))
+          v=json.loads((root/'day_prep/validation_report.json').read_text(encoding='utf-8'))
+          p=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text(encoding='utf-8'))
+          head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          assert o['status']=='READY_FOR_V055_AUTHORING'
+          assert o['selection_id']=='DAILY-20261017' and o['target_date']=='2026-10-17'
+          assert o['source_mode']=='paci'
+          assert s['status']=='SESSION_SEALED'
+          assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.5-candidate'
+          assert s['contract_revision']=='v055-prediction-freeze-confidence-review-r4'
+          assert s['reader_projection']=='v055-lean-model-reader-r2'
+          assert s['base_main_sha']==head==o['base_main_sha']
+          assert p['market_blind'] is True and p['stripped_at_input_bind'] is True
+          assert p['result_opened'] is False and p['target_market_opened'] is False
+          assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
+          assert o['market_blind'] is True and o['result_opened'] is False and o['target_market_opened'] is False
+          assert d['status']=='PASS' and v['status']=='PASS'
+          assert o['analysis']['period_to']=='2026-10-12'
+          assert o['race_count']==len(s['race_roster'])==len(m['entries'])
+          assert o['reader_count']==o['race_count']
+          assert o['kyi_coverage']['kyi_missing_count']==0
+          print(json.dumps({'status':o['status'],'venues':o['expected_venues'],'race_count':o['race_count'],'session_id':o['session_id'],'analysis':o['analysis'],'rrdb':o['rrdb'],'kyi':o['kyi_coverage'],'market_blind':True,'result_opened':False,'target_market_opened':False},ensure_ascii=False))
+          PY
+      - name: Commit immutable TURN 1
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET"
+          git commit -m 'RaceNote: stage DAILY-20261017 v0.5.5 r4 TURN 1'
+          git pull --rebase origin main
+          git push origin HEAD:main
