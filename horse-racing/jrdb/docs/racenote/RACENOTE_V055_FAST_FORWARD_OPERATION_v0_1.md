@@ -89,3 +89,27 @@ runs this finalization when both LLM draft files exist for one daily session.
 
 This removes temporary per-day workflows without moving prediction judgment into
 code.
+
+## RaceLap pre-T1 refresh
+
+RaceLap is the only forward evidence whose freshness is owned by T1.
+
+When the accepted RaceLap CURRENT is behind the expected completed-day cutoff,
+use the permanent Issue Router route `[RACELAP_FORWARD_REFRESH] <request_id>`.
+
+Issue body is one JSON object with:
+
+- `target_date`
+- `expected_period_to`
+- `completed_dates` (unique ascending dates; last value equals `expected_period_to`)
+- `current_run_id`
+- `current_artifact_name`
+- `generation_id`
+
+The routed workflow fetches only the explicitly listed completed-day SED archives,
+resolves the existing CURRENT, validates the cutoff, and publishes a new Actions
+artifact. It does not update Analysis or RRDB and it does not discover dates.
+
+Drive publication of an accepted RaceLap artifact remains a separate native
+Google Drive connector operation. Authenticated Drive access is not performed
+inside GitHub Actions.

@@ -1,0 +1,272 @@
+name: RaceLap Forward Refresh via Issue Router
+
+on:
+  repository_dispatch:
+    types: [racelap_forward_refresh_request]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Existing RaceLap refresh request Issue number
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+env:
+  REQUEST_PREFIX: '[RACELAP_FORWARD_REFRESH]'
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+
+    steps:
+      - name: Resolve request Issue
+        id: issue
+        env:
+          GH_TOKEN: \${{ github.token }}
+          ROUTED_ISSUE_NUMBER: \${{ github.event.client_payload.issue_number || inputs.issue_number }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          number=int(os.environ['ROUTED_ISSUE_NUMBER'])
+          raw=subprocess.check_output([
+              'gh','api',f"repos/{os.environ['GITHUB_REPOSITORY']}/issues/{number}"
+          ], text=True)
+          issue=json.loads(raw)
+          if 'pull_request' in issue or issue['user']['login']!='yukki0113':
+              raise SystemExit('invalid request Issue')
+          if not issue['title'].startswith('[RACELAP_FORWARD_REFRESH]'):
+              raise SystemExit('wrong request prefix')
+          Path('/tmp/routed_issue.json').write_text(json.dumps({
+              'number':number,'title':issue['title'],'body':issue['body'] or ''
+          },ensure_ascii=False),encoding='utf-8')
+          with Path(os.environ['GITHUB_OUTPUT']).open('a') as out:
+              out.write(f'issue_number={number}\n')
+          PY
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Parse and validate request
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import datetime as dt, json
+          from pathlib import Path
+          issue=json.loads(Path('/tmp/routed_issue.json').read_text(encoding='utf-8'))
+          try:
+              req=json.loads(issue['body'].strip())
+          except Exception as exc:
+              raise SystemExit('Issue body must be one JSON object') from exc
+          required=('target_date','expected_period_to','completed_dates',
+                    'current_run_id','current_artifact_name','generation_id')
+          missing=[k for k in required if req.get(k) in (None,'',[])]
+          if missing:
+              raise SystemExit('missing required field(s): '+','.join(missing))
+          target=dt.date.fromisoformat(str(req['target_date']))
+          expected=dt.date.fromisoformat(str(req['expected_period_to']))
+          dates=[dt.date.fromisoformat(str(x)) for x in req['completed_dates']]
+          if not dates or dates != sorted(set(dates)):
+              raise SystemExit('completed_dates must be unique ascending dates')
+          if dates[-1] != expected:
+              raise SystemExit('last completed_dates value must equal expected_period_to')
+          if not expected < target or any(not x < target for x in dates):
+              raise SystemExit('completed dates must be earlier than target_date')
+          run_id=int(req['current_run_id'])
+          if run_id <= 0:
+              raise SystemExit('current_run_id must be positive')
+          resolved={
+              'target_date':target.isoformat(),
+              'expected_period_to':expected.isoformat(),
+              'completed_dates':[x.isoformat() for x in dates],
+              'current_run_id':run_id,
+              'current_artifact_name':str(req['current_artifact_name']),
+              'generation_id':str(req['generation_id']),
+          }
+          Path('/tmp/request.json').write_text(json.dumps(resolved,indent=2)+'\n')
+          PY
+
+      - run: python -m pip install -r tools/data-storage/requirements.txt
+
+      - name: Materialize accepted RaceLap CURRENT
+        id: current
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/racelap/current /tmp/racelap/raw /tmp/racelap/work /tmp/racelap/output
+          run_id="$(python -c "import json;print(json.load(open('/tmp/request.json'))['current_run_id'])")"
+          artifact="$(python -c "import json;print(json.load(open('/tmp/request.json'))['current_artifact_name'])")"
+          gh run download "$run_id" -n "$artifact" -D /tmp/racelap/current
+          manifest="$(find /tmp/racelap/current -type f -name manifest.json -print)"
+          parquet="$(find /tmp/racelap/current -type f -name race_lap.parquet -print)"
+          test "$(printf '%s\n' "$manifest" | sed '/^$/d' | wc -l)" -eq 1
+          test "$(printf '%s\n' "$parquet" | sed '/^$/d' | wc -l)" -eq 1
+          test "$(dirname "$manifest")" = "$(dirname "$parquet")"
+          bundle="$(dirname "$manifest")"
+          echo "bundle=$bundle" >> "$GITHUB_OUTPUT"
+          BUNDLE="$bundle" python - <<'PY'
+          import json, os
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text())
+          bundle=Path(os.environ['BUNDLE'])
+          manifest=json.loads((bundle/'manifest.json').read_text())
+          current=str(manifest.get('period_to'))
+          expected=req['expected_period_to']
+          if current > expected:
+              raise SystemExit(f'RaceLap CURRENT is ahead of expected cutoff: {current} > {expected}')
+          needs=current != expected
+          Path('/tmp/needs_refresh.txt').write_text('true' if needs else 'false')
+          print(json.dumps({'current_period_to':current,'expected_period_to':expected,'needs_refresh':needs}))
+          PY
+
+      - name: Fetch only required completed-day SED
+        env:
+          JRDB_USER: \${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: \${{ secrets.JRDB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if test "$(cat /tmp/needs_refresh.txt)" != "true"; then
+            exit 0
+          fi
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text())
+          for date in req['completed_dates']:
+              compact=date.replace('-','')
+              subprocess.run([
+                  'python','horse-racing/jrdb/src/fetch_jrdb_history.py',
+                  '--date',compact,'--kinds','SED',
+                  '--output-dir','/tmp/racelap/raw','--sleep-seconds','0'
+              ],check=True)
+              expected=Path('/tmp/racelap/raw/SED')/f"SED{compact[2:]}.zip"
+              if not expected.is_file() or expected.stat().st_size == 0:
+                  raise SystemExit(f'missing fetched SED: {expected}')
+          PY
+
+      - name: Resolve RaceLap CURRENT
+        env:
+          CURRENT_BUNDLE: \${{ steps.current.outputs.bundle }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          req=json.loads(Path('/tmp/request.json').read_text())
+          args=[
+              'python','horse-racing/jrdb/src/jrdb_race_lap_current_resolver.py',
+              '--current-bundle',os.environ['CURRENT_BUNDLE'],
+              '--target-date',req['target_date'],
+              '--expected-period-to',req['expected_period_to'],
+              '--receipt','/tmp/racelap/resolver_receipt.json',
+          ]
+          if Path('/tmp/needs_refresh.txt').read_text().strip()=='true':
+              args += [
+                  '--work-root','/tmp/racelap/work',
+                  '--generation-id',req['generation_id'],
+                  '--resolved-bundle','/tmp/racelap/resolved',
+              ]
+              for date in req['completed_dates']:
+                  compact=date.replace('-','')
+                  args += ['--sed',f"/tmp/racelap/raw/SED/SED{compact[2:]}.zip"]
+                  args += ['--expected-date',date]
+          subprocess.run(args,check=True)
+          receipt=json.loads(Path('/tmp/racelap/resolver_receipt.json').read_text())
+          if receipt.get('status')!='CURRENT_READY':
+              raise SystemExit('resolver did not return CURRENT_READY')
+          if receipt.get('period_to')!=req['expected_period_to']:
+              raise SystemExit('resolver period_to mismatch')
+          if receipt.get('network_access') is not False:
+              raise SystemExit('resolver unexpectedly reported network access')
+          PY
+
+      - name: Stage resolved bundle
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+          receipt=json.loads(Path('/tmp/racelap/resolver_receipt.json').read_text())
+          bundle=Path(receipt['bundle'])
+          out=Path('/tmp/racelap/output')
+          for name in ('race_lap.parquet','manifest.json'):
+              shutil.copy2(bundle/name,out/name)
+          if (bundle/'audit.json').is_file():
+              shutil.copy2(bundle/'audit.json',out/'audit.json')
+          shutil.copy2('/tmp/racelap/resolver_receipt.json',out/'resolver_receipt.json')
+          PY
+
+      - uses: actions/upload-artifact@v4
+        id: current_upload
+        with:
+          name: racelap-forward-current-\${{ github.run_id }}
+          path: /tmp/racelap/output/
+          retention-days: 90
+          compression-level: 0
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        id: sed_upload
+        with:
+          name: racelap-completed-sed-\${{ github.run_id }}
+          path: /tmp/racelap/raw/SED/SED*.zip
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: ignore
+
+      - name: Report success and close
+        if: success()
+        env:
+          GH_TOKEN: \${{ github.token }}
+          ISSUE_NUMBER: \${{ steps.issue.outputs.issue_number }}
+          RUN_ID: \${{ github.run_id }}
+          CURRENT_ARTIFACT_ID: \${{ steps.current_upload.outputs.artifact-id }}
+          SED_ARTIFACT_ID: \${{ steps.sed_upload.outputs.artifact-id }}
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          receipt=json.loads(Path('/tmp/racelap/resolver_receipt.json').read_text())
+          run_id=os.environ['RUN_ID']
+          result={
+              'status':'success',
+              'run_id':int(run_id),
+              'current_artifact_name':f'racelap-forward-current-{run_id}',
+              'current_artifact_id':os.environ.get('CURRENT_ARTIFACT_ID') or None,
+              'sed_artifact_name':f'racelap-completed-sed-{run_id}',
+              'sed_artifact_id':os.environ.get('SED_ARTIFACT_ID') or None,
+              'resolver':receipt,
+          }
+          Path('/tmp/comment.md').write_text(
+              'RACELAP_FORWARD_REFRESH_RESULT\n\`\`\`json\n'+
+              json.dumps(result,ensure_ascii=False,indent=2)+'\n\`\`\`\n',
+              encoding='utf-8'
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "\${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "\${{ github.repository }}" --reason completed
+
+      - name: Report failure
+        if: failure() && steps.issue.outcome == 'success'
+        env:
+          GH_TOKEN: \${{ github.token }}
+          ISSUE_NUMBER: \${{ steps.issue.outputs.issue_number }}
+          RUN_URL: \${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "\${{ github.repository }}" \
+            --body "RACELAP_FORWARD_REFRESH_RESULT status=failure run=$RUN_URL"

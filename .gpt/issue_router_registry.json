@@ -73,6 +73,15 @@
       "owner_only": true,
       "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
       "migration_status": "t3"
+    },
+    {
+      "prefix": "[RACELAP_FORWARD_REFRESH]",
+      "event_type": "racelap_forward_refresh_request",
+      "workflow": ".github/workflows/racelap_forward_refresh_issue.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
+      "migration_status": "current"
     }
   ]
 }
