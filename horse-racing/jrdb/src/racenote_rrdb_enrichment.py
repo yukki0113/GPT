@@ -218,6 +218,88 @@ def _course_profile_context(
     return candidate_path, profiles
 
 
+
+def _attach_race_lap_contexts(
+    bundles: list[dict[str, object]],
+    race_lap_reader: RaceLapReader,
+    target_date: str,
+) -> dict[str, int]:
+    """Attach historical source-race shape to PACI recent runs with one batch lookup."""
+    refs: list[str] = []
+    runs: list[dict[str, object]] = []
+    for bundle in bundles:
+        horses = bundle.get("horses")
+        if not isinstance(horses, list):
+            continue
+        for horse in horses:
+            if not isinstance(horse, dict):
+                continue
+            recent = horse.get("recent_runs")
+            if not isinstance(recent, list):
+                continue
+            for run in recent:
+                if not isinstance(run, dict):
+                    continue
+                race = run.get("race")
+                if not isinstance(race, Mapping):
+                    continue
+                race_key = str(race.get("race_key") or "").strip()
+                race_date = str(race.get("date") or "").strip()
+                if not race_key:
+                    continue
+                if not race_date or race_date >= target_date:
+                    raise RRDBEnrichmentError(
+                        f"RaceLap recent-run leakage/invalid date: key={race_key} "
+                        f"source_date={race_date!r} target_date={target_date}"
+                    )
+                refs.append(race_key)
+                runs.append(run)
+
+    contexts = race_lap_reader.get_race_contexts(refs)
+    found = 0
+    missing = 0
+    for run in runs:
+        race = run["race"]
+        race_key = str(race["race_key"])
+        race_date = str(race["date"])
+        context = contexts.get(race_key)
+        if context is None:
+            run["race_structure"] = {
+                "source": "JRDB_RaceLapReader_v0.1",
+                "coverage": {"status": "NOT_FOUND"},
+                "lap_shape": None,
+                "srb_context": None,
+            }
+            missing += 1
+            continue
+
+        context_race = context.get("race")
+        if not isinstance(context_race, Mapping):
+            raise RRDBEnrichmentError(f"RaceLap context race missing: {race_key}")
+        context_date = str(context_race.get("race_date") or "")
+        if context_date != race_date or context_date >= target_date:
+            raise RRDBEnrichmentError(
+                f"RaceLap source binding mismatch/leakage: key={race_key} "
+                f"recent_date={race_date} racelap_date={context_date} "
+                f"target_date={target_date}"
+            )
+        run["race_structure"] = {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": context.get("coverage"),
+            "lap_shape": context.get("shape"),
+            "srb_context": context.get("srb_context"),
+            "policy": context.get("policy"),
+            "provenance": context.get("provenance"),
+        }
+        found += 1
+
+    return {
+        "requested_run_count": len(runs),
+        "unique_race_key_count": len(set(refs)),
+        "found_run_count": found,
+        "missing_run_count": missing,
+    }
+
 def _latest_recommendation(
     reader: RaceReviewReader,
     horse_ids: list[str],
@@ -556,6 +638,11 @@ def enrich_bundles(
             f"RaceLap Parquet not found for RRDB v0.5: {race_lap_parquet}"
         )
     race_lap_reader = RaceLapReader.from_parquet(race_lap_parquet)
+    race_lap_context_report = _attach_race_lap_contexts(
+        bundles,
+        race_lap_reader,
+        target_date,
+    )
     rear_srb_contract = _load_rear_srb_contract()
     recommendation = _latest_recommendation(
         reader,
@@ -566,7 +653,7 @@ def enrich_bundles(
         race_lap_reader=race_lap_reader,
         rear_srb_contract=rear_srb_contract,
     )
-    return [
+    enriched = [
         _apply_bundle_enrichment(
             bundle,
             reader,
@@ -576,6 +663,18 @@ def enrich_bundles(
         )
         for bundle in bundles
     ]
+    for bundle in enriched:
+        meta = bundle.setdefault("metadata", {})
+        if isinstance(meta, dict):
+            meta["race_lap_enrichment"] = {
+                "version": "RaceNote-SRB-RaceLap-Context-0.1",
+                "reader_contract": "JRDB RaceLapReader v0.1",
+                "as_of_exclusive": target_date,
+                "source_run_context_only": True,
+                "scoring": False,
+                **race_lap_context_report,
+            }
+    return enriched
 def main() -> int:
     p = argparse.ArgumentParser(description="Add formal RRDB evidence to RaceNote v1.0")
     p.add_argument("--bundle", type=Path, required=True)
