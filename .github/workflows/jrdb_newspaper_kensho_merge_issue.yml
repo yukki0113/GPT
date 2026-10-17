@@ -439,7 +439,7 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import csv,json
+          import csv,json,os
           from pathlib import Path
           req=json.loads(Path("/tmp/kensho/request.json").read_text(encoding="utf-8"))
           rows=req.get("momotaro_predictions") or []
