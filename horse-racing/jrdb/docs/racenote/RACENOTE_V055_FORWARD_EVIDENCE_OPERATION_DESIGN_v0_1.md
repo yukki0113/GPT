@@ -1,6 +1,6 @@
 # RaceNote v0.5.5 Forward Evidence Operation Design v0.1
 
-Status: **PROPOSED DESIGN / READY FOR IMPLEMENTATION**
+Status: **CURRENT IMPLEMENTATION / CANONICAL RAW ROUTING**
 Target logic: `RaceNote-Human-Context-Reader-0.5.5-candidate`
 Contract: `v055-prediction-freeze-confidence-review-r4`
 Date: 2026-10-17
@@ -301,32 +301,55 @@ Forbidden in normal forward T1:
 
 ---
 
-## 9. One-time bootstrap for 2026
+## 9. Initial current publication from canonical Drive Raw
 
-A one-time bootstrap is required because the current RaceLap canonical asset was originally built from completed annual archives and no reusable 2026 current was established.
+The common RaceLap builder / Store / Reader were already established on
+2026-10-15. Initial current publication must reuse the canonical JRDB Raw
+snapshots; it is not a historical acquisition job.
 
-Bootstrap rules:
+Authoritative input:
 
-1. Reuse `SED_2024.zip` and `SED_2025.zip`.
-2. For 2026, use **known JRA race dates only**, taken from the PACI/day inventory or an accepted operation ledger.
-3. Do not scan every calendar day.
-4. Reuse already available raw SED artifacts when possible.
-5. For missing 2026 race dates, fetch one exact daily SED per race date with normal throttling.
-6. Persist/checkpoint downloaded daily SEDs so a single 429 does not discard the other successful acquisitions.
-7. Retry only missing/error dates.
-8. Build one initial forward current generation through the latest completed JRA date.
-9. Publish it as the RaceLap current baseline.
-10. Never repeat this bootstrap during T1.
+```text
+Google Drive
+GPT/horse-racing/00_raw/SED
+  SED_2024.zip
+  SED_2025.zip
+  SED26*.zip through the accepted completed-date cutoff
+```
 
-For the current 2026-10-17 target, the expected bootstrap cutoff is the same completed date already represented by Analysis: `2026-10-12`.
+Each canonical SED archive contains the paired SED/SRB members required by
+`jrdb_race_lap_dataset.py`.
 
----
+Required initial publication path:
+
+```text
+connected/native Drive materialization
+  -> jrdb_race_lap_dataset.py
+  -> RaceLapStore validation
+  -> immutable candidate manifest
+  -> jrdb_race_lap_forward_promote.py
+  -> RaceLap current
+```
+
+Hard rules:
+
+1. Do not download annual or daily historical SED from JRDB to create the initial current.
+2. Do not calendar-scan historical dates.
+3. Do not treat Actions artifacts from failed acquisition attempts as canonical Raw.
+4. Authenticated/writable Drive transport from GitHub Actions remains prohibited by repository policy.
+5. The initial full snapshot is built from canonical Drive Raw in a connected/native environment.
+6. After that baseline exists, normal post-race operation advances it only with the newly completed canonical SED snapshot.
+7. T1 never performs initial publication, backfill, repair, or historical acquisition.
+8. Analysis supplies the accepted completed-date cutoff only; it is not a RaceLap data source.
+
+For target 2026-10-17, the accepted cutoff remains `2026-10-12`.
+
 
 ## 10. Rate-limit and retry policy
 
 Historical calendar sweeps are prohibited in forward T1.
 
-For post-race acquisition or one-time bootstrap:
+For bounded post-race acquisition only (initial publication uses canonical Drive Raw and performs no JRDB historical fetch):
 
 - request only known race dates;
 - default inter-request delay must be non-zero;
