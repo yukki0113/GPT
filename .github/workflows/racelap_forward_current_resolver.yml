@@ -15,8 +15,8 @@ on:
         description: "Next forecast date YYYY-MM-DD"
         required: true
         type: string
-      analysis_period_to:
-        description: "Accepted Analysis completed-date cutoff YYYY-MM-DD"
+      expected_period_to:
+        description: "RaceLap expected completed-date cutoff YYYY-MM-DD"
         required: true
         type: string
       sed_run_id:
@@ -87,7 +87,7 @@ jobs:
       - name: Resolve CURRENT
         env:
           TARGET_DATE: ${{ inputs.target_date }}
-          ANALYSIS_PERIOD_TO: ${{ inputs.analysis_period_to }}
+          EXPECTED_PERIOD_TO: ${{ inputs.expected_period_to }}
           GENERATION_ID: ${{ inputs.generation_id }}
           EXPECTED_DATES: ${{ inputs.expected_dates }}
         shell: bash
@@ -97,7 +97,7 @@ jobs:
           args=(
             --current-bundle "$current_bundle"
             --target-date "$TARGET_DATE"
-            --analysis-period-to "$ANALYSIS_PERIOD_TO"
+            --expected-period-to "$EXPECTED_PERIOD_TO"
             --receipt .racelap/resolver_receipt.json
           )
 
