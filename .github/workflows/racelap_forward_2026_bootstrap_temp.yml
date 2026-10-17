@@ -40,9 +40,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p /tmp/lap/raw
+          mkdir -p /tmp/lap/raw/SED
           gh run download "$RESUME_RUN_ID" \
-            -n "racelap-bootstrap-raw-$RESUME_RUN_ID" -D /tmp/lap/raw
+            -n "racelap-bootstrap-raw-$RESUME_RUN_ID" -D /tmp/lap/raw/SED
       - name: Acquire exact known 2026 JRA race dates with retries
         run: |
           set -euo pipefail
