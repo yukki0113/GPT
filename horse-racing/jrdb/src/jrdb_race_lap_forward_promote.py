@@ -15,7 +15,7 @@ from jrdb_race_lap_forward_current import validate
 
 
 def promote(candidate: Path, destination: Path, target_date: str,
-            analysis_period_to: str) -> dict:
+            expected_period_to: str) -> dict:
     if destination.exists():
         raise FileExistsError(f"current bundle exists: {destination}")
     m = candidate / "manifest.json"
@@ -24,8 +24,8 @@ def promote(candidate: Path, destination: Path, target_date: str,
     obj = json.loads(m.read_text(encoding="utf-8"))
     if obj.get("status") != "CANDIDATE_PASS" or obj.get("validation_status") != "PASS":
         raise ValueError("candidate is not PASS")
-    if obj.get("period_to") != analysis_period_to or not analysis_period_to < target_date:
-        raise ValueError("Analysis/RaceLap freshness mismatch")
+    if obj.get("period_to") != expected_period_to or not expected_period_to < target_date:
+        raise ValueError("RaceLap expected cutoff mismatch")
     if obj["parquet_sha256"] != hashlib.sha256(p.read_bytes()).hexdigest():
         raise ValueError("candidate parquet SHA mismatch")
     import tempfile
@@ -38,7 +38,7 @@ def promote(candidate: Path, destination: Path, target_date: str,
         current=dict(obj)
         current["status"]="CURRENT"
         (stage/"manifest.json").write_text(json.dumps(current,sort_keys=True,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-        receipt=validate(stage/"race_lap.parquet",stage/"manifest.json",target_date,analysis_period_to)
+        receipt=validate(stage/"race_lap.parquet",stage/"manifest.json",target_date,expected_period_to)
         stage.rename(destination)
         return receipt
 
@@ -48,9 +48,9 @@ def main() -> int:
     parser.add_argument("--candidate",required=True,type=Path)
     parser.add_argument("--destination",required=True,type=Path)
     parser.add_argument("--target-date",required=True)
-    parser.add_argument("--analysis-period-to",required=True)
+    parser.add_argument("--expected-period-to",required=True)
     args=parser.parse_args()
-    print(json.dumps(promote(args.candidate,args.destination,args.target_date,args.analysis_period_to),sort_keys=True))
+    print(json.dumps(promote(args.candidate,args.destination,args.target_date,args.expected_period_to),sort_keys=True))
     return 0
 
 
