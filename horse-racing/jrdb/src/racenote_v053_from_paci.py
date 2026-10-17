@@ -123,7 +123,23 @@ def main() -> int:
             "sha256": sha256(args.paci),
         },
         "daily_manifest_status": manifest.get("status"),
-        "race_lap_resolution": race_lap_resolution,
+        "race_lap_resolution": (
+            {
+                key: race_lap_resolution.get(key)
+                for key in (
+                    "status",
+                    "updated",
+                    "generation_id",
+                    "period_to",
+                    "analysis_period_to",
+                    "parquet_sha256",
+                    "network_access",
+                    "source_policy",
+                )
+            }
+            if race_lap_resolution is not None
+            else None
+        ),
         "forecast_prep": str(forecast_prep),
         "v053_root": None if session is None else str(v053_root),
         "race_count": len(handoff["race_roster"]),
