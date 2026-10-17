@@ -29,8 +29,8 @@ jobs:
       - name: Resolve request Issue
         id: issue
         env:
-          GH_TOKEN: \${{ github.token }}
-          ROUTED_ISSUE_NUMBER: \${{ github.event.client_payload.issue_number || inputs.issue_number }}
+          GH_TOKEN: ${{ github.token }}
+          ROUTED_ISSUE_NUMBER: ${{ github.event.client_payload.issue_number || inputs.issue_number }}
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -105,7 +105,7 @@ jobs:
       - name: Materialize accepted RaceLap CURRENT
         id: current
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/racelap/current /tmp/racelap/raw /tmp/racelap/work /tmp/racelap/output
@@ -136,8 +136,8 @@ jobs:
 
       - name: Fetch only required completed-day SED
         env:
-          JRDB_USER: \${{ secrets.JRDB_USER }}
-          JRDB_PASSWORD: \${{ secrets.JRDB_PASSWORD }}
+          JRDB_USER: ${{ secrets.JRDB_USER }}
+          JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
         run: |
           set -euo pipefail
           if test "$(cat /tmp/needs_refresh.txt)" != "true"; then
@@ -161,7 +161,7 @@ jobs:
 
       - name: Resolve RaceLap CURRENT
         env:
-          CURRENT_BUNDLE: \${{ steps.current.outputs.bundle }}
+          CURRENT_BUNDLE: ${{ steps.current.outputs.bundle }}
         run: |
           set -euo pipefail
           python - <<'PY'
@@ -214,7 +214,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: current_upload
         with:
-          name: racelap-forward-current-\${{ github.run_id }}
+          name: racelap-forward-current-${{ github.run_id }}
           path: /tmp/racelap/output/
           retention-days: 90
           compression-level: 0
@@ -223,7 +223,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         id: sed_upload
         with:
-          name: racelap-completed-sed-\${{ github.run_id }}
+          name: racelap-completed-sed-${{ github.run_id }}
           path: /tmp/racelap/raw/SED/SED*.zip
           retention-days: 30
           compression-level: 0
@@ -232,11 +232,11 @@ jobs:
       - name: Report success and close
         if: success()
         env:
-          GH_TOKEN: \${{ github.token }}
-          ISSUE_NUMBER: \${{ steps.issue.outputs.issue_number }}
-          RUN_ID: \${{ github.run_id }}
-          CURRENT_ARTIFACT_ID: \${{ steps.current_upload.outputs.artifact-id }}
-          SED_ARTIFACT_ID: \${{ steps.sed_upload.outputs.artifact-id }}
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
+          RUN_ID: ${{ github.run_id }}
+          CURRENT_ARTIFACT_ID: ${{ steps.current_upload.outputs.artifact-id }}
+          SED_ARTIFACT_ID: ${{ steps.sed_upload.outputs.artifact-id }}
         run: |
           python - <<'PY'
           import json, os
@@ -253,20 +253,19 @@ jobs:
               'resolver':receipt,
           }
           Path('/tmp/comment.md').write_text(
-              'RACELAP_FORWARD_REFRESH_RESULT\n\`\`\`json\n'+
-              json.dumps(result,ensure_ascii=False,indent=2)+'\n\`\`\`\n',
+              'RACELAP_FORWARD_REFRESH_RESULT\n' + json.dumps(result,ensure_ascii=False,indent=2) + '\n',
               encoding='utf-8'
           )
           PY
-          gh issue comment "$ISSUE_NUMBER" --repo "\${{ github.repository }}" --body-file /tmp/comment.md
-          gh issue close "$ISSUE_NUMBER" --repo "\${{ github.repository }}" --reason completed
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "${{ github.repository }}" --reason completed
 
       - name: Report failure
         if: failure() && steps.issue.outcome == 'success'
         env:
-          GH_TOKEN: \${{ github.token }}
-          ISSUE_NUMBER: \${{ steps.issue.outputs.issue_number }}
-          RUN_URL: \${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ steps.issue.outputs.issue_number }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --repo "\${{ github.repository }}" \
+          gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" \
             --body "RACELAP_FORWARD_REFRESH_RESULT status=failure run=$RUN_URL"
