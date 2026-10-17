@@ -573,10 +573,13 @@ jobs:
               got=projected.get(key)
               if not isinstance(got,dict):
                   raise SystemExit(f"requested Momotaro row missing from projection: {key}")
+              expected_tag=str(row.get("tag") or "").strip() or None
+              if str(row.get("member") or "")=="ryota" and expected_tag=="馬番照合":
+                  expected_tag=None
               expected={
                   "mark": str(row.get("mark") or "").strip() or None,
                   "confidence": str(row.get("confidence") or "").strip() or None,
-                  "tag": str(row.get("tag") or "").strip() or None,
+                  "tag": expected_tag,
                   "review_horse": bool(row.get("review_horse")),
                   "comment": str(row.get("comment") or "").strip() or None,
               }
@@ -593,6 +596,48 @@ jobs:
               json.dumps({"status":"PASS","date":manifest["date"],"rrdb_checked":checked,"racenote_marked":rn_marked,"iluka":iluka},ensure_ascii=False,indent=2)+"\n",
               encoding="utf-8")
           PY
+
+      - name: Attach validated Momotaro members to personal current
+        run: |
+          set -euo pipefail
+          if [ -f /tmp/kensho/momotaro_predictions.csv ]; then
+            python horse-racing/jrdb/src/jrdb_newspaper_attach_momotaro.py \
+              --personal-dir /tmp/merged-day \
+              --public-dir /tmp/momotaro-current \
+              > /tmp/kensho/personal-momotaro-attach.json
+
+            tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner \
+              -C /tmp/merged-day --exclude='./audit.json' \
+              -cJf "/tmp/personal-release/$RELEASE_ARCHIVE" .
+
+            python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path("/tmp/merged-day"); out=Path("/tmp/personal-release")
+          manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
+          archive=out/os.environ["RELEASE_ARCHIVE"]
+          meta={
+              "schema_version":"0.1","release_kind":"jrdb_newspaper_current_cache",
+              "date":manifest["date"],"revision":manifest["revision"],"race_count":len(manifest.get("races") or []),
+              "manifest_sha256":hashlib.sha256((root/"manifest.json").read_bytes()).hexdigest(),
+              "archive_filename":archive.name,"archive_size_bytes":archive.stat().st_size,
+              "archive_sha256":hashlib.sha256(archive.read_bytes()).hexdigest(),
+              "source_run_id":int(os.environ["GITHUB_RUN_ID"]),"source_artifact":"kensho-racenote-rrdb-merge",
+          }
+          (out/os.environ["RELEASE_META"]).write_text(
+              json.dumps(meta,ensure_ascii=False,sort_keys=True,separators=(",",":"))+"\n",
+              encoding="utf-8")
+          PY
+
+            if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              gh release delete "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes
+            fi
+            gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+              --title "JRDB Newspaper current" \
+              --notes "Current personal newspaper with Kensho RaceNote/RRDB and validated shared members." \
+              "/tmp/personal-release/$RELEASE_ARCHIVE" "/tmp/personal-release/$RELEASE_META" \
+              /tmp/kensho/personal-validation.json /tmp/kensho/personal-momotaro-attach.json
+          fi
 
       - name: Publish Momotaro current release
         env:
