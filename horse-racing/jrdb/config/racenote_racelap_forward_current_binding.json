@@ -1,18 +1,18 @@
 {
   "schema_version": "racenote-racelap-forward-current-binding-0.1",
   "status": "CURRENT",
-  "generation_id": "racelap-forward-canonical-20261012-01",
-  "period_to": "2026-10-12",
-  "race_count": 9639,
-  "parquet_sha256": "ab28b788594ce183015637fbe913b410363f9f3239ad2f2c4e360b491c89881f",
+  "generation_id": "racelap-forward-canonical-20261017-01",
+  "period_to": "2026-10-17",
+  "race_count": 9675,
+  "parquet_sha256": "f39056cea12e1d3d694bcb829695121ac1df3426bf633d49f4f5f23fd637ce7d",
   "github_actions": {
-    "run_id": 39010439748,
-    "artifact_id": 12093205219,
-    "artifact_name": "racelap-forward-current-canonical-20261012"
+    "run_id": 39037137243,
+    "artifact_id": 12101869150,
+    "artifact_name": "racelap-forward-current-39037137243"
   },
   "drive": {
     "folder_id": "1HA_HiJlTkK7r3pDHdEFZikfem4s9la6b",
-    "immutable_file_id": "1vRlcapxphkQm6EuaC9KTS1zEXigDWSif",
+    "immutable_file_id": "1q7pmoTRsg27d--xi5HhtTaJXAI_TdzUi",
     "current_file_id": "1RdmS-8q0NsA8opCvNioaqVotk2wiEZz-",
     "current_filename": "RaceLap_CURRENT.zip",
     "source_bundle_file_id": "15Ifo3XzLsBJUdWyjXIZnz3CxHjFgderQ"
