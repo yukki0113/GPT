@@ -474,6 +474,7 @@ jobs:
                           raise SystemExit(f"exact horse lookup failed: {key}")
                       row["horse_no"]=runner_lookup[key]
                   out={key:row.get(key,"") for key in fields}
+                  out["date"]=os.environ["REQUEST_DATE"]
                   out["review_horse"]="1" if row.get("review_horse") is True else ""
                   w.writerow(out)
                   resolved.append(row)
