@@ -19,6 +19,25 @@ target_market_opened=false
 
 Use the existing KYI supplemental bundle and verified RaceLap Parquet.
 
+For normal **forward** operation, RaceLap must come from the canonical forward-current asset defined by
+`RACENOTE_V055_FORWARD_EVIDENCE_OPERATION_DESIGN_v0_1.md`.
+
+Forward T1 must not:
+
+- fetch annual historical SED archives;
+- scan a historical daily SED date range;
+- rebuild RaceLap from raw history.
+
+Before Reader seal, require:
+
+```text
+analysis.period_to < target_date
+race_lap.period_to < target_date
+race_lap.period_to == analysis.period_to
+```
+
+The exact RaceLap Parquet SHA-256 is still bound into the v0.5.5 session, so reuse of the canonical current asset does not weaken input immutability.
+
 ## 2. Initialize the sealed Lean Model Reader
 
 ```bash
