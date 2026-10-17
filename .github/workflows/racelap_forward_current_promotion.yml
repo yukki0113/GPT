@@ -15,8 +15,8 @@ on:
         description: Next forecast date YYYY-MM-DD
         required: true
         type: string
-      analysis_period_to:
-        description: Accepted Analysis completed-date cutoff
+      expected_period_to:
+        description: RaceLap expected completed-date cutoff
         required: true
         type: string
 
@@ -48,7 +48,7 @@ jobs:
         env:
           PYTHONPATH: horse-racing/jrdb/src
           TARGET_DATE: ${{ inputs.target_date }}
-          ANALYSIS_PERIOD_TO: ${{ inputs.analysis_period_to }}
+          EXPECTED_PERIOD_TO: ${{ inputs.expected_period_to }}
         run: |
           set -euo pipefail
           manifest="$(find .racelap-promote/input -type f -name manifest.json -print -quit)"
@@ -56,7 +56,7 @@ jobs:
             --candidate "$(dirname "$manifest")" \
             --destination .racelap-promote/current \
             --target-date "$TARGET_DATE" \
-            --analysis-period-to "$ANALYSIS_PERIOD_TO" \
+            --expected-period-to "$EXPECTED_PERIOD_TO" \
             | tee .racelap-promote/promotion_receipt.json
       - uses: actions/upload-artifact@v4
         id: upload
