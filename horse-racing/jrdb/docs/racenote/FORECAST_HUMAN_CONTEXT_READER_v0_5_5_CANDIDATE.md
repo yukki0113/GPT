@@ -85,7 +85,18 @@ The short note remains editorial rather than a Decision Core summary:
 
 It may focus on ◎'s winning case, its risk, pace/position, ▲, uncertainty, or another race-specific point. It need not enumerate ○/▲ or every marked horse.
 
-There is no sentence-count target and no character-count target. Validation remains an accident guard only.
+The note is for an ordinary racing reader, not for the audit layer. Internal evidence may support the judgment, but **must be translated into ordinary racing language before it appears in `reader_facing_reason`**. Do not expose internal metric/plumbing labels such as `IDM`, `RRDB`, `SRB`, `KYI`, `調教指数`, `状態指数`, Reader/Decision-Core terminology, hashes, or missing-value tokens such as `None`.
+
+Examples:
+
+- NG: `IDM64.0と調教・状態のバランスが最上位。`
+- OK: `近走内容はこの組み合わせでも上位。追い切りの気配も悪くなく、流れに乗れれば勝ち切りまで。`
+- NG: `IDM差が大きい。`
+- OK: `近走内容では一枚上と見た。`
+
+Translation is semantic, not cosmetic: merely removing the metric name while retaining a day-wide fill-in-the-blanks template is not acceptable. Each race must independently choose the one reader-useful point. Obvious variable-substitution templates across a card are a quality failure even when every sentence is grammatically valid.
+
+There is no sentence-count target and no character-count target. Validation remains an accident guard only; it may reject internal terminology and structural template repetition, but must not prescribe which racing point the model chooses.
 
 ## 6. Prediction Freeze
 

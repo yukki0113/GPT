@@ -115,6 +115,10 @@ A/B/C must not be inserted into the r4 Decision Core.
 
 The short note is editorial: write the single race-specific point most useful to the reader. Do not routinely summarize all marks.
 
+Before saving, translate audit-layer evidence into ordinary racing language. `reader_facing_reason` must not contain internal metric/plumbing labels such as `IDM`, `RRDB`, `SRB`, `KYI`, `調教指数`, `状態指数`, Reader/Decision-Core terminology, hashes, or `None/null/NaN`. The reader should understand the note without knowing the RaceNote/JRDB internal schema.
+
+Do not solve this by applying one reusable sentence frame to every race. A day-wide pattern such as “X is best on internal measures; at Ym the running style is preferred” is invalid even if X/Y/style differ by race. Re-read the race and choose its actual reader-useful point: winning route, principal risk, pace/position branch, ▲ appeal, uncertainty, or another supported race-specific observation.
+
 ## 4. Save prediction checkpoints
 
 ```bash

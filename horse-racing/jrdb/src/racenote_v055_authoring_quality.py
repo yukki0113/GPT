@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from difflib import SequenceMatcher
 
-GATE_VERSION = "racenote-v055-authoring-quality-gate-0.2"
+GATE_VERSION = "racenote-v055-authoring-quality-gate-0.3"
 
 _EVIDENCE = re.compile(
     r"(?:IDM|RRDB|SRB|KYI|上がり|先行|差し|逃げ|追込|調教|状態|"
@@ -35,6 +35,8 @@ def inspect(cores: list[dict], *, strict: bool = True) -> dict:
         "boundary_specificity_pass": 0,
         "shot_specificity_pass": 0,
         "reader_facing_reason_safety_pass": 0,
+        "reader_facing_translation_pass": 0,
+        "reader_internal_term_violations": 0,
         "template_similarity_violations": 0,
     }
     for core in cores:

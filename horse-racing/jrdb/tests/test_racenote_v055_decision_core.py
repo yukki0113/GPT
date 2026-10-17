@@ -217,6 +217,36 @@ def test_short_single_sentence_reader_note_is_valid_editorial_prose():
     assert report["status"] == "PASS"
 
 
+
+def test_reader_note_rejects_internal_metric_name():
+    c = core()
+    c["reader_facing_reason"] = "近走IDM58はこの組み合わせで上位。先行して押し切る形を期待する。"
+    report = inspect([c])
+    assert report["status"] == "FAIL"
+    assert report["reader_internal_term_violations"] == 1
+    assert report["reader_facing_translation_pass"] == 0
+
+
+def test_reader_note_accepts_translated_racing_language():
+    c = core()
+    c["reader_facing_reason"] = "近走内容はこの組み合わせでも上位。先行して自分の形に持ち込めれば押し切りまで。"
+    report = inspect([c])
+    assert report["status"] == "PASS"
+    assert report["reader_facing_translation_pass"] == 1
+
+
+def test_reader_note_rejects_variable_substitution_template():
+    a = core()
+    a["race_no"] = 1
+    a["reader_facing_reason"] = "アオイホシは近走内容と追い切りのバランスが最上位。芝1600mで先行から運べる形を重視した。"
+    b = copy.deepcopy(core())
+    b["race_no"] = 2
+    b["reader_facing_reason"] = "シロイツキは近走内容と追い切りのバランスが最上位。ダート1800mで差しから運べる形を重視した。"
+    report = inspect([a, b])
+    assert report["status"] == "FAIL"
+    assert report["template_similarity_violations"] > 0
+
+
 def test_previous_r2_contract_remains_verifiable():
     c = core()
     c["honmei_win"]["confidence"] = "A"

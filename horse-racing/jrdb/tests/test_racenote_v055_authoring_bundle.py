@@ -34,6 +34,11 @@ def test_authoring_bundle_is_lossless_and_non_predictive(tmp_path):
         assert payload["automated_scoring"] is False
         assert payload["automated_ranking"] is False
         assert payload["automated_marks"] is False
+        policy = payload["reader_facing_prose_policy"]
+        assert policy["audience"] == "ORDINARY_RACING_READER"
+        assert policy["translate_internal_evidence"] is True
+        assert "IDM" in policy["forbidden_terms"]
+        assert policy["day_wide_fill_in_template"] is False
         for race in payload["races"]:
             key = (race["venue"], race["race_no"])
             assert key not in seen

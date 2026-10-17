@@ -64,6 +64,16 @@ def build(root: Path, output: Path) -> dict[str, Any]:
             "automated_ranking": False,
             "automated_marks": False,
             "reader_semantics": "FULL_SEALED_LEAN_READER_NO_OMISSION",
+            "reader_facing_prose_policy": {
+                "audience": "ORDINARY_RACING_READER",
+                "translate_internal_evidence": True,
+                "forbidden_terms": [
+                    "IDM", "RRDB", "SRB", "KYI", "調教指数", "状態指数",
+                    "sealed Reader", "Decision Core", "sha256", "None", "null", "NaN",
+                ],
+                "one_reader_useful_point_per_race": True,
+                "day_wide_fill_in_template": False,
+            },
             "races": races,
         }
         path = output / f"{venue}.json"
@@ -89,6 +99,7 @@ def build(root: Path, output: Path) -> dict[str, Any]:
         "automated_ranking": False,
         "automated_marks": False,
         "confidence_generation": False,
+        "reader_facing_prose_policy": "TRANSLATE_INTERNAL_EVIDENCE_AND_AUTHOR_PER_RACE",
         "files": files,
     }
     write_json(output / "manifest.json", manifest)

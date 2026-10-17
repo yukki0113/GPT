@@ -4,6 +4,7 @@
 - Canonical procedure: `docs/racenote/RACENOTE_V055_SINGLE_DAY_RUNBOOK_v0_1.md`.
 - T2 reads the complete bound `v055-lean-model-reader-r2`; source evidence remains sealed/reconstructable.
 - Prediction authoring persists ◎ ○ ▲ △ △, ◎ win evidence/risk, challenger boundary, ▲ case, RRDB refs and editorial short comment. It does **not** persist A/B/C in r4.
+- Reader-facing short comments are ordinary-reader prose: internal labels/scores such as IDM/RRDB/SRB/KYI/調教指数/状態指数 must be translated into normal racing language, and day-wide fill-in-the-blanks prose is prohibited. The v0.5.5 quality gate rejects internal-term leakage and structural template repetition.
 - Prediction Freeze is immutable first: `PREDICTION_FROZEN_CLEAN_BLIND`.
 - Confidence Review is a separate pre-result stage against the frozen ◎. A means active support for ◎ as winner/single-win axis, not near-certainty; B means preferred but contested; C means low winner-selection conviction. There is no A quota.
 - The confidence draft may be reconsidered/overwritten while target result and target market remain closed. `CONFIDENCE_FROZEN_CLEAN_BLIND` is immutable and required before result unlock.
