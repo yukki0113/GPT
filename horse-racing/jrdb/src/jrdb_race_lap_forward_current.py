@@ -20,7 +20,7 @@ def sha(path: Path) -> str:
 
 
 def validate(parquet: Path, manifest: Path, target_date: str,
-             analysis_period_to: str) -> dict:
+             expected_period_to: str) -> dict:
     m = json.loads(manifest.read_text(encoding="utf-8"))
     if m.get("schema_version") != "jrdb-race-lap-forward-current-0.1":
         raise ValueError("RaceLap current schema mismatch")
@@ -32,8 +32,8 @@ def validate(parquet: Path, manifest: Path, target_date: str,
         raise ValueError("RaceLap dataset schema mismatch")
     if m.get("shape_logic_version") != LOGIC_VERSION:
         raise ValueError("RaceLap shape logic mismatch")
-    if m.get("period_to") != analysis_period_to:
-        raise ValueError(f"stale/misaligned RaceLap: {m.get('period_to')} vs Analysis {analysis_period_to}")
+    if m.get("period_to") != expected_period_to:
+        raise ValueError(f"stale/misaligned RaceLap: {m.get('period_to')} vs expected {expected_period_to}")
     if not m["period_to"] < target_date:
         raise ValueError("RaceLap target-date leakage")
     if m.get("parquet_size_bytes") != parquet.stat().st_size:
@@ -49,7 +49,7 @@ def validate(parquet: Path, manifest: Path, target_date: str,
         raise ValueError("RaceLap store row count mismatch")
     return {"status": "PASS", "generation_id": m["generation_id"],
             "race_count": meta["race_count"], "race_lap_sha256": digest,
-            "race_lap_period_to": m["period_to"], "analysis_period_to": analysis_period_to,
+            "race_lap_period_to": m["period_to"], "expected_period_to": expected_period_to,
             "target_date": target_date}
 
 
@@ -58,7 +58,7 @@ def main() -> int:
     ap.add_argument("--parquet", type=Path, required=True)
     ap.add_argument("--manifest", type=Path, required=True)
     ap.add_argument("--target-date", required=True)
-    ap.add_argument("--analysis-period-to", required=True)
+    ap.add_argument("--expected-period-to", required=True)
     args = ap.parse_args()
 
     # Compatibility CLI for existing T1/workflow callers: when the canonical
@@ -75,14 +75,14 @@ def main() -> int:
         result = resolve_current(
             args.parquet.parent,
             args.target_date,
-            args.analysis_period_to,
+            args.expected_period_to,
         )
     else:
         result = validate(
             args.parquet,
             args.manifest,
             args.target_date,
-            args.analysis_period_to,
+            args.expected_period_to,
         )
     print(json.dumps(result, sort_keys=True))
     return 0
