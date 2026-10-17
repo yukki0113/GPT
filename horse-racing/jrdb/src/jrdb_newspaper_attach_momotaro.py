@@ -92,14 +92,17 @@ def attach(personal_dir: Path, public_dir: Path) -> dict:
     personal_manifest.setdefault("source_status", {})["momotaro"] = copy.deepcopy(source_status)
     write_json(personal_manifest, personal_dir / "manifest.json")
     expected_rows = int(((expected.get("momotaro_predictions") or {}).get("merged")) or -1)
-    explicit = count["ryota"] + count["oji"] + count["kenshow"]
+    # The projection audit's merged count represents explicitly supplied
+    # shared-member rows only. Automatic Kenshow rows are derived from the
+    # already-validated private RaceNote/RRDB addons and must not inflate that
+    # explicit-row comparison.
+    explicit = count["ryota"] + count["oji"]
     if expected_rows != explicit:
         raise ValueError(f"member count mismatch: projected={expected_rows}, personal={explicit}")
-    if count["kenshow"] != 0:
-        raise ValueError("Kenshow prediction must remain pending for this publication")
     return {"status": "PASS", "date":personal_manifest["date"], "revision":personal_manifest["revision"],
             "explicit_rows":explicit, "ryota":count["ryota"], "oji":count["oji"],
-            "race_comments":count["race_comments"], "personal_manifest_sha256":sha_file(personal_dir / "manifest.json")}
+            "kenshow":count["kenshow"], "race_comments":count["race_comments"],
+            "personal_manifest_sha256":sha_file(personal_dir / "manifest.json")}
 
 
 def main() -> int:
