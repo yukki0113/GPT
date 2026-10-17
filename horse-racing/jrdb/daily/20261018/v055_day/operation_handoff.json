@@ -1,0 +1,54 @@
+{
+  "schema_version": "racenote-v055-r4-daily-turn1-handoff-0.2",
+  "status": "READY_FOR_V055_AUTHORING",
+  "selection_id": "DAILY-20261018",
+  "target_date": "2026-10-18",
+  "source_mode": "paci",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.5-candidate",
+  "contract_revision": "v055-prediction-freeze-confidence-review-r4",
+  "reader_projection": "v055-lean-model-reader-r2",
+  "session_id": "V055-0be2c4c999722b7b3ba5",
+  "base_main_sha": "2016b37e1527c5b1a1bbc9562860a49224632e35",
+  "paci": {
+    "filename": "PACI261018.zip",
+    "drive_file_id": "18j6nC45N6Nl2-tWT2Lk5F0qkYe6jHfk3",
+    "sha256": "c6eb59e1f02cc229bd562fe3daf39726f3549a2e167efa1002098c84496860b3"
+  },
+  "analysis": {
+    "generation_id": "analysis-v1_4-canonical-20261013-02",
+    "period_to": "2026-10-12",
+    "validation_status": "PASS",
+    "freshness_owned_by": "DEDICATED_ANALYSIS_OPERATION",
+    "forward_t1_freshness_checked": false
+  },
+  "rrdb": {
+    "generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+    "updated_at": "2026-10-13T00:25:57.043544+00:00",
+    "freshness_owned_by": "DEDICATED_RRDB_OPERATION",
+    "forward_t1_freshness_checked": false
+  },
+  "race_lap": {
+    "generation_id": "racelap-forward-canonical-20261017-01",
+    "period_to": "2026-10-17",
+    "expected_period_to": "2026-10-17",
+    "resolver_status": "CURRENT_READY",
+    "sha256": "f39056cea12e1d3d694bcb829695121ac1df3426bf633d49f4f5f23fd637ce7d",
+    "forward_t1_freshness_checked": true
+  },
+  "kyi_coverage": {
+    "reader_horse_count": 450,
+    "kyi_matched_count": 450,
+    "kyi_missing_count": 0
+  },
+  "race_count": 36,
+  "expected_venues": [
+    "京都",
+    "新潟",
+    "東京"
+  ],
+  "reader_count": 36,
+  "market_blind": true,
+  "stripped_at_input_bind": true,
+  "result_opened": false,
+  "target_market_opened": false
+}
