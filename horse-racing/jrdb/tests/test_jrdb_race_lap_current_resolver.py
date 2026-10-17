@@ -104,7 +104,7 @@ def test_stale_current_refreshes_promotes_and_returns_ready(
     assert manifest["generation_id"] == "racelap-resolved-test"
 
 
-def test_resolver_rejects_analysis_cutoff_on_target_date(tmp_path):
+def test_resolver_rejects_expected_cutoff_on_target_date(tmp_path):
     bundle, _, _ = _current_bundle(tmp_path)
     with pytest.raises(
         RaceLapCurrentResolverError,
@@ -136,7 +136,7 @@ def test_existing_forward_current_cli_routes_through_resolver(
             str(bundle / "manifest.json"),
             "--target-date",
             "2026-10-17",
-            "--analysis-period-to",
+            "--expected-period-to",
             baseline["race_date"],
         ],
     )
