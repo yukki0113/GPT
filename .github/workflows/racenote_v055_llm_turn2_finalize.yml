@@ -82,6 +82,6 @@ jobs:
             "$ROOT/confidence_review.json" \
             "$ROOT/confidence_frozen" \
             "$ROOT/turn2_summary.json"
-          git commit -m "RaceNote: freeze LLM-authored $(basename "$(dirname "$(dirname "$(dirname "$ROOT")")")") v0.5.5 TURN 2"
+          date_key="$(basename "$(dirname "$(dirname "$ROOT")")")"\n          git commit -m "RaceNote: freeze LLM-authored ${date_key} v0.5.5 TURN 2"
           git pull --rebase origin main
           git push origin HEAD:main
