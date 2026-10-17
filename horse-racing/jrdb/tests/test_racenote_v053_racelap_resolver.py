@@ -27,9 +27,18 @@ def test_paci_entry_resolves_current_bundle_before_daily_build(tmp_path, monkeyp
         "parquet": str(resolved_parquet),
     }
     handoff = {
-        "race_roster": [{"venue": "東京", "race_no": 1}],
+        "race_count": 1,
         "market_blind": True,
     }
+
+    def fake_bind(_daily_root, forecast_prep, *_args):
+        reader = forecast_prep / "reader"
+        reader.mkdir(parents=True)
+        (reader / "東京_01.json").write_text(
+            json.dumps({"race": {"venue": "東京", "race_no": 1}}, ensure_ascii=False),
+            encoding="utf-8",
+        )
+        return handoff
 
     argv = [
         "racenote_v053_from_paci.py",
@@ -54,7 +63,7 @@ def test_paci_entry_resolves_current_bundle_before_daily_build(tmp_path, monkeyp
             "build_daily_package",
             return_value=({"status": "PASS"}, {"status": "PASS"}, []),
         ) as build,
-        mock.patch.object(entry, "bind", return_value=handoff),
+        mock.patch.object(entry, "bind", side_effect=fake_bind),
     ):
         assert entry.main() == 0
 
@@ -75,3 +84,6 @@ def test_paci_entry_resolves_current_bundle_before_daily_build(tmp_path, monkeyp
     assert operation["status"] == "FORECAST_PREP_READY"
     assert operation["race_lap_resolution"]["status"] == "CURRENT_READY"
     assert operation["race_lap_resolution"]["generation_id"] == "racelap-test"
+
+    assert operation["race_count"] == 1
+    assert operation["expected_venues"] == ["東京"]
