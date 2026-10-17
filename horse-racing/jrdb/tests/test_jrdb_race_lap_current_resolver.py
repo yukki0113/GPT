@@ -4,6 +4,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import sys
 
 import pytest
 
@@ -114,3 +115,33 @@ def test_resolver_rejects_analysis_cutoff_on_target_date(tmp_path):
             "2026-10-17",
             "2026-10-17",
         )
+
+
+def test_existing_forward_current_cli_routes_through_resolver(
+    tmp_path,
+    monkeypatch,
+    capsys,
+):
+    import jrdb_race_lap_forward_current as current_cli
+
+    bundle, _, baseline = _current_bundle(tmp_path)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "jrdb_race_lap_forward_current.py",
+            "--parquet",
+            str(bundle / "race_lap.parquet"),
+            "--manifest",
+            str(bundle / "manifest.json"),
+            "--target-date",
+            "2026-10-17",
+            "--analysis-period-to",
+            baseline["race_date"],
+        ],
+    )
+    assert current_cli.main() == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["status"] == "CURRENT_READY"
+    assert payload["updated"] is False
+    assert payload["generation_id"] == "racelap-current-test"
