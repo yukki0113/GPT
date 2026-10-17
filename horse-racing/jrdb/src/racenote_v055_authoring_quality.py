@@ -20,10 +20,27 @@ _GENERIC = (
     "相手なりに走れる",
 )
 _MARKER = re.compile(r"[0-9０-９]+")
+_READER_INTERNAL_TERM = re.compile(
+    r"(?:IDM|RRDB|SRB|KYI|調教指数|状態指数|適性指数|能力指数|"
+    r"sealed Reader|Decision Core|source_semantic|sha256|None|null|NaN)",
+    re.IGNORECASE,
+)
+_TEMPLATE_CONDITION = re.compile(r"(?:芝|ダート|障害)\s*#(?:m|ｍ)?")
+_TEMPLATE_STYLE = re.compile(r"(?:逃げ|先行|差し|追込)")
+_TEMPLATE_SUBJECT = re.compile(r"^[^。！？]{1,30}?は")
 
 
 def _normal(text: str) -> str:
     return re.sub(r"\s+", "", _MARKER.sub("#", text))
+
+
+def _template_normal(text: str) -> str:
+    """Normalize replaceable race variables while retaining editorial structure."""
+    value = _normal(text)
+    value = _TEMPLATE_SUBJECT.sub("<SUBJ>は", value)
+    value = _TEMPLATE_CONDITION.sub("<COND>", value)
+    value = _TEMPLATE_STYLE.sub("<STYLE>", value)
+    return value
 
 
 def inspect(cores: list[dict], *, strict: bool = True) -> dict:
@@ -72,14 +89,28 @@ def inspect(cores: list[dict], *, strict: bool = True) -> dict:
 
         prose = str(core.get("reader_facing_reason") or "").strip()
         safe = 12 <= len(prose) <= 240 and "\n" not in prose
-        norm = _normal(prose)
+
+        translated = _READER_INTERNAL_TERM.search(prose) is None
+        if translated:
+            counts["reader_facing_translation_pass"] += 1
+        else:
+            counts["reader_internal_term_violations"] += 1
+            errors.append(
+                f"{label} reader_facing_reason: internal metric/plumbing term must be translated for readers"
+            )
+            safe = False
+
+        norm = _template_normal(prose)
         for prev_label, prev in prose_seen:
-            if len(norm) >= 18 and SequenceMatcher(None, norm, prev).ratio() >= 0.94:
-                errors.append(f"{label} reader_facing_reason: near duplicate of {prev_label}")
+            if len(norm) >= 18 and SequenceMatcher(None, norm, prev).ratio() >= 0.90:
+                errors.append(
+                    f"{label} reader_facing_reason: structural template duplicate of {prev_label}"
+                )
                 counts["template_similarity_violations"] += 1
                 safe = False
                 break
         prose_seen.append((label, norm))
+
         if safe:
             counts["reader_facing_reason_safety_pass"] += 1
         else:
@@ -88,9 +119,12 @@ def inspect(cores: list[dict], *, strict: bool = True) -> dict:
     n = len(cores)
     valid = not errors and all(
         counts[k] == n for k in (
-            "honmei_win_specificity_pass", "risk_specificity_pass",
-            "boundary_specificity_pass", "shot_specificity_pass",
+            "honmei_win_specificity_pass",
+            "risk_specificity_pass",
+            "boundary_specificity_pass",
+            "shot_specificity_pass",
             "reader_facing_reason_safety_pass",
+            "reader_facing_translation_pass",
         )
     )
     return {
