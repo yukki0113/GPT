@@ -14,6 +14,7 @@ import tempfile
 from pathlib import Path
 
 from build_racenote_daily import DailyBuildError, build_daily_package
+from jrdb_race_lap_current_resolver import resolve_current
 from racenote_prepare_forecast_input import bind
 from racenote_v053_single_day import init_session
 
@@ -37,7 +38,15 @@ def main() -> int:
     ap.add_argument("--main-sha", required=True)
     ap.add_argument("--analysis-root", type=Path, required=True)
     ap.add_argument("--course-fit-root", type=Path, required=True)
-    ap.add_argument("--race-lap-parquet", type=Path, required=True)
+    race_lap = ap.add_mutually_exclusive_group(required=True)
+    race_lap.add_argument("--race-lap-parquet", type=Path)
+    race_lap.add_argument("--race-lap-current-bundle", type=Path)
+    ap.add_argument("--analysis-period-to")
+    ap.add_argument("--race-lap-sed", type=Path, action="append")
+    ap.add_argument("--race-lap-expected-date", action="append")
+    ap.add_argument("--race-lap-work-root", type=Path)
+    ap.add_argument("--race-lap-generation-id")
+    ap.add_argument("--race-lap-resolved-bundle", type=Path)
     rrdb = ap.add_mutually_exclusive_group(required=True)
     rrdb.add_argument("--racereview-root", type=Path)
     rrdb.add_argument("--racereview-current-cache", type=Path)
@@ -48,8 +57,24 @@ def main() -> int:
 
     if not args.paci.is_file():
         raise FileNotFoundError(args.paci)
-    if not args.race_lap_parquet.is_file():
-        raise FileNotFoundError(args.race_lap_parquet)
+    race_lap_parquet = args.race_lap_parquet
+    race_lap_resolution = None
+    if args.race_lap_current_bundle is not None:
+        if not args.analysis_period_to:
+            raise ValueError("--analysis-period-to is required with --race-lap-current-bundle")
+        race_lap_resolution = resolve_current(
+            args.race_lap_current_bundle,
+            args.date,
+            args.analysis_period_to,
+            sed_archives=args.race_lap_sed,
+            expected_dates=args.race_lap_expected_date,
+            work_root=args.race_lap_work_root,
+            generation_id=args.race_lap_generation_id,
+            resolved_bundle=args.race_lap_resolved_bundle,
+        )
+        race_lap_parquet = Path(race_lap_resolution["parquet"])
+    if race_lap_parquet is None or not race_lap_parquet.is_file():
+        raise FileNotFoundError(race_lap_parquet)
     if args.output_root.exists():
         raise FileExistsError(f"output root already exists: {args.output_root}")
     if len(args.main_sha) != 40 or any(c not in "0123456789abcdef" for c in args.main_sha):
@@ -63,7 +88,7 @@ def main() -> int:
             target_date=args.date,
             analysis_root=args.analysis_root,
             course_fit_root=args.course_fit_root,
-            race_lap_parquet=args.race_lap_parquet,
+            race_lap_parquet=race_lap_parquet,
             racereview_root=args.racereview_root,
             racereview_current_cache=args.racereview_current_cache,
             next_watch_rules=args.next_watch_rules,
@@ -98,6 +123,7 @@ def main() -> int:
             "sha256": sha256(args.paci),
         },
         "daily_manifest_status": manifest.get("status"),
+        "race_lap_resolution": race_lap_resolution,
         "forecast_prep": str(forecast_prep),
         "v053_root": None if session is None else str(v053_root),
         "race_count": len(handoff["race_roster"]),
