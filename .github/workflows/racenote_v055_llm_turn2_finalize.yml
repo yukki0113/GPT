@@ -1,0 +1,87 @@
+name: RaceNote v0.5.5 LLM T2 Finalize
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/daily/**/v055_day/v055/incoming/llm_decisions.json'
+      - 'horse-racing/jrdb/daily/**/v055_day/v055/incoming/llm_confidence.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-v055-llm-turn2-finalize
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve one LLM-authored day
+        id: resolve
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(
+            git diff --name-only "$BEFORE" "$AFTER" |
+            grep -E '^horse-racing/jrdb/daily/[0-9]{8}/v055_day/v055/incoming/llm_(decisions|confidence)\.json$' || true
+          )
+          mapfile -t roots < <(printf '%s\n' "${changed[@]}" | sed '/^$/d' | xargs -r -n1 dirname | xargs -r -n1 dirname | sort -u)
+          test "${#roots[@]}" -le 1 || { echo "::error::one target day per push required"; exit 1; }
+          if test "${#roots[@]}" -eq 0; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          root="${roots[0]}"
+          if test ! -f "$root/incoming/llm_decisions.json" || test ! -f "$root/incoming/llm_confidence.json"; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          test ! -e "$root/frozen" || { echo "::error::prediction Freeze already exists"; exit 1; }
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+          echo "root=$root" >> "$GITHUB_OUTPUT"
+
+      - name: Finalize LLM-authored T2
+        if: steps.resolve.outputs.ready == 'true'
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          ROOT: ${{ steps.resolve.outputs.root }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_turn2_finalize.py \
+            --root "$ROOT" \
+            --decisions "$ROOT/incoming/llm_decisions.json" \
+            --confidence "$ROOT/incoming/llm_confidence.json"
+
+      - name: Commit immutable T2
+        if: steps.resolve.outputs.ready == 'true'
+        env:
+          ROOT: ${{ steps.resolve.outputs.root }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            "$ROOT/authored_decisions" \
+            "$ROOT/authoring_quality_report.json" \
+            "$ROOT/frozen" \
+            "$ROOT/confidence_review.json" \
+            "$ROOT/confidence_frozen" \
+            "$ROOT/turn2_summary.json"
+          git commit -m "RaceNote: freeze LLM-authored $(basename "$(dirname "$(dirname "$(dirname "$ROOT")")")") v0.5.5 TURN 2"
+          git pull --rebase origin main
+          git push origin HEAD:main

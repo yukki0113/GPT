@@ -260,3 +260,22 @@ Pairwise ◎>○, IDM gaps, debut/obstacle grouping and old A5/A7-style analysis
 Do not migrate an existing frozen r1/r2/r3 session into r4. Their embedded confidence remains part of their historical Freeze.
 
 r4 applies only to newly initialized sessions.
+
+
+## 10. Fast forward operational wrapper
+
+For normal forward daily operation, the deterministic preparation/finalization
+steps are consolidated by:
+
+- `src/racenote_v055_forward_turn1.py`
+- `src/racenote_v055_authoring_bundle.py`
+- `src/racenote_v055_turn2_finalize.py`
+- `.github/workflows/racenote_v055_llm_turn2_finalize.yml`
+
+Normative operational boundary:
+`RACENOTE_V055_FAST_FORWARD_OPERATION_v0_1.md`.
+
+The authoring bundle is lossless with respect to each sealed lean Reader and
+must not score, rank, filter, select marks or assign Confidence. The LLM must
+still read and judge every race independently. Automation resumes only after
+the LLM has authored complete Decision Core and Confidence drafts.
