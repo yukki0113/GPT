@@ -60,7 +60,31 @@ def main() -> int:
     ap.add_argument("--target-date", required=True)
     ap.add_argument("--analysis-period-to", required=True)
     args = ap.parse_args()
-    print(json.dumps(validate(args.parquet, args.manifest, args.target_date, args.analysis_period_to),sort_keys=True))
+
+    # Compatibility CLI for existing T1/workflow callers: when the canonical
+    # bundle layout is supplied, resolve through the orchestration layer. The
+    # low-level validate() function remains the primitive used by resolver /
+    # promotion code and by callers that import this module.
+    if (
+        args.parquet.name == "race_lap.parquet"
+        and args.manifest.name == "manifest.json"
+        and args.parquet.parent == args.manifest.parent
+    ):
+        from jrdb_race_lap_current_resolver import resolve_current
+
+        result = resolve_current(
+            args.parquet.parent,
+            args.target_date,
+            args.analysis_period_to,
+        )
+    else:
+        result = validate(
+            args.parquet,
+            args.manifest,
+            args.target_date,
+            args.analysis_period_to,
+        )
+    print(json.dumps(result, sort_keys=True))
     return 0
 
 
