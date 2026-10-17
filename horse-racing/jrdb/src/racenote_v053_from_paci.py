@@ -41,7 +41,7 @@ def main() -> int:
     race_lap = ap.add_mutually_exclusive_group(required=True)
     race_lap.add_argument("--race-lap-parquet", type=Path)
     race_lap.add_argument("--race-lap-current-bundle", type=Path)
-    ap.add_argument("--analysis-period-to")
+    ap.add_argument("--race-lap-expected-period-to")
     ap.add_argument("--race-lap-sed", type=Path, action="append")
     ap.add_argument("--race-lap-expected-date", action="append")
     ap.add_argument("--race-lap-work-root", type=Path)
@@ -60,12 +60,12 @@ def main() -> int:
     race_lap_parquet = args.race_lap_parquet
     race_lap_resolution = None
     if args.race_lap_current_bundle is not None:
-        if not args.analysis_period_to:
-            raise ValueError("--analysis-period-to is required with --race-lap-current-bundle")
+        if not args.race_lap_expected_period_to:
+            raise ValueError("--race-lap-expected-period-to is required with --race-lap-current-bundle")
         race_lap_resolution = resolve_current(
             args.race_lap_current_bundle,
             args.date,
-            args.analysis_period_to,
+            args.race_lap_expected_period_to,
             sed_archives=args.race_lap_sed,
             expected_dates=args.race_lap_expected_date,
             work_root=args.race_lap_work_root,
@@ -141,7 +141,7 @@ def main() -> int:
                     "updated",
                     "generation_id",
                     "period_to",
-                    "analysis_period_to",
+                    "expected_period_to",
                     "parquet_sha256",
                     "network_access",
                     "source_policy",
