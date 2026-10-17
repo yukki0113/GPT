@@ -110,6 +110,16 @@ def main() -> int:
     v053_root = args.output_root / "v053"
     session = None if args.prep_only else init_session(forecast_prep, v053_root, args.main_sha)
 
+    if session is None:
+        race_count = int(handoff["race_count"])
+        expected_venues = sorted({
+            json.loads(path.read_text(encoding="utf-8"))["race"]["venue"]
+            for path in (forecast_prep / "reader").glob("*.json")
+        })
+    else:
+        race_count = len(session["race_roster"])
+        expected_venues = list(session["expected_venues"])
+
     operation = {
         "schema_version": VERSION,
         "status": "FORECAST_PREP_READY" if args.prep_only else "READY_FOR_V053_AUTHORING",
@@ -142,8 +152,8 @@ def main() -> int:
         ),
         "forecast_prep": str(forecast_prep),
         "v053_root": None if session is None else str(v053_root),
-        "race_count": len(handoff["race_roster"]),
-        "expected_venues": sorted({row["venue"] for row in handoff["race_roster"]}),
+        "race_count": race_count,
+        "expected_venues": expected_venues,
         "market_blind": handoff.get("market_blind"),
         "result_opened": False,
         "ab_required": False,
