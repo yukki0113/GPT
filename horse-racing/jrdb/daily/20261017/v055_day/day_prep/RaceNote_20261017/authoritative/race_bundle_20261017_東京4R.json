@@ -1,0 +1,5028 @@
+{
+  "schema_version": "1.0",
+  "metadata": {
+    "source": "JRDB PACI",
+    "race_date": "2026-10-17",
+    "data_phase": "pre_race",
+    "generated_at": "2026-10-17T06:48:22.397812+00:00",
+    "history_enrichment": {
+      "version": "1.0",
+      "base_schema_version": "0.2",
+      "recent_runs_max": 5,
+      "older_runs_max": 3,
+      "stats_window_years": 5,
+      "as_of_exclusive": "2026-10-17",
+      "future_leakage_policy": "all rolling statistics from JRDB Analysis canonical with race_date < target_date",
+      "pedigree_enrichment": {
+        "identity_version": "P1-0.1",
+        "context_version": "P2-0.1",
+        "status": "ACTIVE",
+        "scoring": false,
+        "identity_source": "JRDB Analysis canonical target identity projection",
+        "historical_context_source": "JRDB Analysis canonical (as-of-exclusive)",
+        "approved_identity_fields": [
+          "horse_id",
+          "sire_name",
+          "dam_name",
+          "broodmare_sire_name",
+          "sire_line_code",
+          "broodmare_sire_line_code"
+        ],
+        "historical_dimensions": [
+          "sire_name",
+          "broodmare_sire_name"
+        ],
+        "condition_scope": "venue_surface_exact_distance_plus_target_distance_ranges",
+        "small_sample_policy": "retain_with_sample_size",
+        "missing_field_policy": "null_no_guess",
+        "result_fields_exposed": false
+      },
+      "distance_range_policy": {
+        "ranges": [
+          {
+            "min_m": 1000,
+            "max_m": 1400
+          },
+          {
+            "min_m": 1400,
+            "max_m": 1800
+          },
+          {
+            "min_m": 1800,
+            "max_m": 2400
+          },
+          {
+            "min_m": 2500,
+            "max_m": null
+          }
+        ],
+        "overlap_boundaries_m": [
+          1400,
+          1800
+        ],
+        "long_distance_min_m": 2500
+      },
+      "sample_size_band_policy": {
+        "none": "starts = 0",
+        "small": "starts = 1-19",
+        "moderate": "starts = 20-49",
+        "sufficient": "starts >= 50",
+        "semantic": "descriptive sample-size band only; not statistical significance"
+      },
+      "history_scope": "jrdb_jra_history",
+      "overseas_history_policy": "not_guaranteed",
+      "warning_count": 18,
+      "warnings": [
+        "target_entry_not_found:horse_no=1",
+        "target_entry_not_found:horse_no=2",
+        "target_entry_not_found:horse_no=3",
+        "target_entry_not_found:horse_no=4",
+        "target_entry_not_found:horse_no=5",
+        "target_entry_not_found:horse_no=6",
+        "target_entry_not_found:horse_no=7",
+        "target_entry_not_found:horse_no=8",
+        "target_entry_not_found:horse_no=9",
+        "target_entry_not_found:horse_no=10",
+        "target_entry_not_found:horse_no=11",
+        "target_entry_not_found:horse_no=12",
+        "target_entry_not_found:horse_no=13",
+        "target_entry_not_found:horse_no=14",
+        "target_entry_not_found:horse_no=15",
+        "target_entry_not_found:horse_no=16",
+        "target_entry_not_found:horse_no=17",
+        "target_entry_not_found:horse_no=18"
+      ],
+      "analysis_backend": "parquet_duckdb",
+      "analysis_source": {
+        "kind": "PARQUET",
+        "backend": "parquet_duckdb",
+        "path": "/tmp/analysis",
+        "manifest_path": "/tmp/analysis/generations/analysis-v1_4-canonical-20261013-02/manifest.json",
+        "generation_id": "analysis-v1_4-canonical-20261013-02",
+        "min_race_date": "2016-01-05",
+        "max_race_date": "2026-10-12",
+        "rows": 519313,
+        "query_count": 2,
+        "parquet_scan_count": 2
+      }
+    },
+    "racereview_enrichment": {
+      "version": "RRDB-RaceNote-0.2",
+      "status": "ACTIVE",
+      "current_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+      "review_schema_version": "v0.1",
+      "review_logic_version": "v0.1.1",
+      "baseline_version": "asof-median-loo-v0.1",
+      "recommendation_contract_version": "rrdb-recommendation-signals-v0.5",
+      "recommendation_grade_status": "DISABLED",
+      "operational_lookback_days": 730,
+      "legacy_next_watch_rule_version": null,
+      "legacy_next_watch_status": "HISTORICAL_COMPATIBILITY_ONLY",
+      "as_of_exclusive": "2026-10-17",
+      "horse_identity": "JRDB_BLOOD_REGISTRATION_NO",
+      "name_fallback": false,
+      "scoring": false,
+      "target_result_exposed": false,
+      "market_exposed": false
+    },
+    "race_lap_enrichment": {
+      "version": "RaceNote-SRB-RaceLap-Context-0.1",
+      "reader_contract": "JRDB RaceLapReader v0.1",
+      "as_of_exclusive": "2026-10-17",
+      "source_run_context_only": true,
+      "scoring": false,
+      "requested_run_count": 1665,
+      "unique_race_key_count": 1197,
+      "found_run_count": 1601,
+      "missing_run_count": 64
+    }
+  },
+  "race": {
+    "date": "2026-10-17",
+    "venue": "東京",
+    "meeting": "4",
+    "day": "6",
+    "race_no": 4,
+    "post_time": "11:35",
+    "race_name": null,
+    "surface": "芝",
+    "distance_m": 1400,
+    "turn": "左",
+    "course_layout": "通常（内）",
+    "race_type": "2歳",
+    "class": "新馬",
+    "race_conditions": [
+      "混合",
+      "地方指定"
+    ],
+    "weight_rule": "馬齢",
+    "grade": null,
+    "field_size": 18,
+    "race_trends": {
+      "frame": {},
+      "running_style": {}
+    }
+  },
+  "horses": [
+    {
+      "basic": {
+        "frame_no": 1,
+        "horse_no": 1,
+        "horse_id": "24102424",
+        "horse_name": "ヒッポダメイア",
+        "jockey": "大野拓弥",
+        "carried_weight_kg": 55.0,
+        "apprentice": null,
+        "trainer": "中川公成",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 20.0,
+        "total_index": 19.2,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "弱気",
+        "farm": {
+          "name": "ファンタストクラブ",
+          "rank": "A",
+          "index_rank": 2
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -20.0,
+          "pace": -14.0,
+          "late": -26.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 10,
+          "pace": 10,
+          "late": 10,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 7,
+            "margin": 6,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 8,
+            "margin": 4,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 10,
+            "margin": 21,
+            "lane": "最内"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -11.5,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "美浦坂路",
+          "strength": "強目",
+          "state": "強目",
+          "rider_type": "助手",
+          "furlongs": 4,
+          "clock": {
+            "front": 14.3,
+            "middle": 13.7,
+            "last": 13.0
+          },
+          "clock_index": {
+            "front": 24,
+            "middle": 13,
+            "last": 16,
+            "total": 50
+          },
+          "pair": {
+            "result": "遅れ",
+            "strength": "馬なり",
+            "age": 3,
+            "class": "1勝クラス"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "普通",
+          "focus": "平均",
+          "training_index": 50,
+          "condition_index": 54,
+          "volume_grade": "A",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 50,
+            "course": "美浦坂路"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 56.4,
+        "base_win_rank": 14,
+        "base_place_odds": 9.9,
+        "base_place_rank": 14
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.2,
+        "info_index": -1.0,
+        "stable_index": -11.6,
+        "longshot_index": 115,
+        "jockey_expected_top2_rate": 3.0,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": "◎"
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24102424",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 1,
+        "horse_no": 2,
+        "horse_id": "24100402",
+        "horse_name": "サザンマキシム",
+        "jockey": "佐藤翔馬",
+        "carried_weight_kg": 53.0,
+        "apprentice": "▲",
+        "trainer": "斎藤誠",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 22.5,
+        "total_index": 22.7,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "エスティウィンファーム",
+          "rank": null,
+          "index_rank": 2
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -20.0,
+          "pace": -14.0,
+          "late": -26.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 10,
+          "pace": 10,
+          "late": 11,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 11,
+            "margin": 9,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 10,
+            "margin": 5,
+            "lane": "中"
+          },
+          "finish": {
+            "order": 18,
+            "margin": 27,
+            "lane": "内"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": 0.1,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南W",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "本番騎手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.3,
+            "middle": 13.2,
+            "last": 11.7
+          },
+          "clock_index": {
+            "front": 11,
+            "middle": 15,
+            "last": 22,
+            "total": 52
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "馬なり",
+            "age": 2,
+            "class": "未勝利"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "平均",
+          "training_index": 52,
+          "condition_index": 53,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 53,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 32.1,
+        "base_win_rank": 10,
+        "base_place_odds": 6.1,
+        "base_place_rank": 10
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.2,
+        "info_index": 0.0,
+        "stable_index": -5.2,
+        "longshot_index": 67,
+        "jockey_expected_top2_rate": 3.5,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24100402",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 2,
+        "horse_no": 3,
+        "horse_id": "24103545",
+        "horse_name": "レミニシング",
+        "jockey": "水沼元輝",
+        "carried_weight_kg": 52.0,
+        "apprentice": "▲",
+        "trainer": "萱野浩二",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 20.0,
+        "total_index": 19.0,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "下河辺牧場",
+          "rank": "D",
+          "index_rank": 7
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -20.0,
+          "pace": -14.0,
+          "late": -26.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 10,
+          "pace": 10,
+          "late": 12,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 9,
+            "margin": 8,
+            "lane": "中"
+          },
+          "last3f": {
+            "order": 11,
+            "margin": 5,
+            "lane": "外"
+          },
+          "finish": {
+            "order": 16,
+            "margin": 26,
+            "lane": "中"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -12.1,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-15",
+          "course": "南W",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "調教騎手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.0,
+            "middle": 13.4,
+            "last": 12.6
+          },
+          "clock_index": {
+            "front": 15,
+            "middle": 14,
+            "last": 14,
+            "total": 42
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "一杯",
+            "age": 2,
+            "class": "新馬"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 0,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "平均",
+          "training_index": 42,
+          "condition_index": 39,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 46,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 123.9,
+        "base_win_rank": 17,
+        "base_place_odds": 21.0,
+        "base_place_rank": 17
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.0,
+        "info_index": -1.0,
+        "stable_index": -12.5,
+        "longshot_index": 56,
+        "jockey_expected_top2_rate": 0.8,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24103545",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 2,
+        "horse_no": 4,
+        "horse_id": "24102835",
+        "horse_name": "オトメノイノリ",
+        "jockey": "内田博幸",
+        "carried_weight_kg": 55.0,
+        "apprentice": null,
+        "trainer": "千葉直人",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 20.0,
+        "total_index": 19.1,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "弱気",
+        "farm": {
+          "name": "ミルファーム",
+          "rank": null,
+          "index_rank": 5
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -20.0,
+          "pace": -14.0,
+          "late": -26.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 10,
+          "pace": 10,
+          "late": 13,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 10,
+            "margin": 8,
+            "lane": "外"
+          },
+          "last3f": {
+            "order": 9,
+            "margin": 4,
+            "lane": "大外"
+          },
+          "finish": {
+            "order": 13,
+            "margin": 24,
+            "lane": "外"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -12.7,
+          "training_arrow": "やや下降気味"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南芝",
+          "strength": "一杯",
+          "state": "一杯",
+          "rider_type": "本番騎手",
+          "furlongs": 5,
+          "clock": {
+            "front": 14.6,
+            "middle": 12.6,
+            "last": 12.3
+          },
+          "clock_index": {
+            "front": 18,
+            "middle": 19,
+            "last": 12,
+            "total": 43
+          },
+          "pair": {
+            "result": "遅れ",
+            "strength": "馬なり",
+            "age": 2,
+            "class": "新馬"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 0,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 1,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "平均",
+          "training_index": 43,
+          "condition_index": 37,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 37,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 59.6,
+        "base_win_rank": 15,
+        "base_place_odds": 10.5,
+        "base_place_rank": 15
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.1,
+        "info_index": -1.0,
+        "stable_index": -10.0,
+        "longshot_index": 80,
+        "jockey_expected_top2_rate": 1.8,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24102835",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 3,
+        "horse_no": 5,
+        "horse_id": "24110014",
+        "horse_name": "ジルファノーガ",
+        "jockey": "Ｃ．ルメール",
+        "carried_weight_kg": 55.0,
+        "apprentice": null,
+        "trainer": "嘉藤貴行",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 44.7,
+        "total_index": 51.7,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "強気",
+        "farm": {
+          "name": "ノーザンファーム",
+          "rank": "A",
+          "index_rank": 5
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -12.0,
+          "pace": -5.0,
+          "late": -15.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 1,
+          "pace": 1,
+          "late": 1,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 1,
+            "margin": 0,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 1,
+            "margin": 0,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 1,
+            "margin": 0,
+            "lane": "最内"
+          }
+        },
+        "symbol": "上位上がり"
+      },
+      "training": {
+        "summary": {
+          "training_index": 20.9,
+          "training_arrow": "上昇"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南W",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "調教騎手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.3,
+            "middle": 13.0,
+            "last": 11.6
+          },
+          "clock_index": {
+            "front": 11,
+            "middle": 18,
+            "last": 23,
+            "total": 56
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "馬なり",
+            "age": 29,
+            "class": "3勝クラス"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "平均",
+          "training_index": 56,
+          "condition_index": 60,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 70,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 2.4,
+        "base_win_rank": 1,
+        "base_place_odds": 1.3,
+        "base_place_rank": 1
+      },
+      "jrdb_ratings": {
+        "jockey_index": 3.4,
+        "info_index": 3.6,
+        "stable_index": 17.5,
+        "longshot_index": 107,
+        "jockey_expected_top2_rate": 62.1,
+        "marks": {
+          "total": "◎",
+          "idm": "◎",
+          "info": "○",
+          "jockey": "◎",
+          "stable": "▲",
+          "training": "◎",
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24110014",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 3,
+        "horse_no": 6,
+        "horse_id": "24100166",
+        "horse_name": "ニシノミチビキ",
+        "jockey": "石川裕紀人",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "手塚貴徳",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 20.3,
+        "total_index": 20.5,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "西山牧場阿見分場",
+          "rank": "D",
+          "index_rank": 8
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -20.0,
+          "pace": -14.0,
+          "late": -26.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 10,
+          "pace": 10,
+          "late": 14,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 14,
+            "margin": 11,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 13,
+            "margin": 7,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 11,
+            "margin": 23,
+            "lane": "最内"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -4.3,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南W",
+          "strength": "強目",
+          "state": "終い重点",
+          "rider_type": "本番騎手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.1,
+            "middle": 13.2,
+            "last": 11.4
+          },
+          "clock_index": {
+            "front": 13,
+            "middle": 17,
+            "last": 25,
+            "total": 60
+          },
+          "pair": {
+            "result": "先着",
+            "strength": null,
+            "age": 5,
+            "class": "1勝クラス"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "平均",
+          "training_index": 60,
+          "condition_index": 54,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 58,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 34.6,
+        "base_win_rank": 12,
+        "base_place_odds": 6.5,
+        "base_place_rank": 12
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.2,
+        "info_index": 0.0,
+        "stable_index": -10.0,
+        "longshot_index": 85,
+        "jockey_expected_top2_rate": 3.5,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24100166",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 4,
+        "horse_no": 7,
+        "horse_id": "24109081",
+        "horse_name": "アミフジジャンヌ",
+        "jockey": "木幡育也",
+        "carried_weight_kg": 55.0,
+        "apprentice": null,
+        "trainer": "勢司和浩",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 20.0,
+        "total_index": 19.0,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "弱気",
+        "farm": {
+          "name": "内藤牧場",
+          "rank": null,
+          "index_rank": 6
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -20.0,
+          "pace": -14.0,
+          "late": -26.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 10,
+          "pace": 10,
+          "late": 15,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 12,
+            "margin": 10,
+            "lane": "中"
+          },
+          "last3f": {
+            "order": 12,
+            "margin": 6,
+            "lane": "大外"
+          },
+          "finish": {
+            "order": 17,
+            "margin": 26,
+            "lane": "外"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -12.1,
+          "training_arrow": "やや下降気味"
+        },
+        "main_workout": {
+          "date": "2026-10-15",
+          "course": "南W",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "助手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.9,
+            "middle": 13.6,
+            "last": 12.1
+          },
+          "clock_index": {
+            "front": 7,
+            "middle": 10,
+            "last": 21,
+            "total": 43
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "馬なり",
+            "age": 2,
+            "class": "新馬"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 0,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 1
+          },
+          "distance_pattern": "長め",
+          "focus": "終い",
+          "training_index": 43,
+          "condition_index": 40,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 43,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 256.2,
+        "base_win_rank": 18,
+        "base_place_odds": 42.8,
+        "base_place_rank": 18
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.0,
+        "info_index": -1.0,
+        "stable_index": -11.0,
+        "longshot_index": 72,
+        "jockey_expected_top2_rate": 0.8,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24109081",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 4,
+        "horse_no": 8,
+        "horse_id": "24102942",
+        "horse_name": "ゴーゴーアキラ",
+        "jockey": "菅原明良",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "矢野英一",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 20.0,
+        "total_index": 20.2,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "岩見牧場",
+          "rank": null,
+          "index_rank": 6
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -20.0,
+          "pace": -14.0,
+          "late": -26.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 10,
+          "pace": 10,
+          "late": 16,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 15,
+            "margin": 12,
+            "lane": "中"
+          },
+          "last3f": {
+            "order": 15,
+            "margin": 8,
+            "lane": "外"
+          },
+          "finish": {
+            "order": 12,
+            "margin": 23,
+            "lane": "大外"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -11.5,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "美浦坂路",
+          "strength": "強目",
+          "state": "強目",
+          "rider_type": "助手",
+          "furlongs": 4,
+          "clock": {
+            "front": 14.4,
+            "middle": 13.9,
+            "last": 13.0
+          },
+          "clock_index": {
+            "front": 23,
+            "middle": 10,
+            "last": 16,
+            "total": 47
+          },
+          "pair": {
+            "result": "遅れ",
+            "strength": null,
+            "age": 4,
+            "class": "2勝クラス"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "普通",
+          "focus": "平均",
+          "training_index": 47,
+          "condition_index": 55,
+          "volume_grade": "A",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 52,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 34.2,
+        "base_win_rank": 11,
+        "base_place_odds": 6.4,
+        "base_place_rank": 11
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.2,
+        "info_index": 0.0,
+        "stable_index": -9.5,
+        "longshot_index": 60,
+        "jockey_expected_top2_rate": 3.5,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24102942",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 5,
+        "horse_no": 9,
+        "horse_id": "24105865",
+        "horse_name": "シリアスドラマ",
+        "jockey": "津村明秀",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "松尾卓哉",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 25.8,
+        "total_index": 26.7,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "山元トレーニングセンター",
+          "rank": "A",
+          "index_rank": 3
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -18.0,
+          "pace": -10.0,
+          "late": -21.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 7,
+          "pace": 7,
+          "late": 7,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 6,
+            "margin": 5,
+            "lane": "中"
+          },
+          "last3f": {
+            "order": 6,
+            "margin": 3,
+            "lane": "中"
+          },
+          "finish": {
+            "order": 6,
+            "margin": 14,
+            "lane": "内"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": 2.7,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南W",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "助手",
+          "furlongs": 6,
+          "clock": {
+            "front": 16.6,
+            "middle": 12.8,
+            "last": 11.7
+          },
+          "clock_index": {
+            "front": 0,
+            "middle": 18,
+            "last": 24,
+            "total": 52
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "馬なり",
+            "age": 4,
+            "class": "未勝利"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "終い",
+          "training_index": 52,
+          "condition_index": 58,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 60,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 13.3,
+        "base_win_rank": 6,
+        "base_place_odds": 3.0,
+        "base_place_rank": 6
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.9,
+        "info_index": 0.0,
+        "stable_index": -2.0,
+        "longshot_index": 119,
+        "jockey_expected_top2_rate": 15.4,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": "△",
+          "stable": null,
+          "training": null,
+          "longshot": "◎"
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24105865",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 5,
+        "horse_no": 10,
+        "horse_id": "24102868",
+        "horse_name": "プラナベルデ",
+        "jockey": "吉村誠之助",
+        "carried_weight_kg": 55.0,
+        "apprentice": null,
+        "trainer": "清水久詞",
+        "trainer_base": "栗東",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 44.4,
+        "total_index": 50.0,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "チャンピオンヒルズ",
+          "rank": "A",
+          "index_rank": 5
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -12.0,
+          "pace": -5.0,
+          "late": -15.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 1,
+          "pace": 1,
+          "late": 2,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 2,
+            "margin": 0,
+            "lane": "中"
+          },
+          "last3f": {
+            "order": 2,
+            "margin": 0,
+            "lane": "外"
+          },
+          "finish": {
+            "order": 2,
+            "margin": 6,
+            "lane": "中"
+          }
+        },
+        "symbol": "最速上がり"
+      },
+      "training": {
+        "summary": {
+          "training_index": 18.7,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "CW",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "本番騎手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.1,
+            "middle": 12.7,
+            "last": 11.3
+          },
+          "clock_index": {
+            "front": 15,
+            "middle": 21,
+            "last": 26,
+            "total": 66
+          },
+          "pair": {
+            "result": "遅れ",
+            "strength": "馬なり",
+            "age": 35,
+            "class": "未出走"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "平均",
+          "training_index": 66,
+          "condition_index": 62,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 74,
+            "course": "栗東坂路"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 4.9,
+        "base_win_rank": 2,
+        "base_place_odds": 1.6,
+        "base_place_rank": 2
+      },
+      "jrdb_ratings": {
+        "jockey_index": 1.9,
+        "info_index": 3.7,
+        "stable_index": 20.0,
+        "longshot_index": 94,
+        "jockey_expected_top2_rate": 31.6,
+        "marks": {
+          "total": "○",
+          "idm": "○",
+          "info": "◎",
+          "jockey": "○",
+          "stable": "◎",
+          "training": "○",
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24102868",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 6,
+        "horse_no": 11,
+        "horse_id": "24106816",
+        "horse_name": "リアライズボルト",
+        "jockey": "坂井瑠星",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "手塚貴久",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 33.8,
+        "total_index": 36.4,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "山元トレーニングセンター",
+          "rank": "A",
+          "index_rank": 3
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -16.0,
+          "pace": -7.0,
+          "late": -20.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 4,
+          "pace": 4,
+          "late": 4,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 4,
+            "margin": 3,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 3,
+            "margin": 1,
+            "lane": "中"
+          },
+          "finish": {
+            "order": 4,
+            "margin": 9,
+            "lane": "内"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": 10.0,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南W",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "調教騎手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.3,
+            "middle": 12.8,
+            "last": 11.9
+          },
+          "clock_index": {
+            "front": 11,
+            "middle": 21,
+            "last": 20,
+            "total": 56
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "強目",
+            "age": 3,
+            "class": "1勝クラス"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "平均",
+          "training_index": 56,
+          "condition_index": 56,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 49,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 11.9,
+        "base_win_rank": 4,
+        "base_place_odds": 2.7,
+        "base_place_rank": 4
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.9,
+        "info_index": 1.7,
+        "stable_index": 7.6,
+        "longshot_index": 114,
+        "jockey_expected_top2_rate": 15.6,
+        "marks": {
+          "total": "△",
+          "idm": "△",
+          "info": "△",
+          "jockey": "注",
+          "stable": "△",
+          "training": "注",
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24106816",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 6,
+        "horse_no": 12,
+        "horse_id": "24100283",
+        "horse_name": "インキタトゥス",
+        "jockey": "石橋脩",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "清水英克",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 20.1,
+        "total_index": 19.2,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "菅井牧場",
+          "rank": "C",
+          "index_rank": 8
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -20.0,
+          "pace": -14.0,
+          "late": -26.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 10,
+          "pace": 10,
+          "late": 17,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 13,
+            "margin": 10,
+            "lane": "外"
+          },
+          "last3f": {
+            "order": 16,
+            "margin": 8,
+            "lane": "大外"
+          },
+          "finish": {
+            "order": 14,
+            "margin": 25,
+            "lane": "大外"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -10.1,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南W",
+          "strength": "強目",
+          "state": "強目",
+          "rider_type": "助手",
+          "furlongs": 6,
+          "clock": {
+            "front": 16.4,
+            "middle": 12.6,
+            "last": 11.8
+          },
+          "clock_index": {
+            "front": 1,
+            "middle": 23,
+            "last": 23,
+            "total": 56
+          },
+          "pair": {
+            "result": "先着",
+            "strength": "強目",
+            "age": null,
+            "class": null
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 0,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "中間",
+          "training_index": 56,
+          "condition_index": 50,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 43,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 50.7,
+        "base_win_rank": 13,
+        "base_place_odds": 9.2,
+        "base_place_rank": 13
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.1,
+        "info_index": -1.0,
+        "stable_index": -13.1,
+        "longshot_index": 79,
+        "jockey_expected_top2_rate": 2.4,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24100283",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 7,
+        "horse_no": 13,
+        "horse_id": "24100665",
+        "horse_name": "ハリペオ",
+        "jockey": "横山武史",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "和田勇介",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 40.8,
+        "total_index": 45.4,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "ミッドウェイファーム",
+          "rank": "A",
+          "index_rank": 8
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -14.0,
+          "pace": -6.0,
+          "late": -18.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 3,
+          "pace": 3,
+          "late": 3,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 3,
+            "margin": 2,
+            "lane": "中"
+          },
+          "last3f": {
+            "order": 4,
+            "margin": 1,
+            "lane": "大外"
+          },
+          "finish": {
+            "order": 3,
+            "margin": 6,
+            "lane": "外"
+          }
+        },
+        "symbol": "上位上がり"
+      },
+      "training": {
+        "summary": {
+          "training_index": 14.0,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南W",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "本番騎手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.6,
+            "middle": 13.6,
+            "last": 11.4
+          },
+          "clock_index": {
+            "front": 8,
+            "middle": 12,
+            "last": 25,
+            "total": 52
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "馬なり",
+            "age": 2,
+            "class": "未勝利"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "終い",
+          "training_index": 52,
+          "condition_index": 52,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 59,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 5.3,
+        "base_win_rank": 3,
+        "base_place_odds": 1.7,
+        "base_place_rank": 3
+      },
+      "jrdb_ratings": {
+        "jockey_index": 1.6,
+        "info_index": 3.0,
+        "stable_index": 17.5,
+        "longshot_index": 116,
+        "jockey_expected_top2_rate": 27.6,
+        "marks": {
+          "total": "▲",
+          "idm": "▲",
+          "info": "▲",
+          "jockey": "▲",
+          "stable": "○",
+          "training": "▲",
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24100665",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 7,
+        "horse_no": 14,
+        "horse_id": "24103243",
+        "horse_name": "マニッシュ",
+        "jockey": "遠藤汰月",
+        "carried_weight_kg": 52.0,
+        "apprentice": "▲",
+        "trainer": "伊藤伸一",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 27.8,
+        "total_index": 28.9,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "小野瀬ファーム",
+          "rank": "D",
+          "index_rank": 8
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -17.0,
+          "pace": -7.0,
+          "late": -20.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 6,
+          "pace": 4,
+          "late": 5,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 5,
+            "margin": 4,
+            "lane": "外"
+          },
+          "last3f": {
+            "order": 5,
+            "margin": 2,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 7,
+            "margin": 15,
+            "lane": "最内"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -7.1,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-15",
+          "course": "南ポリトラック",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "本番騎手",
+          "furlongs": 5,
+          "clock": {
+            "front": 15.7,
+            "middle": 13.8,
+            "last": 11.1
+          },
+          "clock_index": {
+            "front": 7,
+            "middle": 11,
+            "last": 30,
+            "total": 54
+          },
+          "pair": {
+            "result": "先着",
+            "strength": "馬なり",
+            "age": 2,
+            "class": "未勝利"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 1
+          },
+          "distance_pattern": "長め",
+          "focus": "終い",
+          "training_index": 54,
+          "condition_index": 60,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 71,
+            "course": "南ポリトラック"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 25.4,
+        "base_win_rank": 7,
+        "base_place_odds": 4.9,
+        "base_place_rank": 7
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.4,
+        "info_index": 0.7,
+        "stable_index": 12.6,
+        "longshot_index": 58,
+        "jockey_expected_top2_rate": 6.4,
+        "marks": {
+          "total": "△",
+          "idm": "△",
+          "info": "△",
+          "jockey": null,
+          "stable": "注",
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24103243",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 7,
+        "horse_no": 15,
+        "horse_id": "24104062",
+        "horse_name": "ロジリッパー",
+        "jockey": "三浦皇成",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "古賀慎明",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 35.0,
+        "total_index": 37.6,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "阿見トレーニングセンター",
+          "rank": "B",
+          "index_rank": 6
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -16.0,
+          "pace": -7.0,
+          "late": -20.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 4,
+          "pace": 4,
+          "late": 6,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 8,
+            "margin": 6,
+            "lane": "外"
+          },
+          "last3f": {
+            "order": 7,
+            "margin": 3,
+            "lane": "外"
+          },
+          "finish": {
+            "order": 5,
+            "margin": 11,
+            "lane": "中"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": 9.4,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南W",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "助手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.3,
+            "middle": 13.0,
+            "last": 11.5
+          },
+          "clock_index": {
+            "front": 12,
+            "middle": 20,
+            "last": 26,
+            "total": 64
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "馬なり",
+            "age": 2,
+            "class": "未勝利"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "終い",
+          "training_index": 64,
+          "condition_index": 58,
+          "volume_grade": "A",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 59,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 12.1,
+        "base_win_rank": 5,
+        "base_place_odds": 2.7,
+        "base_place_rank": 5
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.7,
+        "info_index": 1.9,
+        "stable_index": 10.6,
+        "longshot_index": 101,
+        "jockey_expected_top2_rate": 11.7,
+        "marks": {
+          "total": "注",
+          "idm": "注",
+          "info": "注",
+          "jockey": "△",
+          "stable": "△",
+          "training": "△",
+          "longshot": "◎"
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24104062",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 8,
+        "horse_no": 16,
+        "horse_id": "24105515",
+        "horse_name": "キョウエイベスト",
+        "jockey": "原優介",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "勢司和浩",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 20.2,
+        "total_index": 19.2,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "アクティファーム",
+          "rank": null,
+          "index_rank": 6
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -20.0,
+          "pace": -14.0,
+          "late": -26.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 10,
+          "pace": 10,
+          "late": 18,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 16,
+            "margin": 12,
+            "lane": "外"
+          },
+          "last3f": {
+            "order": 18,
+            "margin": 9,
+            "lane": "中"
+          },
+          "finish": {
+            "order": 15,
+            "margin": 26,
+            "lane": "最内"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -12.1,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-15",
+          "course": "南W",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "助手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.9,
+            "middle": 13.6,
+            "last": 12.0
+          },
+          "clock_index": {
+            "front": 7,
+            "middle": 10,
+            "last": 22,
+            "total": 45
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "馬なり",
+            "age": 2,
+            "class": "新馬"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 0,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 1
+          },
+          "distance_pattern": "長め",
+          "focus": "終い",
+          "training_index": 45,
+          "condition_index": 47,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 57,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 114.8,
+        "base_win_rank": 16,
+        "base_place_odds": 19.5,
+        "base_place_rank": 16
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.0,
+        "info_index": -1.0,
+        "stable_index": -11.0,
+        "longshot_index": 60,
+        "jockey_expected_top2_rate": 0.8,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24105515",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 8,
+        "horse_no": 17,
+        "horse_id": "24106855",
+        "horse_name": "トーセンマライカ",
+        "jockey": "佐々木大輔",
+        "carried_weight_kg": 55.0,
+        "apprentice": null,
+        "trainer": "菊川正達",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 25.5,
+        "total_index": 25.9,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "エスティファーム小見川",
+          "rank": "B",
+          "index_rank": 7
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -18.0,
+          "pace": -10.0,
+          "late": -21.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 7,
+          "pace": 7,
+          "late": 8,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 17,
+            "margin": 13,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 14,
+            "margin": 7,
+            "lane": "中"
+          },
+          "finish": {
+            "order": 8,
+            "margin": 17,
+            "lane": "内"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": -4.6,
+          "training_arrow": "上昇"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "南W",
+          "strength": "強目",
+          "state": "強目",
+          "rider_type": "助手",
+          "furlongs": 6,
+          "clock": {
+            "front": 15.6,
+            "middle": 13.0,
+            "last": 12.0
+          },
+          "clock_index": {
+            "front": 9,
+            "middle": 20,
+            "last": 21,
+            "total": 55
+          },
+          "pair": {
+            "result": "先着",
+            "strength": "一杯",
+            "age": 2,
+            "class": "新馬"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "終い",
+          "training_index": 55,
+          "condition_index": 44,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 51,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 32.1,
+        "base_win_rank": 9,
+        "base_place_odds": 6.1,
+        "base_place_rank": 9
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.2,
+        "info_index": 0.2,
+        "stable_index": 5.7,
+        "longshot_index": 73,
+        "jockey_expected_top2_rate": 3.5,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24106855",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 8,
+        "horse_no": 18,
+        "horse_id": "24103636",
+        "horse_name": "マイネルカピラリス",
+        "jockey": "木幡巧也",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "牧光二",
+        "trainer_base": "美浦",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 26.7,
+        "total_index": 27.4,
+        "running_style": null,
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": null
+      },
+      "condition": {
+        "improvement": null,
+        "rotation_interval": null,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "ビッグレッドファーム鉾田",
+          "rank": "C",
+          "index_rank": 7
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": null,
+        "late_break_rate": null,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -18.0,
+          "pace": -10.0,
+          "late": -21.0,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 7,
+          "pace": 7,
+          "late": 9,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 18,
+            "margin": 14,
+            "lane": "中"
+          },
+          "last3f": {
+            "order": 17,
+            "margin": 9,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 9,
+            "margin": 19,
+            "lane": "中"
+          }
+        },
+        "symbol": "要確認"
+      },
+      "training": {
+        "summary": {
+          "training_index": 2.8,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "美浦坂路",
+          "strength": "一杯",
+          "state": "一杯",
+          "rider_type": "助手",
+          "furlongs": 4,
+          "clock": {
+            "front": 12.7,
+            "middle": 12.4,
+            "last": 13.3
+          },
+          "clock_index": {
+            "front": 40,
+            "middle": 30,
+            "last": 13,
+            "total": 73
+          },
+          "pair": {
+            "result": null,
+            "strength": null,
+            "age": null,
+            "class": null
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "普通",
+          "focus": "テン",
+          "training_index": 73,
+          "condition_index": 61,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 52,
+            "course": "南W"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 27.1,
+        "base_win_rank": 8,
+        "base_place_odds": 5.2,
+        "base_place_rank": 8
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.4,
+        "info_index": 0.3,
+        "stable_index": 0.6,
+        "longshot_index": 81,
+        "jockey_expected_top2_rate": 6.4,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": "△",
+          "longshot": null
+        }
+      },
+      "recent_runs": [],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24103636",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 0,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "NO_HISTORY",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": null,
+        "recommendation": {
+          "status": "NO_PRIOR_HISTORY",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": null,
+          "target_course_profile": {
+            "eligible": true,
+            "course_key": "JRA:05:T:1400:main",
+            "surface_code": "1",
+            "course_size_class": "LARGE",
+            "final_straight_m": 525.9,
+            "final_straight_bucket": "LONG",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "NO_SOURCE_RUN"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    }
+  ]
+}

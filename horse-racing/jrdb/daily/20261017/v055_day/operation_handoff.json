@@ -1,0 +1,45 @@
+{
+  "schema_version": "racenote-v055-r4-daily-turn1-handoff-0.1",
+  "status": "READY_FOR_V055_AUTHORING",
+  "selection_id": "DAILY-20261017",
+  "target_date": "2026-10-17",
+  "source_mode": "paci",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.5-candidate",
+  "contract_revision": "v055-prediction-freeze-confidence-review-r4",
+  "reader_projection": "v055-lean-model-reader-r2",
+  "session_id": "V055-853f1fea5212050b85c7",
+  "base_main_sha": "9dc055a62b6cbfdca4a812b60c1b8da285e04feb",
+  "paci": {
+    "filename": "PACI261017.zip",
+    "drive_file_id": "1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA",
+    "sha256": "72771cb211363f93ddb4a8a29a39417ac2e9acf1fda7e16b0713fa280cfce909"
+  },
+  "analysis": {
+    "generation_id": "analysis-v1_4-canonical-20261013-02",
+    "period_to": "2026-10-12",
+    "validation_status": "PASS"
+  },
+  "rrdb": {
+    "generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+    "updated_at": "2026-10-13T00:25:57.043544+00:00"
+  },
+  "race_lap": {
+    "sha256": "ab28b788594ce183015637fbe913b410363f9f3239ad2f2c4e360b491c89881f"
+  },
+  "kyi_coverage": {
+    "reader_horse_count": 472,
+    "kyi_matched_count": 472,
+    "kyi_missing_count": 0
+  },
+  "race_count": 36,
+  "expected_venues": [
+    "京都",
+    "新潟",
+    "東京"
+  ],
+  "reader_count": 36,
+  "market_blind": true,
+  "stripped_at_input_bind": true,
+  "result_opened": false,
+  "target_market_opened": false
+}

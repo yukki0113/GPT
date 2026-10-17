@@ -1,0 +1,16 @@
+{
+  "available_count": 9298,
+  "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1",
+  "duplicate_count": 0,
+  "input_archive_count": 89,
+  "max_race_date": "2026-10-12",
+  "min_race_date": "2024-01-06",
+  "no_laps_count": 341,
+  "optional_context_available_count": 9327,
+  "output_sha256": "ab28b788594ce183015637fbe913b410363f9f3239ad2f2c4e360b491c89881f",
+  "output_size_bytes": 1658715,
+  "partial_first_count": 1096,
+  "race_count": 9639,
+  "shape_logic_version": "SRB-Neutral-RaceShape-v0.1",
+  "validation_status": "PASS"
+}

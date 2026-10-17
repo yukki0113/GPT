@@ -1,0 +1,4227 @@
+{
+  "schema_version": "1.0",
+  "metadata": {
+    "source": "JRDB PACI",
+    "race_date": "2026-10-17",
+    "data_phase": "pre_race",
+    "generated_at": "2026-10-17T06:48:22.405389+00:00",
+    "history_enrichment": {
+      "version": "1.0",
+      "base_schema_version": "0.2",
+      "recent_runs_max": 5,
+      "older_runs_max": 3,
+      "stats_window_years": 5,
+      "as_of_exclusive": "2026-10-17",
+      "future_leakage_policy": "all rolling statistics from JRDB Analysis canonical with race_date < target_date",
+      "pedigree_enrichment": {
+        "identity_version": "P1-0.1",
+        "context_version": "P2-0.1",
+        "status": "ACTIVE",
+        "scoring": false,
+        "identity_source": "JRDB Analysis canonical target identity projection",
+        "historical_context_source": "JRDB Analysis canonical (as-of-exclusive)",
+        "approved_identity_fields": [
+          "horse_id",
+          "sire_name",
+          "dam_name",
+          "broodmare_sire_name",
+          "sire_line_code",
+          "broodmare_sire_line_code"
+        ],
+        "historical_dimensions": [
+          "sire_name",
+          "broodmare_sire_name"
+        ],
+        "condition_scope": "venue_surface_exact_distance_plus_target_distance_ranges",
+        "small_sample_policy": "retain_with_sample_size",
+        "missing_field_policy": "null_no_guess",
+        "result_fields_exposed": false
+      },
+      "distance_range_policy": {
+        "ranges": [
+          {
+            "min_m": 1000,
+            "max_m": 1400
+          },
+          {
+            "min_m": 1400,
+            "max_m": 1800
+          },
+          {
+            "min_m": 1800,
+            "max_m": 2400
+          },
+          {
+            "min_m": 2500,
+            "max_m": null
+          }
+        ],
+        "overlap_boundaries_m": [
+          1400,
+          1800
+        ],
+        "long_distance_min_m": 2500
+      },
+      "sample_size_band_policy": {
+        "none": "starts = 0",
+        "small": "starts = 1-19",
+        "moderate": "starts = 20-49",
+        "sufficient": "starts >= 50",
+        "semantic": "descriptive sample-size band only; not statistical significance"
+      },
+      "history_scope": "jrdb_jra_history",
+      "overseas_history_policy": "not_guaranteed",
+      "warning_count": 8,
+      "warnings": [
+        "target_entry_not_found:horse_no=1",
+        "target_entry_not_found:horse_no=2",
+        "target_entry_not_found:horse_no=3",
+        "target_entry_not_found:horse_no=4",
+        "target_entry_not_found:horse_no=5",
+        "target_entry_not_found:horse_no=6",
+        "target_entry_not_found:horse_no=7",
+        "target_entry_not_found:horse_no=8"
+      ],
+      "analysis_backend": "parquet_duckdb",
+      "analysis_source": {
+        "kind": "PARQUET",
+        "backend": "parquet_duckdb",
+        "path": "/tmp/analysis",
+        "manifest_path": "/tmp/analysis/generations/analysis-v1_4-canonical-20261013-02/manifest.json",
+        "generation_id": "analysis-v1_4-canonical-20261013-02",
+        "min_race_date": "2016-01-05",
+        "max_race_date": "2026-10-12",
+        "rows": 519313,
+        "query_count": 2,
+        "parquet_scan_count": 2
+      }
+    },
+    "racereview_enrichment": {
+      "version": "RRDB-RaceNote-0.2",
+      "status": "ACTIVE",
+      "current_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+      "review_schema_version": "v0.1",
+      "review_logic_version": "v0.1.1",
+      "baseline_version": "asof-median-loo-v0.1",
+      "recommendation_contract_version": "rrdb-recommendation-signals-v0.5",
+      "recommendation_grade_status": "DISABLED",
+      "operational_lookback_days": 730,
+      "legacy_next_watch_rule_version": null,
+      "legacy_next_watch_status": "HISTORICAL_COMPATIBILITY_ONLY",
+      "as_of_exclusive": "2026-10-17",
+      "horse_identity": "JRDB_BLOOD_REGISTRATION_NO",
+      "name_fallback": false,
+      "scoring": false,
+      "target_result_exposed": false,
+      "market_exposed": false
+    },
+    "race_lap_enrichment": {
+      "version": "RaceNote-SRB-RaceLap-Context-0.1",
+      "reader_contract": "JRDB RaceLapReader v0.1",
+      "as_of_exclusive": "2026-10-17",
+      "source_run_context_only": true,
+      "scoring": false,
+      "requested_run_count": 1665,
+      "unique_race_key_count": 1197,
+      "found_run_count": 1601,
+      "missing_run_count": 64
+    }
+  },
+  "race": {
+    "date": "2026-10-17",
+    "venue": "京都",
+    "meeting": "4",
+    "day": "6",
+    "race_no": 3,
+    "post_time": "10:55",
+    "race_name": null,
+    "surface": "芝",
+    "distance_m": 2000,
+    "turn": "右",
+    "course_layout": "通常（内）",
+    "race_type": "2歳",
+    "class": "未勝利",
+    "race_conditions": [
+      "混合",
+      "地方指定"
+    ],
+    "weight_rule": "馬齢",
+    "grade": null,
+    "field_size": 8,
+    "race_trends": {
+      "frame": {},
+      "running_style": {}
+    }
+  },
+  "horses": [
+    {
+      "basic": {
+        "frame_no": 1,
+        "horse_no": 1,
+        "horse_id": "24104217",
+        "horse_name": "アルバドラータ",
+        "jockey": "国分優作",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "小栗実",
+        "trainer_base": "栗東",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 19.0,
+        "total_index": 19.4,
+        "running_style": "追込",
+        "distance_fit": "中距離",
+        "surface_fit": {
+          "turf": "△",
+          "dirt": null
+        },
+        "heavy_track_fit": null,
+        "jrdb_class": "芝未勝利C"
+      },
+      "condition": {
+        "improvement": "B",
+        "rotation_interval": 0,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "吉澤ステーブルＷＥＳＴ",
+          "rank": "B",
+          "index_rank": 3
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": -1.0,
+        "late_break_rate": 99.9,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -42.3,
+          "pace": -11.4,
+          "late": -30.4,
+          "position": -9.0
+        },
+        "ranks": {
+          "front": 7,
+          "pace": 6,
+          "late": 7,
+          "position": 7
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 7,
+            "margin": 22,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 7,
+            "margin": 13,
+            "lane": "中"
+          },
+          "finish": {
+            "order": 7,
+            "margin": 24,
+            "lane": "内"
+          }
+        },
+        "symbol": "その他"
+      },
+      "training": {
+        "summary": {
+          "training_index": -12.1,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-16",
+          "course": "連闘",
+          "strength": null,
+          "state": "中間軽め",
+          "rider_type": null,
+          "furlongs": 0,
+          "clock": {
+            "front": null,
+            "middle": null,
+            "last": null
+          },
+          "clock_index": {
+            "front": null,
+            "middle": null,
+            "last": null,
+            "total": null
+          },
+          "pair": {
+            "result": null,
+            "strength": null,
+            "age": null,
+            "class": null
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 0,
+            "wood": 0,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "その他",
+          "focus": "その他",
+          "training_index": null,
+          "condition_index": 51,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": null,
+            "course": null
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 26.2,
+        "base_win_rank": 8,
+        "base_place_odds": 4.6,
+        "base_place_rank": 8
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.4,
+        "info_index": 0.0,
+        "stable_index": -7.5,
+        "longshot_index": 126,
+        "jockey_expected_top2_rate": 6.4,
+        "marks": {
+          "total": null,
+          "idm": null,
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": null
+        }
+      },
+      "recent_runs": [
+        {
+          "race": {
+            "race_key": "08264405",
+            "date": "2026-10-11",
+            "venue": "京都",
+            "race_no": 5,
+            "race_name": null,
+            "surface": "芝",
+            "distance_m": 2000,
+            "turn": "右",
+            "course_layout": "通常（内）",
+            "track_condition": "速良",
+            "race_type": "2歳",
+            "class": "新馬",
+            "grade": null,
+            "field_size": 11,
+            "weather": "晴"
+          },
+          "result": {
+            "finish": 10,
+            "abnormal": "異常なし",
+            "time_sec": 122.8,
+            "carried_weight_kg": 56.0,
+            "jockey": "国分恭介",
+            "final_win_odds": 61.3,
+            "final_popularity": 8
+          },
+          "performance": {
+            "idm": 16,
+            "corners": [
+              11,
+              11,
+              10,
+              11
+            ],
+            "first3f_sec": 39.1,
+            "last3f_sec": 35.7,
+            "race_pace": "平均",
+            "horse_pace": "スロー",
+            "course_lane": "中"
+          },
+          "body": {
+            "body_weight_kg": 470,
+            "body_weight_change_kg": null,
+            "body_condition": "良い",
+            "hoof": null
+          },
+          "jrdb_metrics": {
+            "raw_score": 2,
+            "track_diff": -38,
+            "pace_score": 13,
+            "late_break_score": 1,
+            "position_score": null,
+            "trouble_score": null,
+            "prev_trouble_score": null,
+            "mid_trouble_score": null,
+            "late_trouble_score": null,
+            "race_score": null,
+            "front_index": -40.3,
+            "late_index": -37.0,
+            "pace_index": -24.4,
+            "race_pace_index": -19.1
+          },
+          "notes": {
+            "special_notes": [
+              "アオル",
+              "モタつく",
+              "余力なし"
+            ],
+            "equipment": [
+              "ガムチェーン",
+              "ネックストラップ"
+            ],
+            "leg_condition": {
+              "overall": [],
+              "left_front": [],
+              "right_front": [],
+              "left_hind": [],
+              "right_hind": []
+            },
+            "paddock_comment": "仕上がる。踏み込み硬い。",
+            "leg_comment": "特になし。",
+            "equipment_comment": "9/11吉澤Ｓ－ＷＥＳＴ",
+            "race_comment": "アオッて出て後方。直線の追い上げはなく。"
+          },
+          "race_structure": {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": {
+              "status": "AVAILABLE",
+              "lap_count": 10,
+              "comparable_200m_lap_count": 10,
+              "partial_first_segment": false,
+              "early_late_delta_available": true,
+              "optional_srb_context_available": false
+            },
+            "lap_shape": {
+              "early3f_sec": 36.8,
+              "late3f_sec": 34.4,
+              "early_late_delta_sec": -2.4,
+              "lap_std_sec": 0.546,
+              "lap_range_sec": 1.7,
+              "fastest_lap_sec": 11.1,
+              "fastest_segment_no": 10,
+              "max_accel_sec": 1.2,
+              "max_decel_sec": 0.8,
+              "last_vs_best_sec": 0.0,
+              "last3_slope_sec_per_segment": -0.45,
+              "pace_up_remaining_furlongs": null
+            },
+            "srb_context": {
+              "track_bias": {
+                "backstretch": null,
+                "corner1": null,
+                "corner2": null,
+                "corner3": null,
+                "corner4": null,
+                "homestretch": null
+              },
+              "race_comment": null
+            },
+            "policy": {
+              "leader_based": true,
+              "individual_sectionals": false,
+              "score_status": "NO_ADDITIVE_SCORE",
+              "target_race_usage": "HISTORICAL_ONLY_AS_OF_EXCLUSIVE",
+              "partial_first_segment_policy": "EXCLUDE_FROM_200M_COMPARABLE_METRICS"
+            },
+            "provenance": {
+              "source_kind": "JRDB_SRB",
+              "archive": "SED261011.zip",
+              "sed_member": "SED261011.txt",
+              "srb_member": "SRB261011.txt",
+              "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1"
+            }
+          }
+        }
+      ],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24104217",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 1,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "AVAILABLE",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": {
+          "race_key": "08264405",
+          "race_date": "2026-10-11",
+          "venue_code": "08",
+          "surface_code": "1",
+          "distance_m": 2000,
+          "field_size": 11,
+          "finish": 10,
+          "families": {
+            "ability": {
+              "declared_class_group": "NEWCOMER",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "horse_adjusted_delta_sec": 1.6124999999999972,
+              "horse_adjusted_delta_per_1000m": 0.8062499999999986
+            },
+            "pace": {
+              "pace_shape": null
+            },
+            "position": {
+              "corner1_frontness": 0.0,
+              "corner2_frontness": 0.0,
+              "corner3_frontness": 0.09999999999999998,
+              "corner4_frontness": 0.0,
+              "early_position_gain": 0.0,
+              "middle_position_gain": 0.0,
+              "late_position_gain": 0.09999999999999998,
+              "overall_position_gain": 0.09999999999999998
+            },
+            "finish": {
+              "last3f_rank": 10,
+              "last3f_speed_percentile": 10.0,
+              "closing_gain_sec": null,
+              "winner_gap_sec": 2.200000000000003
+            },
+            "trouble": {
+              "calibration_status": "RAW_ONLY_UNCALIBRATED",
+              "jrdb_track_diff": null,
+              "jrdb_pace_score": null,
+              "jrdb_late_break_score": null,
+              "jrdb_position_score": null,
+              "jrdb_trouble_score": null,
+              "jrdb_prev_trouble_score": null,
+              "jrdb_mid_trouble_score": null,
+              "jrdb_late_trouble_score": null
+            }
+          },
+          "review_tags": [
+            "TIME_AT_DECLARED_CLASS",
+            "LATE_POSITION_GAIN"
+          ]
+        },
+        "recommendation": {
+          "status": "NO_MATCH",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": {
+            "race_date": "2026-10-11",
+            "race_key": "08264405",
+            "surface_code": "1",
+            "distance_m": 2000,
+            "finish": 10,
+            "winner_gap_sec": 2.200000000000003,
+            "pace_balance_percentile": null,
+            "corner4_frontness": 0.0,
+            "last3f_speed_percentile": 10.0,
+            "performance_signal": -0.8062499999999986,
+            "time_class_equivalent": "NEWCOMER",
+            "time_class_equivalent_numeric": null
+          },
+          "target_course_profile": {
+            "eligible": false,
+            "course_key": "JRA:08:T:2000:inner",
+            "surface_code": "1",
+            "course_size_class": "MEDIUM",
+            "final_straight_m": 328.4,
+            "final_straight_bucket": "SHORT",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": true,
+            "reason": "MATCH",
+            "surface_code": "1",
+            "distance_bucket": "MIDDLE",
+            "early_late_delta_sec": -2.4,
+            "q20_sec": -2.26,
+            "reference_race_count": 838,
+            "race_lap_schema_version": "JRDB-Race-Lap-Evidence-0.1",
+            "race_lap_logic_version": "SRB-Neutral-RaceShape-v0.1",
+            "race_lap_coverage_status": "AVAILABLE"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 2,
+        "horse_no": 2,
+        "horse_id": "24103644",
+        "horse_name": "ベニールラヴニール",
+        "jockey": "鮫島克駿",
+        "carried_weight_kg": 55.0,
+        "apprentice": null,
+        "trainer": "清水久詞",
+        "trainer_base": "栗東",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 30.1,
+        "total_index": 37.1,
+        "running_style": "逃げ",
+        "distance_fit": "中距離",
+        "surface_fit": {
+          "turf": "○",
+          "dirt": null
+        },
+        "heavy_track_fit": "○",
+        "jrdb_class": "芝未勝利C"
+      },
+      "condition": {
+        "improvement": "B",
+        "rotation_interval": 2,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "チャンピオンヒルズ",
+          "rank": "A",
+          "index_rank": 5
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": 0.0,
+        "late_break_rate": 0.0,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -23.0,
+          "pace": -7.2,
+          "late": -16.3,
+          "position": 0.4
+        },
+        "ranks": {
+          "front": 2,
+          "pace": 3,
+          "late": 4,
+          "position": 1
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 2,
+            "margin": 5,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 2,
+            "margin": 2,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 1,
+            "margin": 0,
+            "lane": "内"
+          }
+        },
+        "symbol": "逃げ馬"
+      },
+      "training": {
+        "summary": {
+          "training_index": 19.8,
+          "training_arrow": "上昇"
+        },
+        "main_workout": {
+          "date": "2026-10-12",
+          "course": "CW",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "助手",
+          "furlongs": 6,
+          "clock": {
+            "front": 16.0,
+            "middle": 12.6,
+            "last": 11.5
+          },
+          "clock_index": {
+            "front": 6,
+            "middle": 22,
+            "last": 25,
+            "total": 61
+          },
+          "pair": {
+            "result": "先着",
+            "strength": "馬なり",
+            "age": 2,
+            "class": "未勝利"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 0,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "長め",
+          "focus": "終い",
+          "training_index": 61,
+          "condition_index": 61,
+          "volume_grade": "C",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": null,
+            "course": null
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 2.4,
+        "base_win_rank": 1,
+        "base_place_odds": 1.2,
+        "base_place_rank": 1
+      },
+      "jrdb_ratings": {
+        "jockey_index": 3.4,
+        "info_index": 3.6,
+        "stable_index": 17.9,
+        "longshot_index": 202,
+        "jockey_expected_top2_rate": 62.2,
+        "marks": {
+          "total": "◎",
+          "idm": "◎",
+          "info": "◎",
+          "jockey": "◎",
+          "stable": "◎",
+          "training": "◎",
+          "longshot": null
+        }
+      },
+      "recent_runs": [
+        {
+          "race": {
+            "race_key": "09264805",
+            "date": "2026-09-26",
+            "venue": "阪神",
+            "race_no": 5,
+            "race_name": null,
+            "surface": "芝",
+            "distance_m": 2000,
+            "turn": "右",
+            "course_layout": "通常（内）",
+            "track_condition": "速良",
+            "race_type": "2歳",
+            "class": "新馬",
+            "grade": null,
+            "field_size": 15,
+            "weather": "雨"
+          },
+          "result": {
+            "finish": 3,
+            "abnormal": "異常なし",
+            "time_sec": 123.7,
+            "carried_weight_kg": 55.0,
+            "jockey": "吉村誠之助",
+            "final_win_odds": 7.7,
+            "final_popularity": 3
+          },
+          "performance": {
+            "idm": 30,
+            "corners": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "first3f_sec": 37.8,
+            "last3f_sec": 35.6,
+            "race_pace": "スロー",
+            "horse_pace": "スロー",
+            "course_lane": "最内"
+          },
+          "body": {
+            "body_weight_kg": 466,
+            "body_weight_change_kg": null,
+            "body_condition": "良い",
+            "hoof": null
+          },
+          "jrdb_metrics": {
+            "raw_score": 15,
+            "track_diff": -25,
+            "pace_score": 15,
+            "late_break_score": null,
+            "position_score": null,
+            "trouble_score": null,
+            "prev_trouble_score": null,
+            "mid_trouble_score": null,
+            "late_trouble_score": null,
+            "race_score": null,
+            "front_index": -23.4,
+            "late_index": -27.1,
+            "pace_index": -23.6,
+            "race_pace_index": -23.6
+          },
+          "notes": {
+            "special_notes": [
+              "レース振スムーズ",
+              "シブトイ"
+            ],
+            "equipment": [
+              "ハートハミ",
+              "ネックストラップ"
+            ],
+            "leg_condition": {
+              "overall": [],
+              "left_front": [],
+              "right_front": [],
+              "left_hind": [],
+              "right_hind": []
+            },
+            "paddock_comment": "仕上がる。煩い。雨。",
+            "leg_comment": "四肢バンデージ。",
+            "equipment_comment": "8/28チャンピオンヒルズ",
+            "race_comment": "促し先手。淡々と逃げて大きくはバテず。"
+          },
+          "race_structure": {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": {
+              "status": "AVAILABLE",
+              "lap_count": 10,
+              "comparable_200m_lap_count": 10,
+              "partial_first_segment": false,
+              "early_late_delta_available": true,
+              "optional_srb_context_available": false
+            },
+            "lap_shape": {
+              "early3f_sec": 37.8,
+              "late3f_sec": 35.2,
+              "early_late_delta_sec": -2.6,
+              "lap_std_sec": 0.588,
+              "lap_range_sec": 1.6,
+              "fastest_lap_sec": 11.6,
+              "fastest_segment_no": 9,
+              "max_accel_sec": 1.2,
+              "max_decel_sec": 1.5,
+              "last_vs_best_sec": 0.1,
+              "last3_slope_sec_per_segment": -0.1,
+              "pace_up_remaining_furlongs": null
+            },
+            "srb_context": {
+              "track_bias": {
+                "backstretch": null,
+                "corner1": null,
+                "corner2": null,
+                "corner3": null,
+                "corner4": null,
+                "homestretch": null
+              },
+              "race_comment": null
+            },
+            "policy": {
+              "leader_based": true,
+              "individual_sectionals": false,
+              "score_status": "NO_ADDITIVE_SCORE",
+              "target_race_usage": "HISTORICAL_ONLY_AS_OF_EXCLUSIVE",
+              "partial_first_segment_policy": "EXCLUDE_FROM_200M_COMPARABLE_METRICS"
+            },
+            "provenance": {
+              "source_kind": "JRDB_SRB",
+              "archive": "SED260926.zip",
+              "sed_member": "SED260926.txt",
+              "srb_member": "SRB260926.txt",
+              "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1"
+            }
+          }
+        }
+      ],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24103644",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 1,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "AVAILABLE",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": {
+          "race_key": "09264805",
+          "race_date": "2026-09-26",
+          "venue_code": "09",
+          "surface_code": "1",
+          "distance_m": 2000,
+          "field_size": 15,
+          "finish": 3,
+          "families": {
+            "ability": {
+              "declared_class_group": "NEWCOMER",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "horse_adjusted_delta_sec": 1.0750000000000028,
+              "horse_adjusted_delta_per_1000m": 0.5375000000000014
+            },
+            "pace": {
+              "pace_shape": null
+            },
+            "position": {
+              "corner1_frontness": 1.0,
+              "corner2_frontness": 1.0,
+              "corner3_frontness": 1.0,
+              "corner4_frontness": 1.0,
+              "early_position_gain": 0.0,
+              "middle_position_gain": 0.0,
+              "late_position_gain": -0.1428571428571428,
+              "overall_position_gain": -0.1428571428571428
+            },
+            "finish": {
+              "last3f_rank": 4,
+              "last3f_speed_percentile": 76.92307692307692,
+              "closing_gain_sec": null,
+              "winner_gap_sec": 0.4000000000000057
+            },
+            "trouble": {
+              "calibration_status": "RAW_ONLY_UNCALIBRATED",
+              "jrdb_track_diff": null,
+              "jrdb_pace_score": null,
+              "jrdb_late_break_score": null,
+              "jrdb_position_score": null,
+              "jrdb_trouble_score": null,
+              "jrdb_prev_trouble_score": null,
+              "jrdb_mid_trouble_score": null,
+              "jrdb_late_trouble_score": null
+            }
+          },
+          "review_tags": [
+            "TIME_AT_DECLARED_CLASS",
+            "LATE_POSITION_LOSS"
+          ]
+        },
+        "recommendation": {
+          "status": "NO_MATCH",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": {
+            "race_date": "2026-09-26",
+            "race_key": "09264805",
+            "surface_code": "1",
+            "distance_m": 2000,
+            "finish": 3,
+            "winner_gap_sec": 0.4000000000000057,
+            "pace_balance_percentile": null,
+            "corner4_frontness": 1.0,
+            "last3f_speed_percentile": 76.92307692307692,
+            "performance_signal": -0.5375000000000014,
+            "time_class_equivalent": "NEWCOMER",
+            "time_class_equivalent_numeric": null
+          },
+          "target_course_profile": {
+            "eligible": false,
+            "course_key": "JRA:08:T:2000:inner",
+            "surface_code": "1",
+            "course_size_class": "MEDIUM",
+            "final_straight_m": 328.4,
+            "final_straight_bucket": "SHORT",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": true,
+            "reason": "MATCH",
+            "surface_code": "1",
+            "distance_bucket": "MIDDLE",
+            "early_late_delta_sec": -2.6,
+            "q20_sec": -2.26,
+            "reference_race_count": 838,
+            "race_lap_schema_version": "JRDB-Race-Lap-Evidence-0.1",
+            "race_lap_logic_version": "SRB-Neutral-RaceShape-v0.1",
+            "race_lap_coverage_status": "AVAILABLE"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 3,
+        "horse_no": 3,
+        "horse_id": "24109036",
+        "horse_name": "タナオルフォーリア",
+        "jockey": "田口貫太",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "浜田多実雄",
+        "trainer_base": "栗東",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 19.0,
+        "total_index": 18.4,
+        "running_style": "先行",
+        "distance_fit": "中距離",
+        "surface_fit": {
+          "turf": "△",
+          "dirt": null
+        },
+        "heavy_track_fit": "○",
+        "jrdb_class": "芝未勝利C"
+      },
+      "condition": {
+        "improvement": "B",
+        "rotation_interval": 1,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "キャニオンファーム土山",
+          "rank": "B",
+          "index_rank": 5
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": 0.0,
+        "late_break_rate": 0.0,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -12.4,
+          "pace": -2.9,
+          "late": -50.0,
+          "position": -1.0
+        },
+        "ranks": {
+          "front": 1,
+          "pace": 1,
+          "late": 8,
+          "position": 2
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 1,
+            "margin": 0,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 1,
+            "margin": 0,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 8,
+            "margin": 32,
+            "lane": "最内"
+          }
+        },
+        "symbol": "その他"
+      },
+      "training": {
+        "summary": {
+          "training_index": -9.0,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "栗東坂路",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "調教騎手",
+          "furlongs": 4,
+          "clock": {
+            "front": 15.5,
+            "middle": 13.4,
+            "last": 12.6
+          },
+          "clock_index": {
+            "front": 12,
+            "middle": 13,
+            "last": 19,
+            "total": 47
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "強目",
+            "age": 2,
+            "class": "未勝利"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 0,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "普通",
+          "focus": "平均",
+          "training_index": 47,
+          "condition_index": 49,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": null,
+            "course": null
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 21.0,
+        "base_win_rank": 7,
+        "base_place_odds": 3.9,
+        "base_place_rank": 7
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.4,
+        "info_index": -1.0,
+        "stable_index": -14.2,
+        "longshot_index": 123,
+        "jockey_expected_top2_rate": 6.4,
+        "marks": {
+          "total": null,
+          "idm": "△",
+          "info": null,
+          "jockey": null,
+          "stable": null,
+          "training": null,
+          "longshot": "◎"
+        }
+      },
+      "recent_runs": [
+        {
+          "race": {
+            "race_key": "08264205",
+            "date": "2026-10-04",
+            "venue": "京都",
+            "race_no": 5,
+            "race_name": null,
+            "surface": "芝",
+            "distance_m": 2000,
+            "turn": "右",
+            "course_layout": "通常（内）",
+            "track_condition": "速良",
+            "race_type": "2歳",
+            "class": "新馬",
+            "grade": null,
+            "field_size": 12,
+            "weather": "雨"
+          },
+          "result": {
+            "finish": 11,
+            "abnormal": "異常なし",
+            "time_sec": 125.2,
+            "carried_weight_kg": 56.0,
+            "jockey": "田口貫太",
+            "final_win_odds": 53.7,
+            "final_popularity": 10
+          },
+          "performance": {
+            "idm": 8,
+            "corners": [
+              2,
+              2,
+              2,
+              2
+            ],
+            "first3f_sec": 36.2,
+            "last3f_sec": 38.6,
+            "race_pace": "ハイ",
+            "horse_pace": "平均",
+            "course_lane": "中"
+          },
+          "body": {
+            "body_weight_kg": 480,
+            "body_weight_change_kg": null,
+            "body_condition": "良い",
+            "hoof": null
+          },
+          "jrdb_metrics": {
+            "raw_score": -9,
+            "track_diff": -33,
+            "pace_score": 17,
+            "late_break_score": null,
+            "position_score": null,
+            "trouble_score": null,
+            "prev_trouble_score": null,
+            "mid_trouble_score": null,
+            "late_trouble_score": null,
+            "race_score": null,
+            "front_index": -10.4,
+            "late_index": -63.1,
+            "pace_index": -19.9,
+            "race_pace_index": -19.2
+          },
+          "notes": {
+            "special_notes": [
+              "スタート悪い",
+              "気性若い",
+              "行きたがる",
+              "直線追うのやめる",
+              "余力なし"
+            ],
+            "equipment": [
+              "メンコ",
+              "ネックストラップ"
+            ],
+            "leg_condition": {
+              "overall": [],
+              "left_front": [],
+              "right_front": [],
+              "left_hind": [],
+              "right_hind": []
+            },
+            "paddock_comment": "仕上がる。踏み込み硬い。大外枠。雨。",
+            "leg_comment": "四肢バンデージ。",
+            "equipment_comment": "8/15キャニオンファーム土山",
+            "race_comment": "掛り加減に２角で番手も直線は脚上がる"
+          },
+          "race_structure": {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": {
+              "status": "AVAILABLE",
+              "lap_count": 10,
+              "comparable_200m_lap_count": 10,
+              "partial_first_segment": false,
+              "early_late_delta_available": true,
+              "optional_srb_context_available": false
+            },
+            "lap_shape": {
+              "early3f_sec": 36.0,
+              "late3f_sec": 35.3,
+              "early_late_delta_sec": -0.7,
+              "lap_std_sec": 0.631,
+              "lap_range_sec": 2.1,
+              "fastest_lap_sec": 11.2,
+              "fastest_segment_no": 2,
+              "max_accel_sec": 1.5,
+              "max_decel_sec": 0.9,
+              "last_vs_best_sec": 0.1,
+              "last3_slope_sec_per_segment": -0.55,
+              "pace_up_remaining_furlongs": null
+            },
+            "srb_context": {
+              "track_bias": {
+                "backstretch": null,
+                "corner1": null,
+                "corner2": null,
+                "corner3": null,
+                "corner4": null,
+                "homestretch": null
+              },
+              "race_comment": null
+            },
+            "policy": {
+              "leader_based": true,
+              "individual_sectionals": false,
+              "score_status": "NO_ADDITIVE_SCORE",
+              "target_race_usage": "HISTORICAL_ONLY_AS_OF_EXCLUSIVE",
+              "partial_first_segment_policy": "EXCLUDE_FROM_200M_COMPARABLE_METRICS"
+            },
+            "provenance": {
+              "source_kind": "JRDB_SRB",
+              "archive": "SED261004.zip",
+              "sed_member": "SED261004.txt",
+              "srb_member": "SRB261004.txt",
+              "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1"
+            }
+          }
+        }
+      ],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24109036",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 1,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "AVAILABLE",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": {
+          "race_key": "08264205",
+          "race_date": "2026-10-04",
+          "venue_code": "08",
+          "surface_code": "1",
+          "distance_m": 2000,
+          "field_size": 12,
+          "finish": 11,
+          "families": {
+            "ability": {
+              "declared_class_group": "NEWCOMER",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "horse_adjusted_delta_sec": 2.625000000000014,
+              "horse_adjusted_delta_per_1000m": 1.312500000000007
+            },
+            "pace": {
+              "pace_shape": null
+            },
+            "position": {
+              "corner1_frontness": 0.9090909090909091,
+              "corner2_frontness": 1.0,
+              "corner3_frontness": 1.0,
+              "corner4_frontness": 0.9090909090909091,
+              "early_position_gain": 0.09090909090909094,
+              "middle_position_gain": -0.09090909090909094,
+              "late_position_gain": -0.8181818181818181,
+              "overall_position_gain": -0.8181818181818181
+            },
+            "finish": {
+              "last3f_rank": 11,
+              "last3f_speed_percentile": 9.090909090909092,
+              "closing_gain_sec": null,
+              "winner_gap_sec": 3.4000000000000057
+            },
+            "trouble": {
+              "calibration_status": "RAW_ONLY_UNCALIBRATED",
+              "jrdb_track_diff": null,
+              "jrdb_pace_score": null,
+              "jrdb_late_break_score": null,
+              "jrdb_position_score": null,
+              "jrdb_trouble_score": null,
+              "jrdb_prev_trouble_score": null,
+              "jrdb_mid_trouble_score": null,
+              "jrdb_late_trouble_score": null
+            }
+          },
+          "review_tags": [
+            "TIME_AT_DECLARED_CLASS",
+            "EARLY_POSITION_GAIN",
+            "MIDDLE_POSITION_LOSS",
+            "LATE_POSITION_LOSS",
+            "MOVE_THEN_FADE"
+          ]
+        },
+        "recommendation": {
+          "status": "NO_MATCH",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": {
+            "race_date": "2026-10-04",
+            "race_key": "08264205",
+            "surface_code": "1",
+            "distance_m": 2000,
+            "finish": 11,
+            "winner_gap_sec": 3.4000000000000057,
+            "pace_balance_percentile": null,
+            "corner4_frontness": 0.9090909090909091,
+            "last3f_speed_percentile": 9.090909090909092,
+            "performance_signal": -1.312500000000007,
+            "time_class_equivalent": "NEWCOMER",
+            "time_class_equivalent_numeric": null
+          },
+          "target_course_profile": {
+            "eligible": false,
+            "course_key": "JRA:08:T:2000:inner",
+            "surface_code": "1",
+            "course_size_class": "MEDIUM",
+            "final_straight_m": 328.4,
+            "final_straight_bucket": "SHORT",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "ABOVE_Q20_THRESHOLD",
+            "surface_code": "1",
+            "distance_bucket": "MIDDLE",
+            "early_late_delta_sec": -0.7,
+            "q20_sec": -2.26,
+            "reference_race_count": 838,
+            "race_lap_schema_version": "JRDB-Race-Lap-Evidence-0.1",
+            "race_lap_logic_version": "SRB-Neutral-RaceShape-v0.1",
+            "race_lap_coverage_status": "AVAILABLE"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": [
+            {
+              "evidence_id": "HEC:3:MOVE_THEN_FADE:08264205@2026-10-04",
+              "code": "MOVE_THEN_FADE",
+              "family": "POSITION",
+              "direction": "MIXED",
+              "priority": "CONTEXTUAL",
+              "strength": "WEAK",
+              "evidence_quality": "MIXED",
+              "redundancy_group_id": "POSITION_MOVE:08264205@2026-10-04",
+              "source_run_refs": [
+                "08264205@2026-10-04"
+              ],
+              "facts": {
+                "early_position_gain": 0.09090909090909094,
+                "middle_position_gain": -0.09090909090909094,
+                "late_position_gain": -0.8181818181818181
+              }
+            }
+          ]
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 4,
+        "horse_no": 4,
+        "horse_id": "24106848",
+        "horse_name": "カエンフォース",
+        "jockey": "田山旺佑",
+        "carried_weight_kg": 55.0,
+        "apprentice": "☆",
+        "trainer": "中村直也",
+        "trainer_base": "栗東",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 27.9,
+        "total_index": 30.4,
+        "running_style": "先行",
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": "△",
+          "dirt": null
+        },
+        "heavy_track_fit": "△",
+        "jrdb_class": "芝未勝利C"
+      },
+      "condition": {
+        "improvement": "B",
+        "rotation_interval": 5,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "宇治田原優駿ステーブル",
+          "rank": "A",
+          "index_rank": 5
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": 0.0,
+        "late_break_rate": 0.0,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -44.3,
+          "pace": -9.6,
+          "late": -12.9,
+          "position": -1.0
+        },
+        "ranks": {
+          "front": 8,
+          "pace": 5,
+          "late": 3,
+          "position": 2
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 6,
+            "margin": 20,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 5,
+            "margin": 9,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 3,
+            "margin": 6,
+            "lane": "中"
+          }
+        },
+        "symbol": "上位上がり"
+      },
+      "training": {
+        "summary": {
+          "training_index": 6.9,
+          "training_arrow": "上昇"
+        },
+        "main_workout": {
+          "date": "2026-10-12",
+          "course": "栗東坂路",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": null,
+          "furlongs": 4,
+          "clock": {
+            "front": 15.7,
+            "middle": 13.5,
+            "last": 12.0
+          },
+          "clock_index": {
+            "front": 11,
+            "middle": 17,
+            "last": 27,
+            "total": 61
+          },
+          "pair": {
+            "result": null,
+            "strength": null,
+            "age": null,
+            "class": null
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 1,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "普通",
+          "focus": "終い",
+          "training_index": 61,
+          "condition_index": 56,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 48,
+            "course": "CW"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 8.6,
+        "base_win_rank": 5,
+        "base_place_odds": 2.1,
+        "base_place_rank": 5
+      },
+      "jrdb_ratings": {
+        "jockey_index": 1.1,
+        "info_index": 1.4,
+        "stable_index": 8.4,
+        "longshot_index": 115,
+        "jockey_expected_top2_rate": 18.4,
+        "marks": {
+          "total": "△",
+          "idm": "△",
+          "info": "注",
+          "jockey": "△",
+          "stable": "注",
+          "training": "△",
+          "longshot": "◎"
+        }
+      },
+      "recent_runs": [
+        {
+          "race": {
+            "race_key": "06264105",
+            "date": "2026-09-05",
+            "venue": "中山",
+            "race_no": 5,
+            "race_name": null,
+            "surface": "芝",
+            "distance_m": 2000,
+            "turn": "右",
+            "course_layout": "通常（内）",
+            "track_condition": "速良",
+            "race_type": "2歳",
+            "class": "新馬",
+            "grade": null,
+            "field_size": 11,
+            "weather": "曇"
+          },
+          "result": {
+            "finish": 5,
+            "abnormal": "異常なし",
+            "time_sec": 124.5,
+            "carried_weight_kg": 55.0,
+            "jockey": "三浦皇成",
+            "final_win_odds": 68.6,
+            "final_popularity": 9
+          },
+          "performance": {
+            "idm": 29,
+            "corners": [
+              3,
+              3,
+              2,
+              2
+            ],
+            "first3f_sec": 39.9,
+            "last3f_sec": 35.3,
+            "race_pace": "スロー",
+            "horse_pace": "スロー",
+            "course_lane": "内"
+          },
+          "body": {
+            "body_weight_kg": 462,
+            "body_weight_change_kg": null,
+            "body_condition": "余裕",
+            "hoof": null
+          },
+          "jrdb_metrics": {
+            "raw_score": 11,
+            "track_diff": -26,
+            "pace_score": 18,
+            "late_break_score": null,
+            "position_score": null,
+            "trouble_score": null,
+            "prev_trouble_score": null,
+            "mid_trouble_score": null,
+            "late_trouble_score": null,
+            "race_score": null,
+            "front_index": -44.8,
+            "late_index": -25.6,
+            "pace_index": -29.0,
+            "race_pace_index": -28.4
+          },
+          "notes": {
+            "special_notes": [
+              "展開向く",
+              "終い甘い"
+            ],
+            "equipment": [
+              "エッグハミ",
+              "ハートハミ",
+              "舌くくる",
+              "ネックストラップ"
+            ],
+            "leg_condition": {
+              "overall": [],
+              "left_front": [],
+              "right_front": [],
+              "left_hind": [],
+              "right_hind": []
+            },
+            "paddock_comment": "胴短でまとまる。硬めでこシア",
+            "leg_comment": "四肢バンデージ。飛端にコブ。",
+            "equipment_comment": "稍重で超スロー。位置取れた分だけ。",
+            "race_comment": "番手でジックリ、前に付いていくも一杯に。"
+          },
+          "race_structure": {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": {
+              "status": "AVAILABLE",
+              "lap_count": 10,
+              "comparable_200m_lap_count": 10,
+              "partial_first_segment": false,
+              "early_late_delta_available": true,
+              "optional_srb_context_available": true
+            },
+            "lap_shape": {
+              "early3f_sec": 39.3,
+              "late3f_sec": 34.2,
+              "early_late_delta_sec": -5.1,
+              "lap_std_sec": 0.762,
+              "lap_range_sec": 2.0,
+              "fastest_lap_sec": 11.3,
+              "fastest_segment_no": 9,
+              "max_accel_sec": 0.7,
+              "max_decel_sec": 0.3,
+              "last_vs_best_sec": 0.0,
+              "last3_slope_sec_per_segment": -0.15,
+              "pace_up_remaining_furlongs": 6
+            },
+            "srb_context": {
+              "track_bias": {
+                "backstretch": "111",
+                "corner1": "111",
+                "corner2": "111",
+                "corner3": "111",
+                "corner4": "11111",
+                "homestretch": "11111"
+              },
+              "race_comment": "午前中の稍重から回復して若干時計は掛かるものの、開幕初日らしく内、先行が有利な馬場。バラけたスタート。各馬が抑えながらそろっとヴェトロテンペスタが先頭に立ち、緩い流れを作って馬群が詰まって流れる。４角を回っても逃げていたヴェトロテンペスタが楽なままで、直線の半ばであっさりと突き放して完勝。２着ローザドーロは内で上手く運んで良い脚を長く使えたが、勝ち馬とは位置取りの差が大きかった。人気のインヴィディアは終始追っつけながらの追走も反応がないまま。まだ途上だった。"
+            },
+            "policy": {
+              "leader_based": true,
+              "individual_sectionals": false,
+              "score_status": "NO_ADDITIVE_SCORE",
+              "target_race_usage": "HISTORICAL_ONLY_AS_OF_EXCLUSIVE",
+              "partial_first_segment_policy": "EXCLUDE_FROM_200M_COMPARABLE_METRICS"
+            },
+            "provenance": {
+              "source_kind": "JRDB_SRB",
+              "archive": "SED260905.zip",
+              "sed_member": "SED260905.txt",
+              "srb_member": "SRB260905.txt",
+              "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1"
+            }
+          }
+        }
+      ],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24106848",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 1,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "AVAILABLE",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": {
+          "race_key": "06264105",
+          "race_date": "2026-09-05",
+          "venue_code": "06",
+          "surface_code": "1",
+          "distance_m": 2000,
+          "field_size": 11,
+          "finish": 5,
+          "families": {
+            "ability": {
+              "declared_class_group": "NEWCOMER",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "horse_adjusted_delta_sec": 1.3555555555555685,
+              "horse_adjusted_delta_per_1000m": 0.6777777777777843
+            },
+            "pace": {
+              "pace_shape": null
+            },
+            "position": {
+              "corner1_frontness": 0.8,
+              "corner2_frontness": 0.8,
+              "corner3_frontness": 0.9,
+              "corner4_frontness": 0.9,
+              "early_position_gain": 0.0,
+              "middle_position_gain": 0.09999999999999998,
+              "late_position_gain": -0.30000000000000004,
+              "overall_position_gain": -0.20000000000000007
+            },
+            "finish": {
+              "last3f_rank": 7,
+              "last3f_speed_percentile": 40.0,
+              "closing_gain_sec": null,
+              "winner_gap_sec": 1.2000000000000028
+            },
+            "trouble": {
+              "calibration_status": "RAW_ONLY_UNCALIBRATED",
+              "jrdb_track_diff": null,
+              "jrdb_pace_score": null,
+              "jrdb_late_break_score": null,
+              "jrdb_position_score": null,
+              "jrdb_trouble_score": null,
+              "jrdb_prev_trouble_score": null,
+              "jrdb_mid_trouble_score": null,
+              "jrdb_late_trouble_score": null
+            }
+          },
+          "review_tags": [
+            "TIME_AT_DECLARED_CLASS",
+            "MIDDLE_POSITION_GAIN",
+            "LATE_POSITION_LOSS",
+            "MOVE_THEN_FADE"
+          ]
+        },
+        "recommendation": {
+          "status": "NO_MATCH",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": {
+            "race_date": "2026-09-05",
+            "race_key": "06264105",
+            "surface_code": "1",
+            "distance_m": 2000,
+            "finish": 5,
+            "winner_gap_sec": 1.2000000000000028,
+            "pace_balance_percentile": null,
+            "corner4_frontness": 0.9,
+            "last3f_speed_percentile": 40.0,
+            "performance_signal": -0.6777777777777843,
+            "time_class_equivalent": "NEWCOMER",
+            "time_class_equivalent_numeric": null
+          },
+          "target_course_profile": {
+            "eligible": false,
+            "course_key": "JRA:08:T:2000:inner",
+            "surface_code": "1",
+            "course_size_class": "MEDIUM",
+            "final_straight_m": 328.4,
+            "final_straight_bucket": "SHORT",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": true,
+            "reason": "MATCH",
+            "surface_code": "1",
+            "distance_bucket": "MIDDLE",
+            "early_late_delta_sec": -5.1,
+            "q20_sec": -2.26,
+            "reference_race_count": 838,
+            "race_lap_schema_version": "JRDB-Race-Lap-Evidence-0.1",
+            "race_lap_logic_version": "SRB-Neutral-RaceShape-v0.1",
+            "race_lap_coverage_status": "AVAILABLE"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": [
+            {
+              "evidence_id": "HEC:4:MOVE_THEN_FADE:06264105@2026-09-05",
+              "code": "MOVE_THEN_FADE",
+              "family": "POSITION",
+              "direction": "MIXED",
+              "priority": "CONTEXTUAL",
+              "strength": "WEAK",
+              "evidence_quality": "MIXED",
+              "redundancy_group_id": "POSITION_MOVE:06264105@2026-09-05",
+              "source_run_refs": [
+                "06264105@2026-09-05"
+              ],
+              "facts": {
+                "early_position_gain": 0.0,
+                "middle_position_gain": 0.09999999999999998,
+                "late_position_gain": -0.30000000000000004
+              }
+            }
+          ]
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 5,
+        "horse_no": 5,
+        "horse_id": "24108206",
+        "horse_name": "ハナナ",
+        "jockey": "川田将雅",
+        "carried_weight_kg": 55.0,
+        "apprentice": null,
+        "trainer": "矢作芳人",
+        "trainer_base": "栗東",
+        "blinker": "初装着"
+      },
+      "ability": {
+        "idm": 27.9,
+        "total_index": 33.7,
+        "running_style": "差し",
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": "△",
+          "dirt": null
+        },
+        "heavy_track_fit": "△",
+        "jrdb_class": "芝未勝利C"
+      },
+      "condition": {
+        "improvement": "B",
+        "rotation_interval": 0,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "大山ヒルズ",
+          "rank": "A",
+          "index_rank": 5
+        },
+        "rest_reason": null,
+        "horse_traits": [
+          "ズブイ"
+        ]
+      },
+      "pace": {
+        "start_index": 0.6,
+        "late_break_rate": 0.0,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -25.5,
+          "pace": -7.9,
+          "late": -17.3,
+          "position": -4.8
+        },
+        "ranks": {
+          "front": 4,
+          "pace": 4,
+          "late": 5,
+          "position": 4
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 3,
+            "margin": 7,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 3,
+            "margin": 5,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 2,
+            "margin": 2,
+            "lane": "中"
+          }
+        },
+        "symbol": "その他"
+      },
+      "training": {
+        "summary": {
+          "training_index": 16.4,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-16",
+          "course": "連闘",
+          "strength": null,
+          "state": "中間軽め",
+          "rider_type": null,
+          "furlongs": 0,
+          "clock": {
+            "front": null,
+            "middle": null,
+            "last": null
+          },
+          "clock_index": {
+            "front": null,
+            "middle": null,
+            "last": null,
+            "total": null
+          },
+          "pair": {
+            "result": null,
+            "strength": null,
+            "age": null,
+            "class": null
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 0,
+            "wood": 0,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "その他",
+          "focus": "その他",
+          "training_index": null,
+          "condition_index": 61,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": null,
+            "course": null
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 3.4,
+        "base_win_rank": 2,
+        "base_place_odds": 1.3,
+        "base_place_rank": 2
+      },
+      "jrdb_ratings": {
+        "jockey_index": 2.9,
+        "info_index": 2.9,
+        "stable_index": 13.7,
+        "longshot_index": 118,
+        "jockey_expected_top2_rate": 52.1,
+        "marks": {
+          "total": "▲",
+          "idm": "注",
+          "info": "▲",
+          "jockey": "○",
+          "stable": "▲",
+          "training": "▲",
+          "longshot": null
+        }
+      },
+      "recent_runs": [
+        {
+          "race": {
+            "race_key": "05264403",
+            "date": "2026-10-11",
+            "venue": "東京",
+            "race_no": 3,
+            "race_name": null,
+            "surface": "芝",
+            "distance_m": 2000,
+            "turn": "左",
+            "course_layout": "通常（内）",
+            "track_condition": "速良",
+            "race_type": "2歳",
+            "class": "未勝利",
+            "grade": null,
+            "field_size": 14,
+            "weather": "晴"
+          },
+          "result": {
+            "finish": 6,
+            "abnormal": "異常なし",
+            "time_sec": 122.3,
+            "carried_weight_kg": 55.0,
+            "jockey": "横山武史",
+            "final_win_odds": 6.2,
+            "final_popularity": 3
+          },
+          "performance": {
+            "idm": 29,
+            "corners": [
+              2,
+              2,
+              3,
+              3
+            ],
+            "first3f_sec": 37.6,
+            "last3f_sec": 35.0,
+            "race_pace": "スロー",
+            "horse_pace": "スロー",
+            "course_lane": "最内"
+          },
+          "body": {
+            "body_weight_kg": 452,
+            "body_weight_change_kg": 4,
+            "body_condition": "良い",
+            "hoof": null
+          },
+          "jrdb_metrics": {
+            "raw_score": 13,
+            "track_diff": -34,
+            "pace_score": 16,
+            "late_break_score": null,
+            "position_score": null,
+            "trouble_score": null,
+            "prev_trouble_score": null,
+            "mid_trouble_score": null,
+            "late_trouble_score": null,
+            "race_score": null,
+            "front_index": -25.8,
+            "late_index": -27.5,
+            "pace_index": -22.3,
+            "race_pace_index": -19.1
+          },
+          "notes": {
+            "special_notes": [
+              "スタート良い",
+              "上がり速い×",
+              "距離長"
+            ],
+            "equipment": [
+              "メンコ",
+              "ビットガード",
+              "ネックストラップ"
+            ],
+            "leg_condition": {
+              "overall": [],
+              "left_front": [],
+              "right_front": [],
+              "left_hind": [
+                "球節が沈む"
+              ],
+              "right_hind": [
+                "球節が沈む"
+              ]
+            },
+            "paddock_comment": "細身で腰高。スッキリ硬い。腰甘い。",
+            "leg_comment": "後肢踏込緩い。",
+            "equipment_comment": "超スロー上り3F勝負。脚が溜まってない。",
+            "race_comment": "好発決めハコ内追走も直線伸びずに流れ込み"
+          },
+          "race_structure": {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": {
+              "status": "AVAILABLE",
+              "lap_count": 10,
+              "comparable_200m_lap_count": 10,
+              "partial_first_segment": false,
+              "early_late_delta_available": true,
+              "optional_srb_context_available": false
+            },
+            "lap_shape": {
+              "early3f_sec": 37.4,
+              "late3f_sec": 34.6,
+              "early_late_delta_sec": -2.8,
+              "lap_std_sec": 0.554,
+              "lap_range_sec": 1.9,
+              "fastest_lap_sec": 11.3,
+              "fastest_segment_no": 10,
+              "max_accel_sec": 1.3,
+              "max_decel_sec": 0.5,
+              "last_vs_best_sec": 0.0,
+              "last3_slope_sec_per_segment": -0.3,
+              "pace_up_remaining_furlongs": null
+            },
+            "srb_context": {
+              "track_bias": {
+                "backstretch": null,
+                "corner1": null,
+                "corner2": null,
+                "corner3": null,
+                "corner4": null,
+                "homestretch": null
+              },
+              "race_comment": null
+            },
+            "policy": {
+              "leader_based": true,
+              "individual_sectionals": false,
+              "score_status": "NO_ADDITIVE_SCORE",
+              "target_race_usage": "HISTORICAL_ONLY_AS_OF_EXCLUSIVE",
+              "partial_first_segment_policy": "EXCLUDE_FROM_200M_COMPARABLE_METRICS"
+            },
+            "provenance": {
+              "source_kind": "JRDB_SRB",
+              "archive": "SED261011.zip",
+              "sed_member": "SED261011.txt",
+              "srb_member": "SRB261011.txt",
+              "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1"
+            }
+          }
+        },
+        {
+          "race": {
+            "race_key": "09264705",
+            "date": "2026-09-21",
+            "venue": "阪神",
+            "race_no": 5,
+            "race_name": null,
+            "surface": "芝",
+            "distance_m": 1800,
+            "turn": "右",
+            "course_layout": "外",
+            "track_condition": "速良",
+            "race_type": "2歳",
+            "class": "新馬",
+            "grade": null,
+            "field_size": 10,
+            "weather": "晴"
+          },
+          "result": {
+            "finish": 6,
+            "abnormal": "異常なし",
+            "time_sec": 107.7,
+            "carried_weight_kg": 55.0,
+            "jockey": "坂井瑠星",
+            "final_win_odds": 6.9,
+            "final_popularity": 4
+          },
+          "performance": {
+            "idm": 31,
+            "corners": [
+              0,
+              5,
+              8,
+              8
+            ],
+            "first3f_sec": 37.1,
+            "last3f_sec": 34.6,
+            "race_pace": "平均",
+            "horse_pace": "スロー",
+            "course_lane": "中"
+          },
+          "body": {
+            "body_weight_kg": 448,
+            "body_weight_change_kg": null,
+            "body_condition": "良い",
+            "hoof": null
+          },
+          "jrdb_metrics": {
+            "raw_score": 19,
+            "track_diff": -27,
+            "pace_score": 12,
+            "late_break_score": null,
+            "position_score": null,
+            "trouble_score": null,
+            "prev_trouble_score": null,
+            "mid_trouble_score": null,
+            "late_trouble_score": null,
+            "race_score": null,
+            "front_index": -23.1,
+            "late_index": -20.7,
+            "pace_index": -21.6,
+            "race_pace_index": -16.8
+          },
+          "notes": {
+            "special_notes": [
+              "モタつく",
+              "ズブイ",
+              "エンジン掛遅",
+              "追って案外"
+            ],
+            "equipment": [
+              "ビットガード",
+              "ネックストラップ"
+            ],
+            "leg_condition": {
+              "overall": [],
+              "left_front": [],
+              "right_front": [],
+              "left_hind": [],
+              "right_hind": []
+            },
+            "paddock_comment": "仕上がる。踏み込み硬い。返し煩い。",
+            "leg_comment": "特になし。",
+            "equipment_comment": "8/8大山ヒルズ",
+            "race_comment": "促すも中団。勝負所での反応鈍く。"
+          },
+          "race_structure": {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": {
+              "status": "AVAILABLE",
+              "lap_count": 9,
+              "comparable_200m_lap_count": 9,
+              "partial_first_segment": false,
+              "early_late_delta_available": true,
+              "optional_srb_context_available": false
+            },
+            "lap_shape": {
+              "early3f_sec": 36.3,
+              "late3f_sec": 34.4,
+              "early_late_delta_sec": -1.9,
+              "lap_std_sec": 0.507,
+              "lap_range_sec": 1.9,
+              "fastest_lap_sec": 11.1,
+              "fastest_segment_no": 8,
+              "max_accel_sec": 1.5,
+              "max_decel_sec": 0.7,
+              "last_vs_best_sec": 0.7,
+              "last3_slope_sec_per_segment": 0.15,
+              "pace_up_remaining_furlongs": null
+            },
+            "srb_context": {
+              "track_bias": {
+                "backstretch": null,
+                "corner1": null,
+                "corner2": null,
+                "corner3": null,
+                "corner4": null,
+                "homestretch": null
+              },
+              "race_comment": null
+            },
+            "policy": {
+              "leader_based": true,
+              "individual_sectionals": false,
+              "score_status": "NO_ADDITIVE_SCORE",
+              "target_race_usage": "HISTORICAL_ONLY_AS_OF_EXCLUSIVE",
+              "partial_first_segment_policy": "EXCLUDE_FROM_200M_COMPARABLE_METRICS"
+            },
+            "provenance": {
+              "source_kind": "JRDB_SRB",
+              "archive": "SED260921.zip",
+              "sed_member": "SED260921.txt",
+              "srb_member": "SRB260921.txt",
+              "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1"
+            }
+          }
+        }
+      ],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24108206",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 2,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "AVAILABLE",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": {
+          "race_key": "05264403",
+          "race_date": "2026-10-11",
+          "venue_code": "05",
+          "surface_code": "1",
+          "distance_m": 2000,
+          "field_size": 14,
+          "finish": 6,
+          "families": {
+            "ability": {
+              "declared_class_group": "MAIDEN",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "horse_adjusted_delta_sec": 1.4375,
+              "horse_adjusted_delta_per_1000m": 0.71875
+            },
+            "pace": {
+              "pace_shape": null
+            },
+            "position": {
+              "corner1_frontness": null,
+              "corner2_frontness": 0.9230769230769231,
+              "corner3_frontness": 0.8461538461538461,
+              "corner4_frontness": 0.8461538461538461,
+              "early_position_gain": null,
+              "middle_position_gain": -0.07692307692307698,
+              "late_position_gain": -0.23076923076923073,
+              "overall_position_gain": null
+            },
+            "finish": {
+              "last3f_rank": 9,
+              "last3f_speed_percentile": 38.46153846153846,
+              "closing_gain_sec": null,
+              "winner_gap_sec": 0.7999999999999972
+            },
+            "trouble": {
+              "calibration_status": "RAW_ONLY_UNCALIBRATED",
+              "jrdb_track_diff": null,
+              "jrdb_pace_score": null,
+              "jrdb_late_break_score": null,
+              "jrdb_position_score": null,
+              "jrdb_trouble_score": null,
+              "jrdb_prev_trouble_score": null,
+              "jrdb_mid_trouble_score": null,
+              "jrdb_late_trouble_score": null
+            }
+          },
+          "review_tags": [
+            "TIME_BELOW_DECLARED_CLASS",
+            "MIDDLE_POSITION_LOSS",
+            "LATE_POSITION_LOSS"
+          ]
+        },
+        "recommendation": {
+          "status": "NO_MATCH",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": {
+            "race_date": "2026-10-11",
+            "race_key": "05264403",
+            "surface_code": "1",
+            "distance_m": 2000,
+            "finish": 6,
+            "winner_gap_sec": 0.7999999999999972,
+            "pace_balance_percentile": null,
+            "corner4_frontness": 0.8461538461538461,
+            "last3f_speed_percentile": 38.46153846153846,
+            "performance_signal": -0.71875,
+            "time_class_equivalent": "NEWCOMER",
+            "time_class_equivalent_numeric": null
+          },
+          "target_course_profile": {
+            "eligible": false,
+            "course_key": "JRA:08:T:2000:inner",
+            "surface_code": "1",
+            "course_size_class": "MEDIUM",
+            "final_straight_m": 328.4,
+            "final_straight_bucket": "SHORT",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": true,
+            "reason": "MATCH",
+            "surface_code": "1",
+            "distance_bucket": "MIDDLE",
+            "early_late_delta_sec": -2.8,
+            "q20_sec": -2.26,
+            "reference_race_count": 838,
+            "race_lap_schema_version": "JRDB-Race-Lap-Evidence-0.1",
+            "race_lap_logic_version": "SRB-Neutral-RaceShape-v0.1",
+            "race_lap_coverage_status": "AVAILABLE"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "CANDIDATE",
+            "confidence": "LOW",
+            "reason_codes": [
+              "RESULT_UNDERRATES_TIME"
+            ],
+            "evidence_ids": [
+              "HEC:5:RESULT_UNDERRATES_TIME:09264705@2026-09-21"
+            ],
+            "source_run_refs": [
+              "09264705@2026-09-21"
+            ]
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [
+            {
+              "evidence_id": "HEC:5:RESULT_UNDERRATES_TIME:09264705@2026-09-21",
+              "code": "RESULT_UNDERRATES_TIME",
+              "family": "ABILITY",
+              "direction": "POSITIVE",
+              "priority": "DIRECT_PERFORMANCE",
+              "strength": "MEDIUM",
+              "evidence_quality": "MIXED",
+              "redundancy_group_id": "TIME_CLASS:09264705@2026-09-21",
+              "source_run_refs": [
+                "09264705@2026-09-21"
+              ],
+              "facts": {
+                "finish": 6,
+                "declared_class_group": "NEWCOMER",
+                "time_class_equivalent": "MAIDEN"
+              }
+            }
+          ],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 6,
+        "horse_no": 6,
+        "horse_id": "24103486",
+        "horse_name": "ビヨンドザスカイ",
+        "jockey": "西塚洸二",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "福永祐一",
+        "trainer_base": "栗東",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 18.9,
+        "total_index": 19.4,
+        "running_style": "追込",
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": null,
+          "dirt": "△"
+        },
+        "heavy_track_fit": "○",
+        "jrdb_class": "ダート未勝利C"
+      },
+      "condition": {
+        "improvement": "B",
+        "rotation_interval": 1,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "大山ヒルズ",
+          "rank": "A",
+          "index_rank": 1
+        },
+        "rest_reason": null,
+        "horse_traits": [
+          "ズブイ"
+        ]
+      },
+      "pace": {
+        "start_index": -2.0,
+        "late_break_rate": 99.9,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -40.0,
+          "pace": -23.7,
+          "late": -9.9,
+          "position": -15.0
+        },
+        "ranks": {
+          "front": 6,
+          "pace": 8,
+          "late": 2,
+          "position": 8
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 8,
+            "margin": 22,
+            "lane": "中"
+          },
+          "last3f": {
+            "order": 8,
+            "margin": 18,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 6,
+            "margin": 15,
+            "lane": "中"
+          }
+        },
+        "symbol": "上位上がり"
+      },
+      "training": {
+        "summary": {
+          "training_index": -0.4,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-15",
+          "course": "栗東坂路",
+          "strength": "一杯",
+          "state": "一杯",
+          "rider_type": "助手",
+          "furlongs": 4,
+          "clock": {
+            "front": 15.0,
+            "middle": 13.7,
+            "last": 12.9
+          },
+          "clock_index": {
+            "front": 17,
+            "middle": 10,
+            "last": 17,
+            "total": 44
+          },
+          "pair": {
+            "result": "遅れ",
+            "strength": "馬なり",
+            "age": 3,
+            "class": "1勝クラス"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 0,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "普通",
+          "focus": "平均",
+          "training_index": 44,
+          "condition_index": 47,
+          "volume_grade": "A",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 15,
+            "course": "栗東坂路"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 16.8,
+        "base_win_rank": 6,
+        "base_place_odds": 3.2,
+        "base_place_rank": 6
+      },
+      "jrdb_ratings": {
+        "jockey_index": 0.5,
+        "info_index": 0.0,
+        "stable_index": -6.5,
+        "longshot_index": 85,
+        "jockey_expected_top2_rate": 9.2,
+        "marks": {
+          "total": "△",
+          "idm": null,
+          "info": "△",
+          "jockey": "△",
+          "stable": "△",
+          "training": "△",
+          "longshot": "◎"
+        }
+      },
+      "recent_runs": [
+        {
+          "race": {
+            "race_key": "08264104",
+            "date": "2026-10-03",
+            "venue": "京都",
+            "race_no": 4,
+            "race_name": null,
+            "surface": "ダート",
+            "distance_m": 1800,
+            "turn": "右",
+            "course_layout": "通常（内）",
+            "track_condition": "速良",
+            "race_type": "2歳",
+            "class": "新馬",
+            "grade": null,
+            "field_size": 14,
+            "weather": "晴"
+          },
+          "result": {
+            "finish": 8,
+            "abnormal": "異常なし",
+            "time_sec": 116.9,
+            "carried_weight_kg": 56.0,
+            "jockey": "小崎綾也",
+            "final_win_odds": 80.6,
+            "final_popularity": 12
+          },
+          "performance": {
+            "idm": 21,
+            "corners": [
+              13,
+              13,
+              13,
+              13
+            ],
+            "first3f_sec": 40.2,
+            "last3f_sec": 37.8,
+            "race_pace": "平均",
+            "horse_pace": "スロー",
+            "course_lane": "外"
+          },
+          "body": {
+            "body_weight_kg": 454,
+            "body_weight_change_kg": null,
+            "body_condition": "良い",
+            "hoof": null
+          },
+          "jrdb_metrics": {
+            "raw_score": 11,
+            "track_diff": -12,
+            "pace_score": 9,
+            "late_break_score": 1,
+            "position_score": null,
+            "trouble_score": null,
+            "prev_trouble_score": null,
+            "mid_trouble_score": null,
+            "late_trouble_score": null,
+            "race_score": null,
+            "front_index": -36.5,
+            "late_index": -15.6,
+            "pace_index": -30.7,
+            "race_pace_index": -19.7
+          },
+          "notes": {
+            "special_notes": [
+              "スタート悪い",
+              "ズブイ",
+              "エンジン掛遅"
+            ],
+            "equipment": [
+              "メンコ",
+              "リングハミ",
+              "ネックストラップ"
+            ],
+            "leg_condition": {
+              "overall": [],
+              "left_front": [],
+              "right_front": [],
+              "left_hind": [],
+              "right_hind": []
+            },
+            "paddock_comment": "仕上がる。踏み込み硬い。",
+            "leg_comment": "特になし。",
+            "equipment_comment": "9/4大山ヒルズ",
+            "race_comment": "出遅れて後方。直線外から遅れて浮上"
+          },
+          "race_structure": {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": {
+              "status": "AVAILABLE",
+              "lap_count": 9,
+              "comparable_200m_lap_count": 9,
+              "partial_first_segment": false,
+              "early_late_delta_available": true,
+              "optional_srb_context_available": false
+            },
+            "lap_shape": {
+              "early3f_sec": 37.2,
+              "late3f_sec": 36.9,
+              "early_late_delta_sec": -0.3,
+              "lap_std_sec": 0.788,
+              "lap_range_sec": 2.2,
+              "fastest_lap_sec": 11.3,
+              "fastest_segment_no": 2,
+              "max_accel_sec": 1.2,
+              "max_decel_sec": 2.1,
+              "last_vs_best_sec": 0.4,
+              "last3_slope_sec_per_segment": -0.65,
+              "pace_up_remaining_furlongs": null
+            },
+            "srb_context": {
+              "track_bias": {
+                "backstretch": null,
+                "corner1": null,
+                "corner2": null,
+                "corner3": null,
+                "corner4": null,
+                "homestretch": null
+              },
+              "race_comment": null
+            },
+            "policy": {
+              "leader_based": true,
+              "individual_sectionals": false,
+              "score_status": "NO_ADDITIVE_SCORE",
+              "target_race_usage": "HISTORICAL_ONLY_AS_OF_EXCLUSIVE",
+              "partial_first_segment_policy": "EXCLUDE_FROM_200M_COMPARABLE_METRICS"
+            },
+            "provenance": {
+              "source_kind": "JRDB_SRB",
+              "archive": "SED261003.zip",
+              "sed_member": "SED261003.txt",
+              "srb_member": "SRB261003.txt",
+              "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1"
+            }
+          }
+        }
+      ],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24103486",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 1,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "AVAILABLE",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": {
+          "race_key": "08264104",
+          "race_date": "2026-10-03",
+          "venue_code": "08",
+          "surface_code": "2",
+          "distance_m": 1800,
+          "field_size": 14,
+          "finish": 8,
+          "families": {
+            "ability": {
+              "declared_class_group": "NEWCOMER",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "horse_adjusted_delta_sec": 2.8285714285714363,
+              "horse_adjusted_delta_per_1000m": 1.5714285714285756
+            },
+            "pace": {
+              "pace_shape": null
+            },
+            "position": {
+              "corner1_frontness": 0.07692307692307687,
+              "corner2_frontness": 0.07692307692307687,
+              "corner3_frontness": 0.07692307692307687,
+              "corner4_frontness": 0.07692307692307687,
+              "early_position_gain": 0.0,
+              "middle_position_gain": 0.0,
+              "late_position_gain": 0.3846153846153847,
+              "overall_position_gain": 0.3846153846153847
+            },
+            "finish": {
+              "last3f_rank": 3,
+              "last3f_speed_percentile": 84.61538461538461,
+              "closing_gain_sec": null,
+              "winner_gap_sec": 2.4000000000000057
+            },
+            "trouble": {
+              "calibration_status": "RAW_ONLY_UNCALIBRATED",
+              "jrdb_track_diff": null,
+              "jrdb_pace_score": null,
+              "jrdb_late_break_score": null,
+              "jrdb_position_score": null,
+              "jrdb_trouble_score": null,
+              "jrdb_prev_trouble_score": null,
+              "jrdb_mid_trouble_score": null,
+              "jrdb_late_trouble_score": null
+            }
+          },
+          "review_tags": [
+            "TIME_AT_DECLARED_CLASS",
+            "LATE_POSITION_GAIN"
+          ]
+        },
+        "recommendation": {
+          "status": "NO_MATCH",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": {
+            "race_date": "2026-10-03",
+            "race_key": "08264104",
+            "surface_code": "2",
+            "distance_m": 1800,
+            "finish": 8,
+            "winner_gap_sec": 2.4000000000000057,
+            "pace_balance_percentile": null,
+            "corner4_frontness": 0.07692307692307687,
+            "last3f_speed_percentile": 84.61538461538461,
+            "performance_signal": -1.5714285714285756,
+            "time_class_equivalent": "NEWCOMER",
+            "time_class_equivalent_numeric": null
+          },
+          "target_course_profile": {
+            "eligible": false,
+            "course_key": "JRA:08:T:2000:inner",
+            "surface_code": "1",
+            "course_size_class": "MEDIUM",
+            "final_straight_m": 328.4,
+            "final_straight_bucket": "SHORT",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": true,
+            "reason": "MATCH",
+            "surface_code": "2",
+            "distance_bucket": "MILE",
+            "early_late_delta_sec": -0.3,
+            "q20_sec": 0.14,
+            "reference_race_count": 1633,
+            "race_lap_schema_version": "JRDB-Race-Lap-Evidence-0.1",
+            "race_lap_logic_version": "SRB-Neutral-RaceShape-v0.1",
+            "race_lap_coverage_status": "AVAILABLE"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 7,
+        "horse_no": 7,
+        "horse_id": "24103519",
+        "horse_name": "ザキノシュガー",
+        "jockey": "西村淳也",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "東田明士",
+        "trainer_base": "栗東",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 28.0,
+        "total_index": 30.7,
+        "running_style": "追込",
+        "distance_fit": "中距離",
+        "surface_fit": {
+          "turf": "△",
+          "dirt": null
+        },
+        "heavy_track_fit": "○",
+        "jrdb_class": "芝未勝利C"
+      },
+      "condition": {
+        "improvement": "B",
+        "rotation_interval": 1,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "吉澤ステーブルＷＥＳＴ",
+          "rank": "B",
+          "index_rank": 5
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": -1.0,
+        "late_break_rate": 0.0,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -24.4,
+          "pace": -6.4,
+          "late": -23.4,
+          "position": -6.0
+        },
+        "ranks": {
+          "front": 3,
+          "pace": 2,
+          "late": 6,
+          "position": 5
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 4,
+            "margin": 11,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 4,
+            "margin": 7,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 5,
+            "margin": 11,
+            "lane": "内"
+          }
+        },
+        "symbol": "その他"
+      },
+      "training": {
+        "summary": {
+          "training_index": 7.1,
+          "training_arrow": "平行線"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "栗東坂路",
+          "strength": "強目",
+          "state": "強目",
+          "rider_type": "助手",
+          "furlongs": 4,
+          "clock": {
+            "front": 16.0,
+            "middle": 15.0,
+            "last": 13.3
+          },
+          "clock_index": {
+            "front": 8,
+            "middle": 2,
+            "last": 14,
+            "total": 27
+          },
+          "pair": {
+            "result": null,
+            "strength": null,
+            "age": null,
+            "class": null
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 0,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "普通",
+          "focus": "平均",
+          "training_index": 27,
+          "condition_index": 42,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": null,
+            "course": null
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 6.9,
+        "base_win_rank": 4,
+        "base_place_odds": 1.8,
+        "base_place_rank": 4
+      },
+      "jrdb_ratings": {
+        "jockey_index": 1.4,
+        "info_index": 1.3,
+        "stable_index": 6.3,
+        "longshot_index": 121,
+        "jockey_expected_top2_rate": 23.9,
+        "marks": {
+          "total": "注",
+          "idm": "▲",
+          "info": "△",
+          "jockey": "注",
+          "stable": "△",
+          "training": "注",
+          "longshot": null
+        }
+      },
+      "recent_runs": [
+        {
+          "race": {
+            "race_key": "08264205",
+            "date": "2026-10-04",
+            "venue": "京都",
+            "race_no": 5,
+            "race_name": null,
+            "surface": "芝",
+            "distance_m": 2000,
+            "turn": "右",
+            "course_layout": "通常（内）",
+            "track_condition": "速良",
+            "race_type": "2歳",
+            "class": "新馬",
+            "grade": null,
+            "field_size": 12,
+            "weather": "雨"
+          },
+          "result": {
+            "finish": 6,
+            "abnormal": "異常なし",
+            "time_sec": 122.4,
+            "carried_weight_kg": 56.0,
+            "jockey": "鮫島克駿",
+            "final_win_odds": 50.1,
+            "final_popularity": 8
+          },
+          "performance": {
+            "idm": 27,
+            "corners": [
+              9,
+              9,
+              6,
+              6
+            ],
+            "first3f_sec": 37.4,
+            "last3f_sec": 35.3,
+            "race_pace": "ハイ",
+            "horse_pace": "スロー",
+            "course_lane": "内"
+          },
+          "body": {
+            "body_weight_kg": 488,
+            "body_weight_change_kg": null,
+            "body_condition": "良い",
+            "hoof": null
+          },
+          "jrdb_metrics": {
+            "raw_score": 10,
+            "track_diff": -33,
+            "pace_score": 17,
+            "late_break_score": null,
+            "position_score": null,
+            "trouble_score": null,
+            "prev_trouble_score": null,
+            "mid_trouble_score": null,
+            "late_trouble_score": null,
+            "race_score": null,
+            "front_index": -22.4,
+            "late_index": -30.1,
+            "pace_index": -23.4,
+            "race_pace_index": -19.2
+          },
+          "notes": {
+            "special_notes": [
+              "アオル",
+              "モタつく",
+              "追って案外"
+            ],
+            "equipment": [
+              "ガムチェーン",
+              "ネックストラップ"
+            ],
+            "leg_condition": {
+              "overall": [],
+              "left_front": [],
+              "right_front": [],
+              "left_hind": [
+                "球節腫れる"
+              ],
+              "right_hind": [
+                "球節腫れる"
+              ]
+            },
+            "paddock_comment": "仕上がる。踏み込み硬い。雨。",
+            "leg_comment": "両後球節腫れ。",
+            "equipment_comment": "9/8吉澤Ｓ－ＷＥＳＴ",
+            "race_comment": "アオッテ出て後方。直線内から流れ込み"
+          },
+          "race_structure": {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": {
+              "status": "AVAILABLE",
+              "lap_count": 10,
+              "comparable_200m_lap_count": 10,
+              "partial_first_segment": false,
+              "early_late_delta_available": true,
+              "optional_srb_context_available": false
+            },
+            "lap_shape": {
+              "early3f_sec": 36.0,
+              "late3f_sec": 35.3,
+              "early_late_delta_sec": -0.7,
+              "lap_std_sec": 0.631,
+              "lap_range_sec": 2.1,
+              "fastest_lap_sec": 11.2,
+              "fastest_segment_no": 2,
+              "max_accel_sec": 1.5,
+              "max_decel_sec": 0.9,
+              "last_vs_best_sec": 0.1,
+              "last3_slope_sec_per_segment": -0.55,
+              "pace_up_remaining_furlongs": null
+            },
+            "srb_context": {
+              "track_bias": {
+                "backstretch": null,
+                "corner1": null,
+                "corner2": null,
+                "corner3": null,
+                "corner4": null,
+                "homestretch": null
+              },
+              "race_comment": null
+            },
+            "policy": {
+              "leader_based": true,
+              "individual_sectionals": false,
+              "score_status": "NO_ADDITIVE_SCORE",
+              "target_race_usage": "HISTORICAL_ONLY_AS_OF_EXCLUSIVE",
+              "partial_first_segment_policy": "EXCLUDE_FROM_200M_COMPARABLE_METRICS"
+            },
+            "provenance": {
+              "source_kind": "JRDB_SRB",
+              "archive": "SED261004.zip",
+              "sed_member": "SED261004.txt",
+              "srb_member": "SRB261004.txt",
+              "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1"
+            }
+          }
+        }
+      ],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24103519",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 1,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "AVAILABLE",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": {
+          "race_key": "08264205",
+          "race_date": "2026-10-04",
+          "venue_code": "08",
+          "surface_code": "1",
+          "distance_m": 2000,
+          "field_size": 12,
+          "finish": 6,
+          "families": {
+            "ability": {
+              "declared_class_group": "NEWCOMER",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "horse_adjusted_delta_sec": -0.17499999999998295,
+              "horse_adjusted_delta_per_1000m": -0.08749999999999147
+            },
+            "pace": {
+              "pace_shape": null
+            },
+            "position": {
+              "corner1_frontness": 0.2727272727272727,
+              "corner2_frontness": 0.2727272727272727,
+              "corner3_frontness": 0.5454545454545454,
+              "corner4_frontness": 0.5454545454545454,
+              "early_position_gain": 0.0,
+              "middle_position_gain": 0.2727272727272727,
+              "late_position_gain": 0.0,
+              "overall_position_gain": 0.2727272727272727
+            },
+            "finish": {
+              "last3f_rank": 4,
+              "last3f_speed_percentile": 72.72727272727273,
+              "closing_gain_sec": null,
+              "winner_gap_sec": 0.6000000000000085
+            },
+            "trouble": {
+              "calibration_status": "RAW_ONLY_UNCALIBRATED",
+              "jrdb_track_diff": null,
+              "jrdb_pace_score": null,
+              "jrdb_late_break_score": null,
+              "jrdb_position_score": null,
+              "jrdb_trouble_score": null,
+              "jrdb_prev_trouble_score": null,
+              "jrdb_mid_trouble_score": null,
+              "jrdb_late_trouble_score": null
+            }
+          },
+          "review_tags": [
+            "TIME_AT_DECLARED_CLASS",
+            "MIDDLE_POSITION_GAIN"
+          ]
+        },
+        "recommendation": {
+          "status": "MATCH",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [
+            "HV02_Q85_Q90"
+          ],
+          "matched_signal_count": 1,
+          "signals": [
+            {
+              "signal_id": "HV02_Q85_Q90",
+              "label": "大敗着順以上のタイム内容",
+              "strength": {
+                "performance_signal": 0.08749999999999147,
+                "performance_band": "Q85_Q90",
+                "source_finish": 6
+              }
+            }
+          ],
+          "human_summary": "6着から補正タイムQ85_Q90",
+          "lookback_days": 730,
+          "source_run": {
+            "race_date": "2026-10-04",
+            "race_key": "08264205",
+            "surface_code": "1",
+            "distance_m": 2000,
+            "finish": 6,
+            "winner_gap_sec": 0.6000000000000085,
+            "pace_balance_percentile": null,
+            "corner4_frontness": 0.5454545454545454,
+            "last3f_speed_percentile": 72.72727272727273,
+            "performance_signal": 0.08749999999999147,
+            "time_class_equivalent": "NEWCOMER",
+            "time_class_equivalent_numeric": null
+          },
+          "target_course_profile": {
+            "eligible": false,
+            "course_key": "JRA:08:T:2000:inner",
+            "surface_code": "1",
+            "course_size_class": "MEDIUM",
+            "final_straight_m": 328.4,
+            "final_straight_bucket": "SHORT",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": false,
+            "reason": "ABOVE_Q20_THRESHOLD",
+            "surface_code": "1",
+            "distance_bucket": "MIDDLE",
+            "early_late_delta_sec": -0.7,
+            "q20_sec": -2.26,
+            "reference_race_count": 838,
+            "race_lap_schema_version": "JRDB-Race-Lap-Evidence-0.1",
+            "race_lap_logic_version": "SRB-Neutral-RaceShape-v0.1",
+            "race_lap_coverage_status": "AVAILABLE"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    },
+    {
+      "basic": {
+        "frame_no": 8,
+        "horse_no": 8,
+        "horse_id": "24101727",
+        "horse_name": "ペプチドデバイス",
+        "jockey": "富田暁",
+        "carried_weight_kg": 56.0,
+        "apprentice": null,
+        "trainer": "武英智",
+        "trainer_base": "栗東",
+        "blinker": null
+      },
+      "ability": {
+        "idm": 30.0,
+        "total_index": 35.6,
+        "running_style": "差し",
+        "distance_fit": null,
+        "surface_fit": {
+          "turf": "○",
+          "dirt": null
+        },
+        "heavy_track_fit": "△",
+        "jrdb_class": "芝未勝利C"
+      },
+      "condition": {
+        "improvement": "B",
+        "rotation_interval": 2,
+        "stable_evaluation": "現状維持",
+        "farm": {
+          "name": "チャンピオンヒルズ",
+          "rank": "A",
+          "index_rank": 5
+        },
+        "rest_reason": null,
+        "horse_traits": []
+      },
+      "pace": {
+        "start_index": 0.0,
+        "late_break_rate": 0.0,
+        "forecast_pace": "平均",
+        "indices": {
+          "front": -33.1,
+          "pace": -19.6,
+          "late": -6.2,
+          "position": -7.0
+        },
+        "ranks": {
+          "front": 5,
+          "pace": 7,
+          "late": 1,
+          "position": 6
+        },
+        "forecast_positions": {
+          "mid": {
+            "order": 5,
+            "margin": 16,
+            "lane": "内"
+          },
+          "last3f": {
+            "order": 6,
+            "margin": 12,
+            "lane": "内"
+          },
+          "finish": {
+            "order": 4,
+            "margin": 8,
+            "lane": "中"
+          }
+        },
+        "symbol": "最速上がり"
+      },
+      "training": {
+        "summary": {
+          "training_index": 19.7,
+          "training_arrow": "上昇"
+        },
+        "main_workout": {
+          "date": "2026-10-14",
+          "course": "栗東坂路",
+          "strength": "馬なり",
+          "state": "余力あり",
+          "rider_type": "調教騎手",
+          "furlongs": 4,
+          "clock": {
+            "front": 18.3,
+            "middle": 15.2,
+            "last": 12.3
+          },
+          "clock_index": {
+            "front": 0,
+            "middle": 0,
+            "last": 22,
+            "total": 31
+          },
+          "pair": {
+            "result": "同入",
+            "strength": "馬なり",
+            "age": 3,
+            "class": "2勝クラス"
+          }
+        },
+        "analysis": {
+          "course_counts": {
+            "slope": 1,
+            "wood": 0,
+            "dirt": 0,
+            "turf": 0,
+            "pool": 0,
+            "obstacle": 0,
+            "polytrack": 0
+          },
+          "distance_pattern": "普通",
+          "focus": "終い",
+          "training_index": 31,
+          "condition_index": 72,
+          "volume_grade": "B",
+          "condition_change": null,
+          "comment": null,
+          "comment_date": null,
+          "training_grade": null,
+          "one_week_ago": {
+            "index": 36,
+            "course": "栗東坂路"
+          }
+        }
+      },
+      "market": {
+        "base_win_odds": 3.9,
+        "base_win_rank": 3,
+        "base_place_odds": 1.3,
+        "base_place_rank": 3
+      },
+      "jrdb_ratings": {
+        "jockey_index": 2.3,
+        "info_index": 3.3,
+        "stable_index": 14.3,
+        "longshot_index": 146,
+        "jockey_expected_top2_rate": 39.2,
+        "marks": {
+          "total": "○",
+          "idm": "○",
+          "info": "○",
+          "jockey": "▲",
+          "stable": "○",
+          "training": "○",
+          "longshot": null
+        }
+      },
+      "recent_runs": [
+        {
+          "race": {
+            "race_key": "06264805",
+            "date": "2026-09-26",
+            "venue": "中山",
+            "race_no": 5,
+            "race_name": null,
+            "surface": "芝",
+            "distance_m": 1800,
+            "turn": "右",
+            "course_layout": "通常（内）",
+            "track_condition": "重",
+            "race_type": "2歳",
+            "class": "新馬",
+            "grade": null,
+            "field_size": 14,
+            "weather": "曇"
+          },
+          "result": {
+            "finish": 4,
+            "abnormal": "異常なし",
+            "time_sec": 114.6,
+            "carried_weight_kg": 55.0,
+            "jockey": "横山武史",
+            "final_win_odds": 2.8,
+            "final_popularity": 2
+          },
+          "performance": {
+            "idm": 30,
+            "corners": [
+              7,
+              7,
+              7,
+              6
+            ],
+            "first3f_sec": 39.8,
+            "last3f_sec": 36.2,
+            "race_pace": "スロー",
+            "horse_pace": "スロー",
+            "course_lane": "中"
+          },
+          "body": {
+            "body_weight_kg": 456,
+            "body_weight_change_kg": null,
+            "body_condition": "余裕",
+            "hoof": null
+          },
+          "jrdb_metrics": {
+            "raw_score": 19,
+            "track_diff": 4,
+            "pace_score": 11,
+            "late_break_score": null,
+            "position_score": null,
+            "trouble_score": null,
+            "prev_trouble_score": null,
+            "mid_trouble_score": null,
+            "late_trouble_score": null,
+            "race_score": null,
+            "front_index": -32.5,
+            "late_index": -17.5,
+            "pace_index": -32.0,
+            "race_pace_index": -27.1
+          },
+          "notes": {
+            "special_notes": [
+              "内もたれ",
+              "エンジン掛遅",
+              "直線余力あり"
+            ],
+            "equipment": [
+              "メンコ",
+              "リングハミ",
+              "ガムチェーン",
+              "ネックストラップ"
+            ],
+            "leg_condition": {
+              "overall": [],
+              "left_front": [],
+              "right_front": [],
+              "left_hind": [],
+              "right_hind": []
+            },
+            "paddock_comment": "胴短で腰高。フックラ硬い。",
+            "leg_comment": "特になし。",
+            "equipment_comment": "重馬場でスロー。使いつつ良くはなりそう。",
+            "race_comment": "中団馬群追走、直線遅れて脚は伸したが。"
+          },
+          "race_structure": {
+            "source": "JRDB_RaceLapReader_v0.1",
+            "coverage": {
+              "status": "AVAILABLE",
+              "lap_count": 9,
+              "comparable_200m_lap_count": 9,
+              "partial_first_segment": false,
+              "early_late_delta_available": true,
+              "optional_srb_context_available": false
+            },
+            "lap_shape": {
+              "early3f_sec": 39.3,
+              "late3f_sec": 36.1,
+              "early_late_delta_sec": -3.2,
+              "lap_std_sec": 0.51,
+              "lap_range_sec": 1.7,
+              "fastest_lap_sec": 11.8,
+              "fastest_segment_no": 8,
+              "max_accel_sec": 0.5,
+              "max_decel_sec": 0.7,
+              "last_vs_best_sec": 0.5,
+              "last3_slope_sec_per_segment": 0.15,
+              "pace_up_remaining_furlongs": null
+            },
+            "srb_context": {
+              "track_bias": {
+                "backstretch": null,
+                "corner1": null,
+                "corner2": null,
+                "corner3": null,
+                "corner4": null,
+                "homestretch": null
+              },
+              "race_comment": null
+            },
+            "policy": {
+              "leader_based": true,
+              "individual_sectionals": false,
+              "score_status": "NO_ADDITIVE_SCORE",
+              "target_race_usage": "HISTORICAL_ONLY_AS_OF_EXCLUSIVE",
+              "partial_first_segment_policy": "EXCLUDE_FROM_200M_COMPARABLE_METRICS"
+            },
+            "provenance": {
+              "source_kind": "JRDB_SRB",
+              "archive": "SED260926.zip",
+              "sed_member": "SED260926.txt",
+              "srb_member": "SRB260926.txt",
+              "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1"
+            }
+          }
+        }
+      ],
+      "older_runs": [],
+      "historical_profile": null,
+      "pedigree": {
+        "horse_id": "24101727",
+        "sire_name": null,
+        "dam_name": null,
+        "broodmare_sire_name": null,
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null,
+        "coverage_status": "NONE",
+        "source": "JRDB Analysis canonical target identity projection",
+        "source_policy": "approved_pre_race_identity_fields_only",
+        "scoring": false
+      },
+      "stats": {
+        "sire": null,
+        "broodmare_sire": null,
+        "jockey": null
+      },
+      "pedigree_context": {
+        "sire": null,
+        "broodmare_sire": null,
+        "coverage_status": "NONE",
+        "scoring": false,
+        "interpretation_policy": "descriptive_context_only",
+        "small_sample_policy": "retain_with_sample_size"
+      },
+      "history_coverage": {
+        "scope": "jrdb_jra_history",
+        "observed_history": "unknown",
+        "observed_starts": null,
+        "overseas_history_coverage": "not_guaranteed",
+        "reason": "target_entry_not_found",
+        "run_layers": {
+          "recent_runs": {
+            "source": "PACI",
+            "role": "detailed_recent_history",
+            "observed_count": 1,
+            "max_count": 5,
+            "career_completeness": "not_guaranteed"
+          },
+          "older_runs": {
+            "source": "JRDB Analysis Lite",
+            "role": "compact_older_history",
+            "observed_count": 0,
+            "max_count": 3,
+            "selection": "strictly_older_than_oldest_recent_run",
+            "career_completeness": "not_guaranteed"
+          }
+        }
+      },
+      "racereview": {
+        "history_status": "AVAILABLE",
+        "source_generation_id": "jrdb_race_review_v0_1_incremental_g38327108923",
+        "as_of_exclusive": "2026-10-17",
+        "latest_prior_run": {
+          "race_key": "06264805",
+          "race_date": "2026-09-26",
+          "venue_code": "06",
+          "surface_code": "1",
+          "distance_m": 1800,
+          "field_size": 14,
+          "finish": 4,
+          "families": {
+            "ability": {
+              "declared_class_group": "NEWCOMER",
+              "time_class_equivalent": "NEWCOMER",
+              "time_class_equivalent_numeric": null,
+              "horse_adjusted_delta_sec": 0.6600000000000108,
+              "horse_adjusted_delta_per_1000m": 0.36666666666667264
+            },
+            "pace": {
+              "pace_shape": null
+            },
+            "position": {
+              "corner1_frontness": 0.5384615384615384,
+              "corner2_frontness": 0.5384615384615384,
+              "corner3_frontness": 0.5384615384615384,
+              "corner4_frontness": 0.6153846153846154,
+              "early_position_gain": 0.0,
+              "middle_position_gain": 0.07692307692307698,
+              "late_position_gain": 0.15384615384615374,
+              "overall_position_gain": 0.23076923076923073
+            },
+            "finish": {
+              "last3f_rank": 3,
+              "last3f_speed_percentile": 84.61538461538461,
+              "closing_gain_sec": null,
+              "winner_gap_sec": 0.7999999999999972
+            },
+            "trouble": {
+              "calibration_status": "RAW_ONLY_UNCALIBRATED",
+              "jrdb_track_diff": null,
+              "jrdb_pace_score": null,
+              "jrdb_late_break_score": null,
+              "jrdb_position_score": null,
+              "jrdb_trouble_score": null,
+              "jrdb_prev_trouble_score": null,
+              "jrdb_mid_trouble_score": null,
+              "jrdb_late_trouble_score": null
+            }
+          },
+          "review_tags": [
+            "TIME_AT_DECLARED_CLASS",
+            "MIDDLE_POSITION_GAIN",
+            "LATE_POSITION_GAIN"
+          ]
+        },
+        "recommendation": {
+          "status": "NO_MATCH",
+          "contract_version": "rrdb-recommendation-signals-v0.5",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "matched_signal_ids": [],
+          "matched_signal_count": 0,
+          "signals": [],
+          "human_summary": null,
+          "lookback_days": 730,
+          "source_run": {
+            "race_date": "2026-09-26",
+            "race_key": "06264805",
+            "surface_code": "1",
+            "distance_m": 1800,
+            "finish": 4,
+            "winner_gap_sec": 0.7999999999999972,
+            "pace_balance_percentile": null,
+            "corner4_frontness": 0.6153846153846154,
+            "last3f_speed_percentile": 84.61538461538461,
+            "performance_signal": -0.36666666666667264,
+            "time_class_equivalent": "NEWCOMER",
+            "time_class_equivalent_numeric": null
+          },
+          "target_course_profile": {
+            "eligible": false,
+            "course_key": "JRA:08:T:2000:inner",
+            "surface_code": "1",
+            "course_size_class": "MEDIUM",
+            "final_straight_m": 328.4,
+            "final_straight_bucket": "SHORT",
+            "physical_valid_from": "2023-01-01",
+            "physical_valid_to_exclusive": null
+          },
+          "course_profile_fit": {
+            "match": false,
+            "reason": "NO_PAIRED_FIT"
+          },
+          "rear_srb": {
+            "match": true,
+            "reason": "MATCH",
+            "surface_code": "1",
+            "distance_bucket": "MILE",
+            "early_late_delta_sec": -3.2,
+            "q20_sec": -2.1,
+            "reference_race_count": 1273,
+            "race_lap_schema_version": "JRDB-Race-Lap-Evidence-0.1",
+            "race_lap_logic_version": "SRB-Neutral-RaceShape-v0.1",
+            "race_lap_coverage_status": "AVAILABLE"
+          }
+        },
+        "next_watch": {
+          "status": "DEPRECATED_REPLACED_BY_RECOMMENDATION",
+          "grade": null,
+          "grade_status": "DISABLED",
+          "replacement": "recommendation"
+        },
+        "history_profile": {
+          "repeated_patterns": [],
+          "hidden_strength": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "fragile_form": {
+            "status": "NONE",
+            "confidence": "NONE",
+            "reason_codes": [],
+            "evidence_ids": [],
+            "source_run_refs": []
+          },
+          "contradiction": {
+            "status": "NONE",
+            "conflict_codes": []
+          },
+          "primary_positive": [],
+          "concerns": [],
+          "mixed_context": []
+        },
+        "scoring": false,
+        "deduplication_policy": "same source run across recent_runs and RRDB is corroborating detail, not additive votes"
+      }
+    }
+  ]
+}
