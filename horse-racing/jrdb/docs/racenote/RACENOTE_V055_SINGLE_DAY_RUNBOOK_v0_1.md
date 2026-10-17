@@ -17,7 +17,13 @@ result_opened=false
 target_market_opened=false
 ```
 
-Use the existing KYI supplemental bundle and verified RaceLap Parquet.
+Use the existing KYI supplemental bundle and Resolver-verified RaceLap Parquet.
+
+For normal **forward** operation, consumers resolve RaceLap through
+`jrdb_race_lap_current_resolver.py`. A fresh CURRENT is validated and returned
+unchanged. A stale CURRENT can advance only when the caller has already
+materialized the exact canonical completed-day SED archive(s); otherwise the
+resolver fails closed. The resolver never fetches JRDB or Drive data.
 
 For normal **forward** operation, RaceLap must come from the canonical forward-current asset defined by
 `RACENOTE_V055_FORWARD_EVIDENCE_OPERATION_DESIGN_v0_1.md`.
