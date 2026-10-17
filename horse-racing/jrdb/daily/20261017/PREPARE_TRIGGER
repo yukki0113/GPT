@@ -1,5 +1,6 @@
-DAILY-20261017 v0.5.5 r4 TURN 1 retry-7
+DAILY-20261017 v0.5.5 r4 TURN 1 canonical RaceLap connection
 PACI_DRIVE_FILE_ID=1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA
-RACELAP_2026_MODE=analysis_canonical_race_dates_through_20261012
+RACELAP_MODE=canonical_forward_current
+RACELAP_SOURCE=drive_canonical_raw_derived
 PACI_BRIDGE_MODE=prep_only
-ANNUAL_SED_RETRY=enabled
+HISTORICAL_JRDB_FETCH=forbidden
