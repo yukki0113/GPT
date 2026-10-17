@@ -25,8 +25,8 @@ This preserves the clean-blind boundary while avoiding repeated historical SED a
 | Lane | Role in v0.5.5 | Forward update timing | T1 behavior |
 |---|---|---|---|
 | Target PACI | target card / pre-race facts / target KYI | target day acquisition | resolve exact PACI only |
-| Analysis v1.4 | historical runner facts / RaceNote base enrichment | post-race incremental refresh | materialize current |
-| RRDB v0.5 | reinterpretation of visible prior runs | post-race/current refresh | materialize current |
+| Analysis v1.4 | historical runner facts / RaceNote base enrichment | **dedicated Analysis operation/thread** | consume supplied current; Forward T1 does not refresh or freshness-check |
+| RRDB v0.5 | reinterpretation of visible prior runs | **dedicated RRDB operation/thread** | consume supplied current; Forward T1 does not refresh or freshness-check |
 | Course Fit v0.1 | approved course-fit evidence | slow/versioned refresh | materialize approved asset |
 | KYI supplemental bundle | allowlisted target KYI + prior race keys | derived during T1 | build from target PACI |
 | RaceLap | leader sectionals / neutral prior-race shape evidence | **post-race incremental refresh** | **materialize current; never refetch history** |
@@ -224,34 +224,42 @@ A later refactor may extract a common post-race raw-source artifact, but that is
 
 ---
 
-## 7. Forward T1 freshness and leakage gates
+## 7. Forward T1 RaceLap freshness and clean-blind gates
 
-For target date `D`:
+For target date `D`, Forward T1 owns freshness for **RaceLap only**.
+
+Analysis and RRDB are updated by their dedicated operations/threads. Forward T1
+must not refresh them and must not compare their recency/cutoff against RaceLap.
+
+### RaceLap freshness gate
+
+The caller supplies an explicit RaceLap-only expected completed-date cutoff:
+
+```text
+race_lap.expected_period_to < D
+race_lap.period_to == race_lap.expected_period_to
+race_lap.period_to < D
+```
+
+If RaceLap is behind `expected_period_to`, the RaceLap resolver may advance it
+only from explicitly materialized canonical SED input. Otherwise it fails
+closed.
 
 ### Hard clean-blind gates
 
 ```text
-analysis.period_to < D
-race_lap.period_to < D
 market_blind = true
 stripped_at_input_bind = true
 result_opened = false
 target_market_opened = false
 ```
 
-### Cross-source freshness gate
+Analysis/RRDB remain evidence inputs to RaceNote, but their freshness is outside
+the Forward T1 ownership boundary. Existing target/future-data contamination
+guards remain in force; removing freshness checks does not permit target-result
+or future evidence leakage.
 
-Use Analysis as the existing completed-race-day reference:
-
-```text
-race_lap.period_to == analysis.period_to
-```
-
-For normal forward operation this prevents a stale RaceLap store from silently omitting the most recent completed JRA day.
-
-If Analysis and RaceLap disagree on `period_to`, T1 fails before Reader seal.
-
-RRDB must also satisfy the active recommendation contract:
+RRDB must still satisfy the active recommendation data contract when consumed:
 
 ```text
 rrdb-recommendation-signals-v0.5
@@ -325,19 +333,25 @@ Normal forward T1 becomes:
 
 ```text
 1. Resolve exact PACI for target date.
-2. Materialize current Analysis v1.4.
-3. Materialize current RRDB v0.5.
+2. Receive the Analysis current prepared by the dedicated Analysis operation.
+   - no refresh here
+   - no freshness/cutoff comparison here
+3. Receive the RRDB current prepared by the dedicated RRDB operation.
+   - no refresh here
+   - no freshness/cutoff comparison here
 4. Materialize approved Course Fit.
 5. Materialize RaceLap_CURRENT and resolve it through RaceLapCurrentResolver.
-6. Require resolver status CURRENT_READY and validate:
-     analysis.period_to < target_date
-     race_lap.period_to == analysis.period_to
+6. Require resolver status CURRENT_READY and validate only RaceLap:
+     race_lap.period_to == race_lap.expected_period_to
      race_lap.period_to < target_date
 7. Build market-blind forecast_prep.
 8. Build KYI supplemental bundle from target PACI.
 9. Initialize v0.5.5 using the Parquet path returned by the resolver.
 10. Seal Reader and stop at READY_FOR_V055_AUTHORING.
 ```
+
+Forward T1 therefore orchestrates freshness/update for RaceLap only. Analysis
+and RRDB are consumed as externally maintained evidence assets.
 
 Forbidden in normal forward T1:
 
@@ -442,7 +456,7 @@ Optional after the first working implementation:
 horse-racing/jrdb/config/racenote_forward_evidence_current.json
 ```
 
-This can provide one readiness registry for Analysis / RRDB / Course Fit / RaceLap.
+This may provide discovery metadata, but Forward T1 must not use it to impose Analysis/RRDB freshness gates. RaceLap owns its separate expected cutoff.
 
 ---
 
@@ -488,16 +502,17 @@ fetch_jrdb_history.py --from-date <historical range> ...
 
 Only the exact target PACI and canonical current evidence assets are materialized.
 
-### E. Freshness guard
+### E. RaceLap freshness guard
 
 If:
 
 ```text
-analysis.period_to = 2026-10-12
+race_lap.expected_period_to = 2026-10-12
 race_lap.period_to = 2026-10-11
 ```
 
-T1 must fail before v0.5.5 Reader seal.
+T1 must fail before v0.5.5 Reader seal. Analysis/RRDB recency is not part of
+this Forward T1 gate.
 
 ### F. Clean-blind guard
 
@@ -516,19 +531,18 @@ target_market_opened=false
 After implementation, the ordinary weekly cycle is:
 
 ```text
-Sunday/Monday post-race:
-  fetch each completed date once
-  -> Analysis update
-  -> RaceLap incremental update
-  -> RRDB update
-  -> promote current assets
+Post-race:
+  Analysis dedicated operation -> Analysis current
+  RRDB dedicated operation     -> RRDB current
+  RaceLap operation            -> RaceLap incremental update -> promote current
 
 Next race day:
   PACI target
-  + current Analysis
-  + current RRDB
+  + externally maintained Analysis current
+  + externally maintained RRDB current
   + current Course Fit
-  + current RaceLap
+  + RaceLap current
+  -> Forward T1 checks/updates RaceLap only
   -> T1 seal
   -> T2 prediction
 ```
