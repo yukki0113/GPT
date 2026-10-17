@@ -273,6 +273,54 @@ The exact RaceLap generation used for that target day remains permanently identi
 
 ## 8. T1 operation after implementation
 
+### 8.1 Standard RaceLap entrypoint
+
+RaceNote and other consumers must not coordinate refresh / validation /
+promotion themselves. The standard entrypoint is:
+
+```text
+jrdb_race_lap_current_resolver.py
+```
+
+Its contract is:
+
+```text
+existing RaceLap CURRENT
++ Analysis period_to
++ target_date
++ optional explicit canonical SED delta
+        |
+        v
+fresh? ---------------------- yes -> validate -> CURRENT_READY
+  |
+  no
+  |
+explicit canonical SED present?
+  | no -> fail closed; never discover/fetch history
+  v
+incremental refresh
+  -> candidate validation
+  -> promotion
+  -> final CURRENT validation
+  -> CURRENT_READY
+```
+
+The resolver never performs JRDB or Drive acquisition. Acquisition /
+materialization remains outside this layer. This keeps source routing explicit
+and prevents a forecast consumer from silently performing historical I/O.
+
+The lower-level modules remain reusable implementation primitives:
+
+- `jrdb_race_lap_forward_refresh.py`
+- `jrdb_race_lap_forward_current.py::validate`
+- `jrdb_race_lap_forward_promote.py`
+
+The normal orchestration caller is the resolver. The Actions wrapper
+`.github/workflows/racelap_forward_current_resolver.yml` provides the same
+verify-or-advance contract for already-materialized Actions artifacts.
+
+### 8.2 RaceNote T1
+
 Normal forward T1 becomes:
 
 ```text
@@ -280,14 +328,14 @@ Normal forward T1 becomes:
 2. Materialize current Analysis v1.4.
 3. Materialize current RRDB v0.5.
 4. Materialize approved Course Fit.
-5. Materialize RaceLap_CURRENT and verify size/SHA/manifest.
-6. Validate:
+5. Materialize RaceLap_CURRENT and resolve it through RaceLapCurrentResolver.
+6. Require resolver status CURRENT_READY and validate:
      analysis.period_to < target_date
      race_lap.period_to == analysis.period_to
      race_lap.period_to < target_date
 7. Build market-blind forecast_prep.
 8. Build KYI supplemental bundle from target PACI.
-9. Initialize v0.5.5 using the already-materialized RaceLap Parquet.
+9. Initialize v0.5.5 using the Parquet path returned by the resolver.
 10. Seal Reader and stop at READY_FOR_V055_AUTHORING.
 ```
 
