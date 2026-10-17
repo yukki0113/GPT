@@ -1,6 +1,7 @@
-DAILY-20261017 v0.5.5 r4 TURN 1 canonical RaceLap connection
+DAILY-20261017 v0.5.5 r4 TURN 1 canonical RaceLap current ready
 PACI_DRIVE_FILE_ID=1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA
-RACELAP_MODE=canonical_forward_current
-RACELAP_SOURCE=drive_canonical_raw_derived
+RACELAP_MODE=current_resolver
+RACELAP_GENERATION=racelap-forward-canonical-20261012-01
+RACELAP_PERIOD_TO=2026-10-12
 PACI_BRIDGE_MODE=prep_only
 HISTORICAL_JRDB_FETCH=forbidden
