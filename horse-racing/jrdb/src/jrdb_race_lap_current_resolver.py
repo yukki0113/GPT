@@ -63,7 +63,7 @@ def _receipt(
         "generation_id": validation["generation_id"],
         "previous_generation_id": previous_generation_id,
         "period_to": validation["race_lap_period_to"],
-        "analysis_period_to": validation["analysis_period_to"],
+        "expected_period_to": validation["expected_period_to"],
         "target_date": validation["target_date"],
         "race_count": validation["race_count"],
         "parquet_sha256": validation["race_lap_sha256"],
@@ -83,7 +83,7 @@ def _receipt(
 def resolve_current(
     current_bundle: Path,
     target_date: str,
-    analysis_period_to: str,
+    expected_period_to: str,
     *,
     sed_archives: list[Path] | None = None,
     expected_dates: list[str] | None = None,
@@ -109,24 +109,24 @@ def resolve_current(
     )
     if not current_period_to:
         raise RaceLapCurrentResolverError("RaceLap CURRENT period_to missing")
-    if not analysis_period_to < target_date:
+    if not expected_period_to < target_date:
         raise RaceLapCurrentResolverError(
-            "Analysis completed-date cutoff must be earlier than target date"
+            "RaceLap expected completed-date cutoff must be earlier than target date"
         )
     if not current_period_to < target_date:
         raise RaceLapCurrentResolverError("RaceLap CURRENT leaks target/future date")
-    if current_period_to > analysis_period_to:
+    if current_period_to > expected_period_to:
         raise RaceLapCurrentResolverError(
-            f"RaceLap CURRENT is ahead of Analysis: "
-            f"{current_period_to} > {analysis_period_to}"
+            f"RaceLap CURRENT is ahead of expected cutoff: "
+            f"{current_period_to} > {expected_period_to}"
         )
 
-    if current_period_to == analysis_period_to:
+    if current_period_to == expected_period_to:
         verified = validate(
             parquet,
             manifest_path,
             target_date,
-            analysis_period_to,
+            expected_period_to,
         )
         return _receipt(
             bundle=current_bundle,
@@ -149,16 +149,16 @@ def resolve_current(
     if not archives:
         raise RaceLapCurrentResolverError(
             f"RaceLap CURRENT is stale: period_to={current_period_to}, "
-            f"Analysis={analysis_period_to}. Explicit canonical SED input is required."
+            f"expected={expected_period_to}. Explicit canonical SED input is required."
         )
     if not dates:
         raise RaceLapCurrentResolverError(
             "expected_dates are required when advancing RaceLap CURRENT"
         )
-    if dates[-1] != analysis_period_to:
+    if dates[-1] != expected_period_to:
         raise RaceLapCurrentResolverError(
-            f"latest expected date must equal Analysis period_to: "
-            f"{dates[-1]} != {analysis_period_to}"
+            f"latest expected date must equal RaceLap expected period_to: "
+            f"{dates[-1]} != {expected_period_to}"
         )
     if any(date <= current_period_to for date in dates):
         raise RaceLapCurrentResolverError(
@@ -188,10 +188,10 @@ def resolve_current(
         raise RaceLapCurrentResolverError(
             f"stale CURRENT did not advance: {report.get('status')}"
         )
-    if report.get("period_to") != analysis_period_to:
+    if report.get("period_to") != expected_period_to:
         raise RaceLapCurrentResolverError(
             f"refreshed period_to mismatch: "
-            f"{report.get('period_to')} != {analysis_period_to}"
+            f"{report.get('period_to')} != {expected_period_to}"
         )
 
     candidate = candidate_root / "generations" / generation_id
@@ -199,13 +199,13 @@ def resolve_current(
         candidate,
         resolved_bundle,
         target_date,
-        analysis_period_to,
+        expected_period_to,
     )
     verified = validate(
         resolved_bundle / "race_lap.parquet",
         resolved_bundle / "manifest.json",
         target_date,
-        analysis_period_to,
+        expected_period_to,
     )
     return _receipt(
         bundle=resolved_bundle,
@@ -220,7 +220,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--current-bundle", type=Path, required=True)
     parser.add_argument("--target-date", required=True)
-    parser.add_argument("--analysis-period-to", required=True)
+    parser.add_argument("--expected-period-to", required=True)
     parser.add_argument("--sed", type=Path, action="append")
     parser.add_argument("--expected-date", action="append")
     parser.add_argument("--work-root", type=Path)
@@ -233,7 +233,7 @@ def main() -> int:
         result = resolve_current(
             args.current_bundle,
             args.target_date,
-            args.analysis_period_to,
+            args.expected_period_to,
             sed_archives=args.sed,
             expected_dates=args.expected_date,
             work_root=args.work_root,
