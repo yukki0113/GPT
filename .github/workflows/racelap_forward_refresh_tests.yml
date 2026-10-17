@@ -8,6 +8,8 @@ on:
       - 'horse-racing/jrdb/src/jrdb_race_lap_forward_current.py'
       - 'horse-racing/jrdb/src/jrdb_race_lap_forward_promote.py'
       - 'horse-racing/jrdb/src/jrdb_race_lap_current_resolver.py'
+      - 'horse-racing/jrdb/src/racenote_v053_from_paci.py'
+      - '.github/workflows/racelap_forward_current_resolver.yml'
       - 'horse-racing/jrdb/tests/test_jrdb_race_lap_forward_refresh.py'
       - 'horse-racing/jrdb/tests/test_jrdb_race_lap_current_resolver.py'
       - '.github/workflows/racelap_forward_refresh_tests.yml'
@@ -26,6 +28,9 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -r tools/data-storage/requirements.txt pytest
+      - name: Compile resolver consumers
+        run: python -m py_compile horse-racing/jrdb/src/jrdb_race_lap_current_resolver.py horse-racing/jrdb/src/racenote_v053_from_paci.py
+
       - name: Forward refresh regression
         env:
           PYTHONPATH: horse-racing/jrdb/src:horse-racing/jrdb/tests
