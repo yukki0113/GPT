@@ -27,7 +27,7 @@ def _sha(path: Path) -> str:
 
 
 def _encoded(row: dict) -> str:
-    return json.dumps(row, sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+    return json.dumps(row, sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False, default=str)
 
 
 def _rows(path: Path) -> dict[str, dict]:
