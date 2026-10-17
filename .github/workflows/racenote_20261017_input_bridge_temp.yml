@@ -1,0 +1,36 @@
+name: RaceNote 20261017 Input Bridge Temp
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/requests/racenote_20261017_input_bridge.trigger'
+
+permissions:
+  contents: read
+
+jobs:
+  bridge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install gdown
+      - name: Download Drive inputs by stable file ID
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/inputs
+          gdown --id 1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA -O /tmp/inputs/PACI261017.zip
+          gdown --id 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/inputs/RaceReviewDB_CURRENT.zip
+          unzip -t /tmp/inputs/PACI261017.zip >/dev/null
+          unzip -t /tmp/inputs/RaceReviewDB_CURRENT.zip >/dev/null
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racenote-20261017-drive-inputs
+          path: /tmp/inputs/
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
