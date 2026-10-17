@@ -1,6 +1,6 @@
 # RaceNote v0.5.5 Forward Evidence Operation Design v0.1
 
-Status: **DESIGN ACCEPTED FOR IMPLEMENTATION**
+Status: **PROPOSED DESIGN / READY FOR IMPLEMENTATION**
 Target logic: `RaceNote-Human-Context-Reader-0.5.5-candidate`
 Contract: `v055-prediction-freeze-confidence-review-r4`
 Date: 2026-10-17
