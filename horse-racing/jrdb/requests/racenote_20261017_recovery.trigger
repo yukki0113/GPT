@@ -1,1 +1,1 @@
-retry 2: canonical RaceLap artifact 12093205219 pinned
+retry 3: prep-only handoff metadata fixed; canonical RaceLap artifact 12093205219 pinned
