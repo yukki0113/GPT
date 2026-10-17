@@ -12,6 +12,7 @@ on:
       - '.github/workflows/racelap_forward_current_resolver.yml'
       - 'horse-racing/jrdb/tests/test_jrdb_race_lap_forward_refresh.py'
       - 'horse-racing/jrdb/tests/test_jrdb_race_lap_current_resolver.py'
+      - 'horse-racing/jrdb/tests/test_racenote_v053_racelap_resolver.py'
       - '.github/workflows/racelap_forward_refresh_tests.yml'
   workflow_dispatch:
 
@@ -34,4 +35,4 @@ jobs:
       - name: Forward refresh regression
         env:
           PYTHONPATH: horse-racing/jrdb/src:horse-racing/jrdb/tests
-        run: python -m pytest -q horse-racing/jrdb/tests/test_jrdb_race_lap_forward_refresh.py horse-racing/jrdb/tests/test_jrdb_race_lap_current_resolver.py
+        run: python -m pytest -q horse-racing/jrdb/tests/test_jrdb_race_lap_forward_refresh.py horse-racing/jrdb/tests/test_jrdb_race_lap_current_resolver.py horse-racing/jrdb/tests/test_racenote_v053_racelap_resolver.py
