@@ -37,6 +37,23 @@ def _load_array(path: Path, label: str) -> list[dict[str, Any]]:
 
 def finalize(root: Path, decisions_path: Path, confidence_path: Path) -> dict[str, Any]:
     session, _, _ = load_session(root)
+
+    authoring_manifest_path = root / "authoring_bundle" / "manifest.json"
+    if not authoring_manifest_path.is_file():
+        raise FileNotFoundError("lossless LLM authoring bundle is required before T2")
+    authoring_manifest = json.loads(authoring_manifest_path.read_text(encoding="utf-8"))
+    if (
+        authoring_manifest.get("status") != "READY_FOR_LLM_RACE_BY_RACE_REVIEW"
+        or authoring_manifest.get("session_id") != session["session_id"]
+        or authoring_manifest.get("race_count") != len(session["race_roster"])
+        or authoring_manifest.get("prediction_policy") != "LLM_RACE_BY_RACE_ONLY"
+        or authoring_manifest.get("automated_scoring") is not False
+        or authoring_manifest.get("automated_ranking") is not False
+        or authoring_manifest.get("automated_marks") is not False
+        or authoring_manifest.get("confidence_generation") is not False
+    ):
+        raise ValueError("LLM authoring bundle boundary invalid")
+
     if (root / "frozen").exists() or (root / "confidence_frozen").exists():
         raise FileExistsError("T2 immutable Freeze already exists")
 
