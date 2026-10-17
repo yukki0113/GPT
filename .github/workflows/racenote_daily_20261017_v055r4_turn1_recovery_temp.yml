@@ -38,13 +38,17 @@ jobs:
           python -m pip install jsonschema pandas numpy
       - name: Confirm immutable target is new
         run: test ! -e "$TARGET"
-      - name: Materialize GPT-routed PACI and RRDB inputs
+      - name: Materialize stable PACI and RRDB input artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p /tmp/input /tmp/rrdb
-          curl --fail --location --retry 3 'https://sdmntprnznorth.oaiusercontent.com/files/00000000-2fac-820b-8f9b-f437a3f2a418/raw?se=2026-10-17T06%3A44%3A00Z&sp=r&sv=2026-02-06&sr=b&scid=9cc4008f-9f29-5458-9426-1b2571c37476&skoid=4aa315bb-5bf6-44d7-aaa9-381a9cb823c8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-16T23%3A19%3A02Z&ske=2026-10-17T23%3A19%3A02Z&sks=b&skv=2026-02-06&sig=ub2PNMeD4YwgZh2wBzpE/KlS4Y9a%2Bbn4gyB77Glcm%2B0%3D' -o /tmp/input/PACI261017.zip
-          curl --fail --location --retry 3 'https://sdmntprnznorth.oaiusercontent.com/files/00000000-00c0-820b-a890-7e92ff9162ba/raw?se=2026-10-17T06%3A44%3A09Z&sp=r&sv=2026-02-06&sr=b&scid=732aa992-448a-5cc6-b675-4936abdbe88c&skoid=4aa315bb-5bf6-44d7-aaa9-381a9cb823c8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-16T19%3A21%3A03Z&ske=2026-10-17T19%3A21%3A03Z&sks=b&skv=2026-02-06&sig=J5iTosIK4Bi3jlR3wgqUP%2B%2BDVzP%2BsmxdREJZHTXEn7I%3D' -o /tmp/input/RaceReviewDB_CURRENT.zip
+          mkdir -p /tmp/input /tmp/rrdb /tmp/input-art
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/12092632628/zip > /tmp/input-art/inputs.zip
+          unzip -q /tmp/input-art/inputs.zip -d /tmp/input
+          test -f /tmp/input/PACI261017.zip
+          test -f /tmp/input/RaceReviewDB_CURRENT.zip
           unzip -t /tmp/input/PACI261017.zip >/dev/null
           unzip -t /tmp/input/RaceReviewDB_CURRENT.zip >/dev/null
           unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
