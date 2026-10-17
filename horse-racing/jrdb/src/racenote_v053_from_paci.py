@@ -43,6 +43,7 @@ def main() -> int:
     rrdb.add_argument("--racereview-current-cache", type=Path)
     ap.add_argument("--next-watch-rules", type=Path)
     ap.add_argument("--output-root", type=Path, required=True)
+    ap.add_argument("--prep-only", action="store_true", help="Build DAY PREP + forecast_prep only; do not initialize legacy v0.5.3 session")
     args = ap.parse_args()
 
     if not args.paci.is_file():
@@ -82,25 +83,25 @@ def main() -> int:
         args.main_sha,
     )
     v053_root = args.output_root / "v053"
-    session = init_session(forecast_prep, v053_root, args.main_sha)
+    session = None if args.prep_only else init_session(forecast_prep, v053_root, args.main_sha)
 
     operation = {
         "schema_version": VERSION,
-        "status": "READY_FOR_V053_AUTHORING",
+        "status": "FORECAST_PREP_READY" if args.prep_only else "READY_FOR_V053_AUTHORING",
         "selection_id": args.selection_id,
         "target_date": args.date,
-        "logic_version": session["logic_version"],
-        "contract_revision": session.get("contract_revision"),
-        "session_id": session["session_id"],
+        "logic_version": None if session is None else session["logic_version"],
+        "contract_revision": None if session is None else session.get("contract_revision"),
+        "session_id": None if session is None else session["session_id"],
         "paci": {
             "filename": args.paci.name,
             "sha256": sha256(args.paci),
         },
         "daily_manifest_status": manifest.get("status"),
         "forecast_prep": str(forecast_prep),
-        "v053_root": str(v053_root),
-        "race_count": len(session["race_roster"]),
-        "expected_venues": session["expected_venues"],
+        "v053_root": None if session is None else str(v053_root),
+        "race_count": len(handoff["race_roster"]),
+        "expected_venues": sorted({row["venue"] for row in handoff["race_roster"]}),
         "market_blind": handoff.get("market_blind"),
         "result_opened": False,
         "ab_required": False,
