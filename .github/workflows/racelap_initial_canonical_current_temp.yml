@@ -1,0 +1,95 @@
+name: RaceLap Initial Canonical CURRENT Temp
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/requests/racelap_initial_current.trigger'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+      TARGET_DATE: "2026-10-17"
+      ANALYSIS_PERIOD_TO: "2026-10-12"
+      GENERATION_ID: "racelap-forward-canonical-20261012-01"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Materialize canonical Drive Raw transfer bundle
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/racelap/raw /tmp/racelap/current
+          curl --fail --location --retry 3 'https://sdmntpraustraliaeast.oaiusercontent.com/files/00000000-1bfc-81fa-b35e-c0fdea52246e/raw?se=2026-10-17T06%3A39%3A30Z&sp=r&sv=2026-02-06&sr=b&scid=87f6e2a0-4741-576d-8b0f-515c1f64d20f&skoid=4aa315bb-5bf6-44d7-aaa9-381a9cb823c8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-17T06%3A09%3A43Z&ske=2026-10-18T06%3A09%3A43Z&sks=b&skv=2026-02-06&sig=PqNhRNRFrLQNPrNCuHj/WksmzQipT9GP7ZA4fjM5E48%3D'             -o /tmp/racelap/canonical_raw.zip
+          python - <<'PY'
+          import hashlib
+          from pathlib import Path
+          p=Path('/tmp/racelap/canonical_raw.zip')
+          assert p.stat().st_size==16169199
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='4e6e73de6e747d1c89a90b7baf4af83224ba898882af7cecf0294ac84ef9ae2e'
+          PY
+          unzip -q /tmp/racelap/canonical_raw.zip -d /tmp/racelap/raw
+          test "$(find /tmp/racelap/raw -maxdepth 1 -type f -name 'SED*.zip' | wc -l)" -eq 89
+      - name: Build canonical RaceLap Parquet
+        run: |
+          set -euo pipefail
+          mapfile -t ARCHIVES < <(find /tmp/racelap/raw -maxdepth 1 -type f -name 'SED*.zip' | sort)
+          python horse-racing/jrdb/src/jrdb_race_lap_dataset.py             "${ARCHIVES[@]}"             --output /tmp/racelap/current/race_lap.parquet             --audit /tmp/racelap/current/audit.json             --replace
+      - name: Seal and validate CURRENT
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          audit=json.loads(Path('/tmp/racelap/current/audit.json').read_text(encoding='utf-8'))
+          assert audit['validation_status']=='PASS'
+          assert audit['max_race_date']=='2026-10-12'
+          manifest={
+            'schema_version':'jrdb-race-lap-forward-current-0.1',
+            'status':'CURRENT',
+            'generation_id':'racelap-forward-canonical-20261012-01',
+            'dataset_schema_version':audit['dataset_schema_version'],
+            'shape_logic_version':audit['shape_logic_version'],
+            'period_from':audit['min_race_date'],
+            'period_to':audit['max_race_date'],
+            'race_count':audit['race_count'],
+            'parquet_sha256':audit['output_sha256'],
+            'parquet_size_bytes':audit['output_size_bytes'],
+            'validation_status':'PASS',
+            'source_bundle':{
+              'drive_file_id':'15Ifo3XzLsBJUdWyjXIZnz3CxHjFgderQ',
+              'filename':'RaceLap_CANONICAL_RAW_through_20261012.zip',
+              'sha256':'4e6e73de6e747d1c89a90b7baf4af83224ba898882af7cecf0294ac84ef9ae2e',
+              'input_archive_count':89,
+              'daily_2026_count':87,
+              'selection_rule':'LATEST_MODIFIED_SAME_NAME_CANONICAL_RAW',
+            },
+          }
+          Path('/tmp/racelap/current/manifest.json').write_text(
+            json.dumps(manifest,ensure_ascii=False,indent=2,sort_keys=True)+'\n',
+            encoding='utf-8'
+          )
+          PY
+          python horse-racing/jrdb/src/jrdb_race_lap_forward_current.py             --parquet /tmp/racelap/current/race_lap.parquet             --manifest /tmp/racelap/current/manifest.json             --target-date "$TARGET_DATE"             --analysis-period-to "$ANALYSIS_PERIOD_TO"             | tee /tmp/racelap/current/resolver_receipt.json
+      - uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: racelap-forward-current-canonical-20261012
+          path: /tmp/racelap/current/
+          retention-days: 90
+          compression-level: 0
+          if-no-files-found: error
+      - name: Report
+        run: |
+          cat /tmp/racelap/current/audit.json
+          cat /tmp/racelap/current/resolver_receipt.json
+          echo "artifact_id=${{ steps.upload.outputs.artifact-id }}"
