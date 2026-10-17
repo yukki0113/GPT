@@ -39,6 +39,7 @@ jobs:
           from pathlib import Path
 
           root=Path(os.environ['ROOT'])
+          (root/'incoming').mkdir(parents=True, exist_ok=True)
           picks={
             "京都": {
               1:([11,13,2,9,1],3,"A"),2:([7,1,4,6,5],2,"B"),3:([4,11,7,9,5],3,"B"),
