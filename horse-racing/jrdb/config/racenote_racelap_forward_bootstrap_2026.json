@@ -1,0 +1,19 @@
+{
+  "schema_version": "racenote-racelap-forward-bootstrap-dates-0.1",
+  "as_of": "2026-10-12",
+  "inventory_source": "config/racenote_backtest_day_pool_2026.json",
+  "inventory_snapshot_date": "2026-09-29",
+  "supplemental_race_dates": [
+    "2026-10-03",
+    "2026-10-04",
+    "2026-10-10",
+    "2026-10-11",
+    "2026-10-12"
+  ],
+  "supplemental_source": "analysis-v1_4-postrace-20261013-01 accepted input dates",
+  "policy": {
+    "known_completed_race_dates_only": true,
+    "target_date_excluded": "2026-10-17",
+    "full_calendar_scan": false
+  }
+}
