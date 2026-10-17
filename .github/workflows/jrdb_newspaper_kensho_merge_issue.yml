@@ -157,6 +157,60 @@ jobs:
           from pathlib import Path
           src=Path(os.environ["RACENOTE_PATH"])
           data=json.loads(src.read_text(encoding="utf-8"))
+          # Reader-facing frozen handoff used by current RaceNote daily authoring.
+          # Preserve authored marks/confidence/comment exactly; only normalize
+          # the envelope into the existing sparse five-mark merge contract.
+          if isinstance(data,dict) and data.get("schema_version")=="racenote-pwa-social-handoff-v0.1":
+              if data.get("status")!="PASS" or data.get("date")!=os.environ["REQUEST_DATE"]:
+                  raise SystemExit("invalid RaceNote PWA social handoff metadata")
+              source=data.get("source") or {}
+              if source.get("result_opened") is not False or source.get("target_market_opened") is not False:
+                  raise SystemExit("RaceNote PWA social handoff is not clean blind")
+              converted=[]
+              seen=set()
+              mark_order=[("◎","◎"),("○","○"),("▲","▲"),("△1","△"),("△2","△")]
+              for venue_block in data.get("venues") or []:
+                  venue=str(venue_block.get("venue") or "").strip()
+                  if not venue:
+                      raise SystemExit("RaceNote venue is blank")
+                  for race in venue_block.get("races") or []:
+                      race_no=int(race.get("race_no"))
+                      identity=(venue,race_no)
+                      if identity in seen:
+                          raise SystemExit(f"duplicate RaceNote race: {identity}")
+                      seen.add(identity)
+                      authored=race.get("marks") or {}
+                      marks=[]
+                      horse_nos=[]
+                      for source_mark,display_mark in mark_order:
+                          if source_mark not in authored:
+                              raise SystemExit(f"RaceNote mark missing: {identity} {source_mark}")
+                          horse_no=int(authored[source_mark])
+                          horse_nos.append(horse_no)
+                          marks.append({"horse_no":horse_no,"mark":display_mark,"prediction_rank":len(marks)+1})
+                      if len(set(horse_nos))!=5:
+                          raise SystemExit(f"RaceNote marks are not five unique horses: {identity}")
+                      confidence=str(race.get("confidence") or "").strip()
+                      reason=str(race.get("short_comment") or "").strip()
+                      honmei=race.get("honmei") or {}
+                      if confidence not in ("A","B","C") or not reason:
+                          raise SystemExit(f"RaceNote confidence/comment incomplete: {identity}")
+                      if int(honmei.get("horse_no") or 0)!=horse_nos[0] or not str(honmei.get("horse_name") or "").strip():
+                          raise SystemExit(f"RaceNote honmei identity mismatch: {identity}")
+                      converted.append({
+                          "venue":venue,
+                          "race_no":race_no,
+                          "marks":marks,
+                          "race_short_comment":reason,
+                          "confidence":confidence,
+                          "model_version":str(data.get("logic_version") or "").strip(),
+                          "source_semantic_sha256":str(source.get("prediction_records_sha256") or "").strip(),
+                          "honmei_name":str(honmei["horse_name"]).strip(),
+                      })
+              declared=int(data.get("race_count") or 0)
+              if declared<=0 or declared!=len(converted):
+                  raise SystemExit(f"RaceNote declared race_count mismatch: declared={declared} actual={len(converted)}")
+              data={"date":os.environ["REQUEST_DATE"],"races":converted,"_expected_race_count":declared}
           # Frozen canonical RaceNote decision records (DAILY-YYYYMMDD).
           # Preserve the authored reader-facing race reason rather than using
           # an image handoff, which intentionally contains only five marks.
@@ -250,6 +304,14 @@ jobs:
                       marks=race.get("marks") or []
                       if len(marks)!=5:
                           raise SystemExit(f"RaceNote sparse marks must contain 5 rows: {(venue,race_no)} got={len(marks)}")
+                      if race.get("honmei_name"):
+                          honmei_no=int(marks[0]["horse_no"])
+                          actual_honmei=base["horses"].get(honmei_no)
+                          if actual_honmei != race["honmei_name"]:
+                              raise SystemExit(
+                                  f"RaceNote honmei name mismatch: {(venue,race_no,honmei_no)} "
+                                  f"{race['honmei_name']!r}!={actual_honmei!r}"
+                              )
                       for item in marks:
                           horse_no=int(item["horse_no"])
                           horse_name=base["horses"].get(horse_no)
@@ -267,8 +329,12 @@ jobs:
                           count+=1
                           marked+=1
           race_count=len(data.get("races") or [])
-          if race_count != 24 or count <= 0:
-              raise SystemExit(f"RaceNote completeness mismatch races={race_count} horses={count}")
+          expected_race_count=int(data.get("_expected_race_count") or 24)
+          if race_count != expected_race_count or count <= 0:
+              raise SystemExit(
+                  f"RaceNote completeness mismatch races={race_count} "
+                  f"expected={expected_race_count} horses={count}"
+              )
           Path("/tmp/kensho/expected-counts.json").write_text(
               json.dumps({"racenote":count,"racenote_marked":marked,"racenote_sparse_marks":sparse},ensure_ascii=False)+"\n",
               encoding="utf-8")
