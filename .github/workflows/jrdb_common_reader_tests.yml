@@ -8,6 +8,8 @@ on:
       - 'horse-racing/jrdb/schema/race_lap_evidence_schema.json'
       - 'horse-racing/jrdb/tests/test_jrdb_race_lap*.py'
       - 'horse-racing/jrdb/src/racenote_lap_shape_evidence.py'
+      - 'horse-racing/jrdb/src/racenote_rrdb_enrichment.py'
+      - 'horse-racing/jrdb/tests/test_racenote_racelap_context.py'
       - 'horse-racing/jrdb/src/jrdb_raw_history.py'
       - 'horse-racing/jrdb/src/fetch_jrdb_history.py'
       - 'horse-racing/jrdb/src/jrdb_store.py'
@@ -74,6 +76,8 @@ on:
       - 'horse-racing/jrdb/schema/race_lap_evidence_schema.json'
       - 'horse-racing/jrdb/tests/test_jrdb_race_lap*.py'
       - 'horse-racing/jrdb/src/racenote_lap_shape_evidence.py'
+      - 'horse-racing/jrdb/src/racenote_rrdb_enrichment.py'
+      - 'horse-racing/jrdb/tests/test_racenote_racelap_context.py'
       - 'horse-racing/jrdb/src/jrdb_raw_history.py'
       - 'horse-racing/jrdb/src/fetch_jrdb_history.py'
       - 'horse-racing/jrdb/src/jrdb_store.py'
@@ -147,6 +151,7 @@ jobs:
             src/jrdb_raw.py \
             src/jrdb_race_lap*.py \
             src/racenote_lap_shape_evidence.py \
+            src/racenote_rrdb_enrichment.py \
             src/jrdb_raw_history.py \
             src/fetch_jrdb_history.py \
             src/jrdb_store.py \
@@ -177,8 +182,8 @@ jobs:
             src/jrdb_newspaper_build.py
 
 
-      - name: Run common race-lap dataset, Store and Reader contracts
-        run: python -m pytest -q horse-racing/jrdb/tests/test_jrdb_race_lap_dataset.py horse-racing/jrdb/tests/test_jrdb_race_lap_store.py horse-racing/jrdb/tests/test_jrdb_race_lap_reader.py
+      - name: Run common race-lap dataset, Store, Reader and RaceNote context contracts
+        run: python -m pytest -q horse-racing/jrdb/tests/test_jrdb_race_lap_dataset.py horse-racing/jrdb/tests/test_jrdb_race_lap_store.py horse-racing/jrdb/tests/test_jrdb_race_lap_reader.py horse-racing/jrdb/tests/test_racenote_racelap_context.py
 
       - name: Run common reader regressions
         working-directory: horse-racing/jrdb/tests
