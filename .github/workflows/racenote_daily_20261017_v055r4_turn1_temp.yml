@@ -91,56 +91,39 @@ jobs:
           mkdir -p /tmp/course-fit
           unzip -q /tmp/approved-fit.zip -d /tmp/course-fit
           test -f /tmp/course-fit/fit/research/candidate_fit_view.parquet
-      - name: Build as-of-safe RaceLap snapshot
+      - name: Materialize verified RaceLap forward current (no JRDB history fetch)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RACELAP_CURRENT_ARTIFACT_ID: ${{ vars.RACELAP_CURRENT_ARTIFACT_ID }}
         run: |
           set -euo pipefail
-          mkdir -p /tmp/racelap-raw /tmp/racelap
-          for y in 2024 2025; do
-            ok=0
-            for attempt in 1 2 3 4 5; do
-              if python horse-racing/jrdb/src/fetch_jrdb_history.py \
-                --from-year "$y" --to-year "$y" --kinds SED \
-                --output-dir /tmp/racelap-raw --sleep-seconds 0.2 \
-                --max-retries 5 --retry-backoff-seconds 3; then
-                ok=1
-                break
-              fi
-              sleep $((attempt * 10))
-            done
-            test "$ok" -eq 1
-            sleep 5
-          done
+          test -n "$RACELAP_CURRENT_ARTIFACT_ID" || {
+            echo "::error::RaceLap forward current not promoted/configured"; exit 1;
+          }
+          mkdir -p /tmp/racelap-materialized /tmp/racelap
+          gh api "repos/${GITHUB_REPOSITORY}/actions/artifacts/${RACELAP_CURRENT_ARTIFACT_ID}/zip" > /tmp/racelap-materialized/current.zip
+          unzip -q /tmp/racelap-materialized/current.zip -d /tmp/racelap-materialized
+          test "$(find /tmp/racelap-materialized -type f -name 'race_lap.parquet' | wc -l)" -eq 1
+          test "$(find /tmp/racelap-materialized -type f -name 'manifest.json' | wc -l)" -eq 1
+          cp "$(find /tmp/racelap-materialized -type f -name 'race_lap.parquet' -print -quit)" /tmp/racelap/race_lap.parquet
+          cp "$(find /tmp/racelap-materialized -type f -name 'manifest.json' -print -quit)" /tmp/racelap/manifest.json
+          if test "$(find /tmp/racelap-materialized -type f -name 'audit.json' | wc -l)" -eq 1; then
+            cp "$(find /tmp/racelap-materialized -type f -name 'audit.json' -print -quit)" /tmp/racelap/race_lap.audit.json
+          else
+            cp /tmp/racelap/manifest.json /tmp/racelap/race_lap.audit.json
+          fi
           python - <<'PY'
           import json
           from pathlib import Path
-          import duckdb
-          root=Path('/tmp/analysis')
-          cur=json.loads((root/'current.json').read_text(encoding='utf-8'))
-          man=json.loads((root/cur['manifest']).read_text(encoding='utf-8'))
-          part=next(x for x in man['fact_table']['partitions'] if int(x['year'])==2026)
-          pq=root/part['relative_path']
-          rows=duckdb.connect().execute(
-              "select distinct replace(cast(race_date as varchar), '-', '') as d "
-              "from read_parquet(?) where race_date < '2026-10-17' order by d",
-              [str(pq)]
-          ).fetchall()
-          dates=[r[0] for r in rows if r[0] and len(r[0])>=8]
-          assert dates and dates[-1]=='20261012', dates[-5:]
-          Path('/tmp/racelap-2026-dates.txt').write_text('\n'.join(dates)+'\n',encoding='utf-8')
-          print(f'2026 completed race dates: {len(dates)}; latest={dates[-1]}')
+          current=json.loads(Path('/tmp/analysis/current.json').read_text(encoding='utf-8'))
+          manifest=json.loads((Path('/tmp/analysis')/current['manifest']).read_text(encoding='utf-8'))
+          Path('/tmp/analysis_period_to.txt').write_text(manifest['period_to'],encoding='utf-8')
           PY
-          while IFS= read -r d; do
-            python horse-racing/jrdb/src/fetch_jrdb_history.py \
-              --from-date "$d" --to-date "$d" --kinds SED \
-              --output-dir /tmp/racelap-raw --sleep-seconds 0.15 \
-              --max-retries 6 --retry-backoff-seconds 2
-          done < /tmp/racelap-2026-dates.txt
-          mapfile -t SED_INPUTS < <(find /tmp/racelap-raw/SED -maxdepth 1 -type f -name 'SED*.zip' | sort)
-          test "${#SED_INPUTS[@]}" -gt 2
-          python horse-racing/jrdb/src/jrdb_race_lap_dataset.py \
-            "${SED_INPUTS[@]}" \
-            --output /tmp/racelap/race_lap.parquet \
-            --audit /tmp/racelap/race_lap.audit.json --replace
+          python horse-racing/jrdb/src/jrdb_race_lap_forward_current.py \
+            --parquet /tmp/racelap/race_lap.parquet \
+            --manifest /tmp/racelap/manifest.json \
+            --target-date 2026-10-17 \
+            --analysis-period-to "$(cat /tmp/analysis_period_to.txt)"
       - name: Build PACI market-blind forecast prep
         shell: bash
         run: |
