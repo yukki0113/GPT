@@ -1,0 +1,67 @@
+name: RaceNote v0.5.5 Authoring Bundle Backfill
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/daily/**/AUTHORING_BUNDLE_TRIGGER'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-v055-authoring-bundle-backfill
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve one target day
+        id: resolve
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed < <(
+            git diff --name-only "$BEFORE" "$AFTER" |
+            grep -E '^horse-racing/jrdb/daily/[0-9]{8}/AUTHORING_BUNDLE_TRIGGER$' || true
+          )
+          test "${#changed[@]}" -eq 1 || { echo "::error::exactly one trigger required"; exit 1; }
+          day_dir="$(dirname "${changed[0]}")"
+          root="$day_dir/v055_day/v055"
+          test -f "$root/session.json"
+          test -f "$root/reader_manifest.json"
+          test ! -e "$root/authoring_bundle"
+          echo "root=$root" >> "$GITHUB_OUTPUT"
+
+      - name: Build lossless authoring bundle
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          ROOT: ${{ steps.resolve.outputs.root }}
+        run: |
+          python horse-racing/jrdb/src/racenote_v055_authoring_bundle.py --root "$ROOT"
+
+      - name: Commit bundle
+        env:
+          ROOT: ${{ steps.resolve.outputs.root }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$ROOT/authoring_bundle"
+          git commit -m "RaceNote: backfill v0.5.5 LLM authoring bundle"
+          git pull --rebase origin main
+          git push origin HEAD:main
