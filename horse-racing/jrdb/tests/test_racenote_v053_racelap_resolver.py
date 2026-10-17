@@ -49,7 +49,7 @@ def test_paci_entry_resolves_current_bundle_before_daily_build(tmp_path, monkeyp
         "--analysis-root", str(tmp_path / "analysis"),
         "--course-fit-root", str(tmp_path / "fit"),
         "--race-lap-current-bundle", str(current),
-        "--analysis-period-to", "2026-10-12",
+        "--race-lap-expected-period-to", "2026-10-12",
         "--racereview-root", str(tmp_path / "rrdb"),
         "--output-root", str(output),
         "--prep-only",
