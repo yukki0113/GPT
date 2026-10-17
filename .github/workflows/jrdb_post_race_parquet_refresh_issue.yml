@@ -158,6 +158,15 @@ jobs:
             test -s ".postrace/raw/SED/SED${yymmdd}.zip"
           done < .postrace/dates.txt
 
+      - name: Publish reusable SED input for RaceLap forward refresh
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-postrace-sed-${{ github.run_id }}
+          path: .postrace/raw/SED/SED*.zip
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+
       - name: Build immutable v1.4 candidate natively from Parquet
         env:
           PYTHONPATH: horse-racing/jrdb/src
