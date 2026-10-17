@@ -1,0 +1,107 @@
+name: RaceLap Forward Incremental Candidate
+
+on:
+  workflow_dispatch:
+    inputs:
+      previous_run_id:
+        description: Actions run containing accepted RaceLap current snapshot
+        required: true
+        type: string
+      previous_artifact_name:
+        description: Exact previous RaceLap artifact name
+        required: true
+        type: string
+      sed_run_id:
+        description: Post-race run containing the SED artifact
+        required: true
+        type: string
+      sed_artifact_name:
+        description: Exact jrdb-postrace-sed artifact name
+        required: true
+        type: string
+      generation_id:
+        description: Immutable new generation id
+        required: true
+        type: string
+      expected_dates:
+        description: Comma-separated completed race dates (YYYY-MM-DD)
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Download exact accepted RaceLap and already-acquired SED
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIOUS_RUN: ${{ inputs.previous_run_id }}
+          PREVIOUS_NAME: ${{ inputs.previous_artifact_name }}
+          SED_RUN: ${{ inputs.sed_run_id }}
+          SED_NAME: ${{ inputs.sed_artifact_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p .racelap/previous .racelap/incoming .racelap/candidate
+          gh run download "$PREVIOUS_RUN" -n "$PREVIOUS_NAME" -D .racelap/previous
+          gh run download "$SED_RUN" -n "$SED_NAME" -D .racelap/incoming
+          test "$(find .racelap/previous -type f -name race_lap.parquet | wc -l)" -eq 1
+          test "$(find .racelap/previous -type f -name manifest.json | wc -l)" -eq 1
+          test "$(find .racelap/incoming -type f -name 'SED*.zip' | wc -l)" -gt 0
+      - name: Verify previous current and make immutable candidate
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          GENERATION_ID: ${{ inputs.generation_id }}
+          EXPECTED_DATES: ${{ inputs.expected_dates }}
+        run: |
+          set -euo pipefail
+          previous="$(find .racelap/previous -type f -name race_lap.parquet -print -quit)"
+          manifest="$(find .racelap/previous -type f -name manifest.json -print -quit)"
+          python - "$previous" "$manifest" <<'PY'
+          import json,sys,hashlib
+          from pathlib import Path
+          from jrdb_race_lap_store import RaceLapStore
+          p,m=map(Path,sys.argv[1:])
+          j=json.loads(m.read_text())
+          assert j['validation_status']=='PASS'
+          assert j['status'] in ('CURRENT','CANDIDATE_PASS')
+          h=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert j['parquet_sha256']==h
+          assert j['parquet_size_bytes']==p.stat().st_size
+          assert RaceLapStore(p).metadata()['race_count']==j['race_count']
+          PY
+          mapfile -t SED_INPUTS < <(find .racelap/incoming -type f -name 'SED*.zip' | sort)
+          args=()
+          for file in "${SED_INPUTS[@]}"; do args+=(--sed "$file"); done
+          IFS=',' read -ra DATES <<< "$EXPECTED_DATES"
+          for d in "${DATES[@]}"; do args+=(--expected-date "$d"); done
+          python horse-racing/jrdb/src/jrdb_race_lap_forward_refresh.py \
+            --previous "$previous" \
+            --output-root .racelap/candidate \
+            --generation-id "$GENERATION_ID" \
+            "${args[@]}" | tee .racelap/refresh_result.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          obj=json.loads(Path('.racelap/refresh_result.json').read_text())
+          assert obj['validation_status']=='PASS'
+          assert obj['status']=='CANDIDATE_PASS', 'No-op candidate does not publish a new generation'
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racelap-forward-candidate-${{ github.run_id }}
+          path: |
+            .racelap/candidate/generations/
+            .racelap/refresh_result.json
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
