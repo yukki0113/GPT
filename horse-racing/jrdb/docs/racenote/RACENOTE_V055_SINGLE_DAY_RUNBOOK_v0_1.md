@@ -34,13 +34,18 @@ Forward T1 must not:
 - scan a historical daily SED date range;
 - rebuild RaceLap from raw history.
 
-Before Reader seal, require:
+Before Reader seal, Forward T1 applies freshness only to RaceLap:
 
 ```text
-analysis.period_to < target_date
+race_lap.expected_period_to < target_date
+race_lap.period_to == race_lap.expected_period_to
 race_lap.period_to < target_date
-race_lap.period_to == analysis.period_to
 ```
+
+Analysis and RRDB are maintained by their dedicated operations/threads. Forward
+T1 consumes the supplied current assets but does not refresh them and does not
+compare their recency/cutoff against RaceLap. Target/future-data contamination
+guards remain unchanged.
 
 The exact RaceLap Parquet SHA-256 is still bound into the v0.5.5 session, so reuse of the canonical current asset does not weaken input immutability.
 
