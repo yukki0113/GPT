@@ -1,0 +1,72 @@
+name: RaceLap Forward Current Promotion
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_run_id:
+        description: Validated RaceLap incremental candidate run
+        required: true
+        type: string
+      candidate_artifact_name:
+        description: Exact candidate artifact name
+        required: true
+        type: string
+      target_date:
+        description: Next forecast date YYYY-MM-DD
+        required: true
+        type: string
+      analysis_period_to:
+        description: Accepted Analysis completed-date cutoff
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Download exact immutable candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_RUN: ${{ inputs.candidate_run_id }}
+          CANDIDATE_ARTIFACT: ${{ inputs.candidate_artifact_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p .racelap-promote/input
+          gh run download "$CANDIDATE_RUN" -n "$CANDIDATE_ARTIFACT" -D .racelap-promote/input
+          test "$(find .racelap-promote/input -type f -name manifest.json | wc -l)" -eq 1
+      - name: Verify, promote, and package current
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          TARGET_DATE: ${{ inputs.target_date }}
+          ANALYSIS_PERIOD_TO: ${{ inputs.analysis_period_to }}
+        run: |
+          set -euo pipefail
+          manifest="$(find .racelap-promote/input -type f -name manifest.json -print -quit)"
+          python horse-racing/jrdb/src/jrdb_race_lap_forward_promote.py \
+            --candidate "$(dirname "$manifest")" \
+            --destination .racelap-promote/current \
+            --target-date "$TARGET_DATE" \
+            --analysis-period-to "$ANALYSIS_PERIOD_TO" \
+            | tee .racelap-promote/promotion_receipt.json
+      - uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: racelap-forward-current-${{ github.run_id }}
+          path: .racelap-promote/current/
+          retention-days: 90
+          compression-level: 0
+          if-no-files-found: error
+      - name: Report current artifact reference
+        run: |
+          echo "Current artifact id: ${{ steps.upload.outputs.artifact-id }}"
+          echo "Set RACELAP_CURRENT_ARTIFACT_ID after durable publication and verification."
