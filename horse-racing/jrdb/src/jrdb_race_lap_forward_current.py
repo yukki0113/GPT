@@ -24,7 +24,7 @@ def validate(parquet: Path, manifest: Path, target_date: str,
     m = json.loads(manifest.read_text(encoding="utf-8"))
     if m.get("schema_version") != "jrdb-race-lap-forward-current-0.1":
         raise ValueError("RaceLap current schema mismatch")
-    if m.get("status") not in ("CURRENT", "CANDIDATE_PASS"):
+    if m.get("status") != "CURRENT":
         raise ValueError("RaceLap current not accepted")
     if m.get("validation_status") != "PASS":
         raise ValueError("RaceLap validation not PASS")
