@@ -94,7 +94,7 @@ jobs:
       - name: Materialize verified RaceLap forward current (no JRDB history fetch)
         env:
           GH_TOKEN: ${{ github.token }}
-          RACELAP_CURRENT_ARTIFACT_ID: ${{ vars.RACELAP_CURRENT_ARTIFACT_ID }}
+          RACELAP_CURRENT_ARTIFACT_ID: "12093205219"
         run: |
           set -euo pipefail
           if test -z "$RACELAP_CURRENT_ARTIFACT_ID" && test -f horse-racing/jrdb/config/racenote_racelap_forward_current_binding.json; then
