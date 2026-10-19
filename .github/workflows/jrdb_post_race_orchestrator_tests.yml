@@ -1,0 +1,49 @@
+name: JRDB Post-Race Orchestrator Tests
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py"
+      - "horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native_v1_4.py"
+      - "horse-racing/jrdb/src/jrdb_postrace_review_incremental.py"
+      - "horse-racing/jrdb/tests/test_run_jrdb_post_race_orchestrator.py"
+      - ".github/workflows/jrdb_post_race_orchestrator_tests.yml"
+      - "horse-racing/jrdb/docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md"
+      - "horse-racing/jrdb/docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md"
+  pull_request:
+    paths:
+      - "horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py"
+      - "horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native_v1_4.py"
+      - "horse-racing/jrdb/src/jrdb_postrace_review_incremental.py"
+      - "horse-racing/jrdb/tests/test_run_jrdb_post_race_orchestrator.py"
+      - ".github/workflows/jrdb_post_race_orchestrator_tests.yml"
+      - "horse-racing/jrdb/docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md"
+      - "horse-racing/jrdb/docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install data dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+      - name: Compile orchestrator
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py
+      - name: Run orchestrator tests
+        working-directory: horse-racing/jrdb/tests
+        env:
+          PYTHONPATH: ../src:../../../tools/data-storage
+        run: |
+          python -m unittest -v test_run_jrdb_post_race_orchestrator

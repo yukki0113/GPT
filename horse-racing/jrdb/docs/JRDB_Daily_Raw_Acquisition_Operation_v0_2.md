@@ -151,6 +151,18 @@ The purpose of this operation is to make the first available SED/HJC usable quic
 
 If a valid canonical SED/HJC already exists from the same post-race operation, do not create a duplicate. The scheduled SED re-fetch happens in the next pre-race operation under Section 3.
 
+### Post-race downstream continuation
+
+For the user-facing `開催後取得をお願いします` flow, Raw publication is no longer the terminal step.
+
+After canonical SED/HJC verification, continue with the current post-race orchestration contract:
+
+`JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md`
+
+That continuation resolves the matching canonical PACI, builds Analysis v1.4 and RaceReviewDB candidates from the same PACI/SED bytes, performs canonical Drive promotion only after candidate PASS, and requires Drive round-trip verification before reporting overall COMPLETE.
+
+The Raw acquisition contract in this document remains the source-of-truth for SED/HJC timing, duplicate protection, and late-finalization SED behavior.
+
 ## 5. Acquisition and transport boundary
 
 JRDB authenticated acquisition is Actions-native because it requires JRDB secrets.
