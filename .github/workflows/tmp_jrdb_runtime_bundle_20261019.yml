@@ -1,0 +1,37 @@
+name: TEMP JRDB Runtime Bundle 20261019
+
+on:
+  push:
+    branches:
+      - ops/jrdb-runtime-bundle-20261019
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download offline DuckDB wheel
+        run: |
+          mkdir -p /tmp/jrdb-runtime/wheels
+          python -m pip download --only-binary=:all: --no-deps \
+            duckdb==1.1.3 \
+            -d /tmp/jrdb-runtime/wheels
+      - name: Stage JRDB runtime source
+        run: |
+          mkdir -p /tmp/jrdb-runtime/repo/horse-racing/jrdb
+          cp -R horse-racing/jrdb/src /tmp/jrdb-runtime/repo/horse-racing/jrdb/
+          cp -R horse-racing/jrdb/schema /tmp/jrdb-runtime/repo/horse-racing/jrdb/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-runtime-bundle-20261019
+          path: /tmp/jrdb-runtime/
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
