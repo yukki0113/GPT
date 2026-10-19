@@ -328,3 +328,27 @@ Fact Lite / Stats Mart data更新:
 - publisher validation
 - current Release更新
 - full Pages recomposition
+
+
+## Post-race orchestration integration — 2026-10-19
+
+The normal JRDB user-facing `開催後取得` operation now owns Fact Lite DataSource
+refresh as a mandatory downstream stage.
+
+Order:
+
+```text
+Analysis CURRENT promotion + round-trip PASS
+  -> Fact Lite v0.3 rebuild / validation
+  -> jrdb-pwa-fact-lite-current Release update + readback
+  -> full JRDB PWA Pages recomposition
+  -> verify Kenshow_Labo/fact-lite.html and momotaro/fact-lite.html distribution
+  -> continue remaining post-race promotion
+```
+
+Kenshow_Labo and Momotaro share the same Fact Lite SQLite distribution asset.
+Do not create a Momotaro-specific Fact Lite database. Their OPFS namespaces and
+UI surfaces remain separate.
+
+A Fact Lite Release update alone is not completion. The full Pages workflow must
+succeed before the post-race operation can proceed past this distribution gate.
