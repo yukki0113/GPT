@@ -224,6 +224,6 @@ Do not report "Drive保存済み" or "SED更新済み" before the relevant Drive
 | User request | Acquire now | Publication behavior | Deferred / excluded |
 |---|---|---|---|
 | `mmddの開催前取得` | target PACI + missing SKB from immediately preceding race week + fresh SED for every preceding-week race date | PACI/SKB normal publish; SED compare-and-refresh canonical if changed | target-date SED/HJC |
-| `mmdd〜mmddの開催後取得` | first available SED + HJC for every specified race date | normal duplicate-safe publish | SKB, PACI; later SED finalization waits for next pre-race cycle |
+| `mmdd〜mmddの開催後取得` | first available SED + HJC for every specified race date, then full post-race orchestrator | duplicate-safe Raw publish -> PACI resolution -> Analysis/RaceReviewDB candidates -> Drive round-trip -> CURRENT promotion | SKB; later SED finalization waits for next pre-race cycle |
 
 This table is the current default for routine 2026 daily raw operation.
