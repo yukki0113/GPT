@@ -71,11 +71,11 @@ RaceNote作業では追加で `docs/racenote/README.md` と `docs/racenote/FOREC
 8. entrypoint / default / contract / subsystem boundary / current-vs-legacy boundaryが変わる場合、README / CONTEXT / HANDOFF / dedicated docsの更新要否を同時確認。
 9. Gitへcommitし、以後Git版を正本とする。
 
-## Current daily Raw acquisition — 2026-10-01
+## Current daily Raw acquisition / post-race orchestration — 2026-10-19
 
 Routine 2026 acquisition requests use the canonical contract:
 
-`docs/JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`
+`docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md`
 
 User-facing commands:
 
@@ -88,9 +88,22 @@ User-facing commands:
   - compare refreshed SED with canonical Drive bytes; if changed, replace the existing Drive file bytes in place to preserve file ID and Drive revision history
   - do not fetch target-date SED/HJC as part of this command
 - `mmdd〜mmddの開催後取得をお願いします`
-  - fetch/upload SED and HJC for each requested race date
-  - do not request SKB
-  - do not request PACI
+  - this is the single user-facing entrypoint for the full post-race update pipeline
+  - inspect canonical Drive SED/HJC per date and classify each family as `EXISTING_VALID`, fetch-required, or after fetch `DOWNLOADED` / `POST_RACE_NOT_READY`
+  - fetch/upload only missing SED/HJC; do not request SKB
+  - if either SED or HJC is `POST_RACE_NOT_READY`, set downstream_allowed=false for that date and stop before derived updates
+  - resolve canonical PACI for every READY date; normally reuse pre-race PACI, but if absent acquire/publish it before downstream work
+  - validate one shared PACI/SED/HJC source receipt
+  - run `src/run_jrdb_post_race_orchestrator.py`
+  - require Analysis v1.4 candidate PASS and RaceReviewDB candidate PASS
+  - publish immutable Analysis generation and RaceReviewDB snapshot through native Drive
+  - round-trip verify SHA/size/manifest before CURRENT promotion
+  - update stable CURRENT objects in place and read them back for final verification
+  - report `COMPLETE` only when the full pipeline passes
+
+Canonical full post-race contract: `docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md`.
+
+The 2026-10-17 / 2026-10-18 cycle already served as the integration validation run. Do not rerun it just for the operational cutover; use this orchestration for the next post-race update onward.
 
 SKB is a delayed-recovery family in routine daily operation. A same-week `NOT_FOUND` for SKB is not by itself an error and must not trigger repeated blind retries. Missing SKB is recovered during the next pre-race acquisition after a Drive inventory check. That same pre-race operation also performs the routine late-finalization SED refresh for every preceding-week race date.
 
