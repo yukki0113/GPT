@@ -162,20 +162,28 @@ The coordinator fails closed when:
 - either derived store reports target dates different from the shared source
   receipt.
 
-## 7. Canonical promotion
+## 7. Canonical promotion and PWA DataSource distribution
 
 After local candidate PASS:
 
 1. publish the Analysis immutable generation to its canonical Drive root,
 2. re-download/re-read and verify manifest, SHA/size, row count and audit,
 3. advance Analysis `current.json` in place only after round-trip PASS,
-4. publish the RaceReviewDB immutable generation/snapshot,
-5. re-download/re-read and verify its manifest, generation, period and bytes,
-6. replace the stable `RaceReviewDB_CURRENT.zip` bytes in place only after
-   round-trip PASS,
-7. preserve the stable CURRENT Drive file ID.
+4. rebuild Fact Lite v0.3 from the promoted Analysis CURRENT,
+5. validate Fact Lite row count, schema, required tables/columns, integrity, size and SHA-256,
+6. publish `jrdb-pwa-fact-lite-current` and read it back for manifest / byte verification,
+7. require a successful full `JRDB PWA Pages` recomposition and verify the same Fact Lite DataSource is distributed to both Kenshow_Labo and Momotaro condition-aggregation surfaces,
+8. publish the RaceReviewDB immutable generation/snapshot,
+9. re-download/re-read and verify its manifest, generation, period and bytes,
+10. replace the stable `RaceReviewDB_CURRENT.zip` bytes in place only after
+    round-trip PASS,
+11. preserve the stable CURRENT Drive file ID.
 
-A candidate PASS alone is not operational completion.
+Kenshow_Labo and Momotaro share the same Fact Lite SQLite distribution asset.
+Do not build or publish a separate Momotaro Fact Lite database.
+
+A candidate PASS alone, or a Fact Lite Release update without a successful full
+Pages deployment, is not operational completion.
 
 ## 8. Raw-thread execution sequence
 
@@ -213,7 +221,10 @@ A successful user-facing completion report should include at least:
 - previous/new Analysis generation IDs,
 - previous/new RaceReviewDB generation IDs,
 - RaceReviewDB period_to,
-- Drive round-trip verification result for both stores,
+- Analysis Drive round-trip / CURRENT verification result,
+- Fact Lite data_version / Release validation result,
+- full JRDB PWA Pages deployment result for Kenshow_Labo + Momotaro condition-aggregation surfaces,
+- RaceReviewDB Drive round-trip / CURRENT verification result,
 - overall status.
 
 Overall status is COMPLETE only when Raw publication, both candidate builds,
