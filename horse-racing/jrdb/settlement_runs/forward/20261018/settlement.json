@@ -1,0 +1,26 @@
+{
+  "schema_version": "racenote-forward-settlement-pending-0.1",
+  "status": "PENDING_JRDB_RAW_SETTLEMENT",
+  "date": "2026-10-18",
+  "selection_id": "DAILY-20261018",
+  "reason": "Target-date JRDB SED/HJC not available in connected Drive. Public-web fallback was used only for result/top3 ledgering; canonical ticket payout settlement is deferred.",
+  "result_summary": {
+    "honmei_wins": 11,
+    "honmei_top3": 24,
+    "winner_in_five": 29,
+    "all_top3_in_five": 15,
+    "winner_mark_counts": {
+      "◎": 11,
+      "○": 6,
+      "▲": 5,
+      "△1": 2,
+      "△2": 5
+    },
+    "winner_outside_five": 7
+  },
+  "research_bets": {
+    "investment_jpy": null,
+    "payout_jpy": null,
+    "return_rate_pct": null
+  }
+}
