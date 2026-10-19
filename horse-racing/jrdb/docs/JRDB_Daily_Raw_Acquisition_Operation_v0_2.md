@@ -149,7 +149,11 @@ For every requested race date:
 
 The purpose of this operation is to make the first available SED/HJC usable quickly for result analysis. Do not delay ordinary post-race acquisition waiting for later SED finalization.
 
-If a valid canonical SED/HJC already exists from the same post-race operation, do not create a duplicate. The scheduled SED re-fetch happens in the next pre-race operation under Section 3.
+If a valid canonical SED/HJC already exists from the same post-race operation, do not create a duplicate. Mark that family as `EXISTING_VALID` and skip only that upstream fetch. Continue fetching the other missing family for the same race date.
+
+If JRDB returns NOT_FOUND for a required post-race SED or HJC, classify the date as `POST_RACE_NOT_READY`. This is a normal availability stop: do not start Analysis or RaceReviewDB updates for that date. Retry the user-facing post-race operation later.
+
+The scheduled SED re-fetch happens in the next pre-race operation under Section 3.
 
 ### Post-race downstream continuation
 
@@ -191,8 +195,11 @@ Before an upstream fetch, check the canonical Drive folder for the requested fil
 For ordinary acquisition families/dates:
 
 - if a valid file already exists, do not create a duplicate Drive object;
+- for post-race SED/HJC, record it as `EXISTING_VALID` and skip only that family;
 - do not refetch merely because the user did not provide a path;
 - report that the canonical file already exists when no further action is required.
+
+The post-race Actions request must receive the Drive-validated existing-file evidence from the GPT/native Drive step because Actions itself does not read Drive.
 
 **Exception:** preceding-week SED during `mmddの開催前取得` is an intentional refresh target. Its existing Drive presence does not suppress the upstream re-fetch.
 
