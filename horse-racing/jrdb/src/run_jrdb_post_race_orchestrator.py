@@ -223,8 +223,21 @@ def run_post_race_orchestrator(
         },
         "publication_required": {
             "analysis_drive_promotion": True,
+            "pwa_fact_lite_distribution": True,
+            "pwa_fact_lite_release_tag": "jrdb-pwa-fact-lite-current",
+            "pwa_pages_redeployment": True,
+            "pwa_surfaces": [
+                "Kenshow_Labo/fact-lite.html",
+                "momotaro/fact-lite.html",
+            ],
             "race_review_db_drive_promotion": True,
             "drive_round_trip_verification": True,
+            "ordered_steps": [
+                "analysis_drive_round_trip_and_current_promotion",
+                "fact_lite_rebuild_validate_publish",
+                "jrdb_pwa_pages_full_redeploy_and_verify",
+                "race_review_db_drive_round_trip_and_current_promotion",
+            ],
         },
     }
 
