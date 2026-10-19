@@ -73,6 +73,7 @@ jobs:
           req=json.loads(str(issue.get('body') or '').strip())
           date=str(req.get('date','')).strip()
           kinds=req.get('kinds') or []
+          mode=str(req.get('mode') or 'generic').strip().lower()
           if not re.fullmatch(r'20\d{6}',date):
               raise SystemExit('date must be YYYYMMDD')
           if not isinstance(kinds,list) or not kinds:
@@ -81,9 +82,33 @@ jobs:
           allowed={'PACI','SED','HJC','SKB'}
           if any(x not in allowed for x in kinds):
               raise SystemExit('supported kinds: PACI, SED, HJC, SKB')
-          Path('/tmp/request.json').write_text(json.dumps({'date':date,'kinds':kinds},indent=2),encoding='utf-8')
+          if mode not in {'generic','post_race'}:
+              raise SystemExit('mode must be generic or post_race')
+          resolved={'date':date,'kinds':kinds,'mode':mode}
+          if mode == 'post_race':
+              import sys
+              sys.path.insert(0, 'horse-racing/jrdb/src')
+              from jrdb_post_race_acquisition_state import build_post_race_fetch_plan
+              existing=req.get('existing_valid_files') or []
+              if not isinstance(existing,list):
+                  raise SystemExit('existing_valid_files must be a list')
+              plan=build_post_race_fetch_plan(
+                  date=date,
+                  kinds=kinds,
+                  existing_valid_files=existing,
+              )
+              resolved['existing_valid_files']=existing
+              Path('/tmp/post_race_plan.json').write_text(
+                  json.dumps(plan,ensure_ascii=False,indent=2)+'\n',
+                  encoding='utf-8',
+              )
+          Path('/tmp/request.json').write_text(
+              json.dumps(resolved,ensure_ascii=False,indent=2)+'\n',
+              encoding='utf-8',
+          )
           with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as f:
               f.write(f'date={date}\n')
+              f.write(f'mode={mode}\n')
               f.write(f'artifact_name=jrdb-raw-{date}\n')
           PY
 
@@ -98,12 +123,25 @@ jobs:
           import json, subprocess
           from pathlib import Path
           req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
-          for kind in req['kinds']:
+          kinds=req['kinds']
+          if req.get('mode') == 'post_race':
+              plan=json.loads(Path('/tmp/post_race_plan.json').read_text(encoding='utf-8'))
+              kinds=plan['fetch_kinds']
+          for kind in kinds:
               if kind=='PACI':
                   cmd=['python','horse-racing/jrdb/src/fetch_jrdb_paci.py','--date',req['date'],'--out-dir','/tmp/jrdb_raw']
               else:
-                  cmd=['python','horse-racing/jrdb/src/fetch_jrdb_history.py','--date',req['date'],'--kinds',kind,'--output-dir','/tmp/jrdb_raw']
-              subprocess.run(cmd,check=True)
+                  cmd=[
+                      'python','horse-racing/jrdb/src/fetch_jrdb_history.py',
+                      '--date',req['date'],
+                      '--kinds',kind,
+                      '--output-dir','/tmp/jrdb_raw',
+                      '--manifest','/tmp/jrdb_raw/fetch_manifest.jsonl',
+                      '--sleep-seconds','0',
+                  ]
+              completed=subprocess.run(cmd,check=False)
+              if completed.returncode != 0:
+                  raise SystemExit(completed.returncode)
           PY
 
       - name: Build manifest and validate ZIPs
@@ -112,18 +150,81 @@ jobs:
           import hashlib,json,zipfile
           from pathlib import Path
           req=json.loads(Path('/tmp/request.json').read_text(encoding='utf-8'))
-          out=Path('/tmp/jrdb_raw'); yy=req['date'][2:]; rows=[]
-          for kind in req['kinds']:
-              name=f'{kind}{yy}.zip'
-              path=out/name if kind=='PACI' else out/kind/name
-              if not path.exists(): raise SystemExit(f'missing output: {path}')
-              if not zipfile.is_zipfile(path): raise SystemExit(f'invalid zip: {path}')
-              with zipfile.ZipFile(path) as zf:
-                  bad=zf.testzip()
-                  if bad is not None: raise SystemExit(f'corrupt member in {name}: {bad}')
-                  members=zf.namelist()
-              rows.append({'kind':kind,'file_name':name,'size_bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'members':members})
-          Path('/tmp/jrdb_raw/manifest.json').write_text(json.dumps({'date':req['date'],'status':'success','files':rows},ensure_ascii=False,indent=2),encoding='utf-8')
+          out=Path('/tmp/jrdb_raw'); yy=req['date'][2:]
+
+          if req.get('mode') == 'post_race':
+              import sys
+              sys.path.insert(0, 'horse-racing/jrdb/src')
+              from jrdb_post_race_acquisition_state import classify_post_race_fetch_result
+              plan=json.loads(Path('/tmp/post_race_plan.json').read_text(encoding='utf-8'))
+              fetch_manifest=out/'fetch_manifest.jsonl'
+              manifest_rows=[]
+              if fetch_manifest.is_file():
+                  manifest_rows=[
+                      json.loads(line)
+                      for line in fetch_manifest.read_text(encoding='utf-8').splitlines()
+                      if line.strip()
+                  ]
+              state=classify_post_race_fetch_result(
+                  plan=plan,
+                  manifest_rows=manifest_rows,
+              )
+              files=[]
+              for kind,family in state['family_states'].items():
+                  if family['status'] != 'DOWNLOADED':
+                      continue
+                  name=f'{kind}{yy}.zip'
+                  path=out/kind/name
+                  if not path.exists(): raise SystemExit(f'missing downloaded output: {path}')
+                  if not zipfile.is_zipfile(path): raise SystemExit(f'invalid zip: {path}')
+                  with zipfile.ZipFile(path) as zf:
+                      bad=zf.testzip()
+                      if bad is not None: raise SystemExit(f'corrupt member in {name}: {bad}')
+                      members=[n for n in zf.namelist() if not n.endswith('/')]
+                      if not any(Path(n).name.upper().startswith(kind) for n in members):
+                          raise SystemExit(f'no {kind} member in {name}')
+                  files.append({
+                      'kind':kind,
+                      'file_name':name,
+                      'size_bytes':path.stat().st_size,
+                      'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),
+                      'member_count':len(members),
+                  })
+              report={
+                  'date':req['date'],
+                  'mode':'post_race',
+                  'status':state['status'],
+                  'downstream_allowed':state['downstream_allowed'],
+                  'family_states':state['family_states'],
+                  'downloaded_files':files,
+                  'next_action':(
+                      'CONTINUE_TO_POST_RACE_ORCHESTRATOR'
+                      if state['downstream_allowed']
+                      else 'STOP_BEFORE_DERIVED_UPDATES'
+                  ),
+              }
+              Path('/tmp/jrdb_raw/manifest.json').write_text(
+                  json.dumps(report,ensure_ascii=False,indent=2)+'\n',
+                  encoding='utf-8',
+              )
+              if state['status'] == 'ERROR':
+                  raise SystemExit('post-race acquisition state ERROR')
+          else:
+              rows=[]
+              for kind in req['kinds']:
+                  name=f'{kind}{yy}.zip'
+                  path=out/name if kind=='PACI' else out/kind/name
+                  if not path.exists(): raise SystemExit(f'missing output: {path}')
+                  if not zipfile.is_zipfile(path): raise SystemExit(f'invalid zip: {path}')
+                  with zipfile.ZipFile(path) as zf:
+                      bad=zf.testzip()
+                      if bad is not None: raise SystemExit(f'corrupt member in {name}: {bad}')
+                      members=zf.namelist()
+                  rows.append({'kind':kind,'file_name':name,'size_bytes':path.stat().st_size,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'members':members})
+              Path('/tmp/jrdb_raw/manifest.json').write_text(
+                  json.dumps({'date':req['date'],'mode':'generic','status':'success','files':rows},ensure_ascii=False,indent=2)+'\n',
+                  encoding='utf-8',
+              )
           PY
 
       - name: Upload raw artifact
@@ -147,7 +248,7 @@ jobs:
           import json,os
           from pathlib import Path
           manifest=json.loads(Path('/tmp/jrdb_raw/manifest.json').read_text(encoding='utf-8'))
-          result={'status':'success','run_id':int(os.environ['RUN_ID']),'artifact_name':os.environ['ARTIFACT_NAME'],'manifest':manifest}
+          result={'status':manifest.get('status','success'),'run_id':int(os.environ['RUN_ID']),'artifact_name':os.environ['ARTIFACT_NAME'],'manifest':manifest}
           Path('/tmp/comment.md').write_text('JRDB_RAW_FETCH_RESULT\n```json\n'+json.dumps(result,ensure_ascii=False,indent=2)+'\n```\n',encoding='utf-8')
           PY
           gh issue comment "$ISSUE_NUMBER" --repo "${{ github.repository }}" --body-file /tmp/comment.md
