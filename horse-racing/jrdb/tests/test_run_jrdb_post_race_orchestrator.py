@@ -130,6 +130,21 @@ class PostRaceOrchestratorTest(unittest.TestCase):
             self.assertTrue(
                 result["publication_required"]["drive_round_trip_verification"]
             )
+            self.assertTrue(
+                result["publication_required"]["pwa_fact_lite_distribution"]
+            )
+            self.assertTrue(
+                result["publication_required"]["pwa_pages_redeployment"]
+            )
+            self.assertEqual(
+                result["publication_required"]["ordered_steps"],
+                [
+                    "analysis_drive_round_trip_and_current_promotion",
+                    "fact_lite_rebuild_validate_publish",
+                    "jrdb_pwa_pages_full_redeploy_and_verify",
+                    "race_review_db_drive_round_trip_and_current_promotion",
+                ],
+            )
 
 
 if __name__ == "__main__":
