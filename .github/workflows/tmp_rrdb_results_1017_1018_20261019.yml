@@ -1,0 +1,44 @@
+name: TMP RRDB results 2026-10-17 18
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/tmp_rrdb_results_1017_1018_20261019.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  results:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      JRDB_USER: ${{ secrets.JRDB_USER }}
+      JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Fetch raw SED/HJC
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rrdb-results/raw /tmp/rrdb-results/out
+          for D in 2026-10-17 2026-10-18; do
+            python horse-racing/jrdb/src/fetch_jrdb_history.py               --date "$D"               --kinds SED HJC               --output-dir /tmp/rrdb-results/raw               --sleep-seconds 0.2               --max-retries 5               --retry-backoff-seconds 2
+          done
+      - name: Query canonical results
+        run: |
+          set -euo pipefail
+          for D in 2026-10-17 2026-10-18; do
+            YMD="${D//-/}"
+            YY="${YMD:2}"
+            python horse-racing/jrdb/src/jrdb_result_query.py               --date "$D"               --source raw               --sed "/tmp/rrdb-results/raw/SED/SED${YY}.zip"               --hjc "/tmp/rrdb-results/raw/HJC/HJC${YY}.zip"               --bet-type win               --bet-type place               --include-all-runners               --pretty               --output "/tmp/rrdb-results/out/result_${YMD}.json"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rrdb-results-20261017-18
+          path: /tmp/rrdb-results/out/
