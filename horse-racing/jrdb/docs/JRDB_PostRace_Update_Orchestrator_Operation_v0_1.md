@@ -19,9 +19,11 @@ The operation covers:
 4. resolution of the matching canonical PACI for every race date,
 5. Analysis v1.4 incremental candidate generation,
 6. RaceReviewDB incremental candidate generation,
-7. canonical Drive promotion for both derived stores,
-8. Drive round-trip verification,
-9. one aggregate completion report.
+7. Analysis canonical Drive promotion and CURRENT verification,
+8. Fact Lite v0.3 rebuild / validation / current Release publication,
+9. full JRDB PWA Pages recomposition and verification for both Kenshow_Labo and Momotaro condition-aggregation pages,
+10. RaceReviewDB canonical Drive promotion and CURRENT verification,
+11. one aggregate completion report.
 
 The user should not have to manually move from the Raw thread to separate
 Analysis or RaceReviewDB maintenance threads.
@@ -191,8 +193,10 @@ resolve target race dates
   -> materialize validated Analysis CURRENT
   -> materialize RaceReviewDB_CURRENT.zip
   -> run run_jrdb_post_race_orchestrator.py
-  -> Analysis Drive promotion + round-trip
-  -> RaceReviewDB Drive promotion + round-trip
+  -> Analysis Drive promotion + round-trip + CURRENT verification
+  -> Fact Lite v0.3 rebuild / validate / current Release publish
+  -> full JRDB PWA Pages redeploy + Kenshow_Labo / Momotaro fact-lite verification
+  -> RaceReviewDB Drive promotion + round-trip + CURRENT verification
   -> aggregate completion report
 ```
 
@@ -213,4 +217,6 @@ A successful user-facing completion report should include at least:
 - overall status.
 
 Overall status is COMPLETE only when Raw publication, both candidate builds,
-both canonical promotions and both round-trip checks have passed.
+Analysis canonical promotion, Fact Lite current Release publication, full PWA Pages
+redeployment for both condition-aggregation surfaces, RaceReviewDB canonical
+promotion, and all required round-trip / CURRENT checks have passed.
