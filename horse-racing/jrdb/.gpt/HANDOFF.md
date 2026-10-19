@@ -99,7 +99,7 @@ Current Stage A instruction:
 
 ### JRDB Daily Raw Acquisition v0.2 — 2026-10-14
 
-- Current routine acquisition contract: `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`.
+- Current routine acquisition contract: `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md`.
 - Normal pre-race command: `mmddの開催前取得をお願いします`.
   - acquire target-date PACI;
   - resolve the immediately preceding JRA race week's actual race dates;
@@ -108,9 +108,17 @@ Current Stage A instruction:
   - re-fetch preceding-week SED for every actual race date even when canonical SED already exists;
   - if refreshed SED bytes differ, update the existing Drive file in place so the canonical file ID stays stable and the previous snapshot remains in Drive revision history.
 - Normal post-race command: `mmdd〜mmddの開催後取得をお願いします`.
-  - acquire/upload SED + HJC for each requested race date;
-  - do not request SKB;
-  - do not request PACI.
+  - treat this as the user-facing entrypoint for the full post-race pipeline, not as Raw-only acquisition;
+  - resolve SED/HJC per family as `EXISTING_VALID` / `DOWNLOADED` / `POST_RACE_NOT_READY`;
+  - publish/verify missing SED/HJC Raw only; do not request SKB;
+  - normally reuse canonical PACI already saved by pre-race acquisition; if PACI is absent, acquire/publish it before downstream work;
+  - only READY dates continue;
+  - run `src/run_jrdb_post_race_orchestrator.py` using the same PACI/SED/HJC source set;
+  - require Analysis v1.4 candidate PASS and RaceReviewDB candidate PASS;
+  - publish immutable generations/snapshots to Drive, round-trip verify SHA/manifest, then promote CURRENT in place;
+  - report overall `COMPLETE` only after CURRENT readback validation.
+- Canonical post-race pipeline contract: `docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md`.
+- 2026-10-17 / 2026-10-18 was the completed validation run for this integration; do not rerun it merely for cutover. Apply this standard from the next post-race update onward.
 - SKB is intentionally recovered on the following pre-race cycle because its publication timing lags SED/HJC. Same-week SKB `NOT_FOUND` is not a reason for blind retry.
 - Post-race SED remains the first-available analysis snapshot. The following pre-race cycle is the standard late-finalization refresh for the preceding race week's SED after JRDB's later update window.
 - Always check Drive before upstream fetch, validate artifact ZIP + size/SHA, upload with the native Google Drive connector, then re-list Drive before claiming completion.
