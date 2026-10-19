@@ -146,6 +146,15 @@ def main():
         lines.append("- unmatched details:")
         for row in unmatched:
             lines.append(f"  - {row.get('key')}: {row.get('reason')}")
+    if settled and len(settled) <= 100:
+        headers=list(settled[0].keys())
+        lines.append("")
+        lines.append("## SETTLED_ROWS_TSV")
+        lines.append("```tsv")
+        lines.append("\t".join(headers))
+        for row in settled:
+            lines.append("\t".join("" if row.get(h) is None else str(row.get(h)).replace("\t"," ").replace("\n"," ") for h in headers))
+        lines.append("```")
     (outdir/"summary.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
     print("\n".join(lines))
 
