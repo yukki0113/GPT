@@ -131,7 +131,7 @@ def main():
     }
     (outdir/"summary.json").write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     lines=[
-      "# keibailuka 2026-09-26/27 settlement",
+      f"# keibailuka settlement {', '.join(req['dates'].keys())}",
       "",
       f"- settled: {len(settled)}",
       f"- unmatched: {len(unmatched)}",
@@ -142,6 +142,10 @@ def main():
       f"- shadow win ROI: {sm['win_roi_pct']}%",
       f"- shadow place ROI: {sm['place_roi_pct']}%",
     ]
+    if unmatched:
+        lines.append("- unmatched details:")
+        for row in unmatched:
+            lines.append(f"  - {row.get('key')}: {row.get('reason')}")
     (outdir/"summary.md").write_text("\n".join(lines)+"\n",encoding="utf-8")
     print("\n".join(lines))
 
