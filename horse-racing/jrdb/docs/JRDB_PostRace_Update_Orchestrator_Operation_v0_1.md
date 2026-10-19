@@ -26,6 +26,14 @@ The operation covers:
 The user should not have to manually move from the Raw thread to separate
 Analysis or RaceReviewDB maintenance threads.
 
+## Operational cutover — 2026-10-19
+
+- The 2026-10-17 / 2026-10-18 cycle has already been executed as the integration validation run for this orchestration.
+- Do not rerun those dates solely for cutover verification.
+- From the next routine post-race update onward, the user-facing `開催後取得` request MUST use this end-to-end contract.
+- A Raw-only SED/HJC completion report is no longer sufficient for the normal user-facing post-race command.
+- Separate user requests to the Analysis or RaceReviewDB maintenance threads are not required for the normal flow.
+
 ## 2. Execution boundary
 
 Authenticated JRDB acquisition remains GitHub-Actions-native.
