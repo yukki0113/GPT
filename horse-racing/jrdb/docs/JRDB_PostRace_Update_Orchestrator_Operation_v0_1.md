@@ -36,7 +36,50 @@ GitHub Actions must not write directly to Google Drive. The orchestrator is
 therefore a logical end-to-end operation spanning both execution domains, not
 one monolithic Actions workflow.
 
-## 3. Shared source contract
+## 3. Acquisition readiness state contract
+
+Before any derived update, every target date must resolve both SED and HJC into one of the following states:
+
+- `EXISTING_VALID`: GPT/native Drive inspection confirmed the canonical file already exists and is valid. This family is skipped upstream and is not treated as an error.
+- `DOWNLOADED`: the family was missing from canonical Drive and was fetched successfully from JRDB.
+- `POST_RACE_NOT_READY`: JRDB returned 404 / NOT_FOUND for a required SED or HJC. This is an expected availability state, not a derived-data failure.
+
+The per-date gate is:
+
+```text
+SED in {EXISTING_VALID, DOWNLOADED}
+AND
+HJC in {EXISTING_VALID, DOWNLOADED}
+  -> READY
+  -> downstream_allowed=true
+
+otherwise, if either is POST_RACE_NOT_READY
+  -> POST_RACE_NOT_READY
+  -> downstream_allowed=false
+  -> stop before Analysis / RaceReviewDB
+```
+
+For the Actions request, GPT must pass Drive-validated existing files in `existing_valid_files`. Example:
+
+```json
+{
+  "date": "20261018",
+  "mode": "post_race",
+  "kinds": ["SED", "HJC"],
+  "existing_valid_files": [
+    {
+      "kind": "SED",
+      "file_name": "SED261018.zip",
+      "size_bytes": 123456,
+      "drive_file_id": "..."
+    }
+  ]
+}
+```
+
+In this example, SED is skipped and only HJC is fetched.
+
+## 4. Shared source contract
 
 For every target race date, the orchestrator resolves exactly one validated:
 
@@ -54,7 +97,7 @@ Analysis v1.4 or RaceReviewDB builders.
 The local coordinator writes one source receipt containing race date, family,
 file name, byte size, SHA-256, and member count.
 
-## 4. Local candidate coordinator
+## 5. Local candidate coordinator
 
 Reference implementation:
 
@@ -91,7 +134,7 @@ python horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py \
 Multiple dates are supplied by repeating `--paci`, `--sed`, and `--hjc`.
 Coverage must match exactly across all three families.
 
-## 5. Candidate semantics
+## 6. Candidate semantics
 
 The Analysis builder creates a SHADOW candidate and must not modify its
 `current.json`.
@@ -109,7 +152,7 @@ The coordinator fails closed when:
 - either derived store reports target dates different from the shared source
   receipt.
 
-## 6. Canonical promotion
+## 7. Canonical promotion
 
 After local candidate PASS:
 
@@ -124,7 +167,7 @@ After local candidate PASS:
 
 A candidate PASS alone is not operational completion.
 
-## 7. Raw-thread execution sequence
+## 8. Raw-thread execution sequence
 
 The Raw acquisition thread should execute the following sequence for
 `開催後取得をお願いします`:
@@ -132,9 +175,11 @@ The Raw acquisition thread should execute the following sequence for
 ```text
 resolve target race dates
   -> Drive-first SED/HJC duplicate check
-  -> authenticated SED/HJC fetch where needed
-  -> validate and publish SED/HJC to canonical Raw
-  -> resolve canonical PACI for every target date
+  -> mark valid Drive files EXISTING_VALID
+  -> fetch only missing SED/HJC families
+  -> if either required family is NOT_FOUND: POST_RACE_NOT_READY and stop
+  -> validate and publish only newly downloaded SED/HJC to canonical Raw
+  -> resolve canonical PACI for every READY target date
   -> materialize validated Analysis CURRENT
   -> materialize RaceReviewDB_CURRENT.zip
   -> run run_jrdb_post_race_orchestrator.py
@@ -146,7 +191,7 @@ resolve target race dates
 If canonical PACI is missing, fetch and publish it before candidate generation
 rather than asking the user to open another maintenance flow.
 
-## 8. Completion report
+## 9. Completion report
 
 A successful user-facing completion report should include at least:
 

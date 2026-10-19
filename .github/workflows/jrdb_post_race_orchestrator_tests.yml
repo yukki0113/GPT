@@ -6,19 +6,25 @@ on:
       - main
     paths:
       - "horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py"
+      - "horse-racing/jrdb/src/jrdb_post_race_acquisition_state.py"
       - "horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native_v1_4.py"
       - "horse-racing/jrdb/src/jrdb_postrace_review_incremental.py"
       - "horse-racing/jrdb/tests/test_run_jrdb_post_race_orchestrator.py"
+      - "horse-racing/jrdb/tests/test_jrdb_post_race_acquisition_state.py"
       - ".github/workflows/jrdb_post_race_orchestrator_tests.yml"
+      - ".github/workflows/jrdb_raw_fetch_issue.yml"
       - "horse-racing/jrdb/docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md"
       - "horse-racing/jrdb/docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md"
   pull_request:
     paths:
       - "horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py"
+      - "horse-racing/jrdb/src/jrdb_post_race_acquisition_state.py"
       - "horse-racing/jrdb/src/build_jrdb_analysis_post_race_parquet_native_v1_4.py"
       - "horse-racing/jrdb/src/jrdb_postrace_review_incremental.py"
       - "horse-racing/jrdb/tests/test_run_jrdb_post_race_orchestrator.py"
+      - "horse-racing/jrdb/tests/test_jrdb_post_race_acquisition_state.py"
       - ".github/workflows/jrdb_post_race_orchestrator_tests.yml"
+      - ".github/workflows/jrdb_raw_fetch_issue.yml"
       - "horse-racing/jrdb/docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md"
       - "horse-racing/jrdb/docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md"
   workflow_dispatch:
@@ -40,10 +46,13 @@ jobs:
       - name: Compile orchestrator
         run: |
           python -m py_compile \
-            horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py
+            horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py \
+            horse-racing/jrdb/src/jrdb_post_race_acquisition_state.py
       - name: Run orchestrator tests
         working-directory: horse-racing/jrdb/tests
         env:
           PYTHONPATH: ../src:../../../tools/data-storage
         run: |
-          python -m unittest -v test_run_jrdb_post_race_orchestrator
+          python -m unittest -v \
+            test_run_jrdb_post_race_orchestrator \
+            test_jrdb_post_race_acquisition_state
