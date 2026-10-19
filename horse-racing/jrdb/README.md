@@ -54,7 +54,7 @@
 Normal user-facing commands:
 
 - `mmddの開催前取得をお願いします` -> target PACI + missing SKB from the immediately preceding JRA race week + fresh SED re-fetch for every preceding-week race date
-- `mmdd〜mmddの開催後取得をお願いします` -> end-to-end post-race pipeline: SED/HJC readiness -> canonical PACI resolution -> Analysis v1.4 candidate -> RaceReviewDB candidate -> Drive round-trip audit -> CURRENT promotion
+- `mmdd〜mmddの開催後取得をお願いします` -> end-to-end post-race pipeline: SED/HJC readiness -> canonical PACI resolution -> Analysis v1.4 -> Fact Lite v0.3 publish / full PWA Pages distribution (Kenshow_Labo + Momotaro) -> RaceReviewDB -> final CURRENT/readback audit
 
 SKB is intentionally excluded from immediate post-race acquisition and is recovered on the following pre-race cycle after checking canonical Drive inventory. The same pre-race cycle also re-fetches the preceding race week's SED and refreshes canonical Drive SED in place when JRDB has revised it.
 
