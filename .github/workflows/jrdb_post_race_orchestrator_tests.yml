@@ -10,6 +10,8 @@ on:
       - "horse-racing/jrdb/src/jrdb_postrace_review_incremental.py"
       - "horse-racing/jrdb/tests/test_run_jrdb_post_race_orchestrator.py"
       - ".github/workflows/jrdb_post_race_orchestrator_tests.yml"
+      - "horse-racing/jrdb/docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md"
+      - "horse-racing/jrdb/docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md"
   pull_request:
     paths:
       - "horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py"
@@ -17,6 +19,8 @@ on:
       - "horse-racing/jrdb/src/jrdb_postrace_review_incremental.py"
       - "horse-racing/jrdb/tests/test_run_jrdb_post_race_orchestrator.py"
       - ".github/workflows/jrdb_post_race_orchestrator_tests.yml"
+      - "horse-racing/jrdb/docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md"
+      - "horse-racing/jrdb/docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md"
   workflow_dispatch:
 
 permissions:
