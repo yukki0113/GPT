@@ -1,9 +1,9 @@
 {
-  "schema_version": "racenote-forward-settlement-pending-0.1",
-  "status": "PENDING_JRDB_RAW_SETTLEMENT",
+  "schema_version": "racenote-forward-settlement-jrdb-0.1",
+  "status": "SETTLED_JRDB_RAW",
   "date": "2026-10-18",
   "selection_id": "DAILY-20261018",
-  "reason": "Target-date JRDB SED/HJC not available in connected Drive. Public-web fallback was used only for result/top3 ledgering; canonical ticket payout settlement is deferred.",
+  "prediction_records_sha256": "869f4a819afd034294f0bebb23b2737c84be6701f8a4e1113ce2c9018b05081d",
   "result_summary": {
     "honmei_wins": 11,
     "honmei_top3": 24,
@@ -19,8 +19,311 @@
     "winner_outside_five": 7
   },
   "research_bets": {
-    "investment_jpy": null,
-    "payout_jpy": null,
-    "return_rate_pct": null
-  }
+    "status": "SETTLED",
+    "unit_stake_yen": 100,
+    "investment_jpy": 86400,
+    "payout_jpy": 30470,
+    "profit_jpy": -55930,
+    "return_rate_pct": 35.3
+  },
+  "result_source": {
+    "mode": "JRDB_RAW",
+    "result_authority": "SED",
+    "payout_authority": "HJC",
+    "sed_archive": "SED261018.zip",
+    "hjc_archive": "HJC261018.zip",
+    "result_query_status": "success",
+    "cross_validation": "pass",
+    "web_used": false
+  },
+  "races": [
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "investment_jpy": 2400,
+      "payout_jpy": 290,
+      "profit_jpy": -2110,
+      "return_rate_pct": 12.1
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "investment_jpy": 2400,
+      "payout_jpy": 500,
+      "profit_jpy": -1900,
+      "return_rate_pct": 20.8
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "investment_jpy": 2400,
+      "payout_jpy": 4240,
+      "profit_jpy": 1840,
+      "return_rate_pct": 176.7
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "investment_jpy": 2400,
+      "payout_jpy": 4370,
+      "profit_jpy": 1970,
+      "return_rate_pct": 182.1
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "investment_jpy": 2400,
+      "payout_jpy": 910,
+      "profit_jpy": -1490,
+      "return_rate_pct": 37.9
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "investment_jpy": 2400,
+      "payout_jpy": 1210,
+      "profit_jpy": -1190,
+      "return_rate_pct": 50.4
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "investment_jpy": 2400,
+      "payout_jpy": 600,
+      "profit_jpy": -1800,
+      "return_rate_pct": 25
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "investment_jpy": 2400,
+      "payout_jpy": 620,
+      "profit_jpy": -1780,
+      "return_rate_pct": 25.8
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "investment_jpy": 2400,
+      "payout_jpy": 550,
+      "profit_jpy": -1850,
+      "return_rate_pct": 22.9
+    },
+    {
+      "venue": "京都",
+      "race_no": 1,
+      "investment_jpy": 2400,
+      "payout_jpy": 110,
+      "profit_jpy": -2290,
+      "return_rate_pct": 4.6
+    },
+    {
+      "venue": "京都",
+      "race_no": 2,
+      "investment_jpy": 2400,
+      "payout_jpy": 420,
+      "profit_jpy": -1980,
+      "return_rate_pct": 17.5
+    },
+    {
+      "venue": "京都",
+      "race_no": 3,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "京都",
+      "race_no": 4,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "京都",
+      "race_no": 5,
+      "investment_jpy": 2400,
+      "payout_jpy": 1860,
+      "profit_jpy": -540,
+      "return_rate_pct": 77.5
+    },
+    {
+      "venue": "京都",
+      "race_no": 6,
+      "investment_jpy": 2400,
+      "payout_jpy": 350,
+      "profit_jpy": -2050,
+      "return_rate_pct": 14.6
+    },
+    {
+      "venue": "京都",
+      "race_no": 7,
+      "investment_jpy": 2400,
+      "payout_jpy": 1450,
+      "profit_jpy": -950,
+      "return_rate_pct": 60.4
+    },
+    {
+      "venue": "京都",
+      "race_no": 8,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "京都",
+      "race_no": 9,
+      "investment_jpy": 2400,
+      "payout_jpy": 5530,
+      "profit_jpy": 3130,
+      "return_rate_pct": 230.4
+    },
+    {
+      "venue": "京都",
+      "race_no": 10,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "京都",
+      "race_no": 11,
+      "investment_jpy": 2400,
+      "payout_jpy": 240,
+      "profit_jpy": -2160,
+      "return_rate_pct": 10
+    },
+    {
+      "venue": "京都",
+      "race_no": 12,
+      "investment_jpy": 2400,
+      "payout_jpy": 200,
+      "profit_jpy": -2200,
+      "return_rate_pct": 8.3
+    },
+    {
+      "venue": "新潟",
+      "race_no": 1,
+      "investment_jpy": 2400,
+      "payout_jpy": 420,
+      "profit_jpy": -1980,
+      "return_rate_pct": 17.5
+    },
+    {
+      "venue": "新潟",
+      "race_no": 2,
+      "investment_jpy": 2400,
+      "payout_jpy": 150,
+      "profit_jpy": -2250,
+      "return_rate_pct": 6.2
+    },
+    {
+      "venue": "新潟",
+      "race_no": 3,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "新潟",
+      "race_no": 4,
+      "investment_jpy": 2400,
+      "payout_jpy": 810,
+      "profit_jpy": -1590,
+      "return_rate_pct": 33.8
+    },
+    {
+      "venue": "新潟",
+      "race_no": 5,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "新潟",
+      "race_no": 6,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "新潟",
+      "race_no": 7,
+      "investment_jpy": 2400,
+      "payout_jpy": 200,
+      "profit_jpy": -2200,
+      "return_rate_pct": 8.3
+    },
+    {
+      "venue": "新潟",
+      "race_no": 8,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "新潟",
+      "race_no": 9,
+      "investment_jpy": 2400,
+      "payout_jpy": 2030,
+      "profit_jpy": -370,
+      "return_rate_pct": 84.6
+    },
+    {
+      "venue": "新潟",
+      "race_no": 10,
+      "investment_jpy": 2400,
+      "payout_jpy": 0,
+      "profit_jpy": -2400,
+      "return_rate_pct": 0
+    },
+    {
+      "venue": "新潟",
+      "race_no": 11,
+      "investment_jpy": 2400,
+      "payout_jpy": 2000,
+      "profit_jpy": -400,
+      "return_rate_pct": 83.3
+    },
+    {
+      "venue": "新潟",
+      "race_no": 12,
+      "investment_jpy": 2400,
+      "payout_jpy": 1410,
+      "profit_jpy": -990,
+      "return_rate_pct": 58.8
+    }
+  ]
 }
