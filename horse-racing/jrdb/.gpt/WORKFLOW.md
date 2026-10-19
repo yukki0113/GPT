@@ -96,10 +96,12 @@ User-facing commands:
   - validate one shared PACI/SED/HJC source receipt
   - run `src/run_jrdb_post_race_orchestrator.py`
   - require Analysis v1.4 candidate PASS and RaceReviewDB candidate PASS
-  - publish immutable Analysis generation and RaceReviewDB snapshot through native Drive
-  - round-trip verify SHA/size/manifest before CURRENT promotion
-  - update stable CURRENT objects in place and read them back for final verification
-  - report `COMPLETE` only when the full pipeline passes
+  - publish immutable Analysis generation through native Drive, round-trip verify it, and promote Analysis CURRENT
+  - immediately rebuild/validate Fact Lite v0.3 from the promoted Analysis CURRENT
+  - publish/verify `jrdb-pwa-fact-lite-current`, then require full `JRDB PWA Pages` success so both Kenshow_Labo and Momotaro `fact-lite.html` consume the new DataSource
+  - only after that PWA DataSource distribution gate passes, publish/promote RaceReviewDB CURRENT
+  - read back all promoted CURRENT/distribution artifacts for final verification
+  - report `COMPLETE` only when the full pipeline, including both PWA condition-aggregation surfaces, passes
 
 Canonical full post-race contract: `docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md`.
 
