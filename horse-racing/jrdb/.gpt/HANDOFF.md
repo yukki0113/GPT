@@ -115,8 +115,11 @@ Current Stage A instruction:
   - only READY dates continue;
   - run `src/run_jrdb_post_race_orchestrator.py` using the same PACI/SED/HJC source set;
   - require Analysis v1.4 candidate PASS and RaceReviewDB candidate PASS;
-  - publish immutable generations/snapshots to Drive, round-trip verify SHA/manifest, then promote CURRENT in place;
-  - report overall `COMPLETE` only after CURRENT readback validation.
+  - publish/verify Analysis and promote Analysis CURRENT first;
+  - immediately rebuild/validate/publish Fact Lite v0.3 to `jrdb-pwa-fact-lite-current`;
+  - require full `JRDB PWA Pages` recomposition and verify both Kenshow_Labo and Momotaro condition-aggregation pages receive the new Fact Lite DataSource;
+  - then publish/verify RaceReviewDB and promote its CURRENT;
+  - report overall `COMPLETE` only after Analysis, Fact Lite/PWA distribution, RaceReviewDB, and CURRENT readback validation all pass.
 - Canonical post-race pipeline contract: `docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md`.
 - 2026-10-17 / 2026-10-18 was the completed validation run for this integration; do not rerun it merely for cutover. Apply this standard from the next post-race update onward.
 - SKB is intentionally recovered on the following pre-race cycle because its publication timing lags SED/HJC. Same-week SKB `NOT_FOUND` is not a reason for blind retry.
