@@ -1,11 +1,12 @@
 name: RaceNote v0.5.5 LLM T2 Finalize
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'horse-racing/jrdb/daily/**/v055_day/v055/incoming/llm_decisions.json'
-      - 'horse-racing/jrdb/daily/**/v055_day/v055/incoming/llm_confidence.json'
+  workflow_dispatch:
+    inputs:
+      root:
+        description: 'Legacy non-r5 daily v055 root'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -28,32 +29,28 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Resolve one LLM-authored day
+      - name: Resolve legacy non-r5 day
         id: resolve
         env:
-          BEFORE: ${{ github.event.before }}
-          AFTER: ${{ github.sha }}
-        shell: bash
+          ROOT: ${{ inputs.root }}
         run: |
           set -euo pipefail
-          mapfile -t changed < <(
-            git diff --name-only "$BEFORE" "$AFTER" |
-            grep -E '^horse-racing/jrdb/daily/[0-9]{8}/v055_day/v055/incoming/llm_(decisions|confidence)\.json$' || true
-          )
-          mapfile -t roots < <(printf '%s\n' "${changed[@]}" | sed '/^$/d' | xargs -r -n1 dirname | xargs -r -n1 dirname | sort -u)
-          test "${#roots[@]}" -le 1 || { echo "::error::one target day per push required"; exit 1; }
-          if test "${#roots[@]}" -eq 0; then
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          root="${roots[0]}"
-          if test ! -f "$root/incoming/llm_decisions.json" || test ! -f "$root/incoming/llm_confidence.json"; then
-            echo "ready=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          test ! -e "$root/frozen" || { echo "::error::prediction Freeze already exists"; exit 1; }
-          echo "ready=true" >> "$GITHUB_OUTPUT"
-          echo "root=$root" >> "$GITHUB_OUTPUT"
+          python - <<'PY'
+          import json, os, pathlib, re
+          root = os.environ["ROOT"].strip("/")
+          if not re.fullmatch(r"horse-racing/jrdb/daily/\d{8}/v055_day/v055", root):
+              raise SystemExit("Unsupported legacy root")
+          path = pathlib.Path(root)
+          session = json.loads((path / "session.json").read_text())
+          if session.get("contract_revision") == "v055-prediction-freeze-confidence-review-r5":
+              raise SystemExit("r5 must use the two-phase workflows")
+          if not all((path / "incoming" / name).is_file() for name in ("llm_decisions.json", "llm_confidence.json")):
+              raise SystemExit("Both legacy drafts required")
+          if (path / "frozen").exists():
+              raise SystemExit("Prediction already frozen")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"ready=true\nroot={root}\n")
+          PY
 
       - name: Finalize LLM-authored T2
         if: steps.resolve.outputs.ready == 'true'
