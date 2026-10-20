@@ -1,4 +1,4 @@
-name: RaceNote BTDAY-0115 v0.5.5 r4 TURN 1
+name: RaceNote BTDAY-0115 v0.5.5 current TURN 1
 
 on:
   push:
@@ -205,22 +205,23 @@ jobs:
           python - <<'PY'
           import json, os
           from pathlib import Path
+          from racenote_decision_core_v055 import CONTRACT_REVISION
           root=Path(os.environ['TARGET'])
           s=json.loads((root/'v055/session.json').read_text())
           m=json.loads((root/'v055/reader_manifest.json').read_text())
           h=json.loads((root/'forecast_prep/day_prep_handoff.json').read_text())
           assert s['status']=='SESSION_SEALED'
           assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.5-candidate'
-          assert s['contract_revision']=='v055-prediction-freeze-confidence-review-r4'
+          assert s['contract_revision']==CONTRACT_REVISION
           assert s['reader_projection']=='v055-lean-model-reader-r2'
           assert s['selection_id']=='BTDAY-0115' and s['target_date']=='2025-03-15'
           assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
           assert s['base_main_sha']==h['main_sha']
-          assert m['contract_revision']=='v055-prediction-freeze-confidence-review-r4'
+          assert m['contract_revision']==CONTRACT_REVISION
           assert m['reader_projection']=='v055-lean-model-reader-r2'
           assert len(m['entries'])==len(s['race_roster'])
           op={
-            'schema_version':'racenote-v055-r4-turn1-handoff-0.1',
+            'schema_version':'racenote-v055-current-turn1-handoff-0.1',
             'status':'READY_FOR_V055_AUTHORING',
             'selection_id':'BTDAY-0115','target_date':'2025-03-15',
             'source_backend':'historical_warehouse',
@@ -244,6 +245,6 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add "$TARGET"
-          git commit -m "RaceNote: stage BTDAY-0115 v0.5.5 r4 TURN 1"
+          git commit -m "RaceNote: stage BTDAY-0115 v0.5.5 current TURN 1"
           git pull --rebase origin main
           git push origin HEAD:main
