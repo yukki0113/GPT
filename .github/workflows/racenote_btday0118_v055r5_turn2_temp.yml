@@ -1,0 +1,75 @@
+name: RaceNote BTDAY-0118 v0.5.5 r5 TURN 2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0118.v055r5-turn2'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-btday-0118-v055r5-turn2
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+      ROOT: horse-racing/jrdb/backtests/BTDAY-0118/20250622/v055
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Confirm immutable TURN 2 target is new
+        run: |
+          set -euo pipefail
+          test ! -e "$ROOT/frozen"
+          test ! -e "$ROOT/confidence_frozen"
+
+      - name: Restore LLM-authored drafts
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, gzip
+          from pathlib import Path
+          root=Path("horse-racing/jrdb/backtests/BTDAY-0118/20250622/v055/incoming")
+          for stem in ("llm_decisions.json","llm_confidence.json"):
+              src=root/(stem+".gz.b64")
+              raw=gzip.decompress(base64.b64decode(src.read_text(encoding="utf-8").strip()))
+              (root/stem).write_bytes(raw)
+          PY
+          python -m json.tool "$ROOT/incoming/llm_decisions.json" >/dev/null
+          python -m json.tool "$ROOT/incoming/llm_confidence.json" >/dev/null
+
+      - name: Finalize LLM-authored TURN 2
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_turn2_finalize.py \
+            --root "$ROOT" \
+            --decisions "$ROOT/incoming/llm_decisions.json" \
+            --confidence "$ROOT/incoming/llm_confidence.json"
+
+      - name: Commit immutable TURN 2
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$ROOT/incoming/llm_decisions.json" "$ROOT/incoming/llm_confidence.json" \
+            "$ROOT/incoming/"*.json \
+            "$ROOT/authored_decisions" "$ROOT/authoring_quality_report.json" \
+            "$ROOT/frozen" "$ROOT/confidence_review.json" "$ROOT/confidence_frozen" \
+            "$ROOT/turn2_summary.json"
+          git rm "$ROOT/incoming/llm_decisions.json.gz.b64" "$ROOT/incoming/llm_confidence.json.gz.b64"
+          git commit -m "RaceNote: finalize BTDAY-0118 v0.5.5 r5 TURN 2"
+          git pull --rebase origin main
+          git push origin HEAD:main
