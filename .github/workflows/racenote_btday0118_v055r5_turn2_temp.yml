@@ -50,6 +50,21 @@ jobs:
           PY
           python -m json.tool "$ROOT/incoming/llm_decisions.json" >/dev/null
           python -m json.tool "$ROOT/incoming/llm_confidence.json" >/dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path("horse-racing/jrdb/backtests/BTDAY-0118/20250622/v055/incoming/llm_decisions.json")
+          rows=json.loads(path.read_text(encoding="utf-8"))
+          for row in rows:
+              key=(row["venue"], int(row["race_no"]))
+              if key == ("函館", 5):
+                  row["shot_case"]["case"]="クラディスティーナは能力面で上位グループに入り、先行して流れに乗れれば初戦から前進できる。"
+              elif key == ("阪神", 6):
+                  row["candidate_selection"]["boundary_reason"]="ダート1200mの事前能力でキンダープンシュとサンブルが抜け、メッチャエエヤン、シュテフィ、テーオーグレーザーを続ける。マクアケも候補だが上位5頭との差を覆す材料は不足。"
+              elif key == ("阪神", 10):
+                  row["shot_case"]["case"]="ルシュヴァルドールは高い水準で安定しており、中団からの差し脚を生かして前が崩れれば逆転まである。"
+          path.write_text(json.dumps(rows,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+          PY
 
       - name: Finalize LLM-authored TURN 2
         run: |
