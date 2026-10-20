@@ -77,8 +77,8 @@ jobs:
           for attempt in 1 2 3 4 5; do
             rm -rf /tmp/current-rrdb
             if python tools/gpt_io/public_drive/fetch.py \
-              --manifest horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json \
-              --artifact golden_20 \
+              --manifest horse-racing/jrdb/config/public_drive/racenote_btday0115_rrdb_current_20261020.json \
+              --artifact rrdb_current \
               --output-root /tmp/current-rrdb \
               --receipt /tmp/current-rrdb/receipt.json; then
               ok=true
