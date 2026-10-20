@@ -17,7 +17,6 @@ from typing import Any
 
 from racenote_decision_core_v055 import (
     CONTRACT_REVISION,
-    R4_CONTRACT_REVISION,
     SUPPORTED_CONTRACT_REVISIONS,
     TWO_STAGE_CONTRACT_REVISIONS,
     validate_core,
@@ -60,6 +59,8 @@ def _validate_confidence_grade(normal: dict[str, Any], grade: str, revision: str
         return
     if grade not in {"A", "B", "C"}:
         raise ValueError("r4 confidence must be A/B/C")
+
+
 DEFAULT_POLICY = (
     Path(__file__).resolve().parents[1]
     / "docs" / "racenote" / "research-work" / "results" / "stage_c"
