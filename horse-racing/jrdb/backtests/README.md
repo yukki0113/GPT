@@ -43,3 +43,11 @@ The current operator sequence and preflight gate are in
 `docs/racenote/BTDAY_PROSPECTIVE_VALIDATION_RUNBOOK_v0_1.md`.
 The same-day A/B runbook is superseded. Target results and target-day market
 remain unopened until after Freeze and Validator PASS.
+
+## Confidence A portfolio research
+
+Confidence-A betting behavior is evaluated downstream of Frozen Prediction / Confidence under:
+
+`analysis/racenote_research/CONFIDENCE_A_PORTFOLIO_VALIDATION_v0_1.md`
+
+This research specification owns the A-only SINGLE / COVER / DOUBLE / MISS KPIs and the market-regime portfolio simulation. It is non-normative and must not alter frozen marks or confidence grades.
