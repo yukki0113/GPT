@@ -1,0 +1,83 @@
+name: RaceNote v0.5.5 r5 Confidence Freeze
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/daily/**/v055_day/v055/incoming/llm_confidence.json'
+      - 'horse-racing/jrdb/backtests/BTDAY-*/**/v055/incoming/llm_confidence.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-v055-r5-freeze
+  cancel-in-progress: false
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve one approved root
+        id: target
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          PHASE: confidence
+          DRAFT: llm_confidence.json
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, pathlib, re, subprocess
+          before, after = os.environ['BEFORE'], os.environ['AFTER']
+          changed = subprocess.check_output(
+              ['git', 'diff', '--name-only', before, after], text=True
+          ).splitlines()
+          draft = os.environ['DRAFT']
+          eligible = []
+          for name in changed:
+              if not name.endswith('/incoming/' + draft):
+                  continue
+              root = name[: -len('/incoming/' + draft)]
+              if re.fullmatch(r'horse-racing/jrdb/daily/\d{8}/v055_day/v055', root) or re.fullmatch(r'horse-racing/jrdb/backtests/BTDAY-\d{4}/\d{8}/v055', root):
+                  eligible.append(root)
+          roots = sorted(set(eligible))
+          if len(roots) != 1:
+              raise SystemExit(f'Expected exactly one approved root, found {roots}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'root={roots[0]}\n')
+          PY
+
+      - name: Preflight and canonical Freeze
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          ROOT: ${{ steps.target.outputs.root }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_turn2_two_phase.py \
+            --phase confidence \
+            --root "$ROOT" \
+            --draft "$ROOT/incoming/llm_confidence.json"
+
+      - name: Persist verified Freeze
+        env:
+          ROOT: ${{ steps.target.outputs.root }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A "$ROOT"
+          git diff --cached --quiet && { echo 'No freeze artifacts to commit'; exit 1; }
+          git commit -m "RaceNote: confidence freeze ${ROOT}"
+          git pull --rebase origin main
+          git push origin HEAD:main
