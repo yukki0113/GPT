@@ -50,10 +50,23 @@ jobs:
           data=json.loads(manifest.read_text())
           wanted={'golden_01','golden_02','golden_03','golden_04','golden_11','golden_12','golden_13','golden_14','golden_15','golden_16','golden_17','golden_18','golden_19'}
           wanted.update(f'golden_{i:02d}' for i in range(21,49))
+          import time
           for row in data['artifacts']:
               if row['artifact_id'] not in wanted:
                   continue
-              subprocess.run(['python','tools/gpt_io/public_drive/fetch.py','--manifest',str(manifest),'--artifact',row['artifact_id'],'--output-root','/tmp/historical'],check=True)
+              cmd=['python','tools/gpt_io/public_drive/fetch.py','--manifest',str(manifest),'--artifact',row['artifact_id'],'--output-root','/tmp/historical']
+              last=None
+              for attempt in range(1,6):
+                  try:
+                      subprocess.run(cmd,check=True)
+                      last=None
+                      break
+                  except subprocess.CalledProcessError as exc:
+                      last=exc
+                      if attempt < 5:
+                          time.sleep(attempt * 5)
+              if last is not None:
+                  raise last
           PY
           mkdir -p /tmp/historical/analysis
           tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
