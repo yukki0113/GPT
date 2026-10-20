@@ -73,7 +73,7 @@ def preflight(root: Path, draft: Path, phase: str):
         by_key = {(str(x["venue"]), int(x["race_no"])): x for x in frozen}
         for x in data:
             key = (str(x["venue"]), int(x["race_no"]))
-            if int(x.get("honmei", -1)) != int(by_key[key]["marks"][0]):
+            if int(x.get("honmei", -1)) != int(by_key[key]["decision_core"]["marks"][0]):
                 raise ValueError(f"FROZEN_HONMEI_MISMATCH: {key}")
     return session, data
 
