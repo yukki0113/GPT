@@ -95,12 +95,10 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$ROOT/incoming/llm_decisions.json" "$ROOT/incoming/llm_confidence.json" \
-            "$ROOT/incoming/"*.json \
-            "$ROOT/authored_decisions" "$ROOT/authoring_quality_report.json" \
-            "$ROOT/frozen" "$ROOT/confidence_review.json" "$ROOT/confidence_frozen" \
-            "$ROOT/turn2_summary.json"
-          git rm "$ROOT/incoming/llm_decisions.json.gz.b64" "$ROOT/incoming/llm_confidence.json.gz.b64" "$ROOT/turn2_diagnostic.txt"
+          rm -f "$ROOT/incoming/llm_decisions.json.gz.b64" \
+                "$ROOT/incoming/llm_confidence.json.gz.b64" \
+                "$ROOT/turn2_diagnostic.txt"
+          git add -A "$ROOT"
+          git status --short "$ROOT"
           git commit -m "RaceNote: finalize BTDAY-0118 v0.5.5 r5 TURN 2"
-          git pull --rebase origin main
           git push origin HEAD:main
