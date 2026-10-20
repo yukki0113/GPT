@@ -2,11 +2,11 @@
 
 Status: **CURRENT CANDIDATE FOR NEW CLEAN-BLIND RUNS**  
 Logic ID: `RaceNote-Human-Context-Reader-0.5.5-candidate`  
-Contract revision: `v055-prediction-freeze-confidence-review-r4`
+Contract revision: `v055-prediction-freeze-confidence-review-r5`
 
 ## 1. Purpose
 
-v0.5.5 r4 keeps the r3 horse-selection logic, Lean Model Reader and editorial short-comment policy, but separates two judgments that must not be frozen at the same moment:
+v0.5.5 r5 keeps the r4 horse-selection logic, Lean Model Reader and editorial short-comment policy, but refines the separate Confidence Review scope. Prediction logic and marks are unchanged.
 
 1. **Forecast judgment** — ◎ ○ ▲ △ △ and the reasons for those marks.
 2. **Win-confidence judgment** — how strongly the already frozen ◎ should be supported as the winner / single-win axis.
@@ -58,7 +58,7 @@ Route diversity is a tie-breaker only.
 
 ## 4. Lean Decision Core
 
-For r4 each race persists:
+For r5 each race persists:
 
 - `venue`, `race_no`
 - `marks`: ◎ ○ ▲ △ △
@@ -69,7 +69,7 @@ For r4 each race persists:
 - `rrdb_refs`
 - `reader_facing_reason`
 
-**A/B/C is not part of the r4 Decision Core.**
+**A/B/C/Z is not part of the r5 Decision Core.**
 
 The Decision Core therefore answers:
 
@@ -102,7 +102,7 @@ There is no sentence-count target and no character-count target. Validation rema
 
 After all races pass format/quality audit, freeze the prediction.
 
-For r4 the prediction handoff is:
+For r5 the prediction handoff is:
 
 `status=PREDICTION_FROZEN_CLEAN_BLIND`
 
@@ -136,6 +136,16 @@ The grades are:
 - **C — LOW WIN CONVICTION**  
   ◎ remains the frozen forecast winner, but confidence in the winner selection itself is low.
 
+- **Z — SPECIAL RACE / OUT OF A-B-C SCOPE**  
+  The forecast itself is still authored with the same ◎ ○ ▲ △ △ logic, but the race is excluded from A/B/C win-confidence performance because the current Reader does not have a dedicated special-race model. `Z` is not lower than C and must never be interpreted as an ordinal confidence grade.
+
+For r5, `Z` is mandatory when the sealed Reader identifies either:
+
+- `race.class == 新馬`; or
+- `race.surface == 障害` or `race.race_type == 障害`.
+
+Standard flat races must remain A/B/C. New-race and jump-race forecasts remain valid forecast outputs; only the A/B/C confidence research scope changes.
+
 There is **no target A rate** and no quota. The purpose is not to manufacture A races; it is to avoid defining A so strictly that only near-certain races qualify.
 
 Pairwise ◎>○, A5/A7, fixed IDM gaps and signal counts remain diagnostic only.
@@ -155,7 +165,7 @@ Each confidence record contains only:
 - `venue`
 - `race_no`
 - frozen `honmei`
-- `confidence`: A / B / C
+- `confidence`: A / B / C / Z
 - concise `reason`
 
 The artifact is bound to the Prediction Freeze SHA.
@@ -193,14 +203,16 @@ After result unlock evaluate at minimum:
 
 1. total ◎ win / top2 / top3;
 2. winner-in-five and top3 capture;
-3. A/B/C counts;
-4. A/B/C ◎ win rates;
-5. A/B/C ◎ single-win return when HJC payout is available.
+3. A/B/C counts, with Z reported separately;
+4. A/B/C ◎ win rates, excluding Z from every denominator;
+5. A/B/C ◎ single-win return when HJC payout is available, excluding Z.
+
+Z races may be retained in a separate special-race reference report. They are excluded from the primary A/B/C bankroll and validation statistics. If bankroll permits, Z races may be used only as optional recreational/satellite bets with separate stake and return accounting; they must not be mixed back into the primary A/B/C performance series.
 
 Downstream ◎-○ / ◎-▲ betting strategies remain a separate betting layer.
 
 ## 10. Revision boundary
 
-Existing r1/r2/r3 sessions and Freezes remain immutable reproduction evidence. Their embedded confidence must not be rewritten or extracted into a synthetic r4 artifact after results are known.
+Existing r1/r2/r3/r4 sessions and Freezes remain immutable reproduction evidence. Their embedded confidence must not be rewritten or retroactively converted to Z after results are known.
 
-Only newly initialized r4 sessions use the two-stage Prediction Freeze / Confidence Freeze lifecycle.
+Only newly initialized r5 sessions use the special-race Z scope. r4 remains readable/verifiable under its original A/B/C contract.

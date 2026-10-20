@@ -18,6 +18,7 @@ from typing import Any
 from racenote_decision_core_v055 import (
     CONTRACT_REVISION,
     SUPPORTED_CONTRACT_REVISIONS,
+    TWO_STAGE_CONTRACT_REVISIONS,
     validate_core,
     validate_prose_collection,
 )
@@ -34,6 +35,32 @@ FROZEN_VERSION = "racenote-v055-single-day-frozen-0.1"
 CONFIDENCE_REVIEW_VERSION = "racenote-v055-confidence-review-0.1"
 CONFIDENCE_FROZEN_VERSION = "racenote-v055-confidence-frozen-0.1"
 CONFIDENCE_MEANING = "HONMEI_WIN_CONFIDENCE"
+SPECIAL_CONFIDENCE_GRADE = "Z"
+
+
+def confidence_scope(normal: dict[str, Any]) -> tuple[str, str | None]:
+    """Return confidence scope and special-race reason from the sealed Reader."""
+    race = normal.get("race") or {}
+    if race.get("class") == "新馬":
+        return "OUT_OF_SCOPE", "DEBUT"
+    if race.get("surface") == "障害" or race.get("race_type") == "障害":
+        return "OUT_OF_SCOPE", "JUMP"
+    return "STANDARD", None
+
+
+def _validate_confidence_grade(normal: dict[str, Any], grade: str, revision: str) -> None:
+    if revision == CONTRACT_REVISION:
+        scope, special_type = confidence_scope(normal)
+        if scope == "OUT_OF_SCOPE":
+            if grade != SPECIAL_CONFIDENCE_GRADE:
+                raise ValueError(f"special race {special_type} must use confidence Z")
+        elif grade not in {"A", "B", "C"}:
+            raise ValueError("standard race confidence must be A/B/C")
+        return
+    if grade not in {"A", "B", "C"}:
+        raise ValueError("r4 confidence must be A/B/C")
+
+
 DEFAULT_POLICY = (
     Path(__file__).resolve().parents[1]
     / "docs" / "racenote" / "research-work" / "results" / "stage_c"
@@ -314,7 +341,7 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
         or session.get("logic_version") != LOGIC
         or session.get("contract_revision") not in SUPPORTED_CONTRACT_REVISIONS
         or (
-            session.get("contract_revision") == CONTRACT_REVISION
+            session.get("contract_revision") in TWO_STAGE_CONTRACT_REVISIONS
             and session.get("reader_projection") != READER_PROJECTION
         )
         or session.get("market_blind") is not True
@@ -352,12 +379,12 @@ def load_session(root: Path) -> tuple[dict[str, Any], dict, dict[tuple[str, int]
         raise ValueError("v0.5.5 Reader manifest digest mismatch")
     manifest = read_json(manifest_path)
     if (
-        session.get("contract_revision") == CONTRACT_REVISION
+        session.get("contract_revision") in TWO_STAGE_CONTRACT_REVISIONS
         and manifest.get("reader_projection") != READER_PROJECTION
     ):
         raise ValueError("v0.5.5 lean Reader projection mismatch")
     entries = {(x["venue"], int(x["race_no"])): x for x in manifest["entries"]}
-    if session.get("contract_revision") == CONTRACT_REVISION:
+    if session.get("contract_revision") in TWO_STAGE_CONTRACT_REVISIONS:
         if any(x.get("reader_projection") != READER_PROJECTION for x in manifest["entries"]):
             raise ValueError("v0.5.5 Reader entry projection mismatch")
     if roster_from_readers(readers) != session["race_roster"] or set(entries) != set(readers):
@@ -463,7 +490,7 @@ def build_freeze(root: Path) -> dict[str, Any]:
     all_cores = [core for payload in authored for core in payload["decisions"]]
     validate_prose_collection(all_cores)
     quality_report = None
-    if session.get("contract_revision") == CONTRACT_REVISION:
+    if session.get("contract_revision") in TWO_STAGE_CONTRACT_REVISIONS:
         quality_report = inspect_authoring_quality(all_cores)
         write_json(root / "authoring_quality_report.json", quality_report)
         if quality_report["status"] != "PASS":
@@ -501,7 +528,7 @@ def build_freeze(root: Path) -> dict[str, Any]:
         "schema_version": FROZEN_VERSION,
         "status": (
             "PREDICTION_FROZEN_CLEAN_BLIND"
-            if session.get("contract_revision") == CONTRACT_REVISION
+            if session.get("contract_revision") in TWO_STAGE_CONTRACT_REVISIONS
             else "FROZEN_CLEAN_BLIND"
         ),
         "validator_status": "PASS",
@@ -519,9 +546,9 @@ def build_freeze(root: Path) -> dict[str, Any]:
         "market_blind": True,
         "target_market_opened": False,
         "result_opened": False,
-        "confidence_frozen": session.get("contract_revision") != CONTRACT_REVISION,
+        "confidence_frozen": session.get("contract_revision") not in TWO_STAGE_CONTRACT_REVISIONS,
         "confidence_meaning": CONFIDENCE_MEANING,
-        **({"confidence_pending": True} if session.get("contract_revision") == CONTRACT_REVISION else {}),
+        **({"confidence_pending": True} if session.get("contract_revision") in TWO_STAGE_CONTRACT_REVISIONS else {}),
         "records_sha256": digest(encoded(records) + b"\n"),
         **({"authoring_quality_report_sha256": digest(encoded(quality_report) + b"\n")}
            if quality_report is not None else {}),
@@ -549,7 +576,7 @@ def verify_freeze(root: Path) -> dict[str, Any]:
     handoff = read_json(root / "frozen" / "day_handoff.json")
     raw = (root / "frozen" / "records.json").read_bytes()
     records = json.loads(raw)
-    is_r4 = session.get("contract_revision") == CONTRACT_REVISION
+    is_r4 = session.get("contract_revision") in TWO_STAGE_CONTRACT_REVISIONS
     expected_status = "PREDICTION_FROZEN_CLEAN_BLIND" if is_r4 else "FROZEN_CLEAN_BLIND"
     expected_confidence_frozen = False if is_r4 else True
     if (
@@ -621,8 +648,8 @@ def _prediction_records(root: Path) -> tuple[dict[str, Any], list[dict[str, Any]
 
 
 def save_confidence_review(root: Path, confidence_path: Path) -> dict[str, Any]:
-    session, _, _ = load_session(root)
-    if session.get("contract_revision") != CONTRACT_REVISION:
+    session, _, entries = load_session(root)
+    if session.get("contract_revision") not in TWO_STAGE_CONTRACT_REVISIONS:
         raise ValueError("separate confidence review is only valid for current r4 sessions")
     if (root / "confidence_frozen").exists():
         raise FileExistsError("confidence is already frozen")
@@ -650,8 +677,11 @@ def save_confidence_review(root: Path, confidence_path: Path) -> dict[str, Any]:
         if honmei != frozen_honmei:
             raise ValueError(f"{key}: confidence honmei must equal frozen ◎ {frozen_honmei}")
         grade = str(item["confidence"])
-        if grade not in {"A", "B", "C"}:
-            raise ValueError(f"{key}: confidence must be A/B/C")
+        normal = read_json(root / "reader" / entries[key]["derived_normal_filename"])
+        try:
+            _validate_confidence_grade(normal, grade, session["contract_revision"])
+        except ValueError as exc:
+            raise ValueError(f"{key}: {exc}") from exc
         reason = str(item["reason"] or "").strip()
         if len(reason) < 12:
             raise ValueError(f"{key}: confidence reason too short")
@@ -672,7 +702,7 @@ def save_confidence_review(root: Path, confidence_path: Path) -> dict[str, Any]:
         "selection_id": session["selection_id"],
         "target_date": session["target_date"],
         "logic_version": LOGIC,
-        "contract_revision": CONTRACT_REVISION,
+        "contract_revision": session["contract_revision"],
         "confidence_meaning": CONFIDENCE_MEANING,
         "prediction_records_sha256": prediction_sha,
         "result_opened": False,
@@ -685,8 +715,8 @@ def save_confidence_review(root: Path, confidence_path: Path) -> dict[str, Any]:
 
 
 def freeze_confidence(root: Path) -> dict[str, Any]:
-    session, _, _ = load_session(root)
-    if session.get("contract_revision") != CONTRACT_REVISION:
+    session, _, entries = load_session(root)
+    if session.get("contract_revision") not in TWO_STAGE_CONTRACT_REVISIONS:
         raise ValueError("separate confidence Freeze is only valid for current r4 sessions")
     if (root / "confidence_frozen").exists():
         raise FileExistsError("immutable confidence Freeze already exists")
@@ -699,7 +729,7 @@ def freeze_confidence(root: Path) -> dict[str, Any]:
         or review.get("selection_id") != session["selection_id"]
         or review.get("target_date") != session["target_date"]
         or review.get("logic_version") != LOGIC
-        or review.get("contract_revision") != CONTRACT_REVISION
+        or review.get("contract_revision") != session["contract_revision"]
         or review.get("confidence_meaning") != CONFIDENCE_MEANING
         or review.get("prediction_records_sha256") != prediction_sha
         or review.get("result_opened") is not False
@@ -718,7 +748,13 @@ def freeze_confidence(root: Path) -> dict[str, Any]:
         key = (str(item.get("venue")), int(item.get("race_no")))
         if key not in expected or key in seen or int(item.get("honmei")) != expected[key]:
             raise ValueError(f"confidence review binding mismatch: {key}")
-        if item.get("confidence") not in {"A", "B", "C"} or len(str(item.get("reason") or "").strip()) < 12:
+        grade = str(item.get("confidence"))
+        normal = read_json(root / "reader" / entries[key]["derived_normal_filename"])
+        try:
+            _validate_confidence_grade(normal, grade, session["contract_revision"])
+        except ValueError as exc:
+            raise ValueError(f"invalid confidence review {key}: {exc}") from exc
+        if len(str(item.get("reason") or "").strip()) < 12:
             raise ValueError(f"invalid confidence review: {key}")
         seen.add(key)
     if seen != set(expected):
@@ -732,7 +768,7 @@ def freeze_confidence(root: Path) -> dict[str, Any]:
         "selection_id": session["selection_id"],
         "target_date": session["target_date"],
         "logic_version": LOGIC,
-        "contract_revision": CONTRACT_REVISION,
+        "contract_revision": session["contract_revision"],
         "confidence_meaning": CONFIDENCE_MEANING,
         "confidence_frozen": True,
         "prediction_freeze_status": prediction_handoff["status"],
@@ -753,8 +789,8 @@ def freeze_confidence(root: Path) -> dict[str, Any]:
 
 
 def verify_confidence_freeze(root: Path) -> dict[str, Any]:
-    session, _, _ = load_session(root)
-    if session.get("contract_revision") != CONTRACT_REVISION:
+    session, _, entries = load_session(root)
+    if session.get("contract_revision") not in TWO_STAGE_CONTRACT_REVISIONS:
         return verify_freeze(root)
     _, prediction_records, prediction_sha = _prediction_records(root)
     handoff = read_json(root / "confidence_frozen" / "day_handoff.json")
@@ -771,7 +807,7 @@ def verify_confidence_freeze(root: Path) -> dict[str, Any]:
         or handoff.get("selection_id") != session["selection_id"]
         or handoff.get("target_date") != session["target_date"]
         or handoff.get("logic_version") != LOGIC
-        or handoff.get("contract_revision") != CONTRACT_REVISION
+        or handoff.get("contract_revision") != session["contract_revision"]
         or handoff.get("confidence_meaning") != CONFIDENCE_MEANING
         or handoff.get("confidence_frozen") is not True
         or handoff.get("prediction_records_sha256") != prediction_sha
@@ -789,10 +825,14 @@ def verify_confidence_freeze(root: Path) -> dict[str, Any]:
             key not in expected
             or key in seen
             or int(item.get("honmei")) != expected[key]
-            or item.get("confidence") not in {"A", "B", "C"}
             or len(str(item.get("reason") or "").strip()) < 12
         ):
             raise ValueError(f"confidence frozen record invalid: {key}")
+        normal = read_json(root / "reader" / entries[key]["derived_normal_filename"])
+        try:
+            _validate_confidence_grade(normal, str(item.get("confidence")), session["contract_revision"])
+        except ValueError as exc:
+            raise ValueError(f"confidence frozen record invalid {key}: {exc}") from exc
         seen.add(key)
     if seen != set(expected):
         raise ValueError("confidence frozen coverage mismatch")

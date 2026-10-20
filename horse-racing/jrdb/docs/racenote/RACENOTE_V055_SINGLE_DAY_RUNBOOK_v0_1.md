@@ -2,7 +2,7 @@
 
 Status: **CURRENT CANDIDATE / NEW v0.5.5 SESSIONS**  
 Logic: `RaceNote-Human-Context-Reader-0.5.5-candidate`  
-Revision: `v055-prediction-freeze-confidence-review-r4`
+Revision: `v055-prediction-freeze-confidence-review-r5`
 
 ## 1. Prepare market-blind source
 
@@ -111,7 +111,7 @@ Author the forecast without A/B/C:
 }
 ```
 
-A/B/C must not be inserted into the r4 Decision Core.
+A/B/C/Z must not be inserted into the r5 Decision Core.
 
 The short note is editorial: write the single race-specific point most useful to the reader. Do not routinely summarize all marks.
 
@@ -164,6 +164,9 @@ Meaning:
 - **A** — ◎を勝ち馬・単勝軸として積極的に支持できる。
 - **B** — ◎が最有力だが、有力な逆転候補または主要リスクがありAほど強く買わない。
 - **C** — ◎は固定済みの本命だが、勝ち馬選定そのものへの確信が低い。
+- **Z** — 新馬戦または障害戦。予想印は通常どおり作成するが、現行A/B/C勝ちConfidenceの評価対象外。
+
+Z is a scope marker, not a lower confidence grade than C. For r5 it is mandatory when the sealed Reader has `race.class == 新馬`, or `race.surface/race_type == 障害`. Standard flat races must be A/B/C.
 
 A does not mean near-certainty. Plausible upset routes do not automatically demote A to B.
 
@@ -192,6 +195,8 @@ python horse-racing/jrdb/src/racenote_v055_single_day.py save-confidence \
   --root <operation-root>/v055 \
   --confidence <operation-root>/v055/incoming/confidence.json
 ```
+
+For Z races, use a concise scope reason such as `新馬戦のため現行A/B/C勝ちConfidence集計の対象外。予想印は通常どおり有効。` or `障害戦のため現行A/B/C勝ちConfidence集計の対象外。予想印は通常どおり有効。`.
 
 Before Confidence Freeze, `confidence_review.json` is deliberately replaceable. Re-read the frozen prediction, reconsider A/B/C boundaries, edit the incoming review and run `save-confidence` again as needed.
 
@@ -235,7 +240,7 @@ The canonical frozen artifacts already contain the full race-by-race marks, comm
 
 - race / frozen counts;
 - Prediction / Confidence final statuses;
-- A/B/C counts;
+- A/B/C/Z counts;
 - prediction / confidence hashes;
 - `result_opened=false`;
 - `target_market_opened=false`;
@@ -253,17 +258,19 @@ After result unlock report:
 
 - total ◎ win / top2 / top3;
 - winner-in-five and top3 capture;
-- A/B/C counts;
-- A/B/C ◎ win rate;
-- A/B/C ◎ single-win return when HJC payout is available.
+- A/B/C/Z counts;
+- A/B/C ◎ win rate, with Z excluded from every denominator;
+- A/B/C ◎ single-win return when HJC payout is available, with Z excluded.
+
+Keep Z performance only as a separate special-race reference line. Z must not be mixed into the primary A/B/C validation series or primary bankroll. Optional play is allowed only as separately accounted recreational/satellite betting when bankroll permits.
 
 Pairwise ◎>○, IDM gaps, debut/obstacle grouping and old A5/A7-style analysis remain downstream diagnostics.
 
-## 9. Existing r1/r2/r3 sessions
+## 9. Existing r1/r2/r3/r4 sessions
 
-Do not migrate an existing frozen r1/r2/r3 session into r4. Their embedded confidence remains part of their historical Freeze.
+Do not migrate an existing frozen r1/r2/r3/r4 session into r5 or retroactively rewrite its A/B/C records as Z. Their embedded confidence remains part of their historical Freeze.
 
-r4 applies only to newly initialized sessions.
+r5 applies only to newly initialized sessions. r4 remains reproducible under its original A/B/C contract.
 
 
 ## 10. Fast forward operational wrapper
