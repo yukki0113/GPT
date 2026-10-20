@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "rrdb_current",
+      "file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
+      "destination": "rrdb.zip",
+      "expected_name": "rrdb.zip",
+      "expected_size": 46921444,
+      "sha256": "61bd2832b656a66a01fddbf47be9bcdc379e042dc7960a3cf8596f4ea8c1c2ec"
+    }
+  ],
+  "note": "BTDAY-0115 T1 current RRDB transport pin from canonical RaceReviewDB_CURRENT.zip; Drive modified 2026-10-19T01:07:25.287Z."
+}
