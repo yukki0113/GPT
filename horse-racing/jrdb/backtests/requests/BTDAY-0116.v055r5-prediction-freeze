@@ -5,5 +5,6 @@
   "contract_revision": "v055-prediction-freeze-confidence-review-r5",
   "action": "PREDICTION_FREEZE",
   "result_opened": false,
-  "target_market_opened": false
+  "target_market_opened": false,
+  "retry": 1
 }
