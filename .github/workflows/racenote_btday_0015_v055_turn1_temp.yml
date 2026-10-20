@@ -1,0 +1,139 @@
+name: RaceNote BTDAY-0015 v0.5.5 TURN 1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-0015/20260823/V055_TURN1_TRIGGER'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: racenote-btday-0015-v055-turn1
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+      TARGET: horse-racing/jrdb/backtests/BTDAY-0015/20260823/v055_day
+      PACI_DRIVE_FILE_ID: 1QQg-Kh6TsJs7WP6IcTDpJMe4Nell-mEr
+      RRDB_DRIVE_FILE_ID: 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg
+      RACELAP_ARTIFACT_ID: '12101869150'
+      RACELAP_EXPECTED_PERIOD_TO: '2026-08-22'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r tools/data-storage/requirements.txt
+          python -m pip install jsonschema pandas numpy
+      - name: Confirm immutable v0.5.5 target is new
+        run: test ! -e "$TARGET"
+      - name: Materialize PACI and RRDB
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/input /tmp/rrdb
+          curl --fail --location --retry 3 "https://drive.usercontent.google.com/download?id=${PACI_DRIVE_FILE_ID}&export=download&confirm=t" --output /tmp/input/PACI260823.zip
+          curl --fail --location --retry 3 "https://drive.usercontent.google.com/download?id=${RRDB_DRIVE_FILE_ID}&export=download&confirm=t" --output /tmp/input/RaceReviewDB_CURRENT.zip
+          unzip -t /tmp/input/PACI260823.zip >/dev/null
+          unzip -t /tmp/input/RaceReviewDB_CURRENT.zip >/dev/null
+          unzip -q /tmp/input/RaceReviewDB_CURRENT.zip -d /tmp/rrdb
+          test -f /tmp/rrdb/postrace_review/v0_1/current.json
+      - name: Materialize Analysis current
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/analysis-art /tmp/analysis
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11782694052/zip > /tmp/analysis-art/refresh.zip
+          unzip -q /tmp/analysis-art/refresh.zip -d /tmp/analysis-art
+          tar -xJf /tmp/analysis-art/analysis-parquet-candidate.tar.xz -C /tmp/analysis
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/analysis')
+          shadow=json.loads((root/'shadow_current.json').read_text())
+          shadow['status']='CURRENT'
+          (root/'current.json').write_text(json.dumps(shadow,ensure_ascii=False,indent=2)+'\n')
+          manifest=json.loads((root/shadow['manifest']).read_text())
+          assert manifest['validation_status']=='PASS'
+          PY
+      - name: Materialize Course Fit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11799761734/zip > /tmp/approved-fit.zip
+          mkdir -p /tmp/course-fit
+          unzip -q /tmp/approved-fit.zip -d /tmp/course-fit
+          test -f /tmp/course-fit/fit/research/candidate_fit_view.parquet
+      - name: Materialize RaceLap current and derive historical as-of snapshot
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/racelap-source /tmp/racelap-asof
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/${RACELAP_ARTIFACT_ID}/zip > /tmp/racelap-source.zip
+          unzip -q /tmp/racelap-source.zip -d /tmp/racelap-source
+          bundle="$(dirname "$(find /tmp/racelap-source -type f -name race_lap.parquet -print -quit)")"
+          python horse-racing/jrdb/src/jrdb_race_lap_asof_snapshot.py             --source-bundle "$bundle"             --cutoff "$RACELAP_EXPECTED_PERIOD_TO"             --output-bundle /tmp/racelap-asof/current             --generation-id racelap-asof-btday0015-20260822-01
+          python horse-racing/jrdb/src/jrdb_race_lap_forward_current.py             --parquet /tmp/racelap-asof/current/race_lap.parquet             --manifest /tmp/racelap-asof/current/manifest.json             --target-date 2026-08-23             --expected-period-to "$RACELAP_EXPECTED_PERIOD_TO"             | tee /tmp/racelap-asof/resolver_receipt.json
+      - name: Run canonical v0.5.5 TURN 1 wrapper
+        run: |
+          set -euo pipefail
+          MAIN_SHA="$(git rev-parse HEAD)"
+          python horse-racing/jrdb/src/racenote_v055_forward_turn1.py             --date 2026-08-23             --paci /tmp/input/PACI260823.zip             --selection-id BTDAY-0015             --main-sha "$MAIN_SHA"             --analysis-root /tmp/analysis             --course-fit-root /tmp/course-fit             --racereview-root /tmp/rrdb/postrace_review/v0_1             --race-lap-current-bundle /tmp/racelap-asof/current             --race-lap-expected-period-to "$RACELAP_EXPECTED_PERIOD_TO"             --output-root "$TARGET"
+      - name: Enrich and validate handoff
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path(os.environ['TARGET'])
+          p=Path('/tmp/input/PACI260823.zip')
+          h=hashlib.sha256(p.read_bytes()).hexdigest()
+          o=json.loads((root/'operation_handoff.json').read_text())
+          s=json.loads((root/'v055/session.json').read_text())
+          m=json.loads((root/'v055/reader_manifest.json').read_text())
+          rl=json.loads(Path('/tmp/racelap-asof/resolver_receipt.json').read_text())
+          o['paci']={'filename':'PACI260823.zip','drive_file_id':'1QQg-Kh6TsJs7WP6IcTDpJMe4Nell-mEr','sha256':h}
+          o['race_lap']={
+            'generation_id':rl['generation_id'],'period_to':rl['period_to'],
+            'expected_period_to':rl['expected_period_to'],'resolver_status':rl['status'],
+            'sha256':rl['parquet_sha256'],'forward_t1_freshness_checked':True,
+            'source_policy':'HISTORICAL_ASOF_FROM_ACCEPTED_CURRENT'
+          }
+          o['race_count']=len(s['race_roster']); o['reader_count']=len(m['entries'])
+          (root/'operation_handoff.json').write_text(json.dumps(o,ensure_ascii=False,indent=2)+'\n')
+          assert o['status']=='READY_FOR_V055_AUTHORING'
+          assert o['selection_id']=='BTDAY-0015'
+          assert o['target_date']=='2026-08-23'
+          assert o['race_lap']['period_to']=='2026-08-22'
+          assert o['analysis_freshness']['forward_t1_checked'] is False
+          assert o['rrdb_freshness']['forward_t1_checked'] is False
+          assert o['race_lap_freshness']['forward_t1_checked'] is True
+          assert o['kyi_coverage']['kyi_missing_count']==0
+          assert o['market_blind'] is True and o['result_opened'] is False and o['target_market_opened'] is False
+          assert o['reader_count']==o['race_count']
+          print(json.dumps({'status':o['status'],'session_id':o['session_id'],'race_count':o['race_count'],'venues':s['expected_venues'],'kyi':o['kyi_coverage'],'race_lap':o['race_lap']},ensure_ascii=False))
+          PY
+      - name: Commit immutable v0.5.5 TURN 1
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET"
+          git commit -m 'RaceNote: stage BTDAY-0015 v0.5.5 TURN 1'
+          git pull --rebase origin main
+          git push origin HEAD:main
