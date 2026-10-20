@@ -67,14 +67,30 @@ jobs:
           PY
 
       - name: Finalize LLM-authored TURN 2
+        id: finalize
+        continue-on-error: true
         run: |
-          set -euo pipefail
+          set -o pipefail
           python horse-racing/jrdb/src/racenote_v055_turn2_finalize.py \
             --root "$ROOT" \
             --decisions "$ROOT/incoming/llm_decisions.json" \
-            --confidence "$ROOT/incoming/llm_confidence.json"
+            --confidence "$ROOT/incoming/llm_confidence.json" \
+            > "$ROOT/turn2_diagnostic.txt" 2>&1
+
+      - name: Persist diagnostic on failure
+        if: steps.finalize.outcome == 'failure'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$ROOT/turn2_diagnostic.txt"
+          git commit -m "RaceNote: capture BTDAY-0118 TURN 2 diagnostic"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          exit 1
 
       - name: Commit immutable TURN 2
+        if: steps.finalize.outcome == 'success'
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
