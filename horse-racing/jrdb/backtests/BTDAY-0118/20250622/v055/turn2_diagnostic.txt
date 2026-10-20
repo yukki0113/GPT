@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/runner/work/GPT/GPT/horse-racing/jrdb/src/racenote_v055_turn2_finalize.py", line 136, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/runner/work/GPT/GPT/horse-racing/jrdb/src/racenote_v055_turn2_finalize.py", line 130, in main
+    result = finalize(args.root, args.decisions, args.confidence)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/GPT/GPT/horse-racing/jrdb/src/racenote_v055_turn2_finalize.py", line 60, in finalize
+    decisions = _load_array(decisions_path, "decisions")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/GPT/GPT/horse-racing/jrdb/src/racenote_v055_turn2_finalize.py", line 32, in _load_array
+    value = json.loads(path.read_text(encoding="utf-8"))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/json/decoder.py", line 341, in decode
+    raise JSONDecodeError("Extra data", s, end)
+json.decoder.JSONDecodeError: Extra data: line 1190 column 2 (char 29279)
