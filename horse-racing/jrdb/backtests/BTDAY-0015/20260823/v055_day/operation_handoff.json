@@ -1,0 +1,75 @@
+{
+  "ab_required": false,
+  "analysis_freshness": {
+    "forward_t1_checked": false,
+    "owner": "DEDICATED_ANALYSIS_OPERATION"
+  },
+  "authoring_bundle": {
+    "automated_marks": false,
+    "automated_ranking": false,
+    "automated_scoring": false,
+    "path": "v055/authoring_bundle",
+    "prediction_policy": "LLM_RACE_BY_RACE_ONLY",
+    "status": "READY_FOR_LLM_RACE_BY_RACE_REVIEW"
+  },
+  "contract_revision": "v055-prediction-freeze-confidence-review-r5",
+  "daily_manifest_status": "PASS",
+  "expected_venues": [
+    "中京",
+    "新潟",
+    "札幌"
+  ],
+  "forecast_prep": "horse-racing/jrdb/backtests/BTDAY-0015/20260823/v055_day/forecast_prep",
+  "kyi_coverage": {
+    "kyi_matched_count": 466,
+    "kyi_missing_count": 0,
+    "reader_horse_count": 466
+  },
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.5-candidate",
+  "market_blind": true,
+  "paci": {
+    "filename": "PACI260823.zip",
+    "drive_file_id": "1QQg-Kh6TsJs7WP6IcTDpJMe4Nell-mEr",
+    "sha256": "b8d74319125d845e160aff2dc048e872e770b2c2805f1154907020c5fd03d9a8"
+  },
+  "race_count": 36,
+  "race_lap_freshness": {
+    "expected_period_to": "2026-08-22",
+    "forward_t1_checked": true,
+    "owner": "FORWARD_T1"
+  },
+  "race_lap_resolution": {
+    "expected_period_to": "2026-08-22",
+    "generation_id": "racelap-asof-btday0015-20260822-01",
+    "network_access": false,
+    "parquet_sha256": "19591e0b471b81ce4d85091f397e9e716647d49c3c53967ab3162fa65ffd01ef",
+    "period_to": "2026-08-22",
+    "source_policy": "VERIFIED_EXISTING_CURRENT",
+    "status": "CURRENT_READY",
+    "updated": false
+  },
+  "reader_count": 36,
+  "reader_projection": "v055-lean-model-reader-r2",
+  "result_opened": false,
+  "rrdb_freshness": {
+    "forward_t1_checked": false,
+    "owner": "DEDICATED_RRDB_OPERATION"
+  },
+  "schema_version": "racenote-v055-forward-turn1-handoff-0.1",
+  "selection_id": "BTDAY-0015",
+  "session_id": "V055-5c9e6c76a703b948b732",
+  "status": "READY_FOR_V055_AUTHORING",
+  "stripped_at_input_bind": true,
+  "target_date": "2026-08-23",
+  "target_market_opened": false,
+  "v053_root": null,
+  "race_lap": {
+    "generation_id": "racelap-asof-btday0015-20260822-01",
+    "period_to": "2026-08-22",
+    "expected_period_to": "2026-08-22",
+    "resolver_status": "CURRENT_READY",
+    "sha256": "19591e0b471b81ce4d85091f397e9e716647d49c3c53967ab3162fa65ffd01ef",
+    "forward_t1_freshness_checked": true,
+    "source_policy": "HISTORICAL_ASOF_FROM_ACCEPTED_CURRENT"
+  }
+}
