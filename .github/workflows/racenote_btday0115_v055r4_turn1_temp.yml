@@ -72,11 +72,21 @@ jobs:
           tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
       - name: Materialize SHA-pinned current RRDB
         run: |
-          python tools/gpt_io/public_drive/fetch.py \
-            --manifest horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json \
-            --artifact golden_20 \
-            --output-root /tmp/current-rrdb \
-            --receipt /tmp/current-rrdb/receipt.json
+          set -euo pipefail
+          ok=false
+          for attempt in 1 2 3 4 5; do
+            rm -rf /tmp/current-rrdb
+            if python tools/gpt_io/public_drive/fetch.py \
+              --manifest horse-racing/jrdb/config/public_drive/racenote_btday0080_historical_20261013.json \
+              --artifact golden_20 \
+              --output-root /tmp/current-rrdb \
+              --receipt /tmp/current-rrdb/receipt.json; then
+              ok=true
+              break
+            fi
+            sleep $((attempt * 5))
+          done
+          test "$ok" = true
           mkdir -p /tmp/rrdb
           unzip -q /tmp/current-rrdb/rrdb.zip -d /tmp/rrdb
           test -f /tmp/rrdb/postrace_review/v0_1/current.json
