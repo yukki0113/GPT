@@ -193,7 +193,7 @@ Complete 3-5 generation pedigree expansion still needs an additional canonical p
 
 ## Follow-up
 
-1. Audit the 102 dam/BMS key inconsistencies.
+1. Dam/BMS apparent inconsistencies — audited in `BRDB_UKC_DAM_BMS_INCONSISTENCY_AUDIT_20261021.md`.
 2. Check whether older JRDB UKC archives before 2010 exist and materially improve recursive coverage.
 3. If not, evaluate an external pedigree master only for unresolved ancestors.
 4. Keep JRDB facts primary and external data supplementary.
