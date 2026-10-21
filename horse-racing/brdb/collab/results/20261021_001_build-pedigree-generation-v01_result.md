@@ -1,6 +1,6 @@
 # BRDB Pedigree Canonical Generation v0.1 — Result
 
-Status: BLOCKED (implementation and full-data validation passed; reviewed alias CSV publication to GitHub requires approval)  
+Status: DONE (implementation, full-data validation, and immutable Drive persistence verified; optional alias CSV publication to GitHub is not required for canonical generation)  
 Date: 2026-10-21  
 Source commit: `5cdeed75a95b1efc24c5fcab551befcc35ddb54c`  
 Branch: `codex/brdb-pedigree-generation-v01-20261021`  
@@ -59,4 +59,4 @@ The alias master CSV was generated locally with explicit version and evidence fi
 
 Code and contract changes: generation builder, resolver correction, focused tests, manifest JSON Schema, manifest contract documentation, and BRDB README index. The pedigree fact SQL schema was already on main. The resolver correction prevents an unused alias from relabeling an exact match. Related open BRDB PRs/branches at preflight: none.
 
-Unresolved: explicit authorization to publish the reviewed alias CSV and detailed audit to GitHub, if desired. The immutable Parquet generation is externally persisted in the user-designated Drive folder. Recommended next action: review this code PR and decide whether the alias CSV should also be published to GitHub.
+The immutable Parquet generation is externally persisted in the user-designated Drive folder and its files were verified against the generation manifest. Publishing a separate reviewed alias CSV to GitHub is optional and is not a blocker for the canonical generation. Recommended next action: merge this implementation PR and proceed to the BRDB CURRENT / Reader publication design.
