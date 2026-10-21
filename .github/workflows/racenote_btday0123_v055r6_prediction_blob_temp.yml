@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 30
     env:
       ROOT: horse-racing/jrdb/backtests/BTDAY-0123/20251109/v055
-      BLOB_SHA: ecfa34e8e8a83162ed1fd010d6f920d67709cd2b
+      BLOB_SHA: 17720643cda48357b8dd93203bfb6909c4b60cee
       PYTHONPATH: horse-racing/jrdb/src
     steps:
       - uses: actions/checkout@v4
