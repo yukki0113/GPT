@@ -17,7 +17,7 @@ def _normal(*, race_class: str = "1勝クラス", surface: str = "芝", race_typ
     return {"race": {"class": race_class, "surface": surface, "race_type": race_type}}
 
 
-def test_r5_standard_flat_race_uses_abc_only() -> None:
+def test_r6_standard_flat_race_uses_abc_only() -> None:
     normal = _normal()
     assert confidence_scope(normal) == ("STANDARD", None)
     for grade in ("A", "B", "C"):
@@ -26,7 +26,7 @@ def test_r5_standard_flat_race_uses_abc_only() -> None:
         _validate_confidence_grade(normal, "Z", CONTRACT_REVISION)
 
 
-def test_r5_debut_race_must_use_z() -> None:
+def test_r6_debut_race_must_use_z() -> None:
     normal = _normal(race_class="新馬", race_type="2歳")
     assert confidence_scope(normal) == ("OUT_OF_SCOPE", "DEBUT")
     _validate_confidence_grade(normal, "Z", CONTRACT_REVISION)
@@ -34,7 +34,7 @@ def test_r5_debut_race_must_use_z() -> None:
         _validate_confidence_grade(normal, "B", CONTRACT_REVISION)
 
 
-def test_r5_jump_race_must_use_z() -> None:
+def test_r6_jump_race_must_use_z() -> None:
     normal = _normal(race_class="オープン", surface="障害", race_type="障害")
     assert confidence_scope(normal) == ("OUT_OF_SCOPE", "JUMP")
     _validate_confidence_grade(normal, "Z", CONTRACT_REVISION)
@@ -45,5 +45,5 @@ def test_r5_jump_race_must_use_z() -> None:
 def test_r4_remains_abc_only_for_reproducibility() -> None:
     debut = _normal(race_class="新馬", race_type="2歳")
     _validate_confidence_grade(debut, "A", R4_CONTRACT_REVISION)
-    with pytest.raises(ValueError, match="r4 confidence must be A/B/C"):
+    with pytest.raises(ValueError, match="legacy pre-r5 confidence must be A/B/C"):
         _validate_confidence_grade(debut, "Z", R4_CONTRACT_REVISION)
