@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'horse-racing/jrdb/backtests/requests/BTDAY-0125.v055r6-turn2-prediction'
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0125.stage2'
 
 permissions:
   contents: write
