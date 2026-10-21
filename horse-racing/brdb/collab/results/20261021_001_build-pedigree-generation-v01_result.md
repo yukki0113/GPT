@@ -1,6 +1,6 @@
 # BRDB Pedigree Canonical Generation v0.1 — Result
 
-Status: BLOCKED (implementation and full-data validation passed; individual-level artifact publication requires approval)  
+Status: BLOCKED (implementation and full-data validation passed; reviewed alias CSV publication to GitHub requires approval)  
 Date: 2026-10-21  
 Source commit: `5cdeed75a95b1efc24c5fcab551befcc35ddb54c`  
 Branch: `codex/brdb-pedigree-generation-v01-20261021`  
@@ -55,8 +55,8 @@ Official JRDB lineage master: 83 rows; 62 distinct codes observed; no unmapped o
 
 Generation ID: `eeca93556584a5b8`. Validated Parquet rows: pedigree fact 82,107; parent relation 246,321; aliases 21; lineage master 83. The local immutable generation includes a manifest, source and output SHA-256 values, and a machine-readable audit. Large Parquet files were kept out of Git.
 
-The alias master CSV was generated locally with explicit version and evidence fields. Automatic approval review rejected publishing that individual-level CSV to GitHub as outside the authorized code-and-aggregate scope. It rejected uploading the ZIP to a new Drive folder because destination ownership, trust, and specific authorization were not established. It also rejected an earlier detailed RESULT containing individual-level data and private source metadata. None of those rejected transfers was bypassed. The new Drive folder is empty.
+The alias master CSV was generated locally with explicit version and evidence fields. Automatic approval review rejected publishing that individual-level CSV to GitHub as outside the authorized code-and-aggregate scope. An earlier attempt to upload the ZIP to a newly created Drive folder was rejected because destination ownership, trust, and specific authorization were not established. The user subsequently supplied an explicit Drive destination. Four Parquet files, `manifest.json`, and `audit.json` were uploaded to a generation subfolder there and verified by folder readback. The previously created folder remains empty. An earlier detailed RESULT containing individual-level data and private source metadata was also rejected; no rejected transfer was bypassed.
 
 Code changes: generation builder, resolver correction, and focused tests. The resolver correction prevents an unused alias from relabeling an exact match. Related open BRDB PRs/branches at preflight: none.
 
-Unresolved: approval of a trusted external destination and explicit authorization to publish the reviewed alias master and detailed audit. Recommended next action: review this code PR, then provide those approvals before treating the immutable generation as externally persisted.
+Unresolved: explicit authorization to publish the reviewed alias CSV and detailed audit to GitHub, if desired. The immutable Parquet generation is externally persisted in the user-designated Drive folder. Recommended next action: review this code PR and decide whether the alias CSV should also be published to GitHub.
