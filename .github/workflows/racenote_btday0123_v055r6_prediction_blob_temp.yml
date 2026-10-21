@@ -1,8 +1,10 @@
 name: RaceNote BTDAY-0125 v0.5.5 r6 Prediction Blob Freeze
 
 on:
-  pull_request:
-    types: [opened]
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/racenote_btday0123_v055r6_prediction_blob_temp.yml'
 
 permissions:
   contents: write
