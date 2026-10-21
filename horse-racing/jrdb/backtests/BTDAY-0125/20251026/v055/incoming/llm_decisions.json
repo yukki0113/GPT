@@ -1,0 +1,1190 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "marks": [
+      5,
+      6,
+      1,
+      7,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        6,
+        1,
+        7,
+        2
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "5番アーネストアイズは前走1800m3着で能力38。出ムチでも行けない中、3角から長く脚を使った。",
+      "main_risk": "6番は前走2着で内をロスなく運べており、位置取り差で逆転される余地がある。"
+    },
+    "shot_case": {
+      "case": "1番は前走5着でも好位内を取れており、展開利があれば粘り込み可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "1800mで長く脚を使った5番。前が止まる形なら最後に届く。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "marks": [
+      6,
+      8,
+      7,
+      10,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        8,
+        7,
+        10,
+        4
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "6番ジェイパックは能力33.1でこの組上位。前走は後方で流れ込むだけだったが地力を最も高く取る。",
+      "main_risk": "8番は能力33で調教61/61上昇、7番も好位から4着で差は小さい。"
+    },
+    "shot_case": {
+      "case": "10番は前走3着で好位を取れており、位置取りの利から上位進出がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "基礎能力上位の6番。流れに乗れればマイルで前進できる。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "marks": [
+      9,
+      6,
+      8,
+      5,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        6,
+        8,
+        5,
+        10
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "9番パーヴォは能力38でこの組最上位。前走は後方から内を突いて4着まで差を詰めた。",
+      "main_risk": "6番は前走2着、8番も能力35で先行できるため展開差は大きい。"
+    },
+    "shot_case": {
+      "case": "6番は調教66/60上昇で前走2着。早めに動ければ押し切りまである。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "末脚の質で9番を上位評価。2000mで差し切りを狙う。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "marks": [
+      12,
+      4,
+      16,
+      5,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        4,
+        16,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "12番ジーティーピカソは事前能力36.1で最上位、調教58/60上昇で初戦から動ける水準。",
+      "main_risk": "4番は能力27、16番24.5で新馬戦だけに適性差が未知。"
+    },
+    "shot_case": {
+      "case": "4番ファイアスピリットは調教53/60上昇で、好位を取れれば能力差を詰められる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "事前能力で一歩抜ける12番をダート新馬の中心に置く。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "marks": [
+      1,
+      8,
+      6,
+      5,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        8,
+        6,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "1番エムズビギンは事前能力43.5で最上位、調教44/63でデキ抜群。",
+      "main_risk": "8番は35.6、6番34.5で初戦の折り合いや位置取り次第では差が縮まる。"
+    },
+    "shot_case": {
+      "case": "8番グラシアムヘールは事前能力35.6で2番手級、調教47/49かつデキ抜群。1番が初戦で折り合いを欠けば完成度で逆転余地がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力と仕上がりの両面で1番を中心視する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "marks": [
+      2,
+      10,
+      11,
+      9,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        10,
+        11,
+        9,
+        6
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "2番サンマルノヴェルは前走1400m2着、能力55。好位から追い比べまで持ち込めた。",
+      "main_risk": "10番は前走を逃げ切り能力55、11番も51で4着と相手は強い。"
+    },
+    "shot_case": {
+      "case": "9番は後方から4着で能力48。前崩れなら直線で浮上できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "現級2着の2番。好位で運べる再現性を最上位に取る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "marks": [
+      6,
+      7,
+      12,
+      1,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        7,
+        12,
+        1,
+        3
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "6番ジュルナールは能力53で前走1800m2着。先手を取りスローでも最後まで粘った。",
+      "main_risk": "7番は能力51で3着、12番も50で3着と先行勢の差は小さい。"
+    },
+    "shot_case": {
+      "case": "1番は前走差し切り勝ちで調教もデキ抜群。流れが速ければ逆転可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前走2着の6番。先手を取れる強みを京都1800mで重視する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "marks": [
+      9,
+      12,
+      5,
+      14,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        12,
+        5,
+        14,
+        4
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "9番モジャーリオは前走1200m2着で能力56、調教72/69デキ抜群。",
+      "main_risk": "12番は能力57で3着、5番は58で2着しており能力差は僅か。"
+    },
+    "shot_case": {
+      "case": "14番は逃げて3着。単騎で運べれば再び粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "状態の良さと末脚を買って9番を中心に据える。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "marks": [
+      7,
+      1,
+      8,
+      5,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        1,
+        8,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "7番クールデイトナは前走を勝ち能力46。3角から進出して直線早めに抜け出した。",
+      "main_risk": "1番も能力45で完勝、8番も逃げ切り勝ちで無敗馬同士の比較は難しい。"
+    },
+    "shot_case": {
+      "case": "8番は調教68/68上昇で逃げ切り勝ち。展開利があれば連勝まで。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "勝ち方の完成度で7番を一歩上に取る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "marks": [
+      5,
+      9,
+      12,
+      3,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        9,
+        12,
+        3,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "5番ジューンアヲニヨシは能力69でこの組最上位。前走3着も番手から4角先頭まで動いた。",
+      "main_risk": "9番は65.5で前走勝ち、12番も65とオープン級で相手は強い。"
+    },
+    "shot_case": {
+      "case": "3番は前走逃げ切りで能力64。先手を奪えば展開利が大きい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力69の5番を中心視。番手から早めに抜ける形を評価する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "marks": [
+      9,
+      15,
+      7,
+      18,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        15,
+        7,
+        18,
+        4
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "9番エネルジコは能力68で前走2着。出遅れながら向正面で挽回し直線も伸びた。",
+      "main_risk": "15番は能力64で前走勝ち、7番も63で2着とクラシック級の相手が揃う。"
+    },
+    "shot_case": {
+      "case": "18番は能力63で3着、調教65/68上昇。好位から長く脚を使えば食い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "出遅れを挽回して能力68を出した9番を中心に取る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "marks": [
+      6,
+      10,
+      13,
+      15,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        10,
+        13,
+        15,
+        8
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "6番コスモストームは能力61.2でこの組最上位。前走4着でも中団から内を突いて崩れなかった。",
+      "main_risk": "10番は前走勝ちで能力58、13番も2着で59と1400m適性が高い。"
+    },
+    "shot_case": {
+      "case": "13番は後方から2着まで伸び、調教70/70。前が速ければ差し切りまである。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力水準で6番を中心視。1400mで流れが締まれば末脚を生かせる。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "marks": [
+      11,
+      2,
+      6,
+      8,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        2,
+        6,
+        8,
+        5
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "11番ドナソールは前走1800m4着で能力27。先団内からロスなく運び、この組では最も形ができている。",
+      "main_risk": "2番は能力28で後方から6着、11番より地力評価では上に取れる余地もある。"
+    },
+    "shot_case": {
+      "case": "6番は前走5着で能力24。発馬を決めて中団より前なら粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "先行して4着の11番。小回り1800mで位置取りを重視する。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "marks": [
+      11,
+      3,
+      2,
+      8,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        3,
+        2,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "11番ジャスフォールは前走1400m2着で能力35。中団から外へ出して長く伸びた。",
+      "main_risk": "3番も前走2着で逃げ粘り、能力34と差はほぼない。"
+    },
+    "shot_case": {
+      "case": "2番は3着で能力34、出負けしても2列目まで挽回できている。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "末脚の再現性で11番を中心視する。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "marks": [
+      7,
+      4,
+      6,
+      5,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        4,
+        6,
+        5,
+        3
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "7番バトゥカーダは能力40でこの組最上位。前走は好位外を回して4着。",
+      "main_risk": "4番は3着で能力33、6番も3着で31と着順差以上に地力差がある。"
+    },
+    "shot_case": {
+      "case": "6番カナタコナタは前走1800m3着で能力31。二の脚で先団内を確保して最内から抜け出しかけており、前有利なら残り目がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力40の7番。好位から運べれば押し切りまで。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "marks": [
+      15,
+      7,
+      16,
+      2,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        7,
+        16,
+        2,
+        10
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "15番ラブリーリディアは前走1800mを後方から長く脚を使って差し切り、能力45。",
+      "main_risk": "7番は能力46で2着、16番も47で3着と昇級後の地力比較は接近。"
+    },
+    "shot_case": {
+      "case": "10番は前走2着で先団から運べる。前残りなら逆転可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "差し切り勝ちの内容を評価し15番を中心に据える。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "marks": [
+      10,
+      16,
+      9,
+      8,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        16,
+        9,
+        8,
+        14
+      ],
+      "external_challenger_horse_no": 17,
+      "excluded_horse_no": 17,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "17番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "10番ルージュルガーノは事前能力39.3で最上位。調教37/52で初戦に向けた上向きもある。",
+      "main_risk": "16番38.9、9番37と能力差が小さく、新馬戦の不確実性は大きい。"
+    },
+    "shot_case": {
+      "case": "14番は能力31.6で調教59/52上昇。仕上がりの良さで食い込み可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "事前能力で10番をわずかに上位評価する。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "marks": [
+      9,
+      3,
+      10,
+      11,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        3,
+        10,
+        11,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "9番ビーコングは前走1200m2着で能力48。強気に逃げて速い流れでも粘った。",
+      "main_risk": "3番は前走勝ちで能力44、調教67/74上昇と状態は非常に良い。"
+    },
+    "shot_case": {
+      "case": "3番は早め好位から危なげなく勝利。昇級でも前で運べれば連勝余地がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "速い流れを逃げて2着の9番を中心視する。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "marks": [
+      1,
+      11,
+      14,
+      7,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        11,
+        14,
+        7,
+        5
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "1番ヤエギリは能力51でこの組最上位。前走4着でも好位から崩れなかった。",
+      "main_risk": "11番は48、14番47で、1番も勝ち切れていない点はリスク。"
+    },
+    "shot_case": {
+      "case": "5番は前走勝ちで能力44。内をロスなく進めば上位へ食い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力51の1番。好位から安定して運べる点を評価する。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "marks": [
+      8,
+      7,
+      11,
+      3,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        7,
+        11,
+        3,
+        9
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "8番テーオーマルコーニは前走1800m3着で能力48。スタートの不利から外を回して差を詰めた。",
+      "main_risk": "7番は能力39ながら後方から4着、11番も42で5着と展開次第で迫る。"
+    },
+    "shot_case": {
+      "case": "7番ピストルスターは前走1800m4着で能力39。出遅れ後に外から押し上げ、直線も渋太く伸びており消耗戦なら浮上できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "不利を受けても3着まで来た8番を中心視する。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "marks": [
+      6,
+      10,
+      12,
+      13,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        10,
+        12,
+        13,
+        9
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "6番グレゴリオは前走1600m2着で能力48。後方内から直線で鋭く伸びた。",
+      "main_risk": "10番は能力45で調教55/77上昇、12番も44と差は大きくない。"
+    },
+    "shot_case": {
+      "case": "10番は状態面が大きく上向いており、好位を取れれば逆転可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前走2着で末脚の切れを見せた6番を中心視する。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "marks": [
+      4,
+      12,
+      5,
+      3,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        12,
+        5,
+        3,
+        16
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "4番フルレゾンは前走2000mを勝利、能力56。中団から直線中央を伸びて差し切った。",
+      "main_risk": "12番は2着で能力55、5番も54.2と相手は近い。"
+    },
+    "shot_case": {
+      "case": "3番は逃げて3着で能力54。単騎なら粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前走を勝ち切った4番。中団からの決め手を信頼する。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "marks": [
+      17,
+      15,
+      5,
+      6,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        17,
+        15,
+        5,
+        6,
+        4
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "17番イコサンは前走勝ちで能力61、調教69/71上昇。2列目から後半伸びて捉えた。",
+      "main_risk": "15番は能力62、5番も前走勝ちで57と直千適性の高い相手が揃う。"
+    },
+    "shot_case": {
+      "case": "6番は出遅れ最後尾から3着まで猛追。外枠替わりなら一発がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "直千で勝ち切った17番。外枠と状態上昇を評価する。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "marks": [
+      3,
+      10,
+      1,
+      9,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        10,
+        1,
+        9,
+        2
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "3番ポンピエは能力51でこの組最上位。前走5着も好位外から伸びずバテずの内容。",
+      "main_risk": "10番は能力46で5着、1番も44と近く、3番自身が勝ち切れていない。"
+    },
+    "shot_case": {
+      "case": "9番は前走4着で調教上昇。中団から差す形なら上位へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力51の3番を中心視。1200mで好位を取れる点を買う。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      12,
+      2,
+      1,
+      4,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        2,
+        1,
+        4,
+        3
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "12番スリーコーズは前走1400m3着で能力39。番手から前を追って最後まで粘った。",
+      "main_risk": "2番は能力29で上昇気配、1番も出遅れながら5着で末脚を見せる。"
+    },
+    "shot_case": {
+      "case": "1番は後方から渋太く伸びており、前が速くなれば差し込み可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前走3着で能力が抜ける12番を中心視する。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      9,
+      4,
+      8,
+      10,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        4,
+        8,
+        10,
+        3
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "9番セヴェロは前走2000m4着で能力34。後方から直線でジリジリ伸びた。",
+      "main_risk": "4番は能力35だが前走10着で内容に不安、8番も33で5着と差は小さい。"
+    },
+    "shot_case": {
+      "case": "10番は好位から4角で先頭に並べており展開利があれば残る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2000mで4着まで伸びた9番を中心に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      11,
+      1,
+      10,
+      9,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        1,
+        10,
+        9,
+        3
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "11番リラは能力36でこの組最上位。前走4着で離れた3番手から最後まで脚を使った。",
+      "main_risk": "1番は能力35で5着、10番は調教68/68上昇と状態面で迫る。"
+    },
+    "shot_case": {
+      "case": "10番は控えすぎても6着まで盛り返した。位置を取れば前進余地が大きい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力36の11番。マイルで好位から運べれば勝ち負け。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      1,
+      14,
+      13,
+      12,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        14,
+        13,
+        12,
+        7
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "1番シルヴァーデュークは前走障害で3着。躓いて最後尾から4角進出し猛追した。",
+      "main_risk": "14番と13番も前走障害3着で、飛越次第では着順が大きく入れ替わる。"
+    },
+    "shot_case": {
+      "case": "14番は強気に逃げて3着。飛越をまとめて単騎なら粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "不利から3着まで追い上げた1番を障害戦の中心に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      5,
+      13,
+      2,
+      15,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        13,
+        2,
+        15,
+        3
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "5番ヴァリスマリネリスは事前能力47.4でこの組最上位。13番43.9を3.5ポイント上回り、調教59/52も安定していて1800m新馬で最も勝ち筋を描きやすい。",
+      "main_risk": "13番43.9、2番35.1で新馬戦だけに実戦での折り合いは未知。"
+    },
+    "shot_case": {
+      "case": "15番は能力33.6で調教60/55上昇。完成度の高さで食い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "事前能力47.4の5番を東京1800m新馬の中心に据える。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      18,
+      14,
+      16,
+      10,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        18,
+        14,
+        16,
+        10,
+        15
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "18番レゲンデは事前能力43.5でこの組最上位。芝1400m新馬で能力差を最も高く評価する。",
+      "main_risk": "14番32.7、16番32.4で差はあるが、18番は調教55/33で状態面に不安が残る。"
+    },
+    "shot_case": {
+      "case": "16番は能力32.4で上昇気配。仕上がりの良さで逆転余地がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力では18番が上。状態面の不安を踏まえても中心に置く。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "marks": [
+      5,
+      12,
+      2,
+      3,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        12,
+        2,
+        3,
+        11
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "5番タマモカンパネラは前走1600m2着で能力46。中団後ろから長く脚を使った。",
+      "main_risk": "12番は前走5着でも能力47、調教57/74上昇で状態面は上。"
+    },
+    "shot_case": {
+      "case": "3番は前走勝ちで能力42。中団から外を伸びる形が再現できれば連勝も。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前走2着の5番。東京1600mで持続する末脚を評価する。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "marks": [
+      14,
+      5,
+      11,
+      2,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        5,
+        11,
+        2,
+        13
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "14番インパクトシーは前走1600m2着で能力54。出遅れ後に外2番手まで挽回し粘った。",
+      "main_risk": "5番は能力50で4着、11番も45で5着と相手はいるが能力差は明確。"
+    },
+    "shot_case": {
+      "case": "13番は前走勝ち。内からロスなく抜けた内容で展開が噛み合えば上位へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "出遅れを挽回して2着の14番。地力を最上位に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "marks": [
+      6,
+      1,
+      11,
+      5,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        1,
+        11,
+        5,
+        7
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "6番ホレーショは能力54でこの組最上位。前走4着でも好位から最後まで崩れなかった。",
+      "main_risk": "1番は前走勝ちで能力51、11番も52と勝ち切りの差は小さい。"
+    },
+    "shot_case": {
+      "case": "1番は最後方から馬群を割って差し切り。流れが速ければ連勝まである。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力54の6番。好位で運べる安定感を軸にする。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "marks": [
+      6,
+      10,
+      2,
+      4,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        10,
+        2,
+        4,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "6番クリニクラウンは前走1800m2着で能力58。先団から最後までしっかり伸びた。",
+      "main_risk": "10番は前走勝ちで能力51、2番も53で3着と展開次第で差は縮まる。"
+    },
+    "shot_case": {
+      "case": "10番は先団で折り合い前走勝ち。位置取りの利から逆転可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前走2着で能力58の6番を中心視する。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "marks": [
+      13,
+      3,
+      12,
+      16,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        3,
+        12,
+        16,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "13番インユアパレスは前走1400mを勝利、能力67。後方から直線外へ出して決め手を発揮した。",
+      "main_risk": "3番は能力62.7で前走不利、12番も61.9とオープン級の相手が揃う。"
+    },
+    "shot_case": {
+      "case": "16番は前走勝ちで能力62。中団から外へ出す形なら再び差し切りまで。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力67で前走勝ちの13番。決め手の質を最上位に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "marks": [
+      5,
+      14,
+      1,
+      8,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        14,
+        1,
+        8,
+        15
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番も候補だが、今回条件・近走内容・状態を合わせると選んだ5頭を上回る決め手まではない。"
+    },
+    "honmei_win": {
+      "evidence": "5番チュウワチーフは前走1600m3着で能力55。番手から直線の追い比べまで持ち込んだ。",
+      "main_risk": "14番は能力48で5着、1番は2着で47と、5番は勝ち切れない点が課題。"
+    },
+    "shot_case": {
+      "case": "1番は調教66/66上昇で前走2着。先行して先に抜ければ逆転可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "能力55で3着の5番を中心視。番手からの安定感を買う。"
+  }
+]
