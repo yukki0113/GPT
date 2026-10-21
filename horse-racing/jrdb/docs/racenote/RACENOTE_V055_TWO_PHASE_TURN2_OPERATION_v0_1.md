@@ -1,6 +1,6 @@
-# RaceNote v0.5.5 r5 — two-phase Turn2 operation
+# RaceNote v0.5.5 r6 — two-phase Turn2 operation
 
-Status: implementation candidate; applies to **new r5 sessions only**.
+Status: implementation candidate; applies to **new r6 sessions only**.
 
 ## Boundary
 
@@ -38,12 +38,12 @@ The workflow job output identifies the failing stage; a failed runner may contai
 
 ## Compatibility
 
-The previous combined `racenote_v055_turn2_finalize.py` stays unchanged for historical reproducibility. Its workflow is **manual-only and non-r5**; new r5 sessions must use the two separate workflows.
+The previous combined `racenote_v055_turn2_finalize.py` stays unchanged for historical reproducibility. Its workflow is **manual-only and non-r5**; new r6 sessions must use the two separate workflows.
 
 ## Regression checks before merge
 
-- Normal fresh r5 Prediction → persisted frozen Prediction → LLM Confidence → persisted frozen Confidence.
-- Broken JSON (including extra suffix), missing race, duplicate race, wrong frozen ◎, non-r5 input and frozen-stage replays all fail closed.
+- Normal fresh r6 Prediction → persisted frozen Prediction → LLM Confidence → persisted frozen Confidence.
+- Broken JSON (including extra suffix), missing race, duplicate race, wrong frozen ◎, non-r6 input and frozen-stage replays all fail closed.
 - Both daily and BTDAY roots resolve; unapproved roots fail.
 - No result or target market is opened.
 - Runner commit writes exactly within the selected operation root.
