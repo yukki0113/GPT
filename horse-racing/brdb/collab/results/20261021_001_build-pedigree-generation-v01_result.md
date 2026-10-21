@@ -4,7 +4,8 @@ Status: BLOCKED (implementation and full-data validation passed; individual-leve
 Date: 2026-10-21  
 Source commit: `5cdeed75a95b1efc24c5fcab551befcc35ddb54c`  
 Branch: `codex/brdb-pedigree-generation-v01-20261021`  
-PR: pending merge
+Implementation commit: `fe511d4f9ea53b0802845b29f11be140259d56b3`  
+PR: #2126 (draft; pending merge)
 
 ## Execution
 
