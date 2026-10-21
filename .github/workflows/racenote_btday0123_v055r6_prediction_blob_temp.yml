@@ -1,10 +1,8 @@
 name: RaceNote BTDAY-0125 v0.5.5 r6 Prediction Blob Freeze
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'horse-racing/jrdb/backtests/requests/BTDAY-0125.stage2'
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
