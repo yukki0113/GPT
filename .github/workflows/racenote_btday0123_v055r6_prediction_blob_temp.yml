@@ -60,7 +60,7 @@ jobs:
                   r["shot_case"]["case"]="7番ピストルスターは前走1800m4着で能力39。出遅れ後に外から押し上げ、直線も渋太く伸びており消耗戦なら浮上できる。"
               elif k==("東京",5):
                   r["honmei_win"]["evidence"]="5番ヴァリスマリネリスは事前能力47.4でこの組最上位。13番43.9を3.5ポイント上回り、調教59/52も安定していて1800m新馬で最も勝ち筋を描きやすい。"
-          p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+"\\n")
+          p.write_text(json.dumps(x,ensure_ascii=False,indent=2))
           PY
 
       - name: Canonical Prediction Freeze
