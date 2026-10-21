@@ -1,17 +1,17 @@
-name: RaceNote BTDAY-0124 v0.5.5 current TURN 1
+name: RaceNote BTDAY-0125 v0.5.5 current TURN 1
 
 on:
   push:
     branches: [main]
     paths:
-      - 'horse-racing/jrdb/backtests/requests/BTDAY-0124.v055r6-turn1'
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0125.v055r6-turn1'
 
 permissions:
   contents: write
   actions: read
 
 concurrency:
-  group: racenote-btday-0124-v055r6-turn1
+  group: racenote-btday-0125-v055r6-turn1
   cancel-in-progress: false
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
       JRDB_USER: ${{ secrets.JRDB_USER }}
       JRDB_PASSWORD: ${{ secrets.JRDB_PASSWORD }}
       PYTHONPATH: horse-racing/jrdb/src
-      TARGET: horse-racing/jrdb/backtests/BTDAY-0124/20250628
+      TARGET: horse-racing/jrdb/backtests/BTDAY-0125/20251026
     steps:
       - uses: actions/checkout@v4
         with:
@@ -124,7 +124,7 @@ jobs:
           from racenote_prepare_forecast_input import bind
 
           target=Path(os.environ['TARGET']); target.mkdir(parents=True)
-          target_date='2025-06-28'; day=date.fromisoformat(target_date)
+          target_date='2025-10-26'; day=date.fromisoformat(target_date)
           current=Path('/tmp/historical/warehouse/current.json')
           validate_gate(Path('horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json'),current)
           request=RaceNoteRequest(day,None,None,date.today())
@@ -157,7 +157,7 @@ jobs:
                   racereview_root=Path('/tmp/rrdb/postrace_review/v0_1'),
                   racereview_current_cache=None,next_watch_rules=None,work_root=Path(tmp))
           views, reader_report=build_reader_views(enriched)
-          report={'base':{'target_date':target_date,'date_raw':'20250628','race_count':len(bases),'target_result_contamination':0,'record_counts':warehouse_report['record_counts'],'warnings':[]},'history':history_report,'rrdb':rrdb_report,'reader':reader_report}
+          report={'base':{'target_date':target_date,'date_raw':'20251026','race_count':len(bases),'target_result_contamination':0,'record_counts':warehouse_report['record_counts'],'warnings':[]},'history':history_report,'rrdb':rrdb_report,'reader':reader_report}
           validation=validate_daily_bundles(enriched,views,report,target_date)
           if validation['status']!='PASS': raise SystemExit(repr(validation['errors']))
           package=write_daily_package(bundles=enriched,views=views,report=report,validation=validation,target_date=target_date,output_root=target/'day_prep')
@@ -165,11 +165,11 @@ jobs:
           manifest['sources'].pop('paci',None)
           manifest['sources']['historical_warehouse']={'generation_id':warehouse_report['generation_id'],'target_date':target_date,'as_of_exclusive':target_date,'record_counts':warehouse_report['record_counts']}
           manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-          handoff=bind(target/'day_prep'/'RaceNote_20250628',target/'forecast_prep','BTDAY-0124',target_date,os.environ['MAIN_SHA'])
+          handoff=bind(target/'day_prep'/'RaceNote_20251026',target/'forecast_prep','BTDAY-0125',target_date,os.environ['MAIN_SHA'])
           assert handoff['market_blind'] is True and handoff['stripped_at_input_bind'] is True
           assert handoff['result_opened'] is False and handoff['target_market_opened'] is False
           (target/'day_prep'/'manifest.json').write_text(manifest_path.read_text(encoding='utf-8'),encoding='utf-8')
-          (target/'day_prep'/'validation_report.json').write_text((target/'day_prep'/'RaceNote_20250628'/'validation_report.json').read_text(encoding='utf-8'),encoding='utf-8')
+          (target/'day_prep'/'validation_report.json').write_text((target/'day_prep'/'RaceNote_20251026'/'validation_report.json').read_text(encoding='utf-8'),encoding='utf-8')
           PY
       - name: Build KYI evidence and seal v0.5.5 Lean Reader
         run: |
@@ -194,7 +194,7 @@ jobs:
           assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.5-candidate'
           assert s['contract_revision']==CONTRACT_REVISION
           assert s['reader_projection']=='v055-lean-model-reader-r2'
-          assert s['selection_id']=='BTDAY-0124' and s['target_date']=='2025-06-28'
+          assert s['selection_id']=='BTDAY-0125' and s['target_date']=='2025-10-26'
           assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
           assert s['base_main_sha']==h['main_sha']
           assert m['contract_revision']==CONTRACT_REVISION
@@ -205,7 +205,7 @@ jobs:
           op={
             'schema_version':'racenote-v055-current-turn1-handoff-0.1',
             'status':'READY_FOR_V055_AUTHORING',
-            'selection_id':'BTDAY-0124','target_date':'2025-06-28',
+            'selection_id':'BTDAY-0125','target_date':'2025-10-26',
             'source_backend':'historical_warehouse',
             'source_generation_id':'jrdb_normalized_warehouse_v1_2010_2025_g20260921',
             'logic_version':s['logic_version'],'contract_revision':s['contract_revision'],
@@ -228,6 +228,6 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add "$TARGET"
-          git commit -m "RaceNote: stage BTDAY-0124 v0.5.5 current TURN 1"
+          git commit -m "RaceNote: stage BTDAY-0125 v0.5.5 current TURN 1"
           git pull --rebase origin main
           git push origin HEAD:main
