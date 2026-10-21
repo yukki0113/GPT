@@ -17,6 +17,7 @@ from typing import Any
 
 from racenote_decision_core_v055 import (
     CONTRACT_REVISION,
+    R5_CONTRACT_REVISION,
     SUPPORTED_CONTRACT_REVISIONS,
     TWO_STAGE_CONTRACT_REVISIONS,
     validate_core,
@@ -49,7 +50,7 @@ def confidence_scope(normal: dict[str, Any]) -> tuple[str, str | None]:
 
 
 def _validate_confidence_grade(normal: dict[str, Any], grade: str, revision: str) -> None:
-    if revision == CONTRACT_REVISION:
+    if revision in {R5_CONTRACT_REVISION, CONTRACT_REVISION}:
         scope, special_type = confidence_scope(normal)
         if scope == "OUT_OF_SCOPE":
             if grade != SPECIAL_CONFIDENCE_GRADE:
@@ -58,7 +59,7 @@ def _validate_confidence_grade(normal: dict[str, Any], grade: str, revision: str
             raise ValueError("standard race confidence must be A/B/C")
         return
     if grade not in {"A", "B", "C"}:
-        raise ValueError("r4 confidence must be A/B/C")
+        raise ValueError("legacy pre-r5 confidence must be A/B/C")
 
 
 DEFAULT_POLICY = (
@@ -641,7 +642,7 @@ def verify_freeze(root: Path) -> dict[str, Any]:
 def _prediction_records(root: Path) -> tuple[dict[str, Any], list[dict[str, Any]], str]:
     handoff = verify_freeze(root)
     if handoff.get("status") != "PREDICTION_FROZEN_CLEAN_BLIND":
-        raise ValueError("separate confidence review is available only for r4 prediction Freeze")
+        raise ValueError("separate confidence review is available only for two-stage prediction Freeze")
     raw = (root / "frozen" / "records.json").read_bytes()
     records = json.loads(raw)
     return handoff, records, digest(raw)
@@ -650,7 +651,7 @@ def _prediction_records(root: Path) -> tuple[dict[str, Any], list[dict[str, Any]
 def save_confidence_review(root: Path, confidence_path: Path) -> dict[str, Any]:
     session, _, entries = load_session(root)
     if session.get("contract_revision") not in TWO_STAGE_CONTRACT_REVISIONS:
-        raise ValueError("separate confidence review is only valid for current r4 sessions")
+        raise ValueError("separate confidence review is only valid for two-stage sessions")
     if (root / "confidence_frozen").exists():
         raise FileExistsError("confidence is already frozen")
     prediction_handoff, prediction_records, prediction_sha = _prediction_records(root)
@@ -717,7 +718,7 @@ def save_confidence_review(root: Path, confidence_path: Path) -> dict[str, Any]:
 def freeze_confidence(root: Path) -> dict[str, Any]:
     session, _, entries = load_session(root)
     if session.get("contract_revision") not in TWO_STAGE_CONTRACT_REVISIONS:
-        raise ValueError("separate confidence Freeze is only valid for current r4 sessions")
+        raise ValueError("separate confidence Freeze is only valid for two-stage sessions")
     if (root / "confidence_frozen").exists():
         raise FileExistsError("immutable confidence Freeze already exists")
     prediction_handoff, prediction_records, prediction_sha = _prediction_records(root)

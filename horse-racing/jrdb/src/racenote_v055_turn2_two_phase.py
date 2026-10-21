@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""RaceNote r5 two-phase mechanical finalizer. Never selects horses or grades."""
+"""RaceNote r6 two-phase mechanical finalizer. Never selects horses or grades."""
 from __future__ import annotations
 
 import argparse
@@ -14,7 +14,7 @@ from racenote_v055_single_day import (
     verify_freeze, write_json,
 )
 
-CONTRACT = "v055-prediction-freeze-confidence-review-r5"
+CONTRACT = "v055-prediction-freeze-confidence-review-r6"
 DAILY = re.compile(r"^horse-racing/jrdb/daily/\d{8}/v055_day/v055$")
 BACKTEST = re.compile(r"^horse-racing/jrdb/backtests/BTDAY-\d{4}/\d{8}/v055$")
 
@@ -32,7 +32,7 @@ def resolve_root(raw: str) -> Path:
 def preflight(root: Path, draft: Path, phase: str):
     session, _, _ = load_session(root)
     if session.get("contract_revision") != CONTRACT:
-        raise ValueError("Two-phase finalizer requires a new r5 session")
+        raise ValueError("Two-phase finalizer requires a new r6 session")
     manifest = json.loads((root / "authoring_bundle/manifest.json").read_text(encoding="utf-8"))
     mandatory = {
         "status": "READY_FOR_LLM_RACE_BY_RACE_REVIEW",
