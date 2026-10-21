@@ -124,15 +124,15 @@ Where dam resolved uniquely:
 
 - dam resolved: 8,198
 - target BMS key equals resolved dam's sire key: 8,096
-- inconsistent: 102
+- inconsistent: 101
 
 Consistency rate:
 
-- 98.76%
+- 98.77%
 
 This strongly supports parent name + birth year as a meaningful exact pedigree key when the parent horse exists in the UKC master.
 
-The 102 inconsistent cases require separate audit before using recursive relation generation as a canonical fact.
+The 101 apparent inconsistencies were audited separately in `BRDB_UKC_DAM_BMS_INCONSISTENCY_AUDIT_20261021.md`. Of these, 100 are spelling/transliteration variants and 1 is a genuine false collision for exact name + birth year. Therefore name + birth year is accepted only as a candidate resolver, not as an unconditional canonical relation key.
 
 ## Unresolved-key pattern
 
