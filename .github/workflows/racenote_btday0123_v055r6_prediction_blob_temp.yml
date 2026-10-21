@@ -1,0 +1,66 @@
+name: RaceNote BTDAY-0123 v0.5.5 r6 Prediction Blob Freeze
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0123.v055r6-turn2-prediction'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-btday-0123-v055r6-turn2-prediction
+  cancel-in-progress: false
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      ROOT: horse-racing/jrdb/backtests/BTDAY-0123/20251109/v055
+      BLOB_SHA: ecfa34e8e8a83162ed1fd010d6f920d67709cd2b
+      PYTHONPATH: horse-racing/jrdb/src
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore LLM-authored prediction draft from Git blob
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$ROOT/incoming"
+          curl -fsSL \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPOSITORY/git/blobs/$BLOB_SHA" \
+            | python -c 'import json,sys,base64; d=json.load(sys.stdin); sys.stdout.buffer.write(base64.b64decode(d["content"]))' \
+            > "$ROOT/incoming/llm_decisions.json"
+          python -m json.tool "$ROOT/incoming/llm_decisions.json" >/dev/null
+
+      - name: Canonical Prediction Freeze
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_turn2_two_phase.py \
+            --phase prediction \
+            --root "$ROOT" \
+            --draft "$ROOT/incoming/llm_decisions.json"
+
+      - name: Commit verified Prediction Freeze
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A "$ROOT"
+          git diff --cached --quiet && { echo 'No freeze artifacts to commit'; exit 1; }
+          git commit -m "RaceNote: prediction freeze BTDAY-0123 v0.5.5 r6"
+          git pull --rebase origin main
+          git push origin HEAD:main
