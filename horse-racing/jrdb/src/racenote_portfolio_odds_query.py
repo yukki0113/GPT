@@ -100,7 +100,7 @@ def main():
     except (ValueError,OSError,json.JSONDecodeError) as exc:
         result={"schema_version":SCHEMA_VERSION,"status":"error","error":str(exc)}
         rc=2
-    data=json.dumps(result,ensure_ascii=False,indent=2 if args.pretty else None)+"\\n"
+    data=json.dumps(result,ensure_ascii=False,indent=2 if args.pretty else None)+"\n"
     if args.output:
         args.output.parent.mkdir(parents=True,exist_ok=True)
         args.output.write_text(data,encoding="utf-8")
