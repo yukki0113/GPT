@@ -1,8 +1,14 @@
 # RaceNote Confidence A — Portfolio Validation v0.1
 
-Status: **RESEARCH / NON-NORMATIVE**  
+Status: **SUPERSEDED / HISTORICAL RESEARCH / NON-NORMATIVE**  
 Scope: RaceNote v0.5.5 Confidence `A` races only  
-Purpose: evaluate how Confidence A behaves under a simplified real-world betting portfolio without changing Prediction or Confidence semantics.
+Purpose: historical v0.1 odds-dependent portfolio experiment. **Do not use for current operation.** Current practical review is `CONFIDENCE_A_PRACTICAL_TICKET_REVIEW_v0_2.md`.
+
+## 0. Supersession note
+
+v0.1 is retained unchanged in substance for research history. Its odds-regime, stake-sizing, bankroll and ROI rules are no longer current because verified JRDB sources do not retain the losing-combination closing odds required to reproduce them completely.
+
+Current operation uses `CONFIDENCE_A_PRACTICAL_TICKET_REVIEW_v0_2.md`.
 
 ## 1. Separation of concerns
 
