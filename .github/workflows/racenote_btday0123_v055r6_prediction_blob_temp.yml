@@ -1,16 +1,16 @@
-name: RaceNote BTDAY-0123 v0.5.5 r6 Prediction Blob Freeze
+name: RaceNote BTDAY-0125 v0.5.5 r6 Prediction Blob Freeze
 
 on:
   push:
     branches: [main]
     paths:
-      - 'horse-racing/jrdb/backtests/requests/BTDAY-0123.v055r6-turn2-prediction'
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0125.v055r6-turn2-prediction'
 
 permissions:
   contents: write
 
 concurrency:
-  group: racenote-btday-0123-v055r6-turn2-prediction
+  group: racenote-btday-0125-v055r6-turn2-prediction
   cancel-in-progress: false
 
 jobs:
@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      ROOT: horse-racing/jrdb/backtests/BTDAY-0123/20251109/v055
-      BLOB_SHA: 17720643cda48357b8dd93203bfb6909c4b60cee
+      ROOT: horse-racing/jrdb/backtests/BTDAY-0125/20251026/v055
+      BLOB_SHA: 59150843a8513f494efec1fd6971e4d61ad26527
       PYTHONPATH: horse-racing/jrdb/src
     steps:
       - uses: actions/checkout@v4
@@ -61,6 +61,6 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A "$ROOT"
           git diff --cached --quiet && { echo 'No freeze artifacts to commit'; exit 1; }
-          git commit -m "RaceNote: prediction freeze BTDAY-0123 v0.5.5 r6"
+          git commit -m "RaceNote: prediction freeze BTDAY-0125 v0.5.5 r6"
           git pull --rebase origin main
           git push origin HEAD:main
