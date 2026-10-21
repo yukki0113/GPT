@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "brdb_current_pointer_v0_1.schema.json",
+  "title": "BRDB CURRENT pointer v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "artifact_type",
+    "generation_id",
+    "manifest",
+    "reader_contract_version"
+  ],
+  "properties": {
+    "status": { "const": "CURRENT" },
+    "artifact_type": { "const": "brdb_pedigree" },
+    "generation_id": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+    "manifest": { "const": "manifest.json" },
+    "reader_contract_version": { "const": "v0.1" }
+  }
+}
