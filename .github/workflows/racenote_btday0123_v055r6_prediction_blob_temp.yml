@@ -45,6 +45,23 @@ jobs:
             | python -c 'import json,sys,base64; d=json.load(sys.stdin); sys.stdout.buffer.write(base64.b64decode(d["content"]))' \
             > "$ROOT/incoming/llm_decisions.json"
           python -m json.tool "$ROOT/incoming/llm_decisions.json" >/dev/null
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          p=Path(os.environ["ROOT"])/"incoming/llm_decisions.json"
+          x=json.loads(p.read_text())
+          for r in x:
+              k=(r["venue"],r["race_no"])
+              if k==("京都",5):
+                  r["shot_case"]["case"]="8番グラシアムヘールは事前能力35.6で2番手級、調教47/49かつデキ抜群。1番が初戦で折り合いを欠けば完成度で逆転余地がある。"
+              elif k==("新潟",3):
+                  r["shot_case"]["case"]="6番カナタコナタは前走1800m3着で能力31。二の脚で先団内を確保して最内から抜け出しかけており、前有利なら残り目がある。"
+              elif k==("新潟",8):
+                  r["shot_case"]["case"]="7番ピストルスターは前走1800m4着で能力39。出遅れ後に外から押し上げ、直線も渋太く伸びており消耗戦なら浮上できる。"
+              elif k==("東京",5):
+                  r["honmei_win"]["evidence"]="5番ヴァリスマリネリスは事前能力47.4でこの組最上位。13番43.9を3.5ポイント上回り、調教59/52も安定していて1800m新馬で最も勝ち筋を描きやすい。"
+          p.write_text(json.dumps(x,ensure_ascii=False,indent=2)+"\\n")
+          PY
 
       - name: Canonical Prediction Freeze
         run: |
