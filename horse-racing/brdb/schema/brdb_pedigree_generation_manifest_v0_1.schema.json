@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "brdb_pedigree_generation_manifest_v0_1.schema.json",
+  "title": "BRDB pedigree generation manifest v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_type",
+    "generation_id",
+    "schema_version",
+    "builder_version",
+    "source_family",
+    "source_archive_count",
+    "source_min_data_date",
+    "source_max_data_date",
+    "source_archives",
+    "row_counts",
+    "canonical_keys",
+    "alias_version",
+    "lineage_source_version",
+    "validation_status",
+    "output_sha256"
+  ],
+  "properties": {
+    "artifact_type": { "const": "brdb_pedigree" },
+    "generation_id": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+    "schema_version": { "const": "v0.1" },
+    "builder_version": { "type": "string", "minLength": 1 },
+    "source_family": { "const": "UKC" },
+    "source_archive_count": { "type": "integer", "minimum": 1 },
+    "source_min_data_date": { "$ref": "#/$defs/data_date" },
+    "source_max_data_date": { "$ref": "#/$defs/data_date" },
+    "source_archives": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "sha256", "size_bytes"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^UKC.*\\.zip$" },
+          "sha256": { "$ref": "#/$defs/sha256" },
+          "size_bytes": { "type": "integer", "minimum": 1 }
+        }
+      }
+    },
+    "row_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pedigree_fact", "parent_relation", "pedigree_name_alias", "lineage_code_master"],
+      "properties": {
+        "pedigree_fact": { "type": "integer", "minimum": 1 },
+        "parent_relation": { "type": "integer", "minimum": 0 },
+        "pedigree_name_alias": { "type": "integer", "minimum": 0 },
+        "lineage_code_master": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "canonical_keys": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pedigree_fact", "parent_relation"],
+      "properties": {
+        "pedigree_fact": { "const": ["horse_id"] },
+        "parent_relation": { "const": ["child_horse_id", "role"] }
+      }
+    },
+    "alias_version": { "type": "string", "minLength": 1 },
+    "lineage_source_version": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "validation_status": { "const": "PASS" },
+    "output_sha256": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pedigree_fact.parquet",
+        "parent_relation.parquet",
+        "pedigree_name_alias.parquet",
+        "lineage_code_master.parquet",
+        "audit.json"
+      ],
+      "properties": {
+        "pedigree_fact.parquet": { "$ref": "#/$defs/sha256" },
+        "parent_relation.parquet": { "$ref": "#/$defs/sha256" },
+        "pedigree_name_alias.parquet": { "$ref": "#/$defs/sha256" },
+        "lineage_code_master.parquet": { "$ref": "#/$defs/sha256" },
+        "audit.json": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  },
+  "$defs": {
+    "data_date": { "type": "string", "pattern": "^[0-9]{8}$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

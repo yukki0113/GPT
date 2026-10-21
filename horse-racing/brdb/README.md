@@ -67,7 +67,7 @@ BRDB は RaceReviewDB (RRDB) の以下の成熟した consumer boundary を引�
 
 ## Current status
 
-Status: **PHASE 1 / PEDIGREE FACT FOUNDATION**
+Status: **PHASE 1 / PEDIGREE GENERATION FOUNDATION**
 
 血統採点ロジック・CURRENT artifact はまだ未実装ですが、Pedigree Fact v0.1 schema と guarded parent-relation resolver は実装済みです。
 
@@ -129,3 +129,9 @@ BRDB はこれらを再取得・再実装せず、利用可能性と coverage �
 - `docs/BRDB_UKC_DAM_BMS_INCONSISTENCY_AUDIT_20261021.md`
 
 Parent name + birth year is treated as a candidate key only. Canonical relation resolution requires independent lineage/pedigree guards and fails closed on conflict.
+
+## Pedigree generation v0.1
+
+The generation builder and guarded resolver are in `src/`. The pedigree tables are defined by `schema/brdb_pedigree_fact_schema_v0_1.sql`. The manifest contract is documented in `docs/BRDB_PEDIGREE_GENERATION_MANIFEST_v0_1.md` and specified in `schema/brdb_pedigree_generation_manifest_v0_1.schema.json`.
+
+The immutable Parquet generation, manifest, and audit are stored outside Git. This foundation does not publish a production `CURRENT` pointer or change PWA/RaceNote serving.

@@ -155,8 +155,6 @@ class HorseMasterIndex:
         used_alias = False
         seen: set[str] = set()
         for candidate_name in sorted(names):
-            if candidate_name != exact_name:
-                used_alias = True
             for profile in self._by_name_year.get((candidate_name, year), ()):
                 if _text(profile.get("sex_code")) != expected_sex:
                     continue
@@ -165,6 +163,8 @@ class HorseMasterIndex:
                 if dedupe_key in seen:
                     continue
                 seen.add(dedupe_key)
+                if candidate_name != exact_name:
+                    used_alias = True
                 output.append(profile)
         return output, used_alias
 
