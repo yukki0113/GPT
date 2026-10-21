@@ -112,7 +112,7 @@ def run(root: Path, draft: Path, phase: str):
             "confidence_status": conf["status"],
             "confidence_counts": dict(sorted(Counter(x["confidence"] for x in records).items())),
             "prediction_records_sha256": pred["records_sha256"],
-            "confidence_records_sha256": conf["records_sha256"],
+            "confidence_records_sha256": conf["confidence_records_sha256"],
             "authoring_quality": quality["status"],
             "prediction_origin": "LLM_RACE_BY_RACE",
             "automated_prediction": False, "automated_scoring": False,
