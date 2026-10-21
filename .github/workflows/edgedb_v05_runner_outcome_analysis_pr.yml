@@ -1,0 +1,50 @@
+name: EdgeDB v0.5 runner outcome analysis
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/edgedb_v05_runner_outcome_analysis_pr.yml'
+      - 'horse-racing/jrdb/src/jrdb_edge_v05_runner_outcome_analysis.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install runtime
+        run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Download Turn 3 artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/t3
+          gh run download 37614611257 --repo yukki0113/GPT             --name edgedb-v05-2026-oos-eval-pr-1898 --dir /tmp/t3
+      - name: Download canonical 2026 SED history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/sed
+          gh run download 37604723913 --repo yukki0113/GPT             --name jrdb-daily-history-20260101-20261007 --dir /tmp/sed
+      - name: Run horse-level analysis
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python horse-racing/jrdb/src/jrdb_edge_v05_runner_outcome_analysis.py             --joined-matches /tmp/t3/v05_2026_oos_joined_matches.parquet             --candidate-eval /tmp/t3/v05_2026_oos_candidate_eval.csv             --sed-root /tmp/sed             --output-root /tmp/runner-analysis
+      - uses: actions/upload-artifact@v4
+        with:
+          name: edgedb-v05-runner-outcome-analysis-pr-${{ github.event.pull_request.number || 'manual' }}
+          path: /tmp/runner-analysis/
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0
