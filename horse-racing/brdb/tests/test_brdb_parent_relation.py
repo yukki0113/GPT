@@ -116,6 +116,18 @@ class ParentRelationTest(unittest.TestCase):
         self.assertEqual(got.status, relation.STATUS_RESOLVED_ALIAS)
         self.assertEqual(got.resolved_horse_id, "D1")
 
+    def test_unused_alias_does_not_relabel_exact_candidate(self) -> None:
+        aliases = relation.AliasIndex([
+            relation.NameAlias(
+                observed_name="父A", canonical_name="別表記", birth_year=2010,
+                lineage_code="1206", alias_version="test-v1",
+            )
+        ])
+        got = relation.resolve_parent(
+            self.child(), relation.ROLE_SIRE, master=self.master, aliases=aliases,
+        )
+        self.assertEqual(got.status, relation.STATUS_RESOLVED_EXACT)
+
     def test_same_name_birth_year_multiple_candidates_is_not_resolved(self) -> None:
         duplicate = dict(self.sire)
         duplicate["horse_id"] = "S2"
