@@ -3,7 +3,7 @@
   "status": "CURRENT_CANDIDATE",
   "phase": "BLIND_RESEARCH_ACTIVE",
   "role": "FORECAST_BLIND_RESEARCH",
-  "contract_revision": "v055-prediction-freeze-confidence-review-r4",
+  "contract_revision": "v055-prediction-freeze-confidence-review-r6",
   "predecessor": {
     "logic_version": "RaceNote-Human-Context-Reader-0.5.4-candidate",
     "freeze_assets_immutable": true
@@ -45,13 +45,16 @@
   },
   "confidence_policy": {
     "meaning": "HONMEI_WIN_CONFIDENCE",
-    "operational_question": "HOW_STRONGLY_TO_SUPPORT_FROZEN_HONMEI_AS_WINNER_AND_SINGLE_WIN_AXIS",
+    "operational_question": "WHETHER_FROZEN_HONMEI_HAS_ENOUGH_PRE_RESULT_EDGE_FOR_ACTIVE_WIN_BET_PARTICIPATION",
     "grades": {
-      "A": "ACTIVE_WIN_SUPPORT",
-      "B": "PREFERRED_BUT_CONTESTED",
+      "A": "ACTIVE_WIN_SUPPORT_BUY_WORTHY_EDGE",
+      "B": "PREFERRED_BUT_CONTESTED_PRACTICAL_PASS",
       "C": "LOW_WIN_CONVICTION"
     },
     "a_requires_near_certainty": false,
+    "a_requires_more_than_most_likely_winner": true,
+    "a_requires_buy_worthy_pre_result_edge": true,
+    "market_odds_used_for_confidence": false,
     "a_quota_or_target_rate": false,
     "pairwise_honmei_over_second": "DIAGNOSTIC_ONLY",
     "fixed_idm_gap_gate": false,
