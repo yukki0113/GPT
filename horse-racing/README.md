@@ -3,10 +3,13 @@
 中央競馬関連プロジェクトの入口です。
 
 - `jrdb/` — 現行のJRDBデータ基盤、RaceNote、Core SQLite構築
+- `brdb/` — Blood Review DB。血統事実・分類を基盤に、対象レースの出走馬を1頭ずつ血統専門ロジックでReviewする
 - `eval/` — Eval表取得・JRA結果取得・検証支援
 - `fetch_keibailuka_blog/` — keibailuka予想ブログの取得・解析。JRDB / Evalとは独立した予想支援ツール
 
-現行作業では目的に応じて `jrdb/`、`eval/`、`fetch_keibailuka_blog/` を使い分けます。
+現行作業では目的に応じて `jrdb/`、`brdb/`、`eval/`、`fetch_keibailuka_blog/` を使い分けます。
+
+BRDB は bootstrap / design 段階です。RRDB の CURRENT / Reader / horse_id query / result-only consumer boundary を継承しつつ、血統ロジック自体は独立した contract として育てます。
 
 ## 1Rだけ予想する場合
 
@@ -31,7 +34,7 @@ RaceNoteはJRDBデータをGPTが読みやすい形へ変換するサブシス�
 - rootの `.venv-data-storage` があれば再利用し、`check-deps` がPASSする場合は再installしない。
 - 無い、または依存不足なら `tools/data-storage/requirements.txt` からbootstrapする。
 - 汎用query / validation / conversionは共通CLIを使う。
-- JRDB / Eval固有の意味論、schema、canonical key、生成contractは各project正本module/configを優先する。
+- JRDB / BRDB / Eval固有の意味論、schema、canonical key、生成contractは各project正本module/configを優先する。
 
 詳細手順は repository root `.gpt/README.md` と `tools/data-storage/README.md` を正本とします。
 
