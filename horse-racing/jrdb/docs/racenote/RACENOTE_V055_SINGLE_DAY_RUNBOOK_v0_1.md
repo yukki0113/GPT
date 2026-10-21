@@ -2,7 +2,7 @@
 
 Status: **CURRENT CANDIDATE / NEW v0.5.5 SESSIONS**  
 Logic: `RaceNote-Human-Context-Reader-0.5.5-candidate`  
-Revision: `v055-prediction-freeze-confidence-review-r5`
+Revision: `v055-prediction-freeze-confidence-review-r6`
 
 ## 1. Prepare market-blind source
 
@@ -161,16 +161,16 @@ Now review the already frozen ◎ horses as a separate judgment.
 
 Meaning:
 
-- **A** — ◎を勝ち馬・単勝軸として積極的に支持できる。
-- **B** — ◎が最有力だが、有力な逆転候補または主要リスクがありAほど強く買わない。
+- **A** — ◎が最有力であるだけでなく、能力差・条件適性・勝ち筋の再現性・不確実性を総合して、**このレースを買うに値するだけの事前優位性がある**。単勝軸として積極的に支持する。
+- **B** — ◎は最有力だが、相手との差が小さい、主要リスクが強い、または昇級・距離替わり・初重賞などの不確実性が大きく、**予想上は◎でも実戦では見送り得る**。
 - **C** — ◎は固定済みの本命だが、勝ち馬選定そのものへの確信が低い。
 - **Z** — 新馬戦または障害戦。予想印は通常どおり作成するが、現行A/B/C勝ちConfidenceの評価対象外。
 
 Z is a scope marker, not a lower confidence grade than C. For r5 it is mandatory when the sealed Reader has `race.class == 新馬`, or `race.surface/race_type == 障害`. Standard flat races must be A/B/C.
 
-A does not mean near-certainty. Plausible upset routes do not automatically demote A to B.
+A does not mean near-certainty, and plausible upset routes do not automatically demote A to B. However, "◎が一番勝ちそう"だけではAにしない。現級・同条件で同等以上の裏付けを持つ相手がいるのに、強い未勝利勝ち・近走2着・能力印象だけでAへ上げない。逆に、明確なクラス優位や再現性の高い勝ち筋がある場合は、他に好調馬がいるだけで機械的にBへ下げない。
 
-There is no A quota and no target grade distribution.
+There is no A quota and no target grade distribution. Aが0件の日も許容するが、Aを「ほぼ確勝」や「極端な低オッズ馬」に限定しない。市場オッズはConfidence Freeze前には見ない。
 
 Create a complete review array:
 
@@ -270,7 +270,7 @@ Pairwise ◎>○, IDM gaps, debut/obstacle grouping and old A5/A7-style analysis
 
 Do not migrate an existing frozen r1/r2/r3/r4 session into r5 or retroactively rewrite its A/B/C records as Z. Their embedded confidence remains part of their historical Freeze.
 
-r5 applies only to newly initialized sessions. r4 remains reproducible under its original A/B/C contract.
+r6 applies only to newly initialized sessions. Existing r5/r4 sessions remain reproducible under their original contracts and must not be rewritten.
 
 
 ## 10. Fast forward operational wrapper
