@@ -4,14 +4,14 @@ on:
   push:
     branches: [main]
     paths:
-      - 'horse-racing/jrdb/backtests/requests/BTDAY-0122.v055r5-turn1'
+      - 'horse-racing/jrdb/backtests/requests/BTDAY-0122.v055r6-turn1'
 
 permissions:
   contents: write
   actions: read
 
 concurrency:
-  group: racenote-btday-0122-v055r5-turn1
+  group: racenote-btday-0122-v055r6-turn1
   cancel-in-progress: false
 
 jobs:
