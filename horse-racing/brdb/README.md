@@ -67,19 +67,22 @@ BRDB は RaceReviewDB (RRDB) の以下の成熟した consumer boundary を引�
 
 ## Current status
 
-Status: **BOOTSTRAP / DESIGN**
+Status: **PHASE 1 / PEDIGREE FACT FOUNDATION**
 
-まだ血統採点ロジック・canonical DB・CURRENT artifact は実装しません。
+血統採点ロジック・CURRENT artifact はまだ未実装ですが、Pedigree Fact v0.1 schema と guarded parent-relation resolver は実装済みです。
 
 初期フェーズでは、
 
-1. JRDB UKC / RaceNote pedigree 資産の棚卸し
-2. canonical pedigree fact schema
-3. lineage taxonomy
-4. regional-type taxonomy
-5. horse review contract
-6. CURRENT / Reader 実装
-7. PWA「血統詳細」modal contract
+1. JRDB UKC / RaceNote pedigree 資産の棚卸し — 完了
+2. canonical pedigree fact schema — v0.1 実装済み
+3. guarded parent relation resolver — v0.1 実装済み
+4. official lineage code master materialization
+5. reviewed pedigree-name alias v0.1
+6. UKC -> pedigree_fact generation builder
+7. regional-type taxonomy
+8. horse review contract
+9. CURRENT / Reader 実装
+10. PWA「血統詳細」modal contract
 
 の順に進めます。
 
@@ -114,3 +117,15 @@ BRDB はこれらを再取得・再実装せず、利用可能性と coverage �
 8. Parquet / DuckDB を扱う場合は `tools/data-storage/`
 
 過去 chat の説明だけを current truth とせず、latest `main` を優先します。
+
+
+## Phase 1 implementation
+
+- `schema/brdb_pedigree_fact_schema_v0_1.sql`
+- `src/brdb_parent_relation.py`
+- `tests/test_brdb_parent_relation.py`
+- `docs/BRDB_PEDIGREE_FACT_SCHEMA_v0_1.md`
+- `docs/BRDB_UKC_PARENT_KEY_JOIN_VALIDATION_20261021.md`
+- `docs/BRDB_UKC_DAM_BMS_INCONSISTENCY_AUDIT_20261021.md`
+
+Parent name + birth year is treated as a candidate key only. Canonical relation resolution requires independent lineage/pedigree guards and fails closed on conflict.
