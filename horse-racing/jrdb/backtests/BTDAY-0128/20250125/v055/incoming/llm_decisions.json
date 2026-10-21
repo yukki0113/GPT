@@ -1,0 +1,1190 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 1,
+    "marks": [
+      1,
+      10,
+      4,
+      7,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        10,
+        4,
+        7,
+        3
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "1番エコロレオナは前走ダート1200mで先手を奪い2着。直線も止まらず、同条件で勝ち筋が明瞭。",
+      "main_risk": "10番はダッシュが鈍くても同距離3着に追い上げ、差し脚の逆転がある。"
+    },
+    "shot_case": {
+      "case": "4番は前走1200mで先行争いに加わり5着。単騎の流れなら粘りが増す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "先手から脚色を保てる1番。中京の短距離で主導権を握る。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 2,
+    "marks": [
+      7,
+      10,
+      12,
+      15,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        10,
+        12,
+        15,
+        14
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "7番メイショウカスガイはダート1800mの前走でスタート後に立て直し番手から2着。勝ち負けの形ができている。",
+      "main_risk": "10番は同距離で3角から動いたが6着、仕上がり良く位置取り改善で迫る。"
+    },
+    "shot_case": {
+      "case": "12番は1800mで中団前から5着。前の競り合いが激しくなれば浮上できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダート1800mで番手から2着に踏ん張った7番の再現性を買う。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 3,
+    "marks": [
+      3,
+      5,
+      2,
+      6,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        5,
+        2,
+        6,
+        4
+      ],
+      "external_challenger_horse_no": 16,
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "16番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "3番ミノリッチマイヤーは芝1800mの前走8着でも好位を取る力があり、ダート1400mへの転換で前進の余地。",
+      "main_risk": "5番は初出走ながら事前能力評価が高く、ダート適性があれば初戦突破も可能。"
+    },
+    "shot_case": {
+      "case": "2番は1200mダート9着でも直線で外へ進路を取れた。距離延長で流れに乗れれば。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "芝からの転戦で未知数だが先行力のある3番を中心に。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 4,
+    "marks": [
+      9,
+      5,
+      3,
+      2,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        5,
+        3,
+        2,
+        10
+      ],
+      "external_challenger_horse_no": 16,
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "16番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "9番ザセンチュリーはダート1800m新馬で事前能力が上位、状態も安定しており初戦から力を出せるとみる。",
+      "main_risk": "5番も事前評価28.2で近く、馬場への対応力次第で上回る可能性。"
+    },
+    "shot_case": {
+      "case": "3番は初出走の仕上がりが良く、前で運べれば粘りが期待できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "初戦の1800mでは9番の素直な仕上がりと事前評価を支持する。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 5,
+    "marks": [
+      14,
+      16,
+      6,
+      3,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        16,
+        6,
+        3,
+        9
+      ],
+      "external_challenger_horse_no": 18,
+      "excluded_horse_no": 18,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "18番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "14番オールザレイジは前走芝1600mで出脚がつかなくても内から追い上げて2着。1400mの速さにも対応できる。",
+      "main_risk": "16番は芝1400m2着で好位から運べる。距離経験で優り押し切られる恐れ。"
+    },
+    "shot_case": {
+      "case": "6番チムグクルは前走1200mで出遅れても先行し3着。短縮した1400mで反撃余地。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "直線に脚を残した14番が一段上。好位を取れる16番が相手。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 6,
+    "marks": [
+      15,
+      1,
+      6,
+      5,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        1,
+        6,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "15番ヴァイスクレーは芝1800mで先手から2着に踏ん張り、マイルへの短縮でも前へ運べる脚が魅力。",
+      "main_risk": "1番は新馬ながら事前能力43.3に良い仕上がり。実戦適性が合えば一気に勝ち切る。"
+    },
+    "shot_case": {
+      "case": "6番は芝1600mを8着でも中団外で最後まで止まらず、スムーズなら上位接近。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "距離短縮で前へ行ける15番のしぶとさを評価。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 7,
+    "marks": [
+      4,
+      3,
+      14,
+      15,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        3,
+        14,
+        15,
+        8
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "4番ペネトレイトゴーはダート1800mで道中後方、直線入口の接触を立て直して2着。末脚の質が抜ける。",
+      "main_risk": "3番は同距離で外を回り5着だが、先行位置を取れるため流れ次第で逆転もある。"
+    },
+    "shot_case": {
+      "case": "14番は1800mで道中ハナに並んだが8着。折り合えれば粘る余地。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "接触を克服して迫った4番。直線の決め手を信頼したい。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 8,
+    "marks": [
+      11,
+      8,
+      9,
+      3,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        8,
+        9,
+        3,
+        16
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "11番タガノミストはダート1400mで番手から早め先頭に立って勝利。昇級でも先行力が通用する。",
+      "main_risk": "8番は同距離2着の地力があり、3番も早め先頭から4着。前の争いが激しくなると苦しい。"
+    },
+    "shot_case": {
+      "case": "9番はダート1400mで後方から内を突いて3着。逃げ先行勢を追い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "番手から抜け出す競馬を完成させた11番を評価。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 9,
+    "marks": [
+      9,
+      10,
+      8,
+      2,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        10,
+        8,
+        2,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "9番ジュタは芝2000mの前走で先団に取り付いて4着、地力はこの組で最上位級。今回も同距離で好勝負。",
+      "main_risk": "10番は同距離勝ちで進路が狭くても伸びた。立ち回り次第で勝ち切る。"
+    },
+    "shot_case": {
+      "case": "8番はマイルで後方から差し切り。2000mへの延長をこなせば怖い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "強い相手にも2000mで脚を使った9番を主役に置く。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 10,
+    "marks": [
+      13,
+      5,
+      3,
+      1,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        5,
+        3,
+        1,
+        12
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "13番ホークフィールドは前走ダート1800mで出遅れて道中劣勢でも勝ち切った。走破の地力が高い。",
+      "main_risk": "5番は1900mを前を追って差し切り、3番は同距離2着。13番は前走内容に不安も残す。"
+    },
+    "shot_case": {
+      "case": "3番は1800mで馬群内から伸びて2着。内で脚をためれば逆転できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "勝ち切った底力を買う13番。1800mで展開の立て直しが鍵。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 11,
+    "marks": [
+      9,
+      12,
+      4,
+      2,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        12,
+        4,
+        2,
+        10
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "9番ハギノサステナブルはダート2100mで後方から押し上げ2着。1900mで早めに動ければ差し切る。",
+      "main_risk": "12番は1800mで持続する脚を使い4着。9番の追い込みが届かない展開では上回る。"
+    },
+    "shot_case": {
+      "case": "4番は1800mで先団内から5着に粘り、内を回れる形なら圏内。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2100mで長く脚を使った9番を距離短縮の中心に取る。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 12,
+    "marks": [
+      1,
+      4,
+      8,
+      9,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        4,
+        8,
+        9,
+        11
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "1番シルキーガールは芝2000mの前走で好位3番手から2着。前が残る流れでも最後に差を詰めており勝機がある。",
+      "main_risk": "4番も芝2200m2着で先行馬を外から追いかけた実績。距離短縮で上回る可能性。"
+    },
+    "shot_case": {
+      "case": "8番は芝2200mで出負け後にも3着へ粘った。折り合えば前進する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2000mの前走で最後まで前を追った1番を上位に取る。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "marks": [
+      7,
+      3,
+      9,
+      2,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        3,
+        9,
+        2,
+        16
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "7番リクエイはダート1200mで好発から併走し2着まで粘った。同距離なら勝ち切りの道筋を描ける。",
+      "main_risk": "3番は同距離3着で直線に一度先頭、9番も中団から3着。前が競れば差される。"
+    },
+    "shot_case": {
+      "case": "9番は1200mで中団から勝負どころ進出して3着。先行馬が苦しくなれば伸びる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "併走しても崩れなかった7番の先行力を支持。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "marks": [
+      14,
+      16,
+      5,
+      15,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        16,
+        5,
+        15,
+        10
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "14番ハルノアラシはダート1800mで出負け後に外から進出し2着。状態面も上向きで差し切る余地が大きい。",
+      "main_risk": "16番は同距離で番手3着、15番も2着しており先行位置の差で逆転される恐れ。"
+    },
+    "shot_case": {
+      "case": "5番は同距離で出遅れても直線外から3着まで迫った。流れ次第で上位。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "外から押し上げて2着の14番。勢いを持続できる強みを評価。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "marks": [
+      4,
+      1,
+      11,
+      13,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        1,
+        11,
+        13,
+        5
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "4番レイオーバーはダート1200mで好位内をロスなく運んで3着。状態も良く安定した運びができる。",
+      "main_risk": "1番は前走先行して3着、11番も渋太く4着。上位勢の実績差が小さい。"
+    },
+    "shot_case": {
+      "case": "11番は同距離で先団から最後まで脚を続けて4着。速い流れにも対応する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "好位を生かせる4番の安定した脚に期待する。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "marks": [
+      15,
+      10,
+      5,
+      11,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        10,
+        5,
+        11,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "15番パーソナルアフェアはダート1800m新馬の事前能力評価が最上位で仕上がりも整う。初戦から動ける素地がある。",
+      "main_risk": "10番と5番も事前能力が高く、初戦の砂適性や位置取りで差が縮む。"
+    },
+    "shot_case": {
+      "case": "5番ナムラローラは状態の良さが目立つ。好発なら前残りまで。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "15番は事前の地力で一歩先行。初戦の立ち回りが焦点。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "marks": [
+      12,
+      3,
+      18,
+      4,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        3,
+        18,
+        4,
+        13
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "12番ブルーマエストロは芝2000m新馬の事前能力が最上位で仕上がりも安定。中距離で素直に能力を発揮できるとみる。",
+      "main_risk": "3番は状態良好で事前能力も近い。初戦の位置取り次第で上回る余地。"
+    },
+    "shot_case": {
+      "case": "18番は初戦前の評価が上位、調教状態も良く外から運べれば浮上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "長めの芝で12番の事前能力を最も重視した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "marks": [
+      4,
+      3,
+      5,
+      1,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        3,
+        5,
+        1,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "4番クレーキングはダート1600mで出負け後、内を捌いて2着。1800mでも地力と末脚を発揮できる。",
+      "main_risk": "3番は同距離で3着、5番は1800mを番手から勝利。距離実績面で強敵がいる。"
+    },
+    "shot_case": {
+      "case": "5番は同距離を番手から勝ち切った。先行がかみ合えば残る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "出遅れを埋めた4番の底力が距離延長でも生きる。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "marks": [
+      4,
+      12,
+      13,
+      5,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        12,
+        13,
+        5,
+        15
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "4番キボウノホシはダート1200mで中団内から最後まで伸び2着。状態が良く勝ち切るための脚も備える。",
+      "main_risk": "12番も同距離2着で逃げて粘った。前有利の流れでは差し届かない恐れ。"
+    },
+    "shot_case": {
+      "case": "13番は1200mで大きな出遅れから4着へ伸びた。発馬改善があれば迫る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中団からロスなく伸びる4番の堅実さを取る。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "marks": [
+      14,
+      9,
+      5,
+      10,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        9,
+        5,
+        10,
+        4
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "14番タイセイアディクトはダート1800mで中団から直線叩き合いの2着。現級の力を示している。",
+      "main_risk": "9番は同距離3着、5番も4着と先行力があり、14番が届くかは展開次第。"
+    },
+    "shot_case": {
+      "case": "5番は1800mで3番手から一度先頭に出た。先行残りで粘り込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "直線の追い比べまで届いた14番を軸に据える。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "marks": [
+      6,
+      4,
+      5,
+      1,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        4,
+        5,
+        1,
+        10
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "6番ユキノロイヤルは芝1600mで好位から伸び2着。マイルでの前進力を今回も生かせる。",
+      "main_risk": "4番・5番も同距離2着。直線の決め手や進路次第で順序が変わる。"
+    },
+    "shot_case": {
+      "case": "5番は1600mで内の狭い間を通って2着。器用さがあれば再び迫る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "マイルの好位で脚を残せる6番を一歩上に。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "marks": [
+      3,
+      9,
+      5,
+      11,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        9,
+        5,
+        11,
+        10
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "3番ホウキボシはダート1800mで外3番手から2着に迫った。今回も同距離なら先行の地力が生きる。",
+      "main_risk": "9番もダート1600m3着で地力が高い。距離延長への対応が利くと逆転の余地。"
+    },
+    "shot_case": {
+      "case": "5番は1800mで出遅れから馬群内を捌いて3着。前が争えば追い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "外から先行して最後まで粘った3番を中心視。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "marks": [
+      16,
+      13,
+      12,
+      1,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        16,
+        13,
+        12,
+        1,
+        5
+      ],
+      "external_challenger_horse_no": 17,
+      "excluded_horse_no": 17,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "17番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "16番ハギノアルデバランは芝2000mで後方から外を伸びて勝ち切った。昇級でも距離適性と脚が明瞭。",
+      "main_risk": "13番は2400mで出遅れて早めに動き勝利、12番も同距離5着。昇級後の展開は未知。"
+    },
+    "shot_case": {
+      "case": "12番は芝2000mで後方から押し上げ5着。前が激しく競れば浮上。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "2000m差し切り勝ちの16番。直線に脚を温存できれば。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "marks": [
+      12,
+      8,
+      4,
+      6,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        8,
+        4,
+        6,
+        16
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "12番エンゲルシュピールは芝1600mで好位から早め先頭に並び3着。今回もマイルの好位で勝機を作れる。",
+      "main_risk": "8番は同距離2着で直線までしぶとく、6番も地力が高い。早仕掛けで粘り切れない懸念。"
+    },
+    "shot_case": {
+      "case": "4番は同距離で外を回りながら3着。状態良く直線の差しが利けば。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "先行して最後に耐えた12番をマイルの中心に置く。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 1,
+    "marks": [
+      11,
+      4,
+      7,
+      8,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        4,
+        7,
+        8,
+        12
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "11番グランキングオーはダート1400mで好位から3着。1700mへの延長が合えば先行を維持できる。",
+      "main_risk": "4番は1800mで逃げて5着。距離短縮で楽に先手なら逆転し得る。"
+    },
+    "shot_case": {
+      "case": "7番は1800mで大外を回って8着。距離短縮でロスを減らせば前進。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前に付けて3着を確保した11番に期待。1700mの追走が鍵。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 2,
+    "marks": [
+      12,
+      16,
+      3,
+      14,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        16,
+        3,
+        14,
+        15
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "12番サニーネイチャーは芝1200mで先手を奪い2着に粘った。同条件での走りが勝ち筋として分かりやすい。",
+      "main_risk": "16番は芝1400mで直線一度先頭に立ち2着。1200mの速さに対応すると逆転される。"
+    },
+    "shot_case": {
+      "case": "3番は1200mで出遅れ10着も地力は上位。発馬が改善すれば差し込み可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "前走1200mで逃げて粘った12番を支持したい。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 3,
+    "marks": [
+      8,
+      10,
+      12,
+      2,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        10,
+        12,
+        2,
+        5
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "8番オースミライトはダート1200mで外から好位へ取り付いて2着。1000m短縮でも速さを生かせる。",
+      "main_risk": "10番は1200mで外から動いて3着、12番も地力上位で1000mは混戦。"
+    },
+    "shot_case": {
+      "case": "2番は1150mで前から4着に粘り、短縮でさらに残る可能性。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "8番は外から前へ行って2着。短いダートで主導権を握る。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 4,
+    "marks": [
+      9,
+      5,
+      1,
+      8,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        5,
+        1,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "9番ドゥラモンドは障害2850mで出負けしても向正面から進出し5着。状態の良さと持続する脚を買う。",
+      "main_risk": "5番も障害2910mで飛ばして5着。先行有利なら9番の差しが届かない。"
+    },
+    "shot_case": {
+      "case": "1番は障害2770mで先手を取って7着。飛越が安定すれば残る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "中盤から進出できる9番の障害経験を評価する。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 5,
+    "marks": [
+      1,
+      7,
+      3,
+      2,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        7,
+        3,
+        2,
+        5
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "1番オオキニは障害3200mで好位3番手から直線内を伸び2着。3390mでも飛越と粘りが通用する。",
+      "main_risk": "7番は3170mで中団から3着、2番は3570mで飛越の乱れを修正し3着。経験豊富な相手がいる。"
+    },
+    "shot_case": {
+      "case": "3番は3380mで途中2番手へ上がり3着。持久力が生きれば前残り。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "長めの障害で2着の1番を中心に。飛越の安定が強み。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 6,
+    "marks": [
+      14,
+      9,
+      1,
+      6,
+      18
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        9,
+        1,
+        6,
+        18
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "14番ブラックアダマスは芝2000m新馬で事前能力評価が最上位。実走の未知はあるが中距離で最も勝ち筋が描きやすい。",
+      "main_risk": "9番も事前能力が高く状態が良い。初戦の発馬で優位が入れ替わる可能性。"
+    },
+    "shot_case": {
+      "case": "1番は事前評価41で新馬の上位。折り合えば3着以上も。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "初戦前の能力を信じて14番を2000mの中心に選んだ。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 7,
+    "marks": [
+      15,
+      2,
+      13,
+      1,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        2,
+        13,
+        1,
+        12
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "15番ビッグベルーガは芝2600mで出遅れから大外を回り、直線詰まりながら2着。スムーズなら勝ち切りに近い。",
+      "main_risk": "2番は2200mで3着、13番は2600mで外から3着。距離経験豊富な相手は侮れない。"
+    },
+    "shot_case": {
+      "case": "13番は2600mで後方から外を伸び3着。前崩れの展開で台頭。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "不利を越えて2着の15番。長距離の末脚を高く取る。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 8,
+    "marks": [
+      3,
+      15,
+      1,
+      10,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        15,
+        1,
+        10,
+        7
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "3番ハイウェイスターはダート1800mで先手を主張し3着。1700mへの短縮でも前で押し切る競馬ができる。",
+      "main_risk": "15番は1800mで4角の不利を受けて3着。展開次第で外から差し込まれる。"
+    },
+    "shot_case": {
+      "case": "1番は1600mで出遅れても4着まで差を詰めた。小倉1700mへの対応で怖い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "先行して粘った3番を支持。距離短縮を追い風と見る。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 9,
+    "marks": [
+      12,
+      11,
+      2,
+      6,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        11,
+        2,
+        6,
+        8
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "12番レイピアは芝1200mで逃げ馬と併走しながら最後まで粘って5着。今回も地力の高さで前進を狙う。",
+      "main_risk": "11番は1200mで内から差し2着、2番は同距離を勝ち切った。着順の裏付けでは相手も強い。"
+    },
+    "shot_case": {
+      "case": "2番は芝1200mで番手から逃げ馬を競り落とし勝利。昇級でも先行が生きれば。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "競り合いでも粘った12番。小倉の短距離で反撃を見込む。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 10,
+    "marks": [
+      6,
+      2,
+      1,
+      7,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        2,
+        1,
+        7,
+        11
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "6番パフはダート1800mで内から最後まで脚を使い4着。1700m短縮で前との差を詰めたい。",
+      "main_risk": "2番は1700mで出負けから進出し差し切った。今回と同距離での勝ち切りでは優位がある。"
+    },
+    "shot_case": {
+      "case": "1番は1800mで6着ながら内をロスなく回れた。前が止まれば着順を上げ得る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "内を通って直線伸びた6番。短縮で脚を使い切る。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 11,
+    "marks": [
+      7,
+      3,
+      9,
+      5,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        3,
+        9,
+        5,
+        12
+      ],
+      "external_challenger_horse_no": 18,
+      "excluded_horse_no": 18,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "18番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "7番シンティレーションは芝2200mで直線の進路を阻まれ10着。地力評価は高く、2000mでまともに運べれば巻き返す。",
+      "main_risk": "3番は2000mで馬群を割って2着、9番も地力が高い。7番の近走着順に不安が残る。"
+    },
+    "shot_case": {
+      "case": "9番は芝2000mで躓き後の早め進出で失速。展開に余裕があれば巻き返す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "直線で不利のあった7番に見直しの余地。中距離で力を出せるか。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 12,
+    "marks": [
+      1,
+      6,
+      3,
+      14,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        6,
+        3,
+        14,
+        4
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番は前走の位置取りと今回の距離適性を比較しても、選出した5頭の勝ち筋に対して現時点で優位となる材料が足りない。"
+    },
+    "honmei_win": {
+      "evidence": "1番ミッキースピネルは芝1800mで大きく出遅れながら6着。地力の差が大きく発馬五分なら上位に入れる。",
+      "main_risk": "6番と3番は同距離2着で先行も可能。1番が後方なら前残りに屈する。"
+    },
+    "shot_case": {
+      "case": "14番は1800mで内を進んで3着。ロスなく回れば馬券圏内。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "発馬改善が見込めるなら1番の地力は魅力的だ。"
+  }
+]
