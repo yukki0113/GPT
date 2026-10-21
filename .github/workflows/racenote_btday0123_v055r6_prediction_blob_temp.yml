@@ -1,7 +1,7 @@
 name: RaceNote BTDAY-0125 v0.5.5 r6 Prediction Blob Freeze
 
 on:
-  issues:
+  pull_request:
     types: [opened]
 
 permissions:
