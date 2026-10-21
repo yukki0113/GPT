@@ -67,9 +67,9 @@ BRDB は RaceReviewDB (RRDB) の以下の成熟した consumer boundary を引�
 
 ## Current status
 
-Status: **PHASE 1 / PEDIGREE GENERATION FOUNDATION**
+Status: **PHASE 1 / CURRENT READER FOUNDATION**
 
-血統採点ロジック・CURRENT artifact はまだ未実装ですが、Pedigree Fact v0.1 schema と guarded parent-relation resolver は実装済みです。
+血統採点ロジックはまだ未実装ですが、Pedigree Fact v0.1、guarded parent-relation resolver、CURRENT pointer contract、read-only BloodReviewReader、deterministic CURRENT bundle builder まで実装済みです。
 
 初期フェーズでは、
 
@@ -135,3 +135,4 @@ Parent name + birth year is treated as a candidate key only. Canonical relation 
 The generation builder and guarded resolver are in `src/`. The pedigree tables are defined by `schema/brdb_pedigree_fact_schema_v0_1.sql`. The manifest contract is documented in `docs/BRDB_PEDIGREE_GENERATION_MANIFEST_v0_1.md` and specified in `schema/brdb_pedigree_generation_manifest_v0_1.schema.json`.
 
 The immutable Parquet generation, manifest, and audit are stored outside Git. This foundation does not publish a production `CURRENT` pointer or change PWA/RaceNote serving.
+\n\n## CURRENT / Reader v0.1\n\n- `src/brdb_pedigree_reader.py`\n- `src/build_brdb_current_bundle.py`\n- `schema/brdb_current_pointer_v0_1.schema.json`\n- `docs/BRDB_CURRENT_READER_CONTRACT_v0_1.md`\n- `tests/test_brdb_pedigree_reader.py`\n\nConsumer identity remains `horse_id` only; horse-name fallback is prohibited. The first immutable generation remains `eeca93556584a5b8`. Operational stable Drive CURRENT publication is the next step before Phase 2 Blood Review logic.\n
