@@ -2,11 +2,11 @@
 
 Status: **CURRENT CANDIDATE FOR NEW CLEAN-BLIND RUNS**  
 Logic ID: `RaceNote-Human-Context-Reader-0.5.5-candidate`  
-Contract revision: `v055-prediction-freeze-confidence-review-r5`
+Contract revision: `v055-prediction-freeze-confidence-review-r6`
 
 ## 1. Purpose
 
-v0.5.5 r5 keeps the r4 horse-selection logic, Lean Model Reader and editorial short-comment policy, but refines the separate Confidence Review scope. Prediction logic and marks are unchanged.
+v0.5.5 r6 keeps the r5 horse-selection logic, Lean Model Reader, special-race Z scope and editorial short-comment policy. Prediction logic and marks are unchanged. r6 only refines the A/B/C Confidence boundary so that A means not merely "most likely winner" but a race where the frozen ◎ has enough pre-result edge to justify active win-bet participation.
 
 1. **Forecast judgment** — ◎ ○ ▲ △ △ and the reasons for those marks.
 2. **Win-confidence judgment** — how strongly the already frozen ◎ should be supported as the winner / single-win axis.
@@ -58,7 +58,7 @@ Route diversity is a tie-breaker only.
 
 ## 4. Lean Decision Core
 
-For r5 each race persists:
+For r6 each race persists:
 
 - `venue`, `race_no`
 - `marks`: ◎ ○ ▲ △ △
@@ -69,7 +69,7 @@ For r5 each race persists:
 - `rrdb_refs`
 - `reader_facing_reason`
 
-**A/B/C/Z is not part of the r5 Decision Core.**
+**A/B/C/Z is not part of the r6 Decision Core.**
 
 The Decision Core therefore answers:
 
@@ -102,7 +102,7 @@ There is no sentence-count target and no character-count target. Validation rema
 
 After all races pass format/quality audit, freeze the prediction.
 
-For r5 the prediction handoff is:
+For r6 the prediction handoff is:
 
 `status=PREDICTION_FROZEN_CLEAN_BLIND`
 
@@ -123,15 +123,15 @@ Confidence Review starts only after Prediction Freeze verifies.
 
 The review sees the already frozen ◎ and asks:
 
-> **How strongly can this ◎ be supported as the winner / single-win axis?**
+> **Does the frozen ◎ have enough pre-result advantage to make this a race worth actively buying as a win-axis race, rather than merely being the most likely winner?**
 
 The grades are:
 
-- **A — ACTIVE WIN SUPPORT**  
-  ◎ has a clear enough winning advantage that it can be actively backed as the main win bet. A does not require near-certainty and does not require the absence of plausible upset routes.
+- **A — ACTIVE WIN SUPPORT / BUY-WORTHY EDGE**  
+  ◎ is not only the preferred winner: its ability edge, condition/fit, repeatable winning route, and uncertainty profile together leave enough separation to justify treating the race as an active win-bet candidate. A does **not** require near-certainty or an absence of plausible upset routes, but "◎ is probably best" by itself is insufficient. Strong recent seconds, a visually strong lower-class win, or a high ability impression do not automatically make A when credible rivals own comparable current-class / same-condition evidence or when material uncertainty remains.
 
-- **B — PREFERRED BUT CONTESTED**  
-  ◎ is the preferred winner, but comparison with credible alternatives or the principal risk is strong enough that the win bet should not receive A-level support.
+- **B — PREFERRED BUT CONTESTED / PASS-WORTHY UNCERTAINTY**  
+  ◎ is still the preferred winner, but either the advantage over credible alternatives is too small, the principal risk is too live, or uncertainty is material enough that the race should not receive A-level active-buy support. B is therefore a valid "forecast ◎ but practical pass" outcome, not a weak prediction.
 
 - **C — LOW WIN CONVICTION**  
   ◎ remains the frozen forecast winner, but confidence in the winner selection itself is low.
@@ -139,14 +139,22 @@ The grades are:
 - **Z — SPECIAL RACE / OUT OF A-B-C SCOPE**  
   The forecast itself is still authored with the same ◎ ○ ▲ △ △ logic, but the race is excluded from A/B/C win-confidence performance because the current Reader does not have a dedicated special-race model. `Z` is not lower than C and must never be interpreted as an ordinal confidence grade.
 
-For r5, `Z` is mandatory when the sealed Reader identifies either:
+For r6, `Z` remains mandatory when the sealed Reader identifies either:
 
 - `race.class == 新馬`; or
 - `race.surface == 障害` or `race.race_type == 障害`.
 
 Standard flat races must remain A/B/C. New-race and jump-race forecasts remain valid forecast outputs; only the A/B/C confidence research scope changes.
 
-There is **no target A rate** and no quota. The purpose is not to manufacture A races; it is to avoid defining A so strictly that only near-certain races qualify.
+There is **no target A rate** and no quota. A may be absent on a day when no standard flat race clears the active-buy boundary, but the reviewer must not make A so strict that only near-certain or extremely short-priced favorites qualify.
+
+The r6 boundary is intentionally about **pre-result edge**, not certainty or market price:
+
+- reward clear class/condition superiority when it gives ◎ a reproducible win route;
+- do not promote a lower-class winner merely because the last win looked strong when proven current-class rivals are comparably credible;
+- do not promote a lightly raced horse into A on ability impression alone when the first major class/distance/grade test creates substantial unknowns;
+- do not demote every A just because one credible rival exists; ask whether the total edge still makes the race worth active participation;
+- market odds remain closed before Confidence Freeze and are not an A/B input.
 
 Pairwise ◎>○, A5/A7, fixed IDM gaps and signal counts remain diagnostic only.
 
@@ -154,7 +162,7 @@ Pairwise ◎>○, A5/A7, fixed IDM gaps and signal counts remain diagnostic only
 
 Before Confidence Freeze, the confidence draft may be rewritten.
 
-For example, B may be reconsidered as A when the reviewer concludes that the frozen ◎ is sufficiently strong to back actively under the operational A definition.
+For example, B may be reconsidered as A when the reviewer concludes that the frozen ◎ has a sufficiently clear, reproducible pre-result edge to make the race an active-buy candidate. Conversely, an initial A should be revised to B when the re-read shows that the case is mainly "best among several comparable horses" or depends too heavily on an unproven class rise, distance change, first major test, or other material uncertainty.
 
 This is not a forecast rewrite: ◎ and every prediction field are already frozen and cannot change.
 
@@ -213,6 +221,6 @@ Downstream ◎-○ / ◎-▲ betting strategies remain a separate betting layer.
 
 ## 10. Revision boundary
 
-Existing r1/r2/r3/r4 sessions and Freezes remain immutable reproduction evidence. Their embedded confidence must not be rewritten or retroactively converted to Z after results are known.
+Existing r1/r2/r3/r4/r5 sessions and Freezes remain immutable reproduction evidence. Their embedded confidence must not be rewritten or retroactively converted to Z after results are known.
 
-Only newly initialized r5 sessions use the special-race Z scope. r4 remains readable/verifiable under its original A/B/C contract.
+Newly initialized r6 sessions keep the r5 special-race Z scope and use the refined A/B boundary above. r5 remains readable/verifiable under its original wording; r4 remains readable/verifiable under its original A/B/C contract.
