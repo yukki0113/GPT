@@ -1,6 +1,6 @@
 # BRDB CURRENT / Reader Contract v0.1
 
-Status: IMPLEMENTED FOUNDATION  
+Status: IMPLEMENTED / OPERATIONAL FOUNDATION  
 Date: 2026-10-22
 
 ## Purpose
@@ -177,19 +177,49 @@ The generation manifest reports:
 
 This generation remains immutable after CURRENT publication.
 
-## Publication boundary
+## Operational CURRENT publication
 
-Implementation of Reader/CURRENT contract does not itself publish a production CURRENT file.
+The first stable operational CURRENT file is now published:
 
-Operational publication requires:
+- filename: `BloodReviewDB_CURRENT.zip`
+- Drive file ID: `1fvqJgMMf1KUNL0Zr_GVnUAC6FyU8rMVz`
+- generation: `eeca93556584a5b8`
+- size: `6,923,691` bytes
+- SHA-256: `c0eda6fc55472a4a7a327dcbee6498063bf19209285dfa0b4bc0284ba554305f`
 
-1. build `BloodReviewDB_CURRENT.zip` from the accepted generation;
-2. place it at the designated BRDB Drive source-of-truth location;
-3. record/verify the stable Drive file ID;
-4. implement the stable Drive resolver/cache boundary;
-5. smoke-test Reader against the downloaded CURRENT bundle.
+Repository transport pin:
 
-Until those steps complete, the immutable generation is canonical data but there is no operational BRDB CURRENT endpoint.
+`config/public_drive/brdb_current_v0_1.json`
+
+Resolver:
+
+`src/brdb_current.py`
+
+The resolver uses the repository's reviewed public Drive read-only transport. It:
+
+1. verifies the transport manifest identity;
+2. downloads only the pinned stable file ID;
+3. requires exact size and SHA-256;
+4. safely extracts the ZIP;
+5. validates the extracted root through `BloodReviewReader`;
+6. promotes only a fully validated generation into local cache;
+7. never replaces an accepted cache after a failed refresh.
+
+Resolver cache identity includes the reviewed transport-manifest SHA. A changed Git manifest therefore forces a fresh verification path.
+
+### Drive permission hardening
+
+At implementation time, Drive metadata reported the stable CURRENT object as publicly writable (`anyone: writer`).
+
+This is not an integrity bypass because the repository pins exact SHA-256 and the resolver fails closed on byte changes, but it is an availability and source-governance risk.
+
+Before normal operational use, change the BRDB Drive folder / CURRENT file general access to:
+
+```text
+Anyone with the link: Viewer
+```
+
+Do not make the artifact private while the public read-only transport is the operational download path.
 
 ## Tests
 
@@ -201,5 +231,11 @@ Until those steps complete, the immutable generation is canonical data but there
 - parent relation cardinality
 - horse_id-only projection
 - deterministic CURRENT ZIP creation
+
+`tests/test_brdb_current.py` covers:
+
+- first resolve and validated cache hit
+- failed/tampered refresh preserving accepted cache
+- transport filename contract failure
 
 These are lightweight contract tests and do not require the 2010-2025 raw rebuild.
