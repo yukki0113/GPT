@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "brdb_current",
+      "file_id": "1fvqJgMMf1KUNL0Zr_GVnUAC6FyU8rMVz",
+      "destination": "BloodReviewDB_CURRENT.zip",
+      "expected_name": "BloodReviewDB_CURRENT.zip",
+      "expected_size": 6923691,
+      "sha256": "c0eda6fc55472a4a7a327dcbee6498063bf19209285dfa0b4bc0284ba554305f"
+    }
+  ],
+  "note": "BRDB CURRENT v0.1 transport pin for immutable pedigree generation eeca93556584a5b8."
+}
