@@ -103,11 +103,27 @@ jobs:
           mkdir -p /tmp/course-fit
           unzip -q /tmp/approved-fit.zip -d /tmp/course-fit
           test -f /tmp/course-fit/fit/research/candidate_fit_view.parquet
-      - name: Build canonical RaceLap snapshot
+      - name: Materialize canonical RaceLap current
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p /tmp/racelap-raw /tmp/racelap
-          python horse-racing/jrdb/src/fetch_jrdb_history.py             --from-year 2024 --to-year 2025 --kinds SED             --output-dir /tmp/racelap-raw --sleep-seconds 0.2             --max-retries 5 --retry-backoff-seconds 2
-          python horse-racing/jrdb/src/jrdb_race_lap_dataset.py             /tmp/racelap-raw/SED/SED_2024.zip             /tmp/racelap-raw/SED/SED_2025.zip             --output /tmp/racelap/race_lap.parquet             --audit /tmp/racelap/race_lap.audit.json --replace
+          set -euo pipefail
+          mkdir -p /tmp/racelap
+          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/12101869150/zip > /tmp/racelap-current.zip
+          unzip -q /tmp/racelap-current.zip -d /tmp/racelap-current
+          cp /tmp/racelap-current/current/race_lap.parquet /tmp/racelap/race_lap.parquet
+          cp /tmp/racelap-current/current/audit.json /tmp/racelap/race_lap.audit.json
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          parquet=Path('/tmp/racelap/race_lap.parquet')
+          h=hashlib.sha256(parquet.read_bytes()).hexdigest()
+          assert h=='f39056cea12e1d3d694bcb829695121ac1df3426bf633d49f4f5f23fd637ce7d'
+          manifest=json.loads(Path('/tmp/racelap-current/current/manifest.json').read_text())
+          assert manifest['validation_status']=='PASS'
+          assert manifest['generation_id']=='racelap-forward-canonical-20261017-01'
+          assert manifest['parquet_sha256']==h
+          PY
       - name: Build historical market-blind forecast prep
         shell: bash
         run: |
