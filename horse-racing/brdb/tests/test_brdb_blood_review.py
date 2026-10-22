@@ -16,6 +16,7 @@ class StubReader:
         if horse_id == "missing":
             return None
         return {
+            "profile_data_date": "2025-10-25",
             "sire": {"name": "父", "lineage": {"lineage_code": "1206", "major_name": "ロイヤルチャージャー", "minor_name": "ヘイロー", "source_name": "JRDB"}},
             "dam": {"name": "母"},
             "broodmare_sire": {"name": "母父", "lineage": {"lineage_code": "1503", "major_name": "ネイティヴダンサー", "minor_name": "ミスタープロスペクター", "source_name": "JRDB"}},
@@ -27,11 +28,21 @@ CTX = {"target_date": "2025-10-26", "venue": "京都", "surface": "芝", "distan
 
 def p2():
     return {
+        "horse_id": "H1",
         "target_context": CTX,
         "as_of_exclusive": "2025-10-26",
         "pedigree_names": {"sire": "父", "broodmare_sire": "母父"},
-        "sire": {"starts": 10, "wins": 2, "top3": 4, "source": "JRDB Analysis"},
-        "broodmare_sire": {"starts": 5, "wins": 1, "top3": 2, "source": "JRDB Analysis"},
+        "producer": {
+            "as_of_exclusive": "2025-10-26",
+            "condition_scope": "venue_surface_exact_distance_plus_target_distance_ranges",
+            "future_leakage_policy": "all rolling statistics from JRDB Analysis canonical with race_date < target_date",
+        },
+        "sire": {"starts": 10, "wins": 2, "top3": 4, "source": "JRDB Analysis canonical (as-of-exclusive)",
+                 "as_of_exclusive": "2025-10-26", "track_condition_scope": "all_conditions",
+                 "sample_size_band": "small", "period": "2021-2025YTD"},
+        "broodmare_sire": {"starts": 5, "wins": 1, "top3": 2, "source": "JRDB Analysis canonical (as-of-exclusive)",
+                          "as_of_exclusive": "2025-10-26", "track_condition_scope": "all_conditions",
+                          "sample_size_band": "small", "period": "2021-2025YTD"},
     }
 
 
@@ -93,6 +104,43 @@ class BloodReviewTest(unittest.TestCase):
         got = self.engine.reviews_for_horses(ids, CTX, pedigree_contexts={"H1": p2()})
         self.assertEqual(got["H1"], self.engine.horse_review("H1", CTX, pedigree_context=p2()))
         self.assertEqual(got["missing"], self.engine.horse_review("missing", CTX))
+
+    def test_future_profile_is_withheld(self):
+        class FutureReader(StubReader):
+            def horse_pedigree(self, horse_id):
+                record = super().horse_pedigree(horse_id)
+                record["profile_data_date"] = "2025-10-27"
+                return record
+        got = BloodReviewEngine(FutureReader()).horse_review("H1", CTX, pedigree_context=p2())
+        self.assertEqual(got["status"], "AS_OF_UNVERIFIED")
+        self.assertIsNone(got["facts"]["sire_name"])
+        self.assertIsNone(got["review"]["pedigree_context"])
+
+    def test_missing_profile_date_is_withheld(self):
+        class UndatedReader(StubReader):
+            def horse_pedigree(self, horse_id):
+                record = super().horse_pedigree(horse_id)
+                del record["profile_data_date"]
+                return record
+        self.assertEqual(BloodReviewEngine(UndatedReader()).horse_review("H1", CTX)["status"],
+                         "AS_OF_UNVERIFIED")
+
+    def test_wrong_wrapper_identity_rejected(self):
+        context = p2()
+        context["horse_id"] = "OTHER"
+        got = self.engine.horse_review("H1", CTX, pedigree_context=context)
+        self.assertEqual(got["status"], "PARTIAL")
+        self.assertIsNone(got["review"]["pedigree_context"])
+
+    def test_zero_starts_and_result_data(self):
+        context = p2()
+        context["sire"].update(starts=0, wins=0, top3=0, sample_size_band="none",
+                               target_finish=1)
+        got = self.engine.horse_review("H1", CTX, pedigree_context=context)
+        self.assertEqual(got["status"], "AVAILABLE")
+        self.assertEqual(got["review"]["pedigree_context"]["sire"]["starts"], 0)
+        self.assertIsNone(got["review"]["pedigree_context"]["sire"]["win_rate"])
+        self.assertNotIn("target_finish", str(got))
 
 
 if __name__ == "__main__":
