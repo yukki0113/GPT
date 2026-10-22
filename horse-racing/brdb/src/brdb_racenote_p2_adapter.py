@@ -39,7 +39,7 @@ def scoped_p2_for_horse(race: Mapping, horse: Mapping, *, expected_horse_id: str
         })
     except (ValueError, TypeError):
         return None
-    results = {"target_context": ctx, "as_of_exclusive": ctx["target_date"]}
+    results = {"target_context": ctx, "as_of_exclusive": ctx["target_date"],\n               "pedigree_names": {"sire": _value(pedigree.get("sire_name")),\n                                  "broodmare_sire": _value(pedigree.get("broodmare_sire_name"))}}
     accepted = False
     for role, name_field in (("sire", "sire_name"), ("broodmare_sire", "broodmare_sire_name")):
         item = p2.get(role)
