@@ -63,3 +63,11 @@ Tests are committed but have **not yet been independently executed**. Do not mar
 3. Decide trusted supplementary ancestor source, if necessary, without production cutover.
 4. With sufficient coverage, add explicit cross generation (e.g. 3×4) semantics and evidence audit.
 5. Preserve all Blood Review v0.1 production outputs and keep PWA release independently gated.
+
+## Depth coverage / older UKC decision (2026-10-22)
+
+Added `src/audit_brdb_ancestor_depth_coverage.py`: it reads the verified BRDB CURRENT through `BloodReviewReader`, measures depth 2–5 for a **birth-year cohort** and emits an all-master unresolved parent birth-year / role / status frequency table. A 2025 birth cohort is **not equivalent** to the 11,818-horse cohort observed in the UKC_2025 annual archive; do not compare their denominator or claim the same coverage.
+
+Canonical parquet reading requires DuckDB. The managed container lacks DuckDB; a normal `pip install duckdb==1.1.3` attempt failed due DNS/network transport, so this turn **did not execute** the real Parquet audit. Do not interpret the pre-existing 2025 audit's four grandparent count values as an independent depth-5 distribution. Execute the audit using the repository's `tools/data-storage/` managed-runtime / sanctioned Actions fallback and record output and test command in a RESULT before accepting any new source window.
+
+**Decision pending evidence:** UKC files dated 2010–2025 can contain horses born before 2010, so year-of-archive is not year-of-birth. An unresolved parent's birth year older than 2010 does not by itself prove a pre-2010 UKC archive exists or that it will resolve the horse. First inventory birth-year/status frequencies and source availability; then check JRDB official/contracted historical UKC source and alternative JRDB pedigree identifiers. External sites are a last resort, require license/provenance approval, and never introduce horse-name-only identity matching.
