@@ -1,0 +1,65 @@
+# BRDB Phase 4 — 3–5代祖先・クロス・類似血統 v0.1
+
+Status: RESEARCH FOUNDATION IMPLEMENTED / VALIDATION & COVERAGE EXPANSION PENDING
+Date: 2026-10-22
+
+## Boundary
+
+Production Blood Review `brdb-review-v0.1` is frozen and unchanged. This research layer must not alter Newspaper, PWA, current Drive generation, Review score or prediction marks. Existing EdgeDB `PEDIGREE_CROSS_5Y_MIXED_OBSERVE_ONLY` is an independent feature-mining result **not** an approved cross/inbreeding source or predictive score.
+
+## Implemented
+
+`src/brdb_ancestor_graph.py` provides:
+
+- `ancestor_graph(horse_id, relations_for, max_depth=1..5)`
+- `graph_from_reader(reader, horse_id, max_depth=1..5)`
+- `ancestor_crosses(graph)`
+- `pedigree_similarity(left_graph, right_graph)`
+
+The graph follows only `parent_relation.role=sire|dam` where `resolution_status=RESOLVED_EXACT|RESOLVED_ALIAS` and `resolved_parent_horse_id` is present. Unresolved candidate names, sire/BMS lineage labels, and fuzzy aliases **never** count as canonical ancestors. `broodmare_sire` relation is a contextual edge, **not** a third direct parent and is not traversed as a parent edge. Cycles, duplicate role rows and contradictory unresolved-ID rows are rejected or marked as unresolved.
+
+## Semantics and caveats
+
+- `path` uses S (sire) and D (dam), e.g. SSD for sire→sire→dam.
+- A cross is the **same canonical ancestor ID** observed at >=2 distinct paths. Its paths and depths are shown; lack of observed cross does not prove a cross is absent when ancestry is incomplete.
+- Similarity reports common **observed unique ancestor IDs** and a descriptive Jaccard fraction. With partial ancestry it is not directly comparable across horses and must not be ranked as a breeding/suitability prediction.
+- `coverage=FULL` only when all 2+4+...+2^depth ancestor paths are resolved; otherwise `PARTIAL`. Incomplete branches do not generate imaginary descendants.
+- Avoid calling a 5-generation completeness claim when only 2-generation IDs were actually resolved.
+- Source uses canonical current pedigree generation `eeca93556584a5b8`. As-of historic use requires separately date-safe ancestry, not just the current profile snapshot.
+
+## Coverage constraints
+
+The initial 2010–2025 UKC canonical master contains 82,107 horses but only a limited subset of parents can be independently resolved by identity. The previous 2025 target audit reported: sire's sire 319; sire's dam 604; dam's sire 943; dam's dam 1,179. Those figures reflect **limited recursively resolvable IDs**, not a validated full pedigree chart.
+
+Next: run coverage histograms for depth 2/3/4/5, unresolved status distribution, duplicate/cycle audit, and comparison of father/mother path availability. Do not assume larger depths are useful until coverage is measured.
+
+## Ancestor source expansion gates
+
+Before accepting external ancestor IDs:
+1. Inventory any available licensed official identifiers and exact crosswalks.
+2. Preserve `source_id`, `source_version`, observed/as-of date, relationship role and source URL/license.
+3. Verify each ID match independently, with name collisions unresolved.
+4. Keep source-native IDs distinct from JRDB horse_id until an audited canonical crosswalk exists.
+5. Never fabricate unknown ancestors to fill 3–5 generations.
+6. Publish immutable extended generation with manifest, audit, SHA and rollback before changing CURRENT.
+
+## Tests
+
+`tests/test_brdb_ancestor_graph.py` covers:
+- 2-path same-ID cross
+- unknown ancestor is not assumed identical
+- cycle rejection
+- contradictory unresolved-ID rejection
+- duplicate role rejection
+- maximum-depth guard
+- observed similarity with partial coverage
+
+Tests are committed but have **not yet been independently executed**. Do not mark Phase 4 complete before running tests and real generation coverage audit.
+
+## Next acceptance
+
+1. Execute focused new tests and entire BRDB test suite.
+2. Run bounded 2025 cohort depth 2–5 against verified BRDB CURRENT Reader and record status counts.
+3. Decide trusted supplementary ancestor source, if necessary, without production cutover.
+4. With sufficient coverage, add explicit cross generation (e.g. 3×4) semantics and evidence audit.
+5. Preserve all Blood Review v0.1 production outputs and keep PWA release independently gated.
