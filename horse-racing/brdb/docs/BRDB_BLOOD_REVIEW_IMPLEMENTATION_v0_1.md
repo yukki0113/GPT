@@ -31,7 +31,7 @@ v0.1必須:
 ## Source lanes
 
 1. `BloodReviewReader`: horse_id照会によるsire/dam/BMSおよびJRDB official lineage labels。
-2. 既存RaceNote P2 pedigree context: **optional descriptive input**。新たな統計集計はしない。
+2. 既存RaceNote P2 pedigree context: **optional descriptive input**。新たな統計集計はしない。\n\nReal P2 adapter: `src/brdb_racenote_p2_adapter.py`. It requires same RaceNote bundle's `race`, `metadata.history_enrichment_poc`, `horses[].basic.horse_id`, `horses[].pedigree`, `horses[].pedigree_context`, strict as-of-exclusive attestation and descriptive-only source. The adapter does not change RaceNote output.
 
 P2 evidenceは以下を満たさなければ採用しない:
 - wrapper `target_context` が target_date/venue/surface/distance の4項目で一致
@@ -88,7 +88,7 @@ P2が未提供/不適合なら `PARTIAL`。0件の合法集計は0件として�
 - invalid sample counts
 - batch/single equivalence
 
-Commit時点でGit上にfixture tests追加済み。独立した実行ログ・現行RaceNote P2へのadapter integration testは未了。v0.1をproduction reviewとみなさない。
+Fixture and real-shape P2 adapter regression tests are committed, but independent execution and real enriched-bundle full-field audit are pending. Do not call v0.1 production-ready until those gates pass. Validation instruction: `collab/instructions/20261022_002_blood-review-v01-verification_instruction.md`.
 
 ## Next
 
