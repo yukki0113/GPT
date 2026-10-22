@@ -71,3 +71,16 @@ Added `src/audit_brdb_ancestor_depth_coverage.py`: it reads the verified BRDB CU
 Canonical parquet reading requires DuckDB. The managed container lacks DuckDB; a normal `pip install duckdb==1.1.3` attempt failed due DNS/network transport, so this turn **did not execute** the real Parquet audit. Do not interpret the pre-existing 2025 audit's four grandparent count values as an independent depth-5 distribution. Execute the audit using the repository's `tools/data-storage/` managed-runtime / sanctioned Actions fallback and record output and test command in a RESULT before accepting any new source window.
 
 **Decision pending evidence:** UKC files dated 2010–2025 can contain horses born before 2010, so year-of-archive is not year-of-birth. An unresolved parent's birth year older than 2010 does not by itself prove a pre-2010 UKC archive exists or that it will resolve the horse. First inventory birth-year/status frequencies and source availability; then check JRDB official/contracted historical UKC source and alternative JRDB pedigree identifiers. External sites are a last resort, require license/provenance approval, and never introduce horse-name-only identity matching.
+
+## Maintenance-period work — independent of older UKC (2026-10-22)
+
+The official JRDB site is temporarily unavailable. No new source archive is assumed or fetched. Existing BRDB CURRENT and frozen `brdb-review-v0.1` remain unchanged.
+
+Added `src/brdb_ancestor_evidence.py` and `tests/test_brdb_ancestor_evidence.py`:
+
+- `summarize_graph`: explicit generation 1..5 expected/resolved/unresolved ancestor path counts. An unenumerated branch counts as unknown, never a confirmed absence.
+- `describe_crosses`: repeated **canonical ancestor horse_id** paths with generation labels, including descriptive `3×4` notation; no inbreeding coefficient, weighting, or ability claim.
+- `compare_observed_ancestors`: reports shared IDs and observed Jaccard with `can_rank_similarity=false` whenever either chart is incomplete. The existing 2025 cohort has zero fully resolved depth-2..5 graphs in accepted audit #2134, so research-overlap values must not be presented as rankings.
+- Fixture tests include partial graphs, explicit complete synthetic graphs, cross notation and duplicate-path rejection.
+
+**Production gate:** This work is research-only. Do not merge it into published Newspaper/PWA, score, recommendation, or CURRENT. No external source is necessary for these contract improvements. The added tests have not been independently executed in this turn.
