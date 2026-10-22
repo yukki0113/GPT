@@ -140,11 +140,11 @@ jobs:
           from racenote_prepare_forecast_input import bind
 
           target=Path(os.environ['TARGET']); target.mkdir(parents=True)
-          target_date='2025-02-15'; day=date.fromisoformat(target_date)
+          target_date='2025-05-04'; day=date.fromisoformat(target_date)
           current=Path('/tmp/historical/warehouse/current.json')
           validate_gate(Path('horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json'),current)
           request=RaceNoteRequest(day,None,None,date.today())
-          base_work=Path('/tmp/btday133-base'); base_work.mkdir(parents=True,exist_ok=True)
+          base_work=Path('/tmp/btday134-base'); base_work.mkdir(parents=True,exist_ok=True)
           base_dir, warehouse_report=build_historical_warehouse_base(
               request,current,[f"{family}=/tmp/historical/warehouse" for family in ('BAC','KYI','CHA','CYB','ZED','ZKB')],base_work)
           warehouse={}
@@ -164,7 +164,7 @@ jobs:
               history_bundles, history_report=enrich_history_bundles(bases,analysis)
           finally:
               analysis.close()
-          with tempfile.TemporaryDirectory(prefix='btday133-rrdb-') as tmp:
+          with tempfile.TemporaryDirectory(prefix='btday134-rrdb-') as tmp:
               enriched, rrdb_report=enrich_rrdb_bundles(
                   history_bundles,
                   paci_path=Path('/tmp/historical/raw/BAC/BAC_2025.zip'),
@@ -210,7 +210,7 @@ jobs:
           assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.5-candidate'
           assert s['contract_revision']==CONTRACT_REVISION
           assert s['reader_projection']=='v055-lean-model-reader-r2'
-          assert s['selection_id']=='BTDAY-0134' and s['target_date']=='2025-02-15'
+          assert s['selection_id']=='BTDAY-0134' and s['target_date']=='2025-05-04'
           assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
           assert s['base_main_sha']==h['main_sha']
           assert m['contract_revision']==CONTRACT_REVISION
@@ -221,7 +221,7 @@ jobs:
           op={
             'schema_version':'racenote-v055-current-turn1-handoff-0.1',
             'status':'READY_FOR_V055_AUTHORING',
-            'selection_id':'BTDAY-0134','target_date':'2025-02-15',
+            'selection_id':'BTDAY-0134','target_date':'2025-05-04',
             'source_backend':'historical_warehouse',
             'source_generation_id':'jrdb_normalized_warehouse_v1_2010_2025_g20260921',
             'logic_version':s['logic_version'],'contract_revision':s['contract_revision'],
