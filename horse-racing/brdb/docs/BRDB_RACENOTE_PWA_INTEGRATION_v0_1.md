@@ -1,6 +1,6 @@
 # BRDB → RaceNote / Newspaper / PWA Integration v0.1
 
-Status: PHASE 3A HANDOFF FOUNDATION — NOT DEPLOYED
+Status: PHASE 3 DESIGN/HANDOFF CLOSED — NOT INTEGRATED OR DEPLOYED
 Date: 2026-10-22
 
 ## Ownership
@@ -60,7 +60,7 @@ Day/race `source_status.brdb` must distinguish `READY / PARTIAL / ERROR / NOT_PR
 - Preserve mobile 360/390/430px, existing sticky and scroll behavior.
 - Do not project to Momotaro without a separately approved scope.
 
-## Next implementation / acceptance
+## Deferred implementation / independent release gates
 
 1. Verify actual canonical Newspaper JSON horse identifier, daily addon merge layer, and all downstream publisher/reader entrypoints. Add an exact-key BRDB merge adapter with field cardinality audit.
 2. Wire RaceNote authoritative P2 `adapt_racenote_bundle` → `BloodReviewEngine` → `project_field` in a sidecar producer. Use canonical CURRENT pin.
@@ -69,4 +69,4 @@ Day/race `source_status.brdb` must distinguish `READY / PARTIAL / ERROR / NOT_PR
 5. Add private Kenshow_Labo-only modal, rendering tests and manual small-screen check.
 6. Run full `JRDB PWA Pages` only after explicit production-cutover decision. Verify actual hosted Pages and current package; keep production untouched before that.
 
-These are acceptance gates, not claims of completed production integration.
+**Phase 3 is closed at the design/handoff boundary.** The items above are deferred to a separately authorized integration/release project; they are not part of Phase 3 completion. No Newspaper merger, UI, daily workflow, Release, Pages, or Momotaro changes are authorized by this document. Before any future deployment, the user must review and approve the exact blood-detail fields, wording, status/coverage presentation, absence of predictive claims, personal-vs-shared PWA scope, and real-device screenshots. Preparation and design alone do not grant publication permission.
