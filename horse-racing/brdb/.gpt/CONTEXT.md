@@ -2,7 +2,7 @@
 
 ## Status
 
-Blood Review DB (BRDB) は Phase 1 / CURRENT Reader foundation 段階です。
+Blood Review DB (BRDB) は Phase 1 CURRENT / Reader 実装完了段階です。次工程は Phase 2 Blood Review v0.1。
 
 目的は、血統に関する固定条件一致馬を列挙することではなく、**対象レースの出走馬を血統専門ロジックで1頭ずつ review し、その結果と根拠を返すこと**です。
 
@@ -35,7 +35,7 @@ RRDB から次の consumer architecture を引き継ぐ。
 - storage detail と consumer contract の分離
 - fail-closed validation
 
-詳細は `../docs/BRDB_RRDB_INHERITANCE_v0_1.md`。\n\nCURRENT / Reader v0.1 foundation は実装済み。最初の immutable pedigree generation は `eeca93556584a5b8`。次の operational task は stable Drive CURRENT publication / resolver。
+詳細は `../docs/BRDB_RRDB_INHERITANCE_v0_1.md`。\n\nCURRENT / Reader v0.1 は実装済み。最初の immutable pedigree generation は `eeca93556584a5b8`。stable Drive CURRENT `BloodReviewDB_CURRENT.zip` と SHA-pinned resolver も実装済み。Drive general access は operational use 前に Viewer へ harden する。
 
 ## Existing pedigree source baseline
 
