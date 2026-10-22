@@ -1,99 +1,23 @@
 # BRDB Blood Review v0.1
 
-Status: IMPLEMENTED BASELINE / VALIDATION PENDING
+Status: **VALIDATED / CONTRACT FROZEN**  
 Date: 2026-10-22
 
-## 目的
+Blood Review v0.1 returns descriptive evidence for every requested horse. It does not assign suitability, a score, regional type, positive or negative factors. The frozen fields and statuses are in `BRDB_REVIEW_CONTRACT_v0_1.md`.
 
-BRDBの全馬レビュー境界を実装する。v0.1は **non-scoring / descriptive review** であり、適性スコア・地域型分類・推定的な肯定/否定要因を生成しない。
+## Source and safety
 
-Canonical pedigree facts は `BloodReviewReader.horse_pedigree(horse_id)` のみから取得する。馬名はidentity fallbackに使わない。
+`src/brdb_blood_review.py` queries pedigree facts only through `BloodReviewReader.horse_pedigree(horse_id)`. The Reader validates the pinned immutable CURRENT and uses DuckDB. No horse-name fallback is allowed. A profile whose `profile_data_date` is missing or later than the target is `AS_OF_UNVERIFIED`; its facts and P2 are withheld.
 
-## API
+`src/brdb_racenote_p2_adapter.py` reads an existing authoritative RaceNote bundle. It verifies `race`, `metadata.history_enrichment`, nested `pedigree_enrichment` (P1-0.1/P2-0.1), as-of-exclusive leakage policy, condition scope, descriptive-only flags, exact complete cohort and unique canonical `horses[].basic.horse_id`. Per-horse `pedigree.horse_id` and source policy must agree. Each role's source, as-of, count bounds, sample band, period and distance ranges are checked. The engine then compares sire/BMS names against canonical Reader facts. Invalid roles are omitted; mismatched race/cohort/producer metadata reject adaptation. Zero starts remains valid evidence. Only approved aggregate fields enter review output, so target result fields cannot pass through.
 
-`src/brdb_blood_review.py`
+`src/run_brdb_blood_review_field_replay.py` replays a fixed authoritative bundle against the transport-manifest-pinned `BloodReviewDB_CURRENT.zip`. The resolver verifies size/SHA, manifest and Parquet hashes. It checks field batch/single equality and writes aggregate counts only.
 
-- `BloodReviewEngine(reader).horse_review(horse_id, target_context, *, pedigree_context=None)`
-- `BloodReviewEngine(reader).reviews_for_horses(horse_ids, target_context, *, pedigree_contexts=None)`
+## Validation evidence
 
-batch APIはsingle-horse APIと同一semanticsを持つ。
+Command: `PYTHONPATH=/workspace/scratch/brdb-pylibs python -m unittest discover -s horse-racing/brdb/tests -q`  
+Result: 38 tests, 0 failures, 0 errors (Python 3.12.14, DuckDB 1.1.3, PyArrow 25.0.1).
 
-## Target context
+Real authoritative input: `horse-racing/jrdb/backtests/BTDAY-0125/20251026/day_prep/RaceNote_20251026/authoritative/race_bundle_20251026_京都1R.json`, input blob SHA `df541481742a28b16e19513cf45c56a7150f4e0b`. The full 9-horse field adapted all 9 P2 role pairs. Review returned 9 records: AVAILABLE 5, AS_OF_UNVERIFIED 4; P2 coverage FULL 5, NONE 4. Batch/single equality passed for all 9. CURRENT generation `eeca93556584a5b8`, pinned ZIP SHA-256 `c0eda6fc55472a4a7a327dcbee6498063bf19209285dfa0b4bc0284ba554305f`.
 
-v0.1必須:
-- `target_date`: YYYY-MM-DD or YYYYMMDD
-- `venue`
-- `surface`: 芝/ダート or turf/dirt
-- `distance`: integer 600..5000
-
-条件が解釈不能なら `UNSUPPORTED_CONTEXT` とし、推測補完しない。
-
-## Source lanes
-
-1. `BloodReviewReader`: horse_id照会によるsire/dam/BMSおよびJRDB official lineage labels。
-2. 既存RaceNote P2 pedigree context: **optional descriptive input**。新たな統計集計はしない。\n\nReal P2 adapter: `src/brdb_racenote_p2_adapter.py`. It requires same RaceNote bundle's `race`, `metadata.history_enrichment_poc`, `horses[].basic.horse_id`, `horses[].pedigree`, `horses[].pedigree_context`, strict as-of-exclusive attestation and descriptive-only source. The adapter does not change RaceNote output.
-
-P2 evidenceは以下を満たさなければ採用しない:
-- wrapper `target_context` が target_date/venue/surface/distance の4項目で一致
-- `as_of_exclusive` がtarget_dateと一致（P2 producerはrace_date < target_dateを保証する）
-- starts/wins/top3が整数かつ 0 <= wins <= top3 <= starts
-- `scoring=True` ではない
-
-これは既存P2 consumer contractに対する安全な**adapter入力要件**であり、既存RaceNote出力がwrapper条件をそのまま満たすという意味ではない。RaceNote統合時は明示的adapterでscopeとas-ofを与え、producer由来の対象条件・履歴exclusive性を検証する。
-
-P2が未提供/不適合なら `PARTIAL`。0件の合法集計は0件として記述し、評価0点とはしない。
-
-## Status
-
-- `NO_HORSE_ID`: empty identity
-- `UNSUPPORTED_CONTEXT`: required context unsupported
-- `NO_PEDIGREE`: horse_idに対応するcanonical pedigreeなし/三要素すべて欠損
-- `PARTIAL`: blood factsあり、P2 evidenceが欠損または片系のみ
-- `AVAILABLE`: sire/dam/BMS factsおよびsire/BMS P2両方あり
-
-`coverage.status`はpedigree factsの3要素のみに対する FULL/PARTIAL/NONE。P2のavailabilityは `coverage.pedigree_context` で別表現。
-
-`confidence=DESCRIPTIVE_ONLY` は統計的confidenceや血統適性の強さを意味しない。
-
-## Output
-
-`BRDB_REVIEW_CONTRACT_v0_1.md` の概念的payloadに準拠:
-- horse_id/status/contract_version
-- target_context
-- facts
-- classification（父系・母父系のJRDB mappingのみ。regional_typeはnull）
-- review（overall_score=null、components=[], positive/negative_factors=[]）
-- coverage
-- confidence
-- provenance（generation/schema/review logic version）
-
-## 非対象
-
-- 0〜100 score
-- 「京都芝2000mに適性あり」等の自動判断
-- RaceNote/Analysisからの自由なpost-race join
-- 3〜5代血統・クロス・similarity
-- PWA連携・CURRENT書換
-
-## Validation
-
-`tests/test_brdb_blood_review.py`:
-- NO_HORSE_ID
-- NO_PEDIGREE
-- UNSUPPORTED_CONTEXT
-- non-scoring fallback
-- scoped P2
-- mismatched target scope
-- mismatched as-of
-- invalid sample counts
-- batch/single equivalence
-
-Fixture and real-shape P2 adapter regression tests are committed, but independent execution and real enriched-bundle full-field audit are pending. Do not call v0.1 production-ready until those gates pass. Validation instruction: `collab/instructions/20261022_002_blood-review-v01-verification_instruction.md`.
-
-## Next
-
-1. testsを実行し欠陥を修正
-2. RaceNote P2 producer payloadとadapter contractを接続し、as-of/target-scope/統計の一致を監査
-3. 代表レース全馬のdry-runとcoverage分布をレポート
-4. 問題がなければBlood Review v0.1 contractをfreeze
-5. その後PWA handoff設計へ進む
+The result report and exact replay invocation are in `../collab/results/20261022_002_blood-review-v01_verification_result.md`. This validation freezes v0.1 contract semantics; it does not change RRDB, RaceNote, PWA or operational CURRENT.

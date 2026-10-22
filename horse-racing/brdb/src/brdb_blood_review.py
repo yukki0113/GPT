@@ -6,12 +6,16 @@ are optional, explicitly supplied as as-of-exclusive descriptive evidence.
 from __future__ import annotations
 
 import datetime as dt
+import re
 from collections.abc import Mapping, Iterable
 
 REVIEW_LOGIC_VERSION = "brdb-blood-review-0.1"
 CONTRACT_VERSION = "brdb-review-v0.1"
 ALLOWED_SURFACES = {"芝", "ダート", "turf", "dirt"}
 P2_ROLES = ("sire", "broodmare_sire")
+P2_SOURCE = "JRDB Analysis canonical (as-of-exclusive)"
+P2_CONDITION_SCOPE = "venue_surface_exact_distance_plus_target_distance_ranges"
+P2_LEAKAGE_POLICY = "all rolling statistics from JRDB Analysis canonical with race_date < target_date"
 
 
 def _date(value: object) -> dt.date:
@@ -60,6 +64,12 @@ def _p2_evidence(p2: Mapping[str, object] | None, ctx: Mapping[str, object]) -> 
     if any(str(scope.get(field)) != str(ctx[field])
            for field in ("target_date", "venue", "surface", "distance")):
         return None
+    producer = p2.get("producer")
+    if (not isinstance(producer, Mapping)
+        or producer.get("as_of_exclusive") != ctx["target_date"]
+        or producer.get("condition_scope") != P2_CONDITION_SCOPE
+        or producer.get("future_leakage_policy") != P2_LEAKAGE_POLICY):
+        return None
     result = {}
     for role in P2_ROLES:
         item = p2.get(role)
@@ -74,13 +84,24 @@ def _p2_evidence(p2: Mapping[str, object] | None, ctx: Mapping[str, object]) -> 
             continue
         if not (0 <= wins <= top3 <= starts):
             continue
+        band = ("none" if starts == 0 else "small" if starts < 20
+                else "moderate" if starts < 50 else "sufficient")
+        period = str(item.get("period") or "")
+        match = re.fullmatch(r"(\d{4})-(\d{4})YTD", period)
+        if (item.get("as_of_exclusive") != ctx["target_date"]
+            or item.get("source") != P2_SOURCE
+            or item.get("track_condition_scope") != "all_conditions"
+            or item.get("sample_size_band") != band
+            or not match or int(match[1]) > int(match[2])
+            or int(match[2]) != int(str(ctx["target_date"])[:4])):
+            continue
         result[role] = {
             "starts": starts, "wins": wins, "top3": top3,
             "win_rate": wins / starts if starts else None,
             "top3_rate": top3 / starts if starts else None,
             "as_of_exclusive": as_of.isoformat(),
-            "source": item.get("source"),
-            "sample_size_band": item.get("sample_size_band"),
+            "source": P2_SOURCE,
+            "sample_size_band": band,
         }
     return result or None
 
@@ -131,6 +152,16 @@ class BloodReviewEngine:
         record = self.reader.horse_pedigree(horse_id)
         if record is None:
             return result
+        # A latest-profile CURRENT may contain an observation made after this
+        # historical target. Without a date-safe profile, facts are withheld.
+        try:
+            profile_date = _date(record.get("profile_data_date"))
+        except (ValueError, TypeError):
+            result["status"] = "AS_OF_UNVERIFIED"
+            return result
+        if profile_date > dt.date.fromisoformat(str(ctx["target_date"])):
+            result["status"] = "AS_OF_UNVERIFIED"
+            return result
         for role, field in (("sire", "sire_name"), ("dam", "dam_name"),
                             ("broodmare_sire", "broodmare_sire_name")):
             result["facts"][field] = record.get(role, {}).get("name")
@@ -148,7 +179,8 @@ class BloodReviewEngine:
         verified_context = pedigree_context
         if isinstance(pedigree_context, Mapping):
             identities = pedigree_context.get("pedigree_names")
-            if (not isinstance(identities, Mapping)
+            if (str(pedigree_context.get("horse_id") or "") != horse_id
+                or not isinstance(identities, Mapping)
                 or any(str(identities.get(role) or "").strip()
                        != str(result["facts"][field] or "").strip()
                        for role, field in (("sire", "sire_name"),
