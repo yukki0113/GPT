@@ -29,6 +29,7 @@ def p2():
     return {
         "target_context": CTX,
         "as_of_exclusive": "2025-10-26",
+        "pedigree_names": {"sire": "父", "broodmare_sire": "母父"},
         "sire": {"starts": 10, "wins": 2, "top3": 4, "source": "JRDB Analysis"},
         "broodmare_sire": {"starts": 5, "wins": 1, "top3": 2, "source": "JRDB Analysis"},
     }
@@ -60,6 +61,13 @@ class BloodReviewTest(unittest.TestCase):
         self.assertEqual(got["review"]["pedigree_context"]["sire"]["starts"], 10)
         self.assertEqual(got["review"]["pedigree_context"]["sire"]["top3_rate"], .4)
         self.assertIsNone(got["review"]["overall_score"])
+
+    def test_wrong_sire_identity_is_not_reused(self):
+        context = p2()
+        context["pedigree_names"]["sire"] = "別の父"
+        got = self.engine.horse_review("H1", CTX, pedigree_context=context)
+        self.assertEqual(got["status"], "PARTIAL")
+        self.assertIsNone(got["review"]["pedigree_context"])
 
     def test_different_scope_is_not_reused(self):
         context = p2()
