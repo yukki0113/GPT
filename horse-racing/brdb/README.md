@@ -148,3 +148,9 @@ Status: **VALIDATED / CONTRACT FROZEN**.
 Review v0.1 applies the same horse_id + target_context contract to all target horses, reuses only validated pedigree Reader facts and explicitly scoped RaceNote P2 descriptive evidence, and returns status / coverage / provenance. A historical profile with an unverifiable as-of date returns `AS_OF_UNVERIFIED` without pedigree facts or P2. Scoring, regional taxonomy, inferred suitability, and PWA integration remain unimplemented.
 
 The frozen contract is `docs/BRDB_REVIEW_CONTRACT_v0_1.md`. A fixed-input, aggregate-only replay CLI is `src/run_brdb_blood_review_field_replay.py`. Validation used the real 2025-10-26 京都1R authoritative RaceNote bundle: all 9 field records returned, 5 AVAILABLE and 4 AS_OF_UNVERIFIED; batch/single equality passed. See `collab/results/20261022_002_blood-review-v01_verification_result.md` for command, source refs and counts.
+
+## Phase 3 closure — display design only
+
+Status: **DESIGN/HANDOFF CLOSED — RELEASE DEFERRED** (2026-10-22).
+
+`src/brdb_newspaper_handoff.py`, `tests/test_brdb_newspaper_handoff.py`, and `docs/BRDB_RACENOTE_PWA_INTEGRATION_v0_1.md` constitute a design/handoff foundation only. There is **no Newspaper merge, PWA modal, production daily workflow change, Release or Pages deployment** as part of this phase. The PWA is shared with other viewers; user approval of exact display contents and real-device presentation is mandatory before a separately scoped integration/release. Do not auto-publish BRDB into Kenshow_Labo or Momotaro.
