@@ -240,6 +240,7 @@ class BloodReviewReader:
             "horse_id": profile.get("horse_id"),
             "horse_name": profile.get("horse_name"),
             "birth_date": profile.get("birth_date"),
+            "profile_data_date": profile.get("profile_data_date"),
             "sire": {
                 "name": profile.get("sire_name"),
                 "birth_year": profile.get("sire_birth_year"),
