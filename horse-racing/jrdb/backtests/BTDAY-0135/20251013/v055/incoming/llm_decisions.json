@@ -1,0 +1,794 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      5,
+      7,
+      15,
+      4,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        7,
+        15,
+        4,
+        8
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番アーティラリーは中山ダート1800m8着で前進余地はあるが、東京芝1400m2着の4番エコールナヴァールを5頭目に残し、初ダートでも状態上昇を評価した。"
+    },
+    "honmei_win": {
+      "evidence": "5番ウィングブルーは前走中山ダート1800m2着で、東京芝1600m4着の経験もある。先行力があり状態も上向きで、初の東京ダート1600mでも勝ち筋を描きやすい。",
+      "main_risk": "7番フライスカイハイは中山ダート1800m3着があり、距離短縮で追走が楽になれば5番を逆転できる余地がある。"
+    },
+    "shot_case": {
+      "case": "15番ジャストビコーズは中山ダート1800m5着に芝1800m2着があり、逃げる形で展開を作れれば粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ウィングブルーは前走ダート1800m2着。先行力と上向く状態を生かし、東京マイルでも中心視する。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      8,
+      6,
+      11,
+      10,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        6,
+        11,
+        10,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番エッジアキュートは芝1400m6着のみでダート未知。ダート1200mで連続6、5着の10番エクスプレスナイトを5頭目に残した。"
+    },
+    "honmei_win": {
+      "evidence": "8番グラティアムはダート1200mと1150mで連続2着。差し脚の再現性が高く、距離延長でも現状の安定感を最上位に取る。",
+      "main_risk": "6番エコロバロンは中山1200m3着があり、流れが前傾になっても崩れにくい。1400mで追走が楽なら逆転可能。"
+    },
+    "shot_case": {
+      "case": "11番ベアアッコチャンは中山1200m4着があり、差し脚を生かせる東京で展開が向けば上位へ届く。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "グラティアムは短距離ダートで連続2着。距離延長でも折り合えば勝ち切りまで期待できる。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      9,
+      3,
+      10,
+      7,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        3,
+        10,
+        7,
+        11
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番ウレシイゴサンはダート1000m2着があるが芝実績が弱い。新潟1600m7着の11番ワディアルリヤハを5頭目に残した。"
+    },
+    "honmei_win": {
+      "evidence": "9番シャオママルは前走中山1600m2着で、1400mも一度経験済み。状態も上向きで、距離短縮なら末脚をより生かしやすい。",
+      "main_risk": "3番ミスターマーボーは前走中山1600m3着、福島1800mでも4、5着。先行力があり短縮でも好位を取れる。"
+    },
+    "shot_case": {
+      "case": "10番ファインコンダクトは初戦札幌1500m5着。状態上昇があり、2戦目で前進すれば上位争いできる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "シャオママルは前走マイル2着。1400mへの短縮と状態上昇で勝ち負けまで。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      7,
+      6,
+      10,
+      14,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        6,
+        10,
+        14,
+        1
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番サトノトルネードは障害経験があるが直近は7、11着。新潟障害2850m5着の14番サンライズウェーヴを5頭目に残した。"
+    },
+    "honmei_win": {
+      "evidence": "7番ジーティーオウジャは東京障害3000m4着、新潟2890mで3着と4着。障害での実戦経験と安定感から中心視する。",
+      "main_risk": "6番テーオーリカードは阪神障害2970mで連続3着。飛越が安定しており、東京でもリズム良く運べれば逆転可能。"
+    },
+    "shot_case": {
+      "case": "10番ゴールデンルーキーは中山障害2880m2着があり、近走の障害経験量では上位。流れが噛み合えば差し込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ジーティーオウジャは東京障害3000m4着と新潟で3、4着。障害での安定した走りを軸にする。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      6,
+      2,
+      10,
+      9,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        2,
+        10,
+        9,
+        4
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番オーケーグリットは状態上昇があるが、9番ポッドクロスと4番マイネルディザイアの能力水準を比較し4番を5頭目に残した。"
+    },
+    "honmei_win": {
+      "evidence": "6番リゾートアイランドは新馬の中で能力水準が高く、状態も上向き。東京1800mで初戦から動ける仕上がりと見て本命。",
+      "main_risk": "2番アラクランは基礎能力が高く、調整評価も強い。初戦同士では6番と大差なく逆転余地がある。"
+    },
+    "shot_case": {
+      "case": "10番ノービレは仕上がりが整っており、初戦から好位で運べれば上位に食い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "リゾートアイランドは新馬戦の中で能力と状態の両方が目立つ。初戦から勝ち切れる仕上がりと見る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      8,
+      14,
+      4,
+      12,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        14,
+        4,
+        12,
+        6
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番アリアベルデは能力はあるが状態面の強調材料が少ない。上昇気配のある12番ミッキーパラソルを5頭目に残した。"
+    },
+    "honmei_win": {
+      "evidence": "8番バルボアパークは新馬の中で能力水準が高く、状態も上向き。東京1600mで初戦から動ける仕上がりを評価する。",
+      "main_risk": "14番スカイドリーマーは能力と状態のバランスが良く、初戦から流れに乗れれば8番を脅かせる。"
+    },
+    "shot_case": {
+      "case": "4番ノーザンタイタンは能力水準が高く、仕上がりも無難。好位で運べれば上位争いできる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "バルボアパークは新馬勢の中で能力と状態が一歩リード。東京マイルで初戦勝ちを狙える。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "marks": [
+      10,
+      2,
+      16,
+      15,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        2,
+        16,
+        15,
+        4
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番タケルゴールドは東京2100m2着歴があるが直近5着。東京2100mで1、2着の15番ブルージャイアントを4頭目に、同条件勝ちの4番トライゴーニックを5頭目に残した。"
+    },
+    "honmei_win": {
+      "evidence": "10番ダカラフェスティヴは東京2100mで1着、2着、4着があり、同条件での再現性が高い。差し脚も安定しており中心視する。",
+      "main_risk": "2番アルデツヨシは東京2100mで2着があり、直近函館2400mを勝利。距離適性と先行力で逆転可能。"
+    },
+    "shot_case": {
+      "case": "16番タマモトリノは中山1800mで1着、3着と2戦とも馬券圏内。キャリアが浅く距離延長でさらに伸びる余地がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダカラフェスティヴは東京2100mで高く安定。得意条件で差し脚の再現を期待する。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "marks": [
+      3,
+      1,
+      5,
+      2,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        1,
+        5,
+        2,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番ラエトゥスは芝マイル勝ちでダート未知。ダート1150m新馬勝ちの2番ショーリバースと、ダート1200m勝ちの7番トップマジシャンを残した。"
+    },
+    "honmei_win": {
+      "evidence": "3番マテンロウダビンチは新潟ダート1800mの初戦を勝ち、能力水準と状態がともに高い。距離短縮でも先行力を生かせる。",
+      "main_risk": "1番テイエムキハクは札幌1700mの初戦を勝ち、厳しい流れを前で受けても押し切った。東京マイルでも互角以上。"
+    },
+    "shot_case": {
+      "case": "5番アルデトップガンは中山1200m新馬勝ち。距離延長は課題だが、先行して折り合えば上位に残れる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "マテンロウダビンチは新馬ダート1800mを勝った内容と仕上がりを評価。距離短縮でも中心。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "marks": [
+      1,
+      18,
+      11,
+      9,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        18,
+        11,
+        9,
+        4
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番ラガークインはマイルで安定するが東京実績がない。東京マイル勝ちの15番ダノンエンブレムを4頭目、東京マイル4着の4番プチプランスを5頭目に残した。"
+    },
+    "honmei_win": {
+      "evidence": "1番ダノンセンチュリーは東京1800m勝ち、前走新潟1600m2着。状態も非常に良く、マイルで先行して勝ち切る形が明確。",
+      "main_risk": "18番ドリーミングアップはマイル18戦7回馬券圏内、東京でも9戦4回好走。差し脚の安定感で逆転候補。"
+    },
+    "shot_case": {
+      "case": "11番ルパヴィヨンは東京マイルで連続3着があり、同距離5戦4回馬券圏内。展開が流れれば上位へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダノンセンチュリーは東京勝ちと前走マイル2着があり、状態も良い。好位から押し切る形を本線にする。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "marks": [
+      8,
+      1,
+      6,
+      5,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        1,
+        6,
+        5,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番レッドヴェロシティは東京2400mで6回馬券圏内だが近走低調。前走札幌2600m3着の5番エンドウノハナと東京2400m2着の7番ヴォランテを残した。"
+    },
+    "honmei_win": {
+      "evidence": "8番デュアルウィルダーは5戦すべて馬券圏内で東京では4戦4回好走、直近東京2400mを勝利。コース適性と地力の両面で最上位。",
+      "main_risk": "1番シャイニングソードは8戦すべて馬券圏内、東京2400m勝ちもある。差し脚の安定感では8番と互角。"
+    },
+    "shot_case": {
+      "case": "6番スピードリッチは芝中長距離で高く安定し、東京2400m4着もある。先行して粘り込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "デュアルウィルダーは東京で4戦すべて好走し前走2400m勝ち。得意舞台で連勝を狙える。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "marks": [
+      7,
+      16,
+      2,
+      14,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        16,
+        2,
+        14,
+        11
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15番ワイドエンペラーは東京適性が高いが直近東京2400m10着。東京2000m2着の11番メリオーレムを5頭目に残した。"
+    },
+    "honmei_win": {
+      "evidence": "7番ラスカンブレスは11戦9回馬券圏内、東京では4戦4回好走。前走小倉2000m4着から得意の東京に戻る点を高く評価する。",
+      "main_risk": "16番トーセンリョウは東京で10戦6回馬券圏内、近3走東京1800mで3、3着。安定感が高く逆転可能。"
+    },
+    "shot_case": {
+      "case": "2番オクタヴィアヌスは8戦7回馬券圏内で東京2000m2着歴があり、前走新潟1800m勝ち。先行力を生かせる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ラスカンブレスは東京4戦すべて馬券圏内。得意コースで末脚を生かせればオープンでも中心。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "marks": [
+      14,
+      15,
+      10,
+      6,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        15,
+        10,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番オーサムデアラーは東京1300mで好走歴があるが直近8着。東京1400m3着の6番キミハスコールと前走中山1200m3着の2番ルイステソーロを残した。"
+    },
+    "honmei_win": {
+      "evidence": "14番スリーピースは14戦9回馬券圏内で、近2走中山1200m3着。先行力と安定感が高く、1300mでも押し切る形を描ける。",
+      "main_risk": "15番ラストシャリナは東京1300m2着があり、前走中山1200m4着。距離実績では14番を脅かす。"
+    },
+    "shot_case": {
+      "case": "10番ヒルビリーエレジーは東京1300m3着歴があり、新潟1200m勝ちもある。先行して流れに乗れれば上位。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "スリーピースは短距離ダートで安定し、近2走も3着。先行力を生かして東京1300mでも中心。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "marks": [
+      1,
+      4,
+      5,
+      8,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        4,
+        5,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番ナンテヒダは京都1400m16着があり近況も弱い。阪神1200m5着の8番ライトオブヌカタと1800m5着の2番ケンフィールドを残した。"
+    },
+    "honmei_win": {
+      "evidence": "1番カッタッパは初戦阪神1200m2着で、能力水準が最上位。距離延長でも先行して自分の形を作りやすい。",
+      "main_risk": "4番キープシャイニングは阪神1400mで3着、4着。距離経験では1番より上で逆転可能。"
+    },
+    "shot_case": {
+      "case": "5番ネメスは初戦阪神1200m3着で仕上がりも良い。1400mで追走が楽になれば上位に残れる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "カッタッパは初戦1200m2着の内容が強い。先行力を生かし1400mでも中心視する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "marks": [
+      5,
+      9,
+      2,
+      7,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        9,
+        2,
+        7,
+        6
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番アイクは中京1600m6着があるが上位実績に劣る。札幌1500m3着の7番サンダーバードと1400mで2、3着の6番リトゥリアを残した。"
+    },
+    "honmei_win": {
+      "evidence": "5番アンディムジークは阪神1600mで2着、5着。マイル実績が明確で、今回も差し脚を再現できれば勝ち切りに近い。",
+      "main_risk": "9番メイプルハッピーは初戦阪神1600m2着で状態も上向き。先手を取れば5番を押し切る余地がある。"
+    },
+    "shot_case": {
+      "case": "2番フィラーエは初戦中京2000m3着。距離短縮で追走が楽になれば末脚を生かせる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "アンディムジークはマイルで2着実績があり条件適性が明確。差し脚の再現を期待する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "marks": [
+      5,
+      16,
+      3,
+      2,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        16,
+        3,
+        2,
+        14
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番アウェイクネスは阪神1400m4着だが上位3頭より実績が一段下。阪神1600m3着の2番パトローナスと阪神1400m3着の14番タナブイハチターボを残した。"
+    },
+    "honmei_win": {
+      "evidence": "5番マサハヤルージュは初戦阪神1600m2着。先行力があり1400m短縮でも好位を取りやすく、勝ち切り候補の筆頭。",
+      "main_risk": "16番シャンデリュイーズは初戦阪神1400m2着で距離適性が明確。状態も上向きで逆転可能。"
+    },
+    "shot_case": {
+      "case": "3番ルナーマンスは初戦中京1400m3着で仕上がりも良い。2戦目の上積みで上位へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "マサハヤルージュは初戦マイル2着。1400m短縮でも先行して押し切る形を期待する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "marks": [
+      11,
+      12,
+      2,
+      1,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        12,
+        2,
+        1,
+        13
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番ヒラリーステップは京都1800m2着があるが近走波がある。前傾を前で受けて東京1600mを勝った13番スカイビートと前走阪神1800m2着の1番アリストクラシアを残した。"
+    },
+    "honmei_win": {
+      "evidence": "11番カルミアクラウンは小倉1700mを勝ち、その前も2着。近走のダート内容が安定しており、1800m延長でも先行力を生かせる。",
+      "main_risk": "12番ハギノコラソンは1800mで8戦5回馬券圏内、京都でも3戦3回好走。条件適性では最上位級。"
+    },
+    "shot_case": {
+      "case": "2番ヴァンアグレアブルは1800mで8戦5回馬券圏内、近3走3着続き。安定感が高く相手上位。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "カルミアクラウンは1700mで連続好走し前走勝ち。先行力を生かし1800mでも中心に据える。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "marks": [
+      10,
+      7,
+      8,
+      1,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        7,
+        8,
+        1,
+        5
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番クロワールは上位勢より能力水準が一段下。状態上昇のある1番リヴァデラルナと能力上位の5番イニシオを残した。"
+    },
+    "honmei_win": {
+      "evidence": "10番ジャスティンビスタは新馬の中で能力水準が高く、仕上がりも整っている。京都1800mで初戦から動けると見る。",
+      "main_risk": "7番セヴェロは能力水準が高く状態も上向き。初戦同士なら10番との比較は僅差。"
+    },
+    "shot_case": {
+      "case": "8番タイムレスフレアーは基礎能力と仕上がりのバランスが良く、好位で運べれば上位争いできる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ジャスティンビスタは新馬勢の中で能力と仕上がりが目立つ。初戦から勝ち切る余地を高く見る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "marks": [
+      9,
+      5,
+      6,
+      7,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        5,
+        6,
+        7,
+        10
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番バルセシートは上位勢より能力水準がやや下。7番ラヴィニールと10番ラヴネヴァーダイズの仕上がりを比較して10番を5頭目に残した。"
+    },
+    "honmei_win": {
+      "evidence": "9番ラブインアクションは新馬の中で能力水準が高く、仕上がりも良好。京都マイルで初戦から動ける状態と見る。",
+      "main_risk": "5番アロハは能力と調整評価が高く、初戦同士では9番との差は小さい。"
+    },
+    "shot_case": {
+      "case": "6番パウワウビートは能力水準が上位で、仕上がりも無難。好位で運べれば上位争いできる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ラブインアクションは新馬勢で能力と状態が最上位級。京都マイルで初戦勝ちを期待する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "marks": [
+      12,
+      4,
+      9,
+      3,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        4,
+        9,
+        3,
+        14
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番スニーカースキルは京都1400m5着があるが勝ち切り材料に乏しい。中京1200m2着の3番キョラムンと京都1400m勝ちの14番ステアハートを残した。"
+    },
+    "honmei_win": {
+      "evidence": "12番ルクスデイジーは1400mで4戦3回馬券圏内、前走阪神1400m勝ち。京都1400m2着もあり条件適性と近況が揃う。",
+      "main_risk": "4番プレゼンティーアは前走阪神1400m3着で、厳しい流れを前で受けても粘った。先行力で逆転可能。"
+    },
+    "shot_case": {
+      "case": "9番ロンシャンクイーンは1400m15戦8回馬券圏内、京都でも8戦4回好走。経験値が高く相手上位。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ルクスデイジーは前走1400m勝ちで京都でも2着実績。距離適性の高さを軸にする。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "marks": [
+      6,
+      9,
+      3,
+      11,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        9,
+        3,
+        11,
+        12
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番エイシンアニーモは京都1800m3着があるが1900m実績はない。京都1800m勝ちの11番ユキノクラウンと阪神1800m2着の12番ココデイックを残した。"
+    },
+    "honmei_win": {
+      "evidence": "6番ハッピーダンチャンは中京1800mで1着、2着と連続好走し、前を受ける形でも崩れない。1900m延長でも先行力を信頼する。",
+      "main_risk": "9番モーメントキャッチは15戦11回馬券圏内、京都1800m2着と東京2100m2着がある。距離延長への対応力で逆転候補。"
+    },
+    "shot_case": {
+      "case": "3番オーレアミストは1900mで2戦2回馬券圏内、京都でも3戦2回好走。条件適性から上位へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ハッピーダンチャンは1800mで連続好走し前走勝ち。距離延長でも前で運べれば中心。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "marks": [
+      11,
+      8,
+      9,
+      4,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        8,
+        9,
+        4,
+        6
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番シホノペルフェットは阪神1800m2着があるが近2走11、15着。中京1800m勝ちの4番スーパージョックと新潟1800mで1、2着の6番ゴヴェルナーレリコを残した。"
+    },
+    "honmei_win": {
+      "evidence": "11番タガノマカシヤは1800mで8戦4回馬券圏内、京都1800m勝ちがあり前走阪神1800m2着。状態も上向きで中心視する。",
+      "main_risk": "8番テーオーライマンは近4走3、1、3、1着で、1800mでも2戦2回馬券圏内。安定感では11番に迫る。"
+    },
+    "shot_case": {
+      "case": "9番ハナウマビーチは1800mで1、2、1着を含む高い実績。先行差しどちらでも運べる点が強み。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "タガノマカシヤは前走1800m2着で京都勝ちもある。先行して安定した形を作れる点を評価する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "marks": [
+      2,
+      10,
+      6,
+      5,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        10,
+        6,
+        5,
+        8
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番ジェットマグナムは札幌1800m3着があるが近走勝ち切れていない。京都マイル勝ち、小倉1800m勝ちの5番レディーミコノスと京都1800m実績の8番リカントロポを残した。"
+    },
+    "honmei_win": {
+      "evidence": "2番ローランドバローズは4戦すべて馬券圏内で、京都1800m2着、前走阪神1800m勝ち。状態も強く上向きで中心。",
+      "main_risk": "10番チェルノボーグは1800m9戦8回馬券圏内、京都でも2戦2回好走。安定感では2番と互角級。"
+    },
+    "shot_case": {
+      "case": "6番ゼンダンハヤブサは1800mで2戦2回馬券圏内、京都でも5戦4回好走。差し脚を生かせれば上位へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ローランドバローズは京都1800m2着から阪神1800m勝ち。上昇度と安定感を最上位に取る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "marks": [
+      8,
+      5,
+      12,
+      7,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        5,
+        12,
+        7,
+        16
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番ランスオブカオスは京都で3戦3回馬券圏内だが1400m経験は1戦。京都で6戦6回好走の7番オフトレイルと、1400m23戦12回馬券圏内の16番グレイイングリーンを残した。"
+    },
+    "honmei_win": {
+      "evidence": "8番ワールズエンドは7戦6回馬券圏内、京都では3戦3回好走し、前走新潟1400m勝ち。逃げて自分の形を作れるのも強み。",
+      "main_risk": "5番ウインマーベルは重賞級の実績があり、1400m8戦5回馬券圏内。状態も良く地力で逆転可能。"
+    },
+    "shot_case": {
+      "case": "12番ロジリオンは1400m7戦4回馬券圏内、前走東京1400m3着。差し脚の安定感で上位へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ワールズエンドは京都で崩れず、前走1400m勝ち。先手を取って自分のリズムなら重賞でも中心。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "marks": [
+      7,
+      9,
+      14,
+      1,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        9,
+        14,
+        1,
+        13
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番ミルミナーヴァは1200m9戦5回馬券圏内だが近走14、4、6、7着。阪神1200m2着の1番アーデルリーベと中京1200m3着の13番セールヴォランを残した。"
+    },
+    "honmei_win": {
+      "evidence": "7番モンテディアーナは9戦7回馬券圏内、ダート1200m勝ちに加え芝短距離でも安定。先行力と地力を高く評価する。",
+      "main_risk": "9番ロードヴァルカンは1200mで8戦5回馬券圏内、近2走阪神で2、3着。状態も上向きで逆転候補。"
+    },
+    "shot_case": {
+      "case": "14番ヴリトラハンは阪神1200m勝ち、京都1400m2着。差し脚を生かせる展開なら上位へ。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "モンテディアーナは短距離で高く安定。先行力を生かし1200mで勝ち切る形を期待する。"
+  }
+]
