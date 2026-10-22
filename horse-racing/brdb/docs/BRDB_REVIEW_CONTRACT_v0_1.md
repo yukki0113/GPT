@@ -1,130 +1,37 @@
 # BRDB Horse Review Contract v0.1
 
-Status: **DRAFT BOUNDARY ONLY**  
-Date: 2026-10-21
+Status: **FROZEN (descriptive review)**  
+Date: 2026-10-22
 
-## Goal
+## Identity and API
 
-BRDB consumer が blood storage や研究中間表を直接解釈せず、1頭単位の安定した review result を受け取るための境界を先に定義する。
+Canonical identity is `horse_id = JRDB blood_registration_no`. Horse-name fallback is prohibited.
 
-## Canonical identity
+`BloodReviewEngine(reader).horse_review(horse_id, target_context, *, pedigree_context=None)` returns one result. `reviews_for_horses(horse_ids, target_context, *, pedigree_contexts=None)` returns one result per requested unique ID and has exactly the same semantics as single review. Callers must supply a complete, unique field cohort to the RaceNote adapter.
 
-`horse_id = JRDB blood_registration_no`
+## Input
 
-horse name fallbackは禁止。
+`target_context` requires `target_date` (YYYY-MM-DD or YYYYMMDD), nonempty `venue`, `surface` (芝/ダート/turf/dirt), and `distance` (integer, 600–5000 metres). It normalizes to `target_date` ISO, `venue`, `surface`, `distance`. Invalid context returns `UNSUPPORTED_CONTEXT`.
 
-## Conceptual API
+Optional `pedigree_context` must come from `adapt_racenote_bundle` with exact race date, venue, surface, distance, canonical horse IDs and complete cohort. Producer attests `race_date < target_date`, `as_of_exclusive = target_date`, P2-0.1, non-scoring, exact condition scope and no result fields. Sire and broodmare-sire names must match canonical Reader facts. A mismatched role is withheld; a mismatched cohort rejects the adapter input. Zero starts is factual evidence.
 
-Single horse:
+## Frozen output fields
 
-```python
-horse_review(
-    horse_id,
-    target_context,
-)
-```
+`horse_id`, `status`, `contract_version = brdb-review-v0.1`, `target_context`, `facts` (`sire_name`, `dam_name`, `broodmare_sire_name`), `classification` (`sire_line`, `broodmare_sire_line`, `regional_type`), `review` (`overall_score`, `components`, `positive_factors`, `negative_factors`, `summary`, `pedigree_context`), `coverage` (`status`, `pedigree_fields`, `pedigree_context`), `confidence`, `provenance` (`generation_id`, `pedigree_schema_version`, `taxonomy_version`, `review_logic_version`, `p2_source`).
 
-Field batch:
+Only Reader facts may populate `facts` and official lineage classifications. `regional_type` and `overall_score` are always null; component/factor arrays are empty. P2 output is a whitelisted descriptive aggregate: starts, wins, top3, derived win/top3 rates, as-of, source and sample band. Race results and arbitrary input keys never pass through.
 
-```python
-reviews_for_horses(
-    horse_ids,
-    target_context,
-)
-```
+## Status and coverage
 
-batch API は single-horse semantics と同一結果を返さなければならない。
+- `NO_HORSE_ID`: empty identity.
+- `UNSUPPORTED_CONTEXT`: context could not be normalized.
+- `NO_PEDIGREE`: no canonical Reader row, or all three pedigree names absent.
+- `AS_OF_UNVERIFIED`: canonical `profile_data_date` is missing, malformed, or later than target date. All pedigree facts and P2 are withheld.
+- `PARTIAL`: at least one pedigree name exists but all three names and both P2 roles are not available.
+- `AVAILABLE`: three pedigree names and both P2 roles available.
 
-## Target context baseline
-
-将来の review では少なくとも次を入力候補とする。
-
-- target_date
-- venue
-- course / layout
-- surface
-- distance
-- track condition
-
-race-shape 等は必要性を検証してから追加し、未確定入力をv0.1で必須にしない。
-
-## Output baseline
-
-```json
-{
-  "horse_id": "00000000",
-  "status": "AVAILABLE",
-  "contract_version": "brdb-review-v0.x",
-  "facts": {
-    "sire_name": null,
-    "dam_name": null,
-    "broodmare_sire_name": null
-  },
-  "classification": {
-    "sire_line": null,
-    "broodmare_sire_line": null,
-    "regional_type": null
-  },
-  "review": {
-    "overall_score": null,
-    "components": [],
-    "positive_factors": [],
-    "negative_factors": [],
-    "summary": null
-  },
-  "coverage": {
-    "status": "NONE"
-  },
-  "provenance": {
-    "generation_id": null,
-    "pedigree_schema_version": null,
-    "taxonomy_version": null,
-    "review_logic_version": null
-  }
-}
-```
-
-これは field-name freeze ではなく、responsibility boundary の draft である。
-
-## Status semantics
-
-最低限:
-
-- `AVAILABLE`
-- `PARTIAL`
-- `NO_PEDIGREE`
-- `UNSUPPORTED_CONTEXT`
-- `NO_HORSE_ID`
-
-を検討する。
-
-missing coverage を0点扱いしない。
-
-## Scoring rule
-
-overall score を将来導入しても:
-
-- score のみを返さない
-- component breakdown を保持する
-- positive / negative rationale を保持する
-- coverage / confidence を併記する
-- taxonomy / review logic version を保持する
+`coverage.status` is FULL/PARTIAL/NONE for three pedigree names. `coverage.pedigree_context` is FULL/PARTIAL/NONE for two P2 roles. Missing evidence is never scored as zero. `confidence = DESCRIPTIVE_ONLY` describes evidence type, not predictive certainty.
 
 ## PWA boundary
 
-PWA「血統詳細」modal はこのReview結果から表示用payloadを生成する。
-
-PWAへ canonical blood tables、taxonomy tables、研究用intermediate列を直接渡さない。
-
-将来の表示候補:
-
-- 父 / 母 / 母父
-- 父系 / 母父系
-- 日本型 / 米国型 / 欧州型
-- 類似馬
-- target course fit
-- component scores
-- overall Blood Review score
-- rationale
-
-表示項目が増えても review logic の正本は BRDB 側に置く。
+PWA may consume this review result without reading BRDB Parquet or RaceNote history directly. This freeze does not enable PWA integration, scoring, regional taxonomy or a production serving change.
