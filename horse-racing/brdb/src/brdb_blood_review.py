@@ -142,7 +142,19 @@ class BloodReviewEngine:
                     "minor_name": line.get("minor_name"), "source": line.get("source_name"),
                 }
         present = sum(bool(value) for value in result["facts"].values())
-        p2 = _p2_evidence(pedigree_context, ctx)
+        # The P2 surname/sire identity must match this canonical horse profile.
+        # Date and venue alone do not establish that the population aggregate
+        # actually belongs to the canonical sire/BMS.
+        verified_context = pedigree_context
+        if isinstance(pedigree_context, Mapping):
+            identities = pedigree_context.get("pedigree_names")
+            if (not isinstance(identities, Mapping)
+                or any(str(identities.get(role) or "").strip()
+                       != str(result["facts"][field] or "").strip()
+                       for role, field in (("sire", "sire_name"),
+                                           ("broodmare_sire", "broodmare_sire_name")))):
+                verified_context = None
+        p2 = _p2_evidence(verified_context, ctx)
         if p2:
             result["review"]["pedigree_context"] = p2
             result["coverage"]["pedigree_context"] = "PARTIAL" if len(p2) < 2 else "FULL"
