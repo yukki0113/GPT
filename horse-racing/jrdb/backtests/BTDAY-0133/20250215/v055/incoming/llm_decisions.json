@@ -1,0 +1,1190 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      2,
+      7,
+      13,
+      1,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        7,
+        13,
+        1,
+        10
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番には先行力の魅力があるが、現状では上位5頭の近走内容を明確に上回る材料まではない。"
+    },
+    "honmei_win": {
+      "evidence": "前走の東京1400mで2着まで詰め、終いの確かさと今回の状態面を合わせると勝ち切りに最も近い。",
+      "main_risk": "7番も前で粘る力があり、展開が前残りに寄ると差し届かない恐れがある。"
+    },
+    "shot_case": {
+      "case": "13番は近2走で着実に内容を上げており、流れが速くなれば相手上位へ食い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "クラウンハートは前走と同じ東京1400mで末脚を生かせる組み合わせ。前がやり合えば差し切りまで。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      11,
+      15,
+      10,
+      16,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        15,
+        10,
+        16,
+        5
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も初戦向きの要素はあるが、上位5頭ほど勝ち切りまでの裏付けを揃えきれない。"
+    },
+    "honmei_win": {
+      "evidence": "初戦から動ける仕上がりと全体のバランスを重視し、11番を最も勝ち筋が描きやすい馬と見た。",
+      "main_risk": "新馬戦で実戦経験がなく、発馬や砂を被った際の反応は未知数。"
+    },
+    "shot_case": {
+      "case": "10番は仕上がり面に余裕があり、流れに乗れれば初戦から上位争いできる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ウイントワイライトは初戦から動けそうな気配。新馬戦だけに発馬ひとつだが、素直に中心視したい。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      12,
+      3,
+      2,
+      8,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        3,
+        2,
+        8,
+        16
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は初出走で伸びしろがある一方、既走馬上位の実績を越える根拠はまだ薄い。"
+    },
+    "honmei_win": {
+      "evidence": "東京1600mで2着があり、近走も崩れず状態も上向き。距離適性と安定感の両面から12番を本命にする。",
+      "main_risk": "3番は連続好走中で、早めに動かれると差を詰めきれない可能性がある。"
+    },
+    "shot_case": {
+      "case": "2番は先行してしぶとく、今回も自分の形なら残り目が十分ある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "フィーチャリングは東京マイル2着の実績が強み。前走からの上積みも見込め、ここは勝ち負けまで。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      4,
+      15,
+      1,
+      8,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        15,
+        1,
+        8,
+        14
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は能力は足りるが、東京2100mでの押し上げ材料が上位5頭より一段弱い。"
+    },
+    "honmei_win": {
+      "evidence": "東京2100mで安定して上位争いを続け、今回は状態面も上向き。コース経験を軸に4番を最上位とした。",
+      "main_risk": "15番は近2走連続3着で能力差が小さく、展開次第で逆転される余地がある。"
+    },
+    "shot_case": {
+      "case": "1番は同条件での好走歴があり、長丁場で流れが落ち着けば堅実に浮上できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "クロックフォードは東京2100mで3、3、4着。条件が替わらない今回は安定感をそのまま信頼する。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      15,
+      8,
+      2,
+      1,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        8,
+        2,
+        1,
+        6
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番は前走2着の魅力があるが、1400mへの対応という点で上位5頭より不確定要素が残る。"
+    },
+    "honmei_win": {
+      "evidence": "近走内容と先行力、状態を総合すると15番が最も自分の形を作りやすく、押し切る筋が明確。",
+      "main_risk": "8番は東京1400mの初戦で2着しており、末脚勝負になると逆転の余地が大きい。"
+    },
+    "shot_case": {
+      "case": "2番は前走2着で上向き。前で運べれば距離短縮にも対応できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ミズイロホルトゥスは先行力が魅力。1400mで楽に位置を取れれば、そのまま押し切る場面まで。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      15,
+      14,
+      11,
+      7,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        14,
+        11,
+        7,
+        8
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番も初戦3着で軽視できないが、今回の距離適性では上位5頭を押しのけるまでには至らない。"
+    },
+    "honmei_win": {
+      "evidence": "東京1800mで2着があり、近走の完成度も高い15番を中心視。差し脚の再現性が最も高い。",
+      "main_risk": "14番は東京での初戦3着から上積みが見込め、瞬発力勝負では脅威になる。"
+    },
+    "shot_case": {
+      "case": "11番は2戦とも4着で大崩れがなく、展開が向けば一段前進できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ラルガメンテは東京1800mで2着済み。直線の長い舞台で持ち味を出し切れれば勝機は十分。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "marks": [
+      10,
+      3,
+      7,
+      6,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        3,
+        7,
+        6,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は初戦勝ちの伸びしろがあるが、昇級戦で比較材料が少なく上位5頭を崩すには一歩足りない。"
+    },
+    "honmei_win": {
+      "evidence": "近走で高い水準を示し、前で運べる10番を本命。距離延長でも流れに乗れば粘り込みが期待できる。",
+      "main_risk": "3番は東京で安定しており、差し比べになればこちらが優位に立つ可能性がある。"
+    },
+    "shot_case": {
+      "case": "7番は近走の安定感と状態面が魅力で、1400mへの対応が利けば上位進出がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "マキシマムドライブは前で運べる強みを評価。距離延長でもリズムよく入れればしぶとい。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "marks": [
+      15,
+      7,
+      8,
+      9,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        7,
+        8,
+        9,
+        2
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番も東京1600mで実績十分だが、今回は上位5頭の近況と勝ち切り性能を優先した。"
+    },
+    "honmei_win": {
+      "evidence": "東京1600mで勝ち切った内容と余力を評価し15番を本命。少ないキャリアでも能力の底をまだ見せていない。",
+      "main_risk": "7番と8番も同舞台で連勝・好走中で、昇級馬同士の比較は僅差。"
+    },
+    "shot_case": {
+      "case": "9番は先行して崩れにくく、前残りなら相手筆頭級の粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ターコイズフリンジは東京ダート1600mを勝った内容が濃い。昇級でも先行できれば連勝まで狙える。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "marks": [
+      7,
+      4,
+      1,
+      8,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        4,
+        1,
+        8,
+        10
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番は安定感はあるものの2400mでの勝ち切り材料が上位5頭ほど強くない。"
+    },
+    "honmei_win": {
+      "evidence": "東京2400mで連続好走している7番を本命。距離適性と近況の安定感が最も噛み合う。",
+      "main_risk": "4番も長距離で崩れにくく、位置取り次第では最後の伸び比べで逆転される。"
+    },
+    "shot_case": {
+      "case": "1番は5戦すべて馬券圏内で、昇級でも持続力を生かせれば上位に残れる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "エセルフリーダは東京2400mで前走2着。長く脚を使える強みを素直に評価したい。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "marks": [
+      16,
+      15,
+      12,
+      7,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        16,
+        15,
+        12,
+        7,
+        14
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は同舞台で勝ち上がっているが、今回は上位5頭ほど昇級後の比較材料が揃っていない。"
+    },
+    "honmei_win": {
+      "evidence": "東京1400mでの実績と近走の安定度、仕上がりを合わせて16番を最上位。先行しても差しても崩れにくい。",
+      "main_risk": "15番は東京での安定感が非常に高く、流れひとつで勝ち切れる力がある。"
+    },
+    "shot_case": {
+      "case": "12番は前に行ける強みがあり、楽に先手なら押し切りまで見込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "コンクイスタは東京1400mで安定。好位から運べれば直線でもう一段伸びる余地がある。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "marks": [
+      4,
+      7,
+      11,
+      12,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        7,
+        11,
+        12,
+        13
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番は逃げて押し切った前走が魅力だが、初のマイル重賞で上位5頭を上回る根拠はまだ限定的。"
+    },
+    "honmei_win": {
+      "evidence": "重賞・オープンで通用するマイル実績を持ち、東京でも好走歴のある4番を中心視する。",
+      "main_risk": "7番は東京での勝ち上がり内容が良く、成長力で既存勢を上回る可能性がある。"
+    },
+    "shot_case": {
+      "case": "11番はキャリア1戦ながら初戦内容と仕上がりが目立ち、未知の上積みが大きい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ショウナンザナドゥはマイルで崩れにくい。東京でも好走済みで、総合力を一枚上と見た。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "marks": [
+      2,
+      1,
+      4,
+      12,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        1,
+        4,
+        12,
+        10
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番には過去の東京で好走歴があるが、直近2走の内容から上位5頭を入れ替えるほどではない。"
+    },
+    "honmei_win": {
+      "evidence": "前走の東京1600mで2着し、この舞台での末脚と安定感が最も信頼できる2番を本命にする。",
+      "main_risk": "1番は先に動ける脚があり、展開が前寄りなら差し届かない可能性がある。"
+    },
+    "shot_case": {
+      "case": "4番は東京マイルで連続好走歴があり、休み明けでも地力で上位に食い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ゴールドシーンは東京マイルで前走2着。直線の長い舞台で末脚を生かせれば今度こそ勝ち切りまで。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "marks": [
+      2,
+      6,
+      11,
+      1,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        6,
+        11,
+        1,
+        16
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は調整面に良さがあるもののダート実績がなく、既走馬上位を崩すには不確定要素が大きい。"
+    },
+    "honmei_win": {
+      "evidence": "京都1200mで前走2着、1400mでも安定しており、状態も上向く2番を本命に据える。",
+      "main_risk": "6番は少ないキャリアで伸びしろがあり、流れがかみ合えば一気の前進がある。"
+    },
+    "shot_case": {
+      "case": "11番は同距離で3着歴があり、差しが届く流れなら相手上位。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ホウショウマリスは京都1200mで前走2着。距離慣れと近走の安定感を素直に信頼する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "marks": [
+      2,
+      10,
+      12,
+      9,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        10,
+        12,
+        9,
+        4
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は着実に前進しているが、現時点では上位5頭ほど勝ち切りにつながる実績がない。"
+    },
+    "honmei_win": {
+      "evidence": "京都1800mで安定して走り、前受けの厳しい競馬でも崩れにくい2番を最上位とする。",
+      "main_risk": "10番は初戦2着で伸びしろが大きく、キャリア差を一気に詰める可能性がある。"
+    },
+    "shot_case": {
+      "case": "12番は近走すべて大きく崩れず、流れに乗れれば終いまでしぶとい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ダイシンレアレアは京都1800mで安定。前走4着でも内容は悪くなく、ここは巻き返しを期待。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "marks": [
+      9,
+      13,
+      5,
+      12,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        13,
+        5,
+        12,
+        15
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は1400m3着歴があるが、上位5頭と比べると直近の勝ち筋がやや薄い。"
+    },
+    "honmei_win": {
+      "evidence": "1400mで2、3着を重ねる9番を本命。先行勢を見ながら運べる安定した競馬ぶりを評価する。",
+      "main_risk": "13番は初戦2着で底を見せておらず、先行力を生かされると押し切られる可能性がある。"
+    },
+    "shot_case": {
+      "case": "5番は前走2着で内容が上向き、好位で運べれば再度上位争い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "メイショウバスクは1400mで安定して上位争い。前が速くなれば差し切りの形まで描ける。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "marks": [
+      3,
+      13,
+      8,
+      7,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        13,
+        8,
+        7,
+        11
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は芝での好走歴はあるが、ダート適性の裏付けが乏しく上位5頭を越えるには材料不足。"
+    },
+    "honmei_win": {
+      "evidence": "京都1800mで2、3着と安定し、状態面も上向く3番を中心視。先行して自分の形を作りやすい。",
+      "main_risk": "13番は前走1900mで2着しており、距離短縮で前進する余地がある。"
+    },
+    "shot_case": {
+      "case": "8番は京都1800mで2着歴があり、先手を取れれば粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ツキノアカリは京都1800mで連続好走。前で運んで再現性の高い競馬ができる点を評価する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "marks": [
+      7,
+      12,
+      5,
+      6,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        12,
+        5,
+        6,
+        1
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番にも初戦から動ける要素はあるが、上位5頭ほど勝ち切りまでの材料が揃っていない。"
+    },
+    "honmei_win": {
+      "evidence": "初戦向きの仕上がりと全体のバランスから7番を本命。1200mでスピードを出し切れる態勢と見た。",
+      "main_risk": "新馬戦で実戦経験がなく、発馬や砂への対応次第で評価が大きく変わる。"
+    },
+    "shot_case": {
+      "case": "5番は初戦から動ける仕上がりで、前に付けられれば上位争いが可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ペプチドヒスイは初戦から動けそうな仕上がり。新馬戦だけに未知数だが、スピード面を評価した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "marks": [
+      11,
+      9,
+      13,
+      8,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        9,
+        13,
+        8,
+        3
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番は堅実だが、上位5頭ほど2000mでの直接的な勝ち切り材料がない。"
+    },
+    "honmei_win": {
+      "evidence": "2000mで連続2着があり、距離適性と安定感の両方が高い11番を本命にする。",
+      "main_risk": "9番は前走2着で先行力があり、楽に運べればそのまま押し切る可能性がある。"
+    },
+    "shot_case": {
+      "case": "13番は近2走連続2着で崩れにくく、相手なりに走れる点が魅力。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "キタサンハナビラは2000mで2着続き。距離経験の差を生かして今度こそ勝ち切りたい。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "marks": [
+      8,
+      11,
+      14,
+      13,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        11,
+        14,
+        13,
+        15
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は堅実さがあるが、勝ち切りという点では上位5頭の近況を上回り切れない。"
+    },
+    "honmei_win": {
+      "evidence": "前走中京1400mで2着し、能力面と状態面が揃う8番を本命。差しが届く展開なら最も信頼できる。",
+      "main_risk": "11番は先行して連続2着と内容が良く、前残りになれば逆転の可能性が高い。"
+    },
+    "shot_case": {
+      "case": "14番は京都1400mで前走2着。展開が速くなれば差し込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "マテンロウミラクルは前走1400mで2着。状態も良く、直線で脚を残せれば勝ち負けになる。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "marks": [
+      9,
+      7,
+      5,
+      3,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        7,
+        5,
+        3,
+        12
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は能力差は大きくないが、近走内容からは上位5頭より勝ち切りの形が見えにくい。"
+    },
+    "honmei_win": {
+      "evidence": "1900mでの実績と前走2着の内容、状態の良さを合わせて9番を中心視する。",
+      "main_risk": "7番はキャリアが浅く伸びしろがあり、距離延長がかみ合えば逆転の余地がある。"
+    },
+    "shot_case": {
+      "case": "5番は近走安定して差を詰めており、消耗戦なら浮上する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "メイショウソウタは1900mで前走2着。距離経験と状態の良さを生かせば押し切りまで。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "marks": [
+      6,
+      5,
+      3,
+      7,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        5,
+        3,
+        7,
+        2
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は京都で勝ち上がっているが、マイルでの直接比較では上位5頭を上回る材料が薄い。"
+    },
+    "honmei_win": {
+      "evidence": "京都1600mで1、2、3着を重ねる6番を本命。コース適性と先行力の再現性を評価した。",
+      "main_risk": "5番もマイルで安定しており、隊列次第では先に抜け出される可能性がある。"
+    },
+    "shot_case": {
+      "case": "3番は初戦を勝ち切った伸びしろが魅力で、昇級でも軽視できない。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ブーディガは京都マイルで安定。好位で流れに乗れれば、最後までしぶとく伸びられる。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "marks": [
+      3,
+      5,
+      1,
+      9,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        5,
+        1,
+        9,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は能力を秘めるが近走の振れ幅が大きく、上位5頭ほど再現性を見込みにくい。"
+    },
+    "honmei_win": {
+      "evidence": "近5走すべて2着で2000m前後の安定感が抜群。3番を勝ち切りに最も近い馬と判断した。",
+      "main_risk": "5番も重賞級の相手に崩れず、直線の伸び比べでは差がほとんどない。"
+    },
+    "shot_case": {
+      "case": "1番は前走2000mを勝ち、先手を取れれば昇級でも残り目がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "シェイクユアハートは惜敗続きでも内容は高水準。得意距離で今度こそ勝ち切りを期待する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "marks": [
+      10,
+      16,
+      14,
+      12,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        16,
+        14,
+        12,
+        11
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は地力上位だが近走で勝ち切れておらず、現状の勢いでは上位5頭を入れ替えるまでに至らない。"
+    },
+    "honmei_win": {
+      "evidence": "近走マイルで安定して先行できる10番を本命。京都でも好走歴があり、流れに左右されにくい。",
+      "main_risk": "16番は近走すべて上位争いで状態も良く、差のない対抗評価。"
+    },
+    "shot_case": {
+      "case": "14番は近2走の内容が良く、前で運べれば粘り込みが怖い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "サンライズロナウドは近走マイルで安定。前目の位置を取れれば直線でもう一押しできる。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "marks": [
+      7,
+      1,
+      2,
+      5,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        1,
+        2,
+        5,
+        10
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番は近走がひと息で、上位5頭を押しのけるだけの直近材料に乏しい。"
+    },
+    "honmei_win": {
+      "evidence": "京都1800mで勝ち切りを含む安定した内容を見せ、先行力もある7番を本命にする。",
+      "main_risk": "1番と2番はともに現級で連続好走中で、展開ひとつで順位が入れ替わる。"
+    },
+    "shot_case": {
+      "case": "2番は先手を取れる強みがあり、楽に運べると最後までしぶとい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "エアサンサーラは京都で勝ち切った実績を評価。好位から自分のリズムで運べれば勝機は十分。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 1,
+    "marks": [
+      6,
+      8,
+      4,
+      5,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        8,
+        4,
+        5,
+        13
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番は同舞台経験はあるが、近走内容で上位5頭を上回る材料に欠ける。"
+    },
+    "honmei_win": {
+      "evidence": "前走同舞台で2着し、能力面と状態の良さが抜ける6番を本命。1700mで勝ち筋が最も明確。",
+      "main_risk": "8番は前走2着で上向き、先行して早めに動かれると逆転の余地がある。"
+    },
+    "shot_case": {
+      "case": "4番は初戦3着からの上積みがあり、前で運べればしぶとい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "マンオブザマッチは小倉1700mで前走2着。条件据え置きなら素直に勝ち負けを期待する。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 2,
+    "marks": [
+      4,
+      17,
+      16,
+      18,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        17,
+        16,
+        18,
+        13
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は能力を示しているが1200m実績がなく、上位5頭ほど条件適性を裏付けられない。"
+    },
+    "honmei_win": {
+      "evidence": "1400mで安定した先行力を見せる4番を本命。1200mへの短縮でスピードを生かしやすい。",
+      "main_risk": "17番は同舞台の初戦で2着しており、逃げる形ならそのまま押し切る可能性がある。"
+    },
+    "shot_case": {
+      "case": "16番は1200mで2着が多く、差し脚の再現性が高い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ハリウッドメモリーは先行力を生かせる距離短縮が鍵。序盤で無理なく位置を取れれば前進できる。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 3,
+    "marks": [
+      1,
+      13,
+      8,
+      3,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        13,
+        8,
+        3,
+        5
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番は芝からの転換で未知の上積みはあるが、ダート短距離の裏付けが上位5頭より薄い。"
+    },
+    "honmei_win": {
+      "evidence": "同舞台3着、1200mでも2着があり、状態も上向く1番を本命。1000mの流れに対応できる実績がある。",
+      "main_risk": "13番も同舞台3着で先行力があり、スタート次第では先に抜け出される。"
+    },
+    "shot_case": {
+      "case": "8番は1000mで安定して先行でき、流れに乗れば粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "オースミライトは小倉1000mで前走3着。スタートを決めれば今回も上位争いの中心。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 4,
+    "marks": [
+      5,
+      8,
+      1,
+      3,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        8,
+        1,
+        3,
+        2
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番にも障害実績はあるが、直近の安定感で上位5頭に一歩譲る。"
+    },
+    "honmei_win": {
+      "evidence": "障害戦で近走2、3着と安定している5番を本命。飛越と持続力の再現性を重視した。",
+      "main_risk": "8番は同舞台3着で状態も良く、道中の位置取り次第では逆転まである。"
+    },
+    "shot_case": {
+      "case": "1番は前走同舞台3着で、経験を生かせれば再度上位争い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ヴラディアは障害で2、3着と安定。飛越をまとめれば勝ち切れる位置にいる。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 5,
+    "marks": [
+      10,
+      6,
+      13,
+      1,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        6,
+        13,
+        1,
+        4
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番は初出走で伸びしろはあるが、既走馬上位を押しのけるだけの比較材料がない。"
+    },
+    "honmei_win": {
+      "evidence": "近走1400～1600mで安定して上位争いを続ける10番を本命。距離延長でも先行力を生かせる。",
+      "main_risk": "6番は前走2着で状態も良く、1800mが合えば一気に逆転できる。"
+    },
+    "shot_case": {
+      "case": "13番は1800mで複数回好走しており、前で楽に運べれば粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ゼンダンハヤブサは近走が安定。1800mでも折り合えれば、好位から長く脚を使えそう。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 6,
+    "marks": [
+      12,
+      7,
+      13,
+      16,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        7,
+        13,
+        16,
+        14
+      ],
+      "external_challenger_horse_no": 18,
+      "excluded_horse_no": 18,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "18番は距離実績が豊富だが、近況では上位5頭の勢いを上回るまでではない。"
+    },
+    "honmei_win": {
+      "evidence": "上位クラスでの好走歴があり、能力面で一段上の12番を本命。1200mへの対応が利けば勝ち切れる。",
+      "main_risk": "7番は1200mで連続2着と勢いがあり、距離適性ではこちらが上。"
+    },
+    "shot_case": {
+      "case": "13番は同舞台3着で安定し、差しが利けば上位に食い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "セシリエプラージュは実績上位。久々の1200mでも流れに対応できれば地力で押し切れる。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 7,
+    "marks": [
+      6,
+      2,
+      7,
+      11,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        2,
+        7,
+        11,
+        8
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は今回の流れには合いそうだが、近走の勝ち切り材料で上位5頭に一歩譲る。"
+    },
+    "honmei_win": {
+      "evidence": "近走1800mで安定し状態も上向く6番を本命。1700mへの短縮で立ち回りやすくなると見た。",
+      "main_risk": "2番は1700mでの実績が豊富で、流れが向けば差し切りまで十分ある。"
+    },
+    "shot_case": {
+      "case": "7番は1700mで連続好走しており、先行して展開利を得られる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "ウィンターガーデンは近走内容が安定。距離短縮で追走が楽になれば最後まで伸びられる。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 8,
+    "marks": [
+      8,
+      1,
+      9,
+      5,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        1,
+        9,
+        5,
+        3
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は小倉3390m勝ちがあるが、近2走の内容では上位5頭の勢いを上回り切れない。"
+    },
+    "honmei_win": {
+      "evidence": "障害で3連勝中の8番を本命。飛越の安定と先行力があり、重賞でも勝ち筋を最も描きやすい。",
+      "main_risk": "1番は長距離障害での経験と実績が豊富で、地力勝負になると簡単には崩れない。"
+    },
+    "shot_case": {
+      "case": "9番は障害で勝ち星を重ねており、先行争いが落ち着けば押し切りまで。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "スマイルスルーは障害3連勝中。先行力と安定した飛越を生かせれば重賞でも中心。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 9,
+    "marks": [
+      5,
+      9,
+      8,
+      2,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        9,
+        8,
+        2,
+        6
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番も同舞台勝ちがあるが、現時点の完成度では上位5頭にわずかに及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "2000mで安定して先行できる5番を本命。昇級後も大きく崩れず、今回も自分の形を作りやすい。",
+      "main_risk": "9番は2000m3着があり状態も良く、先手を取られると逆転の余地がある。"
+    },
+    "shot_case": {
+      "case": "8番は初戦を2000mで勝ち、キャリア1戦の上積みが大きい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "バルティカは先行してしぶといタイプ。小倉2000mで流れに乗れれば押し切りを狙える。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 10,
+    "marks": [
+      9,
+      6,
+      3,
+      14,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        6,
+        3,
+        14,
+        7
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は同舞台勝ちがあるが、昇級直後で現級上位との比較では一段慎重に見たい。"
+    },
+    "honmei_win": {
+      "evidence": "現級で連続好走し2000mでも結果を残す9番を本命。相手なりに崩れにくい点を評価する。",
+      "main_risk": "6番は2000mで高い安定感があり、昇級でも状態の良さから逆転可能。"
+    },
+    "shot_case": {
+      "case": "3番は近走大崩れせず、差しが届く展開なら上位へ食い込める。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "リラボニートは現級で3、3、2着と安定。好位で運べれば今回も勝ち負けになる。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 11,
+    "marks": [
+      16,
+      18,
+      8,
+      6,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        16,
+        18,
+        8,
+        6,
+        12
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も安定した実績があるが、直近の勝ち切りという点で上位5頭を上回り切れない。"
+    },
+    "honmei_win": {
+      "evidence": "1200mで勝ち負けを続ける16番を本命。小倉実績もあり、近況の安定感を最重視した。",
+      "main_risk": "18番は前走小倉1200mで2着しており、差しが利く馬場なら逆転の可能性がある。"
+    },
+    "shot_case": {
+      "case": "8番は1200mで連続好走が多く、先行して流れに乗ればしぶとい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "トーセンエスクードは1200mで近走1、2、1着。小倉でも結果があり、勢いを素直に評価する。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 12,
+    "marks": [
+      12,
+      1,
+      10,
+      8,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        1,
+        10,
+        8,
+        11
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番は先行力があるが、近走内容では上位5頭を入れ替えるほどの押し材料に乏しい。"
+    },
+    "honmei_win": {
+      "evidence": "前走小倉1700mで2着し、地力と状態の両方が揃う12番を本命。差し脚の再現性を評価する。",
+      "main_risk": "1番は1700mで連続好走しており、前で運ばれると捕まえ切れない可能性がある。"
+    },
+    "shot_case": {
+      "case": "10番は前走同舞台3着で、流れが速くなれば差し込みが期待できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "メイショウクモイは小倉1700mで前走2着。展開が流れれば末脚を生かして差し切りまで。"
+  }
+]
