@@ -143,6 +143,8 @@ The immutable Parquet generation, manifest, and audit are stored outside Git. Th
 - `tests/test_brdb_blood_review.py`\n- `tests/test_brdb_racenote_p2_adapter.py`
 - `docs/BRDB_BLOOD_REVIEW_IMPLEMENTATION_v0_1.md`
 
-Status: **IMPLEMENTED BASELINE / VALIDATION PENDING**.
+Status: **VALIDATED / CONTRACT FROZEN**.
 
-Review v0.1 applies the same horse_id + target_context contract to all target horses, reuses only validated pedigree Reader facts and explicitly scoped RaceNote P2 descriptive evidence, and returns status / coverage / provenance. Scoring, regional taxonomy, inferred suitability, and PWA integration remain unimplemented. Execute focused tests and a real RaceNote P2 adapter replay before production use. Verification task: `collab/instructions/20261022_002_blood-review-v01-verification_instruction.md`.
+Review v0.1 applies the same horse_id + target_context contract to all target horses, reuses only validated pedigree Reader facts and explicitly scoped RaceNote P2 descriptive evidence, and returns status / coverage / provenance. A historical profile with an unverifiable as-of date returns `AS_OF_UNVERIFIED` without pedigree facts or P2. Scoring, regional taxonomy, inferred suitability, and PWA integration remain unimplemented.
+
+The frozen contract is `docs/BRDB_REVIEW_CONTRACT_v0_1.md`. A fixed-input, aggregate-only replay CLI is `src/run_brdb_blood_review_field_replay.py`. Validation used the real 2025-10-26 京都1R authoritative RaceNote bundle: all 9 field records returned, 5 AVAILABLE and 4 AS_OF_UNVERIFIED; batch/single equality passed. See `collab/results/20261022_002_blood-review-v01_verification_result.md` for command, source refs and counts.
