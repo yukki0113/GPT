@@ -154,3 +154,13 @@ The frozen contract is `docs/BRDB_REVIEW_CONTRACT_v0_1.md`. A fixed-input, aggre
 Status: **DESIGN/HANDOFF CLOSED — RELEASE DEFERRED** (2026-10-22).
 
 `src/brdb_newspaper_handoff.py`, `tests/test_brdb_newspaper_handoff.py`, and `docs/BRDB_RACENOTE_PWA_INTEGRATION_v0_1.md` constitute a design/handoff foundation only. There is **no Newspaper merge, PWA modal, production daily workflow change, Release or Pages deployment** as part of this phase. The PWA is shared with other viewers; user approval of exact display contents and real-device presentation is mandatory before a separately scoped integration/release. Do not auto-publish BRDB into Kenshow_Labo or Momotaro.
+
+## Phase 4 — Ancestor graph / cross / similarity (research only)
+
+Status: **IMPLEMENTED FOUNDATION / COVERAGE VALIDATION PENDING**.
+
+- `src/brdb_ancestor_graph.py`: canonical-ID-only parent graph (depth 1–5), observed cross paths and descriptive shared-ancestor similarity.
+- `tests/test_brdb_ancestor_graph.py`: cycle, conflict, duplicate, missing-branch and overlap regression tests (execution pending).
+- `docs/BRDB_ANCESTOR_CROSS_SIMILARITY_v0_1.md`: research/coverage/ancestor-source acceptance gates.
+
+Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/Newspaper release or inferred score is authorized. Source expansion and 2025 depth 2–5 coverage audit are required before Phase 4 can be called complete.
