@@ -52,6 +52,14 @@ def _p2_evidence(p2: Mapping[str, object] | None, ctx: Mapping[str, object]) -> 
         return None
     if as_of != dt.date.fromisoformat(str(ctx["target_date"])):
         return None
+    # A role aggregate alone cannot prove the target scope. Require explicit
+    # wrapper-level scope rather than silently accepting unrelated P2 rows.
+    scope = p2.get("target_context")
+    if not isinstance(scope, Mapping):
+        return None
+    if any(str(scope.get(field)) != str(ctx[field])
+           for field in ("target_date", "venue", "surface", "distance")):
+        return None
     result = {}
     for role in P2_ROLES:
         item = p2.get(role)
