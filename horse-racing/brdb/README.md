@@ -139,10 +139,10 @@ The immutable Parquet generation, manifest, and audit are stored outside Git. Th
 
 ## Blood Review v0.1 — non-scoring baseline
 
-- `src/brdb_blood_review.py`
-- `tests/test_brdb_blood_review.py`
+- `src/brdb_blood_review.py`\n- `src/brdb_racenote_p2_adapter.py`
+- `tests/test_brdb_blood_review.py`\n- `tests/test_brdb_racenote_p2_adapter.py`
 - `docs/BRDB_BLOOD_REVIEW_IMPLEMENTATION_v0_1.md`
 
 Status: **IMPLEMENTED BASELINE / VALIDATION PENDING**.
 
-Review v0.1 applies the same horse_id + target_context contract to all target horses, reuses only validated pedigree Reader facts and explicitly scoped RaceNote P2 descriptive evidence, and returns status / coverage / provenance. Scoring, regional taxonomy, inferred suitability, and PWA integration remain unimplemented. Execute focused tests and a real RaceNote P2 adapter replay before production use.
+Review v0.1 applies the same horse_id + target_context contract to all target horses, reuses only validated pedigree Reader facts and explicitly scoped RaceNote P2 descriptive evidence, and returns status / coverage / provenance. Scoring, regional taxonomy, inferred suitability, and PWA integration remain unimplemented. Execute focused tests and a real RaceNote P2 adapter replay before production use. Verification task: `collab/instructions/20261022_002_blood-review-v01-verification_instruction.md`.
