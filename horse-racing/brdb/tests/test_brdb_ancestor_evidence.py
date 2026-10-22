@@ -62,5 +62,28 @@ class AncestorEvidenceTest(unittest.TestCase):
             summarize_graph(graph)
 
 
+    def test_missing_intermediate_path_is_not_full(self):
+        graph = {
+            "horse_id": "A", "max_depth": 2,
+            "paths": [
+                {"path": "S", "horse_id": "B"},
+                {"path": "D", "horse_id": "C"},
+                {"path": "SS", "horse_id": "E"},
+                {"path": "SD", "horse_id": "F"},
+                {"path": "DS", "horse_id": "G"},
+            ],
+        }
+        result = summarize_graph(graph)
+        self.assertFalse(result["complete"])
+        self.assertEqual(result["generation_coverage"][1]["unresolved_paths"], 1)
+
+    def test_unknown_graph_does_not_create_similarity_rank(self):
+        a = ancestor_graph("A", lambda _: [], max_depth=2)
+        b = ancestor_graph("B", lambda _: [], max_depth=2)
+        result = compare_observed_ancestors(a, b)
+        self.assertIsNone(result["observed_jaccard"])
+        self.assertFalse(result["can_rank_similarity"])
+
+
 if __name__ == "__main__":
     unittest.main()
