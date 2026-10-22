@@ -136,3 +136,13 @@ The generation builder and guarded resolver are in `src/`. The pedigree tables a
 
 The immutable Parquet generation, manifest, and audit are stored outside Git. This foundation does not publish a production `CURRENT` pointer or change PWA/RaceNote serving.
 \n\n## CURRENT / Reader v0.1\n\n- `src/brdb_pedigree_reader.py`\n- `src/build_brdb_current_bundle.py`\n- `schema/brdb_current_pointer_v0_1.schema.json`\n- `docs/BRDB_CURRENT_READER_CONTRACT_v0_1.md`\n- `tests/test_brdb_pedigree_reader.py`\n\nConsumer identity remains `horse_id` only; horse-name fallback is prohibited. The first immutable generation remains `eeca93556584a5b8`. Stable Drive CURRENT is published as `BloodReviewDB_CURRENT.zip` and resolved through `src/brdb_current.py` with pinned size/SHA validation. Drive general access must be hardened from `anyone: writer` to `Anyone with the link: Viewer` before normal operational use. Phase 2 Blood Review logic is next.\n
+
+## Blood Review v0.1 — non-scoring baseline
+
+- `src/brdb_blood_review.py`
+- `tests/test_brdb_blood_review.py`
+- `docs/BRDB_BLOOD_REVIEW_IMPLEMENTATION_v0_1.md`
+
+Status: **IMPLEMENTED BASELINE / VALIDATION PENDING**.
+
+Review v0.1 applies the same horse_id + target_context contract to all target horses, reuses only validated pedigree Reader facts and explicitly scoped RaceNote P2 descriptive evidence, and returns status / coverage / provenance. Scoring, regional taxonomy, inferred suitability, and PWA integration remain unimplemented. Execute focused tests and a real RaceNote P2 adapter replay before production use.
