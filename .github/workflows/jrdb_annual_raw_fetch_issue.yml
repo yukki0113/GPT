@@ -75,8 +75,12 @@ jobs:
           end = int(req.get('to_year', 0))
           kinds = req.get('kinds') or []
           sleep_seconds = float(req.get('sleep_seconds', 2.0))
+          probe_only = bool(req.get('probe_only', False))
 
-          if start < 1999 or end < start or end > 2025:
+          minimum_year = 1980 if probe_only else 1999
+          if start < minimum_year or end < start or end > 2025:
+              if probe_only:
+                  raise SystemExit('annual probe mode requires 1980 <= from_year <= to_year <= 2025')
               raise SystemExit('annual mode requires 1999 <= from_year <= to_year <= 2025')
           if not isinstance(kinds, list) or not kinds:
               raise SystemExit('kinds must be a non-empty list')
@@ -92,6 +96,7 @@ jobs:
               'to_year': end,
               'kinds': kinds,
               'sleep_seconds': sleep_seconds,
+              'probe_only': probe_only,
           }
           Path('/tmp/request.json').write_text(json.dumps(resolved), encoding='utf-8')
           with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as f:
@@ -162,16 +167,17 @@ jobs:
                       'matching_member_count': len(matching),
                   })
 
-          if missing:
+          if missing and not req.get('probe_only'):
               raise SystemExit('missing annual ZIPs: ' + ', '.join(missing))
 
           report = {
-              'status': 'success',
+              'status': 'probe_complete' if req.get('probe_only') else 'success',
               'from_year': req['from_year'],
               'to_year': req['to_year'],
               'kinds': req['kinds'],
               'file_count': len(files),
               'files': files,
+              'missing': missing,
           }
           (root / 'annual_validation.json').write_text(
               json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8'
