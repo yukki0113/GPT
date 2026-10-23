@@ -107,6 +107,26 @@ jobs:
             --reverse-json /tmp/rrdb1024/out/RRDB_v0_5_reverse_20261024.json \
             --output-csv /tmp/rrdb1024/out/RRDB_v0_5_PWA_handoff_20261024.csv
 
+      - name: Print extraction summary
+        run: |
+          python - <<'PY'
+          import json, collections
+          from pathlib import Path
+          p=json.loads(Path('/tmp/rrdb1024/out/RRDB_v0_5_reverse_20261024.json').read_text(encoding='utf-8'))
+          recs=p.get('recommendations') or []
+          counts=collections.Counter()
+          for r in recs:
+              counts.update(r.get('matched_signal_ids') or [])
+          print('RRDB_STATUS', p.get('status'))
+          print('RRDB_DATE', p.get('race_date'))
+          print('RRDB_CONTRACT', p.get('recommendation_contract_version'))
+          print('RRDB_MATCH_COUNT', len(recs))
+          print('RRDB_SIGNAL_COUNTS', json.dumps(dict(sorted(counts.items())), ensure_ascii=False))
+          print('RRDB_RECOMMENDATIONS_JSON_BEGIN')
+          print(json.dumps(recs, ensure_ascii=False))
+          print('RRDB_RECOMMENDATIONS_JSON_END')
+          PY
+
       - uses: actions/upload-artifact@v4
         with:
           name: rrdb-v0-5-matches-20261024
