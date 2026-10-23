@@ -54,3 +54,21 @@ Neither code nor breeding place establishes Japanese/US/European pedigree ancest
 ## Unresolved years
 
 Issue [#2171](https://github.com/yukki0113/GPT/issues/2171) computes status and parent birth-year frequencies from the isolated 27-year candidate, plus per-horse lineage completeness and sentinel profile detection. Results require artifact verification; do not copy old 16-year missing counts as 27-year results.
+
+## Accepted Actions audit result — Issue #2171
+
+Run [39941621679](https://github.com/yukki0113/GPT/actions/runs/39941621679), PASS, source commit `012bb1b2042caac2bdebc2a34aec342a9dcda8e3`, output `brdb_27year_date_lineage_audit.json`, source generation `9ad752020bd5801b`.
+
+- Total 128,754 pedigree fact horses.
+- Official master contains 83 available codes. Sire-line: 128,746 nonempty and **all 128,746 mapped** (8 unknown). Broodmare-sire-line: 128,749 nonempty and **all 128,749 mapped** (5 unknown).
+- Eight profile rows use invalid chronology `99999999` (same eight IDs in raw). This **demonstrates actual selection contamination** in candidate and blocks promotion before new candidate generation.
+- Unresolved parent relations (counting all sire, dam and BMS relation slots across **all** 128,754 horses; NOT unique ancestors):
+  - born before 1990: **122,323**
+  - 1990–1999: **81,884**
+  - 2000–2009: **27,605**
+  - 2010–2025: **7,588**
+  - year unknown: **9**
+  - total **239,409**.
+- Direct unresolved relation-status counts: sire NO_CANDIDATE 66,760, dam NO_CANDIDATE 66,980, BMS NO_CANDIDATE 105,429, plus smaller conflicts/insufficient key/guard. The 27-year master covers more total horses than the original 16-year master, so this all-master unresolved count **must not** be compared naively as a progress measure; compare the same target IDs / depths.
+
+**Acceptance revision:** do not block minimum official-lineage research on 3–5 generation completeness. Profile chronology quarantine applies to these 8 candidates; use official codes for source-backed father/BMS line reporting and UNKNOWN for regional type pending reviewed taxonomy. `brdb-review-v0.1`, CURRENT and shared PWA are untouched.
