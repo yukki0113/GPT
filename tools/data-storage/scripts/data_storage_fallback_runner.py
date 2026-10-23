@@ -17,6 +17,8 @@ import time
 from pathlib import Path
 from typing import Any
 
+from drive_gpt_actions_inputs import validate_staged_inputs, download_staged_inputs
+
 BASE = Path("/tmp/data-storage-fallback")
 INPUTS = BASE / "inputs"
 PUBLIC_DRIVE = BASE / "public-drive"
@@ -110,6 +112,8 @@ def validate_request(raw: str) -> dict[str, Any]:
         if manifest_path.is_absolute() or ".." in manifest_path.parts or any(part.startswith(".") for part in manifest_path.parts):
             raise ValueError(f"public Drive input {label}: unsafe manifest path")
 
+    staged_labels = validate_staged_inputs(request.get("staged_inputs", []), labels | public_drive_labels)
+
     steps = request.get("steps")
     if not isinstance(steps, list) or not 1 <= len(steps) <= 20:
         raise ValueError("steps must contain 1..20 items")
@@ -134,7 +138,7 @@ def validate_request(raw: str) -> dict[str, Any]:
             raise ValueError(f"step {name}: args must be an array of strings")
         for arg in args:
             for found in re.findall(r"\{input:([^}]+)\}", arg):
-                if found not in labels:
+                if found not in labels | staged_labels:
                     raise ValueError(f"step {name}: unknown input label {found!r}")
             for found in re.findall(r"\{public_drive:([^}]+)\}", arg):
                 if found not in public_drive_labels:
@@ -265,6 +269,7 @@ def expand_arg(
 
 def execute_steps(request: dict[str, Any], root: Path) -> list[dict[str, Any]]:
     labels = {item["label"]: INPUTS / item["label"] for item in request.get("input_artifacts", [])}
+    labels.update({item["label"]: INPUTS / item["label"] for item in request.get("staged_inputs", [])})
     public_drive_labels = {
         item["label"]: PUBLIC_DRIVE / item["label"] for item in request.get("public_drive_inputs", [])
     }
@@ -330,6 +335,7 @@ def main() -> int:
         source_commit = checkout_source(root, source_ref)
         duckdb_version, pyarrow_version = bootstrap_dependencies(root)
         download_inputs(request, repository)
+        staged_inputs = download_staged_inputs(request.get("staged_inputs", []), repository, INPUTS)
         public_drive_inputs = download_public_drive_inputs(request, root)
         steps = execute_steps(request, root)
 
@@ -344,6 +350,7 @@ def main() -> int:
                 "duckdb_version": duckdb_version,
                 "pyarrow_version": pyarrow_version,
                 "input_artifacts": request.get("input_artifacts", []),
+                "staged_inputs": staged_inputs,
                 "public_drive_inputs": public_drive_inputs,
                 "steps": steps,
             }
