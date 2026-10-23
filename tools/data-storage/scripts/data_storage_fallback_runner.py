@@ -226,23 +226,23 @@ def download_public_drive_inputs(request: dict[str, Any], root: Path) -> list[di
         if root not in manifest.parents or not manifest.is_file():
             raise RuntimeError(f"public Drive manifest missing after checkout: {item['manifest']}")
         # Static files remain immutable repository-reviewed sources.
-        audits.extend(_download_one_public_drive_input(item["label"], manifest, helper, "static"))
+        audits.extend(_download_one_public_drive_input(item["label"], manifest, helper, root, "static"))
     reserved = {item["label"] for item in request.get("input_artifacts", []) + static_items + request.get("staged_inputs", [])}
     generated = build_ephemeral_manifests(request.get("dynamic_public_drive_inputs", []), DYNAMIC_MANIFESTS, reserved)
     for item in generated:
         audits.extend(_download_one_public_drive_input(
-            item["label"], Path(item["manifest_path"]), helper, "dynamic", item
+            item["label"], Path(item["manifest_path"]), helper, root, "dynamic", item
         ))
     return audits
 
 
 def _download_one_public_drive_input(
-    label: str, manifest: Path, helper: Path, kind: str, generated: dict[str, Any] | None = None
+    label: str, manifest: Path, helper: Path, root: Path, kind: str, generated: dict[str, Any] | None = None
 ) -> list[dict[str, Any]]:
     destination = PUBLIC_DRIVE / label
     receipt = PUBLIC_DRIVE_RECEIPTS / f"{label}.json"
-        destination.mkdir(parents=True, exist_ok=True)
-        proc = run(
+    destination.mkdir(parents=True, exist_ok=True)
+    proc = run(
             [
                 sys.executable,
                 str(helper),
@@ -253,8 +253,8 @@ def _download_one_public_drive_input(
                 "--receipt",
                 str(receipt),
             ],
-            cwd=root,
-        )
+        cwd=root,
+    )
     if proc.returncode != 0 or not receipt.is_file():
         raise RuntimeError(f"PUBLIC_FETCH_FAILED: label={label} kind={kind}")
     fetched = json.loads(receipt.read_text(encoding="utf-8"))
