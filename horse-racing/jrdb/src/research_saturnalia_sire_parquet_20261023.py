@@ -26,7 +26,7 @@ def main():
    if not f.is_file() or f.stat().st_size!=x["size_bytes"] or hashlib.sha256(f.read_bytes()).hexdigest()!=x["sha256"]:raise ValueError("Parquet integrity mismatch: "+str(f))
    files.append(str(f))
   conn=duckdb.connect()
-  conn.execute("CREATE VIEW data AS SELECT * FROM read_parquet(?)",[files])
+  conn.from_parquet(files).create_view("data")
   codes=conn.execute("SELECT track_condition_code,COUNT(*) FROM data GROUP BY 1 ORDER BY 1").fetchall()
   sire_codes=conn.execute("SELECT sire_name,COUNT(*) FROM data WHERE sire_name LIKE '%サートゥルナーリア%' GROUP BY 1").fetchall()
   if not sire_codes:raise ValueError("No sire identified; check source profiles")
