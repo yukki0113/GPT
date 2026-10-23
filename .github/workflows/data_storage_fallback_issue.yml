@@ -32,6 +32,7 @@ jobs:
         env:
           FALLBACK_REQUEST_JSON: ${{ github.event.issue.body }}
           GH_TOKEN: ${{ github.token }}
+          DATA_STORAGE_BRIDGE_PRIVATE_KEY_PEM: ${{ secrets.DATA_STORAGE_BRIDGE_PRIVATE_KEY_PEM }}
         run: |
           set -euo pipefail
           python tools/data-storage/scripts/data_storage_fallback_runner.py
