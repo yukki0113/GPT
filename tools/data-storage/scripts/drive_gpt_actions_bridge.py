@@ -90,9 +90,14 @@ def read_inputs(definitions: list[str]) -> list[tuple[str, Path, bytes]]:
         label, raw = definition.split("=", 1)
         if not LABEL.fullmatch(label) or label in seen:
             raise ValueError("invalid or duplicate input label")
-        path = Path(raw).resolve(strict=True)
-        if not path.is_file() or path.is_symlink():
+        candidate = Path(raw)
+        if candidate.is_symlink():
+            raise ValueError("input must not be a symlink")
+        path = candidate.resolve(strict=True)
+        if not path.is_file():
             raise ValueError("input must be a regular, non-symlink file")
+        if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,150}", path.name) or path.name in (".", ".."):
+            raise ValueError("unsafe input filename")
         if path.stat().st_size > MAX_INPUT_BYTES:
             raise ValueError(f"input {label} exceeds 32 MiB; use an approved artifact route")
         data = path.read_bytes()
