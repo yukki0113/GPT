@@ -18,11 +18,13 @@ from pathlib import Path
 from typing import Any
 
 from drive_gpt_actions_inputs import validate_staged_inputs, download_staged_inputs
+from dynamic_public_drive_inputs import build_ephemeral_manifests, validate_dynamic_inputs
 
 BASE = Path("/tmp/data-storage-fallback")
 INPUTS = BASE / "inputs"
 PUBLIC_DRIVE = BASE / "public-drive"
 PUBLIC_DRIVE_RECEIPTS = BASE / "public-drive-receipts"
+DYNAMIC_MANIFESTS = BASE / "dynamic-manifests"
 WORK = BASE / "work"
 OUTPUT = BASE / "output"
 STDOUT = BASE / "stdout"
@@ -112,7 +114,8 @@ def validate_request(raw: str) -> dict[str, Any]:
         if manifest_path.is_absolute() or ".." in manifest_path.parts or any(part.startswith(".") for part in manifest_path.parts):
             raise ValueError(f"public Drive input {label}: unsafe manifest path")
 
-    staged_labels = validate_staged_inputs(request.get("staged_inputs", []), labels | public_drive_labels)
+    dynamic_labels = validate_dynamic_inputs(request.get("dynamic_public_drive_inputs", []), labels | public_drive_labels)
+    staged_labels = validate_staged_inputs(request.get("staged_inputs", []), labels | public_drive_labels | dynamic_labels)
 
     steps = request.get("steps")
     if not isinstance(steps, list) or not 1 <= len(steps) <= 20:
@@ -141,7 +144,7 @@ def validate_request(raw: str) -> dict[str, Any]:
                 if found not in labels | staged_labels:
                     raise ValueError(f"step {name}: unknown input label {found!r}")
             for found in re.findall(r"\{public_drive:([^}]+)\}", arg):
-                if found not in public_drive_labels:
+                if found not in public_drive_labels | dynamic_labels:
                     raise ValueError(f"step {name}: unknown public Drive input label {found!r}")
     return request
 
@@ -192,16 +195,10 @@ def download_inputs(request: dict[str, Any], repository: str) -> None:
         destination.mkdir(parents=True, exist_ok=True)
         proc = run(
             [
-                "gh",
-                "run",
-                "download",
-                str(item["run_id"]),
-                "--repo",
-                repository,
-                "--name",
-                item["artifact_name"],
-                "--dir",
-                str(destination),
+                "gh", "run", "download", str(item["run_id"]),
+                "--repo", repository,
+                "--name", item["artifact_name"],
+                "--dir", str(destination),
             ],
             cwd=Path.cwd(),
         )
@@ -214,17 +211,32 @@ def download_inputs(request: dict[str, Any], repository: str) -> None:
 
 def download_public_drive_inputs(request: dict[str, Any], root: Path) -> list[dict[str, Any]]:
     helper = root / "tools/gpt_io/public_drive/fetch.py"
-    if request.get("public_drive_inputs") and not helper.is_file():
+    if (request.get("public_drive_inputs") or request.get("dynamic_public_drive_inputs")) and not helper.is_file():
         raise RuntimeError("canonical public Drive fetch helper is missing")
     audits: list[dict[str, Any]] = []
-    for item in request.get("public_drive_inputs", []):
+    static_items = request.get("public_drive_inputs", [])
+    for item in static_items:
         manifest = (root / item["manifest"]).resolve()
         if root not in manifest.parents or not manifest.is_file():
             raise RuntimeError(f"public Drive manifest missing after checkout: {item['manifest']}")
-        destination = PUBLIC_DRIVE / item["label"]
-        receipt = PUBLIC_DRIVE_RECEIPTS / f"{item['label']}.json"
-        destination.mkdir(parents=True, exist_ok=True)
-        proc = run(
+        # Static files remain immutable repository-reviewed sources.
+        audits.extend(_download_one_public_drive_input(item["label"], manifest, helper, root, "static"))
+    reserved = {item["label"] for item in request.get("input_artifacts", []) + static_items + request.get("staged_inputs", [])}
+    generated = build_ephemeral_manifests(request.get("dynamic_public_drive_inputs", []), DYNAMIC_MANIFESTS, reserved)
+    for item in generated:
+        audits.extend(_download_one_public_drive_input(
+            item["label"], Path(item["manifest_path"]), helper, root, "dynamic", item
+        ))
+    return audits
+
+
+def _download_one_public_drive_input(
+    label: str, manifest: Path, helper: Path, root: Path, kind: str, generated: dict[str, Any] | None = None
+) -> list[dict[str, Any]]:
+    destination = PUBLIC_DRIVE / label
+    receipt = PUBLIC_DRIVE_RECEIPTS / f"{label}.json"
+    destination.mkdir(parents=True, exist_ok=True)
+    proc = run(
             [
                 sys.executable,
                 str(helper),
@@ -235,20 +247,23 @@ def download_public_drive_inputs(request: dict[str, Any], root: Path) -> list[di
                 "--receipt",
                 str(receipt),
             ],
-            cwd=root,
-        )
-        if proc.returncode != 0 or not receipt.is_file():
-            raise RuntimeError(f"public Drive fetch failed: label={item['label']} manifest={item['manifest']}")
-        audits.append(
-            {
-                "label": item["label"],
-                "manifest": item["manifest"],
-                "manifest_sha256": sha256_file(manifest),
-                "receipt": str(receipt.relative_to(BASE)),
-                "receipt_sha256": sha256_file(receipt),
-            }
-        )
-    return audits
+        cwd=root,
+    )
+    if proc.returncode != 0 or not receipt.is_file():
+        raise RuntimeError(f"PUBLIC_FETCH_FAILED: label={label} kind={kind}")
+    fetched = json.loads(receipt.read_text(encoding="utf-8"))
+    if not all(x.get("verified") is True for x in fetched.get("artifacts", [])):
+        raise RuntimeError(f"PUBLIC_FETCH_FAILED: verification receipt missing for label={label}")
+    return [{
+        "label": label,
+        "kind": kind,
+        "manifest": str(manifest.relative_to(BASE)) if kind == "dynamic" else str(manifest),
+        "manifest_sha256": sha256_file(manifest),
+        "receipt": str(receipt.relative_to(BASE)),
+        "receipt_sha256": sha256_file(receipt),
+        "artifacts": fetched["artifacts"],
+        **({"pinned_artifacts": generated["artifacts"]} if generated is not None else {}),
+    }]
 
 
 def expand_arg(
@@ -271,7 +286,8 @@ def execute_steps(request: dict[str, Any], root: Path) -> list[dict[str, Any]]:
     labels = {item["label"]: INPUTS / item["label"] for item in request.get("input_artifacts", [])}
     labels.update({item["label"]: INPUTS / item["label"] for item in request.get("staged_inputs", [])})
     public_drive_labels = {
-        item["label"]: PUBLIC_DRIVE / item["label"] for item in request.get("public_drive_inputs", [])
+        item["label"]: PUBLIC_DRIVE / item["label"]
+        for item in request.get("public_drive_inputs", []) + request.get("dynamic_public_drive_inputs", [])
     }
     env = os.environ.copy()
     env["PYTHONPATH"] = str(root / "tools/data-storage")
@@ -310,7 +326,7 @@ def execute_steps(request: dict[str, Any], root: Path) -> list[dict[str, Any]]:
 
 
 def main() -> int:
-    for directory in (BASE, INPUTS, PUBLIC_DRIVE, PUBLIC_DRIVE_RECEIPTS, WORK, OUTPUT, STDOUT, STDERR):
+    for directory in (BASE, INPUTS, PUBLIC_DRIVE, PUBLIC_DRIVE_RECEIPTS, DYNAMIC_MANIFESTS, WORK, OUTPUT, STDOUT, STDERR):
         directory.mkdir(parents=True, exist_ok=True)
 
     raw = os.environ.get("FALLBACK_REQUEST_JSON", "").strip()
@@ -352,6 +368,7 @@ def main() -> int:
                 "input_artifacts": request.get("input_artifacts", []),
                 "staged_inputs": staged_inputs,
                 "public_drive_inputs": public_drive_inputs,
+                "dynamic_public_drive_inputs": [x for x in public_drive_inputs if x["kind"] == "dynamic"],
                 "steps": steps,
             }
         )

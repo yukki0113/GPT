@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "description": "Stable source identifiers and exact filename rules; daily file IDs never belong in this registry.",
+  "sources": [
+    {
+      "key": "jrdb.paci.daily",
+      "label": "paci",
+      "folder_id": "1zFajenPU5jxInZCcmqZzkgiaYil3MD8r",
+      "name_template": "PACI{yymmdd}.zip",
+      "artifact_id_template": "paci_{yyyymmdd}",
+      "expected_mime_types": [
+        "application/zip",
+        "application/octet-stream"
+      ],
+      "format": "zip",
+      "required": true
+    },
+    {
+      "key": "jrdb.analysis.current",
+      "label": "analysis",
+      "folder_id": "1sIja9lzuFS1U3jWMwVscZ57NrJiDZGV5",
+      "exact_name": "jrdb_analysis_v1_4_canonical_current.tar.xz",
+      "artifact_id_template": "analysis_current",
+      "expected_mime_types": [
+        "application/x-tar",
+        "application/x-xz",
+        "application/octet-stream"
+      ],
+      "format": "tar.xz",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "request_id": "jrdb-dynamic-drive-demo-20261024",
+  "source_ref": "main",
+  "steps": [
+    {
+      "name": "unpack-analysis",
+      "entrypoint": "tools/data-storage/scripts/safe_unpack_staged_archive.py",
+      "args": [
+        "--archive",
+        "{public_drive:analysis}/jrdb_analysis_v1_4_canonical_current.tar.xz",
+        "--output-dir",
+        "{work}/analysis"
+      ]
+    },
+    {
+      "name": "historical-year-counts",
+      "entrypoint": "tools/data-storage/scripts/query_staged_parquet.py",
+      "args": [
+        "--parquet",
+        "{work}/analysis/objects/fact_entry_result_lite",
+        "--sql",
+        "SELECT year, COUNT(*) AS n FROM data WHERE year BETWEEN 2016 AND 2025 GROUP BY year ORDER BY year",
+        "--output",
+        "{output}/historical_year_counts.json"
+      ]
+    }
+  ]
+}

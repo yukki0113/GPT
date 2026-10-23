@@ -20,6 +20,7 @@ A `shared: true` flag alone does not prove public access; inspect Drive permissi
 **Real Actions smoke PASS, 2026-10-24:** [Issue #2186](https://github.com/yukki0113/GPT/issues/2186), [run 39983516213](https://github.com/yukki0113/GPT/actions/runs/39983516213). An already reviewed JRDB public manifest downloaded three inputs and verified all three SHAs with no extra secret; canonical DuckDB smoke succeeded. This is not a live-data Artemis S forecasting run.
 
 - Public/no-key route: `tools/gpt_io/public_drive/fetch.py` and `docs/CODEX_LOCAL_FIRST_ACTIONS_FALLBACK.md`
+- Date-scoped/no-daily-commit route: `dynamic_public_drive_inputs`; stable `config/drive_source_registry.json`, connector snapshot builder `scripts/build_dynamic_drive_request.py`, Actions-side manifest builder `scripts/dynamic_public_drive_inputs.py`. See `docs/DYNAMIC_DRIVE_MANIFEST_RUNBOOK.md`.
 - Private/opt-in encrypted bridge: `scripts/drive_gpt_actions_bridge.py` and `docs/DRIVE_GPT_ACTIONS_BRIDGE.md`
 - Common archive helper / SQL output: `scripts/safe_unpack_staged_archive.py` and `scripts/query_staged_parquet.py`
 
