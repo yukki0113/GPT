@@ -6,6 +6,11 @@ on:
       - "tools/data-storage/scripts/drive_gpt_actions_bridge.py"
       - "tools/data-storage/scripts/drive_gpt_actions_inputs.py"
       - "tools/data-storage/scripts/data_storage_fallback_runner.py"
+      - "tools/data-storage/scripts/dynamic_public_drive_inputs.py"
+      - "tools/data-storage/scripts/build_dynamic_drive_request.py"
+      - "tools/data-storage/config/drive_source_registry.json"
+      - "tools/data-storage/tests/test_dynamic_public_drive_inputs.py"
+      - "tools/data-storage/tests/test_build_dynamic_drive_request.py"
       - "tools/data-storage/scripts/safe_unpack_staged_archive.py"
       - "tools/data-storage/scripts/query_staged_parquet.py"
       - "tools/data-storage/tests/test_fallback_runner.py"
@@ -30,4 +35,4 @@ jobs:
       - name: Python syntax
         run: python -m compileall -q tools/data-storage/scripts
       - name: Offline encrypted staging tests
-        run: python -m pytest tools/data-storage/tests/test_fallback_runner.py tools/data-storage/tests/test_drive_gpt_actions_bridge.py tools/data-storage/tests/test_staged_archive.py -q
+        run: python -m pytest tools/data-storage/tests/test_fallback_runner.py tools/data-storage/tests/test_drive_gpt_actions_bridge.py tools/data-storage/tests/test_staged_archive.py tools/data-storage/tests/test_dynamic_public_drive_inputs.py tools/data-storage/tests/test_build_dynamic_drive_request.py -q
