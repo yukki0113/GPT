@@ -6,6 +6,19 @@ GPT / Work運用上は、このpackageをrepository共通の **汎用CRUD / Data
 
 The durable analytical data is Parquet. DuckDB is used as an in-process query engine and does not require a persistent `.duckdb` file. Project-specific columns, keys, partitions, and validation rules belong in each project's YAML config, not in this package.
 
+
+## Secure Drive -> GPT -> Actions staging (optional transport)
+
+For non-public Google Drive inputs (such as PACI and canonical Analysis), the connected GPT Drive plugin first downloads the files locally. The shared transport client stages **encrypted only** Git blobs in the repository and opens the existing fallback Issue; the Actions runner decrypts into ephemeral inputs and uses the same canonical DuckDB entrypoints.
+
+- Client: scripts/drive_gpt_actions_bridge.py
+- Actions decrypt/validate: scripts/drive_gpt_actions_inputs.py
+- Archive helper and query step: scripts/safe_unpack_staged_archive.py and scripts/query_staged_parquet.py
+- Example request: config/drive_gpt_actions_example.json
+- **Required one-time secret/key and GitHub token setup:** docs/DRIVE_GPT_ACTIONS_BRIDGE.md
+
+This transport is not automatically active without secret provisioning, nor is it verified until a live Actions round-trip PASS. The public Drive manifest transport remains unchanged.
+
 ## Supported scope
 
 - SQLite table to Parquet (streaming batches)

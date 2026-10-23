@@ -1,11 +1,13 @@
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 import pytest
 
 
 RUNNER_PATH = Path(__file__).resolve().parents[1] / "scripts" / "data_storage_fallback_runner.py"
+sys.path.insert(0, str(RUNNER_PATH.parent))
 SPEC = importlib.util.spec_from_file_location("data_storage_fallback_runner", RUNNER_PATH)
 assert SPEC and SPEC.loader
 runner = importlib.util.module_from_spec(SPEC)
@@ -80,3 +82,55 @@ def test_expand_arg_expands_public_drive_label(tmp_path, monkeypatch):
         {"warehouse": tmp_path / "public-drive" / "warehouse"},
     )
     assert value == str(tmp_path / "public-drive" / "warehouse" / "facts.parquet")
+
+
+
+def test_validate_accepts_encrypted_staged_input_placeholder():
+    import base64
+    staged = {
+        "label": "paci",
+        "filename": "PACI261024.zip",
+        "blob_sha": "a" * 40,
+        "plaintext_sha256": "b" * 64,
+        "ciphertext_sha256": "c" * 64,
+        "size_bytes": 50,
+        "nonce_b64": base64.b64encode(b"0" * 12).decode(),
+        "wrapped_key_b64": base64.b64encode(b"x" * 384).decode(),
+    }
+    parsed = runner.validate_request(request(
+        staged_inputs=[staged],
+        steps=[{"name": "query", "entrypoint": "horse-racing/example/query.py",
+                "args": ["{input:paci}/PACI261024.zip"]}]))
+    assert parsed["staged_inputs"][0]["label"] == "paci"
+
+
+def test_validate_rejects_staged_path_traversal():
+    import base64
+    staged = {
+        "label": "paci",
+        "filename": "../private.zip",
+        "blob_sha": "a" * 40,
+        "plaintext_sha256": "b" * 64,
+        "ciphertext_sha256": "c" * 64,
+        "size_bytes": 50,
+        "nonce_b64": base64.b64encode(b"0" * 12).decode(),
+        "wrapped_key_b64": base64.b64encode(b"x" * 384).decode(),
+    }
+    with pytest.raises(ValueError, match="unsafe staged filename"):
+        runner.validate_request(request(staged_inputs=[staged]))
+
+
+def test_staged_collisions_with_existing_artifact_labels():
+    import base64
+    staged = {
+        "label": "warehouse",
+        "filename": "ok.parquet",
+        "blob_sha": "a" * 40,
+        "plaintext_sha256": "b" * 64,
+        "ciphertext_sha256": "c" * 64,
+        "size_bytes": 50,
+        "nonce_b64": base64.b64encode(b"0" * 12).decode(),
+        "wrapped_key_b64": base64.b64encode(b"x" * 384).decode(),
+    }
+    with pytest.raises(ValueError, match="duplicate staged input label"):
+        runner.validate_request(request(staged_inputs=[staged]))
