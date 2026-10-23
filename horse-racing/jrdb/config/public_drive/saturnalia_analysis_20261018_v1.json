@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "jrdb_analysis_current_20261018",
+      "file_id": "1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5",
+      "destination": "jrdb_analysis_v1_4_canonical_current.tar.xz",
+      "expected_name": "jrdb_analysis_v1_4_canonical_current.tar.xz",
+      "expected_size": 13496088,
+      "sha256": "f30cb7664ebebf32055da20da45eea1a63faf75bf47aa7ebb6ad1f8b7c235c78"
+    }
+  ]
+}
