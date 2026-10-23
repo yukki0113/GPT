@@ -1,6 +1,6 @@
 # Dynamic Drive manifests for Data Storage
 
-Status: implementation v1 — tests and live Actions acceptance must be checked before declaring production use.
+Status: IMPLEMENTED. Tests PASS; live JRDB Drive → Actions → DuckDB → artifact E2E PASS on 2026-10-24.
 
 ## Purpose
 
@@ -145,3 +145,27 @@ The user's established folder-wide link-sharing policy remains unchanged.
   checksummed PASS, DuckDB query output artifact obtained and inspected.
 - Subsequent daily date change requires only connector discovery + one Issue
   (no daily Git commits or dedicated encryption key).
+
+
+## Verified JRDB real-data acceptance — 2026-10-24
+
+- Source PR merged: https://github.com/yukki0113/GPT/pull/2188
+- Owner-created test request: https://github.com/yukki0113/GPT/issues/2189
+- Successful Actions run: https://github.com/yukki0113/GPT/actions/runs/40036792390
+- Verified artifact: data-storage-fallback-40036792390
+- Runner source commit: fa8bc4475265adf046aa481d3a261754504b5012
+- Dynamic PACI261024.zip: Drive byte size 489353, SHA-256 c496c080e70ef8c769bec9f17aa0f3af70b35838d08f32c36b6aadd477ea7a91; receipt verified.
+- Dynamic Analysis CURRENT: Drive byte size 13496088, SHA-256 f30cb7664ebebf32055da20da45eea1a63faf75bf47aa7ebb6ad1f8b7c235c78; receipt verified.
+- Actions steps: unpack PACI (14 entries), unpack Analysis (47 entries), canonical DuckDB query on 2016–2025 (10 rows); all exit_code=0.
+- DuckDB 1.1.3; PyArrow 25.0.1; audit status=PASS.
+- Result historical-year-counts JSON by year:
+  2016=50076; 2017=49299; 2018=48618; 2019=47574; 2020=48282; 2021=47821; 2022=47220; 2023=47672; 2024=47181; 2025=47884. Total=481627.
+- No source Raw ZIP, tar or Parquet was uploaded into Git or the result artifact.
+- There were no per-run commits, RSA secrets or manual permission changes.
+
+Note: this E2E request was assembled from previously verified native Drive metadata and
+actual downloaded file checksums using the documented request schema. The Python
+build_dynamic_drive_request.py entrypoint has passing offline tests, but separate
+live native-connector orchestration for every possible source family is not
+independently proven by this single acceptance run. The SQL result is a transport
+smoke, not an Artemis Stakes prediction.
