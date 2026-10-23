@@ -7,17 +7,23 @@ GPT / Work運用上は、このpackageをrepository共通の **汎用CRUD / Data
 The durable analytical data is Parquet. DuckDB is used as an in-process query engine and does not require a persistent `.duckdb` file. Project-specific columns, keys, partitions, and validation rules belong in each project's YAML config, not in this package.
 
 
-## Secure Drive -> GPT -> Actions staging (optional transport)
+## Drive → GPT → Actions routing (public files first)
 
-For non-public Google Drive inputs (such as PACI and canonical Analysis), the connected GPT Drive plugin first downloads the files locally. The shared transport client stages **encrypted only** Git blobs in the repository and opens the existing fallback Issue; the Actions runner decrypts into ephemeral inputs and uses the same canonical DuckDB entrypoints.
+Choose a transfer **route**, not a new data engine. Canonical DuckDB/Parquet processing and `[DATA_STORAGE_FALLBACK]` remain unchanged.
 
-- Client: scripts/drive_gpt_actions_bridge.py
-- Actions decrypt/validate: scripts/drive_gpt_actions_inputs.py
-- Archive helper and query step: scripts/safe_unpack_staged_archive.py and scripts/query_staged_parquet.py
-- Example request: config/drive_gpt_actions_example.json
-- **Required one-time secret/key and GitHub token setup:** docs/DRIVE_GPT_ACTIONS_BRIDGE.md
+1. If Google Drive metadata explicitly grants `anyone` access, unauthenticated fetch actually succeeds, the **license permits this public access**, and a SHA-256/size-pinned manifest is reviewed in the repository: use the existing `public_drive_inputs` fallback. **No RSA secret, GPT-side binary reupload, or new bridge is needed.**
+2. If the file is **restricted/private**: do not publish raw bytes, Google access tokens, temporary bearer URLs, or file links in a public Issue/Git object. Use a separately approved authenticated transfer. The existing encrypted Git-blob bridge is one opt-in mechanism and requires one-time RSA secret/key provisioning.
+3. Prefer checkout/immutable upstream Actions artifacts when already available; avoid materializing duplicate inputs.
 
-This transport is not automatically active without secret provisioning, nor is it verified until a live Actions round-trip PASS. The public Drive manifest transport remains unchanged.
+A `shared: true` flag alone does not prove public access; inspect Drive permissions and verify anonymous download. Any `anyone:writer` ACL is especially risky: correct public edit rights before relying on this as a long-term data source. SHA-256 detects tampering, but does **not** fix inappropriate public write access, licensing, or availability.
+
+**Real Actions smoke PASS, 2026-10-24:** [Issue #2186](https://github.com/yukki0113/GPT/issues/2186), [run 39983516213](https://github.com/yukki0113/GPT/actions/runs/39983516213). An already reviewed JRDB public manifest downloaded three inputs and verified all three SHAs with no extra secret; canonical DuckDB smoke succeeded. This is not a live-data Artemis S forecasting run.
+
+- Public/no-key route: `tools/gpt_io/public_drive/fetch.py` and `docs/CODEX_LOCAL_FIRST_ACTIONS_FALLBACK.md`
+- Private/opt-in encrypted bridge: `scripts/drive_gpt_actions_bridge.py` and `docs/DRIVE_GPT_ACTIONS_BRIDGE.md`
+- Common archive helper / SQL output: `scripts/safe_unpack_staged_archive.py` and `scripts/query_staged_parquet.py`
+
+For proprietary JRDB inputs, public link sharing must not be introduced merely to avoid key setup. Review distribution rights first. Do not silently switch restricted assets to `anyone`.
 
 ## Supported scope
 
