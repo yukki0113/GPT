@@ -1,7 +1,36 @@
 # Drive to GPT to GitHub Actions bridge
 
-Status: implementation candidate, pending one-time secret provisioning and live E2E.
-Scope: shared Data Storage fallback for local files fetched by GPT from native Google Drive.
+Status: OPTIONAL private-input transport. The encrypted-bridge live E2E has NOT passed because its Actions RSA secret is not configured.
+Scope: non-public local files fetched by GPT from native Google Drive; not the default for already-public sources.
+
+## Route selection — first use the existing no-key mechanism
+
+If Google Drive is already public **and public access is permitted by the data license**, prefer existing `public_drive_inputs` with a reviewed `public_google_drive` manifest that pins both SHA-256 and size. The fallback retrieves data anonymously and runs the canonical DuckDB engine; **no new RSA secret or GPT binary reupload is required**. This no-key path passed Actions smoke on 2026-10-24: [Issue #2186](https://github.com/yukki0113/GPT/issues/2186), [run 39983516213](https://github.com/yukki0113/GPT/actions/runs/39983516213). This used a previously reviewed JRDB result manifest; it did not fetch the 2026-10-24 PACI or Analysis archive.
+
+Example request fragment for a reviewed manifest:
+
+```json
+{
+  "public_drive_inputs": [
+    {
+      "label": "historical",
+      "manifest": "horse-racing/jrdb/config/public_drive/jrdb_result_query_historical_2025_v1.json"
+    }
+  ],
+  "steps": [
+    {
+      "name": "smoke",
+      "entrypoint": "tools/data-storage/scripts/data_storage_fallback_smoke.py",
+      "args": ["--output-dir", "{output}"]
+    }
+  ]
+}
+```
+
+The public Drive manifest must already exist and have been reviewed in the requested repo ref. A public Issue/manifest exposes its file IDs. **Never make a restricted Drive file public just to satisfy this route.** Review data licensing and sharing permissions; `anyone:writer` should not be treated as a desirable default.
+
+If files remain restricted and an explicit authenticated transfer to Actions is required, use the encrypted bridge described below (or a separately approved private artifact transfer); it has setup costs. A private repository or private object store is *not* automatically usable from public-repo Actions with its default GITHUB_TOKEN: cross-boundary access needs credentials or a deliberately authorized integration. Bare temporary signed URLs in public Issues are not safe substitutes.
+
 
 ## Architecture
 
