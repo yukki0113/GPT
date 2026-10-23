@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "ukc_1999",
+      "file_id": "1Exbyl2Vey4utBJb89w7PZ3ardfcReKYK",
+      "destination": "UKC_1999.zip",
+      "expected_name": "UKC_1999.zip",
+      "expected_size": 2907621,
+      "sha256": "f3a913bb32100693c3552afe37f4555b18a16c0bb2b046797cbd2ca204d976fd"
+    },
+    {
+      "artifact_id": "ukc_2000",
+      "file_id": "1p35Onktse0s09vVnxM_oYs6sRzGu8UBN",
+      "destination": "UKC_2000.zip",
+      "expected_name": "UKC_2000.zip",
+      "expected_size": 2981026,
+      "sha256": "18cbb6c395180e29354429c6c7eaeb91f492dd17984da8a049259a115b0f5fda"
+    },
+    {
+      "artifact_id": "ukc_2001",
+      "file_id": "1HgBtONdQGCM3TwsK-1pL0OVFbKsqOZ5e",
+      "destination": "UKC_2001.zip",
+      "expected_name": "UKC_2001.zip",
+      "expected_size": 3072371,
+      "sha256": "65a8a4c9680923133b76f3d0e0d444b17b73a5f497732644ac6d483637ac60b4"
+    },
+    {
+      "artifact_id": "ukc_2002",
+      "file_id": "1oNcOpMeDXbbXOtSiYwDeL1tBkw0JO2EQ",
+      "destination": "UKC_2002.zip",
+      "expected_name": "UKC_2002.zip",
+      "expected_size": 3154936,
+      "sha256": "993646f5a72660a21a4546485719bef6875009026eea4ac80d7b9399433dcefe"
+    },
+    {
+      "artifact_id": "ukc_2003",
+      "file_id": "1yiFKcdnCoyuKTHD2BxKAJsfdJktCL2sx",
+      "destination": "UKC_2003.zip",
+      "expected_name": "UKC_2003.zip",
+      "expected_size": 3149692,
+      "sha256": "c11042f451320abc071d44a40b83b7c48cdd8df5a0ddec6c9d2613f525efbc33"
+    },
+    {
+      "artifact_id": "ukc_2004",
+      "file_id": "14T9wPwogVhfdBQZvmSjCQFyjZIOLkxt_",
+      "destination": "UKC_2004.zip",
+      "expected_name": "UKC_2004.zip",
+      "expected_size": 3034034,
+      "sha256": "800d87ee2d5fd694f27e0e312c1dc24433b2c49f99b8bc13dd78e228edfbe235"
+    },
+    {
+      "artifact_id": "ukc_2005",
+      "file_id": "1p1hNg3T5N7ch2HWAwunTYOPeCyURinoC",
+      "destination": "UKC_2005.zip",
+      "expected_name": "UKC_2005.zip",
+      "expected_size": 3051148,
+      "sha256": "8b753484396e10f4923a761fbd250e342e216c1ccf72024aa4330f34bfef3f7b"
+    },
+    {
+      "artifact_id": "ukc_2006",
+      "file_id": "181FZr9rYzDMuxmlqwEC47G_bu-PAldXX",
+      "destination": "UKC_2006.zip",
+      "expected_name": "UKC_2006.zip",
+      "expected_size": 3107207,
+      "sha256": "f52ec1b9b1fdaaf08995b4fe23e1db6e9d8be5e7494da5d4c908dadee169bf4c"
+    },
+    {
+      "artifact_id": "ukc_2007",
+      "file_id": "1tbJCyPgjnQ-JsRCQrBH9CiRnQfaOg0gZ",
+      "destination": "UKC_2007.zip",
+      "expected_name": "UKC_2007.zip",
+      "expected_size": 3097076,
+      "sha256": "2d92be7c5046629550895f99080d2f592a5c6f50bdea3df8ceabb3ef7536ed4b"
+    },
+    {
+      "artifact_id": "ukc_2008",
+      "file_id": "1yxsyVnO5JRpqC0dZvvjaZZs9EnziS7Pl",
+      "destination": "UKC_2008.zip",
+      "expected_name": "UKC_2008.zip",
+      "expected_size": 3159733,
+      "sha256": "090b94488d661f5a2c350b2c3eab269c8415b191facf59fcdeebbc919f99967e"
+    },
+    {
+      "artifact_id": "ukc_2009",
+      "file_id": "1oep1RxtGxL__QWZ51OBLje0ApKKrDW0D",
+      "destination": "UKC_2009.zip",
+      "expected_name": "UKC_2009.zip",
+      "expected_size": 3142708,
+      "sha256": "a29abf3b3fa923ba17d2a304e474b76be603e9a8964cc1f5ec98a8cf6907d394"
+    },
+    {
+      "artifact_id": "ukc_2010",
+      "file_id": "11Yp1LA6UP-Ew2E9nLd7aYwipM1QiAsb4",
+      "destination": "UKC_2010.zip",
+      "expected_name": "UKC_2010.zip",
+      "expected_size": 3097211,
+      "sha256": "9b4b0472037237596e1cf9f6196e2c5f3eca876ee246fa6434e1633749bacaeb"
+    },
+    {
+      "artifact_id": "ukc_2011",
+      "file_id": "1UO2gNH2AV1knEGQHOfVz-7VDE2RpU7nS",
+      "destination": "UKC_2011.zip",
+      "expected_name": "UKC_2011.zip",
+      "expected_size": 3014379,
+      "sha256": "dafc5687754b0b35816c00ff4c8e66b42e5553b555b2adc95b8360eb5ca7a515"
+    },
+    {
+      "artifact_id": "ukc_2012",
+      "file_id": "1EniO6Qy9hAqOv6QLrGI-NKD1F8hSwsIn",
+      "destination": "UKC_2012.zip",
+      "expected_name": "UKC_2012.zip",
+      "expected_size": 3048299,
+      "sha256": "ccfcdb16626156254c224b76a5b38750c30ba99f5fbd56a1995f96e449afc1bb"
+    },
+    {
+      "artifact_id": "ukc_2013",
+      "file_id": "1dLiBEpaeFFTNkNbj-uRpPRC3m--NWSIF",
+      "destination": "UKC_2013.zip",
+      "expected_name": "UKC_2013.zip",
+      "expected_size": 3056523,
+      "sha256": "2897e8361dbd382683691697915cef8937a905790b0e0935f2e095910ff7f291"
+    },
+    {
+      "artifact_id": "ukc_2014",
+      "file_id": "18VwrOLmJ0Gvl_5V_1YwgeCAKoJTMoJ4R",
+      "destination": "UKC_2014.zip",
+      "expected_name": "UKC_2014.zip",
+      "expected_size": 3030052,
+      "sha256": "aae94250e30e27e0e546805b36b782b8812489ae7be78750d6f39d6e6454c8c6"
+    },
+    {
+      "artifact_id": "ukc_2015",
+      "file_id": "15__YZndmA2NCKyINf8VYuAkdODMF5cEc",
+      "destination": "UKC_2015.zip",
+      "expected_name": "UKC_2015.zip",
+      "expected_size": 3003975,
+      "sha256": "2dba3499beba369f58c3087874922250157527ad56c9b0e0ec68b0f38892ae88"
+    },
+    {
+      "artifact_id": "ukc_2016",
+      "file_id": "1AgQTf88WE4fdnbW2z6ZDeDzDSC29c-xu",
+      "destination": "UKC_2016.zip",
+      "expected_name": "UKC_2016.zip",
+      "expected_size": 3004071,
+      "sha256": "b965d958fad102ac2c61ddf3e0dc1ec5157d7920b36d14c55f62374c60f6cb09"
+    },
+    {
+      "artifact_id": "ukc_2017",
+      "file_id": "1gTLtKXc3A9XmUqEt6etXyNkLphrEzyOL",
+      "destination": "UKC_2017.zip",
+      "expected_name": "UKC_2017.zip",
+      "expected_size": 2963832,
+      "sha256": "97ee4928cc9c954528d015f9b25911e7f693ccf50c48f2889a8311a35bc8479f"
+    },
+    {
+      "artifact_id": "ukc_2018",
+      "file_id": "1mOBd-5nj8cuBK5cJwuHEDu_AThb5pmDC",
+      "destination": "UKC_2018.zip",
+      "expected_name": "UKC_2018.zip",
+      "expected_size": 2918776,
+      "sha256": "32143795bb755e93a860f9da68fbf14d8b3fbb5522c0180c9071c8f9f9b88f3c"
+    },
+    {
+      "artifact_id": "ukc_2019",
+      "file_id": "15XV1vggmXcjsNlneW1dd-_HBSjCSELAk",
+      "destination": "UKC_2019.zip",
+      "expected_name": "UKC_2019.zip",
+      "expected_size": 2861577,
+      "sha256": "706ea01a73f91df10e9001f7db47b9a5d4b69a4d0a4cd0dbdcf99e41853aa87f"
+    },
+    {
+      "artifact_id": "ukc_2020",
+      "file_id": "1T82zOJxyjiB2FBzUsoMahKvPEfqVpjSZ",
+      "destination": "UKC_2020.zip",
+      "expected_name": "UKC_2020.zip",
+      "expected_size": 2899058,
+      "sha256": "824ee947b305c59d8f37cacbc3733d54d8f1a0f960e62ecbed9eae1e5c3b3495"
+    },
+    {
+      "artifact_id": "ukc_2021",
+      "file_id": "15XX3NBkniHu7j8OSCFrCQBaHrxT1fL2L",
+      "destination": "UKC_2021.zip",
+      "expected_name": "UKC_2021.zip",
+      "expected_size": 2864768,
+      "sha256": "0fb1de4fa86b1b71c199181437244133981e2c61aa748559adeea7b30ad5092f"
+    },
+    {
+      "artifact_id": "ukc_2022",
+      "file_id": "1A6Z6BNGJlIYFNB7W4uzh8qW4rvxX5UBm",
+      "destination": "UKC_2022.zip",
+      "expected_name": "UKC_2022.zip",
+      "expected_size": 2830879,
+      "sha256": "00da0dc8171a0ce472ff06ad839b822ffc625e7115c262a86bd9cbd9c51642fb"
+    },
+    {
+      "artifact_id": "ukc_2023",
+      "file_id": "1hHfxK_jaDHhZnN_eOripmd2DfINlcVJG",
+      "destination": "UKC_2023.zip",
+      "expected_name": "UKC_2023.zip",
+      "expected_size": 2862415,
+      "sha256": "29fdbe9b2658c804f5c2826ca5e6190726a3032c3319bf43fa5ca4fd814a73e8"
+    },
+    {
+      "artifact_id": "ukc_2024",
+      "file_id": "1uSqYbrIePZX8-TPpMmglf-92PFFfa1Wk",
+      "destination": "UKC_2024.zip",
+      "expected_name": "UKC_2024.zip",
+      "expected_size": 2835313,
+      "sha256": "fafa0b24ecec70ecc3dafbc6897ffd6da21b167439bb22512d15c241b856563b"
+    },
+    {
+      "artifact_id": "ukc_2025",
+      "file_id": "1hvfajqx0L1fhiIMP_7A6LglL2ha1g_RY",
+      "destination": "UKC_2025.zip",
+      "expected_name": "UKC_2025.zip",
+      "expected_size": 2843565,
+      "sha256": "554f1bf8f72a48b9b6462e1b7d1c4448383ce078c3c9b420006bb21e8558dad5"
+    }
+  ],
+  "note": "Temporary read-only, pinned research input manifest for BRDB generation comparison. Never modifies Drive or CURRENT."
+}
