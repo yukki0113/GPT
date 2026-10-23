@@ -32,7 +32,7 @@ FIELDS = ("horse_id", "horse_name", "birth_date", "sex_code", "sire_name",
 ROLES = ("sire", "dam", "broodmare_sire")
 STATUSES = ("RESOLVED_EXACT", "RESOLVED_ALIAS", "NO_CANDIDATE",
             "MULTIPLE_CANDIDATES", "INSUFFICIENT_KEY", "INSUFFICIENT_GUARD", "CONFLICT")
-BUILDER_VERSION = "0.1.0"
+BUILDER_VERSION = "0.2.0"\nSENTINEL_DATES = {"99999999"}
 
 
 def sha256(path: Path) -> str:
@@ -79,7 +79,7 @@ def load_lineage(path: Path) -> list[dict[str, str]]:
 def ingest(con: sqlite3.Connection, paths: list[Path]) -> dict:
     con.execute("CREATE TABLE observation(horse_id TEXT, data_date TEXT, semantic_hash TEXT, archive TEXT, member TEXT, profile_json TEXT)")
     stats = {"archive_count": len(paths), "text_member_count": 0, "raw_observation_count": 0,
-             "invalid_record_count": 0, "source_archives": []}
+             "invalid_record_count": 0, "source_archives": [], "quarantined_date_records": []}
     buffer = []
     target_2025 = set()
     for archive in paths:
@@ -99,7 +99,7 @@ def ingest(con: sqlite3.Connection, paths: list[Path]) -> dict:
                         record = jrdb_ukc.parse_ukc_record(body)
                         if not record.horse_id or not re.fullmatch(r"\d{8}", record.data_date):
                             raise ValueError(f"invalid UKC identity/date {archive.name}:{member}:{line_no}")
-                        if archive.name == "UKC_2025.zip":
+                        if record.data_date in SENTINEL_DATES:\n                            stats["quarantined_date_records"].append({"horse_id": record.horse_id, "data_date": record.data_date, "archive": archive.name, "member": member, "line_no": line_no})\n                            continue\n                        try:\n                            datetime.strptime(record.data_date, "%Y%m%d")\n                        except ValueError as exc:\n                            raise ValueError(f"invalid UKC calendar date {archive.name}:{member}:{line_no}: {record.data_date}") from exc\n                        if archive.name == "UKC_2025.zip":
                             target_2025.add(record.horse_id)
                         buffer.append((record.horse_id, record.data_date, record.semantic_hash(), archive.name,
                                        member, json.dumps(asdict(record), ensure_ascii=False, sort_keys=True)))
@@ -207,7 +207,7 @@ def build(inputs: list[str], output_root: Path, lineage_path: Path = LINEAGE, al
     from data_storage.validate import validate
     archives = archives_from(inputs)
     identity = [(p.name, sha256(p)) for p in archives]
-    generation = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:16]
+    generation = hashlib.sha256(json.dumps({"builder_version": BUILDER_VERSION, "archives": identity}, sort_keys=True).encode()).hexdigest()[:16]
     destination = output_root / f"brdb-pedigree-generation-{generation}"
     if destination.exists():
         raise FileExistsError(destination)
@@ -215,7 +215,7 @@ def build(inputs: list[str], output_root: Path, lineage_path: Path = LINEAGE, al
     with tempfile.TemporaryDirectory(prefix="brdb-pedigree-") as tmp:
         stage = Path(tmp)
         con = sqlite3.connect(stage / "stage.sqlite")
-        source, target_ids = ingest(con, archives)
+        source, target_ids = ingest(con, archives)\n        if len(source["quarantined_date_records"]) != 8 and any(p.name == "UKC_1999.zip" for p in archives):\n            raise ValueError("unexpected sentinel count for 1999 source; review before building")
         profiles = reduce_profiles(con, generation)
         if len(profiles) != len({p["horse_id"] for p in profiles}):
             raise ValueError("nonunique horse_id")
