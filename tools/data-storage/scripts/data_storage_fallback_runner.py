@@ -192,19 +192,13 @@ def download_inputs(request: dict[str, Any], repository: str) -> None:
         raise RuntimeError("GH_TOKEN is required to download declared artifacts")
     for item in artifacts:
         destination = INPUTS / item["label"]
-    destination.mkdir(parents=True, exist_ok=True)
-    proc = run(
+        destination.mkdir(parents=True, exist_ok=True)
+        proc = run(
             [
-                "gh",
-                "run",
-                "download",
-                str(item["run_id"]),
-                "--repo",
-                repository,
-                "--name",
-                item["artifact_name"],
-                "--dir",
-                str(destination),
+                "gh", "run", "download", str(item["run_id"]),
+                "--repo", repository,
+                "--name", item["artifact_name"],
+                "--dir", str(destination),
             ],
             cwd=Path.cwd(),
         )
