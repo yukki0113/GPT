@@ -315,3 +315,9 @@ In particular:
 - Parquet schemas and hashes remain pinned;
 - threshold, as-of, population, parent/child, and leakage rules are unchanged;
 - a fallback run is not a justification to reinterpret a research result.
+
+## GPT-native Drive local input staging (opt-in)
+
+The fallback additionally accepts up to eight AES-GCM-encrypted Git Blob inputs via the optional staged_inputs Issue field. They share the input:LABEL placeholder namespace with input_artifacts. Their client, exact schema, one-time RSA secret configuration, safety boundaries, and verified use are specified in tools/data-storage/docs/DRIVE_GPT_ACTIONS_BRIDGE.md.
+
+The connected Drive plugin performs the authenticated source read on the GPT side; Actions reads **ciphertext** from GitHub and decrypts with a repository secret only within an ephemeral runner. Neither this extension nor its encrypted Git blobs authorize publishing private Drive plaintext or fetching authenticated Drive URLs in Actions.
