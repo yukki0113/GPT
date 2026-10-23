@@ -12,6 +12,7 @@ dependencies = [
   "pyarrow>=18,<26",
   "PyYAML>=6,<7",
   "gdown>=6.1,<7",
+  "cryptography>=42,<47",
 ]
 
 [project.scripts]
