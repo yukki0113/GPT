@@ -1,0 +1,140 @@
+name: TMP RRDB 2026-10-25 extract
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/tmp_rrdb_1025_extract_20261025.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r tools/data-storage/requirements.txt gdown
+
+      - name: Download canonical Drive inputs
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rrdb1025/input /tmp/rrdb1025/course-fit
+          gdown 10nbJd9wHwu-3iNqbXFfLzjquzfFirDJ_ -O /tmp/rrdb1025/input/PACI261025.zip
+          gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O /tmp/rrdb1025/input/RaceReviewDB_CURRENT.zip
+          gdown 1ljLg_jxVdZtpJ_Aqku0L93y8nwnfXUTQ -O /tmp/rrdb1025/input/course_fit_part1.zip
+          gdown 1yxP0EtPRmcTnrAgmgBMlAAj257r3pgYE -O /tmp/rrdb1025/input/course_fit_part2.zip
+          unzip -qo /tmp/rrdb1025/input/course_fit_part1.zip -d /tmp/rrdb1025/course-fit
+          unzip -qo /tmp/rrdb1025/input/course_fit_part2.zip -d /tmp/rrdb1025/course-fit
+
+      - name: Download audited RaceLap snapshot
+        uses: actions/download-artifact@v4
+        with:
+          name: tmp-rrdb-srb-refinement-38664393631
+          run-id: 38664393631
+          github-token: ${{ github.token }}
+          path: /tmp/rrdb1025/racelap
+
+      - name: Run canonical RRDB v0.5 reverse
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rrdb1025/work /tmp/rrdb1025/out
+          python horse-racing/jrdb/src/jrdb_recommendation_reverse.py \
+            --race-date 2026-10-25 \
+            --paci-zip /tmp/rrdb1025/input/PACI261025.zip \
+            --current-zip /tmp/rrdb1025/input/RaceReviewDB_CURRENT.zip \
+            --course-fit-root /tmp/rrdb1025/course-fit \
+            --race-lap-parquet /tmp/rrdb1025/racelap/race_lap_2024_2026.parquet \
+            --work-root /tmp/rrdb1025/work \
+            --output-json /tmp/rrdb1025/out/RRDB_v0_5_reverse_20261025.json
+
+      - name: Build detailed match CSV
+        run: |
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+          src = Path('/tmp/rrdb1025/out/RRDB_v0_5_reverse_20261025.json')
+          out = Path('/tmp/rrdb1025/out/RRDB_v0_5_Matches_20261025.csv')
+          payload = json.loads(src.read_text(encoding='utf-8'))
+          rows=[]
+          for item in payload.get('recommendations', []):
+              signals=item.get('signals') or []
+              source=item.get('source_run') or {}
+              rows.append({
+                  'date':payload.get('race_date'),
+                  'venue_code':str(item.get('venue_code') or '').zfill(2),
+                  'race_no':item.get('race_no'),
+                  'race_key':item.get('target_race_key'),
+                  'horse_no':item.get('horse_no'),
+                  'horse_name':item.get('horse_name_paci'),
+                  'matched_signal_count':item.get('matched_signal_count'),
+                  'matched_signal_ids':'|'.join(item.get('matched_signal_ids') or []),
+                  'matched_signal_labels':'|'.join(str(s.get('label') or '') for s in signals),
+                  'human_summary':item.get('human_summary'),
+                  'recommendation_comment':item.get('newspaper_comment'),
+                  'recommendation_version':item.get('contract_version'),
+                  'source_race_date':source.get('race_date'),
+                  'source_race_key':source.get('race_key'),
+              })
+          rows.sort(key=lambda r:(r['venue_code'],int(r['race_no'] or 0),int(r['horse_no'] or 0)))
+          fields=['date','venue_code','race_no','race_key','horse_no','horse_name','matched_signal_count','matched_signal_ids','matched_signal_labels','human_summary','recommendation_comment','recommendation_version','source_race_date','source_race_key']
+          with out.open('w',encoding='utf-8-sig',newline='') as f:
+              w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(rows)
+          print(json.dumps({'rows':len(rows),'output':str(out)},ensure_ascii=False))
+          PY
+
+      - name: Build PWA handoff CSV
+        run: |
+          python horse-racing/jrdb/src/build_rrdb_newspaper_handoff.py \
+            --reverse-json /tmp/rrdb1025/out/RRDB_v0_5_reverse_20261025.json \
+            --output-csv /tmp/rrdb1025/out/RRDB_v0_5_PWA_handoff_20261025.csv
+
+      - name: Print extraction summary
+        run: |
+          python - <<'PY'
+          import json, collections
+          from pathlib import Path
+          p=json.loads(Path('/tmp/rrdb1025/out/RRDB_v0_5_reverse_20261025.json').read_text(encoding='utf-8'))
+          recs=p.get('recommendations') or []
+          counts=collections.Counter()
+          for r in recs: counts.update(r.get('matched_signal_ids') or [])
+          print('RRDB_SUMMARY_JSON', json.dumps({
+            'status':p.get('status'),
+            'race_date':p.get('race_date'),
+            'contract':p.get('recommendation_contract_version'),
+            'source_generation_id':p.get('source_generation_id'),
+            'entrant_count':p.get('entrant_count'),
+            'recommendation_count':len(recs),
+            'no_history_count':p.get('no_history_count'),
+            'race_lap_max_date':((p.get('rear_srb_contract') or {}).get('race_lap_metadata') or {}).get('max_race_date'),
+            'signal_counts':dict(sorted(counts.items())),
+            'recommendations':[{
+              'venue_code':x.get('venue_code'),
+              'race_no':x.get('race_no'),
+              'horse_no':x.get('horse_no'),
+              'horse_name':x.get('horse_name_paci'),
+              'matched_signal_ids':x.get('matched_signal_ids'),
+              'matched_signal_count':x.get('matched_signal_count'),
+              'human_summary':x.get('human_summary'),
+              'recommendation_comment':x.get('newspaper_comment'),
+              'source_race_date':(x.get('source_run') or {}).get('race_date'),
+              'source_race_key':(x.get('source_run') or {}).get('race_key'),
+              'rear_srb':x.get('rear_srb')
+            } for x in recs]
+          }, ensure_ascii=False))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rrdb-v0-5-matches-20261025
+          path: /tmp/rrdb1025/out/
