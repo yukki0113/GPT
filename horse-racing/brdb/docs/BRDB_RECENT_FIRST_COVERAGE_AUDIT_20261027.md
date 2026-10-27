@@ -57,3 +57,16 @@ Run [#2209](https://github.com/yukki0113/GPT/issues/2209) / [40433677343](https:
 The report is a verified research result for **KYI annual archive entries**, not proof of race result existence or retrospective as-of-safe feature availability. Full-year 2025 master coverage cannot be described as 100%. The 2026 actual population remains unverified.
 
 **Next steps:** isolate 108 IDs with earliest/latest KYI `race_key_raw` and horse_name samples (diagnostics only, not fallback), cross-check all UKC years and archived profile records, then extend the entry audit across 2016–2025. Preserve the current generation and PWA.
+
+## 2025 missing 108: confirmed source gap
+
+[Issue #2210](https://github.com/yukki0113/GPT/issues/2210) / [Actions #40434315900](https://github.com/yukki0113/GPT/actions/runs/40434315900) PASS. Full file: `output/kyi_2025_missing_ukc_ids.json` in Actions artifact. It compares all 2025 KYI identifiers against all **27 raw UKC ZIP files** rather than only selected canonical BRDB profiles.
+
+- **108** of 11,930 unique 2025 KYI horse IDs absent from all archived 1999–2025 UKC source files.
+- All 108 IDs have prefix `23`. This is descriptive only: do not infer birth year/cause solely from prefix.
+- Each missing ID has an entry count and race-key/name sample in the audit; horse names are diagnostics, **never** a canonical join fallback.
+- Consequently the 108 gap is an **input coverage gap**, not a canonical reducer dropping records nor a newly introduced date sentinel bug. The source window/current-registration path needs investigation; do not silently synthesize pedigree facts.
+- 2024 full identifier join remains PASS; three horses' official line classifications require a separate row-level audit.
+- Proceed to resolve from separately verified contemporary profile source (2025/2026 UKC or allowed live registration source) and *then* retest 2025/2026 race-entry coverage. No claim that such a source has already been acquired.
+
+All actions read-only relative to Drive and production BRDB. Current `eeca93556584a5b8` has not been switched.
