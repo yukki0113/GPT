@@ -1,0 +1,12 @@
+test_direct_broodmare_sire_is_generation_two (test_audit_race_year_pedigree.AuditTest.test_direct_broodmare_sire_is_generation_two) ... ok
+test_entry_denominator_preserves_repeat_appearances (test_audit_race_year_pedigree.AuditTest.test_entry_denominator_preserves_repeat_appearances) ... ok
+test_future_parent_blocks_canonical_id_and_graph (test_audit_race_year_pedigree.AuditTest.test_future_parent_blocks_canonical_id_and_graph) ... ok
+test_future_profile_never_counts_names_or_codes (test_audit_race_year_pedigree.AuditTest.test_future_profile_never_counts_names_or_codes) ... ok
+test_missing_or_changed_inputs_fail_closed (test_audit_race_year_pedigree.AuditTest.test_missing_or_changed_inputs_fail_closed) ... ok
+test_reader_uses_selected_latest_observation (test_audit_race_year_pedigree.AuditTest.test_reader_uses_selected_latest_observation) ... ok
+test_unknown_name_never_falls_back_to_another_id (test_audit_race_year_pedigree.AuditTest.test_unknown_name_never_falls_back_to_another_id) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.005s
+
+OK
