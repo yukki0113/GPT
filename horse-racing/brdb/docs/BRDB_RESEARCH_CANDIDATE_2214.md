@@ -24,7 +24,7 @@ profiles on the chosen date fail the build. Annual facts win for existing IDs;
 additional daily IDs are never allowed to overwrite annual IDs.
 
 The four standard Parquet tables and `manifest.json` retain the v0.1 schema.
-`added_104.json`, `observation_history.json`, `relation_diff.json`, and
+`added_104.json`, `added_104.csv`, `observation_history.json`, `relation_diff.json`, and
 `audit.json` give row-level source, selection, parent resolution, and conflict
 evidence. The observation history records both the PACI archive date and UKC
 profile data date. The builder uses the existing guarded parent resolver and
