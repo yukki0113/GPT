@@ -32,7 +32,8 @@ FIELDS = ("horse_id", "horse_name", "birth_date", "sex_code", "sire_name",
 ROLES = ("sire", "dam", "broodmare_sire")
 STATUSES = ("RESOLVED_EXACT", "RESOLVED_ALIAS", "NO_CANDIDATE",
             "MULTIPLE_CANDIDATES", "INSUFFICIENT_KEY", "INSUFFICIENT_GUARD", "CONFLICT")
-BUILDER_VERSION = "0.2.0"\nSENTINEL_DATES = {"99999999"}
+BUILDER_VERSION = "0.2.0"
+SENTINEL_DATES = {"99999999"}
 
 
 def sha256(path: Path) -> str:
