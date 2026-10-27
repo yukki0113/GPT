@@ -1,0 +1,26 @@
+{
+  "issue": 2214,
+  "source_code_commit": "398a5be134afd9ac10e6ae250e98b9cb301bbd6e",
+  "base_generation_id": "c73cf76ad930b5f0",
+  "research_generation_id": "f409be3f5d11cb90",
+  "annual_archives": 27,
+  "paci_archives": 91,
+  "base_horses": 128754,
+  "research_horses": 128858,
+  "added_horses": 104,
+  "unmatched_horses": 4,
+  "observation_rows": 396,
+  "annual_profile_regression": "PASS",
+  "annual_relation_diff_count": 0,
+  "parent_id_resolved": {
+    "sire": 77,
+    "dam": 81,
+    "broodmare_sire": 60
+  },
+  "as_of_2025_exposed_count": 0,
+  "repeat_build_byte_equal": true,
+  "tests_passed": 70,
+  "github_actions_run": "NOT_RUN",
+  "full_artifact_sha256": "b67b9762db9704ab015fe877e27f50a342f6ad0828340047cd3690cc0eda4d5e",
+  "artifact_location": "approved blood_review Drive folder; private link delivered in task chat"
+}
