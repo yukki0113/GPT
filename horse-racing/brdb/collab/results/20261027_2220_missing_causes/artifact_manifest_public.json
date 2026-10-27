@@ -1,0 +1,130 @@
+{
+  "audit_manifest_sha256": "e8c668df9ac8f5ca528c15d231bf8d8893713ae5f92ca044d15b1f25f2dbcf4c",
+  "file_count": 30,
+  "file_name": "issue2220_missing_3794_causes_20261027.zip",
+  "files": {
+    "REPRODUCE.md": {
+      "sha256": "e690bacc7de8192214d18e2bca91cd25050024835bd6ba1c9f4dc01b5f7d13de",
+      "size_bytes": 5069
+    },
+    "SHA256SUMS.json": {
+      "sha256": "f946a760b97bbf0a7a68351b610d713b8e16c7d911641e9d2a55c3847aeb15c9",
+      "size_bytes": 2895
+    },
+    "audit/RESULT.md": {
+      "sha256": "bab9054aff91e3a38749818e4b80a8585ffced0aae57a14f2d13a98f2bee870e",
+      "size_bytes": 4913
+    },
+    "audit/annual_inventory.json": {
+      "sha256": "d8430096017c651c483c76923557e9c9754c6f4228fe8b7bb694cc0a8c378adc",
+      "size_bytes": 683407
+    },
+    "audit/daily_inventory.json": {
+      "sha256": "a4dfd8c7b5a020dc3149c367a496b538549abfb6edbef568f606d9f063dab2cd",
+      "size_bytes": 784150
+    },
+    "audit/entry_evidence.csv": {
+      "sha256": "aa8bc91499a95185e71afcb6eb6ff9bab3666b8e7e2a6881e587cd8ec6776eb9",
+      "size_bytes": 2642508
+    },
+    "audit/first_appearance_month.csv": {
+      "sha256": "335db72e56d3bb3243cba93c44c8480df4e6f569f953040ec3f8ea54d7bdefdc",
+      "size_bytes": 375
+    },
+    "audit/first_declared_new_class.csv": {
+      "sha256": "78c873a3ca806d593e4051c13ee9c91c91ee6ee15ff26e744af27c2b20804557",
+      "size_bytes": 128
+    },
+    "audit/first_month_birth_new_class_reason.csv": {
+      "sha256": "878f485b9a72e17502c393e925e0068dcee3661de9b1c1dbf7bffbb143809b04",
+      "size_bytes": 2002
+    },
+    "audit/input_errors.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "size_bytes": 3
+    },
+    "audit/kyi_replay_inventory.json": {
+      "sha256": "de0d03bb37d070bf9d81ba490b9fdf41dfc0b78b7f180df01654f9bf99038b95",
+      "size_bytes": 43592
+    },
+    "audit/manifest.json": {
+      "sha256": "e8c668df9ac8f5ca528c15d231bf8d8893713ae5f92ca044d15b1f25f2dbcf4c",
+      "size_bytes": 2818
+    },
+    "audit/missing_3794.csv": {
+      "sha256": "28aa047b5804cb15167f69a90e1ac25b53da3fabfd2efcac2d6d6fbcbf28353e",
+      "size_bytes": 2180204
+    },
+    "audit/missing_3794.json": {
+      "sha256": "f460529d8b6f996fe3290db30fbe6921e4404684d3c361d7ed56e2a3869a14ed",
+      "size_bytes": 7672901
+    },
+    "audit/monthly_active.csv": {
+      "sha256": "7e6f8c5cb40dda37fbe3ecf5da32e8c1ee7b585b91c47a7ae64d415e08122efc",
+      "size_bytes": 740
+    },
+    "audit/race_type_class_surface.csv": {
+      "sha256": "7e2c39c1f33ffdd97cd9c943786a0768d392319ecbe65d3a98820c373be2f828",
+      "size_bytes": 1658
+    },
+    "audit/source_observations.csv": {
+      "sha256": "0bcbd6e5b0c5115c60ab7133cc3d6f904bfbb49399ff7b71a5edcd48bc0f023d",
+      "size_bytes": 3281599
+    },
+    "audit/source_observations.jsonl": {
+      "sha256": "b498b83d03bb3cd535697aa8129fa2a530332876a3edb5702a6549e0a2f0f9b9",
+      "size_bytes": 11822897
+    },
+    "audit/summary.json": {
+      "sha256": "1cd9d2429f7480207a9d6ba8458a3d30bddbe3fb6e45175224a2215004dbd829",
+      "size_bytes": 21915
+    },
+    "audit/unknown_primary.csv": {
+      "sha256": "125bb8af3cc6c779e5d0d4ab8853be6d0337751010777b6f30e0595e22d08bc9",
+      "size_bytes": 1018
+    },
+    "audit/unknown_primary.json": {
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "size_bytes": 3
+    },
+    "inputs/issue2218_race_year_pedigree_audit_20261027.zip": {
+      "sha256": "e3e5ee8b7eca9c0b1bd17d648683307aee52d6b9922266da491eb1d6b7e0089b",
+      "size_bytes": 4869737
+    },
+    "run.log": {
+      "sha256": "6ab45a5d5cfdebb8ee18c48735cd0cd23c8ffa78b1bba3810582259c3e8c4b9c",
+      "size_bytes": 1381
+    },
+    "run_metadata.json": {
+      "sha256": "18b1c5ab60029338ff49076864e39156b4c61d93fb9e5eb5696a939b7d7e7cb9",
+      "size_bytes": 810
+    },
+    "source/audit_missing_daily_ukc_causes.py": {
+      "sha256": "af0961bb69f1d9f91debcc5388baf467c825a4f877f0f2f0e73cc2bd60ee00a0",
+      "size_bytes": 37408
+    },
+    "source/test_audit_missing_daily_ukc_causes.py": {
+      "sha256": "3523d456144dc6f23ab179492ca77fdf70f74cef7cd67a6d114ed0217ff4934e",
+      "size_bytes": 5178
+    },
+    "test.log": {
+      "sha256": "c086a0091e1707bc3a6061311c89feeacdc4882305077841e1fd452cc830b764",
+      "size_bytes": 1767
+    },
+    "verification.json": {
+      "sha256": "fdc8b3459d64a9d7170ab04149c0223dfd399278c02fa0e720b7def8bf159af5",
+      "size_bytes": 721
+    },
+    "verification.log": {
+      "sha256": "6c1399886ccba77898ef37302496edece561af03d165f2fcf2847d395795647c",
+      "size_bytes": 683
+    },
+    "verify_missing_causes.py": {
+      "sha256": "c3414b9294b84db7dbf5d0b61d3a8f9dc3d949ba5106962af08dfa834d169f62",
+      "size_bytes": 7151
+    }
+  },
+  "sha256": "ebaa9105dc426e15e4c724b2524eacb3fa14c87a08130c000de18911a1f89029",
+  "size_bytes": 9841045,
+  "source_code_commit": "2b35a85aa213b34de26d0ebc7117e7812ec2a990"
+}
