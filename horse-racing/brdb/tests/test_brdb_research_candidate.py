@@ -26,6 +26,16 @@ def observation(horse_id: str, data_date: str, archive_date: str, semantic_hash:
 
 
 class CandidateSelectionTest(unittest.TestCase):
+    def test_new_paci_can_extend_but_not_change_fixed_baseline(self):
+        baseline = [{"name": f"PACI26{n:04d}.zip", "sha256": str(n)}
+                    for n in range(91)]
+        added = {"name": "PACI270101.zip", "sha256": "new"}
+        candidate.checked_inventory(baseline + [added], baseline)
+        changed = [dict(x) for x in baseline] + [added]
+        changed[0]["sha256"] = "changed"
+        with self.assertRaisesRegex(ValueError, "baseline PACI changed"):
+            candidate.checked_inventory(changed, baseline)
+
     def test_latest_profile_and_history_are_deterministic(self):
         old = observation("12345678", "20260101", "20260104", "old")
         new = observation("12345678", "20260102", "20260111", "new")
