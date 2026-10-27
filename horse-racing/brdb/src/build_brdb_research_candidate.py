@@ -56,7 +56,7 @@ def scan_daily(paci_dir: Path, inventory: list[dict], found: set[str]):
     sentinel = []
     for item in sorted(inventory, key=lambda x: x["name"]):
         name = item["name"]
-        if name in inventory_names or not re.fullmatch(r"PACI26\d{4}\.zip", name):
+        if name in inventory_names or not re.fullmatch(r"PACI\d{6}\.zip", name):
             raise ValueError(f"invalid/duplicate PACI inventory name: {name}")
         inventory_names.add(name)
         path = paci_dir / name
@@ -139,8 +139,21 @@ def parquet_rows(path: Path):
         con.close()
 
 
+def checked_inventory(inventory: list[dict], baseline: list[dict]) -> None:
+    """Require every fixed #2212 PACI input unchanged; permit additional dates."""
+    if len(baseline) != 91 or len(inventory) < len(baseline):
+        raise ValueError("expected fixed 91-PACI baseline")
+    by_name = {x["name"]: x for x in inventory}
+    if len(by_name) != len(inventory):
+        raise ValueError("duplicate PACI inventory name")
+    for item in baseline:
+        if by_name.get(item["name"]) != item:
+            raise ValueError(f"baseline PACI changed/missing: {item['name']}")
+
+
 def build(base_dir: Path, annual_dir: Path, paci_dir: Path, inventory_path: Path,
-          audit_path: Path, denominator_path: Path, output_root: Path) -> dict:
+          audit_path: Path, denominator_path: Path, output_root: Path,
+          baseline_inventory_path: Path | None = None) -> dict:
     from data_storage.convert import convert
     from data_storage.validate import validate
 
@@ -166,8 +179,9 @@ def build(base_dir: Path, annual_dir: Path, paci_dir: Path, inventory_path: Path
     if len(found) != 104 or len(missing) != 4:
         raise ValueError("#2212 104/4 denominator mismatch")
     inventory = read_json(inventory_path)
-    if len(inventory) != 91:
-        raise ValueError("expected fixed 91-PACI inventory")
+    baseline_inventory_path = baseline_inventory_path or inventory_path
+    baseline_inventory = read_json(baseline_inventory_path)
+    checked_inventory(inventory, baseline_inventory)
     observations, daily, sentinel = scan_daily(paci_dir, inventory, found)
     for item in audit:
         if item["horse_id"] not in found:
@@ -178,7 +192,7 @@ def build(base_dir: Path, annual_dir: Path, paci_dir: Path, inventory_path: Path
         actual = {(x["archive"], x["archive_sha256"], x["member"],
                    x["line_number"], x["semantic_hash"])
                   for x in observations[item["horse_id"]]}
-        if actual != expected:
+        if not expected.issubset(actual):
             raise ValueError(f"#2212 observation provenance mismatch: {item['horse_id']}")
     identity = {"version": VERSION, "selection": SELECTION,
                 "code_sha256": base_builder.sha256(Path(__file__)),
@@ -186,6 +200,7 @@ def build(base_dir: Path, annual_dir: Path, paci_dir: Path, inventory_path: Path
                 "audit_sha256": base_builder.sha256(audit_path),
                 "denominator_sha256": base_builder.sha256(denominator_path),
                 "inventory_sha256": base_builder.sha256(inventory_path),
+                "baseline_inventory_sha256": base_builder.sha256(baseline_inventory_path),
                 "annual": annual, "daily": daily}
     generation = hashlib.sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()[:16]
     destination = output_root / f"brdb-pedigree-research-{generation}"
@@ -303,9 +318,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("base_generation", "annual_dir", "paci_dir", "inventory", "audit", "denominator", "output_root"):
         parser.add_argument("--" + name.replace("_", "-"), required=True, type=Path)
+    parser.add_argument("--baseline-inventory", type=Path,
+                        help="original 91-entry #2212 inventory; required when extending --inventory")
     args = parser.parse_args()
     print(json.dumps(build(args.base_generation, args.annual_dir, args.paci_dir,
-                           args.inventory, args.audit, args.denominator, args.output_root), ensure_ascii=False))
+                           args.inventory, args.audit, args.denominator, args.output_root,
+                           args.baseline_inventory), ensure_ascii=False))
 
 
 if __name__ == "__main__":
