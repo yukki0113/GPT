@@ -11,8 +11,10 @@ Run `src/build_brdb_research_candidate.py` with `--base-generation`,
 `--output-root`. The annual and PACI directories must contain files named in
 the supplied manifests. The command verifies their sizes and SHA-256 values.
 To add later PACI files, extend the audited inventory with their exact ZIP
-name, size, SHA-256, UKC member list, and UKC record count; then rebuild into
-a new output root. An existing generation directory is never overwritten.
+name, size, SHA-256, UKC member list, and UKC record count; pass the original
+91-entry inventory as `--baseline-inventory` when using an extended inventory.
+The fixed 91 entries must remain byte-for-byte equal. Then rebuild into a new
+output root. An existing generation directory is never overwritten.
 
 The candidate generation ID hashes the builder code, base manifest, audit,
 denominator, inventory, all source ZIP hashes, and the selection rule. The
