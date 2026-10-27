@@ -55,3 +55,9 @@ A later UKC snapshot can provide factual pedigree to **current** research, but i
 6. Continue 2016–2025 race-year join and historic-as-of audit before backtests, then approved region-root taxonomy and ancestor-presence search (Storm Cat/Halo).
 
 No requirement to finish every ancestor before supporting 2026 new-race lineage.
+
+## Test execution — verified
+
+[Issue #2211](https://github.com/yukki0113/GPT/issues/2211) completed **PASS**; [Actions run 40437877134](https://github.com/yukki0113/GPT/actions/runs/40437877134), source commit `8e8bfee09f954716871f3d475d008bc1d64aae6f`.
+The new `test_brdb_recent_ukc_recovery_overlay.py` verifies three fail-closed behaviors: source-backed + ID-only separation, contradictory same-date source rejection, and immutable output refusal on repeat.
+A separate local read of all 91 official PACI artifacts verified **104/104** recovered horses have three parent names and both official lineage code fields populated; these are **not yet matched to lineage master labels in an audited Reader**. Their availability in 2025 remains unverified. No production deployment, CURRENT cutover or source upload occurred.
