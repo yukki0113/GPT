@@ -263,7 +263,7 @@ def audit(missing_path: Path, inventory_path: Path, brdb_root: Path, *,
         "pedigree_field_change_horses": sum(bool(row["pedigree_changed_fields"]) for row in rows),
         "brdb_generation_id": reader.generation_id,
         "coverage_complete_for_inventoried_files": all(item["status"] == "SCANNED" for item in inspections),
-        "historical_2025_input_available": any(file["name"].startswith("PACI25") for file in files),
+        "paci_2025_input_available": any(file["name"].startswith("PACI25") for file in files),
         "annual_ukc_2025": annual_item,
         "annual_ukc_2025_matching_ids": len(annual_ids),
     }
