@@ -45,8 +45,7 @@ def sha256(path: Path) -> str:
 
 
 def dump(path: Path, value: object) -> None:
-    path.write_text(json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + "
-", encoding="utf-8")
+    path.write_text(json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
 
 
 def archives_from(paths: list[str]) -> list[Path]:
@@ -93,8 +92,7 @@ def ingest(con: sqlite3.Connection, paths: list[Path]) -> dict:
                 stats["text_member_count"] += 1
                 with z.open(member) as stream:
                     for line_no, line in enumerate(stream, 1):
-                        body = line.rstrip(b"\r
-")
+                        body = line.rstrip(b"\r\n")
                         stats["raw_observation_count"] += 1
                         if len(body) != jrdb_ukc.RECORD_LENGTH:
                             stats["invalid_record_count"] += 1
@@ -225,9 +223,7 @@ def build(inputs: list[str], output_root: Path, lineage_path: Path = LINEAGE, al
     with tempfile.TemporaryDirectory(prefix="brdb-pedigree-") as tmp:
         stage = Path(tmp)
         con = sqlite3.connect(stage / "stage.sqlite")
-        source, target_ids = ingest(con, archives)
-        if len(source["quarantined_date_records"]) != 8 and any(p.name == "UKC_1999.zip" for p in archives):
-            raise ValueError("unexpected sentinel count for 1999 source; review before building")
+        source, target_ids = ingest(con, archives)\n        if len(source["quarantined_date_records"]) != 8 and any(p.name == "UKC_1999.zip" for p in archives):\n            raise ValueError("unexpected sentinel count for 1999 source; review before building")
         profiles = reduce_profiles(con, generation)
         if len(profiles) != len({p["horse_id"] for p in profiles}):
             raise ValueError("nonunique horse_id")
