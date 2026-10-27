@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "kyi_2023",
+      "file_id": "1nPX4GJuQvq8K8yXpcYj_xRgqLPeDq-_K",
+      "destination": "KYI_2023.parquet",
+      "expected_name": "KYI_2023.parquet",
+      "expected_size": 5936231,
+      "sha256": "d68afa2d37e2b4308df8c1897279e6cd38f27fc83d66324b4222e4cff44ed0ce"
+    },
+    {
+      "artifact_id": "kyi_2024",
+      "file_id": "1ixpJ3NmOHwctiwg4x14xOVkDSoDhrv3g",
+      "destination": "KYI_2024.parquet",
+      "expected_name": "KYI_2024.parquet",
+      "expected_size": 5859260,
+      "sha256": "21d0d47337daa7c78f08e6e79fc41ee15eebed05630a3ff3ec6bca4d190340df"
+    },
+    {
+      "artifact_id": "kyi_2025",
+      "file_id": "1BsUYCalaMyVAZsjEa1R0i_YzsdzrvcJW",
+      "destination": "KYI_2025.parquet",
+      "expected_name": "KYI_2025.parquet",
+      "expected_size": 5914994,
+      "sha256": "55fdcc9fd03c70f284b028fa85ef3c6b2882071c685639621061ba146c0fa10b"
+    }
+  ]
+}
