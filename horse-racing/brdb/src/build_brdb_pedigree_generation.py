@@ -223,7 +223,9 @@ def build(inputs: list[str], output_root: Path, lineage_path: Path = LINEAGE, al
     with tempfile.TemporaryDirectory(prefix="brdb-pedigree-") as tmp:
         stage = Path(tmp)
         con = sqlite3.connect(stage / "stage.sqlite")
-        source, target_ids = ingest(con, archives)\n        if len(source["quarantined_date_records"]) != 8 and any(p.name == "UKC_1999.zip" for p in archives):\n            raise ValueError("unexpected sentinel count for 1999 source; review before building")
+        source, target_ids = ingest(con, archives)
+        if len(source["quarantined_date_records"]) != 8 and any(p.name == "UKC_1999.zip" for p in archives):
+            raise ValueError("unexpected sentinel count for 1999 source; review before building")
         profiles = reduce_profiles(con, generation)
         if len(profiles) != len({p["horse_id"] for p in profiles}):
             raise ValueError("nonunique horse_id")
