@@ -65,6 +65,16 @@ class ResearchReaderTest(unittest.TestCase):
         payloads["added_104.json"] = json.dumps([
             {"horse_id": f"{n:08d}", "first_observed_archive_date": "20260104"}
             for n in range(104)]).encode()
+        payloads["observation_history.json"] = json.dumps([
+            {"horse_id": f"{n:08d}", "archive_date": "20260104",
+             "selected": True}
+            for n in range(103)
+        ] + [
+            {"horse_id": "00000103", "archive_date": "20260104",
+             "selected": False},
+            {"horse_id": "00000103", "archive_date": "20260601",
+             "selected": True},
+        ]).encode()
         for name, value in payloads.items():
             (self.root / name).write_bytes(value)
         manifest = {"artifact_type": "brdb_pedigree", "generation_id": "abc123",
@@ -85,8 +95,29 @@ class ResearchReaderTest(unittest.TestCase):
         reader._reader.horse_pedigree = lambda horse_id: {"horse_id": horse_id}
         self.assertEqual(reader.horse_pedigree("00000000", as_of="20260104"),
                          {"horse_id": "00000000"})
+        # Existing v0.1 candidate data is latest-profile only. Never expose a
+        # June update in March, even though the horse first appeared in January.
+        self.assertIsNone(reader.horse_pedigree("00000103", as_of="20260301"))
+        self.assertEqual(reader.horse_pedigree("00000103", as_of="20260601"),
+                         {"horse_id": "00000103"})
+        reader._reader.profiles_for_horses = lambda ids: list(ids)
+        self.assertEqual(reader.profiles_for_horses(
+            ["00000000", "00000103"], as_of="20260301"), ["00000000"])
         with self.assertRaises(ValueError):
             reader.horse_pedigree("00000000", as_of="99999999")
+
+    def test_missing_selected_history_fails_closed(self):
+        history = [{"horse_id": f"{n:08d}", "archive_date": "20260104",
+                    "selected": True} for n in range(103)]
+        path = self.root / "observation_history.json"
+        path.write_text(json.dumps(history), encoding="utf-8")
+        manifest_path = self.root / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["output_sha256"]["observation_history.json"] = hashlib.sha256(
+            path.read_bytes()).hexdigest()
+        manifest_path.write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(BloodReviewReaderError, "selected history"):
+            ResearchPedigreeReader(self.root)
 
 
 if __name__ == "__main__":
