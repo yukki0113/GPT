@@ -339,6 +339,9 @@ def inspect(base, batch_id, *, persist=False):
 
 
 def seal(base, batch_id):
+    existing = load(path_for(base, batch_id) / "batch_manifest.json")
+    if existing.get("status") == SEALED:
+        raise FileExistsError("Immutable batch cohort already sealed")
     cfg = inspect(base, batch_id, persist=True)
     fail(cfg["status"] == "READY_TO_SEAL", "Batch stop condition not yet reached")
     directory = path_for(base, batch_id)
@@ -367,6 +370,16 @@ def seal(base, batch_id):
     return {**proof, "next_action": "COMPLETE"}
 
 
+def sync_active(base):
+    """Reconcile all active batches after a committed clean-blind T2."""
+    updated = []
+    for path in sorted((base / "batches").glob("*/batch_manifest.json")):
+        cfg = load(path)
+        if cfg.get("status") in ("RUNNING", "READY_TO_SEAL"):
+            updated.append(inspect(base, cfg["batch_id"], persist=True))
+    return {"active_batches": len(updated), "batches": updated}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--backtests-dir", type=Path, default=ROOT)
@@ -382,11 +395,14 @@ def main():
     for name in ("status", "sync", "seal"):
         a = sub.add_parser(name)
         a.add_argument("--batch-id", required=True)
+    sub.add_parser("sync-active")
     args = parser.parse_args()
     if args.command == "init":
         result = init(args.backtests_dir, args.batch_id, args.start_selection_id,
                       args.mode, args.target_count, args.target_confidence,
                       args.target_btday_count, args.max_btday_count)
+    elif args.command == "sync-active":
+        result = sync_active(args.backtests_dir)
     elif args.command == "seal":
         result = seal(args.backtests_dir, args.batch_id)
     else:
