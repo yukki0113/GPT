@@ -1,0 +1,120 @@
+name: RaceNote v0.5.5 r6 Batch Controller
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'init / status / sync / seal'
+        type: choice
+        required: true
+        options: [init, status, sync, seal]
+        default: status
+      batch_id:
+        description: 'V055-BATCH-...'
+        type: string
+        required: true
+      start_selection_id:
+        description: 'For init, e.g. BTDAY-0136'
+        type: string
+        required: false
+      mode:
+        description: 'Stop condition (init only)'
+        type: choice
+        required: false
+        options: [confidence_count, btday_count, either]
+        default: confidence_count
+      target_confidence:
+        description: 'A/B/C (init only)'
+        type: choice
+        required: false
+        options: [A, B, C]
+        default: A
+      target_count:
+        description: 'Confidence count target (init only)'
+        type: string
+        required: false
+      target_btday_count:
+        description: 'Day target (btday_count only)'
+        type: string
+        required: false
+      max_btday_count:
+        description: 'Safety day limit (either only)'
+        type: string
+        required: false
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-*/**/v055/turn2_summary.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-v055-batch-controller
+  cancel-in-progress: false
+
+jobs:
+  controller:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Deterministic batch operation (never calls a predictor)
+        env:
+          EVENT: ${{ github.event_name }}
+          OP: ${{ inputs.operation }}
+          BATCH_ID: ${{ inputs.batch_id }}
+          START_ID: ${{ inputs.start_selection_id }}
+          MODE: ${{ inputs.mode }}
+          CONFIDENCE: ${{ inputs.target_confidence }}
+          TARGET_COUNT: ${{ inputs.target_count }}
+          TARGET_DAYS: ${{ inputs.target_btday_count }}
+          MAX_DAYS: ${{ inputs.max_btday_count }}
+        run: |
+          set -euo pipefail
+          script="horse-racing/jrdb/src/racenote_v055_batch_controller.py"
+          if [[ "$EVENT" == "push" ]]; then
+            python "$script" sync-active | tee /tmp/batch-controller.json
+          elif [[ "$OP" == "init" ]]; then
+            args=(init --batch-id "$BATCH_ID" --start-selection-id "$START_ID" --mode "$MODE")
+            if [[ "$MODE" == "btday_count" ]]; then
+              args+=(--target-btday-count "$TARGET_DAYS")
+            else
+              args+=(--target-confidence "$CONFIDENCE" --target-count "$TARGET_COUNT")
+              if [[ "$MODE" == "either" ]]; then
+                args+=(--max-btday-count "$MAX_DAYS")
+              fi
+            fi
+            python "$script" "${args[@]}" | tee /tmp/batch-controller.json
+          else
+            python "$script" "$OP" --batch-id "$BATCH_ID" | tee /tmp/batch-controller.json
+          fi
+          {
+            echo '### RaceNote Batch Controller'
+            echo '```json'
+            python -m json.tool --no-ensure-ascii /tmp/batch-controller.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Commit batch state only
+        run: |
+          set -euo pipefail
+          if [[ ! -d horse-racing/jrdb/backtests/batches ]]; then
+            echo 'No batch manifests yet'
+            exit 0
+          fi
+          git add -A horse-racing/jrdb/backtests/batches/
+          if git diff --cached --quiet; then
+            echo 'Read-only action or no state change'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'RaceNote: advance v0.5.5 r6 batch controller'
+          git pull --rebase origin main
+          git push origin HEAD:main
