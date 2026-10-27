@@ -108,7 +108,7 @@ def test_confidence_target_whole_btday_and_immutable_seal(tmp_path):
     assert bc.inspect(tmp_path, "V055-BATCH-TEST")["next_action"] == "COMPLETE"
     with pytest.raises(ValueError, match="already exists|Another"):
         batch(tmp_path)
-    with pytest.raises(ValueError, match="Immutable"):
+    with pytest.raises(FileExistsError, match="Immutable"):
         bc.seal(tmp_path, "V055-BATCH-TEST")
 
 
@@ -140,6 +140,8 @@ def test_pending_phases_and_clean_blind_guard(tmp_path):
     root = fixture_day(tmp_path, "BTDAY-0136", "2025-01-01", ["A"], pred_only=True)
     assert bc.inspect(tmp_path, "V055-BATCH-TEST")["next_action"] == "T2_CONFIDENCE"
     write(root / "confidence_frozen/day_handoff.json", {"status": bc.CONF})
+    assert bc.inspect(tmp_path, "V055-BATCH-TEST")["next_action"] == "T2_VERIFY"
+    write(root / "turn2_summary.json", {"status": bc.DONE, "result_opened": True})
     with pytest.raises(ValueError, match="Clean-blind"):
         bc.inspect(tmp_path, "V055-BATCH-TEST")
 
