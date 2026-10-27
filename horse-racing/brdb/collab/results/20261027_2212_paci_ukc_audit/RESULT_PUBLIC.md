@@ -10,7 +10,7 @@ Source main: `19d755988efc10d072789fb0224b1841546ab9b6`
 
 Drive canonical folder `1zFajenPU5jxInZCcmqZzkgiaYil3MD8r` を直接列挙し、91件を取得。すべて2026年の `PACI26*.zip`（2026-01-04〜2026-10-25）で、2025年分は0件。列挙91件はfolder fetchの100件上限より少ない。キーワード検索0件を不存在の根拠には使わなかった。
 
-91/91 ZIPを走査、UKC member 91、39,543レコード、パースエラー0。各ZIPのDrive ID、サイズ、SHA-256、member、レコード数は `paci_inventory_audit.json` に記録した。列挙済みファイルの取得不能・破損は0件。未列挙の日付にファイルが存在しないとは推定しない。
+91/91 ZIPを走査、UKC member 91、39,543レコード、パースエラー0。各ZIPのDrive ID、サイズ、SHA-256、member、レコード数はローカル監査artifactの `paci_inventory_audit.json` に記録した。列挙済みファイルの取得不能・破損は0件。未列挙の日付にファイルが存在しないとは推定しない。
 
 ## 108頭の結果
 
