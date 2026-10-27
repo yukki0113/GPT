@@ -69,13 +69,16 @@ jobs:
           PY
           mkdir -p /tmp/historical/analysis
           tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
-      - name: Materialize SHA-pinned current RRDB
+      - name: Materialize verified RRDB CURRENT (per-run digest)
         run: |
           set -euo pipefail
           ok=false
           for attempt in 1 2 3 4 5; do
             rm -rf /tmp/current-rrdb
-            if python tools/gpt_io/public_drive/fetch.py               --manifest horse-racing/jrdb/config/public_drive/racenote_btday0115_rrdb_current_20261020.json               --artifact rrdb_current               --output-root /tmp/current-rrdb               --receipt /tmp/current-rrdb/receipt.json; then
+            mkdir -p /tmp/current-rrdb
+            if python horse-racing/jrdb/src/racenote_fetch_rrdb_current.py \
+                --output /tmp/current-rrdb/rrdb.zip \
+                --receipt /tmp/current-rrdb/receipt.json; then
               ok=true
               break
             fi
