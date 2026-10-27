@@ -30,4 +30,4 @@ BRDB CURRENT generation `eeca93556584a5b8` の既存resolver・祖先グラフ�
 
 `PYTHONPATH=/workspace/scratch/brdb-pylibs python -m unittest discover -s horse-racing/brdb/tests -q` → **66 PASS、0 FAIL、0 ERROR**。Python 3.12.14、DuckDB 1.1.3、PyArrow 25.0.1。既存 `jrdb_ukc.parse_ukc_record` と `brdb_parent_relation` / `brdb_ancestor_graph` を使用。
 
-行別108件のJSON・CSV・Parquetと元入力を含む監査ZIPは承認済みのDrive `blood_review` フォルダに保存した。取得リンクは依頼者にこの会話で直接提示する。アップロード後の再取得SHA-256は `8c7d6ac9418a42331db0bccbe9ccf69977352a3c452901a85177f695ca0f81b6` で元ZIPと一致。GitHubブランチにはコード・テスト・集計を置く。2026年UKCでの発見は2025年時点の利用可能性を証明しない。BRDB CURRENT、PWA、Newspaper、RaceNote、Blood Review v0.1は変更していない。
+行別108件のJSON・CSV・Parquetと元入力を含む監査ZIPは承認済みのDrive `blood_review` フォルダに保存した。取得リンクは依頼者にこの会話で直接提示する。アップロード後に同じDriveファイルIDから再取得し、ZIPのSHA-256が元ファイルと一致することを確認した。GitHubブランチにはコード・テスト・集計を置く。2026年UKCでの発見は2025年時点の利用可能性を証明しない。BRDB CURRENT、PWA、Newspaper、RaceNote、Blood Review v0.1は変更していない。
