@@ -154,6 +154,16 @@ def parent_audit(record: dict, master: HorseMasterIndex, aliases: AliasIndex,
     return output
 
 
+def ukc_input_gap(files: list[dict], inspections: list[dict],
+                  annual_item: dict | None) -> bool:
+    """Annual UKC_2025 is the collected UKC members of 2025 daily PACI."""
+    annual_complete = annual_item is not None and annual_item["status"] == "SCANNED"
+    has_2025_paci = any(file["name"].startswith("PACI25") for file in files)
+    has_2026_paci = any(file["name"].startswith("PACI26") for file in files)
+    return (not (annual_complete or has_2025_paci) or not has_2026_paci
+            or any(item["status"] != "SCANNED" for item in inspections))
+
+
 def audit(missing_path: Path, inventory_path: Path, brdb_root: Path, *,
           annual_ukc_2025: Path | None = None,
           annual_ukc_2025_drive_id: str | None = None,
@@ -187,8 +197,7 @@ def audit(missing_path: Path, inventory_path: Path, brdb_root: Path, *,
         annual_ids = {match["record"]["horse_id"] for match in annual_matches}
         for match in annual_matches:
             observations[match["record"]["horse_id"]].append(match)
-    any_gap = (not any(f["name"].startswith("PACI25") for f in files)
-               or any(f["status"] != "SCANNED" for f in inspections))
+    any_gap = ukc_input_gap(files, inspections, annual_item)
     rows = []
     for source in missing:
         horse_id = source["horse_id"]
@@ -215,7 +224,7 @@ def audit(missing_path: Path, inventory_path: Path, brdb_root: Path, *,
         row = {
             "horse_id": horse_id, "kyi_horse_name_sample": source.get("horse_name_sample"),
             "status": status, "status_reason": ("exact_horse_id_in_UKC" if hits else
-                "2025_PACI_absent_or_ZIP_gap" if any_gap else "absent_in_all_scanned_UKC"),
+                "2025_UKC_or_PACI_input_gap" if any_gap else "absent_in_2025_annual_and_2026_PACI_UKC"),
             "annual_ukc_2025_status": (
                 "NOT_SCANNED" if annual_item is None else
                 "FOUND" if horse_id in annual_ids else
@@ -264,6 +273,11 @@ def audit(missing_path: Path, inventory_path: Path, brdb_root: Path, *,
         "brdb_generation_id": reader.generation_id,
         "coverage_complete_for_inventoried_files": all(item["status"] == "SCANNED" for item in inspections),
         "paci_2025_input_available": any(file["name"].startswith("PACI25") for file in files),
+        "ukc_2025_coverage_source": (
+            "annual_UKC_2025" if annual_item and annual_item["status"] == "SCANNED"
+            else "daily_PACI" if any(file["name"].startswith("PACI25") for file in files)
+            else None),
+        "ukc_scan_complete_for_requested_years": not any_gap,
         "annual_ukc_2025": annual_item,
         "annual_ukc_2025_matching_ids": len(annual_ids),
     }
