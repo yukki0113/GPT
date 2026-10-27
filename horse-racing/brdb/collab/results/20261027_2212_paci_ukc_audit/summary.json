@@ -1,7 +1,6 @@
 {
   "denominator": 108,
   "denominator_sha256": "c3361fc60fee3e752b7e34f51b108462dfd8ba10a1b7bfafa63b5bf375acc830",
-  "folder_id": "1zFajenPU5jxInZCcmqZzkgiaYil3MD8r",
   "folder_returned_count": 91,
   "inventoried_zip_count": 91,
   "zip_year_counts": {
@@ -44,5 +43,15 @@
   "pedigree_field_change_horses": 0,
   "brdb_generation_id": "eeca93556584a5b8",
   "coverage_complete_for_inventoried_files": true,
-  "historical_2025_input_available": false
+  "historical_2025_input_available": false,
+  "annual_ukc_2025_matching_ids": 0,
+  "annual_ukc_2025": {
+    "name": "UKC_2025.zip",
+    "size_bytes": 2843565,
+    "sha256": "554f1bf8f72a48b9b6462e1b7d1c4448383ce078c3c9b420006bb21e8558dad5",
+    "ukc_record_count": 47239,
+    "parse_errors": 0,
+    "status": "SCANNED",
+    "member_count": 109
+  }
 }
