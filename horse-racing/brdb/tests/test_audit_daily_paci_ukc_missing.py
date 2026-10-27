@@ -9,7 +9,7 @@ import zipfile
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
-from audit_daily_paci_ukc_missing import fixed_ids, scan_one
+from audit_daily_paci_ukc_missing import fixed_ids, scan_one, ukc_input_gap
 
 
 class PACIMissingAuditTest(unittest.TestCase):
@@ -64,6 +64,14 @@ class PACIMissingAuditTest(unittest.TestCase):
             self.assertEqual(inspected["status"], "SCANNED")
             self.assertEqual(inspected["ukc_members"], ["UKC250105.txt"])
             self.assertEqual(len(matches), 1)
+
+    def test_annual_ukc_closes_2025_ukc_input_gap(self):
+        files = [{"name": "PACI260104.zip"}]
+        inspections = [{"status": "SCANNED"}]
+        self.assertTrue(ukc_input_gap(files, inspections, None))
+        self.assertFalse(ukc_input_gap(files, inspections, {"status": "SCANNED"}))
+        self.assertTrue(ukc_input_gap(files, inspections, {"status": "PARSE_ERROR"}))
+        self.assertTrue(ukc_input_gap(files, [{"status": "READ_ERROR"}], {"status": "SCANNED"}))
 
 
 if __name__ == "__main__":
