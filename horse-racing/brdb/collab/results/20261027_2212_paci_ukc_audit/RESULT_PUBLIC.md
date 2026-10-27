@@ -10,7 +10,7 @@ Source main: `19d755988efc10d072789fb0224b1841546ab9b6`
 
 Drive canonical folder `1zFajenPU5jxInZCcmqZzkgiaYil3MD8r` を直接列挙し、91件を取得。すべて2026年の `PACI26*.zip`（2026-01-04〜2026-10-25）で、2025年分は0件。列挙91件はfolder fetchの100件上限より少ない。キーワード検索0件を不存在の根拠には使わなかった。
 
-91/91 ZIPを走査、UKC member 91、39,543レコード、パースエラー0。各ZIPのDrive ID、サイズ、SHA-256、member、レコード数はローカル監査artifactの `paci_inventory_audit.json` に記録した。列挙済みファイルの取得不能・破損は0件。未列挙の日付にファイルが存在しないとは推定しない。
+91/91 ZIPを走査、UKC member 91、39,543レコード、パースエラー0。各ZIPのDrive ID、サイズ、SHA-256、member、レコード数は `paci_inventory_audit.json` に記録した。列挙済みファイルの取得不能・破損は0件。未列挙の日付にファイルが存在しないとは推定しない。
 
 ## 108頭の結果
 
@@ -26,6 +26,6 @@ BRDB CURRENT generation `eeca93556584a5b8` の既存resolver・祖先グラフ�
 
 ## 検証・制限
 
-`PYTHONPATH=/workspace/scratch/brdb-pylibs python -m unittest discover -s horse-racing/brdb/tests -q` → **41 PASS、0 FAIL、0 ERROR**。Python 3.12.14、DuckDB 1.1.3、PyArrow 25.0.1。既存 `jrdb_ukc.parse_ukc_record` と `brdb_parent_relation` / `brdb_ancestor_graph` を使用。
+`PYTHONPATH=/workspace/scratch/brdb-pylibs python -m unittest discover -s horse-racing/brdb/tests -q` → **64 PASS、0 FAIL、0 ERROR**。Python 3.12.14、DuckDB 1.1.3、PyArrow 25.0.1。既存 `jrdb_ukc.parse_ukc_record` と `brdb_parent_relation` / `brdb_ancestor_graph` を使用。
 
 行別108件のJSON・CSV・Parquetと元入力を含む監査ZIPはローカル成果物として保持。GitHubへの行別詳細データ登録は自動承認審査が拒否したため、このブランチには集計とZIP inventoryのみを置く。2025年PACIが正式にmaterializeされたら、同じ108 IDで再走査が必要。BRDB CURRENT、PWA、Newspaper、RaceNote、Blood Review v0.1は変更していない。
