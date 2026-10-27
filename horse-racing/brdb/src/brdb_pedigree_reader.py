@@ -65,18 +65,19 @@ def _safe_relative(root: Path, relative: str) -> Path:
 class BloodReviewReader:
     """Query one validated BRDB pedigree CURRENT root through DuckDB."""
 
-    def __init__(self, root: Path, *, verify_hashes: bool = True) -> None:
+    def __init__(self, root: Path, *, verify_hashes: bool = True,
+                 research_generation: bool = False) -> None:
         self.root = Path(root).resolve()
-        current = _read_json(self.root / CURRENT_FILENAME)
+        current = None if research_generation else _read_json(self.root / CURRENT_FILENAME)
 
-        if current.get("status") != "CURRENT":
+        if current is not None and current.get("status") != "CURRENT":
             raise BloodReviewReaderError("BRDB current pointer is not CURRENT")
-        if current.get("artifact_type") != "brdb_pedigree":
+        if current is not None and current.get("artifact_type") != "brdb_pedigree":
             raise BloodReviewReaderError("unexpected BRDB artifact type")
-        if current.get("reader_contract_version") != READER_CONTRACT_VERSION:
+        if current is not None and current.get("reader_contract_version") != READER_CONTRACT_VERSION:
             raise BloodReviewReaderError("unsupported BRDB reader contract version")
 
-        manifest_ref = current.get("manifest")
+        manifest_ref = "manifest.json" if research_generation else current.get("manifest")
         if not isinstance(manifest_ref, str):
             raise BloodReviewReaderError("BRDB current has no manifest")
         manifest_path = _safe_relative(self.root, manifest_ref)
@@ -88,7 +89,9 @@ class BloodReviewReader:
             raise BloodReviewReaderError("unexpected BRDB manifest artifact type")
         if self.manifest.get("validation_status") != "PASS":
             raise BloodReviewReaderError("BRDB manifest is not PASS")
-        if self.manifest.get("generation_id") != current.get("generation_id"):
+        if research_generation and self.manifest.get("research_only") is not True:
+            raise BloodReviewReaderError("explicit research generation required")
+        if current is not None and self.manifest.get("generation_id") != current.get("generation_id"):
             raise BloodReviewReaderError("BRDB current/manifest generation mismatch")
 
         self.generation_id = _text(self.manifest.get("generation_id"))
