@@ -44,7 +44,7 @@ jobs:
               text=True).splitlines()
           ids=[]
           for file in changes:
-              m=re.fullmatch(r'horse-racing/jrdb/backtests/requests/(BTDAY-(\\d{4}))\\.v055r6-turn1',file)
+              m=re.fullmatch(r'horse-racing/jrdb/backtests/requests/(BTDAY-(\d{4}))\.v055r6-turn1',file)
               if m:
                   ids.append((m.group(1),int(m.group(2))))
           if len(ids)!=1:
@@ -52,7 +52,7 @@ jobs:
           sid, number=ids[0]
           if number<=137:
               print(f'SKIP_LEGACY_REQUEST {sid}')
-              with open(os.environ['GITHUB_ENV'],'a') as f: f.write('SKIP_T1=true\\n')
+              with open(os.environ['GITHUB_ENV'],'a') as f: f.write('SKIP_T1=true\n')
               raise SystemExit(0)
           path=Path('horse-racing/jrdb/backtests')/sid/'selection.json'
           selection=json.loads(path.read_text(encoding='utf-8'))
@@ -61,16 +61,16 @@ jobs:
           if len(selection.get('sources',[]))!=1 or selection['sources'][0].get('source_mode')!='historical_warehouse':
               raise SystemExit('Shared historical T1 requires historical_warehouse source')
           date=selection['dates'][0]
-          if not re.fullmatch(r'20\\d{2}-\\d{2}-\\d{2}',date):
+          if not re.fullmatch(r'20\d{2}-\d{2}-\d{2}',date):
               raise SystemExit('Invalid target date')
           target=Path('horse-racing/jrdb/backtests')/sid/date.replace('-','')
           if target.exists():
               raise SystemExit(f'Immutable T1 already exists: {target}')
           with open(os.environ['GITHUB_ENV'],'a') as f:
-              f.write(f'BTDAY_ID={sid}\\n')
-              f.write(f'BTDAY_TARGET_DATE={date}\\n')
-              f.write(f'BTDAY_DATE_RAW={date.replace("-","")}\\n')
-              f.write(f'TARGET={target}\\n')
+              f.write(f'BTDAY_ID={sid}\n')
+              f.write(f'BTDAY_TARGET_DATE={date}\n')
+              f.write(f'BTDAY_DATE_RAW={date.replace("-","")}\n')
+              f.write(f'TARGET={target}\n')
           print(f'BTDAY_REQUEST_ACCEPTED {sid} {date}')
           PY
       - name: Install dependencies
