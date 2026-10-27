@@ -50,6 +50,21 @@ class PACIMissingAuditTest(unittest.TestCase):
             self.assertEqual(inspected["parse_errors"], 1)
             self.assertEqual(matches, [])
 
+    def test_annual_2025_ukc_is_scanned_separately(self):
+        record = bytearray(b" " * 290)
+        record[0:8] = b"23100017"
+        record[268:276] = b"20250105"
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "UKC_2025.zip"
+            with zipfile.ZipFile(path, "w") as archive:
+                archive.writestr("UKC250105.txt", bytes(record) + b"\r\n")
+            file = {"id": "annual-id", "name": path.name, "path": str(path),
+                    "expected_bytes": path.stat().st_size}
+            inspected, matches = scan_one(file, {"23100017"})
+            self.assertEqual(inspected["status"], "SCANNED")
+            self.assertEqual(inspected["ukc_members"], ["UKC250105.txt"])
+            self.assertEqual(len(matches), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
