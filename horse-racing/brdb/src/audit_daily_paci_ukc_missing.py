@@ -49,7 +49,8 @@ def scan_one(file: dict, wanted: set[str]) -> tuple[dict, list[dict]]:
             "ukc_record_count": 0, "parse_errors": 0, "status": "UNVERIFIED_INPUT_GAP"}
     matches = []
     try:
-        if not re.fullmatch(r"PACI(?:25|26)\d{4}\.zip", file["name"]):
+        if not (re.fullmatch(r"PACI(?:25|26)\d{4}\.zip", file["name"])
+                or file["name"] == "UKC_2025.zip"):
             raise ValueError("name_outside_2025_2026_scope")
         item["size_bytes"] = path.stat().st_size
         if item["size_bytes"] != file["expected_bytes"]:
@@ -153,7 +154,10 @@ def parent_audit(record: dict, master: HorseMasterIndex, aliases: AliasIndex,
     return output
 
 
-def audit(missing_path: Path, inventory_path: Path, brdb_root: Path) -> tuple[dict, list[dict], list[dict]]:
+def audit(missing_path: Path, inventory_path: Path, brdb_root: Path, *,
+          annual_ukc_2025: Path | None = None,
+          annual_ukc_2025_drive_id: str | None = None,
+          annual_ukc_2025_expected_bytes: int | None = None) -> tuple[dict, list[dict], list[dict]]:
     missing_bytes = missing_path.read_bytes()
     missing = fixed_ids(json.loads(missing_bytes))
     wanted = {row["horse_id"] for row in missing}
@@ -169,6 +173,19 @@ def audit(missing_path: Path, inventory_path: Path, brdb_root: Path) -> tuple[di
         item, matches = scan_one(file, wanted)
         inspections.append(item)
         for match in matches:
+            observations[match["record"]["horse_id"]].append(match)
+    annual_item = None
+    annual_ids: set[str] = set()
+    if annual_ukc_2025 is not None:
+        if not annual_ukc_2025_expected_bytes or not annual_ukc_2025_drive_id:
+            raise ValueError("annual UKC requires Drive ID and expected size")
+        annual_item, annual_matches = scan_one({
+            "name": "UKC_2025.zip", "id": annual_ukc_2025_drive_id or "",
+            "path": str(annual_ukc_2025),
+            "expected_bytes": annual_ukc_2025_expected_bytes,
+        }, wanted)
+        annual_ids = {match["record"]["horse_id"] for match in annual_matches}
+        for match in annual_matches:
             observations[match["record"]["horse_id"]].append(match)
     any_gap = (not any(f["name"].startswith("PACI25") for f in files)
                or any(f["status"] != "SCANNED" for f in inspections))
@@ -199,6 +216,11 @@ def audit(missing_path: Path, inventory_path: Path, brdb_root: Path) -> tuple[di
             "horse_id": horse_id, "kyi_horse_name_sample": source.get("horse_name_sample"),
             "status": status, "status_reason": ("exact_horse_id_in_UKC" if hits else
                 "2025_PACI_absent_or_ZIP_gap" if any_gap else "absent_in_all_scanned_UKC"),
+            "annual_ukc_2025_status": (
+                "NOT_SCANNED" if annual_item is None else
+                "FOUND" if horse_id in annual_ids else
+                "NOT_FOUND_IN_SCANNED" if annual_item["status"] == "SCANNED" else
+                "UNVERIFIED_INPUT_GAP"),
             "observation_count": len(hits),
             "distinct_profile_versions": len({hit["semantic_hash"] for hit in hits}),
             "conflict_history": len({hit["semantic_hash"] for hit in hits}) > 1,
@@ -242,6 +264,8 @@ def audit(missing_path: Path, inventory_path: Path, brdb_root: Path) -> tuple[di
         "brdb_generation_id": reader.generation_id,
         "coverage_complete_for_inventoried_files": all(item["status"] == "SCANNED" for item in inspections),
         "historical_2025_input_available": any(file["name"].startswith("PACI25") for file in files),
+        "annual_ukc_2025": annual_item,
+        "annual_ukc_2025_matching_ids": len(annual_ids),
     }
     return summary, rows, inspections
 
@@ -251,9 +275,15 @@ def main() -> None:
     parser.add_argument("--missing", type=Path, required=True)
     parser.add_argument("--inventory", type=Path, required=True)
     parser.add_argument("--brdb-root", type=Path, required=True)
+    parser.add_argument("--annual-ukc-2025", type=Path)
+    parser.add_argument("--annual-ukc-2025-drive-id")
+    parser.add_argument("--annual-ukc-2025-expected-bytes", type=int)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    summary, rows, inspections = audit(args.missing, args.inventory, args.brdb_root)
+    summary, rows, inspections = audit(args.missing, args.inventory, args.brdb_root,
+                                       annual_ukc_2025=args.annual_ukc_2025,
+                                       annual_ukc_2025_drive_id=args.annual_ukc_2025_drive_id,
+                                       annual_ukc_2025_expected_bytes=args.annual_ukc_2025_expected_bytes)
     args.output.mkdir(parents=True, exist_ok=True)
     for name, value in (("summary.json", summary), ("missing_108_audit.json", rows),
                         ("paci_inventory_audit.json", inspections)):
