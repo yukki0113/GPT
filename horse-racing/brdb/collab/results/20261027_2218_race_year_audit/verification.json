@@ -1,0 +1,19 @@
+{
+  "csv_reaggregation_matches_summary": true,
+  "entries_per_snapshot": {
+    "BASE": 39543,
+    "CURRENT": 39543,
+    "RESEARCH": 39543
+  },
+  "future_selected_profile_observations_exposed": 0,
+  "horses_per_snapshot": {
+    "BASE": 10680,
+    "CURRENT": 10680,
+    "RESEARCH": 10680
+  },
+  "manifest_sha256": "2837ca56e21e6b4db38c8a4a2e95398ee6c2949fbf1218b258085dd6423a0f6b",
+  "monthly_entry_denominators_match": true,
+  "output_sha256_verified": 12,
+  "paci_zip_count": 91,
+  "status": "PASS"
+}
