@@ -1,0 +1,27 @@
+name: RaceNote v0.5.5 r6 shared T1 tests
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/racenote_v055_r6_btday_turn1_shared.yml'
+      - 'horse-racing/jrdb/tests/test_racenote_v055_shared_t1.py'
+      - 'horse-racing/jrdb/src/racenote_fetch_rrdb_current.py'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/racenote_v055_r6_btday_turn1_shared.yml'
+      - 'horse-racing/jrdb/tests/test_racenote_v055_shared_t1.py'
+      - 'horse-racing/jrdb/src/racenote_fetch_rrdb_current.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install pytest
+      - run: python -m pytest -q horse-racing/jrdb/tests/test_racenote_v055_shared_t1.py
