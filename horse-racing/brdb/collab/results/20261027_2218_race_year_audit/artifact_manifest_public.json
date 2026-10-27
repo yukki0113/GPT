@@ -1,0 +1,130 @@
+{
+  "audit_manifest_sha256": "2837ca56e21e6b4db38c8a4a2e95398ee6c2949fbf1218b258085dd6423a0f6b",
+  "file_count": 30,
+  "file_name": "issue2218_race_year_pedigree_audit_20261027.zip",
+  "files": {
+    "REPRODUCE.md": {
+      "sha256": "ad4489ece559a9659e77e6e190dfdde5d868afd2f55513b5582875ae10def7bc",
+      "size_bytes": 3687
+    },
+    "SHA256SUMS.json": {
+      "sha256": "78f0c6086a3f02798915116d0f436a6c02f6fe23d1e4e856ef049ea5a4036e2c",
+      "size_bytes": 2840
+    },
+    "audit/RESULT.md": {
+      "sha256": "f45d445305e2086c2fa64190563ad4b51f692dc523738848b109d5d20c78dd6a",
+      "size_bytes": 2621
+    },
+    "audit/annual_inventory.json": {
+      "sha256": "a24f317f3d1d7c9b053c8d0d2eb5813878592a4e210e63fdf2504dcb6a1802ce",
+      "size_bytes": 338316
+    },
+    "audit/annual_selected_observations.csv": {
+      "sha256": "e5b9358de42bbb73ace762b0b94fed258fb577e9ac3ef1c8f7dc1cd1ec15bc16",
+      "size_bytes": 1280041
+    },
+    "audit/daily_104_contribution.csv": {
+      "sha256": "c83cfce57bcbca9ddb98d120c10969d82e6cd6cbfb4dcf2776c14bb4c8c9fae5",
+      "size_bytes": 6764
+    },
+    "audit/entries.csv": {
+      "sha256": "6147b3d6757b3cd8da956928b49b70927ef3e120bee40b5b50da35c6aefb564e",
+      "size_bytes": 22893255
+    },
+    "audit/generation_differences.csv": {
+      "sha256": "3af799bc8249da0310829736efa40c4f35eefcbae821d5b6dddf520803b88533",
+      "size_bytes": 377974
+    },
+    "audit/horses.csv": {
+      "sha256": "bda6ed7d79f51485d689d31f75554ce8209f1e102826dac0ba7987233673763e",
+      "size_bytes": 8275938
+    },
+    "audit/input_inventory.json": {
+      "sha256": "de0d03bb37d070bf9d81ba490b9fdf41dfc0b78b7f180df01654f9bf99038b95",
+      "size_bytes": 43592
+    },
+    "audit/manifest.json": {
+      "sha256": "2837ca56e21e6b4db38c8a4a2e95398ee6c2949fbf1218b258085dd6423a0f6b",
+      "size_bytes": 4573
+    },
+    "audit/missing_horses.csv": {
+      "sha256": "8b2552586f2b52c45ed1e09ebea1030c8463f0acff868c4186a081582e03337e",
+      "size_bytes": 693418
+    },
+    "audit/monthly.json": {
+      "sha256": "768043de4edab17626f03819b4373050f5ffef3bd8e673144121435e2c4df492",
+      "size_bytes": 705352
+    },
+    "audit/reader_as_of_checks.csv": {
+      "sha256": "774959ee8441fd2a7fe88499cb83a3c7497cb624e5816a60cda7959116dde222",
+      "size_bytes": 1855
+    },
+    "audit/summary.json": {
+      "sha256": "fff1708e8ab143b650840b6ef9d1a567032235472e2b85f478793add61ee9f28",
+      "size_bytes": 91646
+    },
+    "inputs/base_manifest.json": {
+      "sha256": "5eefd6b7548f5b5a1a14cb523abcf60829a7907ba0a688f7ca5f32ed8d1feee2",
+      "size_bytes": 5389
+    },
+    "inputs/current_manifest.json": {
+      "sha256": "7734e67cdce5ef673ab08dff72db53179be02f9655ea5c02345b74a457a2f53e",
+      "size_bytes": 3683
+    },
+    "inputs/missing_108_audit.json": {
+      "sha256": "469b0c8b074b864ca7e7139444468ad1719a3a039ad02f7534f908746e5e5f76",
+      "size_bytes": 403866
+    },
+    "inputs/paci_source_manifest.json": {
+      "sha256": "71e2c2eabc70d11d25857a38886432ce5a4835db73a2e62492e259505575eec3",
+      "size_bytes": 29669
+    },
+    "inputs/research_added_104.json": {
+      "sha256": "39c3c63e445c7ad4fffbe3ce39b9aed2cbec455551e6ec32d4cc43a5ce2b34ab",
+      "size_bytes": 70165
+    },
+    "inputs/research_manifest.json": {
+      "sha256": "bfad1bc538f7d6b5c3f0f6a6892ceba3220df0eaab999f9a249eaa7cfd945afa",
+      "size_bytes": 40508
+    },
+    "inputs/research_observation_history.json": {
+      "sha256": "a4f14c55ebdb0293050747cc5ba064740f1785ca52ea9ee34d1b1bf5019feefe",
+      "size_bytes": 156163
+    },
+    "run.log": {
+      "sha256": "8a9731c5475d49bf777f56287c785e9545814a3637cebbfe1fe436d730c07248",
+      "size_bytes": 636
+    },
+    "run_metadata.json": {
+      "sha256": "db55decc21f5d1aa69bdcaa6d5ac2802440bb726fd3af0c29fa530cbb4484ba1",
+      "size_bytes": 478
+    },
+    "source/audit_race_year_pedigree.py": {
+      "sha256": "9a25ab6045bbf74431b1b0028c488d6fecea430df71c9f4bf2c27d603c151b41",
+      "size_bytes": 29806
+    },
+    "source/test_audit_race_year_pedigree.py": {
+      "sha256": "811fbad995bc5fe9d39505ec35337fcd5746f10ecb6bbbfc9a0c7c8f5c7dba53",
+      "size_bytes": 3320
+    },
+    "test.log": {
+      "sha256": "024df23028c45f0599914a8f9b4858bd7664d4b84ce309172f9426ed665c5666",
+      "size_bytes": 1103
+    },
+    "verification.json": {
+      "sha256": "1656c3a7679152199f570f750994a95fd6b3626e9e247f4c88a3646920df04b0",
+      "size_bytes": 501
+    },
+    "verification.log": {
+      "sha256": "55bd0406eb6d9299fb81bc332b5df1ef580c36db80432329a49a11390cb82e2b",
+      "size_bytes": 449
+    },
+    "verify_outputs.py": {
+      "sha256": "f37f70bc678d9f35fedd700d94c3e46b8ca4406c3679d40651605b46f00d44bc",
+      "size_bytes": 2779
+    }
+  },
+  "sha256": "e3e5ee8b7eca9c0b1bd17d648683307aee52d6b9922266da491eb1d6b7e0089b",
+  "size_bytes": 4869737,
+  "source_code_commit": "8ac6879fb5e66afddcfccea5440b7fb631145fc4"
+}
