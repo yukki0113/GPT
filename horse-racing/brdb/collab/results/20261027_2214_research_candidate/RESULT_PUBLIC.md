@@ -8,7 +8,7 @@ The exact 27 annual UKC archives rebuilt the existing research baseline
 and original UKC members were rechecked by size, SHA-256, member list, and
 record count. Their exact-ID observations agreed with the prior 108-row audit.
 
-Research candidate `6f8279315fe3c20e` has 128,858 unique horses: 104 additions
+Research candidate `f409be3f5d11cb90` has 128,858 unique horses: 104 additions
 and the four unmatched IDs remain absent. It retains 396 source observations
 for the additions. Annual pedigree fact rows compare equal; annual parent
 relation changes: 0. Daily parent ID resolution: sire 77/104, dam 81/104,
@@ -23,6 +23,7 @@ deeper resolution is not asserted.
 
 Full BRDB test suite: 70 passed. A second full candidate build produced the
 same generation ID and byte-identical outputs. The private artifact contains
+JSON and CSV row results,
 the complete manifest, all input and output SHA-256 values, row-level audit,
 observation history, relation differences, verification report, and test log.
 Its approved `blood_review` Drive folder location is shared in the task chat.
