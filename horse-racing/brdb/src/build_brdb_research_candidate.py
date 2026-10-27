@@ -282,6 +282,20 @@ def build(base_dir: Path, annual_dir: Path, paci_dir: Path, inventory_path: Path
                                 for x in relations if x["child_horse_id"] == p["horse_id"]}}
                  for p in additions]
     base_builder.dump(destination / "added_104.json", row_audit)
+    columns = ("horse_id", "horse_name", "first_observed_archive_date",
+               "profile_data_date", "sire_name", "dam_name",
+               "broodmare_sire_name", "sire_line_code", "broodmare_sire_line_code",
+               "sire_status", "sire_horse_id", "dam_status", "dam_horse_id",
+               "broodmare_sire_status", "broodmare_sire_horse_id")
+    with (destination / "added_104.csv").open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.DictWriter(stream, fieldnames=columns)
+        writer.writeheader()
+        for row in row_audit:
+            flat = {key: row[key] for key in columns[:9]}
+            for role in base_builder.ROLES:
+                flat[f"{role}_status"] = row["relations"][role]["status"]
+                flat[f"{role}_horse_id"] = row["relations"][role]["horse_id"]
+            writer.writerow(flat)
     base_builder.dump(destination / "observation_history.json", history)
     base_builder.dump(destination / "relation_diff.json", relation_diff)
     audit_out = {"added_count": len(additions), "missing_count": len(missing),
@@ -294,7 +308,8 @@ def build(base_dir: Path, annual_dir: Path, paci_dir: Path, inventory_path: Path
                  "first_observed_max": max(first_seen.values()),
                  "as_of_2025_exposed_count": sum(x <= "20251231" for x in first_seen.values())}
     base_builder.dump(destination / "audit.json", audit_out)
-    for name in ("audit.json", "added_104.json", "observation_history.json", "relation_diff.json"):
+    for name in ("audit.json", "added_104.json", "added_104.csv",
+                 "observation_history.json", "relation_diff.json"):
         output_hashes[name] = base_builder.sha256(destination / name)
     manifest = {"artifact_type": "brdb_pedigree", "generation_id": generation,
                 "schema_version": "v0.1", "builder_version": VERSION,
