@@ -104,6 +104,10 @@ jobs:
       - name: Commit batch state only
         run: |
           set -euo pipefail
+          if [[ ! -d horse-racing/jrdb/backtests/batches ]]; then
+            echo 'No batch manifests yet'
+            exit 0
+          fi
           git add -A horse-racing/jrdb/backtests/batches/
           if git diff --cached --quiet; then
             echo 'Read-only action or no state change'
