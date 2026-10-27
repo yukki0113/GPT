@@ -14,7 +14,7 @@
   "ukc_parse_errors": 0,
   "status_counts": {
     "FOUND": 104,
-    "UNVERIFIED_INPUT_GAP": 4
+    "NOT_FOUND_IN_SCANNED": 4
   },
   "nonempty_fields_among_found": {
     "horse_name": 104,
@@ -44,6 +44,8 @@
   "brdb_generation_id": "eeca93556584a5b8",
   "coverage_complete_for_inventoried_files": true,
   "paci_2025_input_available": false,
+  "ukc_2025_coverage_source": "annual_UKC_2025",
+  "ukc_scan_complete_for_requested_years": true,
   "annual_ukc_2025_matching_ids": 0,
   "annual_ukc_2025": {
     "name": "UKC_2025.zip",
