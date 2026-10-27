@@ -41,3 +41,19 @@ KYI normalized warehouse 2023, 2024, 2025 Parquet sourced from `horse-racing/jrd
 4. Review high-frequency mismatches by horse ID and lineage source code. UNKNOWN != NO ancestry.
 5. Country/region-root taxonomy and Storm Cat/Halo ancestor-presence filters remain independent; neither is a prerequisite to P0/P1 basic pedigree.
 6. No current generation swap, PWA deploy, Newspaper integration or scoring authorization.
+
+## Actual 2023–2025 KYI entrants: accepted result
+
+Run [#2209](https://github.com/yukki0113/GPT/issues/2209) / [40433677343](https://github.com/yukki0113/GPT/actions/runs/40433677343) PASS; report `output/kyi_2023_2025_coverage.json`, source commit `e37557723f28487a1f4b0c5a5cde723219fd0dc6`.
+
+| KYI archive year | entry rows | unique horse IDs | BRDB matched | all 3 names | sire and BMS codes mapped | selected profiles newer than year-end |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 2023 | 47,672 | 11,720 | 11,720 (100%) | 11,720 | 11,720 | 6,841 |
+| 2024 | 47,181 | 11,786 | 11,786 (100%) | 11,786 | 11,783 | 6,835 |
+| 2025 | 47,884 | 11,930 | 11,822 (99.0947%) | 11,822 | 11,822 | 0 |
+
+**Key discrepancy:** 2025 KYI has **108 distinct horse IDs absent from BRDB**; these were invisible from a UKC-only denominator. The initial diagnostic stored the first 100 sorted IDs only, so detailed source investigation needs a separate bounded export of *all* 108 IDs plus their key-level appearance patterns and snapshot provenance. Do not assume those 108 are malformed or ineligible; first compare KYI identity semantics and actual UKC source coverage. 2024 has 3 source-lineage-mapping misses despite full horse-ID join.
+
+The report is a verified research result for **KYI annual archive entries**, not proof of race result existence or retrospective as-of-safe feature availability. Full-year 2025 master coverage cannot be described as 100%. The 2026 actual population remains unverified.
+
+**Next steps:** isolate 108 IDs with earliest/latest KYI `race_key_raw` and horse_name samples (diagnostics only, not fallback), cross-check all UKC years and archived profile records, then extend the entry audit across 2016–2025. Preserve the current generation and PWA.
