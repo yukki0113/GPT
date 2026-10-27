@@ -1,0 +1,59 @@
+{
+  "denominator": 108,
+  "denominator_sha256": "c3361fc60fee3e752b7e34f51b108462dfd8ba10a1b7bfafa63b5bf375acc830",
+  "folder_returned_count": 91,
+  "inventoried_zip_count": 91,
+  "zip_year_counts": {
+    "26": 91
+  },
+  "zip_status_counts": {
+    "SCANNED": 91
+  },
+  "ukc_members": 91,
+  "ukc_records": 39543,
+  "ukc_parse_errors": 0,
+  "status_counts": {
+    "FOUND": 104,
+    "NOT_FOUND_IN_SCANNED": 4
+  },
+  "nonempty_fields_among_found": {
+    "horse_name": 104,
+    "sire_name": 104,
+    "dam_name": 104,
+    "broodmare_sire_name": 104,
+    "birth_date": 104,
+    "sire_line_code": 104,
+    "broodmare_sire_line_code": 104
+  },
+  "parent_connection_counts_among_found": {
+    "sire": {
+      "RESOLVED": 77,
+      "UNKNOWN": 27
+    },
+    "dam": {
+      "RESOLVED": 77,
+      "UNKNOWN": 27
+    },
+    "broodmare_sire": {
+      "UNKNOWN": 92,
+      "RESOLVED": 12
+    }
+  },
+  "semantic_profile_change_horses": 2,
+  "pedigree_field_change_horses": 0,
+  "brdb_generation_id": "eeca93556584a5b8",
+  "coverage_complete_for_inventoried_files": true,
+  "paci_2025_input_available": false,
+  "ukc_2025_coverage_source": "annual_UKC_2025",
+  "ukc_scan_complete_for_requested_years": true,
+  "annual_ukc_2025_matching_ids": 0,
+  "annual_ukc_2025": {
+    "name": "UKC_2025.zip",
+    "size_bytes": 2843565,
+    "sha256": "554f1bf8f72a48b9b6462e1b7d1c4448383ce078c3c9b420006bb21e8558dad5",
+    "ukc_record_count": 47239,
+    "parse_errors": 0,
+    "status": "SCANNED",
+    "member_count": 109
+  }
+}
