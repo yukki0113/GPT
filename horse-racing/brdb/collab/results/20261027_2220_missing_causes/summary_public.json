@@ -1,0 +1,725 @@
+{
+  "audit_version": "missing-daily-ukc-causes-0.1",
+  "birth_year_counts": {
+    "2019": 1,
+    "2020": 1,
+    "2021": 2,
+    "2022": 15,
+    "2023": 1580,
+    "2024": 2195
+  },
+  "birth_year_status_counts": {
+    "EXACT_ID_UKC_BIRTH_DATE": 3794
+  },
+  "cohort_entries": 39543,
+  "cohort_horses": 10680,
+  "evidence_counts": {
+    "annual_latest_date_conflict": 0,
+    "annual_not_found_in_scanned_inputs": 3794,
+    "annual_raw_found": 0,
+    "annual_selectable_profile": 0,
+    "any_invalid_profile_date": 0,
+    "any_parser_error": 0,
+    "any_profile_after_observation": 0,
+    "any_sentinel_profile_date": 0,
+    "daily_latest_date_conflict": 0,
+    "daily_not_found_in_scanned_inputs": 0,
+    "daily_raw_found": 3794,
+    "daily_selectable_profile": 3794,
+    "input_gap_or_unverified_inventory": 0,
+    "outside_104_overlay": 3794
+  },
+  "execution": "local managed runtime; no new generation or production writes",
+  "first_appearance_month": [
+    {
+      "cohort_horses": 3472,
+      "group": "202601",
+      "missing_entries": 2161,
+      "missing_horses": 484,
+      "missing_percent": 13.940092
+    },
+    {
+      "cohort_horses": 2194,
+      "group": "202602",
+      "missing_entries": 1361,
+      "missing_horses": 327,
+      "missing_percent": 14.904284
+    },
+    {
+      "cohort_horses": 1272,
+      "group": "202603",
+      "missing_entries": 858,
+      "missing_horses": 252,
+      "missing_percent": 19.811321
+    },
+    {
+      "cohort_horses": 553,
+      "group": "202604",
+      "missing_entries": 637,
+      "missing_horses": 192,
+      "missing_percent": 34.719711
+    },
+    {
+      "cohort_horses": 419,
+      "group": "202605",
+      "missing_entries": 426,
+      "missing_horses": 144,
+      "missing_percent": 34.367542
+    },
+    {
+      "cohort_horses": 521,
+      "group": "202606",
+      "missing_entries": 1154,
+      "missing_horses": 407,
+      "missing_percent": 78.119002
+    },
+    {
+      "cohort_horses": 490,
+      "group": "202607",
+      "missing_entries": 958,
+      "missing_horses": 393,
+      "missing_percent": 80.204082
+    },
+    {
+      "cohort_horses": 607,
+      "group": "202608",
+      "missing_entries": 1010,
+      "missing_horses": 516,
+      "missing_percent": 85.008237
+    },
+    {
+      "cohort_horses": 490,
+      "group": "202609",
+      "missing_entries": 718,
+      "missing_horses": 450,
+      "missing_percent": 91.836735
+    },
+    {
+      "cohort_horses": 662,
+      "group": "202610",
+      "missing_entries": 733,
+      "missing_horses": 629,
+      "missing_percent": 95.015106
+    }
+  ],
+  "first_declared_new_class": [
+    {
+      "cohort_horses": 2876,
+      "group": "A1",
+      "missing_entries": 7249,
+      "missing_horses": 2875,
+      "missing_percent": 99.965229
+    },
+    {
+      "cohort_horses": 7804,
+      "group": "OTHER",
+      "missing_entries": 2767,
+      "missing_horses": 919,
+      "missing_percent": 11.776012
+    }
+  ],
+  "first_kyi_vs_first_daily_source": {
+    "SAME_DATE": 3794
+  },
+  "future_source_evidence_exposed": 0,
+  "inputs": {
+    "annual_last_valid_observation_date": "20251228",
+    "annual_records_identity_scanned": 1312543,
+    "annual_scan_semantics": "all identities/record lengths checked; full UKC profile parser invoked for exact target IDs only",
+    "annual_zip_count": 27,
+    "daily_ids_equal_kyi_cohort": true,
+    "daily_records_identity_scanned": 39543,
+    "daily_unique_numeric_ids": 10680,
+    "daily_zip_count": 91,
+    "input_errors": 0,
+    "non_numeric_annual_source_ids": 3,
+    "non_numeric_daily_source_ids": 0,
+    "verified_upstream_internal_files": 29
+  },
+  "late_year_missingness_check": {
+    "interpretation": "descriptive change in a fixed static snapshot; no causal new-horse claim; partial second-half period",
+    "january_missing_entry_percent": 14.213963,
+    "observed_increase_percentage_points": 30.092689,
+    "october_missing_entry_percent": 44.306652
+  },
+  "monthly_active": [
+    {
+      "cohort_entries": 3982,
+      "cohort_horses": 3472,
+      "conditional_latest_snapshot_safe_missing_entries": 33,
+      "group": "202601",
+      "missing_entries": 566,
+      "missing_entry_percent": 14.213963,
+      "missing_horse_percent": 13.940092,
+      "missing_horses": 484,
+      "recoverable_static_missing_horses": 484
+    },
+    {
+      "cohort_entries": 4021,
+      "cohort_horses": 3475,
+      "conditional_latest_snapshot_safe_missing_entries": 40,
+      "group": "202602",
+      "missing_entries": 560,
+      "missing_entry_percent": 13.926884,
+      "missing_horse_percent": 13.956835,
+      "missing_horses": 485,
+      "recoverable_static_missing_horses": 485
+    },
+    {
+      "cohort_entries": 4237,
+      "cohort_horses": 3613,
+      "conditional_latest_snapshot_safe_missing_entries": 91,
+      "group": "202603",
+      "missing_entries": 643,
+      "missing_entry_percent": 15.175832,
+      "missing_horse_percent": 15.112095,
+      "missing_horses": 546,
+      "recoverable_static_missing_horses": 546
+    },
+    {
+      "cohort_entries": 3743,
+      "cohort_horses": 3383,
+      "conditional_latest_snapshot_safe_missing_entries": 90,
+      "group": "202604",
+      "missing_entries": 665,
+      "missing_entry_percent": 17.766497,
+      "missing_horse_percent": 17.55838,
+      "missing_horses": 594,
+      "recoverable_static_missing_horses": 594
+    },
+    {
+      "cohort_entries": 4763,
+      "cohort_horses": 3889,
+      "conditional_latest_snapshot_safe_missing_entries": 175,
+      "group": "202605",
+      "missing_entries": 851,
+      "missing_entry_percent": 17.866891,
+      "missing_horse_percent": 18.025199,
+      "missing_horses": 701,
+      "recoverable_static_missing_horses": 701
+    },
+    {
+      "cohort_entries": 3589,
+      "cohort_horses": 3241,
+      "conditional_latest_snapshot_safe_missing_entries": 171,
+      "group": "202606",
+      "missing_entries": 992,
+      "missing_entry_percent": 27.640011,
+      "missing_horse_percent": 27.861771,
+      "missing_horses": 903,
+      "recoverable_static_missing_horses": 903
+    },
+    {
+      "cohort_entries": 3746,
+      "cohort_horses": 3264,
+      "conditional_latest_snapshot_safe_missing_entries": 334,
+      "group": "202607",
+      "missing_entries": 1224,
+      "missing_entry_percent": 32.674853,
+      "missing_horse_percent": 32.47549,
+      "missing_horses": 1060,
+      "recoverable_static_missing_horses": 1060
+    },
+    {
+      "cohort_entries": 4777,
+      "cohort_horses": 3905,
+      "conditional_latest_snapshot_safe_missing_entries": 754,
+      "group": "202608",
+      "missing_entries": 1688,
+      "missing_entry_percent": 35.335985,
+      "missing_horse_percent": 35.953905,
+      "missing_horses": 1404,
+      "recoverable_static_missing_horses": 1404
+    },
+    {
+      "cohort_entries": 3137,
+      "cohort_horses": 2823,
+      "conditional_latest_snapshot_safe_missing_entries": 732,
+      "group": "202609",
+      "missing_entries": 1255,
+      "missing_entry_percent": 40.006376,
+      "missing_horse_percent": 39.426142,
+      "missing_horses": 1113,
+      "recoverable_static_missing_horses": 1113
+    },
+    {
+      "cohort_entries": 3548,
+      "cohort_horses": 3171,
+      "conditional_latest_snapshot_safe_missing_entries": 1374,
+      "group": "202610",
+      "missing_entries": 1572,
+      "missing_entry_percent": 44.306652,
+      "missing_horse_percent": 43.33018,
+      "missing_horses": 1374,
+      "recoverable_static_missing_horses": 1374
+    }
+  ],
+  "observed_half_periods": [
+    {
+      "cohort_entries": 24335,
+      "cohort_horses": 8431,
+      "conditional_latest_snapshot_safe_missing_entries": 600,
+      "group": "JAN_JUN",
+      "missing_entries": 4277,
+      "missing_entry_percent": 17.575509,
+      "missing_horse_percent": 21.420947,
+      "missing_horses": 1806,
+      "recoverable_static_missing_horses": 1806
+    },
+    {
+      "cohort_entries": 15208,
+      "cohort_horses": 7815,
+      "conditional_latest_snapshot_safe_missing_entries": 3194,
+      "group": "JUL_OCT25",
+      "missing_entries": 5739,
+      "missing_entry_percent": 37.736718,
+      "missing_horse_percent": 40.870122,
+      "missing_horses": 3194,
+      "recoverable_static_missing_horses": 3194
+    }
+  ],
+  "primary_reasons": {
+    "ANNUAL_VALID_PROFILE_NOT_IN_BASE_REVIEW_REQUIRED": {
+      "count": 0,
+      "denominator": 3794,
+      "percent": 0.0
+    },
+    "DAILY_UKC_PRESENT_OUTSIDE_104_OVERLAY": {
+      "count": 3794,
+      "denominator": 3794,
+      "percent": 100.0
+    },
+    "NOT_FOUND_IN_SCANNED_ANNUAL_OR_DAILY_UKC": {
+      "count": 0,
+      "denominator": 3794,
+      "percent": 0.0
+    },
+    "PROFILE_DATE_OR_SELECTION_GUARD": {
+      "count": 0,
+      "denominator": 3794,
+      "percent": 0.0
+    },
+    "UNKNOWN_BUILD_DISCREPANCY": {
+      "count": 0,
+      "denominator": 3794,
+      "percent": 0.0
+    },
+    "UNKNOWN_INPUT_GAP": {
+      "count": 0,
+      "denominator": 3794,
+      "percent": 0.0
+    },
+    "UNKNOWN_PARSE_FAILURE": {
+      "count": 0,
+      "denominator": 3794,
+      "percent": 0.0
+    }
+  },
+  "race_type_class_surface": [
+    {
+      "cohort_entries": 29,
+      "cohort_horses": 29,
+      "conditional_latest_snapshot_safe_missing_entries": 27,
+      "group": "11|05|1",
+      "missing_entries": 29,
+      "missing_entry_percent": 100.0,
+      "missing_horse_percent": 100.0,
+      "missing_horses": 29,
+      "recoverable_static_missing_horses": 29
+    },
+    {
+      "cohort_entries": 23,
+      "cohort_horses": 22,
+      "conditional_latest_snapshot_safe_missing_entries": 22,
+      "group": "11|05|2",
+      "missing_entries": 23,
+      "missing_entry_percent": 100.0,
+      "missing_horse_percent": 100.0,
+      "missing_horses": 22,
+      "recoverable_static_missing_horses": 22
+    },
+    {
+      "cohort_entries": 1586,
+      "cohort_horses": 1583,
+      "conditional_latest_snapshot_safe_missing_entries": 652,
+      "group": "11|A1|1",
+      "missing_entries": 1586,
+      "missing_entry_percent": 100.0,
+      "missing_horse_percent": 100.0,
+      "missing_horses": 1583,
+      "recoverable_static_missing_horses": 1583
+    },
+    {
+      "cohort_entries": 586,
+      "cohort_horses": 585,
+      "conditional_latest_snapshot_safe_missing_entries": 302,
+      "group": "11|A1|2",
+      "missing_entries": 586,
+      "missing_entry_percent": 100.0,
+      "missing_horse_percent": 100.0,
+      "missing_horses": 585,
+      "recoverable_static_missing_horses": 585
+    },
+    {
+      "cohort_entries": 1064,
+      "cohort_horses": 741,
+      "conditional_latest_snapshot_safe_missing_entries": 585,
+      "group": "11|A3|1",
+      "missing_entries": 1064,
+      "missing_entry_percent": 100.0,
+      "missing_horse_percent": 100.0,
+      "missing_horses": 741,
+      "recoverable_static_missing_horses": 741
+    },
+    {
+      "cohort_entries": 693,
+      "cohort_horses": 513,
+      "conditional_latest_snapshot_safe_missing_entries": 475,
+      "group": "11|A3|2",
+      "missing_entries": 693,
+      "missing_entry_percent": 100.0,
+      "missing_horse_percent": 100.0,
+      "missing_horses": 513,
+      "recoverable_static_missing_horses": 513
+    },
+    {
+      "cohort_entries": 177,
+      "cohort_horses": 156,
+      "conditional_latest_snapshot_safe_missing_entries": 132,
+      "group": "11|OP|1",
+      "missing_entries": 177,
+      "missing_entry_percent": 100.0,
+      "missing_horse_percent": 100.0,
+      "missing_horses": 156,
+      "recoverable_static_missing_horses": 156
+    },
+    {
+      "cohort_entries": 628,
+      "cohort_horses": 404,
+      "conditional_latest_snapshot_safe_missing_entries": 9,
+      "group": "12|05|1",
+      "missing_entries": 54,
+      "missing_entry_percent": 8.598726,
+      "missing_horse_percent": 10.643564,
+      "missing_horses": 43,
+      "recoverable_static_missing_horses": 43
+    },
+    {
+      "cohort_entries": 769,
+      "cohort_horses": 441,
+      "conditional_latest_snapshot_safe_missing_entries": 9,
+      "group": "12|05|2",
+      "missing_entries": 94,
+      "missing_entry_percent": 12.223667,
+      "missing_horse_percent": 14.512472,
+      "missing_horses": 64,
+      "recoverable_static_missing_horses": 64
+    },
+    {
+      "cohort_entries": 312,
+      "cohort_horses": 312,
+      "conditional_latest_snapshot_safe_missing_entries": 11,
+      "group": "12|A1|1",
+      "missing_entries": 311,
+      "missing_entry_percent": 99.679487,
+      "missing_horse_percent": 99.679487,
+      "missing_horses": 311,
+      "recoverable_static_missing_horses": 311
+    },
+    {
+      "cohort_entries": 398,
+      "cohort_horses": 396,
+      "conditional_latest_snapshot_safe_missing_entries": 24,
+      "group": "12|A1|2",
+      "missing_entries": 398,
+      "missing_entry_percent": 100.0,
+      "missing_horse_percent": 100.0,
+      "missing_horses": 396,
+      "recoverable_static_missing_horses": 396
+    },
+    {
+      "cohort_entries": 5641,
+      "cohort_horses": 2157,
+      "conditional_latest_snapshot_safe_missing_entries": 495,
+      "group": "12|A3|1",
+      "missing_entries": 1943,
+      "missing_entry_percent": 34.444247,
+      "missing_horse_percent": 37.691238,
+      "missing_horses": 813,
+      "recoverable_static_missing_horses": 813
+    },
+    {
+      "cohort_entries": 7340,
+      "cohort_horses": 2808,
+      "conditional_latest_snapshot_safe_missing_entries": 757,
+      "group": "12|A3|2",
+      "missing_entries": 2448,
+      "missing_entry_percent": 33.351499,
+      "missing_horse_percent": 37.535613,
+      "missing_horses": 1054,
+      "recoverable_static_missing_horses": 1054
+    },
+    {
+      "cohort_entries": 621,
+      "cohort_horses": 350,
+      "conditional_latest_snapshot_safe_missing_entries": 11,
+      "group": "12|OP|1",
+      "missing_entries": 40,
+      "missing_entry_percent": 6.441224,
+      "missing_horse_percent": 8.857143,
+      "missing_horses": 31,
+      "recoverable_static_missing_horses": 31
+    },
+    {
+      "cohort_entries": 92,
+      "cohort_horses": 74,
+      "conditional_latest_snapshot_safe_missing_entries": 1,
+      "group": "12|OP|2",
+      "missing_entries": 12,
+      "missing_entry_percent": 13.043478,
+      "missing_horse_percent": 13.513514,
+      "missing_horses": 10,
+      "recoverable_static_missing_horses": 10
+    },
+    {
+      "cohort_entries": 2345,
+      "cohort_horses": 1169,
+      "conditional_latest_snapshot_safe_missing_entries": 109,
+      "group": "13|05|1",
+      "missing_entries": 211,
+      "missing_entry_percent": 8.997868,
+      "missing_horse_percent": 11.291702,
+      "missing_horses": 132,
+      "recoverable_static_missing_horses": 132
+    },
+    {
+      "cohort_entries": 2456,
+      "cohort_horses": 1249,
+      "conditional_latest_snapshot_safe_missing_entries": 129,
+      "group": "13|05|2",
+      "missing_entries": 256,
+      "missing_entry_percent": 10.423453,
+      "missing_horse_percent": 11.449159,
+      "missing_horses": 143,
+      "recoverable_static_missing_horses": 143
+    },
+    {
+      "cohort_entries": 1179,
+      "cohort_horses": 582,
+      "conditional_latest_snapshot_safe_missing_entries": 14,
+      "group": "13|10|1",
+      "missing_entries": 25,
+      "missing_entry_percent": 2.120441,
+      "missing_horse_percent": 3.092784,
+      "missing_horses": 18,
+      "recoverable_static_missing_horses": 18
+    },
+    {
+      "cohort_entries": 1115,
+      "cohort_horses": 575,
+      "conditional_latest_snapshot_safe_missing_entries": 16,
+      "group": "13|10|2",
+      "missing_entries": 33,
+      "missing_entry_percent": 2.959641,
+      "missing_horse_percent": 3.304348,
+      "missing_horses": 19,
+      "recoverable_static_missing_horses": 19
+    },
+    {
+      "cohort_entries": 573,
+      "cohort_horses": 306,
+      "conditional_latest_snapshot_safe_missing_entries": 2,
+      "group": "13|16|1",
+      "missing_entries": 3,
+      "missing_entry_percent": 0.52356,
+      "missing_horse_percent": 0.653595,
+      "missing_horses": 2,
+      "recoverable_static_missing_horses": 2
+    },
+    {
+      "cohort_entries": 479,
+      "cohort_horses": 267,
+      "conditional_latest_snapshot_safe_missing_entries": 2,
+      "group": "13|16|2",
+      "missing_entries": 2,
+      "missing_entry_percent": 0.417537,
+      "missing_horse_percent": 0.749064,
+      "missing_horses": 2,
+      "recoverable_static_missing_horses": 2
+    },
+    {
+      "cohort_entries": 662,
+      "cohort_horses": 383,
+      "conditional_latest_snapshot_safe_missing_entries": 2,
+      "group": "13|OP|1",
+      "missing_entries": 3,
+      "missing_entry_percent": 0.453172,
+      "missing_horse_percent": 0.522193,
+      "missing_horses": 2,
+      "recoverable_static_missing_horses": 2
+    },
+    {
+      "cohort_entries": 351,
+      "cohort_horses": 194,
+      "conditional_latest_snapshot_safe_missing_entries": 1,
+      "group": "13|OP|2",
+      "missing_entries": 1,
+      "missing_entry_percent": 0.2849,
+      "missing_horse_percent": 0.515464,
+      "missing_horses": 1,
+      "recoverable_static_missing_horses": 1
+    },
+    {
+      "cohort_entries": 1706,
+      "cohort_horses": 745,
+      "conditional_latest_snapshot_safe_missing_entries": 1,
+      "group": "14|05|1",
+      "missing_entries": 3,
+      "missing_entry_percent": 0.17585,
+      "missing_horse_percent": 0.402685,
+      "missing_horses": 3,
+      "recoverable_static_missing_horses": 3
+    },
+    {
+      "cohort_entries": 2311,
+      "cohort_horses": 970,
+      "conditional_latest_snapshot_safe_missing_entries": 3,
+      "group": "14|05|2",
+      "missing_entries": 14,
+      "missing_entry_percent": 0.605798,
+      "missing_horse_percent": 0.721649,
+      "missing_horses": 7,
+      "recoverable_static_missing_horses": 7
+    },
+    {
+      "cohort_entries": 1150,
+      "cohort_horses": 535,
+      "conditional_latest_snapshot_safe_missing_entries": 1,
+      "group": "14|10|1",
+      "missing_entries": 4,
+      "missing_entry_percent": 0.347826,
+      "missing_horse_percent": 0.186916,
+      "missing_horses": 1,
+      "recoverable_static_missing_horses": 1
+    },
+    {
+      "cohort_entries": 1450,
+      "cohort_horses": 640,
+      "conditional_latest_snapshot_safe_missing_entries": 1,
+      "group": "14|10|2",
+      "missing_entries": 2,
+      "missing_entry_percent": 0.137931,
+      "missing_horse_percent": 0.3125,
+      "missing_horses": 2,
+      "recoverable_static_missing_horses": 2
+    },
+    {
+      "cohort_entries": 730,
+      "cohort_horses": 342,
+      "conditional_latest_snapshot_safe_missing_entries": 0,
+      "group": "14|16|1",
+      "missing_entries": 0,
+      "missing_entry_percent": 0.0,
+      "missing_horse_percent": 0.0,
+      "missing_horses": 0,
+      "recoverable_static_missing_horses": 0
+    },
+    {
+      "cohort_entries": 663,
+      "cohort_horses": 332,
+      "conditional_latest_snapshot_safe_missing_entries": 0,
+      "group": "14|16|2",
+      "missing_entries": 0,
+      "missing_entry_percent": 0.0,
+      "missing_horse_percent": 0.0,
+      "missing_horses": 0,
+      "recoverable_static_missing_horses": 0
+    },
+    {
+      "cohort_entries": 796,
+      "cohort_horses": 391,
+      "conditional_latest_snapshot_safe_missing_entries": 0,
+      "group": "14|OP|1",
+      "missing_entries": 0,
+      "missing_entry_percent": 0.0,
+      "missing_horse_percent": 0.0,
+      "missing_horses": 0,
+      "recoverable_static_missing_horses": 0
+    },
+    {
+      "cohort_entries": 464,
+      "cohort_horses": 245,
+      "conditional_latest_snapshot_safe_missing_entries": 1,
+      "group": "14|OP|2",
+      "missing_entries": 1,
+      "missing_entry_percent": 0.215517,
+      "missing_horse_percent": 0.408163,
+      "missing_horses": 1,
+      "recoverable_static_missing_horses": 1
+    },
+    {
+      "cohort_entries": 786,
+      "cohort_horses": 306,
+      "conditional_latest_snapshot_safe_missing_entries": 0,
+      "group": "20|A3|3",
+      "missing_entries": 0,
+      "missing_entry_percent": 0.0,
+      "missing_horse_percent": 0.0,
+      "missing_horses": 0,
+      "recoverable_static_missing_horses": 0
+    },
+    {
+      "cohort_entries": 368,
+      "cohort_horses": 139,
+      "conditional_latest_snapshot_safe_missing_entries": 0,
+      "group": "20|OP|3",
+      "missing_entries": 0,
+      "missing_entry_percent": 0.0,
+      "missing_horse_percent": 0.0,
+      "missing_horses": 0,
+      "recoverable_static_missing_horses": 0
+    }
+  ],
+  "recovery_potential": {
+    "additional_entries": 10016,
+    "additional_horses": 3794,
+    "build_status": "NOT_BUILT: source-supported upper bound/selection eligibility audit only",
+    "conditional_assumption": "preserve annual and existing 104-overlay profiles; append missing eligible IDs only",
+    "conditional_expanded_master_profiles": 132652,
+    "conditional_latest_snapshot_safe_additional_entries": 3794,
+    "conditional_latest_snapshot_safe_total_entries": {
+      "count": 33029,
+      "denominator": 39543,
+      "percent": 83.526794
+    },
+    "dated_source_complete_basic_entries": 10016,
+    "dated_source_evidence_entries": 10016,
+    "historical_reader_status": "NOT_IMPLEMENTED: dated-source evidence is not current Reader availability",
+    "potential_static_entries": {
+      "count": 39543,
+      "denominator": 39543,
+      "percent": 100.0
+    },
+    "potential_static_horses": {
+      "count": 10680,
+      "denominator": 10680,
+      "percent": 100.0
+    },
+    "raw_daily_exact_id_upper_bound_horses": 3794,
+    "selected_basic_names_complete_horses": 3794,
+    "selected_official_codes_mapped_horses": 3794
+  },
+  "research_joined_horses": 6886,
+  "scope": {
+    "max_date": "20261025",
+    "min_date": "20260104",
+    "outside_inventory_period": "UNKNOWN; no claim for unscanned dates",
+    "population": "KYI declared entries, not confirmed actual starts"
+  },
+  "source_commit": "2b35a85aa213b34de26d0ebc7117e7812ec2a990",
+  "status": "COMPLETE_FOR_SCOPE",
+  "target_entries": 10016,
+  "target_horses": 3794,
+  "unknown_primary_horses": 0,
+  "upstream_asof_only_blocked_entries": 292
+}
