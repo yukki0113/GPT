@@ -63,6 +63,10 @@ jobs:
           date=selection['dates'][0]
           if not re.fullmatch(r'20\d{2}-\d{2}-\d{2}',date):
               raise SystemExit('Invalid target date')
+          # The current historical golden materialization provides BAC/KYI 2025.
+          # Never silently reuse the 2025 raw archives for another target year.
+          if not date.startswith('2025-'):
+              raise SystemExit(f'Historical raw archive year not supported: {date}')
           target=Path('horse-racing/jrdb/backtests')/sid/date.replace('-','')
           if target.exists():
               raise SystemExit(f'Immutable T1 already exists: {target}')
