@@ -213,3 +213,15 @@ def test_sealed_cohort_tamper_detected(tmp_path):
     cohort.write_bytes(cohort.read_bytes() + b" ")
     with pytest.raises(ValueError, match="cohort seal invalid"):
         bc.inspect(tmp_path, "V055-BATCH-TEST")
+
+
+def test_real_btday0135_frozen_contract_compatibility():
+    """Integration: a real r6 frozen day remains readable without result access."""
+    base = SOURCE.parents[1] / "backtests"
+    snapshot, cohort, stage = bc.read_finished(base, "BTDAY-0135")
+    assert stage == "COMPLETE"
+    assert snapshot["record_count"] == 24
+    assert snapshot["confidence_counts"] == {"A": 10, "B": 9, "Z": 5}
+    assert len(cohort) == 10
+    assert all(row["selection_id"] == "BTDAY-0135" and row["confidence"] == "A"
+               for row in cohort)
