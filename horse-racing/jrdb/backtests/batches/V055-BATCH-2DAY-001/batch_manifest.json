@@ -1,0 +1,22 @@
+{
+  "schema_version": "racenote-v055-batch-controller-0.1",
+  "batch_id": "V055-BATCH-2DAY-001",
+  "start_selection_id": "BTDAY-0136",
+  "stop_condition": {
+    "mode": "btday_count",
+    "target_btday_count": 2
+  },
+  "status": "RUNNING",
+  "completed_sessions": [],
+  "progress": {
+    "completed_btday_count": 0,
+    "confidence_counts": {
+      "A": 0,
+      "B": 0,
+      "C": 0,
+      "Z": 0
+    },
+    "last_completed_selection_id": null,
+    "next_selection_id": "BTDAY-0136"
+  }
+}
