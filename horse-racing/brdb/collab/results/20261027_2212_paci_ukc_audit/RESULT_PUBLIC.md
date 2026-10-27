@@ -1,6 +1,6 @@
 # Issue #2212 — PACI UKC監査（集計報告）
 
-Status: **部分調査**（2026年PACI 91 ZIPと2025年年次UKCを走査、2025年PACIは入力なし）  
+Status: **2025–2026年UKC内容の監査完了**（2025年は年次集約ZIP、2026年は保存済みPACI）  
 Date: 2026-10-27 JST  
 Source main: `19d755988efc10d072789fb0224b1841546ab9b6`
 
@@ -12,14 +12,14 @@ Drive canonical folder `1zFajenPU5jxInZCcmqZzkgiaYil3MD8r` を直接列挙し、
 
 91/91 ZIPを走査、UKC member 91、39,543レコード、パースエラー0。各ZIPのDrive ID、サイズ、SHA-256、member、レコード数は監査artifactの `paci_inventory_audit.json` に記録した。列挙済みファイルの取得不能・破損は0件。未列挙の日付にファイルが存在しないとは推定しない。
 
-同じ `00_raw` の `UKC/UKC_2025.zip` を別途確認。109 UKC member（2025-01-05〜2025-12-28）、47,239レコードをパースエラー0で走査し、固定108 IDとの一致は0件。ZIP SHA-256は `554f1bf8f72a48b9b6462e1b7d1c4448383ce078c3c9b420006bb21e8558dad5`。これは2025年**年次UKC**の非発見確認であり、未取得の2025年**PACI**の走査完了とは区別する。
+同じ `00_raw` の `UKC/UKC_2025.zip` を別途確認。109 UKC member（2025-01-05〜2025-12-28）、47,239レコードをパースエラー0で走査し、固定108 IDとの一致は0件。ZIP SHA-256は `554f1bf8f72a48b9b6462e1b7d1c4448383ce078c3c9b420006bb21e8558dad5`。ユーザー確認により、この年次ZIPは2025年の日次PACI内UKCをまとめたものとして、UKC内容監査の2025年入力に採用する。2025年PACIコンテナ自体のmetadata/inventoryは監査対象外。
 
 ## 108頭の結果
 
 | 判定 | 頭数 |
 | --- | ---: |
 | 2026年UKCで `horse_id` 完全一致 | 104 |
-| `UNVERIFIED_INPUT_GAP` | 4 |
+| `NOT_FOUND_IN_SCANNED` | 4 |
 | 合計 | **108** |
 
 104頭は計396回観測。馬名、父・母・母父、生年月日、父系/母父系コードの非空数はいずれも104。semantic profile変更は2頭で、変更列は `owner_name` のみ。血統列変更は0。2026年観測を2025年レース時点の利用可能情報とは扱わない。
@@ -28,6 +28,6 @@ BRDB CURRENT generation `eeca93556584a5b8` の既存resolver・祖先グラフ�
 
 ## 検証・制限
 
-`PYTHONPATH=/workspace/scratch/brdb-pylibs python -m unittest discover -s horse-racing/brdb/tests -q` → **65 PASS、0 FAIL、0 ERROR**。Python 3.12.14、DuckDB 1.1.3、PyArrow 25.0.1。既存 `jrdb_ukc.parse_ukc_record` と `brdb_parent_relation` / `brdb_ancestor_graph` を使用。
+`PYTHONPATH=/workspace/scratch/brdb-pylibs python -m unittest discover -s horse-racing/brdb/tests -q` → **66 PASS、0 FAIL、0 ERROR**。Python 3.12.14、DuckDB 1.1.3、PyArrow 25.0.1。既存 `jrdb_ukc.parse_ukc_record` と `brdb_parent_relation` / `brdb_ancestor_graph` を使用。
 
-行別108件のJSON・CSV・Parquetと元入力を含む監査ZIPはローカルworkspaceに保存し、チャットから取得可能にした。GitHubへの行別詳細データ登録とGoogle DriveへのZIPアップロードは自動承認審査が拒否したため、このブランチには集計だけを置く。2025年PACIが正式にmaterializeされたら、同じ108 IDで再走査が必要。BRDB CURRENT、PWA、Newspaper、RaceNote、Blood Review v0.1は変更していない。
+行別108件のJSON・CSV・Parquetと元入力を含む監査ZIPは承認済みのDrive `blood_review` フォルダに保存した。取得リンクは依頼者にこの会話で直接提示する。アップロード後の再取得SHA-256は `8c7d6ac9418a42331db0bccbe9ccf69977352a3c452901a85177f695ca0f81b6` で元ZIPと一致。GitHubブランチにはコード・テスト・集計を置く。2026年UKCでの発見は2025年時点の利用可能性を証明しない。BRDB CURRENT、PWA、Newspaper、RaceNote、Blood Review v0.1は変更していない。
