@@ -27,3 +27,11 @@ jobs:
               assert all(json.loads(z.read(x['path']))['race']['reader'] for x in index['entries'])
           print('RACEZIP_DELIVERY_TEST=PASS')
           PY
+
+      - name: Upload probe artifact for connector retrieval
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-racezip-0136-connector-probe
+          path: /tmp/test-btday-0136.zip
+          if-no-files-found: error
+          retention-days: 2
