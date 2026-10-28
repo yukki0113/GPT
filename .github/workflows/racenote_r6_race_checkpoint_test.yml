@@ -4,6 +4,7 @@ on:
     paths:
       - 'horse-racing/jrdb/src/racenote_v055_r6_race_checkpoint_store.py'
       - '.github/workflows/racenote_r6_race_checkpoint_test.yml'
+      - 'horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction/**'
 permissions: {contents: read}
 jobs:
   test:
@@ -18,7 +19,7 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile horse-racing/jrdb/src/racenote_v055_r6_race_checkpoint_store.py
-          STORE=/tmp/racenote-checkpoint-test-0136
+          STORE=horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction
           ROOT=horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055
           CMD=horse-racing/jrdb/src/racenote_v055_r6_race_checkpoint_store.py
           mkdir -p "$STORE"
