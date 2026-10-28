@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
-      - name: Verify compact commands against persisted four LLM race checkpoints
+      - name: Verify compact commands against dynamic persisted race checkpoints
         env:
           PYTHONPATH: horse-racing/jrdb/src
         run: |
@@ -39,8 +39,10 @@ jobs:
           python "$CLI" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction/中山_03.json > /tmp/save.json
           python - <<'PY'
           import json
+          from pathlib import Path
           s=json.load(open('/tmp/save.json'))
-          assert s['saved']==len(list(Path('horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction').glob('*.json'))) and s['remaining']==36-s['completed'],s
+          count=len(list(Path('horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction').glob('*.json')))
+          assert s['saved']==count and s['remaining']==36-count,s
           print('PREDICTION_CLI_IDEMPOTENT_SAVE=PASS')
           PY
           test ! -e "$ROOT/incoming/llm_decisions.json"
