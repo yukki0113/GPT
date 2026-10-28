@@ -1,0 +1,55 @@
+name: RaceNote past-run join audit
+on:
+  pull_request:
+    paths: ['.github/workflows/racenote_pastrun_join_audit.yml']
+permissions: {contents: read}
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install tiktoken==0.12.0
+      - name: Match past runs and assess exact repeats
+        run: |
+          python - <<'PY'
+          import json,pathlib,hashlib,collections
+          import tiktoken
+          root=pathlib.Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055/authoring_bundle');manifest=json.loads((root/'manifest.json').read_bytes());enc=tiktoken.get_encoding('o200k_base')
+          j=lambda x:json.dumps(x,ensure_ascii=False,sort_keys=True,separators=(',',':'))
+          tok=lambda x:len(enc.encode(j(x)))
+          stats=collections.Counter(); samples=[]; key_sources=collections.Counter(); record_keys=collections.Counter()
+          for f in manifest['files']:
+              raw=(root/f['file']).read_bytes();assert hashlib.sha256(raw).hexdigest()==f['sha256']
+              for race in json.loads(raw)['races']:
+                  for horse in race['reader']['horses']:
+                      runs=horse['other_context'].get('recent_runs') or []
+                      laps=horse.get('historical_race_lap_contexts') or []
+                      stats['horses']+=1;stats['recent_runs']+=len(runs);stats['lap_contexts']+=len(laps)
+                      for idx,run in enumerate(runs):
+                          lap=laps[idx] if idx<len(laps) else None
+                          if lap is None:stats['missing_lap_position']+=1;continue
+                          rd=run.get('race',{}).get('date');ld=lap.get('source_race_date')
+                          if rd==ld:stats['matched_date_at_index']+=1
+                          else:
+                              stats['mismatched_date_at_index']+=1
+                              if len(samples)<5:samples.append({'venue':race['venue'],'race_no':race['race_no'],'horse_no':horse['identity']['horse_no'],'run_date':rd,'lap_date':ld})
+                          # test whether date-based crosswalk uniquely identifies each historical run within a horse
+                          run_dates=[r.get('race',{}).get('date') for r in runs]
+                          lap_dates=[l.get('source_race_date') for l in laps]
+                          if run_dates.count(rd)==1 and lap_dates.count(rd)==1:stats['uniquely_joinable_date']+=1
+                          # Record fields also carrying race identifiers
+                          for k in run:record_keys['run.'+k]+=1
+                          for k in lap:record_keys['lap.'+k]+=1
+                          for k in set(run).intersection(lap):
+                              if run[k]==lap[k]:stats['same_top_level_field_value']+=1
+                      stats['run_date_duplicates_within_horse']+=len([x for x,v in collections.Counter(r.get('race',{}).get('date') for r in runs).items() if v>1])
+          result={'selection_id':manifest['selection_id'],'counts':dict(stats),'examples_mismatch':samples,'keys':record_keys.most_common(22),'note':'Index/date alignment only, not semantic equivalence; no prediction or results accessed.'}
+          print('RACENOTE_PASTRUN_JOIN_AUDIT='+j(result))
+          pathlib.Path('racenote_pastrun_join_audit.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racenote-pastrun-join-audit
+          path: racenote_pastrun_join_audit.json
