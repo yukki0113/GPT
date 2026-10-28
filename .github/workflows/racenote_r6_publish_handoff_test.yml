@@ -25,7 +25,7 @@ jobs:
           checkpoint=make(root,store,'checkpoint',draft)
           assert checkpoint['path']==str(draft),checkpoint
           assert checkpoint['branch']=='feat/racenote-v055-racezip-delivery-20261028'
-          assert checkpoint['completed']==4 and checkpoint['remaining']==32
+          assert checkpoint['completed']==5 and checkpoint['remaining']==31
           try:
               make(root,store,'prediction',draft)
           except ValueError as e:
