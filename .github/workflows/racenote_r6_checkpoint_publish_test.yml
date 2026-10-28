@@ -1,0 +1,48 @@
+name: RaceNote one-command checkpoint publish regression
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_r6_checkpoint_publish.py'
+      - '.github/workflows/racenote_r6_checkpoint_publish_test.yml'
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Offline mock GitHub PUT and immutable verification
+        env: {PYTHONPATH: 'horse-racing/jrdb/src'}
+        run: |
+          python - <<'PY'
+          import base64
+          from pathlib import Path
+          import racenote_v055_r6_checkpoint_publish as m
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055')
+          store=Path('horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction')
+          draft=store/'中山_03.json'
+          remote_content={}
+          calls=[]
+          def fake_gh(method,endpoint,body=None):
+              calls.append(method)
+              if method=='GET':
+                  if 'data' not in remote_content:raise RuntimeError('GitHub operation failed: 404 Not Found')
+                  return {'content':base64.b64encode(remote_content['data']).decode()}
+              assert method=='PUT'
+              assert body['branch']=='feat/racenote-v055-racezip-delivery-20261028'
+              remote_content['data']=base64.b64decode(body['content'])
+              return {'commit':{'sha':'f'*40}}
+          m.gh=fake_gh
+          a=m.publish(root,store,draft)
+          assert a['status']=='PUBLISHED' and a['completed']==4 and a['remaining']==32,a
+          b=m.publish(root,store,draft)
+          assert b['status']=='ALREADY_PUBLISHED',b
+          assert calls==['GET','PUT','GET','GET','GET'],calls
+          remote_content['data']=b'{"corrupted":true}'
+          try:m.publish(root,store,draft)
+          except ValueError as exc:assert 'immutable remote checkpoint conflict' in str(exc)
+          else:raise AssertionError('overwrite was allowed')
+          assert not (root/'incoming/llm_decisions.json').exists()
+          print('CHECKPOINT_PUBLISH_OFFLINE=PASS')
+          PY
