@@ -1,15 +1,19 @@
 name: RaceNote v0.5.5 r6 race ZIP delivery (read-only)
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-*/**/operation_handoff.json'
   workflow_dispatch:
     inputs:
       selection_id:
-        description: Existing, T1-ready BTDAY (no new selection)
+        description: Existing T1-ready BTDAY (no new selection)
         required: true
         type: string
 permissions:
   contents: read
 concurrency:
-  group: racenote-racezip-delivery-${{ inputs.selection_id }}
+  group: racenote-racezip-delivery
   cancel-in-progress: false
 jobs:
   deliver:
@@ -18,14 +22,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: main
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Validate and create immutable-source per-race ZIP
+      - name: Resolve exactly one BTDAY (manual or committed T1 handoff)
+        id: target
+        env:
+          INPUT_SELECTION: ${{ inputs.selection_id }}
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import os,re,subprocess
+          sid=os.environ.get('INPUT_SELECTION','')
+          if os.environ['EVENT_NAME']=='push':
+              changed=subprocess.check_output(['git','diff','--name-only',os.environ['BEFORE'],os.environ['AFTER']],text=True).splitlines()
+              found=set()
+              for p in changed:
+                  m=re.fullmatch(r'horse-racing/jrdb/backtests/(BTDAY-\d{4})/\d{8}/operation_handoff\.json',p)
+                  if m:found.add(m.group(1))
+              if len(found)!=1:raise SystemExit(f'Exactly one T1 handoff required: {sorted(found)}')
+              sid=next(iter(found))
+          if not re.fullmatch(r'BTDAY-\d{4}',sid):
+              raise SystemExit('Invalid selection ID')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write(f'selection_id={sid}\n')
+          PY
+      - name: Validate and create race ZIP
         shell: bash
         env:
-          SELECTION_ID: ${{ inputs.selection_id }}
+          SELECTION_ID: ${{ steps.target.outputs.selection_id }}
         run: |
           set -euo pipefail
           python horse-racing/jrdb/src/racenote_v055_racezip_delivery.py \
@@ -33,10 +61,8 @@ jobs:
             --output "/tmp/racenote-racezip-$SELECTION_ID.zip"
       - name: Publish transport artifact
         uses: actions/upload-artifact@v4
-        env:
-          SELECTION_ID: ${{ inputs.selection_id }}
         with:
-          name: racenote-racezip-${{ inputs.selection_id }}
-          path: /tmp/racenote-racezip-${{ inputs.selection_id }}.zip
+          name: racenote-racezip-${{ steps.target.outputs.selection_id }}
+          path: /tmp/racenote-racezip-${{ steps.target.outputs.selection_id }}.zip
           if-no-files-found: error
           retention-days: 7
