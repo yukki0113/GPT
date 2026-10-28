@@ -4,6 +4,7 @@ on:
     paths:
       - 'horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama07_llm_positive.json'
       - '.github/workflows/racenote_r6_one_race_positive_test.yml'
+      - 'horse-racing/jrdb/tests/fixtures/racenote_r6_0136_hanshin09_llm_positive.json'
 permissions: {contents: read}
 jobs:
   one_race:
@@ -23,18 +24,19 @@ jobs:
           from racenote_v055_turn2_two_phase import preflight
           root=pathlib.Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055')
           session,_,entries=load_session(root)
-          core=json.loads(pathlib.Path('horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama07_llm_positive.json').read_text())
-          key=(core['venue'],core['race_no'])
-          normal=json.loads((root/'reader'/entries[key]['derived_normal_filename']).read_bytes())
-          assert len(normal['horses'])==9
-          validate_core(core,_validator_reader(normal),contract_revision=session['contract_revision'])
+          cores=[json.loads(pathlib.Path(x).read_text()) for x in ('horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama07_llm_positive.json','horse-racing/jrdb/tests/fixtures/racenote_r6_0136_hanshin09_llm_positive.json')]
+          for core in cores:
+              key=(core['venue'],core['race_no'])
+              normal=json.loads((root/'reader'/entries[key]['derived_normal_filename']).read_bytes())
+              assert len(normal['horses'])==9
+              validate_core(core,_validator_reader(normal),contract_revision=session['contract_revision'])
           with tempfile.TemporaryDirectory() as tmp:
               p=pathlib.Path(tmp)/'one.json'
-              p.write_text(json.dumps([core],ensure_ascii=False))
+              p.write_text(json.dumps(cores,ensure_ascii=False))
               try:preflight(root,p,'prediction')
               except ValueError as exc:assert 'COVERAGE_MISMATCH' in str(exc),str(exc)
               else:raise AssertionError('Partial day must not Freeze')
           assert not (root/'frozen').exists()
-          print('RACENOTE_1R_POSITIVE_VALIDATOR=PASS')
+          print('RACENOTE_2R_POSITIVE_VALIDATOR=PASS')
           print('RACENOTE_36R_FREEZE_PARTIAL_REJECTION=PASS')
           PY
