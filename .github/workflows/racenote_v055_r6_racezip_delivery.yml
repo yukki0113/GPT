@@ -1,0 +1,42 @@
+name: RaceNote v0.5.5 r6 race ZIP delivery (read-only)
+on:
+  workflow_dispatch:
+    inputs:
+      selection_id:
+        description: Existing, T1-ready BTDAY (no new selection)
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: racenote-racezip-delivery-${{ inputs.selection_id }}
+  cancel-in-progress: false
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate and create immutable-source per-race ZIP
+        shell: bash
+        env:
+          SELECTION_ID: ${{ inputs.selection_id }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_racezip_delivery.py \
+            --selection-id "$SELECTION_ID" \
+            --output "/tmp/racenote-racezip-$SELECTION_ID.zip"
+      - name: Publish transport artifact
+        uses: actions/upload-artifact@v4
+        env:
+          SELECTION_ID: ${{ inputs.selection_id }}
+        with:
+          name: racenote-racezip-${{ inputs.selection_id }}
+          path: /tmp/racenote-racezip-${{ inputs.selection_id }}.zip
+          if-no-files-found: error
+          retention-days: 7
