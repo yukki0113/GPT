@@ -1,0 +1,31 @@
+name: RaceNote Nakayama 4R positive validator
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama04_llm_positive.json'
+      - '.github/workflows/racenote_r6_nakayama04_positive_test.yml'
+permissions: {contents: read}
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate all 16 runners and submitted core
+        env: {PYTHONPATH: 'horse-racing/jrdb/src'}
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from racenote_v055_single_day import load_session,_validator_reader
+          from racenote_decision_core_v055 import validate_core
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055')
+          f=Path('horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama04_llm_positive.json')
+          session,_,entries=load_session(root)
+          core=json.loads(f.read_text())
+          reader=json.loads((root/'reader'/entries[('中山',4)]['derived_normal_filename']).read_text())
+          assert len(reader['horses'])==16
+          validate_core(core,_validator_reader(reader),contract_revision=session['contract_revision'])
+          print('NAKAYAMA04_R6_VALIDATION=PASS')
+          PY
