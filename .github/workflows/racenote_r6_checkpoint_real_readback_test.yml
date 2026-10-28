@@ -28,7 +28,7 @@ jobs:
           import json
           r=json.load(open('/tmp/publish-result.json'))
           assert r['status']=='ALREADY_PUBLISHED',r
-          assert r['completed']==4 and r['remaining']==32,r
+          assert r['completed']==5 and r['remaining']==31,r
           assert r['branch']=='feat/racenote-v055-racezip-delivery-20261028',r
           print('REAL_GITHUB_EXISTING_CHECKPOINT_VERIFIED=PASS')
           PY
