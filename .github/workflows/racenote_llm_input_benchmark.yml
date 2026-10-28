@@ -1,0 +1,72 @@
+name: RaceNote LLM input chunk benchmark (read-only)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/racenote_llm_input_benchmark.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'tiktoken==0.12.0'
+      - name: Measure JSON chunks and ZIP retrieval
+        run: |
+          python - <<'PY'
+          import pathlib,json,io,zipfile,time,statistics,hashlib,collections,os
+          import tiktoken
+          root=pathlib.Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055/authoring_bundle')
+          manifest=json.loads((root/'manifest.json').read_bytes())
+          races=[]; raw_source=0
+          for f in manifest['files']:
+              raw=(root/f['file']).read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==f['sha256']
+              raw_source+=len(raw)
+              o=json.loads(raw)
+              for row in o['races']:
+                  races.append((row['venue'],row['race_no'],row))
+          assert len(races)==36
+          enc=tiktoken.get_encoding('o200k_base')
+          entries=[]
+          for venue,num,row in races:
+              data=json.dumps(row,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()
+              entries.append((f'{venue}/{num:02d}.json',data))
+          bio=io.BytesIO()
+          with zipfile.ZipFile(bio,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=6) as z:
+              for name,data in entries:z.writestr(name,data)
+          zip_bytes=bio.getvalue()
+          chunks={}
+          for batch in [1,3,6,12,36]:
+              tok=[]; sizes=[]
+              for i in range(0,len(entries),batch):
+                  blob=b'\n'.join(x[1] for x in entries[i:i+batch])
+                  sizes.append(len(blob));tok.append(len(enc.encode(blob.decode('utf-8'))))
+              chunks[str(batch)]={'chunk_count':len(tok),'total_tokens':sum(tok),'max_chunk_tokens':max(tok),'median_chunk_tokens':round(statistics.median(tok)), 'max_chunk_bytes':max(sizes)}
+          read=[]
+          for name,_ in entries:
+              times=[]
+              for j in range(20):
+                  t=time.perf_counter()
+                  with zipfile.ZipFile(io.BytesIO(zip_bytes)) as z:
+                      raw=z.read(name)
+                  json.loads(raw)
+                  times.append((time.perf_counter()-t)*1000)
+              read.append(statistics.median(times))
+          report={'selection_id':manifest['selection_id'],'race_count':len(entries),'original_bytes':raw_source,'zip_bytes':len(zip_bytes),'zip_ratio_pct':round(len(zip_bytes)/raw_source*100,2),'tokenizer':'o200k_base (proxy, NOT confirmed GPT-6 tokenizer)','chunking':chunks,'one_race_extract_parse_ms_median':round(statistics.median(read),3),'one_race_extract_parse_ms_max_race_median':round(max(read),3),'roundtrip_equal':all(json.loads(b)==r for (_,b),(_,_,r) in zip(entries,races)),'note':'Measures tokenized input/chunk sizes and local ZIP operations, NOT LLM inference wall time or retained conversation context.'}
+          print('RACENOTE_LLM_INPUT_BENCHMARK='+json.dumps(report,ensure_ascii=False))
+          pathlib.Path('racenote_llm_input_benchmark.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('## RaceNote LLM input benchmark (BTDAY-0136, read-only)\n\n')
+              f.write('Tokenizer is a proxy (o200k_base), not a GPT-6 measured tokenizer.\n\n')
+              f.write('| races/chunk | chunks | max tokens | median tokens | total tokens |\n|---:|---:|---:|---:|---:|\n')
+              for k,v in chunks.items():f.write(f'| {k} | {v["chunk_count"]} | {v["max_chunk_tokens"]} | {v["median_chunk_tokens"]} | {v["total_tokens"]} |\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racenote-llm-input-benchmark
+          path: racenote_llm_input_benchmark.json
