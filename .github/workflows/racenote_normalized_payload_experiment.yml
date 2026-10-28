@@ -1,0 +1,80 @@
+name: RaceNote normalized payload experiment
+on:
+  pull_request:
+    paths: ['.github/workflows/racenote_normalized_payload_experiment.yml']
+permissions: {contents: read}
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install tiktoken==0.12.0
+      - name: Compare reversible serializations and key overlap
+        run: |
+          python - <<'PY'
+          import pathlib,json,hashlib,collections,statistics,os
+          import tiktoken
+          root=pathlib.Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055/authoring_bundle')
+          manifest=json.loads((root/'manifest.json').read_bytes());enc=tiktoken.get_encoding('o200k_base')
+          dump=lambda x:json.dumps(x,ensure_ascii=False,sort_keys=True,separators=(',',':'))
+          tokens=lambda x:len(enc.encode(x))
+          samples=[];runkeys=collections.Counter(); overlap=collections.Counter()
+          for f in manifest['files']:
+              raw=(root/f['file']).read_bytes();assert hashlib.sha256(raw).hexdigest()==f['sha256']
+              for row in json.loads(raw)['races']:samples.append(row['reader'])
+          def intern_encode(v,keys):
+              if isinstance(v,dict):
+                  return {'@':[[keys[k],intern_encode(z,keys)] for k,z in v.items()]}
+              if isinstance(v,list):return [intern_encode(x,keys) for x in v]
+              return v
+          def intern_decode(v,keys):
+              if isinstance(v,dict) and set(v)=={'@'}:
+                  return {keys[k]:intern_decode(x,keys) for k,x in v['@']}
+              if isinstance(v,list):return [intern_decode(x,keys) for x in v]
+              return v
+          # Dictionary is per day but each race can be decoded independently with the dictionary.
+          def keys_walk(v,count):
+              if isinstance(v,dict):
+                  for k,z in v.items():count[k]+=1;keys_walk(z,count)
+              elif isinstance(v,list):
+                  for z in v:keys_walk(z,count)
+          counts=collections.Counter()
+          for x in samples:keys_walk(x,counts)
+          keys=[k for k,_ in counts.most_common()];keymap={k:i for i,k in enumerate(keys)}
+          dictionary=dump(keys); raw_total=0; packed_total=0; per=[]
+          for x in samples:
+              orig=dump(x);c=dump(intern_encode(x,keymap))
+              assert intern_decode(json.loads(c),keys)==x
+              raw_total+=tokens(orig);packed_total+=tokens(c);per.append((tokens(orig),tokens(c)))
+          # Flat key-value path transcription, reversible via JSON-pointer-like typed paths.
+          def flat_encode(v):
+              out=[]
+              def walk(x,path):
+                  if isinstance(x,dict):
+                      out.append([path,'D',len(x)])
+                      for k,z in x.items():walk(z,path+[['k',k]])
+                  elif isinstance(x,list):
+                      out.append([path,'L',len(x)])
+                      for i,z in enumerate(x):walk(z,path+[['i',i]])
+                  else:out.append([path,'V',x])
+              walk(v,[]);return out
+          # inspect same horse's recent-run and lap source IDs/keys, without asserting semantic equality
+          samplehorse=samples[0]['horses'][0]
+          for h in [h for r in samples for h in r['horses']]:
+              runs=h.get('other_context',{}).get('recent_runs',[]) or []
+              laps=h.get('historical_race_lap_contexts',[]) or []
+              reviews=h.get('other_context',{}).get('racereview')
+              overlap['horse_instances']+=1
+              overlap['recent_runs']+=len(runs)
+              overlap['lap_contexts']+=len(laps)
+              overlap['review_present']+=int(reviews is not None)
+          result={'race_count':len(samples),'total_json_tokens':raw_total,'interned_tokens_without_dictionary':packed_total,'dictionary_tokens':tokens(dictionary),'interned_total_tokens':packed_total+tokens(dictionary),'interned_reduction_pct':round(100*(1-(packed_total+tokens(dictionary))/raw_total),2),'distinct_keys':len(keys),'top_keys':counts.most_common(15),'overlap_counts':dict(overlap),'roundtrip_equal':True,'tokenizer':'o200k_base proxy'}
+          print('RACENOTE_NORMALIZED_EXPERIMENT='+json.dumps(result,ensure_ascii=False))
+          pathlib.Path('racenote_normalized_payload_report.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racenote-normalized-payload-report
+          path: racenote_normalized_payload_report.json
