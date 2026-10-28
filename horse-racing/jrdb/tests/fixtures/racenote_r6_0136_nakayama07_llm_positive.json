@@ -1,0 +1,33 @@
+{
+  "venue": "中山",
+  "race_no": 7,
+  "marks": [
+    6,
+    7,
+    2,
+    1,
+    4
+  ],
+  "candidate_selection": {
+    "ordinary_five": [
+      6,
+      7,
+      2,
+      1,
+      4
+    ],
+    "external_challenger_horse_no": 8,
+    "excluded_horse_no": 8,
+    "decision": "KEEP_ORDINARY_FIVE",
+    "boundary_reason": "セルズパワーは1400mでの差し脚が良いが、今回の1600mへの延長で上位候補との比較に不確実性が残るため、上位五頭を維持する。"
+  },
+  "honmei_win": {
+    "evidence": "カザンラクは新馬戦の東京芝1800mを先行して余力十分に完勝。IDM50.1と今回のメンバー上位の能力値を示し、芝1600mへの短縮でも先行力と騎手面の強みがある。",
+    "main_risk": "実戦経験が1戦のみであり、中山のコーナーとクラス上昇への適応は未知数。"
+  },
+  "shot_case": {
+    "case": "ルパヴィヨンは東京芝1600mの前走を先行して勝利。距離経験と立ち回りの安定性から三番手候補。"
+  },
+  "rrdb_refs": [],
+  "reader_facing_reason": "新馬戦を余裕十分に勝ち切ったカザンラクを中心視。先行力と能力値の高さが魅力だが、経験の浅さと中山替わりは注意したい。"
+}
