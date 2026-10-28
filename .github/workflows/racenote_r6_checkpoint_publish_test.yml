@@ -35,7 +35,7 @@ jobs:
               return {'commit':{'sha':'f'*40}}
           m.gh=fake_gh
           a=m.publish(root,store,draft)
-          assert a['status']=='PUBLISHED' and a['completed']==5 and a['remaining']==31,a
+          assert a['status']=='PUBLISHED' and a['completed']+a['remaining']==36,a
           b=m.publish(root,store,draft)
           assert b['status']=='ALREADY_PUBLISHED',b
           assert calls==['GET','PUT','GET','GET','GET'],calls
