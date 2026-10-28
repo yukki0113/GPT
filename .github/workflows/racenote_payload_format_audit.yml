@@ -1,0 +1,60 @@
+name: RaceNote semantic payload format audit
+on:
+  pull_request:
+    paths: ['.github/workflows/racenote_payload_format_audit.yml']
+permissions: {contents: read}
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install tiktoken==0.12.0
+      - name: Benchmark fields and serialization
+        run: |
+          python - <<'PY'
+          import json,pathlib,hashlib,collections,statistics,os
+          import tiktoken
+          root=pathlib.Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055/authoring_bundle')
+          man=json.loads((root/'manifest.json').read_bytes())
+          enc=tiktoken.get_encoding('o200k_base')
+          js=lambda v:json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(',',':'))
+          tok=lambda v:len(enc.encode(v))
+          other=collections.Counter(); lap=collections.Counter(); nested=collections.Counter(); n=0
+          sample=[]
+          for f in man['files']:
+              raw=(root/f['file']).read_bytes();assert hashlib.sha256(raw).hexdigest()==f['sha256']
+              for item in json.loads(raw)['races']:
+                  reader=item['reader'];n+=1
+                  for horse in reader['horses']:
+                      for k,v in horse.get('other_context',{}).items():
+                          other[k]+=tok(js(v))
+                          if k=='recent_runs' and isinstance(v,list):
+                              for run in v:
+                                  if isinstance(run,dict):
+                                      for rk,rv in run.items():nested['recent_runs.'+rk]+=tok(js(rv))
+                      for k,v in horse.items():
+                          if k.startswith('historical_race_lap'):
+                              lap[k]+=tok(js(v))
+                  sample.append(reader)
+          # Reversible format: per-race JSON vs per-race indented JSON vs python repr.
+          variants={'compact_json':0,'pretty_json':0,'python_repr':0}
+          for r in sample:
+              variants['compact_json']+=tok(js(r))
+              variants['pretty_json']+=tok(json.dumps(r,ensure_ascii=False,indent=2,sort_keys=True))
+              variants['python_repr']+=tok(repr(r))
+          # Count exact duplicates of serialized recent-run objects (informative only, never collapse blindly)
+          run_counts=collections.Counter()
+          for r in sample:
+              for h in r['horses']:
+                  for x in h.get('other_context',{}).get('recent_runs',[]) or []:
+                      run_counts[js(x)]+=1
+          result={'races':n,'other_context_children_tokens':dict(other),'recent_runs_children_tokens':dict(nested),'lap_tokens':dict(lap),'variants_total_tokens':variants,'recent_run_object_instances':sum(run_counts.values()),'exact_duplicate_recent_run_instances':sum(v-1 for v in run_counts.values() if v>1),'tokenizer':'o200k_base proxy','note':'Serialized values counted separately. Exact duplicate objects only; semantic overlap not automatically inferred.'}
+          print('RACENOTE_PAYLOAD_FORMAT_AUDIT='+json.dumps(result,ensure_ascii=False))
+          pathlib.Path('racenote_payload_format_audit.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racenote-payload-format-audit
+          path: racenote_payload_format_audit.json

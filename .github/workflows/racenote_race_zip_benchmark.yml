@@ -1,0 +1,79 @@
+name: RaceNote 1R ZIP benchmark (read-only)
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/racenote_race_zip_benchmark.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify and benchmark 36R source bundle
+        run: |
+          python - <<'PY'
+          import json, pathlib, hashlib, zipfile, io, time, statistics
+          root=pathlib.Path("horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055/authoring_bundle")
+          m=json.loads((root/"manifest.json").read_bytes())
+          assert m["selection_id"]=="BTDAY-0136" and m["race_count"]==36
+          files=[]; races=[]; original_rows={}
+          for f in m["files"]:
+              raw=(root/f["file"]).read_bytes()
+              assert hashlib.sha256(raw).hexdigest()==f["sha256"]
+              files.append((f["file"],raw))
+              obj=json.loads(raw)
+              assert len(obj["races"])==f["race_count"]
+              meta={k:v for k,v in obj.items() if k!="races"}
+              for row in obj["races"]:
+                  key=(row["venue"],int(row["race_no"]))
+                  assert key not in original_rows
+                  original_rows[key]=row
+                  payload={"venue_bundle_metadata":meta,"race":row}
+                  b=json.dumps(payload,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode("utf-8")
+                  races.append((f'races/{key[0]}/{key[1]:02d}.json',b))
+          assert len(races)==len(original_rows)==36
+          def pack(entries,level):
+              with io.BytesIO() as bio:
+                  with zipfile.ZipFile(bio,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=level) as z:
+                      for name,content in entries: z.writestr(name,content)
+                  return bio.getvalue()
+          measurements={}
+          for label,entries in (("venue_zip",files),("race_zip",races)):
+              for level in (6,9):
+                  runs=[]; blob=None
+                  for _ in range(5):
+                      t=time.perf_counter(); blob=pack(entries,level); runs.append(time.perf_counter()-t)
+                  assert blob is not None
+                  times=[]
+                  for _ in range(5):
+                      t=time.perf_counter()
+                      with zipfile.ZipFile(io.BytesIO(blob)) as z:
+                          for name,content in entries:
+                              assert z.read(name)==content
+                      times.append(time.perf_counter()-t)
+                  measurements[f"{label}_level{level}"]={"bytes":len(blob),"pack_ms_median":round(statistics.median(runs)*1000,2),"read_verify_ms_median":round(statistics.median(times)*1000,2)}
+          # JSON-level roundtrip ensures every race's full Reader is unchanged.
+          for name,b in races:
+              row=json.loads(b)["race"]
+              assert row==original_rows[(row["venue"],int(row["race_no"]))]
+          raw_size=sum(len(b) for _,b in files)
+          split_size=sum(len(b) for _,b in races)
+          report={"selection_id":m["selection_id"],"races":36,"original_bytes":raw_size,"split_bytes":split_size,"split_growth_pct":round((split_size/raw_size-1)*100,2),"source_sha_verified":True,"all_races_roundtrip_equal":True,"measurements":measurements}
+          for v in measurements.values():
+              v["ratio_to_original_pct"]=round(v["bytes"]/raw_size*100,2)
+          print("RACENOTE_RACE_ZIP_BENCHMARK="+json.dumps(report,ensure_ascii=False,sort_keys=True))
+          pathlib.Path("race_zip_benchmark_report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2))
+          with open(__import__("os").environ["GITHUB_STEP_SUMMARY"],"a") as f:
+              f.write("## RaceNote BTDAY-0136 ZIP Benchmark\n\n")
+              f.write("| Mode | bytes | ratio to original | pack ms median | extract+verify ms median |\n|---|---:|---:|---:|---:|\n")
+              for k,v in measurements.items(): f.write(f'| {k} | {v["bytes"]} | {v["ratio_to_original_pct"]}% | {v["pack_ms_median"]} | {v["read_verify_ms_median"]} |\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racenote-zip-benchmark-report
+          path: race_zip_benchmark_report.json
