@@ -1,0 +1,53 @@
+name: RaceNote r6 integration negative-path regression
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_r6_submit_gate.py'
+      - 'horse-racing/jrdb/src/racenote_v055_race_draft_assemble.py'
+      - '.github/workflows/racenote_r6_integration_negative_test.yml'
+permissions: {contents: read}
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Exercise real T1, 1R checkpoint, incomplete submission rejection
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python - <<'PY'
+          import json,tempfile
+          from pathlib import Path
+          from racenote_v055_r6_submit_gate import build
+          from racenote_v055_race_draft_assemble import main as assemble_main
+          from racenote_v055_r6_turn2_checkpoint import inspect
+          from racenote_v055_turn2_two_phase import preflight
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055')
+          session=json.loads((root/'session.json').read_text())
+          assert inspect(root)['next_action']=='LLM_PREDICTION_AUTHORING'
+          race=session['race_roster'][0]
+          # Intentionally not a valid LLM Decision Core; verify coverage is caught first.
+          one={'venue':race['venue'],'race_no':race['race_no']}
+          with tempfile.TemporaryDirectory() as td:
+              path=Path(td)/'one.json'
+              path.write_text(json.dumps([one],ensure_ascii=False))
+              for check in (lambda:preflight(root,path,'prediction'),lambda:build(root,'prediction',path)):
+                  try:check()
+                  except ValueError as exc:
+                      assert 'COVERAGE_MISMATCH' in str(exc),str(exc)
+                  else:raise AssertionError('1R incorrectly accepted for 36R Freeze')
+              # An empty draft collection must not produce any output.
+              import sys
+              output=Path(td)/'draft.json'
+              sys.argv=['assemble','--root',str(root),'--phase','prediction','--draft-dir',td,'--output',str(output)]
+              try:assemble_main()
+              except (SystemExit,ValueError) as exc:
+                  assert 'unexpected draft path' in str(exc) or 'incomplete coverage' in str(exc),str(exc)
+              else:raise AssertionError('invalid partial checkpoint accepted')
+              assert not output.exists()
+          assert inspect(root)['next_action']=='LLM_PREDICTION_AUTHORING'
+          assert not (root/'frozen').exists()
+          print('RACENOTE_R6_NEGATIVE_INTEGRATION=PASS')
+          PY
