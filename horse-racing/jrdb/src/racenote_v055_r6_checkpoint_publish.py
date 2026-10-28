@@ -13,6 +13,7 @@ import sys
 from pathlib import Path
 
 from racenote_v055_r6_publish_handoff import make
+from racenote_v055_r6_race_checkpoint_store import canon
 from racenote_v055_turn2_two_phase import resolve_root
 
 def gh(method: str, endpoint: str, body=None):
@@ -32,7 +33,9 @@ def publish(root: Path,store: Path,draft: Path):
     path=plan["path"]
     branch=plan["branch"]
     endpoint=f"repos/{repo}/contents/{path}"
-    expected=draft.read_bytes()
+    expected=canon(json.loads(draft.read_text(encoding='utf-8')))
+    if hashlib.sha256(expected).hexdigest()!=plan['sha256']:
+        raise ValueError('checkpoint canonical SHA mismatch')
     # The remote file must be absent or exactly identical; never overwrite a revision.
     def remote():
         try:
