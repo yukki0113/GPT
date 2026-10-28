@@ -1,0 +1,31 @@
+name: RaceNote r6 submit gate regression
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_r6_submit_gate.py'
+      - '.github/workflows/racenote_r6_submit_gate_test.yml'
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate submission gate is fail-closed
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python -m py_compile horse-racing/jrdb/src/racenote_v055_r6_submit_gate.py
+          python - <<'PY'
+          from pathlib import Path
+          from racenote_v055_r6_submit_gate import build
+          root=Path("horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055")
+          for phase in ("prediction","confidence"):
+              try:
+                  build(root,phase,Path("/tmp/this-draft-does-not-exist.json"))
+              except ValueError:
+                  print("EXPECTED_FAIL_CLOSED",phase)
+              else:
+                  raise AssertionError("missing draft or wrong phase accepted")
+          PY
