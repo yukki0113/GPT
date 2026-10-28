@@ -1,0 +1,36 @@
+name: RaceNote publish handoff regression
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_r6_publish_handoff.py'
+      - '.github/workflows/racenote_r6_publish_handoff_test.yml'
+permissions: {contents: read}
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate checkpoint handoff and reject incomplete prediction submit
+        env: {PYTHONPATH: 'horse-racing/jrdb/src'}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from racenote_v055_r6_publish_handoff import make
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055')
+          store=Path('horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction')
+          draft=store/'中山_03.json'
+          checkpoint=make(root,store,'checkpoint',draft)
+          assert checkpoint['path']==str(draft),checkpoint
+          assert checkpoint['branch']=='feat/racenote-v055-racezip-delivery-20261028'
+          assert checkpoint['completed']==4 and checkpoint['remaining']==32
+          try:
+              make(root,store,'prediction',draft)
+          except ValueError as e:
+              assert 'prediction incomplete' in str(e),str(e)
+          else:raise AssertionError('incomplete prediction submitted')
+          print('PUBLISH_HANDOFF_CHECKPOINT=PASS')
+          print('PUBLISH_HANDOFF_INCOMPLETE_PREDICTION_REJECTED=PASS')
+          PY
