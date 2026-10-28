@@ -1,0 +1,29 @@
+name: RaceNote race ZIP delivery regression
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_racezip_delivery.py'
+      - '.github/workflows/racenote_v055_r6_racezip_delivery.yml'
+      - '.github/workflows/racenote_racezip_delivery_test.yml'
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Package and inspect BTDAY-0136 without changing canonical artifacts
+        run: |
+          python horse-racing/jrdb/src/racenote_v055_racezip_delivery.py --selection-id BTDAY-0136 --output /tmp/test-btday-0136.zip
+          python - <<'PY'
+          import zipfile,json
+          with zipfile.ZipFile('/tmp/test-btday-0136.zip') as z:
+              index=json.loads(z.read('index.json'))
+              assert index['race_count']==36
+              assert len(index['entries'])==36
+              assert index['result_opened'] is False
+              assert index['target_market_opened'] is False
+              assert all(json.loads(z.read(x['path']))['race']['reader'] for x in index['entries'])
+          print('RACEZIP_DELIVERY_TEST=PASS')
+          PY
