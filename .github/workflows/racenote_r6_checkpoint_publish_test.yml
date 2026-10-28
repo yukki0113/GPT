@@ -36,6 +36,9 @@ jobs:
           m.gh=fake_gh
           a=m.publish(root,store,draft)
           assert a['status']=='PUBLISHED' and a['completed']+a['remaining']==36,a
+          # Existing pretty-printed JSON with identical semantics is immutable-equivalent.
+          import json
+          remote_content['data']=json.dumps(json.loads(draft.read_text()),ensure_ascii=False,indent=2).encode()
           b=m.publish(root,store,draft)
           assert b['status']=='ALREADY_PUBLISHED',b
           assert calls==['GET','PUT','GET','GET','GET'],calls
