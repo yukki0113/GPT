@@ -1,0 +1,58 @@
+name: RaceNote Reader field/token audit (read-only)
+on:
+  pull_request:
+    paths: ['.github/workflows/racenote_reader_field_audit.yml']
+permissions: {contents: read}
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install tiktoken==0.12.0
+      - name: Token accounting and lossless columnar encoding
+        run: |
+          python - <<'PY'
+          import json,pathlib,hashlib,collections,statistics,os
+          import tiktoken
+          root=pathlib.Path('horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055/authoring_bundle')
+          man=json.loads((root/'manifest.json').read_bytes()); enc=tiktoken.get_encoding('o200k_base')
+          tok=lambda o:len(enc.encode(json.dumps(o,ensure_ascii=False,sort_keys=True,separators=(',',':'))))
+          sizes=collections.Counter(); hfields=collections.Counter(); totals=collections.Counter();race_token=[]; compact_token=[]; lossless=True; rows=0
+          def encode(v):
+              if isinstance(v,dict):
+                  return {k:encode(x) for k,x in v.items()}
+              if isinstance(v,list):
+                  if len(v)>=2 and all(isinstance(x,dict) for x in v):
+                      keys=sorted(set().union(*(x.keys() for x in v)))
+                      # value-presence bitmaps preserve absent vs null and original mapping; no omission
+                      return {'__table_keys__':keys,'__table_rows__':[[[k in x,encode(x[k]) if k in x else None] for k in keys] for x in v]}
+                  return [encode(x) for x in v]
+              return v
+          def decode(v):
+              if isinstance(v,dict):
+                  if set(v)=={'__table_keys__','__table_rows__'}:
+                      return [{k:decode(cell[1]) for k,cell in zip(v['__table_keys__'],row) if cell[0]} for row in v['__table_rows__']]
+                  return {k:decode(x) for k,x in v.items()}
+              if isinstance(v,list):return [decode(x) for x in v]
+              return v
+          for f in man['files']:
+              raw=(root/f['file']).read_bytes();assert hashlib.sha256(raw).hexdigest()==f['sha256']
+              bundle=json.loads(raw)
+              for item in bundle['races']:
+                  r=item['reader']; rows+=1
+                  race_token.append(tok(r))
+                  for k,v in r.items():totals[k]+=tok(v)
+                  for h in r['horses']:
+                      for k,v in h.items():hfields[k]+=tok(v)
+                  # token reduction from lossless repeated-key transform
+                  c=encode(r);compact_token.append(tok(c));assert decode(c)==r
+          res={'races':rows,'base_tokens':sum(race_token),'compact_tokens':sum(compact_token),'compact_reduction_pct':round((1-sum(compact_token)/sum(race_token))*100,2),'roundtrip_equal':lossless,'top_level_tokens':dict(totals),'horse_fields_tokens':dict(hfields),'per_race_base_median':int(statistics.median(race_token)),'per_race_compact_median':int(statistics.median(compact_token)),'tokenizer':'o200k_base proxy'}
+          print('RACENOTE_FIELD_AUDIT='+json.dumps(res,ensure_ascii=False))
+          pathlib.Path('racenote_reader_field_audit.json').write_text(json.dumps(res,ensure_ascii=False,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racenote-reader-field-audit
+          path: racenote_reader_field_audit.json
