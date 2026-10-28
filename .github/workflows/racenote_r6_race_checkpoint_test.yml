@@ -26,12 +26,13 @@ jobs:
           python "$CMD" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama01_llm_positive.json
           python "$CMD" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama07_llm_positive.json
           python "$CMD" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/tests/fixtures/racenote_r6_0136_hanshin09_llm_positive.json
+          python "$CMD" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction/中山_03.json
           python "$CMD" --root "$ROOT" --store "$STORE" status > /tmp/racenote-checkpoint-status.json
           python - <<'PY'
           import json
           s=json.load(open('/tmp/racenote-checkpoint-status.json'))
-          assert s['saved']==3 and s['remaining']==33,s
-          print('CHECKPOINT_3_OF_36=PASS')
+          assert s['saved']==4 and s['remaining']==32,s
+          print('CHECKPOINT_4_OF_36=PASS')
           PY
           if python "$CMD" --root "$ROOT" --store "$STORE" assemble --output /tmp/should-not-exist.json; then exit 1; fi
           test ! -f /tmp/should-not-exist.json
