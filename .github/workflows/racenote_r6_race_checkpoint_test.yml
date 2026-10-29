@@ -1,0 +1,41 @@
+name: RaceNote r6 immutable race checkpoints
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_r6_race_checkpoint_store.py'
+      - '.github/workflows/racenote_r6_race_checkpoint_test.yml'
+      - 'horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction/**'
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Validate real LLM cores, immutability and partial resume
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python -m py_compile horse-racing/jrdb/src/racenote_v055_r6_race_checkpoint_store.py
+          STORE="$(mktemp -d)"
+          ROOT=horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055
+          CMD=horse-racing/jrdb/src/racenote_v055_r6_race_checkpoint_store.py
+          mkdir -p "$STORE"
+          python "$CMD" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama01_llm_positive.json
+          python "$CMD" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama07_llm_positive.json
+          python "$CMD" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/tests/fixtures/racenote_r6_0136_hanshin09_llm_positive.json
+          python "$CMD" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction/中山_03.json
+          python "$CMD" --root "$ROOT" --store "$STORE" status > /tmp/racenote-checkpoint-status.json
+          python - <<'PY'
+          import json
+          s=json.load(open('/tmp/racenote-checkpoint-status.json'))
+          assert s['saved']==4 and s['remaining']==32,s
+          print('CHECKPOINT_4_OF_36=PASS')
+          PY
+          if python "$CMD" --root "$ROOT" --store "$STORE" assemble --output /tmp/should-not-exist.json; then exit 1; fi
+          test ! -f /tmp/should-not-exist.json
+          python "$CMD" --root "$ROOT" --store "$STORE" save --draft horse-racing/jrdb/tests/fixtures/racenote_r6_0136_nakayama01_llm_positive.json
+          test ! -e "$ROOT/incoming/llm_decisions.json"
+          test ! -e "$ROOT/frozen/day_handoff.json"

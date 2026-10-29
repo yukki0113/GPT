@@ -1,0 +1,116 @@
+name: RaceNote v0.5.5 r6 race ZIP delivery (read-only)
+on:
+  # Authenticated, explicitly requested backfill for an already committed T1.
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/racezip/BTDAY-*.delivery-request'
+  workflow_run:
+    workflows:
+      - RaceNote v0.5.5 r6 shared BTDAY T1
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      selection_id:
+        description: Existing T1-ready BTDAY (no new selection)
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: racenote-racezip-delivery
+  cancel-in-progress: false
+jobs:
+  deliver:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Resolve exact BTDAY from triggering T1 request commit
+        id: target
+        env:
+          INPUT_SELECTION: ${{ inputs.selection_id }}
+          EVENT_NAME: ${{ github.event_name }}
+          T1_REQUEST_SHA: ${{ github.event.workflow_run.head_sha }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os,re,subprocess
+          from pathlib import Path
+          sid=os.environ.get('INPUT_SELECTION','')
+          if os.environ['EVENT_NAME']=='push':
+              changed=subprocess.check_output(
+                  ['git','diff','--name-only',os.environ['BEFORE'],os.environ['AFTER']],
+                  text=True).splitlines()
+              found=set()
+              for path in changed:
+                  m=re.fullmatch(
+                      r'horse-racing/jrdb/backtests/requests/racezip/(BTDAY-\d{4})\.delivery-request',
+                      path)
+                  if m:found.add(m.group(1))
+              if len(found)!=1:
+                  raise SystemExit(f'Exactly one explicit delivery request expected: {sorted(found)}')
+              sid=next(iter(found))
+          if os.environ['EVENT_NAME']=='workflow_run':
+              commit=os.environ.get('T1_REQUEST_SHA','')
+              if not re.fullmatch('[0-9a-f]{40}',commit):
+                  raise SystemExit('Missing triggering T1 request commit SHA')
+              # workflow_run.head_sha points to the request event, not to the
+              # later github-actions[bot] commit that persisted the T1 output.
+              changed=subprocess.check_output(
+                  ['git','diff-tree','--no-commit-id','--name-only','-r',commit],
+                  text=True).splitlines()
+              found=set()
+              for path in changed:
+                  m=re.fullmatch(
+                      r'horse-racing/jrdb/backtests/requests/(BTDAY-\d{4})\.v055r6-turn1',
+                      path)
+                  if m:found.add(m.group(1))
+              if len(found)!=1:
+                  raise SystemExit(f'Exactly one T1 request expected: {sorted(found)}')
+              sid=next(iter(found))
+          if not re.fullmatch(r'BTDAY-\d{4}',sid):
+              raise SystemExit('Invalid selection ID')
+          selection=Path('horse-racing/jrdb/backtests')/sid/'selection.json'
+          data=json.loads(selection.read_text(encoding='utf-8'))
+          if data.get('selection_id')!=sid or data.get('n')!=1 or len(data.get('dates',[]))!=1:
+              raise SystemExit('Selection mismatch')
+          target=selection.parent/data['dates'][0].replace('-','')/'operation_handoff.json'
+          handoff=json.loads(target.read_text(encoding='utf-8'))
+          if (handoff.get('status')!='READY_FOR_V055_AUTHORING'
+                  or handoff.get('selection_id')!=sid
+                  or handoff.get('target_date')!=data['dates'][0]
+                  or handoff.get('market_blind') is not True
+                  or handoff.get('result_opened') is not False
+                  or handoff.get('target_market_opened') is not False):
+              raise SystemExit('T1 must be committed and CLEAN BLIND')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:
+              out.write(f'selection_id={sid}\n')
+          print(f'RACEZIP_T1_COMMITTED_READY {sid}')
+          PY
+      - name: Validate and create race ZIP
+        shell: bash
+        env:
+          SELECTION_ID: ${{ steps.target.outputs.selection_id }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_racezip_delivery.py \
+            --selection-id "$SELECTION_ID" \
+            --output "/tmp/racenote-racezip-$SELECTION_ID.zip"
+      - name: Publish transport artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-racezip-${{ steps.target.outputs.selection_id }}
+          path: /tmp/racenote-racezip-${{ steps.target.outputs.selection_id }}.zip
+          if-no-files-found: error
+          retention-days: 7

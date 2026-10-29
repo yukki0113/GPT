@@ -1,0 +1,30 @@
+name: RaceNote r6 Confidence CLI safety regression
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_r6_confidence_cli.py'
+      - '.github/workflows/racenote_r6_confidence_cli_test.yml'
+permissions: {contents: read}
+jobs:
+  safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Block Confidence before canonical prediction freeze
+        env: {PYTHONPATH: 'horse-racing/jrdb/src'}
+        run: |
+          set -euo pipefail
+          ROOT=horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055
+          STORE=horse-racing/jrdb/llm_checkpoints/BTDAY-0136/confidence
+          CLI=horse-racing/jrdb/src/racenote_v055_r6_confidence_cli.py
+          python -m py_compile "$CLI"
+          if python "$CLI" --root "$ROOT" --store "$STORE" next > /tmp/should-not-work.json 2>/tmp/confidence-error.txt; then
+            echo "Confidence incorrectly permitted before Prediction Freeze"; exit 1
+          fi
+          grep -q 'committed Prediction Freeze required' /tmp/confidence-error.txt
+          test ! -e "$STORE"
+          test ! -e "$ROOT/incoming/llm_confidence.json"
+          test ! -e "$ROOT/confidence_frozen"
+          echo "CONFIDENCE_FREEZE_BOUNDARY=PASS"

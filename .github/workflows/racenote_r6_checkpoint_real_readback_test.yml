@@ -1,0 +1,35 @@
+name: RaceNote checkpoint real GitHub readback
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_r6_checkpoint_publish.py'
+      - '.github/workflows/racenote_r6_checkpoint_real_readback_test.yml'
+permissions:
+  contents: read
+jobs:
+  real_readback:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Real authenticated GitHub existing-checkpoint publish (no mutations)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RACENOTE_CHECKPOINT_BRANCH: feat/racenote-v055-racezip-delivery-20261028
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_r6_checkpoint_publish.py \
+            --root horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055 \
+            --store horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction \
+            --draft horse-racing/jrdb/llm_checkpoints/BTDAY-0136/prediction/中山_03.json \
+            > /tmp/publish-result.json
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/publish-result.json'))
+          assert r['status']=='ALREADY_PUBLISHED',r
+          assert r['completed']+r['remaining']==36,r
+          assert r['branch']=='feat/racenote-v055-racezip-delivery-20261028',r
+          print('REAL_GITHUB_EXISTING_CHECKPOINT_VERIFIED=PASS')
+          PY

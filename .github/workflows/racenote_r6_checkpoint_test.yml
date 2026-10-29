@@ -1,0 +1,30 @@
+name: RaceNote r6 checkpoint regression
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_r6_turn2_checkpoint.py'
+      - '.github/workflows/racenote_r6_checkpoint_test.yml'
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Verify sealed T1 next step without mutating data
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          python -m py_compile horse-racing/jrdb/src/racenote_v055_r6_turn2_checkpoint.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from racenote_v055_r6_turn2_checkpoint import inspect
+          root=Path("horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055")
+          result=inspect(root)
+          assert result['state']=='T1_READY',result
+          assert result['next_action']=='LLM_PREDICTION_AUTHORING',result
+          assert result['result_opened'] is False and result['target_market_opened'] is False
+          print("R6_TURN2_CHECKPOINT="+json.dumps(result,ensure_ascii=False))
+          PY

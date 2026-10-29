@@ -1,0 +1,20 @@
+name: RaceNote r6 draft assembler smoke test
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_race_draft_assemble.py'
+      - '.github/workflows/racenote_r6_draft_assemble_test.yml'
+permissions: {contents: read}
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Check Python syntax and safety CLI
+        run: |
+          python -m py_compile horse-racing/jrdb/src/racenote_v055_race_draft_assemble.py
+          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/racenote_v055_race_draft_assemble.py --help
+          test ! -e horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055/incoming/llm_decisions.json
+          test ! -e horse-racing/jrdb/backtests/BTDAY-0136/20250302/v055/frozen/day_handoff.json
