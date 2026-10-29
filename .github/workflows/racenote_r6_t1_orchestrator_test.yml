@@ -1,0 +1,69 @@
+name: RaceNote r6 T1 Orchestrator regression
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v055_t1_orchestrator.py'
+      - '.github/workflows/racenote_v055_r6_t1_orchestrator.yml'
+      - '.github/workflows/racenote_v055_r6_btday_turn1_shared.yml'
+      - '.github/workflows/racenote_r6_t1_orchestrator_test.yml'
+permissions: {contents: read}
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Exercise real T1 READY and isolated NEXT with no production writes
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+          import json,shutil
+          import racenote_v055_t1_orchestrator as m
+          assert m.run('T2_ONLY')['action']=='SKIPPED'
+          old=m.run('EXISTING','BTDAY-0138')
+          assert old['state']=='T1_READY' and old['start_t1'] is False,old
+          st=m.run('STATUS','BTDAY-0138')
+          assert st['action']=='READ_ONLY_STATUS' and st['start_t1'] is False,st
+          with TemporaryDirectory() as directory:
+              temp=Path(directory)
+              m.POOL=temp/'state.json'
+              m.BASE=temp/'backtests'
+              m.BASE.mkdir()
+              shutil.copyfile('horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json',m.POOL)
+              plan=m.run('NEXT')
+              assert plan['start_t1'] is True and plan['created_selection'] is True,plan
+              assert plan['target_date'].startswith('2025-'),plan
+              sid=plan['selection_id']
+              assert (m.BASE/sid/'selection.json').is_file()
+              resume=m.run('NEXT')
+              assert resume['selection_id']==sid and not resume['created_selection'],resume
+              assert resume['start_t1'] is True
+              req=m.BASE/'requests'/(sid+'.v055r6-turn1')
+              req.parent.mkdir(parents=True,exist_ok=True)
+              req.write_text('active')
+              retried=m.run('EXISTING',sid)
+              assert retried['action']=='ALREADY_REQUESTED' and not retried['start_t1']
+              try:m.run('NEXT')
+              except ValueError as exc:assert 'already exists' in str(exc)
+              else:raise AssertionError('duplicate NEXT unexpectedly started')
+          print('T1_ORCHESTRATOR_MODES_AND_IDEMPOTENCY=PASS')
+          PY
+          python -m pip install --quiet pyyaml
+          python - <<'PY'
+          import yaml
+          for path in ('.github/workflows/racenote_v055_r6_t1_orchestrator.yml',
+                       '.github/workflows/racenote_v055_r6_btday_turn1_shared.yml'):
+              with open(path) as f: yaml.safe_load(f)
+          text=open('.github/workflows/racenote_v055_r6_t1_orchestrator.yml').read()
+          assert "workflow_dispatch:" in text and "push:" in text
+          assert "workflow_call:" in open('.github/workflows/racenote_v055_r6_btday_turn1_shared.yml').read()
+          assert "needs.reserve.outputs.base_sha" in text
+          assert "secrets: inherit" in text
+          assert "github.event_name" in text
+          print('T1_ORCHESTRATOR_WORKFLOW_SYNTAX=PASS')
+          PY
