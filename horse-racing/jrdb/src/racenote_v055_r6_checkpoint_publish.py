@@ -46,7 +46,11 @@ def publish(root: Path,store: Path,draft: Path):
     existing=remote()
     if existing:
         found=base64.b64decode(existing["content"].replace("\n",""))
-        if hashlib.sha256(found).hexdigest()!=plan["sha256"]:
+        try:
+            found_normalized=canon(json.loads(found.decode("utf-8")))
+        except (ValueError,UnicodeError,TypeError) as exc:
+            raise ValueError("invalid remote checkpoint JSON") from exc
+        if hashlib.sha256(found_normalized).hexdigest()!=plan["sha256"]:
             raise ValueError("immutable remote checkpoint conflict")
         result="ALREADY_PUBLISHED"
     else:
@@ -59,7 +63,11 @@ def publish(root: Path,store: Path,draft: Path):
     if not verified:
         raise ValueError("GitHub read-after-write verification failed")
     actual=base64.b64decode(verified["content"].replace("\n",""))
-    if hashlib.sha256(actual).hexdigest()!=plan["sha256"]:
+    try:
+        actual_normalized=canon(json.loads(actual.decode("utf-8")))
+    except (ValueError,UnicodeError,TypeError) as exc:
+        raise ValueError("invalid persisted checkpoint JSON") from exc
+    if hashlib.sha256(actual_normalized).hexdigest()!=plan["sha256"]:
         raise ValueError("GitHub persisted SHA mismatch")
     return {"status":result,"path":path,"branch":branch,"sha256":plan["sha256"],
             "completed":plan["completed"],"remaining":plan["remaining"]}
