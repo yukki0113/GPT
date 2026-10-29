@@ -6,7 +6,7 @@
     "mode": "btday_count",
     "target_btday_count": 2
   },
-  "status": "RUNNING",
+  "status": "CLOSED_INCOMPLETE",
   "completed_sessions": [],
   "progress": {
     "completed_btday_count": 0,
@@ -17,6 +17,7 @@
       "Z": 0
     },
     "last_completed_selection_id": null,
-    "next_selection_id": "BTDAY-0136"
-  }
+    "next_selection_id": null
+  },
+  "close_reason": "User requested closure of BTDAY-0136 and BTDAY-0137 without prediction/confidence Freeze; preserve existing sessions and drafts; no result unlock."
 }
