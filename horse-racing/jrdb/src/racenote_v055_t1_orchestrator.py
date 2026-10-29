@@ -75,7 +75,17 @@ def choose_next():
             return selected,False
         # The most recent selection is READY: reserve the next random day.
         break
-    new=pick_days(pool,1,source_mode="historical_warehouse")
+    # Current shared T1 depends on verified 2025 KYI/BAC archives.
+    # Restore the inventory's true eligibility after choosing a 2025 date.
+    flags=[row.get("eligible",True) for row in pool["days"]]
+    try:
+        for row in pool["days"]:
+            if not str(row.get("date","")).startswith("2025-"):
+                row["eligible"]=False
+        new=pick_days(pool,1,source_mode="historical_warehouse")
+    finally:
+        for row,eligible in zip(pool["days"],flags):
+            row["eligible"]=eligible
     sid=new["selection_id"]
     if selection_path(sid).exists():
         raise ValueError("selection already exists: "+sid)
