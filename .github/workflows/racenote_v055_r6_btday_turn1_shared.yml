@@ -6,6 +6,9 @@ on:
       selection_id:
         required: true
         type: string
+      base_sha:
+        required: true
+        type: string
   push:
     branches: [main]
     paths:
@@ -30,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ inputs.base_sha || 'main' }}
           fetch-depth: 2
       - uses: actions/setup-python@v5
         with:
@@ -40,6 +43,7 @@ jobs:
           BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.sha }}
           REQUESTED_SELECTION: ${{ inputs.selection_id }}
+          REQUESTED_BASE_SHA: ${{ inputs.base_sha }}
           TRIGGER_EVENT: ${{ github.event_name }}
         run: |
           set -euo pipefail
@@ -47,6 +51,10 @@ jobs:
           import json, os, re, subprocess
           from pathlib import Path
           if os.environ.get('REQUESTED_SELECTION'):
+              expected=os.environ.get('REQUESTED_BASE_SHA','')
+              actual=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+              if not re.fullmatch('[0-9a-f]{40}',expected) or actual!=expected:
+                  raise SystemExit('Pinned T1 generation SHA mismatch')
               ids=[(os.environ['REQUESTED_SELECTION'],int(os.environ['REQUESTED_SELECTION'].split('-')[-1]))]
           else:
               changes=subprocess.check_output(
