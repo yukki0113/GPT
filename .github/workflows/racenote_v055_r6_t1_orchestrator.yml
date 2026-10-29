@@ -1,0 +1,114 @@
+name: RaceNote r6 T1 Orchestrator
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: NEXT, EXISTING, STATUS or T2_ONLY
+        required: true
+        default: NEXT
+        type: choice
+        options: [NEXT, EXISTING, STATUS, T2_ONLY]
+      selection_id:
+        description: Required for EXISTING; optional for STATUS
+        required: false
+        type: string
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: racenote-r6-t1-orchestrator
+  cancel-in-progress: false
+jobs:
+  reserve:
+    runs-on: ubuntu-latest
+    outputs:
+      selection_id: ${{ steps.resolve.outputs.selection_id }}
+      start_t1: ${{ steps.resolve.outputs.start_t1 }}
+      deliver: ${{ steps.resolve.outputs.deliver }}
+      base_sha: ${{ steps.resolve.outputs.base_sha }}
+      action: ${{ steps.resolve.outputs.action }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Select, resume or inspect exactly one T1
+        id: resolve
+        env:
+          REQUEST_MODE: ${{ inputs.mode }}
+          REQUEST_ID: ${{ inputs.selection_id }}
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          args=("$REQUEST_MODE")
+          if [[ -n "$REQUEST_ID" ]]; then
+            args+=(--selection-id "$REQUEST_ID")
+          fi
+          python horse-racing/jrdb/src/racenote_v055_t1_orchestrator.py "${args[@]}" --output /tmp/t1-orchestrator.json
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          d=json.loads(Path('/tmp/t1-orchestrator.json').read_text())
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('selection_id='+d.get('selection_id','')+'\n')
+              f.write('start_t1='+str(d.get('start_t1',False)).lower()+'\n')
+              f.write('deliver='+str(d.get('action') in ('PREPARE_NEW_T1','REUSE_READY')).lower()+'\n')
+              f.write('action='+d['action']+'\n')
+          PY
+      - name: Commit one new random reservation (if created)
+        if: inputs.mode == 'NEXT'
+        run: |
+          set -euo pipefail
+          if ! git diff --quiet -- horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json ||              [[ -n "$(git ls-files --others --exclude-standard horse-racing/jrdb/backtests/BTDAY-*/selection.json)" ]]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json horse-racing/jrdb/backtests/BTDAY-*/selection.json
+            git commit -m "RaceNote: orchestrator reserve NEXT historical BTDAY"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Record pinned generation SHA
+        id: pin
+        run: |
+          set -euo pipefail
+          echo "base_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "T1_CONTROLLER_ACTION=${{ steps.resolve.outputs.action }}"
+          cat /tmp/t1-orchestrator.json
+      - name: Export pinned generation SHA
+        id: sha_export
+        run: echo "base_sha=${{ steps.pin.outputs.base_sha }}" >> "$GITHUB_OUTPUT"
+  t1:
+    needs: reserve
+    if: needs.reserve.outputs.start_t1 == 'true'
+    uses: ./.github/workflows/racenote_v055_r6_btday_turn1_shared.yml
+    with:
+      selection_id: ${{ needs.reserve.outputs.selection_id }}
+      base_sha: ${{ needs.reserve.outputs.base_sha }}
+    secrets: inherit
+  deliver:
+    needs: [reserve, t1]
+    if: ${{ always() && needs.reserve.result == 'success' && (needs.t1.result == 'success' || needs.t1.result == 'skipped') && needs.reserve.outputs.deliver == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Package verified CLEAN BLIND 1R ZIPs
+        env:
+          SELECTION_ID: ${{ needs.reserve.outputs.selection_id }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v055_racezip_delivery.py             --selection-id "$SELECTION_ID"             --output "/tmp/racenote-racezip-$SELECTION_ID.zip"
+      - name: Publish T1 READY transport artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-orchestrator-${{ needs.reserve.outputs.selection_id }}
+          path: /tmp/racenote-racezip-${{ needs.reserve.outputs.selection_id }}.zip
+          retention-days: 7
+          if-no-files-found: error
