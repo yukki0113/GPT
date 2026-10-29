@@ -1,5 +1,9 @@
 name: RaceNote r6 T1 Orchestrator
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/orchestrator/*.json'
   workflow_dispatch:
     inputs:
       mode:
@@ -40,9 +44,39 @@ jobs:
         env:
           REQUEST_MODE: ${{ inputs.mode }}
           REQUEST_ID: ${{ inputs.selection_id }}
+          TRIGGER_EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
           PYTHONPATH: horse-racing/jrdb/src
         run: |
           set -euo pipefail
+          if [[ "$TRIGGER_EVENT" == "push" ]]; then
+            python - <<'PY'
+          import json,os,re,subprocess
+          from pathlib import Path
+          before=os.environ['BEFORE']
+          after=os.environ['AFTER']
+          changed=subprocess.check_output(['git','diff','--name-only',before,after],text=True).splitlines()
+          found=[p for p in changed if re.fullmatch(r'horse-racing/jrdb/backtests/requests/orchestrator/[A-Za-z0-9_-]+\\.json',p)]
+          if len(found)!=1:
+              raise SystemExit(f'Expected exactly one new orchestrator request: {found}')
+          path=Path(found[0])
+          if not path.is_file() or path.is_symlink():
+              raise SystemExit('Orchestrator request missing or symlink')
+          data=json.loads(path.read_text(encoding='utf-8'))
+          if set(data)!=set(['mode','selection_id']) or data['mode'] not in ('NEXT','EXISTING','STATUS','T2_ONLY'):
+              raise SystemExit('Invalid orchestrator request schema')
+          sid=data['selection_id'] or ''
+          if sid and not re.fullmatch(r'BTDAY-\\d{4}',sid):
+              raise SystemExit('Invalid selection ID')
+          if data['mode']=='EXISTING' and not sid:
+              raise SystemExit('EXISTING requires selection ID')
+          with open(os.environ['GITHUB_ENV'],'a') as f:
+              f.write('REQUEST_MODE='+data['mode']+'\\n')
+              f.write('REQUEST_ID='+sid+'\\n')
+          print('ORCHESTRATOR_REQUEST_ACCEPTED',path)
+          PY
+          fi
           args=("$REQUEST_MODE")
           if [[ -n "$REQUEST_ID" ]]; then
             args+=(--selection-id "$REQUEST_ID")
@@ -59,7 +93,7 @@ jobs:
               f.write('action='+d['action']+'\n')
           PY
       - name: Commit one new random reservation (if created)
-        if: inputs.mode == 'NEXT'
+        if: steps.resolve.outputs.action == 'PREPARE_NEW_T1'
         run: |
           set -euo pipefail
           if ! git diff --quiet -- horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json ||              [[ -n "$(git ls-files --others --exclude-standard horse-racing/jrdb/backtests/BTDAY-*/selection.json)" ]]; then
