@@ -1,5 +1,10 @@
 name: RaceNote v0.5.5 r6 race ZIP delivery (read-only)
 on:
+  # Authenticated, explicitly requested backfill for an already committed T1.
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/requests/racezip/BTDAY-*.delivery-request'
   workflow_run:
     workflows:
       - RaceNote v0.5.5 r6 shared BTDAY T1
@@ -35,12 +40,27 @@ jobs:
           INPUT_SELECTION: ${{ inputs.selection_id }}
           EVENT_NAME: ${{ github.event_name }}
           T1_REQUEST_SHA: ${{ github.event.workflow_run.head_sha }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
         run: |
           set -euo pipefail
           python - <<'PY'
           import json,os,re,subprocess
           from pathlib import Path
           sid=os.environ.get('INPUT_SELECTION','')
+          if os.environ['EVENT_NAME']=='push':
+              changed=subprocess.check_output(
+                  ['git','diff','--name-only',os.environ['BEFORE'],os.environ['AFTER']],
+                  text=True).splitlines()
+              found=set()
+              for path in changed:
+                  m=re.fullmatch(
+                      r'horse-racing/jrdb/backtests/requests/racezip/(BTDAY-\d{4})\.delivery-request',
+                      path)
+                  if m:found.add(m.group(1))
+              if len(found)!=1:
+                  raise SystemExit(f'Exactly one explicit delivery request expected: {sorted(found)}')
+              sid=next(iter(found))
           if os.environ['EVENT_NAME']=='workflow_run':
               commit=os.environ.get('T1_REQUEST_SHA','')
               if not re.fullmatch('[0-9a-f]{40}',commit):
