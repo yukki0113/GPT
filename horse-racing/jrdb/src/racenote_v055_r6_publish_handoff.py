@@ -6,13 +6,19 @@ No network, no LLM inference, no writes, no Freeze execution.
 import argparse
 import hashlib
 import json
+import os
+import re
 from pathlib import Path
 from racenote_v055_r6_submit_gate import build
 from racenote_v055_r6_race_checkpoint_store import state, canon
 from racenote_v055_turn2_two_phase import resolve_root
 
 REPO="yukki0113/GPT"
-BRANCH="feat/racenote-v055-racezip-delivery-20261028"
+# Production checkpoints belong to main, separately from the canonical T1 root.
+# PR regressions may explicitly select their isolated existing test branch.
+BRANCH=os.environ.get("RACENOTE_CHECKPOINT_BRANCH", "main")
+if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._/-]{0,127}",BRANCH):
+    raise ValueError("invalid checkpoint branch")
 
 def make(root, store, action, draft=None):
     session,saved,missing=state(root,store)
