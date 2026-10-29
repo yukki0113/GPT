@@ -16,6 +16,7 @@ jobs:
       - name: Real authenticated GitHub existing-checkpoint publish (no mutations)
         env:
           GH_TOKEN: ${{ github.token }}
+          RACENOTE_CHECKPOINT_BRANCH: feat/racenote-v055-racezip-delivery-20261028
           PYTHONPATH: horse-racing/jrdb/src
         run: |
           set -euo pipefail
