@@ -35,3 +35,60 @@ jobs:
           path: /tmp/test-btday-0136.zip
           if-no-files-found: error
           retention-days: 2
+
+  verify_0138:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify shared T1 workflow_run request SHA resolves BTDAY-0138
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, re, subprocess
+          from pathlib import Path
+          trigger='e4b26c2656e8a6fd2ab50d6090430d9d5c1b172a'
+          changed=subprocess.check_output(['git','diff-tree','--no-commit-id','--name-only','-r',trigger],text=True).splitlines()
+          pattern=re.compile(r'horse-racing/jrdb/backtests/requests/(BTDAY-\d{4})\.v055r6-turn1')
+          ids=[m.group(1) for row in changed if (m:=pattern.fullmatch(row))]
+          assert ids==['BTDAY-0138'],(changed,ids)
+          root=Path('horse-racing/jrdb/backtests/BTDAY-0138/20250802')
+          op=json.loads((root/'operation_handoff.json').read_text(encoding='utf-8'))
+          assert op['status']=='READY_FOR_V055_AUTHORING'
+          assert op['session_id']=='V055-407b4ad655ae9fc1b0b8'
+          assert op['market_blind'] is True
+          assert op['result_opened'] is False and op['target_market_opened'] is False
+          print('T1_WORKFLOW_RUN_CHAIN_SELECTOR=PASS')
+          PY
+      - name: Deliver verified existing BTDAY-0138 as 36 independent races
+        run: |
+          python horse-racing/jrdb/src/racenote_v055_racezip_delivery.py --selection-id BTDAY-0138 --output /tmp/racenote-racezip-BTDAY-0138.zip
+          python - <<'PY'
+          import hashlib,json,zipfile
+          p='/tmp/racenote-racezip-BTDAY-0138.zip'
+          with zipfile.ZipFile(p) as z:
+              i=json.loads(z.read('index.json'))
+              assert i['selection_id']=='BTDAY-0138'
+              assert i['session_id']=='V055-407b4ad655ae9fc1b0b8'
+              assert len(i['entries'])==i['race_count']==36
+              assert i['market_blind'] is True
+              assert i['result_opened'] is False and i['target_market_opened'] is False
+              assert len(set(x['path'] for x in i['entries']))==36
+              for row in i['entries']:
+                  raw=z.read(row['path'])
+                  assert hashlib.sha256(raw).hexdigest()==row['sha256']
+                  assert len(raw)==row['bytes']
+                  assert json.loads(raw)['race']['reader']
+          print('BTDAY_0138_DELIVERY_VERIFIED=PASS')
+          PY
+      - name: Publish BTDAY-0138 transport probe artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-racezip-0138-connector-probe
+          path: /tmp/racenote-racezip-BTDAY-0138.zip
+          if-no-files-found: error
+          retention-days: 2
