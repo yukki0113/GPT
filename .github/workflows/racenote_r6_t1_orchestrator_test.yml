@@ -52,6 +52,7 @@ jobs:
               else:raise AssertionError('duplicate NEXT unexpectedly started')
           print('T1_ORCHESTRATOR_MODES_AND_IDEMPOTENCY=PASS')
           PY
+          python -m pip install --quiet pyyaml
           python - <<'PY'
           import yaml
           for path in ('.github/workflows/racenote_v055_r6_t1_orchestrator.yml',
