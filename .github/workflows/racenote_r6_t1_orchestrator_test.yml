@@ -37,6 +37,7 @@ jobs:
               shutil.copyfile('horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json',m.POOL)
               plan=m.run('NEXT')
               assert plan['start_t1'] is True and plan['created_selection'] is True,plan
+              assert plan['target_date'].startswith('2025-'),plan
               sid=plan['selection_id']
               assert (m.BASE/sid/'selection.json').is_file()
               resume=m.run('NEXT')
@@ -58,5 +59,11 @@ jobs:
           for path in ('.github/workflows/racenote_v055_r6_t1_orchestrator.yml',
                        '.github/workflows/racenote_v055_r6_btday_turn1_shared.yml'):
               with open(path) as f: yaml.safe_load(f)
+          text=open('.github/workflows/racenote_v055_r6_t1_orchestrator.yml').read()
+          assert "workflow_dispatch:" in text and "push:" in text
+          assert "workflow_call:" in open('.github/workflows/racenote_v055_r6_btday_turn1_shared.yml').read()
+          assert "needs.reserve.outputs.base_sha" in text
+          assert "secrets: inherit" in text
+          assert "github.event_name" in text
           print('T1_ORCHESTRATOR_WORKFLOW_SYNTAX=PASS')
           PY
