@@ -71,11 +71,12 @@ jobs:
               raise SystemExit('Invalid selection ID')
           if data['mode']=='EXISTING' and not sid:
               raise SystemExit('EXISTING requires selection ID')
-          with open(os.environ['GITHUB_ENV'],'a') as f:
-              f.write('REQUEST_MODE='+data['mode']+'\\n')
-              f.write('REQUEST_ID='+sid+'\\n')
+          Path('/tmp/orchestrator-request-mode').write_text(data['mode'],encoding='utf-8')
+          Path('/tmp/orchestrator-request-id').write_text(sid,encoding='utf-8')
           print('ORCHESTRATOR_REQUEST_ACCEPTED',path)
           PY
+          REQUEST_MODE="$(cat /tmp/orchestrator-request-mode)"
+          REQUEST_ID="$(cat /tmp/orchestrator-request-id)"
           fi
           args=("$REQUEST_MODE")
           if [[ -n "$REQUEST_ID" ]]; then
