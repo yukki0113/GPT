@@ -25,7 +25,7 @@ jobs:
       selection_id: ${{ steps.resolve.outputs.selection_id }}
       start_t1: ${{ steps.resolve.outputs.start_t1 }}
       deliver: ${{ steps.resolve.outputs.deliver }}
-      base_sha: ${{ steps.resolve.outputs.base_sha }}
+      base_sha: ${{ steps.pin.outputs.base_sha }}
       action: ${{ steps.resolve.outputs.action }}
     steps:
       - uses: actions/checkout@v4
@@ -77,9 +77,6 @@ jobs:
           echo "base_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "T1_CONTROLLER_ACTION=${{ steps.resolve.outputs.action }}"
           cat /tmp/t1-orchestrator.json
-      - name: Export pinned generation SHA
-        id: sha_export
-        run: echo "base_sha=${{ steps.pin.outputs.base_sha }}" >> "$GITHUB_OUTPUT"
   t1:
     needs: reserve
     if: needs.reserve.outputs.start_t1 == 'true'
