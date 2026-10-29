@@ -1,6 +1,11 @@
 name: RaceNote v0.5.5 r6 shared BTDAY T1
 
 on:
+  workflow_call:
+    inputs:
+      selection_id:
+        required: true
+        type: string
   push:
     branches: [main]
     paths:
@@ -34,19 +39,25 @@ jobs:
         env:
           BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.sha }}
+          REQUESTED_SELECTION: ${{ inputs.selection_id }}
+          TRIGGER_EVENT: ${{ github.event_name }}
         run: |
           set -euo pipefail
           python - <<'PY'
           import json, os, re, subprocess
           from pathlib import Path
-          changes=subprocess.check_output(
-              ['git','diff','--name-only',os.environ['BEFORE'],os.environ['AFTER']],
-              text=True).splitlines()
-          ids=[]
-          for file in changes:
-              m=re.fullmatch(r'horse-racing/jrdb/backtests/requests/(BTDAY-(\d{4}))\.v055r6-turn1',file)
-              if m:
-                  ids.append((m.group(1),int(m.group(2))))
+          if os.environ['TRIGGER_EVENT']=='workflow_call':
+              ids=[(os.environ['REQUESTED_SELECTION'],int(os.environ['REQUESTED_SELECTION'].split('-')[-1]))]
+          else:
+              changes=subprocess.check_output(
+                  ['git','diff','--name-only',os.environ['BEFORE'],os.environ['AFTER']],
+                  text=True).splitlines()
+              ids=[]
+          if os.environ['TRIGGER_EVENT']!='workflow_call':
+              for file in changes:
+                  m=re.fullmatch(r'horse-racing/jrdb/backtests/requests/(BTDAY-(\d{4}))\.v055r6-turn1',file)
+                  if m:
+                      ids.append((m.group(1),int(m.group(2))))
           if len(ids)!=1:
               raise SystemExit(f'Expected one BTDAY T1 request, got {ids}')
           sid, number=ids[0]
