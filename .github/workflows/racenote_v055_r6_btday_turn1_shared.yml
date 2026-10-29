@@ -46,14 +46,14 @@ jobs:
           python - <<'PY'
           import json, os, re, subprocess
           from pathlib import Path
-          if os.environ['TRIGGER_EVENT']=='workflow_call':
+          if os.environ.get('REQUESTED_SELECTION'):
               ids=[(os.environ['REQUESTED_SELECTION'],int(os.environ['REQUESTED_SELECTION'].split('-')[-1]))]
           else:
               changes=subprocess.check_output(
                   ['git','diff','--name-only',os.environ['BEFORE'],os.environ['AFTER']],
                   text=True).splitlines()
               ids=[]
-          if os.environ['TRIGGER_EVENT']!='workflow_call':
+          if not os.environ.get('REQUESTED_SELECTION'):
               for file in changes:
                   m=re.fullmatch(r'horse-racing/jrdb/backtests/requests/(BTDAY-(\d{4}))\.v055r6-turn1',file)
                   if m:
