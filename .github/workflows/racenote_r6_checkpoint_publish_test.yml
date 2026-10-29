@@ -13,7 +13,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - name: Offline mock GitHub PUT and immutable verification
-        env: {PYTHONPATH: 'horse-racing/jrdb/src'}
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          RACENOTE_CHECKPOINT_BRANCH: feat/racenote-v055-racezip-delivery-20261028
         run: |
           python - <<'PY'
           import base64
