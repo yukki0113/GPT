@@ -82,6 +82,15 @@
       "owner_only": true,
       "request_id_pattern": "^[A-Za-z0-9._-]{1,80}$",
       "migration_status": "current"
+    },
+    {
+      "prefix": "[RACENOTE_V056_FORWARD_PACI_T1]",
+      "event_type": "racenote_v056_forward_paci_t1_request",
+      "workflow": ".github/workflows/racenote_v056_forward_paci_t1.yml",
+      "enabled": true,
+      "owner_only": true,
+      "request_id_pattern": "^[0-9]{8}$",
+      "migration_status": "v056-forward-paci"
     }
   ]
 }
