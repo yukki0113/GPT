@@ -48,7 +48,7 @@ def materialize(
     output.parent.mkdir(parents=True, exist_ok=True)
     try:
         subprocess.run(
-            ["gdown", "--id", drive_file_id, "-O", str(output)],
+            ["gdown", drive_file_id, "-O", str(output)],
             check=True,
         )
         if not output.is_file() or output.is_symlink() or output.stat().st_size == 0:
