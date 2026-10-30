@@ -134,3 +134,8 @@ https://github.com/yukki0113/GPT/actions/runs/41025188480 succeeded.
 Previous-class comparison additionally remains unknown unless normalized_class
 is explicitly verified, preventing raw OP codes from being compared as equivalent
 to normalized OP/grade groups. Invalid provenance timestamps report UNVERIFIED_AS_OF.
+
+Final reviewed code commit: e2f016f765dc8830b14c8eacf620d6d9a0bf982a.
+Final PR CI PASS: https://github.com/yukki0113/GPT/actions/runs/41025343509
+Final push CI PASS: https://github.com/yukki0113/GPT/actions/runs/41025336594
+Local final regression: 107 passed in 2.47s; Reader-only follow-up 35 passed.
