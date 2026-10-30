@@ -29,6 +29,21 @@ class HistoricalAuditTests(unittest.TestCase):
         self.assertEqual(result["static_join_distinct_horses"],1)
         self.assertEqual(result["as_of_verified_date_only_entries"],0)
 
+    def test_lineage_mapping_distinct_from_code_presence(self):
+        class Fake:
+            facts={"12345678":{}}
+            def horse_profile(self, horse_id, *, as_of):
+                return {"status":"AVAILABLE_ANNUAL_SNAPSHOT", "observed_date":"20170101",
+                        "profile_data_date":"20161231",
+                        "profile":{"sire_name":"S","dam_name":"D","broodmare_sire_name":"B",
+                                   "sire_line_code":"1206","broodmare_sire_line_code":"UNMAPPED"}}
+        rows=[{"race_date":"20180101","race_key":"0118AB01","horse_id":"12345678"}]
+        result=evaluate(rows, Fake(), mapped_codes={"1206"})[0]
+        self.assertEqual(result["sire_line_code_asof_present"], 1)
+        self.assertEqual(result["broodmare_sire_line_code_asof_present"], 1)
+        self.assertEqual(result["official_lineage_mapped"]["sire_line_code"], 1)
+        self.assertEqual(result["official_lineage_mapped"]["broodmare_sire_line_code"], 0)
+
     def test_empty_inventory_fail_closed(self):
         with self.assertRaises(ValueError):
             parse_paci(Path("."), [])
