@@ -1,0 +1,254 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "honmei": 10,
+    "confidence": "B",
+    "reason": "前走1200m2着は強いが、6番と1番も同距離で安定しており勝ち切り評価は中位。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "honmei": 9,
+    "confidence": "B",
+    "reason": "京都1800m3着は明確な材料だが、1番と5番にも同舞台2着歴があり差は小さい。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "honmei": 2,
+    "confidence": "B",
+    "reason": "地力は上位だが1400m短縮が初で、同舞台実績のある3番や9番に適性面の不確実性が残る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "honmei": 8,
+    "confidence": "C",
+    "reason": "地力を評価したが1900mは初条件で、3番や4番の距離経験を上回る確信は低い。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "honmei": 10,
+    "confidence": "Z",
+    "reason": "全馬初出走の新馬戦で、発馬や砂への対応が未確認のため通常評価の対象外。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "honmei": 4,
+    "confidence": "B",
+    "reason": "同舞台1800m2着は信頼できるが、7番も同距離2戦2好走で評価は僅差。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "honmei": 1,
+    "confidence": "A",
+    "reason": "能力面が一枚上で1200mへの対応も確認済み。勝ち切り軸として高く評価する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "honmei": 10,
+    "confidence": "B",
+    "reason": "前走1400m2着の地力を評価するが、14番や6番にも京都1400mの好走歴がある。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "honmei": 5,
+    "confidence": "A",
+    "reason": "1600m4戦4好走、京都でも2戦2好走。条件再現性が高い。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "honmei": 7,
+    "confidence": "B",
+    "reason": "京都2200m勝ちの地力は高いが、2400m2戦2好走の5番が強い相手になる。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "honmei": 6,
+    "confidence": "A",
+    "reason": "ダート1800m3戦3勝。中京で連勝中の内容から昇級でも高く評価する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "honmei": 3,
+    "confidence": "A",
+    "reason": "1600m7戦4好走で直近も連続2着。条件適性と近況の安定感が揃っている。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 1,
+    "honmei": 12,
+    "confidence": "C",
+    "reason": "地力は上位だが1000mは初条件で、5番の1000m実績など適性面の不確実性が大きい。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 2,
+    "honmei": 9,
+    "confidence": "B",
+    "reason": "2000m3着は明確だが、実戦数の少ない6番など上積み余地の大きい相手がいる。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 3,
+    "honmei": 4,
+    "confidence": "B",
+    "reason": "1700m2着を評価するが、2番の地力や1番の距離経験もあり差は小さい。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 4,
+    "honmei": 9,
+    "confidence": "Z",
+    "reason": "障害戦は飛越による変動が大きいため、通常のA/B/C評価の対象外。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 5,
+    "honmei": 6,
+    "confidence": "Z",
+    "reason": "障害オープンは飛越と展開の変動が大きく、通常平地戦と同じ評価では扱わない。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 6,
+    "honmei": 10,
+    "confidence": "B",
+    "reason": "1200m実績は安定するが、15番と14番にも同距離で明確な好走歴がある。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 7,
+    "honmei": 2,
+    "confidence": "B",
+    "reason": "中距離で安定しているが2000mで抜けた実績まではなく、7番や6番の上積みを警戒する。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 8,
+    "honmei": 1,
+    "confidence": "B",
+    "reason": "地力は上位だが小倉1800mの実績がなく、12番や10番の条件適性に逆転余地がある。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 9,
+    "honmei": 15,
+    "confidence": "A",
+    "reason": "1800mで連続2着し能力も上位。1700mへの対応も見込める。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 10,
+    "honmei": 14,
+    "confidence": "A",
+    "reason": "ダート1000m2戦2好走に加え前走1200m2着。スピードと近況が揃う。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 11,
+    "honmei": 9,
+    "confidence": "A",
+    "reason": "1200m6戦5好走で前走も勝利。近況の勢いと能力水準を評価する。"
+  },
+  {
+    "venue": "小倉",
+    "race_no": 12,
+    "honmei": 7,
+    "confidence": "C",
+    "reason": "能力は上位でも1200m未経験で、3番や4番の同距離実績を上回る確信は低い。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "honmei": 2,
+    "confidence": "B",
+    "reason": "地力は上位だが1400mは初で、16番と6番の同舞台好走歴が強い対抗材料になる。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "honmei": 8,
+    "confidence": "C",
+    "reason": "能力は上位だが2100m初条件で、6番や5番の中距離経験を上回る確信は低い。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "honmei": 10,
+    "confidence": "B",
+    "reason": "ダート中距離の内容は安定するが、6番も1800m3着で地力差は小さい。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "honmei": 6,
+    "confidence": "A",
+    "reason": "中山1800mで連続2着し能力55。今回の組み合わせでは地力を高く評価する。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "honmei": 15,
+    "confidence": "Z",
+    "reason": "全馬初出走の新馬戦で、発馬や折り合いが未知のため通常評価の対象外。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "honmei": 11,
+    "confidence": "B",
+    "reason": "地力は高いが1800m条件では12番の同舞台2着が強く、評価は競っている。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "honmei": 4,
+    "confidence": "B",
+    "reason": "東京1400m2戦2好走は信頼できるが、14番も同舞台で連続2着しており僅差。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "honmei": 5,
+    "confidence": "A",
+    "reason": "東京2100m3戦3好走で前走2着。コース適性が明確。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "honmei": 8,
+    "confidence": "A",
+    "reason": "東京1600mで連続3着し能力61.6。条件実績を最上位に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "honmei": 1,
+    "confidence": "A",
+    "reason": "1400m2戦2勝、東京でも1戦1勝。条件適性が明確。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "honmei": 11,
+    "confidence": "B",
+    "reason": "能力は最上位だが2000mでは6番と4番の安定した実績があり、評価は中位。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "honmei": 8,
+    "confidence": "A",
+    "reason": "東京1800mで前走2着、同距離4戦3好走。条件適性と近況を評価する。"
+  }
+]
