@@ -314,7 +314,7 @@ def automatic_kenshow_race_confidence(bundle: dict[str, Any]) -> str | None:
     if len(values) > 1:
         raise ValueError(f"conflicting RaceNote race confidence: {sorted(values)}")
     value = next(iter(values), None)
-    if value is not None and value not in {"A", "B", "C"}:
+    if value is not None and value not in {"A", "B", "C", "Z"}:
         raise ValueError(f"invalid RaceNote race confidence: {value!r}")
     return value
 
