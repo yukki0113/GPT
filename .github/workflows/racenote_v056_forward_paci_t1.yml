@@ -1,5 +1,7 @@
 name: RaceNote v0.5.6 Forward PACI T1
 on:
+  repository_dispatch:
+    types: [racenote_v056_forward_paci_t1_request]
   workflow_dispatch:
     inputs:
       target_date:
@@ -37,8 +39,9 @@ on:
 permissions:
   contents: write
   actions: read
+  issues: read
 concurrency:
-  group: racenote-v056-forward-${{ inputs.target_date }}
+  group: racenote-v056-forward-${{ inputs.target_date || github.event.client_payload.issue_number }}
   cancel-in-progress: false
 jobs:
   prepare-forward:
@@ -63,6 +66,65 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Resolve explicit manual or owner Issue input
+        id: resolve
+        env:
+          ROUTED_ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re, subprocess
+
+          keys = {
+              "target_date": "TARGET_DATE",
+              "paci_drive_file_id": "PACI_DRIVE_FILE_ID",
+              "paci_drive_sha256": "PACI_DRIVE_SHA256",
+              "race_lap_expected_period_to": "EXPECTED_PERIOD_TO",
+              "analysis_artifact_id": "ANALYSIS_ARTIFACT_ID",
+              "analysis_generation_id": "ANALYSIS_GENERATION",
+              "course_fit_artifact_id": "COURSE_FIT_ARTIFACT_ID",
+              "race_lap_artifact_id": "RACE_LAP_ARTIFACT_ID",
+          }
+          if os.environ["GITHUB_EVENT_NAME"] == "repository_dispatch":
+              number = os.environ.get("ROUTED_ISSUE_NUMBER", "")
+              if not number.isdecimal() or int(number) <= 0:
+                  raise SystemExit("missing positive routed Issue number")
+              issue = json.loads(subprocess.check_output([
+                  "gh", "api", f"repos/{os.environ['GITHUB_REPOSITORY']}/issues/{number}"
+              ], text=True))
+              title = issue.get("title", "")
+              if ("pull_request" in issue
+                      or issue.get("user", {}).get("login") != "yukki0113"
+                      or not title.startswith("[RACENOTE_V056_FORWARD_PACI_T1]")):
+                  raise SystemExit("invalid owner forward T1 request Issue")
+              req = json.loads((issue.get("body") or "").strip())
+              required = set(keys) - {"paci_drive_sha256"}
+              if not isinstance(req, dict) or not required <= set(req) or set(req) - set(keys):
+                  raise SystemExit("incorrect forward T1 Issue input fields")
+              values = {key: str(req.get(key, "") or "") for key in keys}
+              label = title[len("[RACENOTE_V056_FORWARD_PACI_T1]"):].strip()
+              if label != values["target_date"].replace("-", ""):
+                  raise SystemExit("Issue title date and target_date disagree")
+          else:
+              values = {key: os.environ.get(env, "") for key, env in keys.items()}
+          for key in ("target_date", "race_lap_expected_period_to"):
+              if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", values[key]):
+                  raise SystemExit("bad date in " + key)
+          if not re.fullmatch(r"[A-Za-z0-9_-]{10,128}", values["paci_drive_file_id"]):
+              raise SystemExit("bad PACI Drive ID")
+          for key in ("analysis_artifact_id", "course_fit_artifact_id", "race_lap_artifact_id"):
+              if not re.fullmatch(r"[1-9][0-9]{6,19}", values[key]):
+                  raise SystemExit("bad artifact ID in " + key)
+          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{3,127}", values["analysis_generation_id"]):
+              raise SystemExit("bad Analysis generation")
+          if values["paci_drive_sha256"] and not re.fullmatch(r"[0-9a-f]{64}", values["paci_drive_sha256"]):
+              raise SystemExit("bad PACI SHA256")
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
+              for key, env in keys.items():
+                  stream.write(f"{env}={values[key]}\n")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as stream:
+              stream.write(f"target_date={values['target_date']}\n")
+          PY
       - name: Validate one forward date and immutable target
         run: |
           set -euo pipefail
@@ -148,7 +210,8 @@ jobs:
           PY
           unzip -q /tmp/v056-artifacts/COURSE_FIT.zip -d /tmp/racenote-fit
           test -f /tmp/racenote-fit/fit/research/candidate_fit_view.parquet
-          unzip -q /tmp/v056-artifacts/RACE_LAP.zip -d /tmp/racenote-lap
+          mkdir -p /tmp/racenote-lap/current
+          unzip -q /tmp/v056-artifacts/RACE_LAP.zip -d /tmp/racenote-lap/current
           test -s /tmp/racenote-lap/current/race_lap.parquet
           test -s /tmp/racenote-lap/current/manifest.json
       - name: Fetch RRDB CURRENT with receipt and CRC
@@ -212,7 +275,7 @@ jobs:
       - name: Publish lossless v056 authoring bundle
         uses: actions/upload-artifact@v4
         with:
-          name: racenote-v056-forward-${{ inputs.target_date }}-authoring
+          name: racenote-v056-forward-${{ steps.resolve.outputs.target_date }}-authoring
           path: horse-racing/jrdb/daily/*/v056_day/v056/authoring_bundle/
           retention-days: 7
           if-no-files-found: error
