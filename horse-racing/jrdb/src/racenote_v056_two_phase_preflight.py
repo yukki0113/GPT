@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 from racenote_v056_contract_gates import check_prediction_audit_comment, check_confidence_review
 from racenote_decision_core_v056 import validate_core
+from racenote_v056_single_day import _validator_reader, confidence_scope
 
 CONTRACT = "v056-prediction-confidence-audit-newspaper-v1"
 LOGIC = "RaceNote-Human-Context-Reader-0.5.6-candidate"
@@ -57,7 +58,7 @@ def validate(root: Path, draft: Path, phase: str):
             if not isinstance(core, dict) or core.get("venue") != r["venue"] or core.get("race_no") != r["race_no"]:
                 raise ValueError("Decision Core race identity mismatch")
             reader = _read(root / "reader" / f"{r['venue']}_{r['race_no']:02d}.json")
-            validate_core(core, reader, contract_revision=CONTRACT)
+            validate_core(core, _validator_reader(reader), contract_revision=CONTRACT)
             check_prediction_audit_comment(core)
             if (core.get("honmei_win") or {}).get("confidence") is not None:
                 raise ValueError("Prediction cannot assign Confidence")
@@ -84,9 +85,13 @@ def validate(root: Path, draft: Path, phase: str):
                 raise ValueError("Confidence reason is insufficient")
             # The official reader-based special-race classification must be supplied
             # by the sealed v056 input; never infer Z from grade.
-            special = _read(root / "reader" / f"{r['venue']}_{r['race_no']:02d}.json")
+            manifest = _read(root / "reader_manifest.json")
+            matches = [entry for entry in manifest["entries"] if entry["venue"] == r["venue"] and int(entry["race_no"]) == r["race_no"]]
+            if len(matches) != 1:
+                raise ValueError("Reader manifest race mismatch")
+            special = _read(root / "reader" / matches[0]["derived_normal_filename"])
             race = special.get("race") or {}
-            z_required = race.get("class") == "新馬" or race.get("surface") == "障害" or race.get("race_type") == "障害"
+            z_required = confidence_scope(special)[0] == "OUT_OF_SCOPE"
             check_confidence_review(r, frozen_honmei, z_required=z_required)
         dest = root / "incoming/llm_confidence.json"
     else:
