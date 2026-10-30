@@ -1,4 +1,4 @@
-> **2026-10-30 v0.5.6日次PACI forward候補経路**：新規v056 forward T1/Reader出力は [RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md](RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md) を参照。BTDAY/forwardのPrediction・Confidenceは共通v056二段階Freeze。新聞清書/PWA提出は別工程。実日次PACI E2E未検証につき旧v055の通常運用を自動置換しない。
+> **2026-10-30 v0.5.6日次PACI forward候補経路**：PACI入力は既存Driveの `PACI` フォルダを正本とし（PACIのJRDB直接取得は禁止）、新規v056 forward T1/Reader出力は [RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md](RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md) を参照。BTDAY/forwardのPrediction・Confidenceは共通v056二段階Freeze。新聞清書/PWA提出は別工程。実日次PACI E2E未検証につき旧v055の通常運用を自動置換しない。
 
 > **v0.5.6 初回BTDAY受入（試験経路）**：新規v0.5.6を明示指定する予想スレッドは [RACENOTE_V056_BTDAY_PREDICTION_THREAD_HANDOFF_20261030.md](RACENOTE_V056_BTDAY_PREDICTION_THREAD_HANDOFF_20261030.md) を最優先し、専用T1 Orchestrator／v056 Prediction・Confidence Freezeを使用する。これは初回BTDAYの本番相当検証用であり、v0.5.5 r6の通常運用を自動的に置換しない。初回試験の両Freeze成功前に「v0.5.6正式稼働」と報告しない。
 
