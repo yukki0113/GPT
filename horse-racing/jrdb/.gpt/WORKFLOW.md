@@ -1,3 +1,17 @@
+## RaceNote v0.5.6 日次PACI forward運用（明示指定時の優先手順／2026-10-30）
+
+> ユーザーが **v0.5.6でforward／明日の予想／日次PACI予想** を明示した場合、この節を先に読み、`docs/racenote/RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md` に従う。下記のv0.5.5 r6 BTDAY手順および旧v0.5.2～v0.5.5 forward文書を混用しない。**v0.5.6本番PACIの初回E2Eは未受入**であり、正常実行前に本番完走と断言しない。
+
+1. **T1（機械処理）**：`RaceNote v0.5.6 Forward PACI T1`（`.github/workflows/racenote_v056_forward_paci_t1.yml`）をmainで起動する。`target_date`、確定済みRaceLapの`race_lap_expected_period_to`、承認済み`analysis_artifact_id`・`analysis_generation_id`・`course_fit_artifact_id`・`race_lap_artifact_id`を実物と照合して指定する。不明なartifact IDや更新日を推測・固定流用しない。Workflowは認証付きPACI取得、RRDB CURRENT取得、Analysis／Course Fit／RaceLapの入力確認を行う。
+2. **RaceNote生成**：正本の`src/racenote_v056_forward_turn1.py`が既存`racenote_v053_from_paci.py --prep-only`を再利用し、DAY PREP → market-blind `forecast_prep` → KYI補足 → v056 Reader/session → 全レースのlossless authoring bundleを生成する。ここで印・Confidence・新聞文章を自動生成しない。
+3. **T1受入**：`horse-racing/jrdb/daily/YYYYMMDD/v056_day/`に`operation_handoff.json`（`READY_FOR_V056_AUTHORING`、`execution_mode=FORWARD`）、`v056/session.json`、`v056/reader_manifest.json`、`v056/authoring_bundle/manifest.json`がmain永続化され、Session・日付・race count・CLEAN BLIND・SHA整合が通っていることを確認する。T1 Actions SUCCESSとGitHub commit／Artifact公開を両方確認する。
+4. **共通LLM予想**：LLMが全頭比較して全レースの`prediction_audit_comment`を含むDecision Coreを著述し、`v056/incoming/llm_decisions.json`へ保存する。`.github/workflows/racenote_v056_llm_prediction_freeze.yml`の成功とmain上の`v056/frozen/day_handoff.json`／SHAを検証する。**Prediction段階でConfidenceを生成しない**。
+5. **独立Confidence**：凍結済み◎のみを対象に独立LLMがA/B/C/Zと`confidence_review`（勝ち切り根拠・強敵比較・敗北シナリオ等）を著述し、`v056/incoming/llm_confidence.json`へ保存する。`.github/workflows/racenote_v056_llm_confidence_freeze.yml`の成功、`v056/confidence_frozen/day_handoff.json`／`v056/turn2_summary.json`のmain永続化・SHA照合を確認する。結果／当日市場／確定オッズは両Freeze以前に開かない。
+6. **出力・提出境界**：日次RaceNoteおよび二段階Freeze完了までが現行モジュールの担当。`forward_newspaper_comment`の一般読者向け清書とPWA提出JSON作成・送信は**現Workflowの対象外**。必要なら両Freeze後に別途実施し、凍結された印・Confidence・SHAを書き換えない。
+
+v0.5.6に明示切替していない通常のv0.5.5 r6 BTDAY運用は下記既存手順を維持する。CIテストPASSは実PACI一気通貫の完走証明とは異なる。問題発生時はrun・artifact・source SHAを調べて再実行／修正し、旧rootやFreezeを上書きしない。
+
+---
 # RaceNote r6 PIPELINE 現行オペレーション・追記（2026-10-30）
 
 - 最新のr6 BTDAY運用は `horse-racing/jrdb/docs/racenote/RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md` を最優先する。旧r4/r5、2026 PACI/Forward、旧統合Freezeは当時の対象に限って参照する。
