@@ -26,6 +26,7 @@ class HistoricalAuditTests(unittest.TestCase):
         self.assertEqual(result["kyi_declarations"],2)
         self.assertEqual(result["distinct_horses"],1)
         self.assertEqual(result["static_join_entries"],2)
+        self.assertEqual(result["static_join_distinct_horses"],1)
         self.assertEqual(result["as_of_verified_date_only_entries"],0)
 
     def test_empty_inventory_fail_closed(self):
