@@ -30,7 +30,7 @@ def main():
     target_date = selection["dates"][0]
     target = BASE / sid / target_date.replace("-", "")
     handoff = json.loads((target / "operation_handoff.json").read_text(encoding="utf-8"))
-    if not (handoff.get("status") == "READY_FOR_V055_AUTHORING"
+    if not (handoff.get("status") == "READY_FOR_V056_AUTHORING"
             and handoff.get("contract_revision") == CONTRACT
             and handoff.get("market_blind") is True
             and handoff.get("result_opened") is False
