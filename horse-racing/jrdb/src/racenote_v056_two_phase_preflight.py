@@ -11,6 +11,7 @@ import json
 import re
 from pathlib import Path
 from racenote_v056_contract_gates import check_prediction_audit_comment, check_confidence_review
+from racenote_decision_core_v056 import validate_core
 
 CONTRACT = "v056-prediction-confidence-audit-newspaper-v1"
 LOGIC = "RaceNote-Human-Context-Reader-0.5.6-candidate"
@@ -55,8 +56,10 @@ def validate(root: Path, draft: Path, phase: str):
             core = r["decision_core"]
             if not isinstance(core, dict) or core.get("venue") != r["venue"] or core.get("race_no") != r["race_no"]:
                 raise ValueError("Decision Core race identity mismatch")
+            reader = _read(root / "reader" / f"{r['venue']}_{r['race_no']:02d}.json")
+            validate_core(core, reader, contract_revision=CONTRACT)
             check_prediction_audit_comment(core)
-            if core.get("honmei_win", {}).get("confidence") is not None:
+            if (core.get("honmei_win") or {}).get("confidence") is not None:
                 raise ValueError("Prediction cannot assign Confidence")
         dest = root / "incoming/llm_decisions.json"
     elif phase == "confidence":
