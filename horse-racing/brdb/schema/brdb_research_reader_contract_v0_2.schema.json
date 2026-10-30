@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BRDB explicit research Reader v0.2 manifest extension",
+  "type": "object",
+  "required": ["version", "id_set_encoding", "added_count", "added_ids_sha256", "annual_count", "annual_ids_sha256", "added_audit", "observation_history", "annual_availability", "as_of_policy"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"const": "research-reader-v0.2"},
+    "id_set_encoding": {"const": "sorted-utf8-lines-v1"},
+    "added_count": {"type": "integer", "minimum": 1},
+    "added_ids_sha256": {"$ref": "#/$defs/sha256"},
+    "annual_count": {"type": "integer", "minimum": 1},
+    "annual_ids_sha256": {"$ref": "#/$defs/sha256"},
+    "added_audit": {"$ref": "#/$defs/reference"},
+    "observation_history": {"$ref": "#/$defs/reference"},
+    "annual_availability": {"$ref": "#/$defs/reference"},
+    "as_of_policy": {"const": "selected_latest_observation_date"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reference": {
+      "type": "object", "required": ["path", "sha256"], "additionalProperties": false,
+      "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"$ref": "#/$defs/sha256"}}
+    }
+  }
+}
