@@ -842,6 +842,7 @@ def verify_confidence_freeze(root: Path) -> dict[str, Any]:
             _validate_confidence_grade(normal, str(item.get("confidence")), session["contract_revision"])
         except ValueError as exc:
             raise ValueError(f"confidence frozen record invalid {key}: {exc}") from exc
+        check_confidence_review(item, expected[key], z_required=confidence_scope(normal)[0] == "OUT_OF_SCOPE")
         seen.add(key)
     if seen != set(expected):
         raise ValueError("confidence frozen coverage mismatch")
