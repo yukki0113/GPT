@@ -1,0 +1,65 @@
+{
+  "alias_version": "v0.1",
+  "artifact_type": "brdb_pedigree",
+  "base_generation_id": "c73cf76ad930b5f0",
+  "builder_version": "research-paci-v0.2",
+  "canonical_keys": {
+    "parent_relation": [
+      "child_horse_id",
+      "role"
+    ],
+    "pedigree_fact": [
+      "horse_id"
+    ]
+  },
+  "generation_id": "5279af0bd8226cde",
+  "generation_manifest_sha256": "7efb70ab370cafd18d39eb20ea4fc2bb32490653364a58b44b1382cf9fa5f16c",
+  "lineage_source_version": [
+    "2003-05-15"
+  ],
+  "output_sha256": {
+    "added_horses.csv": "de173c823b7b93b347793deeae24c4ef1da95e1f5a568f6f9be74ea0a52b6a8d",
+    "added_horses.json": "a333a4c90497efb0a2b0489daa011450c4cca0430c923dca4f6e5095698700c3",
+    "annual_availability.parquet": "ca5bacf36b5df307c96fffabe93e2fa065dbbab5a1376ec0122ca59f801e767a",
+    "annual_daily_profile_review.json": "edec252c2dd136cb96f1a62547c749838c7987b8b6a5f961a9ab578550cb10da",
+    "annual_relation_diff.csv": "dc9d4ebdeb52879659d9673767e83058438aa4d3e970c87351d721f226403111",
+    "annual_relation_diff.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "audit.json": "4d7cf5eddf7a42020f939e1318f916c7ef1c09550ace2cbde473470492ff1acd",
+    "daily_observation_history.csv": "9066d632704243015921ecff9a7275d98d5ac4a03a7e1a9a07cdea9bf8eb0593",
+    "daily_observation_history.parquet": "4707c8d7077696f95da4583fa5b34ad8ce29b2357007f1a989b9990e7aa8488d",
+    "lineage_code_master.parquet": "6263f4b239e9018e03fe6ce8333ba843b05c2eac32470369368e7be0fe7bd54b",
+    "parent_relation.parquet": "c90482851f91b8f2d99ec88407f4246471d10b38f18163464f88760cb197ff85",
+    "pedigree_fact.parquet": "1e7574f78703d79d8d83797f9e350a8927b728fc68c659cf5d340ee0f79b3536",
+    "pedigree_name_alias.parquet": "ed7be0d82dea1458fa257e961c9ac7ace69b8435b87bb768fc144853919cf15d",
+    "preserved_selection_diff.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "previous_relation_diff.csv": "dc9d4ebdeb52879659d9673767e83058438aa4d3e970c87351d721f226403111",
+    "previous_relation_diff.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "profile_regression.json": "b4b2e8cd589fc5f5fa70fe95b57402e7cba2ce43d37fefd3900d75a0f6fd1215",
+    "quarantine.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "semantic_history_changes.json": "1f88614683c19e756dfd97f618f4f6aaf9a2c7400814f316ea8e8f785b0bac56"
+  },
+  "previous_generation_id": "f409be3f5d11cb90",
+  "private_input_inventories_omitted": true,
+  "reader_contract": {
+    "added_count": 3898,
+    "annual_count": 128754,
+    "as_of_policy": "selected_latest_observation_date",
+    "version": "research-reader-v0.2"
+  },
+  "research_only": true,
+  "row_counts": {
+    "annual_availability": 128754,
+    "daily_observation_history": 39543,
+    "lineage_code_master": 83,
+    "parent_relation": 397956,
+    "pedigree_fact": 132652,
+    "pedigree_name_alias": 21
+  },
+  "schema_version": "v0.1",
+  "source_archive_count": 118,
+  "source_commit": "8cce021ff02f548870a3b79e11fd7f92e7ea9610",
+  "source_family": "UKC+PACI_UKC",
+  "source_max_data_date": "20261025",
+  "source_min_data_date": "19990105",
+  "validation_status": "PASS"
+}

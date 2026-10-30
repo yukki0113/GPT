@@ -1,0 +1,956 @@
+{
+  "actual_as_of_entries": 33029,
+  "added_profiles": 3898,
+  "additional_daily_profiles": 3794,
+  "annual_fact_regression": "PASS",
+  "annual_profiles": 128754,
+  "annual_relation_diff_count": 0,
+  "contributions": {
+    "additional": {
+      "as_of_entries": 3794,
+      "cohort_horses": 3794,
+      "entries": 10016
+    },
+    "annual": {
+      "as_of_entries": 29131,
+      "cohort_horses": 6782,
+      "entries": 29131
+    },
+    "preserved": {
+      "as_of_entries": 104,
+      "cohort_horses": 104,
+      "entries": 396
+    }
+  },
+  "daily_observations": 39543,
+  "future_profile_leaks": 0,
+  "generation_id": "5279af0bd8226cde",
+  "legacy_single_batch_profiles_checked": 104,
+  "master_profiles": 132652,
+  "metrics": {
+    "as_of_entries": {
+      "ancestor_depth_0_to_5": {
+        "0": {
+          "count": 8928,
+          "denominator": 39543,
+          "percent": 22.577953
+        },
+        "1": {
+          "count": 2290,
+          "denominator": 39543,
+          "percent": 5.791164
+        },
+        "2": {
+          "count": 17371,
+          "denominator": 39543,
+          "percent": 43.929393
+        },
+        "3": {
+          "count": 10636,
+          "denominator": 39543,
+          "percent": 26.897302
+        },
+        "4": {
+          "count": 318,
+          "denominator": 39543,
+          "percent": 0.804188
+        },
+        "5": {
+          "count": 0,
+          "denominator": 39543,
+          "percent": 0.0
+        }
+      },
+      "denominator": 39543,
+      "metrics": {
+        "broodmare_sire_id_ambiguous": {
+          "count": 1,
+          "denominator": 39543,
+          "percent": 0.002529
+        },
+        "broodmare_sire_id_resolved": {
+          "count": 17508,
+          "denominator": 39543,
+          "percent": 44.275852
+        },
+        "broodmare_sire_id_unknown": {
+          "count": 22035,
+          "denominator": 39543,
+          "percent": 55.724148
+        },
+        "broodmare_sire_line_code_mapped": {
+          "count": 33029,
+          "denominator": 39543,
+          "percent": 83.526794
+        },
+        "broodmare_sire_line_code_present": {
+          "count": 33029,
+          "denominator": 39543,
+          "percent": 83.526794
+        },
+        "broodmare_sire_name_present": {
+          "count": 33029,
+          "denominator": 39543,
+          "percent": 83.526794
+        },
+        "dam_id_ambiguous": {
+          "count": 15,
+          "denominator": 39543,
+          "percent": 0.037933
+        },
+        "dam_id_resolved": {
+          "count": 25229,
+          "denominator": 39543,
+          "percent": 63.801431
+        },
+        "dam_id_unknown": {
+          "count": 14314,
+          "denominator": 39543,
+          "percent": 36.198569
+        },
+        "dam_name_present": {
+          "count": 33029,
+          "denominator": 39543,
+          "percent": 83.526794
+        },
+        "id_joined": {
+          "count": 33029,
+          "denominator": 39543,
+          "percent": 83.526794
+        },
+        "sire_id_ambiguous": {
+          "count": 0,
+          "denominator": 39543,
+          "percent": 0.0
+        },
+        "sire_id_resolved": {
+          "count": 23444,
+          "denominator": 39543,
+          "percent": 59.287358
+        },
+        "sire_id_unknown": {
+          "count": 16099,
+          "denominator": 39543,
+          "percent": 40.712642
+        },
+        "sire_line_code_mapped": {
+          "count": 33029,
+          "denominator": 39543,
+          "percent": 83.526794
+        },
+        "sire_line_code_present": {
+          "count": 33029,
+          "denominator": 39543,
+          "percent": 83.526794
+        },
+        "sire_name_present": {
+          "count": 33029,
+          "denominator": 39543,
+          "percent": 83.526794
+        },
+        "three_names_present": {
+          "count": 33029,
+          "denominator": 39543,
+          "percent": 83.526794
+        }
+      },
+      "parent_branch_depth_0_to_5": {
+        "broodmare_sire": {
+          "0": {
+            "count": 22035,
+            "denominator": 39543,
+            "percent": 55.724148
+          },
+          "1": {
+            "count": 0,
+            "denominator": 39543,
+            "percent": 0.0
+          },
+          "2": {
+            "count": 14366,
+            "denominator": 39543,
+            "percent": 36.330071
+          },
+          "3": {
+            "count": 2953,
+            "denominator": 39543,
+            "percent": 7.46782
+          },
+          "4": {
+            "count": 189,
+            "denominator": 39543,
+            "percent": 0.477961
+          },
+          "5": {
+            "count": 0,
+            "denominator": 39543,
+            "percent": 0.0
+          }
+        },
+        "dam": {
+          "0": {
+            "count": 14314,
+            "denominator": 39543,
+            "percent": 36.198569
+          },
+          "1": {
+            "count": 4407,
+            "denominator": 39543,
+            "percent": 11.14483
+          },
+          "2": {
+            "count": 14070,
+            "denominator": 39543,
+            "percent": 35.581519
+          },
+          "3": {
+            "count": 6486,
+            "denominator": 39543,
+            "percent": 16.402397
+          },
+          "4": {
+            "count": 266,
+            "denominator": 39543,
+            "percent": 0.672685
+          },
+          "5": {
+            "count": 0,
+            "denominator": 39543,
+            "percent": 0.0
+          }
+        },
+        "sire": {
+          "0": {
+            "count": 16099,
+            "denominator": 39543,
+            "percent": 40.712642
+          },
+          "1": {
+            "count": 4223,
+            "denominator": 39543,
+            "percent": 10.679513
+          },
+          "2": {
+            "count": 13988,
+            "denominator": 39543,
+            "percent": 35.37415
+          },
+          "3": {
+            "count": 5180,
+            "denominator": 39543,
+            "percent": 13.099664
+          },
+          "4": {
+            "count": 53,
+            "denominator": 39543,
+            "percent": 0.134031
+          },
+          "5": {
+            "count": 0,
+            "denominator": 39543,
+            "percent": 0.0
+          }
+        }
+      }
+    },
+    "as_of_first_entry_horses": {
+      "ancestor_depth_0_to_5": {
+        "0": {
+          "count": 3328,
+          "denominator": 10680,
+          "percent": 31.161049
+        },
+        "1": {
+          "count": 569,
+          "denominator": 10680,
+          "percent": 5.327715
+        },
+        "2": {
+          "count": 4124,
+          "denominator": 10680,
+          "percent": 38.614232
+        },
+        "3": {
+          "count": 2575,
+          "denominator": 10680,
+          "percent": 24.110487
+        },
+        "4": {
+          "count": 84,
+          "denominator": 10680,
+          "percent": 0.786517
+        },
+        "5": {
+          "count": 0,
+          "denominator": 10680,
+          "percent": 0.0
+        }
+      },
+      "denominator": 10680,
+      "metrics": {
+        "broodmare_sire_id_ambiguous": {
+          "count": 0,
+          "denominator": 10680,
+          "percent": 0.0
+        },
+        "broodmare_sire_id_resolved": {
+          "count": 4190,
+          "denominator": 10680,
+          "percent": 39.23221
+        },
+        "broodmare_sire_id_unknown": {
+          "count": 6490,
+          "denominator": 10680,
+          "percent": 60.76779
+        },
+        "broodmare_sire_line_code_mapped": {
+          "count": 7975,
+          "denominator": 10680,
+          "percent": 74.672285
+        },
+        "broodmare_sire_line_code_present": {
+          "count": 7975,
+          "denominator": 10680,
+          "percent": 74.672285
+        },
+        "broodmare_sire_name_present": {
+          "count": 7975,
+          "denominator": 10680,
+          "percent": 74.672285
+        },
+        "dam_id_ambiguous": {
+          "count": 3,
+          "denominator": 10680,
+          "percent": 0.02809
+        },
+        "dam_id_resolved": {
+          "count": 6011,
+          "denominator": 10680,
+          "percent": 56.282772
+        },
+        "dam_id_unknown": {
+          "count": 4669,
+          "denominator": 10680,
+          "percent": 43.717228
+        },
+        "dam_name_present": {
+          "count": 7975,
+          "denominator": 10680,
+          "percent": 74.672285
+        },
+        "id_joined": {
+          "count": 7975,
+          "denominator": 10680,
+          "percent": 74.672285
+        },
+        "sire_id_ambiguous": {
+          "count": 0,
+          "denominator": 10680,
+          "percent": 0.0
+        },
+        "sire_id_resolved": {
+          "count": 5624,
+          "denominator": 10680,
+          "percent": 52.659176
+        },
+        "sire_id_unknown": {
+          "count": 5056,
+          "denominator": 10680,
+          "percent": 47.340824
+        },
+        "sire_line_code_mapped": {
+          "count": 7975,
+          "denominator": 10680,
+          "percent": 74.672285
+        },
+        "sire_line_code_present": {
+          "count": 7975,
+          "denominator": 10680,
+          "percent": 74.672285
+        },
+        "sire_name_present": {
+          "count": 7975,
+          "denominator": 10680,
+          "percent": 74.672285
+        },
+        "three_names_present": {
+          "count": 7975,
+          "denominator": 10680,
+          "percent": 74.672285
+        }
+      },
+      "parent_branch_depth_0_to_5": {
+        "broodmare_sire": {
+          "0": {
+            "count": 6490,
+            "denominator": 10680,
+            "percent": 60.76779
+          },
+          "1": {
+            "count": 0,
+            "denominator": 10680,
+            "percent": 0.0
+          },
+          "2": {
+            "count": 3415,
+            "denominator": 10680,
+            "percent": 31.975655
+          },
+          "3": {
+            "count": 729,
+            "denominator": 10680,
+            "percent": 6.825843
+          },
+          "4": {
+            "count": 46,
+            "denominator": 10680,
+            "percent": 0.430712
+          },
+          "5": {
+            "count": 0,
+            "denominator": 10680,
+            "percent": 0.0
+          }
+        },
+        "dam": {
+          "0": {
+            "count": 4669,
+            "denominator": 10680,
+            "percent": 43.717228
+          },
+          "1": {
+            "count": 1062,
+            "denominator": 10680,
+            "percent": 9.94382
+          },
+          "2": {
+            "count": 3324,
+            "denominator": 10680,
+            "percent": 31.123596
+          },
+          "3": {
+            "count": 1562,
+            "denominator": 10680,
+            "percent": 14.625468
+          },
+          "4": {
+            "count": 63,
+            "denominator": 10680,
+            "percent": 0.589888
+          },
+          "5": {
+            "count": 0,
+            "denominator": 10680,
+            "percent": 0.0
+          }
+        },
+        "sire": {
+          "0": {
+            "count": 5056,
+            "denominator": 10680,
+            "percent": 47.340824
+          },
+          "1": {
+            "count": 1013,
+            "denominator": 10680,
+            "percent": 9.485019
+          },
+          "2": {
+            "count": 3307,
+            "denominator": 10680,
+            "percent": 30.964419
+          },
+          "3": {
+            "count": 1283,
+            "denominator": 10680,
+            "percent": 12.013109
+          },
+          "4": {
+            "count": 21,
+            "denominator": 10680,
+            "percent": 0.196629
+          },
+          "5": {
+            "count": 0,
+            "denominator": 10680,
+            "percent": 0.0
+          }
+        }
+      }
+    },
+    "static_entries": {
+      "ancestor_depth_0_to_5": {
+        "0": {
+          "count": 2923,
+          "denominator": 39543,
+          "percent": 7.391953
+        },
+        "1": {
+          "count": 2599,
+          "denominator": 39543,
+          "percent": 6.572592
+        },
+        "2": {
+          "count": 20423,
+          "denominator": 39543,
+          "percent": 51.647574
+        },
+        "3": {
+          "count": 13107,
+          "denominator": 39543,
+          "percent": 33.146195
+        },
+        "4": {
+          "count": 491,
+          "denominator": 39543,
+          "percent": 1.241686
+        },
+        "5": {
+          "count": 0,
+          "denominator": 39543,
+          "percent": 0.0
+        }
+      },
+      "denominator": 39543,
+      "metrics": {
+        "broodmare_sire_id_ambiguous": {
+          "count": 6,
+          "denominator": 39543,
+          "percent": 0.015173
+        },
+        "broodmare_sire_id_resolved": {
+          "count": 21222,
+          "denominator": 39543,
+          "percent": 53.668159
+        },
+        "broodmare_sire_id_unknown": {
+          "count": 18321,
+          "denominator": 39543,
+          "percent": 46.331841
+        },
+        "broodmare_sire_line_code_mapped": {
+          "count": 39543,
+          "denominator": 39543,
+          "percent": 100.0
+        },
+        "broodmare_sire_line_code_present": {
+          "count": 39543,
+          "denominator": 39543,
+          "percent": 100.0
+        },
+        "broodmare_sire_name_present": {
+          "count": 39543,
+          "denominator": 39543,
+          "percent": 100.0
+        },
+        "dam_id_ambiguous": {
+          "count": 21,
+          "denominator": 39543,
+          "percent": 0.053107
+        },
+        "dam_id_resolved": {
+          "count": 30215,
+          "denominator": 39543,
+          "percent": 76.41049
+        },
+        "dam_id_unknown": {
+          "count": 9328,
+          "denominator": 39543,
+          "percent": 23.58951
+        },
+        "dam_name_present": {
+          "count": 39543,
+          "denominator": 39543,
+          "percent": 100.0
+        },
+        "id_joined": {
+          "count": 39543,
+          "denominator": 39543,
+          "percent": 100.0
+        },
+        "sire_id_ambiguous": {
+          "count": 0,
+          "denominator": 39543,
+          "percent": 0.0
+        },
+        "sire_id_resolved": {
+          "count": 28164,
+          "denominator": 39543,
+          "percent": 71.223731
+        },
+        "sire_id_unknown": {
+          "count": 11379,
+          "denominator": 39543,
+          "percent": 28.776269
+        },
+        "sire_line_code_mapped": {
+          "count": 39543,
+          "denominator": 39543,
+          "percent": 100.0
+        },
+        "sire_line_code_present": {
+          "count": 39543,
+          "denominator": 39543,
+          "percent": 100.0
+        },
+        "sire_name_present": {
+          "count": 39543,
+          "denominator": 39543,
+          "percent": 100.0
+        },
+        "three_names_present": {
+          "count": 39543,
+          "denominator": 39543,
+          "percent": 100.0
+        }
+      },
+      "parent_branch_depth_0_to_5": {
+        "broodmare_sire": {
+          "0": {
+            "count": 18321,
+            "denominator": 39543,
+            "percent": 46.331841
+          },
+          "1": {
+            "count": 0,
+            "denominator": 39543,
+            "percent": 0.0
+          },
+          "2": {
+            "count": 17138,
+            "denominator": 39543,
+            "percent": 43.340161
+          },
+          "3": {
+            "count": 3802,
+            "denominator": 39543,
+            "percent": 9.61485
+          },
+          "4": {
+            "count": 282,
+            "denominator": 39543,
+            "percent": 0.713148
+          },
+          "5": {
+            "count": 0,
+            "denominator": 39543,
+            "percent": 0.0
+          }
+        },
+        "dam": {
+          "0": {
+            "count": 9328,
+            "denominator": 39543,
+            "percent": 23.58951
+          },
+          "1": {
+            "count": 5173,
+            "denominator": 39543,
+            "percent": 13.081961
+          },
+          "2": {
+            "count": 16618,
+            "denominator": 39543,
+            "percent": 42.025137
+          },
+          "3": {
+            "count": 8032,
+            "denominator": 39543,
+            "percent": 20.312065
+          },
+          "4": {
+            "count": 392,
+            "denominator": 39543,
+            "percent": 0.991326
+          },
+          "5": {
+            "count": 0,
+            "denominator": 39543,
+            "percent": 0.0
+          }
+        },
+        "sire": {
+          "0": {
+            "count": 11379,
+            "denominator": 39543,
+            "percent": 28.776269
+          },
+          "1": {
+            "count": 4981,
+            "denominator": 39543,
+            "percent": 12.596414
+          },
+          "2": {
+            "count": 16729,
+            "denominator": 39543,
+            "percent": 42.305844
+          },
+          "3": {
+            "count": 6353,
+            "denominator": 39543,
+            "percent": 16.066055
+          },
+          "4": {
+            "count": 101,
+            "denominator": 39543,
+            "percent": 0.255418
+          },
+          "5": {
+            "count": 0,
+            "denominator": 39543,
+            "percent": 0.0
+          }
+        }
+      }
+    },
+    "static_horses": {
+      "ancestor_depth_0_to_5": {
+        "0": {
+          "count": 845,
+          "denominator": 10680,
+          "percent": 7.911985
+        },
+        "1": {
+          "count": 697,
+          "denominator": 10680,
+          "percent": 6.526217
+        },
+        "2": {
+          "count": 5356,
+          "denominator": 10680,
+          "percent": 50.149813
+        },
+        "3": {
+          "count": 3614,
+          "denominator": 10680,
+          "percent": 33.838951
+        },
+        "4": {
+          "count": 168,
+          "denominator": 10680,
+          "percent": 1.573034
+        },
+        "5": {
+          "count": 0,
+          "denominator": 10680,
+          "percent": 0.0
+        }
+      },
+      "denominator": 10680,
+      "metrics": {
+        "broodmare_sire_id_ambiguous": {
+          "count": 1,
+          "denominator": 10680,
+          "percent": 0.009363
+        },
+        "broodmare_sire_id_resolved": {
+          "count": 5716,
+          "denominator": 10680,
+          "percent": 53.520599
+        },
+        "broodmare_sire_id_unknown": {
+          "count": 4964,
+          "denominator": 10680,
+          "percent": 46.479401
+        },
+        "broodmare_sire_line_code_mapped": {
+          "count": 10680,
+          "denominator": 10680,
+          "percent": 100.0
+        },
+        "broodmare_sire_line_code_present": {
+          "count": 10680,
+          "denominator": 10680,
+          "percent": 100.0
+        },
+        "broodmare_sire_name_present": {
+          "count": 10680,
+          "denominator": 10680,
+          "percent": 100.0
+        },
+        "dam_id_ambiguous": {
+          "count": 5,
+          "denominator": 10680,
+          "percent": 0.046816
+        },
+        "dam_id_resolved": {
+          "count": 8068,
+          "denominator": 10680,
+          "percent": 75.543071
+        },
+        "dam_id_unknown": {
+          "count": 2612,
+          "denominator": 10680,
+          "percent": 24.456929
+        },
+        "dam_name_present": {
+          "count": 10680,
+          "denominator": 10680,
+          "percent": 100.0
+        },
+        "id_joined": {
+          "count": 10680,
+          "denominator": 10680,
+          "percent": 100.0
+        },
+        "sire_id_ambiguous": {
+          "count": 0,
+          "denominator": 10680,
+          "percent": 0.0
+        },
+        "sire_id_resolved": {
+          "count": 7543,
+          "denominator": 10680,
+          "percent": 70.627341
+        },
+        "sire_id_unknown": {
+          "count": 3137,
+          "denominator": 10680,
+          "percent": 29.372659
+        },
+        "sire_line_code_mapped": {
+          "count": 10680,
+          "denominator": 10680,
+          "percent": 100.0
+        },
+        "sire_line_code_present": {
+          "count": 10680,
+          "denominator": 10680,
+          "percent": 100.0
+        },
+        "sire_name_present": {
+          "count": 10680,
+          "denominator": 10680,
+          "percent": 100.0
+        },
+        "three_names_present": {
+          "count": 10680,
+          "denominator": 10680,
+          "percent": 100.0
+        }
+      },
+      "parent_branch_depth_0_to_5": {
+        "broodmare_sire": {
+          "0": {
+            "count": 4964,
+            "denominator": 10680,
+            "percent": 46.479401
+          },
+          "1": {
+            "count": 0,
+            "denominator": 10680,
+            "percent": 0.0
+          },
+          "2": {
+            "count": 4534,
+            "denominator": 10680,
+            "percent": 42.453184
+          },
+          "3": {
+            "count": 1099,
+            "denominator": 10680,
+            "percent": 10.290262
+          },
+          "4": {
+            "count": 83,
+            "denominator": 10680,
+            "percent": 0.777154
+          },
+          "5": {
+            "count": 0,
+            "denominator": 10680,
+            "percent": 0.0
+          }
+        },
+        "dam": {
+          "0": {
+            "count": 2612,
+            "denominator": 10680,
+            "percent": 24.456929
+          },
+          "1": {
+            "count": 1374,
+            "denominator": 10680,
+            "percent": 12.865169
+          },
+          "2": {
+            "count": 4348,
+            "denominator": 10680,
+            "percent": 40.71161
+          },
+          "3": {
+            "count": 2230,
+            "denominator": 10680,
+            "percent": 20.88015
+          },
+          "4": {
+            "count": 116,
+            "denominator": 10680,
+            "percent": 1.086142
+          },
+          "5": {
+            "count": 0,
+            "denominator": 10680,
+            "percent": 0.0
+          }
+        },
+        "sire": {
+          "0": {
+            "count": 3137,
+            "denominator": 10680,
+            "percent": 29.372659
+          },
+          "1": {
+            "count": 1315,
+            "denominator": 10680,
+            "percent": 12.312734
+          },
+          "2": {
+            "count": 4408,
+            "denominator": 10680,
+            "percent": 41.273408
+          },
+          "3": {
+            "count": 1767,
+            "denominator": 10680,
+            "percent": 16.544944
+          },
+          "4": {
+            "count": 53,
+            "denominator": 10680,
+            "percent": 0.496255
+          },
+          "5": {
+            "count": 0,
+            "denominator": 10680,
+            "percent": 0.0
+          }
+        }
+      }
+    }
+  },
+  "new_generation_is_research_only": true,
+  "pre_2026_daily_profiles_exposed": 0,
+  "predicted_as_of_entries": 33029,
+  "prediction_difference": 0,
+  "preserved_daily_profiles": 104,
+  "previous_fact_regression": "PASS",
+  "previous_relation_diff_count": 0,
+  "production_writes": 0,
+  "real_pedigree_projection_samples": 19,
+  "rebuild_all_output_bytes_equal": true,
+  "scope": {
+    "entries": 39543,
+    "horses": 10680,
+    "max_date": "20261025",
+    "min_date": "20260104",
+    "population": "KYI declarations; actual start/cancellation and intraday publication times unverified",
+    "zip_count": 91
+  },
+  "single_batch_added_profiles_checked": 3898,
+  "source_commit": "8cce021ff02f548870a3b79e11fd7f92e7ea9610",
+  "source_guard_status_counts": {
+    "VALID": 39543
+  },
+  "status": "PASS"
+}
