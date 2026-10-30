@@ -1,4 +1,4 @@
-name: RaceNote v0.5.6 r6 shared BTDAY T1
+name: RaceNote v0.5.6 shared BTDAY T1
 
 on:
   workflow_call:
@@ -286,12 +286,12 @@ jobs:
           assert s['status']=='SESSION_SEALED'
           assert s['logic_version']=='RaceNote-Human-Context-Reader-0.5.6-candidate'
           assert s['contract_revision']==CONTRACT_REVISION
-          assert s['reader_projection']=='v056-lean-model-reader-r2'
+          assert s['reader_projection']=='v055-lean-model-reader-r2'
           assert s['selection_id']==os.environ['BTDAY_ID'] and s['target_date']==os.environ['BTDAY_TARGET_DATE']
           assert s['market_blind'] is True and s['result_opened'] is False and s['target_market_opened'] is False
           assert s['base_main_sha']==h['main_sha']
           assert m['contract_revision']==CONTRACT_REVISION
-          assert m['reader_projection']=='v056-lean-model-reader-r2'
+          assert m['reader_projection']=='v055-lean-model-reader-r2'
           assert len(m['entries'])==len(s['race_roster'])
           assert a['status']=='READY_FOR_LLM_RACE_BY_RACE_REVIEW'
           assert a['race_count']==len(s['race_roster'])
