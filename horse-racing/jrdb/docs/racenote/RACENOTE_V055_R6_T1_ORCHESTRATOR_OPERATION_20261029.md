@@ -1,3 +1,5 @@
+> **2026-10-30 現行r6補足**：新規2025 Historical BTDAYのT1入口は `.github/workflows/racenote_v055_r6_t1_orchestrator.yml` の `NEXT` / `EXISTING` / `STATUS` / `T2_ONLY`。通常のT2は冒頭で次T1を先行起動し、二段階Freeze後に次T1の終了・ZIP Artifactを確認する。詳細は [現行PIPELINE手順](RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md) を優先。旧版の手動起動・統合Freeze・forward専用説明は、その対象に限る。原文バックアップ：`operation-backups/20261030_pre_pipeline/RACENOTE_V055_R6_T1_ORCHESTRATOR_OPERATION_20261029.md`。
+
 # RaceNote r6 T1 Orchestrator — operating contract (2026-10-29)
 
 ## Purpose
