@@ -138,7 +138,7 @@ def evaluate(entries, reader):
         date, hid = row["race_date"], row["horse_id"]
         year = date[:4]
         group = annual.setdefault(year, {"entries": 0, "horse_ids": set(), "races": set(),
-                "static_join": 0, "temporal_verified": 0, "profile_fields": Counter(),
+                "static_join": 0, "static_ids": set(), "temporal_verified": 0, "profile_fields": Counter(),
                 "statuses": Counter()})
         group["entries"] += 1
         group["horse_ids"].add(hid)
@@ -146,6 +146,8 @@ def evaluate(entries, reader):
         # Latest generation metadata is checked only for static ID membership.
         static = hid in reader.facts
         group["static_join"] += int(static)
+        if static:
+            group["static_ids"].add(hid)
         key = hid, date
         if key not in cache:
             cache[key] = reader.horse_profile(hid, as_of=date)
@@ -162,6 +164,7 @@ def evaluate(entries, reader):
         output.append({"year": int(year), "kyi_declarations": g["entries"],
             "distinct_horses": len(g["horse_ids"]), "races": len(g["races"]),
             "static_join_entries": g["static_join"],
+            "static_join_distinct_horses": len(g["static_ids"]),
             "as_of_verified_date_only_entries": g["temporal_verified"],
             "as_of_unverified_entries": g["entries"] - g["temporal_verified"],
             **{field + "_asof_present": g["profile_fields"][field] for field in FIELDS},
