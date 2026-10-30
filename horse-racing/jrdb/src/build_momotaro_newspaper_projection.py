@@ -344,6 +344,15 @@ def project_horse(
     horse_no = int(projected["key"]["horse_no"])
     horse_name = str(projected["basic"]["horse_name"])
     momotaro: dict[str, Any] = {}
+    if isinstance(original_addons, dict):
+        existing_momotaro = original_addons.get("momotaro")
+        if isinstance(existing_momotaro, dict):
+            for member in ("ryota", "oji"):
+                existing = existing_momotaro.get(member)
+                if isinstance(existing, dict):
+                    momotaro[member] = json.loads(
+                        json.dumps(existing, ensure_ascii=False)
+                    )
 
     automatic_kenshow = automatic_kenshow_prediction(horse)
     if automatic_kenshow is not None:
@@ -535,6 +544,12 @@ def build_projection(
             race_notes.pop("momotaro_race_confidence", None)
 
         member_comments: dict[str, str] = {}
+        existing_comments = race_notes.get("momotaro_comments")
+        if isinstance(existing_comments, dict):
+            for member in ("ryota", "oji"):
+                comment = str(existing_comments.get(member) or "").strip()
+                if comment:
+                    member_comments[member] = comment
         if automatic_kenshow_comment:
             member_comments["kenshow"] = automatic_kenshow_comment
         for member in ("ryota", "kenshow"):
