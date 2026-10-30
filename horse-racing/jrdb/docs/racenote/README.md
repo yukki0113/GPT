@@ -1,3 +1,5 @@
+> **2026-10-30 現行r6運用の優先案内**：新規BTDAYの標準手順は [RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md](RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md)。T2開始直後に次BTDAYのT1 Orchestratorを起動する `PIPELINE` が通常モード、`T2_ONLY` は先行起動を止めるモード。独立したLLM予想→Prediction Freeze→独立Confidence→Confidence Freeze→Batch同期→次T1の状態照合を守る。以下の旧手順・旧日付の「current」表記は当時の履歴として保持し、現行r6の起動口を置き換えない。更新前の全文は `operation-backups/20261030_pre_pipeline/README.md` に退避済み。
+
 
 ## RaceNote research-work handoff area — 2026-10-05
 
