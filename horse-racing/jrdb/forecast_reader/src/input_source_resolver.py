@@ -16,7 +16,10 @@ def verify(source, kind, as_of):
         raise ValueError('HASH_MISMATCH')
     if source.get('kind') != kind or not source.get('version') or source.get('name') != path.name:
         raise ValueError('INVALID_REQUEST: source kind/version/name')
-    stamp = datetime.fromisoformat(source.get('snapshot_at', ''))
+    try:
+        stamp = datetime.fromisoformat(source.get('snapshot_at', ''))
+    except (ValueError, TypeError) as exc:
+        raise ValueError('UNVERIFIED_AS_OF: invalid snapshot timestamp') from exc
     if stamp.utcoffset() is None or stamp > as_of:
         raise ValueError('UNVERIFIED_AS_OF')
     proof = verify_provenance(source, as_of)
@@ -33,7 +36,10 @@ def verify_provenance(source, as_of):
         raise ValueError('SOURCE_CHANGED: metadata evidence')
     if not before['id'] or not before['parent_ids'] or before['name'] != source['name'] or before['size_bytes'] != source['size_bytes'] or proof.get('download_sha256') != source['sha256']:
         raise ValueError('UNVERIFIED_AS_OF: evidence does not bind input')
-    modified = datetime.fromisoformat(before['modified_time'])
+    try:
+        modified = datetime.fromisoformat(before['modified_time'])
+    except (ValueError, TypeError) as exc:
+        raise ValueError('UNVERIFIED_AS_OF: invalid metadata timestamp') from exc
     if modified.utcoffset() is None or modified > as_of:
         raise ValueError('UNVERIFIED_AS_OF: metadata postdates request')
     return proof

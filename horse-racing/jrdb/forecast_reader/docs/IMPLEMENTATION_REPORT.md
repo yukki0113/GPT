@@ -128,3 +128,9 @@ and a complete rerun passed. Updated CI results are linked in the PR.
 Draft remains required until the unresolved real-data prerequisites are met.
 
 Correction validation: full local suite 107 passed in 2.23s.
+
+Review CI: commit 375134028fb7ce2fc3ab6232979c69704e4b228b push check
+https://github.com/yukki0113/GPT/actions/runs/41025188480 succeeded.
+Previous-class comparison additionally remains unknown unless normalized_class
+is explicitly verified, preventing raw OP codes from being compared as equivalent
+to normalized OP/grade groups. Invalid provenance timestamps report UNVERIFIED_AS_OF.

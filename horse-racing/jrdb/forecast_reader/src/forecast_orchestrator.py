@@ -52,14 +52,14 @@ def build(target, races, rows, runners, rules, reference_rows=None):
         previous = runner.get('previous_run') or {}
         values = {'popularity': runner.get('pre_race_popularity'), 'age': runner.get('age'), 'sire': runner.get('sire_name'), 'frame': runner.get('frame'), 'running_style': runner.get('running_style_code'),
                   'jockey': runner.get('jockey'), 'previous_distance': previous.get('distance_m'),
-                  'previous_class': previous.get('race_class_code')}
+                  'previous_class': previous.get('normalized_class')}
         runner['trend_matches'] = []
         for axis in AXES:
             value = values.get(axis)
             groups = trends['exact_only'][axis]['groups']
             observed = [g for g in groups if str(value) == g['group']]
             runner['trend_matches'].append({'dimension': axis, 'result': 'unknown' if value is None or not groups else ('match' if observed else 'mismatch'),
-                                           'reason': ('pre_race_popularity_unavailable_final_popularity_forbidden' if axis == 'popularity' else 'pre_race_value_missing') if value is None else ('historical_groups_missing' if not groups else None),
+                                           'reason': ('pre_race_popularity_unavailable_final_popularity_forbidden' if axis == 'popularity' else ('previous_class_mapping_unverified' if axis == 'previous_class' else 'pre_race_value_missing')) if value is None else ('historical_groups_missing' if not groups else None),
                                            'membership_only': True, 'interpretation': 'same-value historical group, not favorable-trend suitability; inspect starts/finishes evidence', 'evidence': observed})
         runner['data_coverage'] = {'previous_run': 'available' if runner.get('previous_run') else 'missing'}
     represented = {r['race_key'] for r in prepared}
