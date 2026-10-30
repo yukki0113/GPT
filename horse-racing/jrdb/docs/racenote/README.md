@@ -1,3 +1,5 @@
+> **2026-10-30 v0.5.6日次PACI forward候補経路**：新規v056 forward T1/Reader出力は [RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md](RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md) を参照。BTDAY/forwardのPrediction・Confidenceは共通v056二段階Freeze。新聞清書/PWA提出は別工程。実日次PACI E2E未検証につき旧v055の通常運用を自動置換しない。
+
 > **v0.5.6 初回BTDAY受入（試験経路）**：新規v0.5.6を明示指定する予想スレッドは [RACENOTE_V056_BTDAY_PREDICTION_THREAD_HANDOFF_20261030.md](RACENOTE_V056_BTDAY_PREDICTION_THREAD_HANDOFF_20261030.md) を最優先し、専用T1 Orchestrator／v056 Prediction・Confidence Freezeを使用する。これは初回BTDAYの本番相当検証用であり、v0.5.5 r6の通常運用を自動的に置換しない。初回試験の両Freeze成功前に「v0.5.6正式稼働」と報告しない。
 
 > **2026-10-30 現行r6運用の優先案内**：新規BTDAYの標準手順は [RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md](RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md)。T2開始直後に次BTDAYのT1 Orchestratorを起動する `PIPELINE` が通常モード、`T2_ONLY` は先行起動を止めるモード。独立したLLM予想→Prediction Freeze→独立Confidence→Confidence Freeze→Batch同期→次T1の状態照合を守る。以下の旧手順・旧日付の「current」表記は当時の履歴として保持し、現行r6の起動口を置き換えない。更新前の全文は `operation-backups/20261030_pre_pipeline/README.md` に退避済み。
