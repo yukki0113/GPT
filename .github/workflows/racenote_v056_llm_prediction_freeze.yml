@@ -1,0 +1,102 @@
+name: RaceNote v0.5.6 Prediction Freeze
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/daily/**/v056_day/v056/incoming/llm_decisions.json'
+      - 'horse-racing/jrdb/backtests/BTDAY-*/**/v056/incoming/llm_decisions.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-v056-freeze
+  cancel-in-progress: false
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Resolve one approved root
+        id: target
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          PHASE: prediction
+          DRAFT: llm_decisions.json
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, pathlib, re, subprocess
+          before, after = os.environ['BEFORE'], os.environ['AFTER']
+          changed = subprocess.check_output(
+              ['git', 'diff', '--name-only', before, after], text=True
+          ).splitlines()
+          draft = os.environ['DRAFT']
+          eligible = []
+          for name in changed:
+              if not name.endswith('/incoming/' + draft):
+                  continue
+              root = name[: -len('/incoming/' + draft)]
+              if re.fullmatch(r'horse-racing/jrdb/daily/\d{8}/v056_day/v056', root) or re.fullmatch(r'horse-racing/jrdb/backtests/BTDAY-\d{4}/\d{8}/v056', root):
+                  eligible.append(root)
+          roots = sorted(set(eligible))
+          if len(roots) != 1:
+              raise SystemExit(f'Expected exactly one approved root, found {roots}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'root={roots[0]}\n')
+          PY
+
+      - name: Preflight and canonical Freeze
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          ROOT: ${{ steps.target.outputs.root }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v056_turn2_two_phase.py \
+            --phase prediction \
+            --root "$ROOT" \
+            --draft "$ROOT/incoming/llm_decisions.json"
+
+      - name: Assert v056 contract and verified seal
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          ROOT: ${{ steps.target.outputs.root }}
+          PHASE: prediction
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from racenote_v056_single_day import verify_freeze, verify_confidence_freeze
+          root = Path(os.environ['ROOT'])
+          session = json.loads((root/'session.json').read_text(encoding='utf-8'))
+          assert session['contract_revision'] == 'v056-prediction-confidence-audit-newspaper-v1'
+          if os.environ['PHASE'] == 'prediction':
+              assert verify_freeze(root)['status'] == 'PREDICTION_FROZEN_CLEAN_BLIND'
+          else:
+              assert verify_confidence_freeze(root)['status'] == 'CONFIDENCE_FROZEN_CLEAN_BLIND'
+          PY
+
+      - name: Persist verified Freeze
+        env:
+          ROOT: ${{ steps.target.outputs.root }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A "$ROOT"
+          git diff --cached --quiet && { echo 'No freeze artifacts to commit'; exit 1; }
+          git commit -m "RaceNote: prediction freeze ${ROOT}"
+          git pull --rebase origin main
+          git push origin HEAD:main
