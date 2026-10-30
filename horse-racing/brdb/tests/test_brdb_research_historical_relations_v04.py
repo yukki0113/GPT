@@ -24,7 +24,7 @@ class Fake:
   return {'profile':self.facts[hid],'status':'AVAILABLE_ANNUAL_SNAPSHOT','source':{'observed_date':self.dates[hid]},'profile_data_date':self.dates[hid],'observed_date':self.dates[hid]}
 
 def reader(annual,updates=None):
- r=HistoricalRelationsReader.__new__(HistoricalRelationsReader);r.history=Fake(annual,updates);r._date=None;r._relations={};r._profiles={};r._master=None;r._aliases=AliasIndex();return r
+ r=HistoricalRelationsReader.__new__(HistoricalRelationsReader);r.history=Fake(annual,updates);r._date=None;r._relations={};r._profiles={};r._master=None;r._aliases=AliasIndex();r._coverage_end='20261025';return r
 
 class HistoricalTest(unittest.TestCase):
  def base(self):
@@ -65,6 +65,9 @@ class HistoricalTest(unittest.TestCase):
   cyclic=reader([(horse('a','A',sire='B',sire_year=2000),'20200101'),(horse('b','B',sire='A',sire_year=2000),'20200101')]);self.assertTrue(any(x['status']=='CYCLE' for x in cyclic.ancestor_graph('a',as_of='20260101')['paths']))
  def test_batch_single_order_and_cache_isolation(self):
   r=reader(self.base()+[(horse('p','Father'),'20200101')]);a=r.parent_relations('c',as_of='20260101');b=r.relations_for_horses(['p','c'],as_of='20260101')['c'];self.assertEqual(a,b);a[0]['child_source']['observed_date']='99999999';self.assertNotEqual(a,r.parent_relations('c',as_of='20260101'));r.parent_relations('c',as_of='20260201');self.assertEqual(b,r.parent_relations('c',as_of='20260101'))
+ def test_after_coverage_fails_closed(self):
+  r=reader(self.base())
+  with self.assertRaises(ValueError):r.parent_relations('c',as_of='20261026')
  def test_invalid_date(self):
   r=reader(self.base())
   with self.assertRaises(ValueError):r.parent_relations('c',as_of='20260230')
