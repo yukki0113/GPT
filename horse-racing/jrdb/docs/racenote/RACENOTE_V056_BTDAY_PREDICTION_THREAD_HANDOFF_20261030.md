@@ -8,7 +8,7 @@
 - Predictionは `decision_core` 内に `prediction_audit_comment` を含み、Confidenceを入れない。
 - Prediction Freezeをmainに永続化・verifyした後にだけ、凍結済み◎を見て `confidence_review`（勝ち切り根拠、強敵との比較、敗北シナリオなど）を独立著述する。Confidence Freeze完了まで結果/配当/当日市場を開かない。
 - BTDAY：後から結果照会・評価。新聞短評清書工程は起動しない。
-- FORWARD：両Freezeと全レース完了後、別の新聞短評清書/掲載工程（**別マイルストーン、まだ未導入**）。
+- FORWARD：PACI専用T1とBTDAY共通の二段階Freezeは接続。両Freeze完了後の新聞短評清書/掲載工程は別マイルストーン（未導入）。
 - 旧v055のセッション/Frozenに手を触れない。v056実装をv055の既存ルートへ挿し込まない。
 
 ## 現時点の入口
@@ -34,7 +34,7 @@
 ## 未検証として扱うもの
 
 - 2025年Warehouse実データのv056 T1→36R著述→二段階Freeze一気通貫は未実施。
-- FORWARD PACI T1と新聞清書/PWA連携は未実装・未受入。**明日開催のforwardがv056で実行可能と断言しない**。
+- FORWARD PACI T1は `racenote_v056_forward_turn1.py` と `racenote_v056_forward_paci_t1.yml` で実装。日次の本番入力受入は未実施。新聞清書・PWA連携は未実装・未受入。指示書 `RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md` を参照。
 - T1の直後に生成したReader ZIPを受けたLLMの実予想作業は、予想スレッド側の責務。
 - `config/racenote_forecast_logic_current.json` の古いresearch pointerに依存せず、初回実験は明示的v056のworkflow/contractを指定する。成功までcurrentを一括変更しない。
 
