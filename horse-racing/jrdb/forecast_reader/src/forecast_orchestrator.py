@@ -47,9 +47,11 @@ def build(target, races, rows, runners, rules):
             groups = trends['exact_only'][axis]['groups']
             observed = [g for g in groups if str(value) == g['group']]
             runner['trend_matches'].append({'dimension': axis, 'result': 'unknown' if value is None or not groups else ('match' if observed else 'mismatch'),
+                                           'reason': 'current_value_missing' if value is None else ('historical_groups_missing' if not groups else None),
                                            'interpretation': 'observed historical group membership; no prediction', 'evidence': observed})
         runner['data_coverage'] = {'previous_run': 'available' if runner.get('previous_run') else 'missing'}
-    incomplete = any(axis['missing_count'] for table in trends.values() for axis in table.values())
+    represented = {r['race_key'] for r in prepared}
+    incomplete = bool((set(selected['exact_race_keys']) | set(selected['supplement_race_keys'])) - represented) or any(axis['missing_count'] for table in trends.values() for axis in table.values())
     missing_previous = any(not r.get('previous_run') for r in runners)
     status = 'PARTIAL' if incomplete or missing_previous or selected['failure_code'] or not selected['exact_count'] else 'PASS'
     return {'schema_version': 'forecast-evidence.v1', 'status': status, 'target': target,
