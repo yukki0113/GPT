@@ -1,0 +1,53 @@
+{
+  "ancestor_depth_reaggregated": true,
+  "entries": 39543,
+  "first_entry_horses_by_cohort": {
+    "annual": {
+      "broodmare_sire_NO_CANDIDATE": 3254,
+      "broodmare_sire_RESOLVED_EXACT": 3528,
+      "broodmare_sire_resolved": 3528,
+      "broodmare_sire_unknown": 3254,
+      "dam_CONFLICT": 68,
+      "dam_NO_CANDIDATE": 1651,
+      "dam_RESOLVED_EXACT": 5063,
+      "dam_resolved": 5063,
+      "dam_unknown": 1719,
+      "depth_0": 523,
+      "depth_1": 500,
+      "depth_2": 3615,
+      "depth_3": 2104,
+      "depth_4": 40,
+      "horses": 6782,
+      "sire_NO_CANDIDATE": 1980,
+      "sire_RESOLVED_EXACT": 4802,
+      "sire_resolved": 4802,
+      "sire_unknown": 1980
+    },
+    "daily": {
+      "broodmare_sire_CONFLICT": 1,
+      "broodmare_sire_NO_CANDIDATE": 1709,
+      "broodmare_sire_RESOLVED_EXACT": 2188,
+      "broodmare_sire_resolved": 2188,
+      "broodmare_sire_unknown": 1710,
+      "dam_CONFLICT": 25,
+      "dam_NO_CANDIDATE": 956,
+      "dam_RESOLVED_EXACT": 2917,
+      "dam_resolved": 2917,
+      "dam_unknown": 981,
+      "depth_0": 332,
+      "depth_1": 190,
+      "depth_2": 1746,
+      "depth_3": 1503,
+      "depth_4": 127,
+      "horses": 3898,
+      "sire_NO_CANDIDATE": 1157,
+      "sire_RESOLVED_EXACT": 2741,
+      "sire_resolved": 2741,
+      "sire_unknown": 1157
+    }
+  },
+  "future_child_parent": 0,
+  "role_counts_reaggregated": true,
+  "status": "PASS",
+  "v03_profile_date_regression": 0
+}
