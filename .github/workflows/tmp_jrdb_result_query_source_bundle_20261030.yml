@@ -1,0 +1,27 @@
+name: TMP JRDB Result Query source bundle 20261030
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/tmp_jrdb_result_query_source_bundle_20261030.yml'
+permissions:
+  contents: read
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Stage canonical source bundle
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jrdb_result_query_runtime/src
+          cp horse-racing/jrdb/src/jrdb_result_query_runner.py /tmp/jrdb_result_query_runtime/src/
+          cp horse-racing/jrdb/src/jrdb_result_query.py /tmp/jrdb_result_query_runtime/src/
+          cp horse-racing/jrdb/src/jrdb_raw.py /tmp/jrdb_result_query_runtime/src/
+          cp horse-racing/jrdb/src/jrdb_ukc.py /tmp/jrdb_result_query_runtime/src/
+          sha256sum /tmp/jrdb_result_query_runtime/src/* > /tmp/jrdb_result_query_runtime/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-result-query-source-bundle-20261030
+          path: /tmp/jrdb_result_query_runtime/
