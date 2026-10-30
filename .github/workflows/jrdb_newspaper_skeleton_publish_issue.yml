@@ -455,15 +455,17 @@ jobs:
         run: |
           set -euo pipefail
 
-          for TAG in "$PERSONAL_RELEASE_TAG" "$MOMOTARO_RELEASE_TAG"; do
-            if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
-              gh release delete "$TAG" --repo "${{ github.repository }}" --yes
-            fi
-          done
+          if gh release view "$PERSONAL_RELEASE_TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$PERSONAL_RELEASE_TAG"               --repo "${{ github.repository }}" --clobber               "/tmp/skeleton-request/$PERSONAL_RELEASE_ARCHIVE"               "/tmp/skeleton-request/$PERSONAL_RELEASE_META"
+          else
+            gh release create "$PERSONAL_RELEASE_TAG"               --repo "${{ github.repository }}"               --title "JRDB Newspaper current"               --notes "Mutable PWA distribution cache built from an audited PACI skeleton."               "/tmp/skeleton-request/$PERSONAL_RELEASE_ARCHIVE"               "/tmp/skeleton-request/$PERSONAL_RELEASE_META"
+          fi
 
-          gh release create "$PERSONAL_RELEASE_TAG"             --repo "${{ github.repository }}"             --title "JRDB Newspaper current"             --notes "Mutable PWA distribution cache built from an audited PACI skeleton."             "/tmp/skeleton-request/$PERSONAL_RELEASE_ARCHIVE"             "/tmp/skeleton-request/$PERSONAL_RELEASE_META"
-
-          gh release create "$MOMOTARO_RELEASE_TAG"             --repo "${{ github.repository }}"             --title "JRDB Momotaro Newspaper current"             --notes "Mutable public Momotaro cache built from an audited PACI skeleton."             "/tmp/skeleton-request/$MOMOTARO_RELEASE_ARCHIVE"             "/tmp/skeleton-request/$MOMOTARO_RELEASE_META"             /tmp/skeleton-request/validation-summary.json
+          if gh release view "$MOMOTARO_RELEASE_TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release upload "$MOMOTARO_RELEASE_TAG"               --repo "${{ github.repository }}" --clobber               "/tmp/skeleton-request/$MOMOTARO_RELEASE_ARCHIVE"               "/tmp/skeleton-request/$MOMOTARO_RELEASE_META"               /tmp/skeleton-request/validation-summary.json
+          else
+            gh release create "$MOMOTARO_RELEASE_TAG"               --repo "${{ github.repository }}"               --title "JRDB Momotaro Newspaper current"               --notes "Mutable public Momotaro cache built from an audited PACI skeleton."               "/tmp/skeleton-request/$MOMOTARO_RELEASE_ARCHIVE"               "/tmp/skeleton-request/$MOMOTARO_RELEASE_META"               /tmp/skeleton-request/validation-summary.json
+          fi
 
       - name: Comment success and close issue
         if: success()
