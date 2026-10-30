@@ -1,7 +1,7 @@
 # Codex Cloud 運用ガイド
 
 Status: ACTIVE  
-Updated: 2026-10-05  
+Updated: 2026-10-30  
 Repository: `yukki0113/GPT`
 
 ## 目的
@@ -70,7 +70,7 @@ Codex Cloud の workspace は task 開始時点の repository snapshot を基準
 
 現在の Cloud 実行環境では、shell からの `git fetch` / `git pull` は Codex Cloud 基盤の proxy 経路に依存し、`proxy:8080` への接続失敗が確認されている。
 
-そのため、task 開始後に Git へ追加された指示書やコードを shell Git で追従する運用は禁止する。
+従来はtask開始後のshell Git更新を一律禁止していたが、これは2026-10-05時点の接続障害への回避策である。現在も常に通信不能とは断定せず、作業状態を保護しながら安全な同期可否を確認する。
 
 新しい指示書・基準 commit を使う作業は、原則として:
 
@@ -131,6 +131,21 @@ RESULT / REPORT には、作業成果そのものだけでなく、その時点�
 
 ---
 
+## 2.1 作業開始時の最新性確認と安全な同期（必須）
+
+最新mainを確認し、必要な基準コミットを実行workspaceへ確実に反映する。ただし実行中の変更を無条件にmainへ追従させず、再現可能な基準SHAを固定する。
+
+1. GitHub built-in connectorでremote mainの最新SHA、関連open PR、指定の最低基準commitを確認する。localの`git rev-parse HEAD`、`git status --porcelain`、現在branchと比較する。
+2. 不足する指示書やコードがあっても、古いHEADだけを理由に終了しない。未コミット変更・未追跡ファイル・進行中の作業を保護する。
+3. shell Git通信が可能なら`git fetch origin main`を許可する。作業ツリーがcleanで、現在branchがfast-forward可能であり、意図する基準が確認できた場合のみ`git pull --ff-only origin main`または同等のfast-forward同期を許可する。detached HEAD、diverged履歴、変更ありの場合は無条件pull禁止。安全な新規worktree/branchまたは新規taskで対応する。
+4. proxy接続エラーが起きたら強行・連続再試行しない。connector経由で最新仕様を確認し、安全なworkspace再構築または新規taskを検討する。**connectorで最新ファイルを読めることと、local実行コードが更新されたことは別**である。
+5. 同期後はlocal HEAD・必要ファイル・基準SHAを検証する。PR提出前にもremote mainと差分・競合を確認し、必要な再テストを実施する。
+6. 同期不能時も可能な監査・準備・fixtureテストは継続する。ただし必要な実行資産が欠けている場合は完了やPASSを宣言しない。REPORTにblockerと再開経路を記載する。
+
+`git reset --hard`、強制push、未確認merge/rebase、作業変更の破棄は禁止。同期の許可はshellによるGitHub成果反映の許可ではない。
+
+---
+
 ## 3. GitHub 反映ルール
 
 ### 正式経路
@@ -153,13 +168,11 @@ Codex Cloud では成果反映のために以下を使用しない。
 git add
 git commit
 git push
-git fetch
-git pull
 ```
 
 特に shell `git push` は標準反映経路としない。
 
-shell Git は、現在の workspace に対する読み取り中心の確認用途に限定する。
+shell Git は読み取り中心とするが、第2.1節の安全条件を満たす場合に限りfetchおよびfast-forward-only pullを例外的に許可する。GitHubへの成果反映は引き続きbuilt-in connectorを正式経路とする。
 
 例:
 
@@ -170,7 +183,7 @@ git log
 git show
 ```
 
-ただし、最新 remote 状態を必要とする確認は built-in GitHub connector を優先する。
+remote最新状態の確認はbuilt-in GitHub connectorを優先し、同期後はlocal HEADとの一致を検証する。
 
 ### 理由
 
@@ -383,7 +396,8 @@ Cloud 用 instruction.md には、必要に応じて以下を付与する。
 - Treat the instruction file and repository docs as canonical.
 - Before concluding that a file or prerequisite is missing, inspect relevant open PRs / pending branches with the built-in GitHub connector.
 - Record relevant pending-merge PRs/branches in the requested RESULT/REPORT.
-- Do not depend on shell git fetch/pull/push.
+- Verify remote main SHA and local HEAD before work; permit safe fetch and fast-forward-only pull on a clean, compatible workspace. Preserve existing changes and use connector plus a fresh task/safe workspace reconstruction if shell Git networking fails.
+- Do not use shell git push for publication.
 - For GitHub writes, use the built-in GitHub connector.
 - Create a working branch and PR unless explicitly instructed otherwise.
 - Do not write directly to main unless explicitly authorized.
@@ -405,7 +419,8 @@ Codex Cloud task を開始する前に確認する。
 - [ ] instruction / 前提資産が main と pending PR のどちらにあるか確認済み
 - [ ] 必要なら main へ反映済み
 - [ ] `GPT` Cloud Environment を選択
-- [ ] task 開始時点の repository snapshot に必要資産が含まれる
+- [ ] remote main SHA、local HEAD、作業ツリー状態、最低基準SHAを照合済み
+- [ ] 必要資産を安全に同期または新規環境で取り込み、実行コードを確認済み
 - [ ] Drive 利用は connector 経路
 - [ ] 大容量成果物の保存先は Drive
 - [ ] GitHub 反映は built-in connector
@@ -418,7 +433,7 @@ Codex Cloud task を開始する前に確認する。
 
 - Cloud workspace は task 開始時点の repository snapshot と一致するとは限らず、特に task 開始後に追加された commit は自動追従しない。
 - `main` にない資産でも open PR / pending branch に存在する場合があるため、GitHub connector での確認を省略しない。
-- shell Git の GitHub 通信は Cloud proxy 障害の影響を受ける場合がある。
+- shell Git の GitHub 通信は Cloud proxy 障害の影響を受ける場合がある。過去の接続障害を恒久的な通信不能の証明とせず、現在の環境で安全に検証する。
 - GitHub connector と shell Git の通信経路・認証は別物として扱う。
 - Drive connector と repository 内の旧 Drive API adapter も別物として扱う。
 - Cloud workspace の一時状態だけを唯一の成果物にしない。重要結果は GitHub または Drive の正式保存先へ残す。
