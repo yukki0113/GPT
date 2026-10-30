@@ -50,7 +50,7 @@ RACENOTE_REQUIRED_COLUMNS = {
     "source_semantic_sha256",
 }
 RACENOTE_MARK_BY_RANK = {1: "◎", 2: "○", 3: "▲", 4: "△", 5: "△"}
-RACENOTE_CONFIDENCE = {"A", "B", "C"}
+RACENOTE_CONFIDENCE = {"A", "B", "C", "Z"}
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 
