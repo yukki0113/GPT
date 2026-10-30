@@ -5,7 +5,12 @@ ROOT=Path(__file__).resolve().parents[3]
 class ForwardRouting(unittest.TestCase):
     def test_workflow_routes_paci_to_v056_only(self):
         s=(ROOT/".github/workflows/racenote_v056_forward_paci_t1.yml").read_text(encoding="utf-8")
-        self.assertIn("fetch_jrdb_paci.py",s)
+        self.assertIn("racenote_v056_forward_drive_paci.py",s)
+        self.assertIn("PACI_DRIVE_FILE_ID",s)
+        self.assertIn("--paci-source-receipt",s)
+        self.assertNotIn("fetch_jrdb_paci.py",s)
+        self.assertNotIn("JRDB_USER",s)
+        self.assertNotIn("JRDB_PASSWORD",s)
         self.assertIn("racenote_v056_forward_turn1.py",s)
         self.assertIn("--race-lap-expected-period-to",s)
         self.assertIn("racenote_v056_single_day",s)
