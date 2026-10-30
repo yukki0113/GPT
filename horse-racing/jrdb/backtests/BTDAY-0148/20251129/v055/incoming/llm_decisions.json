@@ -1,0 +1,794 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "marks": [
+      13,
+      7,
+      10,
+      5,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        7,
+        10,
+        5,
+        12
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番は東京1400m7着で、同舞台好走の13番や7番ほどの裏付けはない。"
+    },
+    "honmei_win": {
+      "evidence": "13番は前走京都ダート1400mで2着。好位から直線まで脚を残し、同舞台実績を最も高く評価する。",
+      "main_risk": "先行馬が複数いて流れが速くなると、7番や10番に差される余地がある。"
+    },
+    "shot_case": {
+      "case": "10番は同舞台の新馬戦で後方から2着。前が競れば末脚が生きる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都1Rは13番の同舞台2着を軸にし、7番と10番を相手上位に置く。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "marks": [
+      9,
+      4,
+      6,
+      1,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        4,
+        6,
+        1,
+        10
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番は芝2000m先行経験はあるがダート実績がなく、上位5頭を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "9番は阪神ダート1800mで2着。今回の距離で好位から脚を続けた点を評価する。",
+      "main_risk": "休み明けで反応が鈍いと4番の差しに逆転される可能性がある。"
+    },
+    "shot_case": {
+      "case": "4番は福島1700m新馬で2着。距離延長でも末脚が生きれば頭まである。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都2Rは1800m2着歴の9番が中心。4番と6番を相手に取る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "marks": [
+      12,
+      8,
+      6,
+      10,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        8,
+        6,
+        10,
+        1
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番は新潟1400m6着で、京都1600m実績のある12番と8番を超える材料は乏しい。"
+    },
+    "honmei_win": {
+      "evidence": "12番は京都芝1600m新馬2着、続く1400mでも3着。京都での安定感を重視する。",
+      "main_risk": "後方に置かれると好位から運ぶ8番に先に抜け出される危険がある。"
+    },
+    "shot_case": {
+      "case": "8番は京都1600mで2着。スローなら12番より先に動ける。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都3Rは12番の京都での連続好走を軸に、8番と6番を相手上位に置く。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "marks": [
+      6,
+      2,
+      7,
+      1,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        2,
+        7,
+        1,
+        8
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は同舞台8着で序盤から流れに乗れず、通常候補5頭より一段下。"
+    },
+    "honmei_win": {
+      "evidence": "6番は新潟障害2850mで3着。飛越良く好位から直線まで脚を残した内容を評価する。",
+      "main_risk": "京都2910mは初で、飛越のリズムを崩すと2番や7番の経験が上回る。"
+    },
+    "shot_case": {
+      "case": "2番は京都2910mで5着。最終障害のミスがありながら掲示板を確保している。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都4Rは障害で3着した6番を中心に、2番と7番を相手上位に取る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "marks": [
+      8,
+      11,
+      9,
+      5,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        11,
+        9,
+        5,
+        4
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は調教は目立つが能力評価では上位5頭に届かず、大きな上振れが必要。"
+    },
+    "honmei_win": {
+      "evidence": "8番は初出走組で事前能力評価が最上位。芝1600m向きのスピードを最も期待する。",
+      "main_risk": "実戦経験がなく、発馬や折り合い次第で9番や5番に先着を許す。"
+    },
+    "shot_case": {
+      "case": "9番は能力上位で調教内容も良く、初戦から流れに乗れれば差を詰められる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都5Rは8番を素材面で中心視し、11番と9番を相手上位に置く。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "marks": [
+      7,
+      5,
+      3,
+      4,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        5,
+        3,
+        4,
+        13
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は能力と調教とも水準だが7番、5番、3番ほどの強調材料がない。"
+    },
+    "honmei_win": {
+      "evidence": "7番は初出走組で能力評価と調教内容の両方が高く、最も完成度が高いとみる。",
+      "main_risk": "全馬初出走で砂を被る経験もなく、スタートや位置取り一つで評価が崩れ得る。"
+    },
+    "shot_case": {
+      "case": "5番は能力面で次位。中距離で先行できれば押し切りまで残す。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都6Rは7番を中心に、5番と3番を素材上位、4番を調教面で押さえる。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "marks": [
+      5,
+      3,
+      4,
+      14,
+      18
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        3,
+        4,
+        14,
+        18
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は1800m実績は高いが長期休養明けで、近況が確認できる上位5頭を優先した。"
+    },
+    "honmei_win": {
+      "evidence": "5番は前走京都1800mで最後方から2着まで追い込み、同距離2戦2好走。",
+      "main_risk": "後方脚質で前が止まらないと4番や1番を捕まえ切れない可能性がある。"
+    },
+    "shot_case": {
+      "case": "3番は京都1800mで前走2着。距離実績も豊富で展開が向けば逆転可能。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都7Rは5番の前走強襲を本線に、3番と4番を相手上位に置く。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "marks": [
+      15,
+      11,
+      7,
+      12,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        11,
+        7,
+        12,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は1200m実績はあるが近走2勝クラスで6着、芝で11着。直近内容では上位5頭を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "15番は前走東京1400mで2着。先行して高い水準で粘り、1200m短縮でもスピードを生かせる。",
+      "main_risk": "1200m実績が少なく、流れが忙しいと11番や7番の同距離実績が上回る。"
+    },
+    "shot_case": {
+      "case": "11番は阪神1200mで連続4着。前が速くなれば差し込みがある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都8Rは15番の前走2着を軸に、11番と7番の1200m実績を相手上位に取る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "marks": [
+      6,
+      10,
+      11,
+      4,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        10,
+        11,
+        4,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は近走1600mと1800mで6着。上位5頭ほど勝ち切る材料は強くない。"
+    },
+    "honmei_win": {
+      "evidence": "6番は前走京都1800mの2勝クラスで2着。同舞台で中団から伸びた内容が最も信頼できる。",
+      "main_risk": "差し脚質で3番が楽に先行すると直線で届かない展開もある。"
+    },
+    "shot_case": {
+      "case": "10番は前走京都1800mを後方から差し切り。昇級でも流れが速ければ末脚が通用する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "栂尾特別は6番を中心に、10番と11番を相手本線に置く。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "marks": [
+      11,
+      6,
+      5,
+      1,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        6,
+        5,
+        1,
+        8
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は京都1600mの3勝クラス3着歴はあるが、1400mの近況では11番や6番ほど明確でない。"
+    },
+    "honmei_win": {
+      "evidence": "11番は前走京都1400mの2勝クラスを勝利。同距離実績もあり昇級でも末脚を評価する。",
+      "main_risk": "3勝クラス初戦で相手強化となり、先行勢を捕らえるまでに脚を使うと甘くなる。"
+    },
+    "shot_case": {
+      "case": "6番は1200mの2勝クラスを差し切り、1400mでも好走歴がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東山Sは11番を中心に、6番と5番を相手上位に評価する。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "marks": [
+      11,
+      5,
+      7,
+      6,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        5,
+        7,
+        6,
+        10
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は前走京都1800mを逃げ切ったが2000mでは4着があり、距離実績で上位5頭に一歩譲る。"
+    },
+    "honmei_win": {
+      "evidence": "11番は芝2000mを2戦2勝。前走中山2000mのオープンも差し切り、距離実績が明確。",
+      "main_risk": "初京都で後方になると5番や7番に先に抜け出される危険がある。"
+    },
+    "shot_case": {
+      "case": "5番は芝2000mのオープンで4着。好位から運べるため京都内回りで展開利がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都2歳Sは2000m無敗の11番を本命。5番と7番を相手に取る。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "marks": [
+      1,
+      13,
+      6,
+      15,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        13,
+        6,
+        15,
+        14
+      ],
+      "external_challenger_horse_no": 16,
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "16番は能力水準は高いが近走1400m10着で、1200m直近好走の上位5頭を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "1番は京都1200mの前走で逃げて2着。中京1200mでも2着しており先行力が安定する。",
+      "main_risk": "13番も逃げたいタイプで競ると、6番や14番の差しが浮上する。"
+    },
+    "shot_case": {
+      "case": "6番は1200mで6戦5好走。先行争いが激しくなれば外から差せる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "京都12Rは1番の連続1200m2着を軸に、13番と6番を相手上位に置く。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      11,
+      10,
+      2,
+      8,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        10,
+        2,
+        8,
+        1
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番は前走同舞台4着だが、11番と10番の2着実績ほどの裏付けには届かない。"
+    },
+    "honmei_win": {
+      "evidence": "11番は前走東京1600mで2着。好位から勝ち馬について脚を続け、同舞台4着歴もある。",
+      "main_risk": "10番も同舞台2着で、差しが決まる流れでは直線で逆転される可能性がある。"
+    },
+    "shot_case": {
+      "case": "10番は前走東京1600mで中団内から2着。ペースが上がれば差し切りまである。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東京1Rは11番の同舞台2着を本線に、10番と2番を相手上位とする。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      11,
+      5,
+      13,
+      10,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        5,
+        13,
+        10,
+        16
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は1600m4着歴と高い調教内容があるが、東京1400m実績の上位5頭を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "11番は前走東京1400mで2着。中団から渋太く伸び、同距離での実戦内容が最も安定する。",
+      "main_risk": "5番や13番も東京1400mで好走しており、位置取りが後ろだと差し届かない可能性がある。"
+    },
+    "shot_case": {
+      "case": "5番は東京1400m新馬で2着。前走は出遅れながら6着まで伸びており巻き返せる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東京2Rは11番の前走2着を軸に、5番と13番を相手上位に置く。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      12,
+      5,
+      3,
+      8,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        5,
+        3,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は東京2000m9着。先行力はあるが直線の伸びで上位5頭に劣る。"
+    },
+    "honmei_win": {
+      "evidence": "12番は東京1800mで前走4着。出遅れ気味から内を捌いて伸び、同舞台2戦の経験を評価する。",
+      "main_risk": "勝ち切る決め手はまだ示しておらず、5番が流れに乗ると逆転される余地がある。"
+    },
+    "shot_case": {
+      "case": "5番は東京2000m新馬5着。ロスがありながら差を詰め、1800m短縮で前進がある。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東京3Rは同舞台4着の12番を中心に、5番と3番を相手に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      10,
+      3,
+      15,
+      9,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        3,
+        15,
+        9,
+        11
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は調教は良いが能力評価で10番、3番、15番に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "10番は出走取消歴はあるが事前能力評価が最上位で、調教内容も水準にある。",
+      "main_risk": "実戦を走り切った経験がなく、発馬や砂を被る形では3番や15番に先着を許す可能性がある。"
+    },
+    "shot_case": {
+      "case": "15番は能力評価が上位で調教内容も良く、外からスムーズなら初戦から上位争い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東京4Rは10番を素材面で中心にし、3番と15番を相手上位に置く。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      8,
+      7,
+      13,
+      11,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        7,
+        13,
+        11,
+        12
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は能力評価が中位で、上位5頭ほど事前材料がそろっていない。"
+    },
+    "honmei_win": {
+      "evidence": "8番は初出走組で能力評価と調教内容の両方が上位。東京1600mで最も末脚を期待する。",
+      "main_risk": "全馬初出走で、位置取りや折り合いが崩れると7番や13番に逆転される。"
+    },
+    "shot_case": {
+      "case": "13番は能力評価が上位で調教内容が最も目立ち、実戦でスムーズなら本命との差は小さい。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東京5Rは8番の能力と仕上がりを軸に、7番と13番を相手上位に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      8,
+      16,
+      2,
+      9,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        16,
+        2,
+        9,
+        7
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は前走同舞台2着だが能力水準では8番、16番、2番に一歩譲る。"
+    },
+    "honmei_win": {
+      "evidence": "8番は前走東京1600mで大きく出遅れながら2着。直線の差し脚が強く同舞台4着歴もある。",
+      "main_risk": "後方からになると前残りに取りこぼす余地があり、16番の先行力が脅威。"
+    },
+    "shot_case": {
+      "case": "16番は東京1600mで2着、1着の実績。好位から運べるため展開面では安定する。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東京6Rは8番の末脚を本命に、16番と2番を相手本線に置く。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "marks": [
+      13,
+      15,
+      7,
+      1,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        15,
+        7,
+        1,
+        12
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番は福島2600m4着まで押し上げたが東京2400m実績がなく、同舞台好走馬を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "13番は前走東京2400mで2着。同じ舞台で後方から長く脚を使い距離適性を示した。",
+      "main_risk": "差し脚質で前が楽になると、番手から運べる15番を捕まえ切れない可能性がある。"
+    },
+    "shot_case": {
+      "case": "15番は東京2400mで2着。前で立ち回れるためスローなら先に抜け出せる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東京7Rは13番と15番の東京2400m2着実績を重視し、13番を末脚で上位とする。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "marks": [
+      9,
+      14,
+      10,
+      7,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        14,
+        10,
+        7,
+        12
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番は東京2100m5着経験があるが、直線半ばで苦しくなっており上位5頭ほど勝ち切る材料がない。"
+    },
+    "honmei_win": {
+      "evidence": "9番は1800mの2勝クラスで連続2着。能力が高く好位から長く脚を使える安定感を評価する。",
+      "main_risk": "東京2100mは初で、距離延長により末脚が鈍ると14番や10番の差しが届く。"
+    },
+    "shot_case": {
+      "case": "14番は中山1800mの2勝クラスで3着。後方から馬群を捌いて伸びた内容なら延長にも対応できる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東京8Rは9番の連続2着を本命に、14番と10番を相手上位に置く。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "marks": [
+      4,
+      7,
+      1,
+      5,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        7,
+        1,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番は京都1400mを勝っているが、東京で高い内容を示した4番や1番ほどコース適性の裏付けがない。"
+    },
+    "honmei_win": {
+      "evidence": "4番は前走東京1400mの1勝クラスを高い水準で差し切り、3戦3好走で完成度が高い。",
+      "main_risk": "1600m延長で折り合いを欠くと、同舞台を勝った1番や5番に逆転される可能性がある。"
+    },
+    "shot_case": {
+      "case": "7番は阪神1400m新馬を大差で逃げ切り。先手なら距離延長でも怖い。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "カトレアSは4番を地力評価の中心に、7番と1番を相手に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "marks": [
+      4,
+      2,
+      15,
+      7,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        2,
+        15,
+        7,
+        16
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番は前走東京1400m4着と悪くないが、4番や2番ほど近走の勝ち切り材料が強くない。"
+    },
+    "honmei_win": {
+      "evidence": "4番は前走京都1400mの3勝クラスで2着。1400mで9戦5好走と能力・適性を両立する。",
+      "main_risk": "先行争いが激しくなると2番や15番に直線で捕まる可能性がある。"
+    },
+    "shot_case": {
+      "case": "2番は5戦5好走で交流重賞でも3着。出遅れても脚を使え、東京1400mでも地力上位。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "シャングリラSは4番を本命に、2番と15番を相手上位に評価する。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "marks": [
+      9,
+      6,
+      10,
+      1,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        6,
+        10,
+        1,
+        5
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15番は1600mで安定するが、近走の能力水準では9番や6番を上回る決め手がない。"
+    },
+    "honmei_win": {
+      "evidence": "9番は前走東京1600mのオープンで4着。能力水準が最上位で東京1600mでも複数回好走。",
+      "main_risk": "追込脚質で位置取りが後ろだと、先行勢を直線だけで捕まえ切れない危険がある。"
+    },
+    "shot_case": {
+      "case": "6番は京都1600mを3勝クラス1着、オープン2着と連続好走。差し脚の勢いなら本命に迫る。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "キャピタルSは9番の東京1600m実績を軸に、6番と10番を相手に取る。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "marks": [
+      4,
+      3,
+      5,
+      7,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        3,
+        5,
+        7,
+        6
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番は1600m実績豊富だが前走東京1600m7着で、近況の勢いでは通常候補5頭が上。"
+    },
+    "honmei_win": {
+      "evidence": "4番は東京1600mの前走2勝クラスで2着。芝1600m3戦3好走で条件適性が最も明確。",
+      "main_risk": "3番と5番も連勝中で、好位の位置取り次第では先に抜け出される可能性がある。"
+    },
+    "shot_case": {
+      "case": "3番は芝1600mを連勝して昇級。好位から抜け出す形が安定し、初東京でも勝ち負けできる。"
+    },
+    "rrdb_refs": [],
+    "reader_facing_reason": "東京12Rは4番の東京1600m2着を本命に、連勝中の3番と5番を強い相手とみる。"
+  }
+]
