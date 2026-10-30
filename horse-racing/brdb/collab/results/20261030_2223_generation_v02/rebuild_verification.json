@@ -1,0 +1,28 @@
+{
+  "all_files_byte_equal": true,
+  "files": {
+    "added_horses.csv": true,
+    "added_horses.json": true,
+    "annual_availability.parquet": true,
+    "annual_daily_profile_review.json": true,
+    "annual_relation_diff.csv": true,
+    "annual_relation_diff.json": true,
+    "audit.json": true,
+    "build_request.json": true,
+    "daily_observation_history.csv": true,
+    "daily_observation_history.parquet": true,
+    "input_inventory.json": true,
+    "lineage_code_master.parquet": true,
+    "manifest.json": true,
+    "parent_relation.parquet": true,
+    "pedigree_fact.parquet": true,
+    "pedigree_name_alias.parquet": true,
+    "preserved_selection_diff.json": true,
+    "previous_relation_diff.csv": true,
+    "previous_relation_diff.json": true,
+    "profile_regression.json": true,
+    "quarantine.json": true,
+    "semantic_history_changes.json": true
+  },
+  "status": "PASS"
+}
