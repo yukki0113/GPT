@@ -52,9 +52,9 @@ def validate(root: Path, draft: Path, phase: str):
         if frozen_dir.exists() or confidence_dir.exists():
             raise ValueError("Prediction is already frozen")
         for r in records:
-            if set(r) != {"venue", "race_no", "decision_core"}:
-                raise ValueError("Unexpected Prediction payload fields")
-            core = r["decision_core"]
+            # Canonical two-phase runner consumes a flat array of Decision Cores.
+            # Do not wrap each record in a second decision_core object.
+            core = r
             if not isinstance(core, dict) or core.get("venue") != r["venue"] or core.get("race_no") != r["race_no"]:
                 raise ValueError("Decision Core race identity mismatch")
             manifest = _read(root / "reader_manifest.json")
