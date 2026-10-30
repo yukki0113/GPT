@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""RaceNote r6 two-phase mechanical finalizer. Never selects horses or grades."""
+"""RaceNote v0.5.6 two-phase mechanical finalizer. Never selects horses or grades."""
 from __future__ import annotations
 
 import argparse
@@ -32,7 +32,7 @@ def resolve_root(raw: str) -> Path:
 def preflight(root: Path, draft: Path, phase: str):
     session, _, _ = load_session(root)
     if session.get("contract_revision") != CONTRACT:
-        raise ValueError("Two-phase finalizer requires a new r6 session")
+        raise ValueError("Two-phase finalizer requires a v0.5.6 session")
     manifest = json.loads((root / "authoring_bundle/manifest.json").read_text(encoding="utf-8"))
     mandatory = {
         "status": "READY_FOR_LLM_RACE_BY_RACE_REVIEW",
