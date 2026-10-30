@@ -30,5 +30,14 @@ def run():
  summary=json.loads((args.audit/'summary.json').read_text())['entries']
  for k,v in total.items():
   if summary.get(k,0)!=v:raise ValueError('summary mismatch: '+k)
- print(json.dumps({'status':'PASS','entries':len(rows),'v03_profile_date_regression':0,'future_child_parent':0,'ancestor_depth_reaggregated':True,'role_counts_reaggregated':True},sort_keys=True))
+ with (args.audit/'horses_first_entry.csv').open(encoding='utf8',newline='') as f:first=list(csv.DictReader(f))
+ if len(first)!=10680 or len({r['horse_id'] for r in first})!=10680:raise ValueError('first-entry horse cardinality mismatch')
+ grouped={}
+ for row in first:
+  c=grouped.setdefault(row['cohort'],Counter());c['horses']+=1;c['depth_'+row['depth']]+=1
+  for role in ('sire','dam','broodmare_sire'):
+   c[role+'_'+row[role+'_status']]+=1;c[role+'_resolved' if row[role+'_canonical_id'] else role+'_unknown']+=1
+ result={'status':'PASS','entries':len(rows),'v03_profile_date_regression':0,'future_child_parent':0,'ancestor_depth_reaggregated':True,'role_counts_reaggregated':True,'first_entry_horses_by_cohort':{k:dict(v) for k,v in sorted(grouped.items())}}
+ (args.audit/'independent_verification.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
+ print(json.dumps(result,sort_keys=True))
 if __name__=='__main__':run()
