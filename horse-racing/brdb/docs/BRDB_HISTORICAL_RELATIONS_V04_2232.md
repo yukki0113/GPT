@@ -16,6 +16,7 @@ Reproduce from repository root with Python and DuckDB installed:
 PYTHONPATH=horse-racing/brdb/src python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_research_historical_relations_v04.py' -v
 PYTHONPATH=horse-racing/brdb/src python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_research_history_reader_v03.py' -v
 PYTHONPATH=horse-racing/brdb/src python horse-racing/brdb/src/audit_brdb_historical_relations_v04.py --generation GENERATION_DIR --cohort COHORT_ENTRIES_CSV --output OUTPUT_DIR
+PYTHONPATH=horse-racing/brdb/src python horse-racing/brdb/src/verify_brdb_historical_relations_v04.py --audit OUTPUT_DIR --v03-zip ISSUE2230_ZIP
 ```
 
 The output includes every declaration with resolved IDs, guard results, temporal source provenance and ancestor paths; earliest-entry per horse; day and month aggregates. Detailed row outputs belong in the approved Drive artifact. `max_rss_kib` is environment dependent and is excluded from deterministic summary comparison.
