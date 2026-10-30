@@ -11,6 +11,7 @@ from pathlib import Path
 from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"src"))
 import racenote_v056_forward_turn1 as forward
+from racenote_v056_forward_drive_paci import CANONICAL_FOLDER_ID, VERSION as RECEIPT_VERSION
 
 class ForwardPaciTest(unittest.TestCase):
     def setUp(self):
@@ -24,12 +25,26 @@ class ForwardPaciTest(unittest.TestCase):
         self.paci=Path("PACI261031.zip")
         with zipfile.ZipFile(self.paci,"w") as z:
             z.writestr("KYI261031.TXT",b"safe-test")
+        self.paci_sha=hashlib.sha256(self.paci.read_bytes()).hexdigest()
+        self.receipt=Path("drive_source_receipt.json")
+        self.receipt.write_text(json.dumps({
+            "schema_version": RECEIPT_VERSION,
+            "status": "DRIVE_PACI_VERIFIED",
+            "source": "GOOGLE_DRIVE_CANONICAL_PACI",
+            "canonical_folder_id": CANONICAL_FOLDER_ID,
+            "drive_file_id": "1ABCDEFGHIJKLMNOPQRSTUVWXYZ12345",
+            "target_date": self.day,
+            "filename": self.paci.name,
+            "sha256": self.paci_sha,
+            "jrdb_direct_fetch": False,
+        }), encoding="utf-8")
         self.lap=Path("lap")
         self.lap.mkdir()
         (self.lap/"race_lap.parquet").write_bytes(b"test-parquet-sha")
         self.lapsha=hashlib.sha256(b"test-parquet-sha").hexdigest()
         self.argv=[
             "prog","--date",self.day,"--paci",str(self.paci),
+            "--paci-source-receipt",str(self.receipt),
             "--main-sha","a"*40,"--analysis-root","analysis",
             "--course-fit-root","fit","--racereview-root","rrdb",
             "--race-lap-current-bundle","lap",
@@ -61,7 +76,7 @@ class ForwardPaciTest(unittest.TestCase):
             (self.root/"operation_handoff.json").write_text(json.dumps({
                 "status":"FORECAST_PREP_READY",
                 "selection_id":"DAILY-20261031","target_date":self.day,
-                "paci":{"sha256":"pacisha"},
+                "paci":{"sha256":self.paci_sha},
                 "race_lap_resolution":{
                     "status":"CURRENT_READY","updated":False,
                     "parquet_sha256":self.lapsha
@@ -84,6 +99,7 @@ class ForwardPaciTest(unittest.TestCase):
             handoff=json.loads((self.root/"operation_handoff.json").read_text())
             self.assertEqual(handoff["status"],"READY_FOR_V056_AUTHORING")
             self.assertEqual(handoff["execution_mode"],"FORWARD")
+            self.assertEqual(handoff["paci_source"]["source"],"GOOGLE_DRIVE_CANONICAL_PACI")
             self.assertEqual(handoff["session_id"],"V056-test")
             self.assertEqual(handoff["reader_count"],1)
             self.assertEqual(handoff["authoring_bundle"]["path"],"v056/authoring_bundle")
@@ -91,6 +107,24 @@ class ForwardPaciTest(unittest.TestCase):
             cmd.assert_called_once()
             self.assertEqual(init.call_args.args[1],self.root/"v056")
             self.assertEqual(bundle.call_args.args[0],self.root/"v056")
+    def test_reject_missing_drive_receipt(self):
+        self.receipt.unlink()
+        with self.assertRaises(FileNotFoundError):
+            self.run_args()
+
+    def test_reject_modified_drive_paci(self):
+        with zipfile.ZipFile(self.paci, "a") as archive:
+            archive.writestr("CHANGED.TXT", b"modified")
+        with self.assertRaisesRegex(ValueError, "changed after receipt"):
+            self.run_args()
+
+    def test_reject_jrdb_source_claim(self):
+        receipt = json.loads(self.receipt.read_text(encoding="utf-8"))
+        receipt["source"] = "JRDB_DIRECT"
+        self.receipt.write_text(json.dumps(receipt), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "not a verified canonical Drive"):
+            self.run_args()
+
     def test_reject_mismatched_racelap_sha(self):
         def fake_prep(_cmd,check):
             self.root.mkdir(parents=True,exist_ok=True)
