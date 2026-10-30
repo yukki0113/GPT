@@ -1,3 +1,5 @@
+**2026-10-30 v0.5.6 FORWARD実行口**：PACI→CLEAN BLIND RaceNote→v056 Reader/Authoring Bundle は `src/racenote_v056_forward_turn1.py` と `.github/workflows/racenote_v056_forward_paci_t1.yml`。正式手順 `docs/racenote/RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md`。Prediction/ConfidenceはBTDAY共通v056二段階Freeze。新聞短評清書・PWA JSONは別工程。本番PACI経路の初回E2E成功はまだ未判定。旧v055の通常経路は不変更。
+
 > **v0.5.6 初回BTDAY受入（試験経路）**：新規v0.5.6を明示指定する予想スレッドは docs/racenote/RACENOTE_V056_BTDAY_PREDICTION_THREAD_HANDOFF_20261030.md を最優先し、専用T1 Orchestrator／v056 Prediction・Confidence Freezeを使用する。これは初回BTDAYの本番相当検証用であり、v0.5.5 r6の通常運用を自動的に置換しない。初回試験の両Freeze成功前に「v0.5.6正式稼働」と報告しない。
 
 # RaceNote r6 PIPELINE 現行オペレーション・追記（2026-10-30）
