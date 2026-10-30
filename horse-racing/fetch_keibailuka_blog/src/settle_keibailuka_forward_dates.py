@@ -97,6 +97,7 @@ def main():
         shadow=(primary=="surface" and base_rank is not None and 6<=base_rank<=9)
         finish=to_int(sed.get("finish"))
         fp=to_int(sed.get("final_popularity"))
+        normal_result=sed.get("abnormal_code") in (None,"",0,"0")
         row={
           "key":src.get("key"),"日付":d,"会場":venue,"R":src.get("R"),"馬名_raw":horse_raw,"馬名_resolved":horse_resolved,"馬名":horse,
           "primary_reason":primary,"base_win_rank":base_rank,"base_win_odds":to_float(kyi.get("base_win_odds")),
@@ -104,7 +105,8 @@ def main():
           "着順":finish,"確定単勝人気順位":fp,"最終単勝オッズ":to_float(sed.get("final_win_odds")),
           "単勝払戻":to_float(sed.get("win_payout")) or 0,"複勝払戻":to_float(sed.get("place_payout")) or 0,
           "異常区分":sed.get("abnormal_code"),
-          "単勝的中":1 if finish==1 else 0,"複勝的中":1 if finish is not None and finish<=3 else 0,
+          "単勝的中":1 if normal_result and finish==1 else 0,
+          "複勝的中":1 if normal_result and finish is not None and 1<=finish<=3 else 0,
         }
         settled.append(row)
 
