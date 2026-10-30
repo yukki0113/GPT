@@ -30,6 +30,8 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--date", required=True)
     ap.add_argument("--paci", type=Path, required=True)
+    ap.add_argument("--paci-source-receipt", type=Path, required=True,
+                    help="Verified Drive PACI download receipt; no direct JRDB fallback")
     ap.add_argument("--main-sha", required=True)
     ap.add_argument("--analysis-root", type=Path, required=True)
     ap.add_argument("--course-fit-root", type=Path, required=True)
@@ -62,6 +64,24 @@ def main() -> int:
     with ZipFile(args.paci) as archive:
         if not archive.namelist() or archive.testzip() is not None:
             raise ValueError("PACI CRC/contents invalid")
+    from racenote_v056_forward_drive_paci import CANONICAL_FOLDER_ID, VERSION as DRIVE_RECEIPT_VERSION
+    paci_receipt = json.loads(args.paci_source_receipt.read_text(encoding="utf-8"))
+    if (paci_receipt.get("schema_version") != DRIVE_RECEIPT_VERSION
+        or paci_receipt.get("status") != "DRIVE_PACI_VERIFIED"
+        or paci_receipt.get("source") != "GOOGLE_DRIVE_CANONICAL_PACI"
+        or paci_receipt.get("canonical_folder_id") != CANONICAL_FOLDER_ID
+        or paci_receipt.get("target_date") != args.date
+        or paci_receipt.get("filename", "").upper() != paci_name.upper()
+        or paci_receipt.get("jrdb_direct_fetch") is not False
+        or not paci_receipt.get("drive_file_id")):
+        raise ValueError("PACI is not a verified canonical Drive download")
+    h = hashlib.sha256()
+    with args.paci.open("rb") as stream:
+        for part in iter(lambda: stream.read(1024 * 1024), b""):
+            h.update(part)
+    if h.hexdigest() != paci_receipt.get("sha256"):
+        raise ValueError("Drive PACI download has changed after receipt")
+
 
     if args.output_root.exists():
         raise FileExistsError(f"output root already exists: {args.output_root}")
@@ -125,6 +145,7 @@ def main() -> int:
 
     base_handoff = json.loads((args.output_root / "operation_handoff.json").read_text(encoding="utf-8"))
     base_handoff.update({
+        "paci_source": paci_receipt,
         "schema_version": "racenote-v056-forward-turn1-handoff-0.1",
         "execution_mode": "FORWARD",
         "reader_manifest_sha256": session["reader_manifest_sha256"],
@@ -161,6 +182,8 @@ def main() -> int:
         "result_opened": False,
         "target_market_opened": False,
     })
+    if base_handoff.get("paci", {}).get("sha256") != paci_receipt["sha256"]:
+        raise ValueError("Day prep PACI SHA is inconsistent with Drive receipt")
     if base_handoff.get("selection_id") != selection_id or base_handoff.get("target_date") != args.date:
         raise ValueError("PACI/preparation identity changed")
     if authoring.get("race_count") != len(session["race_roster"]) or not session["race_roster"]:
