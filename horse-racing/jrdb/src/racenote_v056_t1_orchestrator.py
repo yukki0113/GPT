@@ -67,6 +67,14 @@ def choose_next():
         if not sid or not SID.fullmatch(sid) or not selection_path(sid).exists():
             continue
         selected=read_selection(sid)
+        # A previous v055 selection is historical and must not be interpreted
+        # as a corrupt v056 T1. Reserve a new selection instead.
+        base=BASE/sid/selected["dates"][0].replace("-","")
+        legacy=base/"operation_handoff.json"
+        if legacy.is_file():
+            old_handoff=load_json(legacy)
+            if old_handoff.get("contract_revision") != CONTRACT:
+                break
         state=t1_state(selected)
         if state=="T1_NOT_CREATED":
             req=BASE/"requests"/(sid+".v056-turn1")
