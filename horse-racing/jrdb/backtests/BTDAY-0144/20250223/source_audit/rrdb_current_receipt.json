@@ -1,0 +1,15 @@
+{
+  "artifact_id": "rrdb_current",
+  "destination": "rrdb.zip",
+  "file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
+  "schema_version": 1,
+  "sha256": "d89a4e82982b44fd115f683fbf12a32dc2e967a65f9b33f0ad4bf9258a241ea7",
+  "size": 46960865,
+  "transport": "public_google_drive_current_verified_at_download",
+  "validation": [
+    "ZIP_CRC",
+    "SAFE_ARCHIVE_MEMBERS",
+    "CURRENT_JSON_OBJECT"
+  ],
+  "verified": true
+}
