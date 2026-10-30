@@ -109,6 +109,38 @@ jobs:
                       output["review_horse"] = "1" if row.get("review_horse") is True else ""
                       writer.writerow(output)
 
+          race_comments = request.get("race_comments", [])
+          if not isinstance(race_comments, list):
+              raise SystemExit("race_comments must be an array")
+          normalized_race_comments = []
+          seen_race_comment_keys = set()
+          for index, item in enumerate(race_comments, start=1):
+              if not isinstance(item, dict):
+                  raise SystemExit(f"race comment {index} must be an object")
+              venue_code = str(item.get("venue_code") or "").strip().zfill(2)
+              race_no = item.get("race_no")
+              member = str(item.get("member") or "").strip()
+              comment = str(item.get("comment") or "").strip()
+              if not re.fullmatch(r"\d{2}", venue_code):
+                  raise SystemExit(f"race comment {index}: venue_code is invalid")
+              if not isinstance(race_no, int) or isinstance(race_no, bool) or not 1 <= race_no <= 12:
+                  raise SystemExit(f"race comment {index}: race_no is invalid")
+              if member not in {"ryota", "kenshow"}:
+                  raise SystemExit(f"race comment {index}: member must be ryota/kenshow")
+              if not comment:
+                  raise SystemExit(f"race comment {index}: comment is blank")
+              key = (date, venue_code, race_no, member)
+              if key in seen_race_comment_keys:
+                  raise SystemExit(f"duplicate race comment key: {key}")
+              seen_race_comment_keys.add(key)
+              normalized_race_comments.append({
+                  "date": date,
+                  "venue_code": venue_code,
+                  "race_no": race_no,
+                  "member": member,
+                  "comment": comment,
+              })
+
           normalized = {
               "date": date,
               "base_run_id": base_run_id,
@@ -116,6 +148,7 @@ jobs:
               "revision": revision,
               "keibailuka_entries": normalized_entries,
               "momotaro_predictions": predictions,
+              "race_comments": normalized_race_comments,
           }
           Path("/tmp/skeleton-request/request.json").write_text(
               json.dumps(normalized, ensure_ascii=False, indent=2) + "\n",
@@ -123,6 +156,10 @@ jobs:
           )
           Path("/tmp/skeleton-request/keibailuka.json").write_text(
               json.dumps({"entries": normalized_entries}, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          Path("/tmp/skeleton-request/momotaro_race_comments.json").write_text(
+              json.dumps({"entries": normalized_race_comments}, ensure_ascii=False, indent=2) + "\n",
               encoding="utf-8",
           )
 
@@ -233,6 +270,9 @@ jobs:
           if [ -f /tmp/skeleton-request/momotaro_predictions.csv ]; then
             MOMOTARO_ARGS+=(--momotaro-csv /tmp/skeleton-request/momotaro_predictions.csv)
           fi
+          if python -c 'import json; from pathlib import Path; payload=json.loads(Path("/tmp/skeleton-request/momotaro_race_comments.json").read_text(encoding="utf-8")); raise SystemExit(0 if payload.get("entries") else 1)'; then
+            MOMOTARO_ARGS+=(--race-comments-json /tmp/skeleton-request/momotaro_race_comments.json)
+          fi
           python horse-racing/jrdb/src/build_momotaro_newspaper_projection.py             --day-dir /tmp/merged-day             --output-dir /tmp/momotaro-current             "${MOMOTARO_ARGS[@]}" > /tmp/skeleton-request/momotaro-result.json
 
       - name: Attach validated authors to personal current
@@ -285,6 +325,11 @@ jobs:
           for member, total in expected_members.items():
               if int(attach_result.get(member, 0)) != total:
                   raise SystemExit(f"member count mismatch: {member}: expected={total} actual={attach_result.get(member)}")
+          expected_race_comments = len(req.get("race_comments") or [])
+          if int(attach_result.get("race_comments", 0)) != expected_race_comments:
+              raise SystemExit(
+                  f"race comment count mismatch: expected={expected_race_comments} actual={attach_result.get('race_comments')}"
+              )
           iluka = merge_result.get("keibailuka") or {}
           if req.get("keibailuka_entries"):
               if iluka.get("merged") != len(req["keibailuka_entries"]):
@@ -314,6 +359,7 @@ jobs:
               "momotaro_rows": attach_result["explicit_rows"],
               "ryota": attach_result["ryota"],
               "oji": attach_result["oji"],
+              "race_comments": attach_result.get("race_comments", 0),
               "iluka": iluka.get("merged", 0),
           }
           Path("/tmp/skeleton-request/validation-summary.json").write_text(
