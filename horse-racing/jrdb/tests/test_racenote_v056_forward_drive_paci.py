@@ -23,8 +23,7 @@ class DrivePaciTransportTests(unittest.TestCase):
 
     def fake_gdown(self, argv, check):
         self.assertTrue(check)
-        self.assertEqual(argv[:2], ["gdown", "--id"])
-        self.assertEqual(argv[2], ID)
+        self.assertEqual(argv, ["gdown", ID, "-O", str(self.dest)])
         with zipfile.ZipFile(self.dest, "w") as zf:
             zf.writestr("safe/KYI261031.TXT", b"fictional-test")
         return None
