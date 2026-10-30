@@ -31,3 +31,28 @@ Status: INCOMPLETE. Do not use this as a complete forecast reader.
   integration matrix, full contract, CI execution and completed PR. Added atomic four-file publishing utility and hash test; not yet connected to CLI. No gates are PASS.
 - Relevant open PR search (`jrdb forecast`): no results at time of inspection.
 - Existing uncommitted work is retained. GitHub publication is a draft; Issue #2241 remains incomplete.
+
+## Integrated implementation update
+
+The CLI now connects source SHA/size/version/snapshot verification, common BAC
+resolution, canonical Data Storage archive and historical partition routing,
+verified condition-export overlays, sampling, previous-history joins, eight-axis
+aggregation, PACI previous-run joins, optional common RawHistory fallback,
+descriptive runner group comparisons, contract validation and atomic four-JSON
+publication. Added strict request keys, post-race snapshot rejection, target-result
+output rejection and integration tests. Fixture plan/run reaches PASS and emits
+all four files. Identical bundle content is idempotent. Class equivalences remain
+UNKNOWN unless established by a verified export; no speculative mapping is added.
+
+Validation: 97 tests passed (Reader, common Raw, RawHistory and Data Storage).
+Real canonical Analysis archive was inspected through safe_unpack_staged_archive
+and data_storage: 481627 historical rows in 2016–2025. This inspection excludes
+2026 partition reads and is not an as-of forecast acceptance. The current archive
+is post-race and cannot meet as-of provenance; eligibility/weight/class conditions
+also require a verified historical export. Full live evidence remains NEED_INPUT.
+The previously recorded PACI join 18/18 remains confirmed.
+
+Remaining acceptance limitations: historical class/date-effective mappings have
+not been independently verified; live canonical condition-export acquisition and
+Actions fallback E2E are unverified. No completed live forecast evidence is claimed.
+PR: https://github.com/yukki0113/GPT/pull/2244 (single existing draft).

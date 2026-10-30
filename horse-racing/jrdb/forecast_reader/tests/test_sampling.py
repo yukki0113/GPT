@@ -74,3 +74,18 @@ def test_date_windows_and_target_year_exclusion():
     result = sampling.select(TARGET, rows, RULES)
     assert result["exact_count"] == 0
     assert result["supplement_race_keys"] == ["in"]
+
+@pytest.mark.parametrize('offset,stage', [(21,'S1'),(22,'S2'),(42,'S2'),(43,'S3'),(70,'S3'),(71,None)])
+def test_stage_window_edges(offset, stage):
+    from datetime import timedelta
+    d = date(2020,10,25) - timedelta(days=offset)
+    result = sampling.select(TARGET, [race(2020,'001',name='other',date=d.isoformat())], RULES)
+    assert result['selected_stage'] == stage
+
+
+def test_renamed_three_win_requires_explicit_mapping():
+    target = {**TARGET, 'name': '特別', 'race_class': '3win'}
+    rows = [race(2018,'001',name='特別',race_class='1600man')]
+    result = sampling.select(target, rows, RULES)
+    assert result['exact_count'] == 0
+    assert not result['supplement_race_keys']

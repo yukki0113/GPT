@@ -25,8 +25,8 @@ def seasonal_distance(left: date, right: date) -> int:
 
 
 def _mismatches(target: dict, candidate: dict, fields: tuple[str, ...]) -> list[str]:
-    return [key for key in fields if target.get(key) in (None, "")
-            or candidate.get(key) in (None, "") or target[key] != candidate[key]]
+    return [key for key in fields if target.get(key) in (None, "", "UNKNOWN", "UNKNOWN_CLASS")
+            or candidate.get(key) in (None, "", "UNKNOWN", "UNKNOWN_CLASS") or target[key] != candidate[key]]
 
 
 def select(target: dict, races: list[dict], rules: dict) -> dict:
@@ -72,7 +72,7 @@ def select(target: dict, races: list[dict], rules: dict) -> dict:
                 if not stage["relax_details"]:
                     reasons += ["condition:" + key for key in details]
                 else:
-                    reasons += ["unknown:" + key for key in DETAIL if race.get(key) in (None, "")]
+                    reasons += ["unknown:" + key for key in DETAIL if race.get(key) in (None, "", "UNKNOWN", "UNKNOWN_CLASS")]
                 if days > stage["days"]:
                     reasons.append("season_outside_window")
                 decision = {"race_key": race["race_key"], "days": days,

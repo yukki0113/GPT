@@ -56,6 +56,26 @@ def read_previous(archive: Path, race_key: str, target_date: date) -> tuple[list
                        "horse_id": runner["blood_registration_no"], "race_horse_key": runner["race_horse_key"],
                        "running_style_code": runner["running_style_code"], "frame": runner["frame_no"],
                        "sex_code": runner["sex_code"], "jockey": runner["jockey"],
-                       "previous_run": result})
+                       "previous_run": result, "prev_result_key": key, "prev_race_key": runner["previous"][0]["race_key_raw"]})
     return output, {"runner_count": len(output), "previous_available": len(matched),
                     "missing_previous": len(output) - len(matched)}
+
+
+def supplement_previous(runners, raw_root, target_date):
+    from jrdb_raw_history import get_horses_runs
+    missing = [r for r in runners if not r['previous_run']]
+    found = get_horses_runs(raw_root, [r['horse_id'] for r in missing], before=target_date.isoformat(), limit_per_horse=1)
+    for runner in missing:
+        candidates = [r for r in found.get(runner['horse_id'], []) if r.data['result_key'] == runner['prev_result_key']]
+        if not candidates:
+            continue
+        if len(candidates) != 1:
+            raise ValueError('DUPLICATE_RACE_OR_RUN')
+        data = candidates[0].data
+        if data['race_key_raw'] != runner['prev_race_key']:
+            raise ValueError('SOURCE_CHANGED')
+        runner['previous_run'] = {'result_key': data['result_key'], 'race_key': data['race_key_raw'], 'date': data['date_raw'],
+            'name': data['race_name'], 'distance_m': data['distance_m'], 'race_class_code': data['race_class_code'],
+            'grade_code': data['grade_code'], 'finish': data['finish'], 'popularity': data['final_popularity'],
+            'field_size': data['field_size'], 'corners': data['corners'], 'abnormal_code': data['abnormal_code'], 'source_kind': 'RAW_SED'}
+    return runners

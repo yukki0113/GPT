@@ -35,3 +35,21 @@ def test_hash_mismatch_is_fail_closed(tmp_path):
     path.write_bytes(b"abc")
     with pytest.raises(ValueError, match="HASH_MISMATCH"):
         module.verify_source({"path": str(path), "size_bytes": 3, "sha256": "0" * 64})
+
+
+def test_unknown_request_fields_rejected():
+    with pytest.raises(ValueError, match='INVALID_REQUEST'):
+        module.validate({**REQUEST, 'allow_results': True})
+
+
+def test_postrace_snapshot_rejected(tmp_path):
+    from input_source_resolver import verify
+    from datetime import datetime
+    import hashlib
+    p = tmp_path / 'input'
+    p.write_bytes(b'fixture')
+    source = {'path': str(p), 'name': p.name, 'kind': 'test', 'version':'v1',
+              'sha256': hashlib.sha256(p.read_bytes()).hexdigest(), 'size_bytes':7,
+              'snapshot_at':'2026-10-26T00:00:00+09:00'}
+    with pytest.raises(ValueError, match='UNVERIFIED_AS_OF'):
+        verify(source, 'test', datetime.fromisoformat(REQUEST['as_of']))

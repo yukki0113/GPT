@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
+from contract_validator import validate_evidence
 
 from sampling import select
 from trend_aggregator import aggregate, AXES
@@ -36,24 +37,38 @@ def build(target, races, rows, runners, rules):
         subset = [r for r in prepared if r['race_key'] in selected[key_field]]
         trends[label] = aggregate(subset)
     for runner in runners:
-        runner['trend_matches'] = [dict(dimension=axis, result='unknown', reason='no_predictive_threshold_defined') for axis in AXES]
+        previous = runner.get('previous_run') or {}
+        values = {'frame': runner.get('frame'), 'running_style': runner.get('running_style_code'),
+                  'jockey': runner.get('jockey'), 'previous_distance': previous.get('distance_m'),
+                  'previous_class': previous.get('race_class_code')}
+        runner['trend_matches'] = []
+        for axis in AXES:
+            value = values.get(axis)
+            groups = trends['exact_only'][axis]['groups']
+            observed = [g for g in groups if str(value) == g['group']]
+            runner['trend_matches'].append({'dimension': axis, 'result': 'unknown' if value is None or not groups else ('match' if observed else 'mismatch'),
+                                           'interpretation': 'observed historical group membership; no prediction', 'evidence': observed})
         runner['data_coverage'] = {'previous_run': 'available' if runner.get('previous_run') else 'missing'}
     incomplete = any(axis['missing_count'] for table in trends.values() for axis in table.values())
     missing_previous = any(not r.get('previous_run') for r in runners)
-    status = 'PARTIAL'  # Gate C requires a complete runner comparison adapter.
+    status = 'PARTIAL' if incomplete or missing_previous or selected['failure_code'] or not selected['exact_count'] else 'PASS'
     return {'schema_version': 'forecast-evidence.v1', 'status': status, 'target': target,
             'sampling': selected, 'trends': trends, 'runners': runners,
             'gate_status': {'A': 'PASS' if not selected['failure_code'] else 'PARTIAL',
-                            'B': 'PARTIAL' if incomplete else 'PASS', 'C': 'PARTIAL'},
-            'limitations': ['Runner comparisons remain descriptive and unverified.']}
+                            'B': 'PARTIAL' if incomplete or not selected['exact_count'] else 'PASS', 'C': 'PARTIAL' if missing_previous else 'PASS'},
+            'limitations': ['Runner comparisons describe observed groups and do not estimate outcomes.']}
 
 
 def publish(output_dir, request, evidence, sampling_audit, source_audit):
+    validate_evidence(evidence)
     request_hash = hashlib.sha256(canonical(request)).hexdigest()
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
     destination = root / request_hash
     if destination.exists():
+        expected = {'forecast_evidence.json': evidence, 'sampling_audit.json': sampling_audit, 'source_audit.json': source_audit}
+        if all((destination / name).is_file() and (destination / name).read_bytes() == canonical(value) for name,value in expected.items()):
+            return destination
         raise ValueError('SOURCE_CHANGED: output exists')
     with tempfile.TemporaryDirectory(dir=root) as scratch:
         stage = Path(scratch) / 'bundle'
@@ -64,6 +79,6 @@ def publish(output_dir, request, evidence, sampling_audit, source_audit):
             content = canonical(value)
             (stage / name).write_bytes(content)
             hashes[name] = hashlib.sha256(content).hexdigest()
-        (stage / 'manifest.json').write_bytes(canonical({'request_sha256': request_hash, 'outputs': hashes, 'reader_version': '0.1.0-incomplete'}))
+        (stage / 'manifest.json').write_bytes(canonical({'request_sha256': request_hash, 'outputs': hashes, 'reader_version': '1.0.0', 'code_sha256': hashlib.sha256(b''.join(p.read_bytes() for p in sorted(Path(__file__).parent.glob('*.py')))).hexdigest()}))
         os.rename(stage, destination)
     return destination
