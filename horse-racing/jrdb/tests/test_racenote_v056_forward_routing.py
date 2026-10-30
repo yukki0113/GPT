@@ -18,6 +18,9 @@ class ForwardRouting(unittest.TestCase):
         self.assertNotIn("racenote_v055_forward_turn1.py",s)
         self.assertNotIn("racenote_v055_single_day.py",s)
         self.assertIn("test -d \"$TARGET/v056\"",s)
+        self.assertIn("repository_dispatch:",s)
+        self.assertIn("-d /tmp/racenote-lap/current",s)
+        self.assertIn("PACI_DRIVE_FILE_ID",s)
     def test_prediction_and_confidence_share_daily_root(self):
         for stage in ("prediction","confidence"):
             s=(ROOT/".github/workflows"/f"racenote_v056_llm_{stage}_freeze.yml").read_text(encoding="utf-8")
