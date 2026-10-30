@@ -48,11 +48,11 @@ PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/racenote_v056_forw
   --course-fit-root /tmp/fit \
   --racereview-root /tmp/rrdb/postrace_review/v0_1 \
   --race-lap-current-bundle /tmp/racelap/current \
-  --race-lap-expected-period-to 2026-10-30 \
+  --race-lap-expected-period-to 2026-10-25 \
   --output-root horse-racing/jrdb/daily/20261031/v056_day
 ```
 
-**注意:** 上記の日付とカットオフは記載例。実際の開催日・完了済み期間に置き換える。RaceLap CURRENTが古ければ既存の `RACELAP_FORWARD_REFRESH` 手順で事前更新する。
+**注意:** 上記の日付とカットオフは記載例。実際の開催日・完了済み期間に置き換える。RaceLapのカットオフは前日の日付ではなく、実際に確定済みの直近開催日を承認済みCURRENTのmanifestで確認する。RaceLap CURRENTが古ければ既存の `RACELAP_FORWARD_REFRESH` 手順で事前更新する。
 
 ## 受入判定
 
