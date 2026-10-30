@@ -92,12 +92,15 @@ jobs:
           predictions = request.get("momotaro_predictions", [])
           predictions_gzip_b64 = str(request.get("momotaro_predictions_gzip_b64") or "").strip()
           if predictions_gzip_b64:
-              import base64, gzip
+              import base64
+              import gzip
               if predictions:
                   raise SystemExit("supply momotaro_predictions or momotaro_predictions_gzip_b64, not both")
               try:
                   predictions = json.loads(
-                      gzip.decompress(base64.b64decode(predictions_gzip_b64, validate=True)).decode("utf-8")
+                      gzip.decompress(
+                          base64.b64decode(predictions_gzip_b64, validate=True)
+                      ).decode("utf-8")
                   )
               except Exception as exc:
                   raise SystemExit(f"failed to decode momotaro_predictions_gzip_b64: {exc}") from exc
@@ -123,12 +126,15 @@ jobs:
           race_comments = request.get("race_comments", [])
           race_comments_gzip_b64 = str(request.get("race_comments_gzip_b64") or "").strip()
           if race_comments_gzip_b64:
-              import base64, gzip
+              import base64
+              import gzip
               if race_comments:
                   raise SystemExit("supply race_comments or race_comments_gzip_b64, not both")
               try:
                   race_comments = json.loads(
-                      gzip.decompress(base64.b64decode(race_comments_gzip_b64, validate=True)).decode("utf-8")
+                      gzip.decompress(
+                          base64.b64decode(race_comments_gzip_b64, validate=True)
+                      ).decode("utf-8")
                   )
               except Exception as exc:
                   raise SystemExit(f"failed to decode race_comments_gzip_b64: {exc}") from exc
