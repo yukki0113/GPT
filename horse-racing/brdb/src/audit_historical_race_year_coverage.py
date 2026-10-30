@@ -131,7 +131,9 @@ def classify_temporal(result, race_date):
     return "AS_OF_VERIFIED_DATE_ONLY"
 
 
-def evaluate(entries, reader):
+def evaluate(entries, reader, mapped_codes=None):
+    """Separate official-code presence from verified mapping coverage."""
+    mapped_codes = set(mapped_codes or ())
     annual = {}
     cache = {}
     for row in entries:
@@ -139,7 +141,7 @@ def evaluate(entries, reader):
         year = date[:4]
         group = annual.setdefault(year, {"entries": 0, "horse_ids": set(), "races": set(),
                 "static_join": 0, "static_ids": set(), "temporal_verified": 0, "profile_fields": Counter(),
-                "statuses": Counter()})
+                "statuses": Counter(), "mapped": Counter()})
         group["entries"] += 1
         group["horse_ids"].add(hid)
         group["races"].add((date, row["race_key"]))
@@ -159,6 +161,9 @@ def evaluate(entries, reader):
             group["temporal_verified"] += 1
             for field in FIELDS:
                 group["profile_fields"][field] += int(bool(result["profile"].get(field)))
+            for field in ("sire_line_code", "broodmare_sire_line_code"):
+                code = result["profile"].get(field)
+                group["mapped"][field] += int(bool(code) and code in mapped_codes)
     output = []
     for year, g in sorted(annual.items()):
         output.append({"year": int(year), "kyi_declarations": g["entries"],
@@ -168,7 +173,8 @@ def evaluate(entries, reader):
             "as_of_verified_date_only_entries": g["temporal_verified"],
             "as_of_unverified_entries": g["entries"] - g["temporal_verified"],
             **{field + "_asof_present": g["profile_fields"][field] for field in FIELDS},
-            "source_status_counts": dict(sorted(g["statuses"].items()))})
+            "source_status_counts": dict(sorted(g["statuses"].items())),
+            "official_lineage_mapped": dict(sorted(g["mapped"].items()))})
     return output
 
 
@@ -187,7 +193,16 @@ def main(argv=None):
     entries, input_counts = parse_paci(args.paci_dir, inventory, args.start_year, args.end_year)
     reader = ResearchHistoryReader(args.generation, expected_generation_id=args.generation_id,
                                    expected_manifest_sha256=args.manifest_sha256)
-    annual = evaluate(entries, reader)
+    underlying = reader.latest._reader
+    con = underlying._connect()
+    try:
+        lineage_rows = underlying._rows(con.execute(
+            "SELECT lineage_code FROM read_parquet(?)",
+            [str(underlying._paths["lineage_code_master.parquet"])]))
+    finally:
+        con.close()
+    mapped_codes = {v["lineage_code"] for v in lineage_rows}
+    annual = evaluate(entries, reader, mapped_codes=mapped_codes)
     covered = {v["year"] for v in annual}
     result = {"version": VERSION, "research_only": True, "generation_id": reader.generation_id,
         "source_inventory_sha256": sha256(args.inventory), "input_counts": input_counts,
