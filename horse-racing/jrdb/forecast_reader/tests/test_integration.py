@@ -39,6 +39,9 @@ def test_cli_inputs_to_bundle(tmp_path):
         sources[kind] = {'kind': kind, 'path': str(path), 'name': path.name, 'size_bytes': path.stat().st_size,
                          'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'version': 'fixture-v1',
                          'snapshot_at': '2026-08-29T00:00:00+09:00'}
+    for source in sources.values():
+        metadata = {'id': 'fixture-file', 'name': source['name'], 'size_bytes': source['size_bytes'], 'modified_time': source['snapshot_at'], 'parent_ids': ['fixture-folder'], 'version': '1'}
+        source['provenance'] = {'provider':'native_drive', 'observation_id':'fixture-only', 'before':metadata, 'after':dict(metadata), 'download_sha256':source['sha256']}
     result = run(request, {'sources': sources}, tmp_path / 'output')
     assert result['status'] == 'PASS'
     bundle = Path(result['output_dir'])

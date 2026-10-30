@@ -36,8 +36,21 @@ def read_previous(archive: Path, race_key: str, target_date: date) -> tuple[list
         matched[key] = parser.zed(record)
     if audit.record_length_errors:
         raise ValueError("INVALID_SOURCE: record length")
+    horses = {}
+    for _, record in iter_archive_records(archive, 'UKC', audit):
+        data = parser.ukc(record)
+        horse_id = data.get('blood_registration_no') or data.get('horse_id')
+        if horse_id in horses:
+            raise ValueError('DUPLICATE_RACE_OR_RUN')
+        horses[horse_id] = data
     output = []
     for runner in sorted(runners, key=lambda r: r["horse_no"]):
+        horse = horses.get(runner['blood_registration_no'], {})
+        birth = horse.get('birth_date')
+        try:
+            birth_date = date.fromisoformat(f'{birth[:4]}-{birth[4:6]}-{birth[6:8]}') if birth else None
+        except ValueError:
+            birth_date = None
         key = runner["previous"][0]["result_key"]
         previous = matched.get(key)
         if previous and (not key.startswith(runner["blood_registration_no"]) or
@@ -55,7 +68,7 @@ def read_previous(archive: Path, race_key: str, target_date: date) -> tuple[list
         output.append({"horse_no": runner["horse_no"], "horse_name": runner["horse_name"],
                        "horse_id": runner["blood_registration_no"], "race_horse_key": runner["race_horse_key"],
                        "running_style_code": runner["running_style_code"], "frame": runner["frame_no"],
-                       "sex_code": runner["sex_code"], "jockey": runner["jockey"],
+                       "pre_race_popularity": runner.get("base_win_rank"), "age": target_date.year - birth_date.year if birth_date and birth_date < target_date else None, "sire_name": horse.get("sire_name"), "broodmare_sire_name": horse.get("broodmare_sire_name"), "sex_code": runner["sex_code"], "jockey": runner["jockey"],
                        "previous_run": result, "prev_result_key": key, "prev_race_key": runner["previous"][0]["race_key_raw"]})
     return output, {"runner_count": len(output), "previous_available": len(matched),
                     "missing_previous": len(output) - len(matched)}

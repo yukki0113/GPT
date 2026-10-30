@@ -64,3 +64,67 @@ pinning. Neither snapshot timestamps alone nor a link-sharing flag proves it.
 
 Pending merge: this single draft PR; no production policy/model changes and no
 merge or direct main publication. Existing local uncommitted work is retained.
+
+## Review correction — issuecomment-6518067970
+
+Implemented separate cohort and reference-history inputs. `reference_rows` and
+verified `jrdb.history.references` permit 2015 previous runs for 2016 starts without
+adding 2015 starts. Duplicate (race_key,horse_id), non-earlier previous dates,
+missing expected cohort years and missing previous joins are audited/rejected or
+PARTIAL. Archive routing now checks partition-year uniqueness, bytes, SHA, row
+counts and year membership. Condition exports still require complete coverage and
+source provenance; incomplete Lite conditions continue to return NEED_INPUT.
+
+Completed all eight runner comparisons: KYI base_win_rank (pre-race only), UKC
+calendar age and sire, frame/style/jockey and previous distance/class. Every axis
+has explicit unknown reasons. membership_only and explanation distinguish observed
+group membership from favorable suitability; linked starts/finishes/top3 evidence
+is retained. Static style and previous corners are not substituted. UKC identity
+joins are keyed by horse_id, not name.
+
+Source snapshot_at alone is now rejected. Stable before/after native metadata,
+observation identifier, provider, revision/version and download SHA bindings are
+required and recorded. Caller must supply authentic connector evidence; Reader
+does not authenticate arbitrary JSON. Recursive output scanning also covers source
+and sampling audits and nested keys. Only direct runner previous_run finish is
+allowed; final popularity/odds/payouts are forbidden throughout outputs. Tests
+assert target SED/HJC/SRB acquisition is never requested by PACI previous reader.
+
+Real measurements after correction (same input SHAs above): Kyoto named/distance
+candidates 8 races, 143 starts; other venue 2 races. These are NOT verified S0,
+because eligibility/weight/class and as-of conditions remain unverified. Seven
+statistical axes have 143/143 starts (popularity 18 groups, frame 8, style 4, age 1,
+sire 53, jockey 48, previous distance 7); previous class has 143 missing. Previous
+distance join 143/143. Real PACI previous joins remain 18/18; UKC age and sire
+coverage are each 18/18. No live PASS is claimed.
+
+Source investigation: common BAC parser and existing accepted Warehouse adapter
+were inspected. Canonical Warehouse path is
+GPT/horse-racing/10_warehouse/jrdb/v1/current.json (2010–2025), BAC family keyed by
+race_key; needed columns are race_class_code, grade_code, race_type_code,
+symbol_code, weight_rule_code, turn/layout and race date. Lite projection cannot
+supply full eligibility/weight conditions. A provenance-pinned BAC family/export
+covering these keys is still needed, plus earlier reference rows where unavailable.
+
+Official 00_document folder was directly listed:
+https://drive.google.com/drive/folders/1Net_dx_CNHL_fMekneShkhRKJZdJ5SCh
+Its jrdb-specifications-oneshot-20261015.zip was retrieved (1762089 bytes, SHA256
+79bbdf124caafe77e486d68116474713e9b71dda8ee17ce536fc0031fd7b8000).
+004_bac_doc.txt confirms condition fields and refers to the JRDB code table.
+128_jrdb_code.txt is dated 2019-05-26 and describes the class-label change; code 16
+is listed as 3-win with old label 1600man. This revision date alone does not prove
+race-level effective dates or historical code validity for every prior year.
+No unsupported date-effective equivalence was added. A dated historical code
+specification/verified mapping plus BAC evidence remains the prerequisite.
+
+Regression scope added: 2016→2015 reference join, reference duplicate/future checks,
+missing-year audit, eight-axis reasons and counts, metadata-only timestamp rejection,
+stable metadata mismatch, nested source-audit leak rejection, permitted historical
+previous finish, no target-result archive access and canonical bundle hash equality.
+Final local test command is the full Reader/Raw/RawHistory/Data Storage command
+above. One earlier run hit the existing randomized ciphertext-corruption test
+(test_drive_gpt_actions_bridge.py) once; no production/test changes were made there,
+and a complete rerun passed. Updated CI results are linked in the PR.
+Draft remains required until the unresolved real-data prerequisites are met.
+
+Correction validation: full local suite 107 passed in 2.23s.

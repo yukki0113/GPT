@@ -45,7 +45,8 @@ def plan(request):
         {"key": "jrdb.paci.daily", "expected_name": f"PACI{day:%y%m%d}.zip", "required": True},
         {"key": "jrdb.analysis.current", "expected_name": "jrdb_analysis_v1_4_canonical_current.tar.xz", "required": True},
         {"key": "jrdb.historical_conditions", "required": "if Analysis lacks conditions"},
-        {"key": "jrdb.previous_raw", "required": "if PACI ZED misses previous runs"}],
+        {"key": "jrdb.previous_raw", "required": "if PACI ZED misses previous runs"},
+        {"key": "jrdb.history.references", "required": "if previous-history references predate available cohort partitions"}],
         "years_from": day.year - 10, "years_to": day.year - 1}
 
 
@@ -80,6 +81,8 @@ def run(request, inputs, output_dir=None):
     target, expected_runners = resolve(paths['jrdb.paci.daily'], request['target'], asof)
     history_path = paths.get('jrdb.history.normalized', paths['jrdb.analysis.current'])
     races, rows, query_audit = read_history(history_path, target['date'])
+    if query_audit.get('years_missing'):
+        return {'status': 'NEED_INPUT', 'failure_code': 'SOURCE_NOT_FOUND', 'history_coverage': query_audit}
     if query_audit.get('missing_conditions') and 'jrdb.historical_conditions' in paths:
         conditions = json.loads(paths['jrdb.historical_conditions'].read_text())
         if conditions.get('schema_version') != 'forecast-conditions.v1':
@@ -98,7 +101,7 @@ def run(request, inputs, output_dir=None):
         query_audit['missing_conditions'] = []
     if query_audit.get('missing_conditions'):
         return {'status': 'NEED_INPUT', 'failure_code': 'UNKNOWN_CONDITION',
-                'missing_conditions': query_audit['missing_conditions'], 'plan': plan(request)}
+                'missing_conditions': query_audit['missing_conditions'], 'history_coverage': query_audit, 'plan': plan(request)}
     runners, coverage = read_previous(paths['jrdb.paci.daily'], target['race_key'], day)
     raw_sources = [p for k,p in paths.items() if k.startswith('jrdb.previous_raw.')]
     if coverage['missing_previous'] and raw_sources:
@@ -117,7 +120,11 @@ def run(request, inputs, output_dir=None):
     if len(runners) != expected_runners:
         raise ValueError('SOURCE_CHANGED: BAC/KYI field count')
     rules = json.loads((Path(__file__).parent / 'config/sampling_rules_v1.json').read_text())
-    evidence = build(target, races, rows, runners, rules)
+    reference_rows = rows
+    if 'jrdb.history.references' in paths:
+        _, additional, _ = read_history(paths['jrdb.history.references'], target['date'])
+        reference_rows = rows + additional
+    evidence = build(target, races, rows, runners, rules, reference_rows=reference_rows)
     evidence['policy'] = {'version': request['protocol'], 'years_from': day.year - 10, 'years_to': day.year - 1}
     evidence['provenance'] = {'input_artifacts': audits}
     evidence['states'] = ['INIT', 'SOURCE_READY', 'TARGET_RESOLVED', 'EXACT_SELECTED', 'BRANCH_SELECTED',

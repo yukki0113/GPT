@@ -19,4 +19,21 @@ def verify(source, kind, as_of):
     stamp = datetime.fromisoformat(source.get('snapshot_at', ''))
     if stamp.utcoffset() is None or stamp > as_of:
         raise ValueError('UNVERIFIED_AS_OF')
-    return path, {key: source[key] for key in ('kind', 'version', 'name', 'size_bytes', 'sha256', 'snapshot_at')}
+    proof = verify_provenance(source, as_of)
+    return path, {**{key: source[key] for key in ('kind', 'version', 'name', 'size_bytes', 'sha256', 'snapshot_at')}, 'provenance': proof}
+
+
+def verify_provenance(source, as_of):
+    proof = source.get('provenance', {})
+    if proof.get('provider') != 'native_drive' or not proof.get('observation_id'):
+        raise ValueError('UNVERIFIED_AS_OF: native metadata evidence required')
+    before, after = proof.get('before', {}), proof.get('after', {})
+    fields = ('id', 'name', 'size_bytes', 'modified_time', 'parent_ids', 'version')
+    if any(key not in before or before[key] != after.get(key) for key in fields):
+        raise ValueError('SOURCE_CHANGED: metadata evidence')
+    if not before['id'] or not before['parent_ids'] or before['name'] != source['name'] or before['size_bytes'] != source['size_bytes'] or proof.get('download_sha256') != source['sha256']:
+        raise ValueError('UNVERIFIED_AS_OF: evidence does not bind input')
+    modified = datetime.fromisoformat(before['modified_time'])
+    if modified.utcoffset() is None or modified > as_of:
+        raise ValueError('UNVERIFIED_AS_OF: metadata postdates request')
+    return proof

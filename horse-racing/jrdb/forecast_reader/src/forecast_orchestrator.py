@@ -4,7 +4,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
-from contract_validator import validate_evidence
+from contract_validator import validate_evidence, validate_nested
 
 from sampling import select
 from trend_aggregator import aggregate, AXES
@@ -14,19 +14,31 @@ def canonical(value):
     return (json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False) + '\n').encode()
 
 
-def build(target, races, rows, runners, rules):
+def build(target, races, rows, runners, rules, reference_rows=None):
     selected = select(target, races, rules)
-    keys = [(r['race_key'], r['horse_id']) for r in rows]
+    cohort_keys = [(r['race_key'], r['horse_id']) for r in rows]
+    if len(cohort_keys) != len(set(cohort_keys)):
+        raise ValueError('DUPLICATE_RACE_OR_RUN')
+    references = rows if reference_rows is None else reference_rows
+    keys = [(r['race_key'], r['horse_id']) for r in references]
     if len(keys) != len(set(keys)):
         raise ValueError('DUPLICATE_RACE_OR_RUN')
     if any(r['race_date'] >= target['date'] for r in rows):
         raise ValueError('FUTURE_LEAK')
-    by_key = {(r['race_key'], r['horse_id']): r for r in rows}
+    if any(str(r['race_date']) >= target['date'] for r in references):
+        raise ValueError('FUTURE_LEAK')
+    by_key = {(r['race_key'], r['horse_id']): r for r in references}
+    start_year = int(target['date'][:4]) - 10
+    cohort = [r for r in rows if start_year <= int(str(r['race_date'])[:4]) < int(target['date'][:4])]
+    joined = 0
+    requested = 0
     prepared = []
-    for row in rows:
+    for row in cohort:
+        requested += bool(row.get('prev_race_key_1'))
         item = dict(row)
         previous = by_key.get((row.get('prev_race_key_1'), row['horse_id']))
         if previous:
+            joined += 1
             if previous['race_date'] >= row['race_date']:
                 raise ValueError('FUTURE_LEAK')
             item['previous_distance'] = previous.get('distance')
@@ -38,7 +50,7 @@ def build(target, races, rows, runners, rules):
         trends[label] = aggregate(subset)
     for runner in runners:
         previous = runner.get('previous_run') or {}
-        values = {'frame': runner.get('frame'), 'running_style': runner.get('running_style_code'),
+        values = {'popularity': runner.get('pre_race_popularity'), 'age': runner.get('age'), 'sire': runner.get('sire_name'), 'frame': runner.get('frame'), 'running_style': runner.get('running_style_code'),
                   'jockey': runner.get('jockey'), 'previous_distance': previous.get('distance_m'),
                   'previous_class': previous.get('race_class_code')}
         runner['trend_matches'] = []
@@ -47,14 +59,18 @@ def build(target, races, rows, runners, rules):
             groups = trends['exact_only'][axis]['groups']
             observed = [g for g in groups if str(value) == g['group']]
             runner['trend_matches'].append({'dimension': axis, 'result': 'unknown' if value is None or not groups else ('match' if observed else 'mismatch'),
-                                           'reason': 'current_value_missing' if value is None else ('historical_groups_missing' if not groups else None),
-                                           'interpretation': 'observed historical group membership; no prediction', 'evidence': observed})
+                                           'reason': ('pre_race_popularity_unavailable_final_popularity_forbidden' if axis == 'popularity' else 'pre_race_value_missing') if value is None else ('historical_groups_missing' if not groups else None),
+                                           'membership_only': True, 'interpretation': 'same-value historical group, not favorable-trend suitability; inspect starts/finishes evidence', 'evidence': observed})
         runner['data_coverage'] = {'previous_run': 'available' if runner.get('previous_run') else 'missing'}
     represented = {r['race_key'] for r in prepared}
     incomplete = bool((set(selected['exact_race_keys']) | set(selected['supplement_race_keys'])) - represented) or any(axis['missing_count'] for table in trends.values() for axis in table.values())
     missing_previous = any(not r.get('previous_run') for r in runners)
+    present_years = sorted({int(str(r['race_date'])[:4]) for r in cohort})
+    missing_years = sorted(set(range(start_year, int(target['date'][:4]))) - set(present_years))
+    incomplete = incomplete or bool(missing_years) or requested > joined
     status = 'PARTIAL' if incomplete or missing_previous or selected['failure_code'] or not selected['exact_count'] else 'PASS'
     return {'schema_version': 'forecast-evidence.v1', 'status': status, 'target': target,
+            'history_coverage': {'years_present': present_years, 'years_missing': missing_years, 'cohort_starts': len(cohort), 'cohort_races': len({r['race_key'] for r in cohort}), 'reference_rows': len(references), 'previous_requested': requested, 'previous_joined': joined, 'previous_missing': requested - joined},
             'sampling': selected, 'trends': trends, 'runners': runners,
             'gate_status': {'A': 'PASS' if not selected['failure_code'] else 'PARTIAL',
                             'B': 'PARTIAL' if incomplete or not selected['exact_count'] else 'PASS', 'C': 'PARTIAL' if missing_previous else 'PASS'},
@@ -63,6 +79,8 @@ def build(target, races, rows, runners, rules):
 
 def publish(output_dir, request, evidence, sampling_audit, source_audit):
     validate_evidence(evidence)
+    validate_nested(source_audit)
+    validate_nested(sampling_audit)
     request_hash = hashlib.sha256(canonical(request)).hexdigest()
     root = Path(output_dir)
     root.mkdir(parents=True, exist_ok=True)
