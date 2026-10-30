@@ -42,8 +42,8 @@ jobs:
           python -m gdown 1A0xdYsCJAxujWbczv3FeSz3U22M0Rn1n -O .rrdb/input/SED261024.zip
           python -m gdown 1jj5G1IXZ_AJI2Y474H6UH4K8xLFAvmB3 -O .rrdb/input/SED261025.zip
 
-          unzip -q .rrdb/input/course_fit_part1.zip -d .rrdb/course-fit
-          unzip -q .rrdb/input/course_fit_part2.zip -d .rrdb/course-fit
+          unzip -qo .rrdb/input/course_fit_part1.zip -d .rrdb/course-fit
+          unzip -qo .rrdb/input/course_fit_part2.zip -d .rrdb/course-fit
           unzip -q .rrdb/input/RaceLap_CURRENT.zip -d .rrdb/racelap-current
 
           test -f .rrdb/racelap-current/current/race_lap.parquet
