@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Compile v056 modules
-        run: python -m compileall -q horse-racing/jrdb/src/racenote_v056_contract_gates.py horse-racing/jrdb/src/racenote_decision_core_v056.py horse-racing/jrdb/src/racenote_v056_single_day.py horse-racing/jrdb/src/racenote_v056_turn2_two_phase.py horse-racing/jrdb/src/racenote_v056_two_phase_preflight.py horse-racing/jrdb/src/racenote_v056_authoring_bundle.py horse-racing/jrdb/src/racenote_v056_racezip_delivery.py
+        run: python -m compileall -q horse-racing/jrdb/src/racenote_v056_contract_gates.py horse-racing/jrdb/src/racenote_decision_core_v056.py horse-racing/jrdb/src/racenote_v056_single_day.py horse-racing/jrdb/src/racenote_v056_turn2_two_phase.py horse-racing/jrdb/src/racenote_v056_two_phase_preflight.py horse-racing/jrdb/src/racenote_v056_authoring_bundle.py horse-racing/jrdb/src/racenote_v056_racezip_delivery.py horse-racing/jrdb/src/racenote_v056_forward_turn1.py horse-racing/jrdb/src/racenote_v056_forward_drive_paci.py
       - name: Run isolated structural regression tests
         run: |
           python -m unittest discover -s horse-racing/jrdb/tests -p 'test_racenote_v056*.py' -v
