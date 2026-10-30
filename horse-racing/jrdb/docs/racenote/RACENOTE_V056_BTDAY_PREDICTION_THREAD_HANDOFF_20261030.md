@@ -34,7 +34,7 @@
 ## 未検証として扱うもの
 
 - 2025年Warehouse実データのv056 T1→36R著述→二段階Freeze一気通貫は未実施。
-- FORWARD PACI T1は `racenote_v056_forward_turn1.py` と `racenote_v056_forward_paci_t1.yml` で実装。日次の本番入力受入は未実施。新聞清書・PWA連携は未実装・未受入。指示書 `RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md` を参照。
+- FORWARD PACI T1は `racenote_v056_forward_turn1.py` と `racenote_v056_forward_paci_t1.yml` で実装。PACIは既存Driveの `PACI` フォルダを正本とし、`racenote_v056_forward_drive_paci.py` で指定Drive IDから取得。JRDB直接再取得は禁止。日次の本番入力受入は未実施。新聞清書・PWA連携は未実装・未受入。指示書 `RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md` を参照。
 - T1の直後に生成したReader ZIPを受けたLLMの実予想作業は、予想スレッド側の責務。
 - `config/racenote_forecast_logic_current.json` の古いresearch pointerに依存せず、初回実験は明示的v056のworkflow/contractを指定する。成功までcurrentを一括変更しない。
 
