@@ -1,4 +1,5 @@
 > **2026-10-30 v0.5.6 forward優先案内**：この文書の「v0.5.2通常運用」「二ターン」「旧ファイル名」は当時の運用履歴です。ユーザーが**v0.5.6の日次PACI forward**を指定した場合、`RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md` と `horse-racing/jrdb/.gpt/WORKFLOW.md` のv0.5.6節を最優先します。実行口は `.github/workflows/racenote_v056_forward_paci_t1.yml`、生成モジュールは `src/racenote_v056_forward_turn1.py`、出力は `daily/YYYYMMDD/v056_day/v056` です。
+> PACIの正本は既存Google Driveの `PACI` フォルダ（`1zFajenPU5jxInZCcmqZzkgiaYil3MD8r`）であり、対象日ファイルIDを確定して `paci_drive_file_id` へ渡す。**JRDB会員サイトからのPACI再取得は禁止**、Driveから取得できなければ停止する。取得・検証は `racenote_v056_forward_drive_paci.py`、証跡は `operation_handoff.json.paci_source` に保持する。
 > T1でPACI→CLEAN BLIND RaceNote→v056 Reader／Authoring Bundleを生成した後、**BTDAYと同一v056 Prediction Freeze→独立Confidence Freeze**で確定します。新聞短評清書・PWA提出JSONはFreeze後の別工程です。現時点で実PACIの初回E2E成功は確認されていません。旧版Freezeは書き換えません。
 
 ---
