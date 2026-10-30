@@ -193,7 +193,7 @@ jobs:
                       confidence=str(race.get("confidence") or "").strip()
                       reason=str(race.get("short_comment") or "").strip()
                       honmei=race.get("honmei") or {}
-                      if confidence not in ("A","B","C") or not reason:
+                      if confidence not in ("A","B","C","Z") or not reason:
                           raise SystemExit(f"RaceNote confidence/comment incomplete: {identity}")
                       if int(honmei.get("horse_no") or 0)!=horse_nos[0] or not str(honmei.get("horse_name") or "").strip():
                           raise SystemExit(f"RaceNote honmei identity mismatch: {identity}")
@@ -225,7 +225,7 @@ jobs:
                       raise SystemExit("RaceNote confidence supplement requires 24 races")
                   for entry in supplement["entries"]:
                       key=(str(entry["venue"]),int(entry["race_no"]))
-                      if key in supplement_index or entry.get("confidence") not in ("A","B","C"):
+                      if key in supplement_index or entry.get("confidence") not in ("A","B","C","Z"):
                           raise SystemExit(f"invalid RaceNote confidence entry: {key}")
                       supplement_index[key]=entry
               if len(data)!=24:
