@@ -2,7 +2,7 @@
 
 - v0.5.6を明示指定したforwardのT1は `src/racenote_v056_forward_turn1.py` / `.github/workflows/racenote_v056_forward_paci_t1.yml`。旧v0.5.5/r6 BTDAYまたはv0.5.2 forwardの自動転用は禁止。
 - Readerの契約は `v056-prediction-confidence-audit-newspaper-v1`。BTDAY/forward共通のLLM Prediction Freeze → 独立Confidence Freeze。日次出力ルートは `daily/YYYYMMDD/v056_day/v056`。
-- 入力は対象日のPACIおよび受入済みAnalysis・Course Fit・RRDB・RaceLap CURRENT。Readerに市場・結果を混入させない。Asset IDsは実物照合必須。
+- 対象日PACIの正本はGoogle Driveの既存 `PACI` フォルダ（ID `1zFajenPU5jxInZCcmqZzkgiaYil3MD8r`）。`PACIyyMMdd.zip` を親フォルダ・日付で照合し、`paci_drive_file_id` をv056 forward T1へ渡す。`racenote_v056_forward_drive_paci.py` を使用し、JRDBからの直接PACI再取得・fallbackは禁止。PACIのSHA・Drive IDは `operation_handoff.json.paci_source` に記録する。Analysis・Course Fit・RRDB・RaceLap CURRENTは別途受入済み資産を使用。Readerに市場・結果を混入させない。Asset IDsは実物照合必須。
 - 新聞短評の清書とPWA JSON生成・送信は別工程であり、このT1の完了とは区別する。実PACIによるforward E2E受入は未判定。
 - 運用仕様の優先順位：`.gpt/WORKFLOW.md` v0.5.6節 → `docs/racenote/RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md` → ソース/Actions。下記の旧current表記は当時の記録であり、v0.5.6明示指定時に優先しない。
 
