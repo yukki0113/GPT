@@ -1,0 +1,19 @@
+test_2025_never_exposes_daily_profiles (test_brdb_research_generation_v02.ResearchV02Test.test_2025_never_exposes_daily_profiles) ... ok
+test_audit_tamper_fails_hash_validation (test_brdb_research_generation_v02.ResearchV02Test.test_audit_tamper_fails_hash_validation) ... ok
+test_daily_sentinel_is_retained_but_not_selected (test_brdb_research_generation_v02.ResearchV02Test.test_daily_sentinel_is_retained_but_not_selected) ... ok
+test_future_parent_id_is_suppressed_until_observed (test_brdb_research_generation_v02.ResearchV02Test.test_future_parent_id_is_suppressed_until_observed) ... ok
+test_id_set_identity_is_order_independent_but_content_sensitive (test_brdb_research_generation_v02.ResearchV02Test.test_id_set_identity_is_order_independent_but_content_sensitive) ... ok
+test_legacy_104_generation_remains_compatible (test_brdb_research_generation_v02.ResearchV02Test.test_legacy_104_generation_remains_compatible) ... ok
+test_manifest_dynamic_count_and_latest_observation_gate (test_brdb_research_generation_v02.ResearchV02Test.test_manifest_dynamic_count_and_latest_observation_gate) ... ok
+test_missing_v02_contract_fails_closed (test_brdb_research_generation_v02.ResearchV02Test.test_missing_v02_contract_fails_closed) ... ok
+test_selected_history_duplicate_is_rejected (test_brdb_research_generation_v02.ResearchV02Test.test_selected_history_duplicate_is_rejected) ... ok
+test_wrong_count_fails_without_104_fallback (test_brdb_research_generation_v02.ResearchV02Test.test_wrong_count_fails_without_104_fallback) ... ok
+test_wrong_id_binding_fails (test_brdb_research_generation_v02.ResearchV02Test.test_wrong_id_binding_fails) ... ok
+test_latest_profile_and_history_are_deterministic (test_brdb_research_candidate.CandidateSelectionTest.test_latest_profile_and_history_are_deterministic) ... ok
+test_new_paci_can_extend_but_not_change_fixed_baseline (test_brdb_research_candidate.CandidateSelectionTest.test_new_paci_can_extend_but_not_change_fixed_baseline) ... ok
+test_same_date_conflict_fails_closed (test_brdb_research_candidate.CandidateSelectionTest.test_same_date_conflict_fails_closed) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.626s
+
+OK
