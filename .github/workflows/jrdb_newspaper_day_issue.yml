@@ -23,6 +23,11 @@ jobs:
           ref: main
           fetch-depth: 1
 
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Install Analysis Parquet dependencies
         run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
 
