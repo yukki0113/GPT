@@ -24,10 +24,13 @@ class HistoricalRelationsReader:
         self._profiles = {}
         self._master = None
         self._aliases = AliasIndex()  # no timestamped evidence for alias ledger
+        self._coverage_end = max(row['archive_date'] for rows in self.history.history.values() for row in rows if valid_date(row['archive_date']))
 
     def _prepare(self, as_of):
         if not valid_date(as_of):
             raise ValueError('as_of must be valid YYYYMMDD')
+        if as_of > self._coverage_end:
+            raise ValueError('as_of exceeds available daily observation coverage')
         if self._date == as_of:
             return
         h = self.history
@@ -47,6 +50,8 @@ class HistoricalRelationsReader:
         self._date = as_of
 
     def horse_profile(self, horse_id, *, as_of):
+        if not valid_date(as_of) or as_of > self._coverage_end:
+            raise ValueError('as_of outside valid daily observation coverage')
         return self.history.horse_profile(horse_id, as_of=as_of)
 
     def parent_relations(self, horse_id, *, as_of):
