@@ -57,7 +57,11 @@ def validate(root: Path, draft: Path, phase: str):
             core = r["decision_core"]
             if not isinstance(core, dict) or core.get("venue") != r["venue"] or core.get("race_no") != r["race_no"]:
                 raise ValueError("Decision Core race identity mismatch")
-            reader = _read(root / "reader" / f"{r['venue']}_{r['race_no']:02d}.json")
+            manifest = _read(root / "reader_manifest.json")
+            matches = [entry for entry in manifest["entries"] if entry["venue"] == r["venue"] and int(entry["race_no"]) == r["race_no"]]
+            if len(matches) != 1:
+                raise ValueError("Reader manifest race mismatch")
+            reader = _read(root / "reader" / matches[0]["derived_normal_filename"])
             validate_core(core, _validator_reader(reader), contract_revision=CONTRACT)
             check_prediction_audit_comment(core)
             if (core.get("honmei_win") or {}).get("confidence") is not None:
