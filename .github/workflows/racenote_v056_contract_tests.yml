@@ -1,0 +1,23 @@
+name: RaceNote v0.5.6 Contract Tests
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/racenote_v056_*'
+      - 'horse-racing/jrdb/src/racenote_decision_core_v056.py'
+      - '.github/workflows/racenote_v056_*.yml'
+      - 'horse-racing/jrdb/tests/test_racenote_v056_*'
+      - '.github/workflows/racenote_v056_contract_tests.yml'
+  workflow_dispatch:
+jobs:
+  v056-contract-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile v056 modules
+        run: python -m compileall -q horse-racing/jrdb/src/racenote_v056_contract_gates.py horse-racing/jrdb/src/racenote_decision_core_v056.py horse-racing/jrdb/src/racenote_v056_single_day.py horse-racing/jrdb/src/racenote_v056_turn2_two_phase.py horse-racing/jrdb/src/racenote_v056_two_phase_preflight.py horse-racing/jrdb/src/racenote_v056_authoring_bundle.py horse-racing/jrdb/src/racenote_v056_racezip_delivery.py
+      - name: Run isolated structural regression tests
+        run: |
+          python -m unittest discover -s horse-racing/jrdb/tests -p 'test_racenote_v056*.py' -v

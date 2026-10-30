@@ -1,3 +1,5 @@
+> **v0.5.6 初回BTDAY受入（試験経路）**：新規v0.5.6を明示指定する予想スレッドは docs/racenote/RACENOTE_V056_BTDAY_PREDICTION_THREAD_HANDOFF_20261030.md を最優先し、専用T1 Orchestrator／v056 Prediction・Confidence Freezeを使用する。これは初回BTDAYの本番相当検証用であり、v0.5.5 r6の通常運用を自動的に置換しない。初回試験の両Freeze成功前に「v0.5.6正式稼働」と報告しない。
+
 # RaceNote r6 PIPELINE 現行オペレーション・追記（2026-10-30）
 
 - 最新のr6 BTDAY運用は `horse-racing/jrdb/docs/racenote/RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md` を最優先する。旧r4/r5、2026 PACI/Forward、旧統合Freezeは当時の対象に限って参照する。
