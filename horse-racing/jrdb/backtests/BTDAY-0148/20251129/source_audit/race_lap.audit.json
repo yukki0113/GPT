@@ -1,0 +1,24 @@
+{
+  "status": "CANDIDATE_PASS",
+  "generation_id": "racelap-forward-canonical-20261017-01",
+  "previous_sha256": "ab28b788594ce183015637fbe913b410363f9f3239ad2f2c4e360b491c89881f",
+  "input_archives": [
+    {
+      "name": "SED261017.zip",
+      "sha256": "597add074c97a345d99f2791843656c0ecaee273de9ce33716c176f357fac4f1"
+    }
+  ],
+  "identical_count": 0,
+  "new_count": 36,
+  "previous_count": 9639,
+  "race_count": 9675,
+  "previous_rows_preserved": true,
+  "duplicate_key_rows": 0,
+  "parquet_sha256": "f39056cea12e1d3d694bcb829695121ac1df3426bf633d49f4f5f23fd637ce7d",
+  "parquet_size_bytes": 1659860,
+  "period_from": "2024-01-06",
+  "period_to": "2026-10-17",
+  "dataset_schema_version": "JRDB-Race-Lap-Parquet-0.1",
+  "shape_logic_version": "SRB-Neutral-RaceShape-v0.1",
+  "validation_status": "PASS"
+}
