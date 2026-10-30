@@ -1,3 +1,14 @@
+# RaceNote r6 PIPELINE 現行オペレーション・追記（2026-10-30）
+
+- 最新のr6 BTDAY運用は `horse-racing/jrdb/docs/racenote/RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md` を最優先する。旧r4/r5、2026 PACI/Forward、旧統合Freezeは当時の対象に限って参照する。
+- 標準モード `PIPELINE`：対象BTDAYのT1・36R ZIP確認→冒頭で `RaceNote r6 T1 Orchestrator` の `NEXT`（次BTDAY）を起動→現在BTDAYの全頭LLM Prediction・main永続Freeze→凍結済み◎に対するLLM Confidence・main永続Freeze→Batch sync→次BTDAYのT1/ZIP Artifactの状態確認。
+- 停止モード `T2_ONLY`：次T1を起動せず既存T2だけ行う。世代変更や検証時に使用。
+- `NEXT` は現行2025 Historical Warehouseのみ。実際の選択IDと日付はPickerの `selection.json` 正本で確認し、BTDAY番号から予測しない。
+- 次T1の失敗は現在T2のFreeze状態を取り消さず、結果・配当・市場は必要なFreeze前に開かない。機械処理による印・候補馬・Confidence生成は禁止。
+- 2026-10-30変更前のこの文書は `horse-racing/jrdb/docs/racenote/operation-backups/20261030_pre_pipeline/gpt__WORKFLOW.md` に全文バックアップ済み。
+
+---
+
 # JRDB GPT workflow
 
 ## Public Drive read-only Historical input (2026-10-09)
