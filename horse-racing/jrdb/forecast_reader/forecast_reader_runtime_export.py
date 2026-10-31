@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[3]
 SOURCE_DIRS = (
     "horse-racing/jrdb/forecast_reader",
     "horse-racing/jrdb/src",
+    "horse-racing/jrdb/tests",
     "tools/data-storage",
 )
 ALLOWED_SUFFIXES = {".py", ".json", ".yaml", ".yml", ".txt"}
