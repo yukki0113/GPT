@@ -184,7 +184,7 @@ A: latest main / source確認
 
 ### D: Actions-Native Execution
 
-次の場合は `.github/workflows/jra_results_chat.yml` / `[JRA_RESULTS_REQUEST]` を使用します。
+次の場合は `.github/workflows/jra_results_chat.yml` / `[JRA_RESULTS_REQUEST]` (Issue Router 登録済み) を使用します。
 
 - Chat/ローカル環境から取得先へ到達できない
 - 長期・大量取得でrunner実行が適切
@@ -220,7 +220,7 @@ D経路ではIssue作成前に `.gpt/ISSUE_REQUEST_CONTRACTS.md` のpreflight / 
 
 Actions処理:
 
-1. Issue作成イベントでActions起動
+1. Issue作成イベントを共通 Issue Router が検知し、`repository_dispatch` (`jra_results_request`) で対象workflowを起動
 2. `main` checkout
 3. requirements導入
 4. fetcher実行
@@ -262,8 +262,17 @@ artifact保持期間はworkflow設定に従います。日次成果物はGitへc
 1. latest main、project README / WORKFLOW / HANDOFFを確認
 2. Cで直接実行可能か判定
 3. Cならfetch + validationを直接完結
-4. Dが必要ならpreflight後に一意request_idでIssueを1回発行
+4. Dが必要ならpreflight後に一意request_idでIssueを1回発行（Router `ISSUE_ROUTER_RESULT` → `JRA_RESULTS_RESULT` を確認）
 5. DではRESULT / run / artifactをA: Read / Auditで確認
 6. validation結果を必ず判定
 7. 日次成果物はGitへcommitしない
 8. source/workflow仕様変更時はdocs/testsと整合させる
+
+## Issue Router移行（2026-10-31）
+
+- `issues: opened` を直接受ける旧workflowは廃止し、共通 `.github/workflows/issue_router.yml` のrouteを使用する。
+- Registry prefix `[JRA_RESULTS_REQUEST]`、event_type `jra_results_request`。
+- 対象workflowは `repository_dispatch` と既存Issue番号を入力する `workflow_dispatch` を受け付ける。
+- dispatch後、対象workflowがIssueを取得してtitle/bodyとownerを検証する。dispatch payloadの本文は信用しない。
+- 発行直後に `ISSUE_ROUTER_RESULT`、取得後に `JRA_RESULTS_RESULT` とvalidation、artifactを確認する。Issue作成のみで完了扱いにしない。
+- 移行前に作成したIssueは自動再発火しない。必要なら既存Issue番号を指定したmanual dispatchで再実行する。
