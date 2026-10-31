@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import os
 
 ROOT = Path(__file__).resolve().parents[3]
 RUNNER = Path(__file__).with_name("forecast_reader_runner.py")
@@ -26,6 +27,8 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     report = {"schema_version": "forecast-reader-acceptance.v1", "mode": args.mode,
               "checks": [], "status": "FAIL"}
+    env = os.environ.copy()
+    env["PYTHONPATH"] = os.pathsep.join([str(ROOT / 'horse-racing/jrdb/src'), str(ROOT / 'tools/data-storage'), env.get('PYTHONPATH', '')])
     if args.mode == "smoke":
         request = {"schema_version":"forecast-reader-request.v1","protocol":"human_statistics_v1",
                    "target":{"date":"2026-10-25","venue":"京都","race_no":11},
@@ -35,7 +38,7 @@ def main():
         request_path.write_text(json.dumps(request, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
         command = [sys.executable, str(RUNNER), "--request", str(request_path),
                    "--plan", "--output-dir", str(out / "plan")]
-        cp = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+        cp = subprocess.run(command, cwd=ROOT, env=env, capture_output=True, text=True)
         plan_ok = cp.returncode == 0 and (out / "plan/acquisition_plan.json").is_file()
         report["checks"].append({"name":"canonical_plan","pass":plan_ok,"exit_code":cp.returncode,
                                   "stdout":cp.stdout[-3000:],"stderr":cp.stderr[-3000:]})
