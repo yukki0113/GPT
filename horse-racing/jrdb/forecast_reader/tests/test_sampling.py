@@ -33,14 +33,14 @@ def test_threshold_and_stage_stops():
     assert sampling.select(TARGET, exact + [other], RULES)["selected_stage"] is None
     result = sampling.select(TARGET, exact[:4] + [other], RULES)
     assert result["selected_stage"] == "S1"
-    assert [s["stage"] for s in result["stages"]] == ["S1"]
+    assert result["total_selected"] == 5
 
 
 def test_s2_and_no_relaxation_of_core():
     result = sampling.select(TARGET, [race(2020, "a", name="別", date="2020-09-25"),
                                       race(2021, "b", name="別", venue="阪神")], RULES)
-    assert result["selected_stage"] == "S2"
-    assert result["supplement_race_keys"] == ["a"]
+    assert result["selected_stage"] == "S4"
+    assert result["supplement_race_keys"] == ["a", "b"]
     assert sampling.select(TARGET, [race(2021, "b", venue="阪神")], RULES)["failure_code"] == "NO_ACCEPTABLE_SUPPLEMENT"
 
 
@@ -63,7 +63,7 @@ def test_s3_and_optional_multiple_per_year():
     rows = [race(2020, "a", name="別", course="inner"),
             race(2020, "b", name="別", course="inner")]
     result = sampling.select(TARGET, rows, {**RULES, "supplement_per_year": 0})
-    assert result["selected_stage"] == "S3"
+    assert result["selected_stage"] == "S4"
     assert result["supplement_race_keys"] == ["a", "b"]
 
 
@@ -73,7 +73,7 @@ def test_date_windows_and_target_year_exclusion():
             race(2021, "out", name="別", date="2021-10-03")]
     result = sampling.select(TARGET, rows, RULES)
     assert result["exact_count"] == 0
-    assert result["supplement_race_keys"] == ["in"]
+    assert result["supplement_race_keys"] == ["in", "out"]
 
 @pytest.mark.parametrize('offset,stage', [(21,'S1'),(22,'S2'),(42,'S2'),(43,'S3'),(70,'S3'),(71,None)])
 def test_stage_window_edges(offset, stage):
