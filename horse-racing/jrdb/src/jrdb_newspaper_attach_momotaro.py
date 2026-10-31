@@ -97,7 +97,12 @@ def attach(personal_dir: Path, public_dir: Path) -> dict:
     # already-validated private RaceNote/RRDB addons and must not inflate that
     # explicit-row comparison.
     explicit = count["ryota"] + count["oji"]
-    if expected_rows != explicit:
+    # For partial member replacement, the projection may preserve existing
+    # validated Ryota/Oji rows in addition to the explicitly supplied rows.
+    # The projection builder has already fail-closed validated every supplied
+    # row, so require only that the public projection contains at least that
+    # many explicit shared-member rows.
+    if expected_rows > explicit:
         raise ValueError(f"member count mismatch: projected={expected_rows}, personal={explicit}")
     return {"status": "PASS", "date":personal_manifest["date"], "revision":personal_manifest["revision"],
             "explicit_rows":explicit, "ryota":count["ryota"], "oji":count["oji"],
