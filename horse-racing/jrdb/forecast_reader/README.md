@@ -21,7 +21,9 @@ search returning zero results is not evidence that data is absent. Follow
 metadata and SHA pinning. Post-race current archives do not prove as-of provenance.
 
 Sampling consumes verified normalized conditions only; it does not infer JRDB
-codes. S1/S2/S3 windows and one representative per year are proposed defaults.
+codes. The configured S0-S4 policy targets ten **races**, allows multiple races
+per year, stops at 10 or after S4, and keeps venue, surface, distance, course
+and class fixed. No web enrichment or automatic distance-band expansion.
 Previous runs use the common Parser and only KYI-linked ZED records before the
 target date. No forecast marks or wagers are produced.
 
@@ -97,3 +99,30 @@ historical S0 7 Kyoto races / 94 starts; 93 previous-run joins with 1 missing,
 target 11/11 previous-run joins, 8 axes measured, Reader technical
 `PARTIAL`. This is an example of `ACCEPTED_WITH_MISSING` when the full
 audited source and result contracts pass; it is **not** a Reader PASS.
+
+## S0-S4 sampling operation (2026-11)
+
+Historical population is the previous ten calendar years. Select up to **10 races**
+(not ten years and not ten horses) in priority order, without duplicate race keys:
+
+| Stage | Seasonal window | Matching requirements |
+| --- | --- | --- |
+| S0 | Any date | Same normalized name and all seven conditions |
+| S1 | ±21 days | Name unrestricted; all seven conditions |
+| S2 | ±21 days | As S1, but weight_rule may differ |
+| S3 | ±21 days | As S2, but eligibility may also differ |
+| S4 | ±42 days | Revisit the S1→S3 matching tiers in order of fewer condition mismatches, then closest seasonal date |
+
+The seven conditions are venue, surface, distance, race_class, eligibility,
+course and weight_rule. **venue, surface, distance, race_class and course never
+change.** Unknown condition values cannot qualify for relaxation. There is no
+±70-day search, no more-than-42-day widening, no automatic distance-band
+extension, and no fallback to website data. Multiple races from one year may
+qualify. Each stage records the candidate decisions, selected keys, added_count,
+ and cumulative_count. The output also provides target_races,
+total_selected, and sample_shortfall. A sample shortage after S4 is reported,
+not silently treated as ten. Exact and supplemental trends remain separate.
+
+For operational acceptance, never equate sample_shortfall with unknown data.
+An S0+S1+S2+S3+S4 pool smaller than ten is an explicit sampling limitation;
+existing PASS/PARTIAL source-integrity gates still apply.

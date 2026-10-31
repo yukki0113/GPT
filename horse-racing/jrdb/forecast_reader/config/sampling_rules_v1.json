@@ -1,10 +1,37 @@
 {
   "schema_version": "forecast-sampling-rules.v1",
-  "exact_threshold": 5,
-  "supplement_per_year": 1,
+  "exact_threshold": 10,
+  "target_races": 10,
+  "supplement_per_year": 0,
   "stages": [
-    {"name": "S1", "days": 21, "relax_details": false},
-    {"name": "S2", "days": 42, "relax_details": false},
-    {"name": "S3", "days": 70, "relax_details": true}
+    {
+      "name": "S1",
+      "days": 21,
+      "relax_fields": []
+    },
+    {
+      "name": "S2",
+      "days": 21,
+      "relax_fields": [
+        "weight_rule"
+      ]
+    },
+    {
+      "name": "S3",
+      "days": 21,
+      "relax_fields": [
+        "weight_rule",
+        "eligibility"
+      ]
+    },
+    {
+      "name": "S4",
+      "days": 42,
+      "relax_fields": [
+        "weight_rule",
+        "eligibility"
+      ],
+      "rank_by_relaxation": true
+    }
   ]
 }

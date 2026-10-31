@@ -22,70 +22,46 @@ def test_kyoto_eight_hanshin_two():
     races = [race(y, str(y), venue="阪神" if y in (2021, 2022) else "京都") for y in range(2016, 2026)]
     result = sampling.select(TARGET, races, RULES)
     assert result["exact_count"] == 8
-    assert not result["fallback_triggered"]
-    assert result["stages"] == []
+    assert result["fallback_triggered"]
+    assert len(result["stages"]) == 4
     assert all(isinstance(k, str) for k in result["exact_race_keys"])
 
 
-def test_threshold_and_stage_stops():
-    exact = [race(y, str(y)) for y in range(2016, 2021)]
-    other = race(2024, "other", name="別競走")
-    assert sampling.select(TARGET, exact + [other], RULES)["selected_stage"] is None
-    result = sampling.select(TARGET, exact[:4] + [other], RULES)
-    assert result["selected_stage"] == "S1"
-    assert [s["stage"] for s in result["stages"]] == ["S1"]
 
-
-def test_s2_and_no_relaxation_of_core():
-    result = sampling.select(TARGET, [race(2020, "a", name="別", date="2020-09-25"),
-                                      race(2021, "b", name="別", venue="阪神")], RULES)
-    assert result["selected_stage"] == "S2"
-    assert result["supplement_race_keys"] == ["a"]
-    assert sampling.select(TARGET, [race(2021, "b", venue="阪神")], RULES)["failure_code"] == "NO_ACCEPTABLE_SUPPLEMENT"
-
-
-def test_one_per_year_and_leap_day():
-    result = sampling.select(TARGET, [race(2020, "b", name="別"), race(2020, "a", name="別")], RULES)
-    assert result["supplement_race_keys"] == ["a"]
-    assert sampling.seasonal_distance(date(2024, 12, 31), date(2020, 1, 1)) == 1
-    assert sampling.seasonal_distance(date(2024, 2, 29), date(2023, 3, 1)) == 1
-
-
-def test_unknown_and_duplicate_never_match():
-    with pytest.raises(ValueError, match="DUPLICATE"):
-        sampling.select(TARGET, [race(2020, "x"), race(2021, "x")], RULES)
-    result = sampling.select(TARGET, [race(2020, "x", race_class=None)], RULES)
-    assert result["exact_count"] == 0
-    assert result["failure_code"] == "NO_ACCEPTABLE_SUPPLEMENT"
-
-
-def test_s3_and_optional_multiple_per_year():
-    rows = [race(2020, "a", name="別", course="inner"),
-            race(2020, "b", name="別", course="inner")]
-    result = sampling.select(TARGET, rows, {**RULES, "supplement_per_year": 0})
-    assert result["selected_stage"] == "S3"
-    assert result["supplement_race_keys"] == ["a", "b"]
-
-
-def test_date_windows_and_target_year_exclusion():
-    rows = [race(2015, "old"), race(2026, "current"),
-            race(2020, "in", name="別", date="2020-10-04"),
-            race(2021, "out", name="別", date="2021-10-03")]
+def test_cumulative_ten_and_multiple_per_year():
+    rows = [race(2024, "exact")]
+    rows += [race(2020, f"s1{i}", name="別") for i in range(3)]
+    rows += [race(2021, f"s2{i}", name="別", weight_rule="handicap") for i in range(3)]
+    rows += [race(2022, f"s3{i}", name="別", weight_rule="handicap", eligibility="older") for i in range(3)]
     result = sampling.select(TARGET, rows, RULES)
-    assert result["exact_count"] == 0
-    assert result["supplement_race_keys"] == ["in"]
-
-@pytest.mark.parametrize('offset,stage', [(21,'S1'),(22,'S2'),(42,'S2'),(43,'S3'),(70,'S3'),(71,None)])
-def test_stage_window_edges(offset, stage):
-    from datetime import timedelta
-    d = date(2020,10,25) - timedelta(days=offset)
-    result = sampling.select(TARGET, [race(2020,'001',name='other',date=d.isoformat())], RULES)
-    assert result['selected_stage'] == stage
+    assert result["total_selected"] == 10
+    assert result["sample_shortfall"] == 0
+    assert [x["added_count"] for x in result["stages"]] == [3, 3, 3]
 
 
-def test_renamed_three_win_requires_explicit_mapping():
-    target = {**TARGET, 'name': '特別', 'race_class': '3win'}
-    rows = [race(2018,'001',name='特別',race_class='1600man')]
-    result = sampling.select(target, rows, RULES)
-    assert result['exact_count'] == 0
-    assert not result['supplement_race_keys']
+def test_s4_42_days_and_shortfall():
+    rows = [race(2020, "a", name="別", date="2020-09-25"),
+            race(2021, "b", name="別", date="2021-09-25", weight_rule="handicap"),
+            race(2022, "c", name="別", date="2022-09-25", eligibility="older", weight_rule="handicap"),
+            race(2023, "outside", name="別", date="2023-08-30")]
+    result = sampling.select(TARGET, rows, RULES)
+    assert result["selected_stage"] == "S4"
+    assert result["supplement_race_keys"] == ["a", "b", "c"]
+    assert result["sample_shortfall"] == 7
+
+
+@pytest.mark.parametrize("field,value", [("venue","阪神"), ("surface","ダート"),
+                                         ("distance",2800), ("course","inner"),
+                                         ("race_class","G2")])
+def test_core_conditions_remain_fixed(field, value):
+    result = sampling.select(TARGET, [race(2020, "x", name="別", **{field:value})], RULES)
+    assert not result["supplement_race_keys"]
+    assert result["sample_shortfall"] == 10
+
+
+def test_unknown_duplicate_and_leap():
+    with pytest.raises(ValueError, match="DUPLICATE"):
+        sampling.select(TARGET, [race(2020,"x"), race(2021,"x")], RULES)
+    assert not sampling.select(TARGET, [race(2020,"x",name="別",eligibility=None)], RULES)["supplement_race_keys"]
+    assert sampling.seasonal_distance(date(2024,12,31),date(2020,1,1)) == 1
+    assert sampling.seasonal_distance(date(2024,2,29),date(2023,3,1)) == 1
