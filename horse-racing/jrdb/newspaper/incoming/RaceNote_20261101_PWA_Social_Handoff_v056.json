@@ -1,0 +1,458 @@
+{
+  "schema_version": "racenote-pwa-social-handoff-v0.1",
+  "status": "PASS",
+  "date": "2026-11-01",
+  "selection_id": "DAILY-20261101",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.6-candidate",
+  "contract_revision": "v056-prediction-confidence-audit-newspaper-v1",
+  "source": {
+    "prediction_status": "PREDICTION_FROZEN_CLEAN_BLIND",
+    "confidence_status": "CONFIDENCE_FROZEN_CLEAN_BLIND",
+    "prediction_records_sha256": "9dd80399e490fc92bb83b62f785fb9073595e41b41e8c77b1a4060d6b24e28d5",
+    "confidence_records_sha256": "3a94ff2ffc5df0aea8da32debd300ef276fa11ea5c0e2185ac0c973883427b4b",
+    "paci_filename": "PACI261101.zip",
+    "paci_sha256": "1d9a098c35ae167ce22bcfc9de186088c9a0331a7c009ecf5028c1e8472aedb6",
+    "horse_name_provenance": "PACI-derived sealed v056 Reader, exact race and horse number",
+    "result_opened": false,
+    "target_market_opened": false
+  },
+  "display_contract": {
+    "pwa": "marks + confidence + short_comment",
+    "social_image": "◎ only includes horse_name; ○▲△ use horse number",
+    "mark_order": [
+      "◎",
+      "○",
+      "▲",
+      "△1",
+      "△2"
+    ],
+    "confidence_Z": "OUT_OF_SCOPE_NOT_LOW_CONFIDENCE"
+  },
+  "race_count": 24,
+  "confidence_counts": {
+    "A": 5,
+    "B": 11,
+    "C": 3,
+    "Z": 5
+  },
+  "venues": [
+    {
+      "venue": "京都",
+      "races": [
+        {
+          "race_no": 1,
+          "honmei": {
+            "horse_no": 6,
+            "horse_name": "ルージュミスティカ"
+          },
+          "marks": {
+            "◎": 6,
+            "○": 10,
+            "▲": 8,
+            "△1": 2,
+            "△2": 7
+          },
+          "confidence": "B",
+          "short_comment": "ルージュミスティカは京都ダート1400mの初戦で3着。舞台経験と順調な調整を生かして前進を狙う。アヴレディールはダートへの対応次第で逆転も。",
+          "social_line": "◎6 ルージュミスティカ / ○10 ▲8 △2 △7"
+        },
+        {
+          "race_no": 2,
+          "honmei": {
+            "horse_no": 9,
+            "horse_name": "マコトブリッツ"
+          },
+          "marks": {
+            "◎": 9,
+            "○": 1,
+            "▲": 13,
+            "△1": 5,
+            "△2": 2
+          },
+          "confidence": "A",
+          "short_comment": "マコトブリッツは京都、阪神のダート1800mでともに2着。距離適性と安定した走りを評価する。初戦3着のグランビートにも上積みがありそうだ。",
+          "social_line": "◎9 マコトブリッツ / ○1 ▲13 △5 △2"
+        },
+        {
+          "race_no": 3,
+          "honmei": {
+            "horse_no": 8,
+            "horse_name": "エトワールハマー"
+          },
+          "marks": {
+            "◎": 8,
+            "○": 5,
+            "▲": 9,
+            "△1": 6,
+            "△2": 3
+          },
+          "confidence": "A",
+          "short_comment": "エトワールハマーは芝2000mで連続2着。距離への適性を重視し、今度こそ勝ち切りを期待。京都で3着のペプチドデバイスが相手筆頭。",
+          "social_line": "◎8 エトワールハマー / ○5 ▲9 △6 △3"
+        },
+        {
+          "race_no": 4,
+          "honmei": {
+            "horse_no": 13,
+            "horse_name": "アウスヴァール"
+          },
+          "marks": {
+            "◎": 13,
+            "○": 12,
+            "▲": 9,
+            "△1": 5,
+            "△2": 4
+          },
+          "confidence": "Z",
+          "short_comment": "アウスヴァールは障害戦で2着、4着と好走を重ねる。飛越の安定感を武器に上位争いへ。モスクロッサーも同距離で2着があり侮れない。",
+          "social_line": "◎13 アウスヴァール / ○12 ▲9 △5 △4"
+        },
+        {
+          "race_no": 5,
+          "honmei": {
+            "horse_no": 2,
+            "horse_name": "サンオブシディアン"
+          },
+          "marks": {
+            "◎": 2,
+            "○": 8,
+            "▲": 12,
+            "△1": 3,
+            "△2": 17
+          },
+          "confidence": "Z",
+          "short_comment": "サンオブシディアンはデビュー戦へ向けた能力と仕上がりを評価。初戦だけに未知数は多く、調整の進むシルヴァニクスとの比較が鍵。",
+          "social_line": "◎2 サンオブシディアン / ○8 ▲12 △3 △17"
+        },
+        {
+          "race_no": 6,
+          "honmei": {
+            "horse_no": 9,
+            "horse_name": "オールベット"
+          },
+          "marks": {
+            "◎": 9,
+            "○": 2,
+            "▲": 5,
+            "△1": 8,
+            "△2": 4
+          },
+          "confidence": "Z",
+          "short_comment": "オールベットはダート1800mの初戦に向けて順調な仕上がり。実戦でも持ち味を出せれば勝負になる。アブソリュートガイとの差は小さい。",
+          "social_line": "◎9 オールベット / ○2 ▲5 △8 △4"
+        },
+        {
+          "race_no": 7,
+          "honmei": {
+            "horse_no": 11,
+            "horse_name": "ブロンテス"
+          },
+          "marks": {
+            "◎": 11,
+            "○": 16,
+            "▲": 7,
+            "△1": 13,
+            "△2": 15
+          },
+          "confidence": "B",
+          "short_comment": "ブロンテスは京都芝1400mで連続3着。調整面の上積みも見込め、得意舞台で前進を狙う。同舞台2着のダノンクロムが強敵。",
+          "social_line": "◎11 ブロンテス / ○16 ▲7 △13 △15"
+        },
+        {
+          "race_no": 8,
+          "honmei": {
+            "horse_no": 10,
+            "horse_name": "マイコンプリート"
+          },
+          "marks": {
+            "◎": 10,
+            "○": 9,
+            "▲": 4,
+            "△1": 2,
+            "△2": 3
+          },
+          "confidence": "B",
+          "short_comment": "マイコンプリートは芝2200mの前走を勝利。調整も良好で距離適性を評価した。ダノンミッドナイトにも同距離で好走歴があり、直線の競り合いに注目。",
+          "social_line": "◎10 マイコンプリート / ○9 ▲4 △2 △3"
+        },
+        {
+          "race_no": 9,
+          "honmei": {
+            "horse_no": 4,
+            "horse_name": "タガノアルトゥーラ"
+          },
+          "marks": {
+            "◎": 4,
+            "○": 9,
+            "▲": 6,
+            "△1": 2,
+            "△2": 8
+          },
+          "confidence": "B",
+          "short_comment": "タガノアルトゥーラは京都ダート1800mで前走勝ち。充実した状態を生かして昇級戦に挑む。中京で勝ったアトモスも力差は小さい。",
+          "social_line": "◎4 タガノアルトゥーラ / ○9 ▲6 △2 △8"
+        },
+        {
+          "race_no": 10,
+          "honmei": {
+            "horse_no": 1,
+            "horse_name": "ファームツエンティ"
+          },
+          "marks": {
+            "◎": 1,
+            "○": 4,
+            "▲": 5,
+            "△1": 2,
+            "△2": 3
+          },
+          "confidence": "C",
+          "short_comment": "ファームツエンティは芝2200mで2着。3000mへの距離延長に対応できれば持久力が生きる。長距離実績のあるプレシャスデイには警戒したい。",
+          "social_line": "◎1 ファームツエンティ / ○4 ▲5 △2 △3"
+        },
+        {
+          "race_no": 11,
+          "honmei": {
+            "horse_no": 3,
+            "horse_name": "ブエナオンダ"
+          },
+          "marks": {
+            "◎": 3,
+            "○": 7,
+            "▲": 8,
+            "△1": 13,
+            "△2": 1
+          },
+          "confidence": "C",
+          "short_comment": "ブエナオンダはマイル戦での走りと地力を評価。強い相手が揃う一戦だけに、レザベーションの調整内容やスマートワイスの実績も気になる。",
+          "social_line": "◎3 ブエナオンダ / ○7 ▲8 △13 △1"
+        },
+        {
+          "race_no": 12,
+          "honmei": {
+            "horse_no": 3,
+            "horse_name": "ヒーローインチーフ"
+          },
+          "marks": {
+            "◎": 3,
+            "○": 2,
+            "▲": 6,
+            "△1": 5,
+            "△2": 10
+          },
+          "confidence": "B",
+          "short_comment": "ヒーローインチーフは京都芝1400mの前走で3着。同条件で堅実な走りを期待する。ワンコールアウェイも近走好走しており、差は大きくない。",
+          "social_line": "◎3 ヒーローインチーフ / ○2 ▲6 △5 △10"
+        }
+      ]
+    },
+    {
+      "venue": "東京",
+      "races": [
+        {
+          "race_no": 1,
+          "honmei": {
+            "horse_no": 1,
+            "horse_name": "インサイドエッジ"
+          },
+          "marks": {
+            "◎": 1,
+            "○": 13,
+            "▲": 9,
+            "△1": 3,
+            "△2": 12
+          },
+          "confidence": "A",
+          "short_comment": "インサイドエッジは東京芝1400mで2着の実績。距離適性を生かして勝ち切りを狙う。東京で3着のユリアも状態が良く、好勝負になりそうだ。",
+          "social_line": "◎1 インサイドエッジ / ○13 ▲9 △3 △12"
+        },
+        {
+          "race_no": 2,
+          "honmei": {
+            "horse_no": 6,
+            "horse_name": "ナムラアラバイ"
+          },
+          "marks": {
+            "◎": 6,
+            "○": 10,
+            "▲": 7,
+            "△1": 2,
+            "△2": 5
+          },
+          "confidence": "C",
+          "short_comment": "ナムラアラバイは東京ダート1600mで4着。距離短縮が良い方向に出れば前進できる。東京1400mで4着のライヴバーボンが対抗。",
+          "social_line": "◎6 ナムラアラバイ / ○10 ▲7 △2 △5"
+        },
+        {
+          "race_no": 3,
+          "honmei": {
+            "horse_no": 9,
+            "horse_name": "ハートノート"
+          },
+          "marks": {
+            "◎": 9,
+            "○": 4,
+            "▲": 2,
+            "△1": 5,
+            "△2": 8
+          },
+          "confidence": "B",
+          "short_comment": "ハートノートは芝1800mで連続2着。距離の裏付けと好調な調整を評価し、今度こそ勝機をつかみたい。東京で2着のコスモバルムンクは手強い。",
+          "social_line": "◎9 ハートノート / ○4 ▲2 △5 △8"
+        },
+        {
+          "race_no": 4,
+          "honmei": {
+            "horse_no": 10,
+            "horse_name": "コールセレスト"
+          },
+          "marks": {
+            "◎": 10,
+            "○": 1,
+            "▲": 2,
+            "△1": 7,
+            "△2": 13
+          },
+          "confidence": "Z",
+          "short_comment": "コールセレストはデビュー戦へ向けて仕上がり良好。初戦から力を発揮できれば上位争いへ。アドマイヤキングスも同程度の仕上がりで注意が必要。",
+          "social_line": "◎10 コールセレスト / ○1 ▲2 △7 △13"
+        },
+        {
+          "race_no": 5,
+          "honmei": {
+            "horse_no": 2,
+            "horse_name": "オルトゥス"
+          },
+          "marks": {
+            "◎": 2,
+            "○": 6,
+            "▲": 7,
+            "△1": 3,
+            "△2": 8
+          },
+          "confidence": "Z",
+          "short_comment": "オルトゥスは芝2000mのデビュー戦。調整過程と素質を評価したが、初戦だけに不確定要素も多い。パルパデオも好仕上がりで接戦か。",
+          "social_line": "◎2 オルトゥス / ○6 ▲7 △3 △8"
+        },
+        {
+          "race_no": 6,
+          "honmei": {
+            "horse_no": 9,
+            "horse_name": "ガラク"
+          },
+          "marks": {
+            "◎": 9,
+            "○": 12,
+            "▲": 14,
+            "△1": 4,
+            "△2": 11
+          },
+          "confidence": "A",
+          "short_comment": "ガラクは東京ダート1400mで2着。コース経験と調整の良さから有力視する。ゴーゴーパンチとヘルヴェティオスも同舞台で3着がある。",
+          "social_line": "◎9 ガラク / ○12 ▲14 △4 △11"
+        },
+        {
+          "race_no": 7,
+          "honmei": {
+            "horse_no": 4,
+            "horse_name": "エドワードバローズ"
+          },
+          "marks": {
+            "◎": 4,
+            "○": 5,
+            "▲": 12,
+            "△1": 3,
+            "△2": 11
+          },
+          "confidence": "B",
+          "short_comment": "エドワードバローズは東京ダート1600mで2、5、3着と堅実。現級での実績を武器に勝機を狙う。カルネヴァーレも同舞台で前走2着と迫る。",
+          "social_line": "◎4 エドワードバローズ / ○5 ▲12 △3 △11"
+        },
+        {
+          "race_no": 8,
+          "honmei": {
+            "horse_no": 6,
+            "horse_name": "イブキ"
+          },
+          "marks": {
+            "◎": 6,
+            "○": 4,
+            "▲": 7,
+            "△1": 1,
+            "△2": 2
+          },
+          "confidence": "B",
+          "short_comment": "イブキは東京芝2400mで勝ちと2着があり、得意条件で安定した走りを期待。ネチェセラーダは距離経験が豊富で、ワンモアスマイルも侮れない。",
+          "social_line": "◎6 イブキ / ○4 ▲7 △1 △2"
+        },
+        {
+          "race_no": 9,
+          "honmei": {
+            "horse_no": 1,
+            "horse_name": "ミッキーソルジャー"
+          },
+          "marks": {
+            "◎": 1,
+            "○": 6,
+            "▲": 9,
+            "△1": 14,
+            "△2": 10
+          },
+          "confidence": "A",
+          "short_comment": "ミッキーソルジャーは東京芝1600mで勝利し、他場でも2着。昇級しても対応できる力を評価する。テラメリタの安定感が最大の脅威。",
+          "social_line": "◎1 ミッキーソルジャー / ○6 ▲9 △14 △10"
+        },
+        {
+          "race_no": 10,
+          "honmei": {
+            "horse_no": 9,
+            "horse_name": "プルメリアリノ"
+          },
+          "marks": {
+            "◎": 9,
+            "○": 13,
+            "▲": 2,
+            "△1": 4,
+            "△2": 7
+          },
+          "confidence": "B",
+          "short_comment": "プルメリアリノはダート1200mで2連勝。勢いを買う一方、相手も強化される。セイントエルモズの堅実さとタマモティーカップの上積みに注意。",
+          "social_line": "◎9 プルメリアリノ / ○13 ▲2 △4 △7"
+        },
+        {
+          "race_no": 11,
+          "honmei": {
+            "horse_no": 1,
+            "horse_name": "クロワデュノール"
+          },
+          "marks": {
+            "◎": 1,
+            "○": 7,
+            "▲": 17,
+            "△1": 6,
+            "△2": 11
+          },
+          "confidence": "B",
+          "short_comment": "クロワデュノールは芝2000mの勝利と2200mでの2着が光る。総合力を評価して本命。東京2400mで好走するマスカレードボールやダノンデサイルも強敵。",
+          "social_line": "◎1 クロワデュノール / ○7 ▲17 △6 △11"
+        },
+        {
+          "race_no": 12,
+          "honmei": {
+            "horse_no": 8,
+            "horse_name": "スマートスピア"
+          },
+          "marks": {
+            "◎": 8,
+            "○": 13,
+            "▲": 2,
+            "△1": 14,
+            "△2": 9
+          },
+          "confidence": "B",
+          "short_comment": "スマートスピアは東京ダート1600mで2着。得意条件を生かして勝ち切りを狙う。サマーマッドネスとファンシーズも同舞台で勝利経験があり、接戦になりそうだ。",
+          "social_line": "◎8 スマートスピア / ○13 ▲2 △14 △9"
+        }
+      ]
+    }
+  ]
+}
