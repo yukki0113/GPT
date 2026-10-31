@@ -229,3 +229,37 @@
 ```
 
 この構成を、今後の成績画像の標準テンプレートとする。
+
+
+## 13. X投稿スレッドの責務（2026-10-31追記）
+
+このスレッドは、予想一覧画像に加え、当日の結果・払戻取得、既存の同日精算エンジン実行、成績画像作成まで担当する。
+
+### 13.1 標準フロー
+
+1. GitHub `main` の予想・結果画像仕様、当日freeze済み予想（Social Handoff等）を取得する。
+2. `date`、`status`、会場/R、◎○▲△△の完全性を検証し、予想を一切変更しない。
+3. 開催後に結果・払戻を取得する。標準は JRDB Result Query（SED/HJC）。同日未入手時の速報は既存同日結果運用仕様に従う。既存の正規ソースがあるなら別ソースで代用しない。
+4. 既存 `horse-racing/jrdb/src/racenote_daily_settlement.py` を使用して成績を算出する。買い目、100円単位、戦略別集計を独自に再実装しない。
+5. Social Handoff JSONの構造がエンジンのForecast入力契約に一致しない場合は、既存freeze済みForecastまたは `decision_core.marks` を優先して使用する。必要な変換は意味・horse_noを変更せず監査可能にし、無言でフォーマット互換を仮定しない。
+6. `settled_races` / `pending` / `review_required`、投資・払戻・回収率、券種ごとの`top_payout_tickets`を検査する。未確定・要確認があれば確定成績画像を公開しない。
+7. 最上段だけは予想時点で凍結された `confidence == "A"` の◎を結果と結合して着度数・単複回収率を算出する。
+8. 下段の馬連・馬単・3連複・3連単は**全レース**のSettlement値を使用する。
+9. 確定値を決定的に文字描画し、画像生成AIに数値・馬名・印を推測させない。キャラと背景は正本デザインに沿わせる。
+10. 出力画像の数値をSettlement・自信度A集計と全項目照合する。
+
+### 13.2 参照する既存実装
+
+- `horse-racing/jrdb/docs/racenote/SAME_DAY_RESULT_SETTLEMENT_v0_1.md`
+- `horse-racing/jrdb/src/racenote_daily_result_from_jrdb.py`
+- `horse-racing/jrdb/src/racenote_daily_settlement.py`
+- `horse-racing/jrdb/tests/test_racenote_daily_settlement.py`
+- `horse-racing/jrdb/docs/JRDB_RESULT_QUERY_GPT_RUNTIME_RUNBOOK_v0_1.md`
+
+### 13.3 処理主体と保存ルール
+
+- ユーザーにSettlement JSONの手動用意を要求することを標準フローにしない。
+- 正本の予想・結果ファイルは既存のGit / Drive / Library運用を尊重する。ユーザー添付を恒久的な正本にはしない。
+- Settlement JSON/Markdownは再現可能なpost-result生成物。保存する場合も、既存正本との重複・汚染を避ける。
+- このスレッドは投稿画像の作成・検算を担当し、予想Freezeの再計算・変更は行わない。
+- 独立したSettlementエンジンの再実装はしない。
