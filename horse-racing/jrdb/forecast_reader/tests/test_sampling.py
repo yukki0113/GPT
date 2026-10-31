@@ -22,8 +22,8 @@ def test_kyoto_eight_hanshin_two():
     races = [race(y, str(y), venue="阪神" if y in (2021, 2022) else "京都") for y in range(2016, 2026)]
     result = sampling.select(TARGET, races, RULES)
     assert result["exact_count"] == 8
-    assert not result["fallback_triggered"]
-    assert result["stages"] == []
+    assert result["fallback_triggered"]
+    assert len(result["stages"]) == 4
     assert all(isinstance(k, str) for k in result["exact_race_keys"])
 
 
