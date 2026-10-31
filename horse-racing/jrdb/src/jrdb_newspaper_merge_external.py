@@ -834,6 +834,25 @@ def merge_day(
         rrdb_recommendation_merged = 0
         rn_comments = 0
 
+        # Supplied Kensho sources are replacements for that source namespace,
+        # not additive patches.  This is required for independent RaceNote/RRDB
+        # updates: a changed candidate set must not leave stale entries behind,
+        # while an omitted source remains untouched in the copied current day.
+        if rrdb_recommendation_source_name is not None:
+            for horse in bundle.get("horses") or []:
+                addons = horse.get("addons")
+                if isinstance(addons, dict):
+                    addons.pop("rrdb_recommendation", None)
+
+        if racenote_csv is not None:
+            for horse in bundle.get("horses") or []:
+                addons = horse.get("addons")
+                if isinstance(addons, dict):
+                    addons.pop("racenote_prediction", None)
+            race_notes = bundle.get("race_notes")
+            if isinstance(race_notes, dict):
+                race_notes.pop("racenote_short_comment", None)
+
         rn_meta = (
             rn_races.get(race_id) if racenote_csv is not None else None
         )
