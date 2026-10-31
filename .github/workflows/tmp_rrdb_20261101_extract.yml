@@ -1,0 +1,123 @@
+name: RRDB 20261101 extraction temporary
+
+on:
+  push:
+    branches:
+      - tmp/rrdb-1101-extract-20261031
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r tools/data-storage/requirements.txt
+          python -m pip install gdown
+
+      - name: Download canonical inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .rrdb/input .rrdb/work .rrdb/output .rrdb/course-fit .rrdb/racelap
+
+          python -m gdown 12nGKaoJpYBfbOweuuC0aRux4FeJDRY0N -O .rrdb/input/PACI261101.zip
+          python -m gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O .rrdb/input/RaceReviewDB_CURRENT.zip
+          python -m gdown 1ljLg_jxVdZtpJ_Aqku0L93y8nwnfXUTQ -O .rrdb/input/course_fit_part1.zip
+          python -m gdown 1yxP0EtPRmcTnrAgmgBMlAAj257r3pgYE -O .rrdb/input/course_fit_part2.zip
+          python -m gdown 1RdmS-8q0NsA8opCvNioaqVotk2wiEZz- -O .rrdb/input/RaceLap_CURRENT.zip
+
+          python -m gdown 1k9z4UxSzLOuD9JkXcvobOA6_o0_lW7eD -O .rrdb/input/SED261018.zip
+          python -m gdown 1A0xdYsCJAxujWbczv3FeSz3U22M0Rn1n -O .rrdb/input/SED261024.zip
+          python -m gdown 1jj5G1IXZ_AJI2Y474H6UH4K8xLFAvmB3 -O .rrdb/input/SED261025.zip
+
+          unzip -qo .rrdb/input/course_fit_part1.zip -d .rrdb/course-fit
+          unzip -qo .rrdb/input/course_fit_part2.zip -d .rrdb/course-fit
+          unzip -qo .rrdb/input/RaceLap_CURRENT.zip -d .rrdb/racelap-current
+
+          test -f .rrdb/racelap-current/current/race_lap.parquet
+          test -f .rrdb/course-fit/fit/research/candidate_fit_view.parquet
+
+      - name: Advance RaceLap through latest available completed JRA date
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/jrdb_race_lap_forward_refresh.py             --previous .rrdb/racelap-current/current/race_lap.parquet             --sed .rrdb/input/SED261018.zip             --sed .rrdb/input/SED261024.zip             --sed .rrdb/input/SED261025.zip             --output-root .rrdb/racelap             --generation-id racelap-forward-rrdb-20261101-01             --expected-date 2026-10-18             --expected-date 2026-10-24             --expected-date 2026-10-25             | tee .rrdb/output/racelap_refresh.json
+          test -f .rrdb/racelap/generations/racelap-forward-rrdb-20261101-01/race_lap.parquet
+
+      - name: Run canonical RRDB reverse lookup
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/jrdb_recommendation_reverse.py             --race-date 2026-11-01             --paci-zip .rrdb/input/PACI261101.zip             --current-zip .rrdb/input/RaceReviewDB_CURRENT.zip             --course-fit-root .rrdb/course-fit             --race-lap-parquet .rrdb/racelap/generations/racelap-forward-rrdb-20261101-01/race_lap.parquet             --work-root .rrdb/work             --output-json .rrdb/output/20261101_RRDB_v0_5_reverse.json
+
+      - name: Build PWA handoff and detailed audit CSV
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/build_rrdb_newspaper_handoff.py             --reverse-json .rrdb/output/20261101_RRDB_v0_5_reverse.json             --output-csv .rrdb/output/20261101_RRDB_v0_5_PWA_handoff.csv
+
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+          src=Path(".rrdb/output/20261101_RRDB_v0_5_reverse.json")
+          out=Path(".rrdb/output/20261101_RRDB_v0_5_matches.csv")
+          obj=json.loads(src.read_text(encoding="utf-8"))
+          cols=["date","venue_code","race_no","race_key","horse_no","horse_name",
+                "matched_signal_count","matched_signal_ids","matched_signal_labels",
+                "human_summary","recommendation_comment","recommendation_version",
+                "source_race_date","source_race_key"]
+          rows=[]
+          labels={s["signal_id"]:s["label"] for r in obj["recommendations"] for s in r.get("signals",[])}
+          for r in obj["recommendations"]:
+              ids=r.get("matched_signal_ids") or []
+              sr=r.get("source_run") or {}
+              rows.append({
+                  "date":obj["race_date"],
+                  "venue_code":str(r.get("venue_code") or "").zfill(2),
+                  "race_no":r.get("race_no"),
+                  "race_key":r.get("target_race_key"),
+                  "horse_no":r.get("horse_no"),
+                  "horse_name":r.get("horse_name_paci"),
+                  "matched_signal_count":len(ids),
+                  "matched_signal_ids":"|".join(ids),
+                  "matched_signal_labels":"|".join(labels.get(x,x) for x in ids),
+                  "human_summary":r.get("human_summary"),
+                  "recommendation_comment":r.get("newspaper_comment"),
+                  "recommendation_version":obj.get("recommendation_contract_version"),
+                  "source_race_date":sr.get("race_date"),
+                  "source_race_key":sr.get("race_key"),
+              })
+          with out.open("w",encoding="utf-8-sig",newline="") as f:
+              w=csv.DictWriter(f,fieldnames=cols); w.writeheader(); w.writerows(rows)
+          summary={
+              "status":obj["status"],
+              "race_date":obj["race_date"],
+              "source_generation_id":obj["source_generation_id"],
+              "entrant_count":obj["entrant_count"],
+              "recommendation_count":obj["recommendation_count"],
+              "no_match_count":obj["no_match_count"],
+              "no_history_count":obj["no_history_count"],
+          }
+          Path(".rrdb/output/summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print(json.dumps(summary,ensure_ascii=False))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rrdb-20261101-extraction-${{ github.run_id }}
+          path: .rrdb/output/
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
