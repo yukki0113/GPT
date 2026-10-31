@@ -120,6 +120,21 @@
 
 けんしょーはKenshow_Labo利用者本人であり、RaceNote / RaceReviewDB (RRDB) を予想・短評・注目馬提出の正本とする。
 
+### 分離取り込み
+
+RaceNote と RRDB は完成時刻が異なるため、同時提出を必須としない。
+
+- RaceNote だけ先に提出・反映してよい。
+- RRDB だけ先に提出・反映してよい。
+- 後からもう片方を提出した場合は、そのsourceだけを差し替える。
+- 未指定のsourceは current の内容を完全保持し、空扱い・削除・再推測しない。
+- RaceNoteを差し替える場合は既存の `addons.racenote_prediction` とRaceNoteレース短評をそのsource単位で置換する。
+- RRDBを差し替える場合は既存の `addons.rrdb_recommendation` をそのsource単位で置換する。
+- どちらか一方の更新でも、個人PWAと桃太郎PWAを同じcurrent datasetから再投影し、もう片方の保持を監査する。
+- りょーた・おーじ・🐬・Evalなど、今回未指定の他sourceも保持する。
+
+正式なIssue workflow `.github/workflows/jrdb_newspaper_kensho_merge_issue.yml` は、`RaceNote-only` / `RRDB-only` / `RaceNote+RRDB` の3モードを受け付ける。
+
 ### RaceNote
 
 RaceNoteの当日予想を、そのままけんしょー予想として扱う。
