@@ -133,3 +133,51 @@ def test_pending_race_is_not_counted_as_loss_or_stake() -> None:
         assert row["stake_jpy"] == 0
         assert row["payout_jpy"] == 0
         assert row["return_rate_pct"] is None
+
+
+def test_four_leg_tickets_from_november_2026() -> None:
+    record = forecast()
+    record["identity"]["target_date"] = "2026-11-01"
+    tickets = subject.build_tickets(record)
+    assert len(tickets) == 28
+    for strategy, wager in [("quinella_main", "quinella"), ("exacta_main", "exacta")]:
+        relevant = [t for t in tickets if t.strategy == strategy]
+        assert len(relevant) == 4
+        assert {t.marks[1] for t in relevant} == {"○", "▲", "△1", "△2"}
+        assert all(t.horses[0] == 5 and t.wager == wager for t in relevant)
+
+
+def test_four_leg_settlement_includes_delta_hits_and_uses_400_yen_stake() -> None:
+    record = forecast()
+    record["identity"]["target_date"] = "2026-11-01"
+    result = results()
+    race = result["races"][0]
+    race["date"] = "2026-11-01"
+    race["payouts"]["quinella"].append({"combination": [5, 7], "payout_jpy": 1800})
+    race["payouts"]["exacta"].append({"combination": [5, 9], "payout_jpy": 2600})
+    payload = subject.settle([record], result)
+    by = {row["code"]: row for row in payload["strategies"]}
+    assert payload["races"][0]["tickets"] and len(payload["races"][0]["tickets"]) == 28
+    assert by["quinella_main"]["label"] == "馬連 ◎－他印流し"
+    assert by["exacta_main"]["label"] == "馬単 ◎→他印流し"
+    assert by["quinella_main"]["ticket_count"] == 4
+    assert by["quinella_main"]["stake_jpy"] == 400
+    assert by["quinella_main"]["payout_jpy"] == 2110
+    assert by["exacta_main"]["ticket_count"] == 4
+    assert by["exacta_main"]["stake_jpy"] == 400
+    assert by["exacta_main"]["payout_jpy"] == 4090
+    assert by["quinella_second"]["stake_jpy"] == 100
+    assert by["quinella_shot"]["stake_jpy"] == 100
+    assert by["trio_flow"]["stake_jpy"] == 600
+    assert by["trifecta_flow"]["stake_jpy"] == 1200
+    assert by["quinella_main"]["top_payout_tickets"][0]["marks"] == "◎－△1"
+    assert by["exacta_main"]["top_payout_tickets"][0]["marks"] == "◎→△2"
+
+
+def test_legacy_october_settlement_remains_24_tickets() -> None:
+    record = forecast()
+    record["identity"]["target_date"] = "2026-10-31"
+    tickets = subject.build_tickets(record)
+    assert len(tickets) == 24
+    assert sum(t.strategy == "quinella_main" for t in tickets) == 2
+    assert sum(t.strategy == "exacta_main" for t in tickets) == 2
