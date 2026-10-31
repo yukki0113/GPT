@@ -42,6 +42,8 @@ def main():
         plan_ok = cp.returncode == 0 and (out / "plan/acquisition_plan.json").is_file()
         report["checks"].append({"name":"canonical_plan","pass":plan_ok,"exit_code":cp.returncode,
                                   "stdout":cp.stdout[-3000:],"stderr":cp.stderr[-3000:]})
+        bootstrap = subprocess.run([sys.executable, "-m", "pip", "install", "--disable-pip-version-check", "pytest"], cwd=ROOT, env=env, capture_output=True, text=True)
+        report["checks"].append({"name":"pytest_bootstrap","pass":bootstrap.returncode == 0,"exit_code":bootstrap.returncode,"tail":(bootstrap.stdout + bootstrap.stderr)[-1000:]})
         tests = subprocess.run([sys.executable, "-m", "pytest", *TEST_PATHS, "-q"],
                                cwd=ROOT, capture_output=True, text=True)
         (out / "pytest.log").write_text(tests.stdout + "\n" + tests.stderr, encoding="utf-8")
