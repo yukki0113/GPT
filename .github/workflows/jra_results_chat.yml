@@ -1,8 +1,14 @@
 name: jra-results-chat
 
 on:
-  issues:
-    types: [opened]
+  repository_dispatch:
+    types: [jra_results_request]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Existing JRA results request Issue number
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -13,9 +19,40 @@ env:
 
 jobs:
   fetch:
-    if: startsWith(github.event.issue.title, '[JRA_RESULTS_REQUEST]')
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve request Issue
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          ROUTED_ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+          MANUAL_ISSUE_NUMBER: ${{ inputs.issue_number }}
+        run: |
+          python - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+          event = os.environ['EVENT_NAME']
+          number = (os.environ.get('ROUTED_ISSUE_NUMBER') if event == 'repository_dispatch'
+                    else os.environ.get('MANUAL_ISSUE_NUMBER') if event == 'workflow_dispatch'
+                    else '')
+          number = str(number or '').strip()
+          if not re.fullmatch(r'[1-9][0-9]*', number):
+              raise SystemExit('invalid issue number')
+          issue = json.loads(subprocess.run(
+              ['gh', 'api', f"repos/{os.environ['GITHUB_REPOSITORY']}/issues/{number}"],
+              capture_output=True, text=True, check=True).stdout)
+          if issue.get('state') != 'open':
+              raise SystemExit('request issue must be open')
+          if issue.get('user', {}).get('login') != 'yukki0113':
+              raise SystemExit('request issue owner mismatch')
+          if not str(issue.get('title') or '').startswith('[JRA_RESULTS_REQUEST]'):
+              raise SystemExit('request issue prefix mismatch')
+          Path('/tmp/jra_results_issue.json').write_text(json.dumps(issue), encoding='utf-8')
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
+              out.write(f'issue_number={number}\n')
+          PY
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -28,10 +65,6 @@ jobs:
         run: pip install -r horse-racing/eval/requirements.txt
 
       - name: Parse request
-        env:
-          ISSUE_TITLE: ${{ github.event.issue.title }}
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           python - <<'PY'
           import json
@@ -41,14 +74,15 @@ jobs:
           from pathlib import Path
 
           prefix = '[JRA_RESULTS_REQUEST]'
-          title = os.environ['ISSUE_TITLE']
+          issue = json.loads(Path('/tmp/jra_results_issue.json').read_text(encoding='utf-8'))
+          title = issue['title']
           if not title.startswith(prefix):
               raise SystemExit('Unexpected issue title')
           request_id = title[len(prefix):].strip()
           if not re.fullmatch(r'[A-Za-z0-9._-]{1,80}', request_id):
               raise SystemExit('Invalid request_id in issue title')
 
-          body = (os.environ.get('ISSUE_BODY') or '').strip()
+          body = (issue.get('body') or '').strip()
           try:
               request = json.loads(body)
           except json.JSONDecodeError as exc:
@@ -99,7 +133,7 @@ jobs:
 
           config = {
               'request_id': request_id,
-              'issue_number': int(os.environ['ISSUE_NUMBER']),
+              'issue_number': int(issue['number']),
               'command': command,
               'output_dir': output_dir,
               'range_label': range_label,
@@ -161,7 +195,7 @@ jobs:
           mkdir -p "$OUTPUT_DIR"
           {
             echo "request_id=$REQUEST_ID"
-            echo "issue_number=${{ github.event.issue.number }}"
+            echo "issue_number=${{ steps.resolve.outputs.issue_number }}"
             echo "run_id=${{ github.run_id }}"
             echo "head_sha=${{ github.sha }}"
             echo "event_name=${{ github.event_name }}"
@@ -214,13 +248,13 @@ jobs:
               encoding='utf-8'
           )
           PY
-          gh issue comment "${{ github.event.issue.number }}" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
+          gh issue comment "${{ steps.resolve.outputs.issue_number }}" --repo "${{ github.repository }}" --body-file /tmp/result_comment.md
 
       - name: Close request issue
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh issue close "${{ github.event.issue.number }}" --repo "${{ github.repository }}"
+        run: gh issue close "${{ steps.resolve.outputs.issue_number }}" --repo "${{ github.repository }}"
 
       - name: Fail workflow when fetch or validation failed
         if: always() && (steps.fetch.outputs.exit_code != '0' || steps.validate.outputs.exit_code != '0')
@@ -230,7 +264,7 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_NUMBER: ${{ steps.resolve.outputs.issue_number }}
           JOB_STATUS: ${{ job.status }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
