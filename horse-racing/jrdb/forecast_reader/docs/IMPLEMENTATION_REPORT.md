@@ -215,3 +215,18 @@ inputs. Missing sources/unknown code/date mappings still fail closed. Earlier
 2015 references for other selected cohorts can be reconstructed from the accepted
 2010–2025 Warehouse using existing adapters if they are needed; they were not
 required by the selected 143 starts here. No missing-value imputation was used.
+
+Authority manifest SHAs (native observations retained in local input receipt):
+- jrdb.paci.daily: 2fcce9418b51b55de3d6ea70e1c73510c24a9daf40047d0d1d6a026ea8847484; PACI261025
+- jrdb.analysis.current: f8627085b9ff905166a8b6c51f842bdc382d2a3529b11fb72086d41b843f5557; analysis-v1_4-postrace-20261018-01
+- jrdb.historical_conditions: 62fb6eb79546e3e0dd2b70592e0324d52c33c361f7073e78c2b420b82e1e008d; jrdb_normalized_warehouse_v1_2010_2025_g20260921
+
+Final acceptance code commit: b999d255a2edb8701953883dc7495031e4add9f0.
+
+Final acceptance CI PASS on b999d255a2edb8701953883dc7495031e4add9f0:
+- PR: https://github.com/yukki0113/GPT/actions/runs/41151757778
+- push: https://github.com/yukki0113/GPT/actions/runs/41151752158
+Native observations were taken during this investigation; the provider's recorded
+publication/modified times and immutable old-manifest content bindings establish
+pre-cutoff availability. We do not claim that this agent observed the files at the
+historical prediction time. Existing source receipts are preserved locally.

@@ -1,8 +1,8 @@
-# Forecast Reader (work in progress)
+# Forecast Reader
 
 The CLI supports deterministic plan/run execution and emits PASS, PARTIAL,
-NEED_INPUT or BLOCKED according to verified source coverage. Real-data acceptance
-is limited by unavailable as-of historical condition evidence; see the report.
+NEED_INPUT or BLOCKED according to verified source coverage. The Kyoto 菊花賞 2026 case has passed real-data acceptance through an immutable
+pre-race Analysis manifest and accepted Warehouse conditions; see the report.
 
 ```
 python horse-racing/jrdb/forecast_reader/forecast_reader_runner.py --request request.json --plan --output-dir OUTPUT
