@@ -85,6 +85,11 @@ def run(request, inputs, output_dir=None):
         return {'status': 'NEED_INPUT', 'failure_code': 'SOURCE_NOT_FOUND', 'history_coverage': query_audit}
     if query_audit.get('missing_conditions') and 'jrdb.historical_conditions' in paths:
         conditions = json.loads(paths['jrdb.historical_conditions'].read_text())
+        if conditions.get('artifact_type') == 'jrdb_normalized_warehouse_final_generation':
+            from warehouse_conditions import read_conditions
+            races, bac_audit = read_conditions(conditions, sources['jrdb.historical_conditions'].get('asset_paths', {}), day.year)
+            conditions = {'schema_version': 'forecast-conditions.v1', 'races': races}
+            query_audit['warehouse_bac_assets'] = bac_audit
         if conditions.get('schema_version') != 'forecast-conditions.v1':
             raise ValueError('INVALID_REQUEST: condition schema')
         races = conditions['races']
@@ -102,6 +107,7 @@ def run(request, inputs, output_dir=None):
     if query_audit.get('missing_conditions'):
         return {'status': 'NEED_INPUT', 'failure_code': 'UNKNOWN_CONDITION',
                 'missing_conditions': query_audit['missing_conditions'], 'history_coverage': query_audit, 'plan': plan(request)}
+    by_race = {r['race_key']: r for r in races}
     runners, coverage = read_previous(paths['jrdb.paci.daily'], target['race_key'], day)
     raw_sources = [p for k,p in paths.items() if k.startswith('jrdb.previous_raw.')]
     if coverage['missing_previous'] and raw_sources:
@@ -119,6 +125,13 @@ def run(request, inputs, output_dir=None):
         coverage['missing_previous'] = len(runners) - coverage['previous_available']
     if len(runners) != expected_runners:
         raise ValueError('SOURCE_CHANGED: BAC/KYI field count')
+    for runner in runners:
+        previous = runner.get('previous_run')
+        if previous:
+            from race_condition_resolver import class_identity
+            previous['normalized_class'] = class_identity(previous.get('race_class_code'), previous.get('grade_code'))
+            if previous.get('race_key') in by_race and previous['normalized_class'] != by_race[previous['race_key']]['race_class']:
+                raise ValueError('SOURCE_CHANGED: previous class BAC/ZED mismatch')
     rules = json.loads((Path(__file__).parent / 'config/sampling_rules_v1.json').read_text())
     reference_rows = rows
     if 'jrdb.history.references' in paths:

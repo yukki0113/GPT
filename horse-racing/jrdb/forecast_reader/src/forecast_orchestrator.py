@@ -29,7 +29,9 @@ def build(target, races, rows, runners, rules, reference_rows=None):
         raise ValueError('FUTURE_LEAK')
     by_key = {(r['race_key'], r['horse_id']): r for r in references}
     start_year = int(target['date'][:4]) - 10
-    cohort = [r for r in rows if start_year <= int(str(r['race_date'])[:4]) < int(target['date'][:4])]
+    history_pool = [r for r in rows if start_year <= int(str(r['race_date'])[:4]) < int(target['date'][:4])]
+    selected_keys = set(selected['exact_race_keys']) | set(selected['supplement_race_keys'])
+    cohort = [r for r in history_pool if r['race_key'] in selected_keys]
     joined = 0
     requested = 0
     prepared = []
@@ -65,16 +67,23 @@ def build(target, races, rows, runners, rules, reference_rows=None):
     represented = {r['race_key'] for r in prepared}
     incomplete = bool((set(selected['exact_race_keys']) | set(selected['supplement_race_keys'])) - represented) or any(axis['missing_count'] for table in trends.values() for axis in table.values())
     missing_previous = any(not r.get('previous_run') for r in runners)
-    present_years = sorted({int(str(r['race_date'])[:4]) for r in cohort})
+    present_years = sorted({int(str(r['race_date'])[:4]) for r in history_pool})
     missing_years = sorted(set(range(start_year, int(target['date'][:4]))) - set(present_years))
     incomplete = incomplete or bool(missing_years) or requested > joined
     status = 'PARTIAL' if incomplete or missing_previous or selected['failure_code'] or not selected['exact_count'] else 'PASS'
     return {'schema_version': 'forecast-evidence.v1', 'status': status, 'target': target,
-            'history_coverage': {'years_present': present_years, 'years_missing': missing_years, 'cohort_starts': len(cohort), 'cohort_races': len({r['race_key'] for r in cohort}), 'reference_rows': len(references), 'previous_requested': requested, 'previous_joined': joined, 'previous_missing': requested - joined},
+            'history_coverage': {'years_present': present_years, 'years_missing': missing_years, 'history_pool_starts': len(history_pool), 'history_pool_races': len({r['race_key'] for r in history_pool}), 'cohort_starts': len(cohort), 'cohort_races': len({r['race_key'] for r in cohort}), 'reference_rows': len(references), 'previous_requested': requested, 'previous_joined': joined, 'previous_missing': requested - joined},
             'sampling': selected, 'trends': trends, 'runners': runners,
             'gate_status': {'A': 'PASS' if not selected['failure_code'] else 'PARTIAL',
                             'B': 'PARTIAL' if incomplete or not selected['exact_count'] else 'PASS', 'C': 'PARTIAL' if missing_previous else 'PASS'},
             'limitations': ['Runner comparisons describe observed groups and do not estimate outcomes.']}
+
+
+def code_hash():
+    root = Path(__file__).resolve().parent.parent
+    files = list((root / 'src').glob('*.py')) + list((root / 'config').glob('*.json')) + [root / 'forecast_reader_runner.py']
+    payload = b''.join(str(p.relative_to(root)).encode() + b'\0' + p.read_bytes() + b'\0' for p in sorted(files))
+    return hashlib.sha256(payload).hexdigest()
 
 
 def publish(output_dir, request, evidence, sampling_audit, source_audit):
@@ -87,7 +96,7 @@ def publish(output_dir, request, evidence, sampling_audit, source_audit):
     destination = root / request_hash
     if destination.exists():
         expected = {'forecast_evidence.json': evidence, 'sampling_audit.json': sampling_audit, 'source_audit.json': source_audit}
-        if all((destination / name).is_file() and (destination / name).read_bytes() == canonical(value) for name,value in expected.items()):
+        if json.loads((destination / 'manifest.json').read_text()).get('code_sha256') == code_hash() and all((destination / name).is_file() and (destination / name).read_bytes() == canonical(value) for name,value in expected.items()):
             return destination
         raise ValueError('SOURCE_CHANGED: output exists')
     with tempfile.TemporaryDirectory(dir=root) as scratch:
@@ -99,6 +108,6 @@ def publish(output_dir, request, evidence, sampling_audit, source_audit):
             content = canonical(value)
             (stage / name).write_bytes(content)
             hashes[name] = hashlib.sha256(content).hexdigest()
-        (stage / 'manifest.json').write_bytes(canonical({'request_sha256': request_hash, 'outputs': hashes, 'reader_version': '1.0.0', 'code_sha256': hashlib.sha256(b''.join(p.read_bytes() for p in sorted(Path(__file__).parent.glob('*.py')))).hexdigest()}))
+        (stage / 'manifest.json').write_bytes(canonical({'request_sha256': request_hash, 'outputs': hashes, 'reader_version': '1.0.0', 'code_sha256': code_hash()}))
         os.rename(stage, destination)
     return destination

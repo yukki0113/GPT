@@ -14,6 +14,8 @@ def read_history(path, target_date):
     # be established upstream and versioned; this adapter never guesses codes.
     if path.suffix == '.json':
         value = json.loads(path.read_text())
+        if value.get('artifact_type') == 'jrdb_analysis':
+            return read_generation(value, path.parent, target_date)
         if value.get('schema_version') != 'forecast-history.v1':
             raise ValueError('INVALID_REQUEST: history schema')
         return value['races'], value['rows'], {**coverage(value['rows'], target_date), 'engine': 'normalized-json', 'query': None}
@@ -27,21 +29,7 @@ def read_history(path, target_date):
             if not manifest_path.is_relative_to(base):
                 raise ValueError('INVALID_REQUEST: manifest path')
             manifest = json.loads(manifest_path.read_text())
-            historical = []
-            years = [int(p['year']) for p in manifest['fact_table']['partitions'] if int(p['year']) < int(target_date[:4])]
-            if len(years) != len(set(years)):
-                raise ValueError('DUPLICATE_RACE_OR_RUN: partition year')
-            for part in manifest['fact_table']['partitions']:
-                if int(part['year']) >= int(target_date[:4]):
-                    continue
-                asset = (base / part['relative_path']).resolve()
-                if not asset.is_relative_to(base) or asset.stat().st_size != part['size_bytes'] or hashlib.sha256(asset.read_bytes()).hexdigest() != part['sha256']:
-                    raise ValueError('HASH_MISMATCH')
-                _, rows, _ = read_history(asset, target_date)
-                if len(rows) != part['rows'] or any(int(str(r['race_date'])[:4]) != int(part['year']) for r in rows):
-                    raise ValueError('SOURCE_CHANGED: partition rows/year')
-                historical.extend(rows)
-            return [], historical, {**coverage(historical, target_date), 'partitions': years, 'engine': 'tools/data-storage', 'missing_conditions': ['race_class', 'eligibility', 'weight_rule'], 'generation': manifest['generation_id']}
+            return read_generation(manifest, base, target_date)
     from data_storage.query import execute_query
     # Projection excludes payouts/odds. The target year is excluded at the query
     # boundary; earlier rows can supply previous runs for the ten-year cohort.
@@ -66,3 +54,24 @@ def coverage(rows, target_date):
     expected = set(range(int(target_date[:4]) - 10, int(target_date[:4])))
     return {'years_present': years, 'years_missing': sorted(expected - set(years)),
             'starts': len(rows), 'race_count': len({r['race_key'] for r in rows}), 'unique_race_horse': True}
+
+
+def read_generation(manifest, base, target_date):
+    if manifest.get('validation_status') not in ('PASS','success'):
+        raise ValueError('INVALID_REQUEST: Analysis generation not validated')
+    historical, audit = [], []
+    years = [int(p['year']) for p in manifest['fact_table']['partitions'] if int(p['year']) < int(target_date[:4])]
+    if len(years) != len(set(years)):
+        raise ValueError('DUPLICATE_RACE_OR_RUN: partition year')
+    for part in manifest['fact_table']['partitions']:
+        if int(part['year']) >= int(target_date[:4]):
+            continue
+        asset = (base / part['relative_path']).resolve()
+        if not asset.is_relative_to(base.resolve()) or asset.stat().st_size != part['size_bytes'] or hashlib.sha256(asset.read_bytes()).hexdigest() != part['sha256']:
+            raise ValueError('HASH_MISMATCH')
+        _, rows, _ = read_history(asset,target_date)
+        if len(rows) != part['rows'] or any(int(str(r['race_date'])[:4]) != int(part['year']) for r in rows):
+            raise ValueError('SOURCE_CHANGED: partition rows/year')
+        historical.extend(rows)
+        audit.append({'year':part['year'],'sha256':part['sha256'],'rows':len(rows)})
+    return [],historical,{**coverage(historical,target_date),'partitions':audit,'engine':'tools/data-storage','missing_conditions':['race_class','eligibility','weight_rule'],'generation':manifest['generation_id']}

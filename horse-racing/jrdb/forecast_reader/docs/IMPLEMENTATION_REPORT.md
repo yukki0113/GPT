@@ -1,6 +1,6 @@
 # Issue #2241 implementation and acceptance report
 
-Status: INTEGRATED; full live acceptance NEED_INPUT. Issue is not claimed closed.
+Status: latest菊花賞2026 live acceptance PASS (see final acceptance section); earlier NEED_INPUT entries below are retained as dated work history. No main merge.
 PR: https://github.com/yukki0113/GPT/pull/2244
 Branch: codex/issue2241-forecast-reader
 Base: 5762281e7ceceb244c54fad9b7abbf5fba38dbaa
@@ -139,3 +139,79 @@ Final reviewed code commit: e2f016f765dc8830b14c8eacf620d6d9a0bf982a.
 Final PR CI PASS: https://github.com/yukki0113/GPT/actions/runs/41025343509
 Final push CI PASS: https://github.com/yukki0113/GPT/actions/runs/41025336594
 Local final regression: 107 passed in 2.47s; Reader-only follow-up 35 passed.
+
+## Final acceptance — BAC Warehouse and pre-race generation reconstruction
+
+Supersedes earlier NEED_INPUT for the tested 2026-10-25 Kyoto11R case. No source
+conditions were guessed and no post-race current generation was used as authority.
+The standard forecast_reader_runner.py --run completed with status PASS.
+
+1. Accepted Historical Warehouse final manifest was fetched natively and inspected.
+   BAC 2015–2025: 11 immutable Parquet assets, 37949 race conditions, exact manifest
+   SHA and byte-size verification plus row counts and year coverage. Condition
+   normalization reuses the shared BAC field contract. All ten 菊花賞 instances
+   have matching OP:1, 12:541, turf/3000 and weight=3; eight are Kyoto outer and
+   two (2021/2022) are Hanshin. The latter are excluded. Exact keys:
+   08164711,08174711,08184711,08194711,08204611,08232711,08245611,08253911.
+2. The official 2019-05-26 code table explicitly lists condition code 16 as current
+   3-win and old label 1600man. Verified labels/source SHA are now configured.
+   Matching uses the unchanged raw condition code AND grade identity. Distinct
+   codes 15/16 are not collapsed even though both have group=3. A calendar label
+   change date is not inferred from the specification's publication date; no
+   economic-rule equivalence across different raw codes is claimed. Unknown codes
+   remain UNKNOWN. This is sufficient for the tested OP:1 exact comparison and
+   preserves raw-code identity across the old/new label change.
+3. BAC has 53 gaps in December 2025 relative to the Analysis pool. Accepted SED
+   year=2025 supplies the published race-condition fields for exactly those keys.
+   It is read through common Data Storage with a condition-only projection, not
+   finish/popularity/payout columns. Consistency across horse rows is checked.
+   Full Analysis-pool condition coverage is thereby obtained without inventions.
+4. Pre-cutoff Analysis generation found on native Drive:
+   analysis-v1_4-postrace-20261018-01. Manifest created 2026-10-19T01:00:20.977099Z,
+   Drive modified 2026-10-19T01:03:58.649Z, before as_of 2026-10-25T15:30+09:00.
+   Its 2016–2025 partition SHAs are identical to the already materialized bytes.
+   Reader now accepts an immutable generation manifest rooted with its assets;
+   every referenced prior-year file is rechecked for SHA/bytes/row count/year.
+   No 2026 Analysis partition is opened. Reusing identical bytes is not treating
+   the newer current pointer as historical authority.
+5. Real CLI request/input observations are in work/issue2241-live-{request,inputs}.json.
+   Native before/after listing checks for BAC assets, manifests and PACI were
+   stable. Native revision IDs were not exposed, so metadata version remains null;
+   generation IDs and immutable manifest SHA/asset bindings supply content identity.
+   Full ten-year input: 481627 starts/34548 races; selected cohort: 143 starts/8 races.
+   Previous joins required/joined: 143/143; missing 0. The two coverage populations
+   are now explicitly separated. Unselected-pool missing references do not silently
+   inflate selected-cohort missing counts; neither do they add statistical starts.
+6. Eight historical axes all have 143 valid starts and zero missing. PACI runners
+   18/18 previous joins and 18/18 UKC age/sire; all eight runner comparisons have
+   values and evidence, no unknowns for this case. Previous classes use verified
+   code/grade identity with BAC/ZED disagreement rejected. Previous corners for
+   horses 8/13/15 remain [5,7,8,4], [1,1,1,1], [10,8,1,1].
+
+Real Evidence Bundle generated twice from identical inputs: all four files are
+byte-identical. Manifest request SHA:
+9cdbfd1fda503a5bf56e5128da57d70e1c351fc9c61aea667e5887e613bdf8df.
+Code/config SHA: 2b711447ad8a3fbf7347e93c17a72aec3ea56ade38eb7d9a5858bc8fb4ecefd3.
+Output SHAs:
+- forecast_evidence.json: 4238ede7ae55d8cf11c9804f4bbfe6b78747d029dc68ea148771456d6b570960
+- sampling_audit.json: 06272eeeb5028913d25c495aa4baaefbb1da4c7021f723962f96aafd56af7baf
+- source_audit.json: 589b394573d28d91744c76485f4c058fdd49e353b595d8398574b03af7cb71b1
+
+Files remain local in work/issue2241-accepted-final/<request-sha>/ and compressed
+in work/issue2241-kikuka-evidence.zip; no underlying datasets are committed.
+The source audit includes each consumed BAC/SED/Analysis asset SHA and manifest
+provenance. SED2025 SHA: 6a7be1dc005833c9caaa20559ac3ad40af99bdc95a342b0e57d638ca979f8974.
+Execution route: local, existing canonical tools/data-storage. No fallback needed.
+
+Local regression: 111 passed (Reader, Raw, RawHistory, Data Storage). New tests
+cover immutable BAC coverage/hash rejection, condition-only SED fallback, distinct
+class code identity, and separation of selected cohort from unrelated history.
+CI now runs the same common dependency and test scope. CI URL is recorded below
+when the existing PR branch finishes its checks. PR remains #2244; no main merge.
+
+Limits: this establishes the named G1 case. It is not evidence that every historical
+race, code-change date, every 3-win renamed special, or every future date has valid
+inputs. Missing sources/unknown code/date mappings still fail closed. Earlier
+2015 references for other selected cohorts can be reconstructed from the accepted
+2010–2025 Warehouse using existing adapters if they are needed; they were not
+required by the selected 143 starts here. No missing-value imputation was used.

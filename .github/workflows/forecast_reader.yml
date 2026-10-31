@@ -18,5 +18,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: python -m pip install pytest
-      - run: python -m pytest horse-racing/jrdb/forecast_reader/tests horse-racing/jrdb/tests/test_jrdb_raw_common.py horse-racing/jrdb/tests/test_jrdb_raw_history_batch.py -q
+      - run: python -m pip install pytest -r tools/data-storage/requirements.txt
+      - run: PYTHONPATH=tools/data-storage python -m pytest horse-racing/jrdb/forecast_reader/tests horse-racing/jrdb/tests/test_jrdb_raw_common.py horse-racing/jrdb/tests/test_jrdb_raw_history_batch.py tools/data-storage/tests -q

@@ -1,5 +1,8 @@
 """Explicit BAC condition projection; raw codes remain visible and unguessed."""
 from datetime import datetime
+from pathlib import Path
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 from zoneinfo import ZoneInfo
 from jrdb_raw import Parser, ReaderAudit, iter_archive_records
 
@@ -9,7 +12,7 @@ VENUES = {'札幌':'01','函館':'02','福島':'03','新潟':'04','東京':'05',
 def condition(bac):
     return {'race_key': bac['race_key_raw'], 'date': datetime.strptime(bac['date_raw'], '%Y%m%d').date().isoformat(),
             'name': bac['race_name'], 'venue': bac['race_key_raw'][:2], 'surface': bac['surface_code'],
-            'distance': int(bac['distance_raw']), 'race_class': bac['race_class_code'] + ':' + bac['grade_code'],
+            'distance': int(bac['distance_raw']), 'race_class': class_identity(bac['race_class_code'], bac['grade_code']),
             'eligibility': bac['race_type_code'] + ':' + bac['symbol_code'],
             'course': bac['turn_code'] + ':' + bac['layout_code'], 'weight_rule': bac['weight_rule_code']}
 
@@ -30,3 +33,10 @@ def resolve(archive, target, as_of):
         if key not in out or out[key] != expected:
             raise ValueError('UNKNOWN_CONDITION: assertion mismatch')
     return out, bac['field_size']
+
+
+def class_identity(code, grade):
+    """Official field-code identity, not an inferred economic equivalence."""
+    if code not in {'04','05','08','09','10','15','16','A1','A2','A3','OP'} or grade not in {'','1','2','3','4','5','6','L'}:
+        return None
+    return code + ':' + grade

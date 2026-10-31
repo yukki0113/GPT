@@ -49,3 +49,23 @@ manifest; inspect Actions audit and all four JSON files before accepting results
 Do not publish proprietary inputs in the request or artifact. No new shell entrypoint
 or credential mechanism is introduced. Live Actions fallback has not been rerun for
 this reader.
+
+### Immutable historical-generation route
+
+`jrdb.analysis.current` may point to a previously published `jrdb_analysis`
+manifest JSON, not only the mutable current archive. Stage its exact relative
+asset paths below the manifest directory; the reader validates every historical
+partition SHA/size/row count/year. Its native observation must bind the old
+manifest, rather than assigning a pre-race timestamp to a newer current archive.
+
+`jrdb.historical_conditions` can now point directly to the accepted final
+Historical Warehouse manifest. Supply `asset_paths` mapping its relative asset
+paths to local, connector-materialized files. Required ten-year BAC assets are
+checked against that manifest. Declared SED assets may supply missing BAC race
+conditions using only the shared parser's condition fields; contradictions between
+horse rows fail closed. No new Raw byte parser or external client is introduced.
+
+The real Kyoto 菊花賞 2026 case reached CLI PASS using the 2026-10-18 Analysis
+manifest and accepted BAC/SED assets. See final acceptance in IMPLEMENTATION_REPORT.
+The older live NEED_INPUT notes in this README describe the initial current-only
+route, not the reconstructed immutable-generation route.

@@ -1,1 +1,15 @@
-{"schema_version":"forecast-class-normalization.v1","mappings":[],"unknown_policy":"UNKNOWN_CLASS; historical 1600man/3win equivalence requires an independently verified date-effective source."}
+{
+  "schema_version":"forecast-class-normalization.v1",
+  "source":"00_document/jrdb-specifications-oneshot-20261015.zip/128_jrdb_code.txt",
+  "source_revision":"2019-05-26",
+  "source_archive_sha256":"79bbdf124caafe77e486d68116474713e9b71dda8ee17ce536fc0031fd7b8000",
+  "identity_policy":"Compare the same raw condition code and grade; do not collapse distinct condition codes or infer a calendar label cutover.",
+  "verified_labels":{
+    "16":{"current":"3勝クラス","previous":"1600万下","group":"3"},
+    "15":{"current":"3勝クラス","previous":"1500万下","group":"3"},
+    "10":{"current":"2勝クラス","previous":"1000万下","group":"2"},
+    "05":{"current":"1勝クラス","previous":"500万下","group":"1"}
+  },
+  "date_effective_label_mappings":[],
+  "unknown_policy":"Unverified codes or effective dates remain UNKNOWN; identity comparisons do not assert an economic/class-rule equivalence between different codes."
+}
