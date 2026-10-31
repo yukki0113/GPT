@@ -70,7 +70,7 @@ def assess(evidence: dict, source_audit: dict) -> dict:
     if trends:
         for axis in AXES:
             table = trends.get(axis) or {}
-            valid_axes[axis] = table.get("valid_count")
+            valid_axes[axis] = sum(g.get("starts", 0) for g in table.get("groups", []))
             missing_axes[axis] = table.get("missing_count")
     if valid_axes and not any(isinstance(v, int) and v > 0 for v in valid_axes.values()):
         errors.append("NO_USABLE_AXIS_EVIDENCE")
