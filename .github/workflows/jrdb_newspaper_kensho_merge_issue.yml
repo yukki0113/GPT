@@ -273,7 +273,11 @@ jobs:
                   extra=supplement_index.get(identity)
                   if supplement_index and (extra is None or extra.get("marks")!=marks or extra.get("source_semantic_sha256")!=record["source_semantic_sha256"]):
                       raise SystemExit(f"RaceNote confidence does not match frozen marks: {identity}")
-                  reason=str(core.get("reader_facing_reason") or "").strip()
+                  reason=str(
+                      core.get("reader_facing_reason")
+                      or core.get("prediction_audit_comment")
+                      or ""
+                  ).strip()
                   if len(marks)!=5 or len(set(marks))!=5 or not reason:
                       raise SystemExit(f"frozen RaceNote incomplete: {identity}")
                   if record["target_date"] != os.environ["REQUEST_DATE"]:
