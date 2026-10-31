@@ -74,15 +74,26 @@ jobs:
               raise SystemExit("date must be YYYY-MM-DD")
           if not isinstance(revision,int) or isinstance(revision,bool) or revision < 1:
               raise SystemExit("revision must be integer >= 1")
-          if sum(bool(v) for v in (rn, rn_gzip_b64)) != 1:
-              raise SystemExit("supply exactly one of racenote_repo_path/racenote_gzip_b64")
-          if sum(bool(v) for v in (rr, rr_csv)) != 1:
-              raise SystemExit("supply exactly one of rrdb_repo_path/rrdb_csv")
+
+          rn_count=sum(bool(v) for v in (rn, rn_gzip_b64))
+          rr_count=sum(bool(v) for v in (rr, rr_csv))
+          if rn_count > 1:
+              raise SystemExit("supply at most one of racenote_repo_path/racenote_gzip_b64")
+          if rr_count > 1:
+              raise SystemExit("supply at most one of rrdb_repo_path/rrdb_csv")
+          has_rn=rn_count == 1
+          has_rr=rr_count == 1
+          has_other=bool(momotaro_predictions or keibailuka_entries or momotaro_race_comments)
+          if not (has_rn or has_rr or has_other):
+              raise SystemExit("request must supply at least one update source")
+          if confidence_path and not has_rn:
+              raise SystemExit("racenote_confidence_repo_path requires a RaceNote source")
+
           if rn:
               p=Path(rn)
               if p.is_absolute() or ".." in p.parts or not p.is_file():
                   raise SystemExit("invalid racenote_repo_path")
-          else:
+          elif rn_gzip_b64:
               import base64,gzip
               try:
                   payload=gzip.decompress(base64.b64decode(rn_gzip_b64,validate=True))
@@ -90,23 +101,37 @@ jobs:
                   raise SystemExit(f"failed to decode racenote_gzip_b64: {exc}") from exc
               Path("/tmp/kensho/racenote.json").write_bytes(payload)
               rn="/tmp/kensho/racenote.json"
+
           if rr:
               p=Path(rr)
               if p.is_absolute() or ".." in p.parts or not p.is_file():
                   raise SystemExit("invalid rrdb_repo_path")
-          else:
+          elif rr_csv:
               Path("/tmp/kensho/rrdb.csv").write_text(rr_csv,encoding="utf-8")
               rr="/tmp/kensho/rrdb.csv"
+
           if confidence_path:
               p=Path(confidence_path)
               if p.is_absolute() or ".." in p.parts or not p.is_file():
                   raise SystemExit("invalid racenote_confidence_repo_path")
+
+          req["source_mode"] = (
+              "racenote+rrdb" if has_rn and has_rr
+              else "racenote" if has_rn
+              else "rrdb" if has_rr
+              else "shared-only"
+          )
           Path("/tmp/kensho/request.json").write_text(json.dumps(req,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
           Path("/tmp/kensho/keibailuka.json").write_text(
               json.dumps({"entries":keibailuka_entries},ensure_ascii=False,indent=2)+"\n",
               encoding="utf-8")
           with open(os.environ["GITHUB_ENV"],"a",encoding="utf-8") as h:
-              h.write(f"REQUEST_DATE={date}\nREQUEST_REVISION={revision}\nRACENOTE_PATH={rn}\nRRDB_PATH={rr}\n")
+              h.write(f"REQUEST_DATE={date}\nREQUEST_REVISION={revision}\n")
+              h.write(f"HAS_RACENOTE={1 if has_rn else 0}\nHAS_RRDB={1 if has_rr else 0}\n")
+              if rn:
+                  h.write(f"RACENOTE_PATH={rn}\n")
+              if rr:
+                  h.write(f"RRDB_PATH={rr}\n")
               if confidence_path:
                   h.write(f"RACENOTE_CONFIDENCE_PATH={confidence_path}\n")
           PY
@@ -152,6 +177,10 @@ jobs:
       - name: Convert compact RaceNote handoff
         run: |
           set -euo pipefail
+          if [ "${HAS_RACENOTE}" != "1" ]; then
+            echo "RaceNote source omitted; preserving current RaceNote addon."
+            exit 0
+          fi
           python - <<'PY'
           import csv,json,os
           from pathlib import Path
@@ -340,7 +369,7 @@ jobs:
               encoding="utf-8")
           PY
 
-      - name: Merge RaceNote and RRDB into personal current
+      - name: Merge requested Kensho sources into personal current
         run: |
           set -euo pipefail
           rm -rf /tmp/merged-day
@@ -354,56 +383,102 @@ jobs:
           then
             EXTRA_ARGS+=(--keibailuka-json /tmp/kensho/keibailuka.json)
           fi
-          RN_ARGS=()
-          if python - <<'PY'
+
+          SOURCE_ARGS=()
+          if [ "${HAS_RACENOTE}" = "1" ]; then
+            SOURCE_ARGS+=(--racenote-csv /tmp/kensho/racenote.csv)
+            if python - <<'PY'
           import json
           from pathlib import Path
           x=json.loads(Path("/tmp/kensho/expected-counts.json").read_text(encoding="utf-8"))
           raise SystemExit(0 if x.get("racenote_sparse_marks") else 1)
           PY
-          then
-            RN_ARGS+=(--racenote-sparse-marks)
+            then
+              SOURCE_ARGS+=(--racenote-sparse-marks)
+            fi
           fi
-          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py             --day-dir /tmp/current-day             --output-dir /tmp/merged-day             --racenote-csv /tmp/kensho/racenote.csv             "${RN_ARGS[@]}"             --rrdb-recommendation-csv "$RRDB_PATH"             "${EXTRA_ARGS[@]}"             --revision "$REQUEST_REVISION"             > /tmp/kensho/merge-result.json
+          if [ "${HAS_RRDB}" = "1" ]; then
+            SOURCE_ARGS+=(--rrdb-recommendation-csv "${RRDB_PATH}")
+          fi
+
+          PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py \
+            --day-dir /tmp/current-day \
+            --output-dir /tmp/merged-day \
+            "${SOURCE_ARGS[@]}" \
+            "${EXTRA_ARGS[@]}" \
+            --revision "${REQUEST_REVISION}" \
+            > /tmp/kensho/merge-result.json
 
       - name: Validate personal merge
         run: |
           set -euo pipefail
           python - <<'PY'
-          import json,os
+          import csv,json,os
           from pathlib import Path
-          root=Path("/tmp/merged-day")
-          manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
+
+          def collect(root):
+              manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
+              counts={"eval":0,"iluka":0,"racenote":0,"rrdb":0}
+              rn_payload={}
+              rr_payload={}
+              for entry in manifest.get("races") or []:
+                  b=json.loads((root/entry["path"]).read_text(encoding="utf-8"))
+                  race_key=str(b["race"]["race_key"])
+                  race_notes=b.get("race_notes") or {}
+                  rn_payload[(race_key,"__race_comment__")]=race_notes.get("racenote_short_comment")
+                  for h in b.get("horses") or []:
+                      a=h.get("addons") or {}
+                      no=int(h["key"]["horse_no"])
+                      counts["eval"] += int(isinstance(a.get("eval"),dict))
+                      counts["iluka"] += int(isinstance(a.get("keibailuka"),dict))
+                      counts["racenote"] += int(isinstance(a.get("racenote_prediction"),dict))
+                      counts["rrdb"] += int(isinstance(a.get("rrdb_recommendation"),dict))
+                      if isinstance(a.get("racenote_prediction"),dict):
+                          rn_payload[(race_key,no)]=a["racenote_prediction"]
+                      if isinstance(a.get("rrdb_recommendation"),dict):
+                          rr_payload[(race_key,no)]=a["rrdb_recommendation"]
+              return manifest,counts,rn_payload,rr_payload
+
+          current_manifest,baseline,baseline_rn,baseline_rr=collect(Path("/tmp/current-day"))
+          manifest,counts,merged_rn,merged_rr=collect(Path("/tmp/merged-day"))
           if manifest.get("date") != os.environ["REQUEST_DATE"] or int(manifest.get("revision") or 0)!=int(os.environ["REQUEST_REVISION"]):
               raise SystemExit("personal manifest mismatch")
-          baseline={"eval":0,"iluka":0}
-          current_manifest=json.loads(Path("/tmp/current-day/manifest.json").read_text(encoding="utf-8"))
-          for entry in current_manifest.get("races") or []:
-              b=json.loads((Path("/tmp/current-day")/entry["path"]).read_text(encoding="utf-8"))
-              for h in b.get("horses") or []:
-                  a=h.get("addons") or {}
-                  baseline["eval"] += int(isinstance(a.get("eval"),dict))
-                  baseline["iluka"] += int(isinstance(a.get("keibailuka"),dict))
-          counts={"eval":0,"iluka":0,"racenote":0,"rrdb":0}
-          for entry in manifest.get("races") or []:
-              b=json.loads((root/entry["path"]).read_text(encoding="utf-8"))
-              for h in b.get("horses") or []:
-                  a=h.get("addons") or {}
-                  counts["eval"] += int(isinstance(a.get("eval"),dict))
-                  counts["iluka"] += int(isinstance(a.get("keibailuka"),dict))
-                  counts["racenote"] += int(isinstance(a.get("racenote_prediction"),dict))
-                  counts["rrdb"] += int(isinstance(a.get("rrdb_recommendation"),dict))
-          expected=json.loads(Path("/tmp/kensho/expected-counts.json").read_text(encoding="utf-8"))
-          import csv
-          with Path(os.environ["RRDB_PATH"]).open(encoding="utf-8-sig",newline="") as h:
-              rrdb_expected=sum(1 for _ in csv.DictReader(h))
+
+          has_rn=os.environ.get("HAS_RACENOTE")=="1"
+          has_rr=os.environ.get("HAS_RRDB")=="1"
+          rn_expected=baseline["racenote"]
+          if has_rn:
+              expected=json.loads(Path("/tmp/kensho/expected-counts.json").read_text(encoding="utf-8"))
+              rn_expected=int(expected["racenote"])
+          elif merged_rn != baseline_rn:
+              raise SystemExit("omitted RaceNote source changed current RaceNote data")
+
+          rrdb_expected=baseline["rrdb"]
+          if has_rr:
+              with Path(os.environ["RRDB_PATH"]).open(encoding="utf-8-sig",newline="") as h:
+                  rrdb_expected=sum(1 for _ in csv.DictReader(h))
+          elif merged_rr != baseline_rr:
+              raise SystemExit("omitted RRDB source changed current RRDB data")
+
           req=json.loads(Path("/tmp/kensho/request.json").read_text(encoding="utf-8"))
           requested_iluka=len(req.get("keibailuka_entries") or [])
-          wanted={"eval":baseline["eval"],"iluka":requested_iluka if requested_iluka else baseline["iluka"],"racenote":int(expected["racenote"]),"rrdb":rrdb_expected}
+          wanted={
+              "eval":baseline["eval"],
+              "iluka":requested_iluka if requested_iluka else baseline["iluka"],
+              "racenote":rn_expected,
+              "rrdb":rrdb_expected,
+          }
           if counts != wanted:
               raise SystemExit(f"personal counts mismatch: got={counts} expected={wanted}")
+
           Path("/tmp/kensho/personal-validation.json").write_text(
-              json.dumps({"status":"PASS","date":manifest["date"],"revision":manifest["revision"],**counts},ensure_ascii=False,indent=2)+"\n",
+              json.dumps({
+                  "status":"PASS",
+                  "date":manifest["date"],
+                  "revision":manifest["revision"],
+                  "source_mode":req.get("source_mode"),
+                  **counts,
+              },ensure_ascii=False,indent=2)+"\n",
               encoding="utf-8")
           PY
 
@@ -426,14 +501,14 @@ jobs:
               "manifest_sha256":hashlib.sha256((root/"manifest.json").read_bytes()).hexdigest(),
               "archive_filename":archive.name,"archive_size_bytes":archive.stat().st_size,
               "archive_sha256":hashlib.sha256(archive.read_bytes()).hexdigest(),
-              "source_run_id":int(os.environ["GITHUB_RUN_ID"]),"source_artifact":"kensho-racenote-rrdb-merge",
+              "source_run_id":int(os.environ["GITHUB_RUN_ID"]),"source_artifact":"kensho-source-merge",
           }
           (out/os.environ["RELEASE_META"]).write_text(json.dumps(meta,ensure_ascii=False,sort_keys=True,separators=(",",":"))+"\n",encoding="utf-8")
           PY
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release delete "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes
           fi
-          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --title "JRDB Newspaper current"             --notes "Current personal newspaper with Kensho RaceNote and RRDB merged."             "/tmp/personal-release/$RELEASE_ARCHIVE" "/tmp/personal-release/$RELEASE_META"             /tmp/kensho/personal-validation.json
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --title "JRDB Newspaper current"             --notes "Current personal newspaper with requested Kensho source updates merged."             "/tmp/personal-release/$RELEASE_ARCHIVE" "/tmp/personal-release/$RELEASE_META"             /tmp/kensho/personal-validation.json
 
       - name: Prepare optional Momotaro member predictions
         run: |
@@ -516,12 +591,27 @@ jobs:
         run: |
           set -euo pipefail
           python - <<'PY'
-          import csv,json,os
+          import json,os
           from pathlib import Path
+
+          # Always derive expected Kensho state from the fully merged personal
+          # day.  This makes RaceNote-only and RRDB-only runs validate the
+          # omitted source as preserved current data instead of requiring the
+          # omitted handoff file again.
           rrdb={}
-          with Path(os.environ["RRDB_PATH"]).open(encoding="utf-8-sig",newline="") as h:
-              for row in csv.DictReader(h):
-                  rrdb[(str(row["race_key"]),int(row["horse_no"]))]=row["recommendation_comment"]
+          expected_rn_marked=0
+          for p in Path("/tmp/merged-day/races").glob("*.json"):
+              b=json.loads(p.read_text(encoding="utf-8"))
+              rk=str(b["race"]["race_key"])
+              for h in b.get("horses") or []:
+                  a=h.get("addons") or {}
+                  rn=a.get("racenote_prediction")
+                  if isinstance(rn,dict) and rn.get("mark"):
+                      expected_rn_marked += 1
+                  rec=a.get("rrdb_recommendation")
+                  if isinstance(rec,dict):
+                      rrdb[(rk,int(h["key"]["horse_no"]))]=str(rec.get("comment") or "")
+
           root=Path("/tmp/momotaro-current")
           manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
           checked=0; rn_marked=0; iluka=0
@@ -543,11 +633,11 @@ jobs:
                       if k.get("comment") != rrdb[key]:
                           raise SystemExit(f"RRDB comment mismatch {key}")
                       checked+=1
-          expected=json.loads(Path("/tmp/kensho/expected-counts.json").read_text(encoding="utf-8"))
+
           if checked != len(rrdb):
               raise SystemExit(f"RRDB projection count mismatch: got={checked} expected={len(rrdb)}")
-          if rn_marked != int(expected["racenote_marked"]):
-              raise SystemExit(f"RaceNote marked count mismatch: got={rn_marked} expected={expected['racenote_marked']}")
+          if rn_marked != expected_rn_marked:
+              raise SystemExit(f"RaceNote marked count mismatch: got={rn_marked} expected={expected_rn_marked}")
           personal=json.loads(Path("/tmp/kensho/personal-validation.json").read_text(encoding="utf-8"))
           if iluka != int(personal["iluka"]):
               raise SystemExit(f"Iluka projection count mismatch: got={iluka} expected={personal['iluka']}")
@@ -569,6 +659,7 @@ jobs:
                   for member in ("ryota","oji","kenshow"):
                       if isinstance(member_map.get(member),dict):
                           projected[(venue_code,race_no,horse_no,member)]=member_map[member]
+
           for row in requested:
               key=(str(row["venue_code"]).zfill(2),int(row["race_no"]),int(row["horse_no"]),str(row["member"]))
               got=projected.get(key)
@@ -587,6 +678,7 @@ jobs:
               for field,value in expected.items():
                   if got.get(field) != value:
                       raise SystemExit(f"Momotaro row mismatch {key} field={field}: {got.get(field)!r}!={value!r}")
+
           for row in requested_comments:
               key=(str(row["venue_code"]).zfill(2),int(row["race_no"]),str(row["member"]))
               expected_comment=str(row.get("comment") or "").strip()
@@ -594,7 +686,14 @@ jobs:
                   raise SystemExit(f"Momotaro race comment mismatch {key}: {projected_comments.get(key)!r}!={expected_comment!r}")
 
           Path("/tmp/kensho/momotaro-validation.json").write_text(
-              json.dumps({"status":"PASS","date":manifest["date"],"rrdb_checked":checked,"racenote_marked":rn_marked,"iluka":iluka},ensure_ascii=False,indent=2)+"\n",
+              json.dumps({
+                  "status":"PASS",
+                  "date":manifest["date"],
+                  "source_mode":req.get("source_mode"),
+                  "rrdb_checked":checked,
+                  "racenote_marked":rn_marked,
+                  "iluka":iluka,
+              },ensure_ascii=False,indent=2)+"\n",
               encoding="utf-8")
           PY
 
@@ -625,7 +724,7 @@ jobs:
               "manifest_sha256":hashlib.sha256((root/"manifest.json").read_bytes()).hexdigest(),
               "archive_filename":archive.name,"archive_size_bytes":archive.stat().st_size,
               "archive_sha256":hashlib.sha256(archive.read_bytes()).hexdigest(),
-              "source_run_id":int(os.environ["GITHUB_RUN_ID"]),"source_artifact":"kensho-racenote-rrdb-merge",
+              "source_run_id":int(os.environ["GITHUB_RUN_ID"]),"source_artifact":"kensho-source-merge",
           }
           (out/os.environ["RELEASE_META"]).write_text(
               json.dumps(meta,ensure_ascii=False,sort_keys=True,separators=(",",":"))+"\n",
@@ -668,7 +767,7 @@ jobs:
           if gh release view "$MOMOTARO_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release delete "$MOMOTARO_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --yes
           fi
-          gh release create "$MOMOTARO_RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --title "JRDB Momotaro Newspaper current"             --notes "Current Momotaro newspaper projection with Kensho RaceNote and RRDB."             "/tmp/momotaro-release/$MOMOTARO_RELEASE_ARCHIVE" "/tmp/momotaro-release/$MOMOTARO_RELEASE_META"             /tmp/kensho/momotaro-validation.json
+          gh release create "$MOMOTARO_RELEASE_TAG" --repo "$GITHUB_REPOSITORY"             --title "JRDB Momotaro Newspaper current"             --notes "Current Momotaro newspaper projection with current Kensho RaceNote/RRDB state."             "/tmp/momotaro-release/$MOMOTARO_RELEASE_ARCHIVE" "/tmp/momotaro-release/$MOMOTARO_RELEASE_META"             /tmp/kensho/momotaro-validation.json
 
       - name: Comment success and close
         if: success()
