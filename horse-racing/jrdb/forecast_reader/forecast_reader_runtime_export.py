@@ -44,7 +44,7 @@ def main() -> int:
         "--only-binary=:all:", "--no-deps",
         "--python-version", "313", "--implementation", "cp",
         "--abi", "cp313", "--platform", "manylinux2014_x86_64",
-        "--dest", str(wheels), "duckdb==1.1.3", "pyarrow==25.0.1",
+        "--dest", str(wheels), "duckdb==1.1.3", "pyarrow==20.0.0",
     ]
     result = subprocess.run(command, text=True, capture_output=True)
     report = {
