@@ -69,3 +69,31 @@ The real Kyoto 菊花賞 2026 case reached CLI PASS using the 2026-10-18 Analysi
 manifest and accepted BAC/SED assets. See final acceptance in IMPLEMENTATION_REPORT.
 The older live NEED_INPUT notes in this README describe the initial current-only
 route, not the reconstructed immutable-generation route.
+
+
+## Operational acceptance for explicitly missing JRDB records
+
+The Reader's technical `status` remains **PASS** or **PARTIAL** according to the
+canonical evidence contract. Never rewrite a PARTIAL result to PASS. For a
+user-approved missing-data policy, call `operational_acceptance.assess(evidence,
+source_audit)` on the **validated, published evidence JSONs**.
+
+- `ACCEPTED`: strict Reader PASS and all operational safeguards pass.
+- `ACCEPTED_WITH_MISSING`: strict Reader PARTIAL, but sample years, target
+  runner joins, sampling gate A, JRDB source provenance, and target-result
+  exclusion pass. Preserve exact valid/missing axis counts and missing previous
+  joins. Calculate statistical groups using only usable rows; never manufacture
+  the missing observation.
+- `REJECTED`: source/contract issues, incomplete target runner data, missing
+  statistical years, unverified sampling, forbidden target results, or a Reader
+  status other than PASS/PARTIAL.
+
+**No Web search or external enrichment is an alternative data source.** Allowed
+inputs are the verified JRDB PACI/Analysis/Warehouse records. The evaluator
+does not query/download any input and never changes the canonical Evidence Bundle.
+
+2026-10-31 Kyoto11R ファンタジーS acceptance observation:
+historical S0 7 Kyoto races / 94 starts; 93 previous-run joins with 1 missing,
+target 11/11 previous-run joins, 8 axes measured, Reader technical
+`PARTIAL`. This is an example of `ACCEPTED_WITH_MISSING` when the full
+audited source and result contracts pass; it is **not** a Reader PASS.
