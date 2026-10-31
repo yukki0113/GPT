@@ -1,0 +1,10 @@
+{
+  "schema_version": "forecast-sampling-rules.v1",
+  "exact_threshold": 5,
+  "supplement_per_year": 1,
+  "stages": [
+    {"name": "S1", "days": 21, "relax_details": false},
+    {"name": "S2", "days": 42, "relax_details": false},
+    {"name": "S3", "days": 70, "relax_details": true}
+  ]
+}
