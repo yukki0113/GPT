@@ -8,8 +8,8 @@ from __future__ import annotations
 from datetime import date
 import unicodedata
 
-CORE = ("venue", "surface", "distance", "race_class", "eligibility")
-DETAIL = ("course", "weight_rule")
+CORE = ("venue", "surface", "distance", "race_class", "course")
+DETAIL = ("eligibility", "weight_rule")
 
 
 def normalize_name(value: str) -> str:
@@ -30,7 +30,7 @@ def _mismatches(target: dict, candidate: dict, fields: tuple[str, ...]) -> list[
 
 
 def select(target: dict, races: list[dict], rules: dict) -> dict:
-    """Select exact and, only if necessary, the first nonempty supplement stage.
+    """Select exact and cumulatively add supplements through S1-S4 to ten races.
 
     race_key must be unique; inputs must already have confirmed class and
     eligibility semantics. The audit records every candidate and decision.
@@ -60,41 +60,54 @@ def select(target: dict, races: list[dict], rules: dict) -> dict:
         if selected:
             exact.append(race["race_key"])
     stages, supplement, selected_stage = [], [], None
-    if len(exact) < rules["exact_threshold"]:
-        for stage in rules["stages"]:
-            decisions, candidates = [], []
-            for race in eligible:
-                mismatch = _mismatches(target, race, CORE)
-                details = _mismatches(target, race, DETAIL)
-                days = seasonal_distance(target_date, date.fromisoformat(race["date"]))
-                reasons = (["already_exact"] if race["race_key"] in exact else [])
-                reasons += ["condition:" + key for key in mismatch]
-                if not stage["relax_details"]:
-                    reasons += ["condition:" + key for key in details]
-                else:
-                    reasons += ["unknown:" + key for key in DETAIL if race.get(key) in (None, "", "UNKNOWN", "UNKNOWN_CLASS")]
-                if days > stage["days"]:
-                    reasons.append("season_outside_window")
-                decision = {"race_key": race["race_key"], "days": days,
-                            "detail_mismatches": details, "reasons": reasons, "selected": False}
-                decisions.append(decision)
-                if not reasons:
-                    candidates.append((len(details), days, race["race_key"],
-                                       date.fromisoformat(race["date"]).year, decision))
-            used_years = set()
-            for _, _, key, year, decision in sorted(candidates):
-                if rules["supplement_per_year"] == 1 and year in used_years:
-                    decision["reasons"].append("year_representative")
-                    continue
+    chosen = set(exact)
+    goal = rules.get("target_races", rules["exact_threshold"])
+    for stage in rules["stages"] if len(chosen) < goal else []:
+        decisions = []
+        candidates = []
+        relax = set(stage.get("relax_fields", []))
+        if not relax <= {"weight_rule", "eligibility"}:
+            raise ValueError("INVALID_RULES")
+        for race in eligible:
+            days = seasonal_distance(target_date, date.fromisoformat(race["date"]))
+            mismatches = _mismatches(target, race, CORE + DETAIL)
+            reasons = []
+            if race["race_key"] in chosen:
+                reasons.append("already_selected")
+            for field in mismatches:
+                if field not in relax:
+                    reasons.append("condition:" + field)
+                elif race.get(field) in (None, "", "UNKNOWN", "UNKNOWN_CLASS"):
+                    reasons.append("unknown:" + field)
+            if days > stage["days"]:
+                reasons.append("season_outside_window")
+            decision = {"race_key": race["race_key"], "days": days,
+                        "condition_mismatches": mismatches,
+                        "reasons": reasons, "selected": False}
+            decisions.append(decision)
+            if not reasons:
+                candidates.append((len(mismatches), days, race["race_key"], race["date"][:4], decision))
+        used_years = set()
+        for _, _, key, year, decision in sorted(candidates):
+            if len(chosen) >= goal:
+                decision["reasons"].append("target_reached")
+            elif rules.get("supplement_per_year") == 1 and year in used_years:
+                decision["reasons"].append("year_representative")
+            else:
                 used_years.add(year)
-                decision["selected"] = True
+                chosen.add(key)
                 supplement.append(key)
-            stages.append({"stage": stage["name"], "candidates": decisions})
-            if supplement:
+                decision["selected"] = True
                 selected_stage = stage["name"]
-                break
+        stages.append({"stage": stage["name"], "candidates": decisions,
+                       "added_count": sum(d["selected"] for d in decisions),
+                       "cumulative_count": len(chosen)})
+        if len(chosen) >= goal:
+            break
     return {"exact_race_keys": sorted(exact), "exact_count": len(exact),
-            "fallback_triggered": len(exact) < rules["exact_threshold"],
+            "fallback_triggered": len(exact) < goal,
+            "target_races": goal, "total_selected": len(chosen),
+            "sample_shortfall": max(0, goal - len(chosen)),
             "selected_stage": selected_stage, "supplement_race_keys": sorted(supplement),
-            "failure_code": "NO_ACCEPTABLE_SUPPLEMENT" if len(exact) < rules["exact_threshold"] and not supplement else None,
+            "failure_code": "NO_ACCEPTABLE_SUPPLEMENT" if len(exact) < goal and not supplement else None,
             "candidates": audit, "stages": stages}
