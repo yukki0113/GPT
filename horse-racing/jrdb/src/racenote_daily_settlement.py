@@ -10,7 +10,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
-VERSION = "racenote-daily-settlement-0.1.0"
+VERSION = "racenote-daily-settlement-0.2.0"
+FOUR_LEG_EFFECTIVE_DATE = "2026-11-01"
 UNIT_STAKE_JPY = 100
 UNORDERED_WAGERS = {"quinella", "wide", "trio", "frame_quinella"}
 
@@ -132,21 +133,25 @@ def _mark_map(marks: Iterable[MarkedHorse]) -> dict[str, MarkedHorse]:
 
 
 def build_tickets(record: dict[str, Any]) -> list[Ticket]:
+    """Use 2 legs before 2026-11-01 and all four opponent marks thereafter."""
     marks = extract_marks(record)
     by_mark = _mark_map(marks)
     honmei = by_mark["◎"]
     second = by_mark["○"]
     third = by_mark["▲"]
     opponents = [row for row in marks if row.mark != "◎"]
+    is_four_leg = race_identity(record)[0] >= FOUR_LEG_EFFECTIVE_DATE
+    if is_four_leg and {row.mark for row in opponents} != {"○", "▲", "△1", "△2"}:
+        raise ValueError("four-leg settlement requires exactly ○ ▲ △1 △2")
+    legs = opponents if is_four_leg else [second, third]
 
     tickets = [
         Ticket("honmei_win", "win", (honmei.horse_no,), (honmei.mark,)),
         Ticket("honmei_place", "place", (honmei.horse_no,), (honmei.mark,)),
-        Ticket("quinella_main", "quinella", (honmei.horse_no, second.horse_no), (honmei.mark, second.mark)),
-        Ticket("quinella_main", "quinella", (honmei.horse_no, third.horse_no), (honmei.mark, third.mark)),
-        Ticket("exacta_main", "exacta", (honmei.horse_no, second.horse_no), (honmei.mark, second.mark)),
-        Ticket("exacta_main", "exacta", (honmei.horse_no, third.horse_no), (honmei.mark, third.mark)),
     ]
+    for leg in legs:
+        tickets.append(Ticket("quinella_main", "quinella", (honmei.horse_no, leg.horse_no), (honmei.mark, leg.mark)))
+        tickets.append(Ticket("exacta_main", "exacta", (honmei.horse_no, leg.horse_no), (honmei.mark, leg.mark)))
     for i in range(len(opponents)):
         for j in range(i + 1, len(opponents)):
             a, b = opponents[i], opponents[j]
@@ -232,6 +237,9 @@ def settle(forecast_records: list[dict[str, Any]], results: dict[str, Any], *, t
             continue
 
         tickets = build_tickets(record)
+        if key[0] >= FOUR_LEG_EFFECTIVE_DATE:
+            strategy_rows["quinella_main"]["label"] = "馬連 ◎－他印流し"
+            strategy_rows["exacta_main"]["label"] = "馬単 ◎→他印流し"
         by_strategy: dict[str, list[dict[str, Any]]] = {code: [] for code in STRATEGIES}
         race_ticket_items: list[dict[str, Any]] = []
 
@@ -265,18 +273,12 @@ def settle(forecast_records: list[dict[str, Any]], results: dict[str, Any], *, t
             race_ticket_items.append(item)
             record_strategy(ticket.strategy, item)
 
-            # Keep the physical 24-ticket formation unchanged while exposing
-            # ○ and ▲ contribution as separate analytical settlement rows.
-            if ticket.strategy == "quinella_main":
-                record_strategy(
-                    "quinella_second" if ticket.marks == ("◎", "○") else "quinella_shot",
-                    item,
-                )
-            elif ticket.strategy == "exacta_main":
-                record_strategy(
-                    "exacta_second" if ticket.marks == ("◎", "○") else "exacta_shot",
-                    item,
-                )
+            # Analytical ○/▲ rows are subsets of the combined physical tickets.
+            # △ legs count only in the combined strategy (no double-counted stake).
+            if ticket.strategy == "quinella_main" and ticket.marks[1] in {"○", "▲"}:
+                record_strategy("quinella_second" if ticket.marks[1] == "○" else "quinella_shot", item)
+            elif ticket.strategy == "exacta_main" and ticket.marks[1] in {"○", "▲"}:
+                record_strategy("exacta_second" if ticket.marks[1] == "○" else "exacta_shot", item)
 
         for code in STRATEGIES:
             row = strategy_rows[code]
@@ -298,6 +300,7 @@ def settle(forecast_records: list[dict[str, Any]], results: dict[str, Any], *, t
         "schema_version": "RaceNote-SameDay-Settlement-0.1",
         "settlement_version": VERSION,
         "unit_stake_jpy": UNIT_STAKE_JPY,
+        "four_leg_effective_date": FOUR_LEG_EFFECTIVE_DATE,
         "forecast_race_count": len(forecast_records),
         "settled_race_count": len(race_details),
         "pending_race_count": len(pending),
