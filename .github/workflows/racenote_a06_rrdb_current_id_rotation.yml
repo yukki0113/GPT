@@ -1,0 +1,68 @@
+name: RaceNote A06 RRDB current ID rotation contract
+
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/config/rrdb_current_source_v1.json'
+      - 'horse-racing/jrdb/src/rrdb_current_source_contract.py'
+      - 'horse-racing/jrdb/src/racenote_fetch_rrdb_current.py'
+      - 'horse-racing/jrdb/src/racenote_racereview_current.py'
+      - 'horse-racing/jrdb/tests/test_racenote_a06_rrdb_current_id_rotation.py'
+      - '.github/workflows/racenote_a06_rrdb_current_id_rotation.yml'
+      - '.github/workflows/racenote_v056_forward_paci_t1.yml'
+      - 'horse-racing/jrdb/docs/racenote/RACENOTE_A06_RRDB_CURRENT_ID_ROTATION_20261102.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  a06:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile JRDB-scoped source, verify no syntax regression
+        run: |
+          python -m py_compile \
+            horse-racing/jrdb/src/rrdb_current_source_contract.py \
+            horse-racing/jrdb/src/racenote_fetch_rrdb_current.py \
+            horse-racing/jrdb/src/racenote_racereview_current.py \
+            horse-racing/jrdb/tests/test_racenote_a06_rrdb_current_id_rotation.py
+      - name: Run existing and A06 RRDB current resolver tests
+        run: |
+          python -m unittest discover -s horse-racing/jrdb/tests -p 'test_racenote_racereview_current.py' -v
+          python -m unittest discover -s horse-racing/jrdb/tests -p 'test_racenote_a06_rrdb_current_id_rotation.py' -v
+      - name: Live immutable-byte read smoke against currently approved public CURRENT
+        run: |
+          python -m pip install 'gdown>=6.1,<7'
+          python horse-racing/jrdb/src/racenote_fetch_rrdb_current.py \
+            --output /tmp/a06-rrdb.zip \
+            --receipt /tmp/a06-rrdb-receipt.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from rrdb_current_source_contract import approved_source
+          receipt=json.loads(Path('/tmp/a06-rrdb-receipt.json').read_text())
+          source=approved_source()
+          assert receipt['verified'] is True
+          assert receipt['file_id']==source['file_id']
+          assert receipt['source_contract_sha256']==source['source_contract_sha256']
+          assert receipt['canonical_folder_id']==source['canonical_folder_id']
+          assert receipt['validation'][-2:]==['MANIFEST_PASS','GENERATION_MATCH']
+          assert receipt['manifest_sha256'] and receipt['sha256']
+          assert receipt['generation_id'] and receipt['period_to']
+          print('A06_RRDB_APPROVED_CURRENT_PASS',receipt['generation_id'],receipt['period_to'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: racenote-a06-approved-current-receipt
+          path: /tmp/a06-rrdb-receipt.json
+          if-no-files-found: ignore
+          retention-days: 7
