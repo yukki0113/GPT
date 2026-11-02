@@ -27,8 +27,9 @@ class RetiredAssetBoundaryTest(unittest.TestCase):
                     self.assertIsNone(pattern.search(p.read_text(errors='replace')),str(p))
 
     def test_shared_utilities_and_permanent_guard_retained(self):
-        for name in ['jrdb_edge_v02_canonical.py','jrdb_previous_start_research_ledger.py','jrdb_newspaper_retired_sources.py','racenote_edge_prediction_policy.py','racenote_edge_performance_adapter.py']:
+        for name in ['jrdb_canonical_codes.py','jrdb_previous_start_research_ledger.py','jrdb_newspaper_retired_sources.py','racenote_edge_prediction_policy.py','racenote_edge_performance_adapter.py']:
             self.assertTrue((ROOT/'horse-racing/jrdb/src'/name).is_file())
+        self.assertFalse((ROOT/'horse-racing/jrdb/src/jrdb_edge_v02_canonical.py').exists())
 
     def test_independent_stats_and_fact_delivery_retained(self):
         pages=(ROOT/'.github/workflows/jrdb_pwa_pages.yml').read_text()
