@@ -176,7 +176,7 @@ class NewspaperBuilderTest(unittest.TestCase):
         self.assertIsNone(horse["history"][0]["last3f_rank"])
         self.assertEqual(horse["history"][0]["notes"]["race_comment"], "直線しぶとい")
         self.assertTrue(all(value is None for value in horse["addons"].values()))
-        self.assertEqual(horse["edge_matches"], [])
+        self.assertNotIn("edge_matches", horse)
 
         status = bundle["metadata"]["source_status"]["jrdb_history"]
         self.assertEqual(status["state"], "READY")

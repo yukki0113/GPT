@@ -23,6 +23,7 @@ import shutil
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
+from jrdb_newspaper_retired_sources import clean_retired_sources
 
 EVAL_REQUIRED_COLUMNS = {
     "date", "venue_code", "race_no", "horse_no", "eval", "horse_name", "join_status",
@@ -36,9 +37,6 @@ EVAL_ANALYSIS_COLUMNS = {
     "eval_analysis_asof",
 }
 EVAL_ANALYSIS_STATUSES = {"NONE", "WATCH", "MATCH"}
-MY_INDEX_REQUIRED_COLUMNS = {
-    "date", "venue_code", "race_no", "horse_no", "training_edge_index",
-}
 RRDB_RECOMMENDATION_REQUIRED_COLUMNS = {
     "date", "venue_code", "race_no", "race_key", "horse_no", "horse_name",
     "recommendation_comment", "recommendation_version",
@@ -63,7 +61,7 @@ def sha_file(path: Path) -> str:
 
 
 def write_json(value: Any, path: Path) -> None:
-    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    path.write_text(json.dumps(clean_retired_sources(value), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def write_day_package(day_dir: Path, path: Path) -> dict[str, Any]:
@@ -228,87 +226,7 @@ def load_eval(
     return index, sha_file(path), analysis_enabled
 
 
-# Historical compatibility only: RL / Training Edge production generation is retired.
 # Normal Newspaper production must not require or auto-create this input.
-def load_my_index(
-    path: Path,
-) -> tuple[dict[tuple[str, str, int, int], dict[str, Any]], str, int, int]:
-    """Load a complete Training Edge handoff without interpreting its values.
-
-    A present CSV row is meaningful even when its display index is blank.  The
-    caller must therefore merge ``None`` rather than treating the row as absent.
-    """
-    with path.open(encoding="utf-8-sig", newline="") as handle:
-        reader = csv.DictReader(handle)
-        fields = set(reader.fieldnames or [])
-        rows = list(reader)
-
-    missing = MY_INDEX_REQUIRED_COLUMNS - fields
-    if not rows or missing:
-        raise ValueError(
-            f"Training Edge CSV missing required columns: {sorted(missing)}"
-        )
-
-    index: dict[tuple[str, str, int, int], dict[str, Any]] = {}
-    value_rows = 0
-    null_rows = 0
-    for line_no, row in enumerate(rows, start=2):
-        try:
-            date = str(row["date"] or "").strip()
-            raw_venue_code = str(row["venue_code"] or "").strip()
-            venue_code = raw_venue_code.zfill(2)
-            race_no = int(str(row["race_no"] or "").strip())
-            horse_no = int(str(row["horse_no"] or "").strip())
-        except (KeyError, TypeError, ValueError) as exc:
-            raise ValueError(
-                f"invalid Training Edge identity at CSV line {line_no}: {exc}"
-            ) from exc
-
-        try:
-            dt.date.fromisoformat(date)
-        except ValueError as exc:
-            raise ValueError(
-                f"invalid Training Edge date at CSV line {line_no}: {date!r}"
-            ) from exc
-        if not re.fullmatch(r"\d{2}", venue_code):
-            raise ValueError(
-                "invalid Training Edge venue_code at CSV line "
-                f"{line_no}: {raw_venue_code!r}"
-            )
-        if not 1 <= race_no <= 12 or horse_no < 1:
-            raise ValueError(
-                f"invalid Training Edge race/horse at CSV line {line_no}"
-            )
-
-        raw_index = str(row["training_edge_index"] or "").strip()
-        if raw_index:
-            try:
-                training_edge_index: float | None = float(raw_index)
-            except ValueError as exc:
-                raise ValueError(
-                    "invalid Training Edge training_edge_index at CSV line "
-                    f"{line_no}: {raw_index!r}"
-                ) from exc
-            if not math.isfinite(training_edge_index):
-                raise ValueError(
-                    "non-finite Training Edge training_edge_index at CSV line "
-                    f"{line_no}: {raw_index!r}"
-                )
-            value_rows += 1
-        else:
-            training_edge_index = None
-            null_rows += 1
-
-        key = (date, venue_code, race_no, horse_no)
-        if key in index:
-            raise ValueError(f"duplicate Training Edge key: {key}")
-        index[key] = {
-            "date": date,
-            "training_edge_index": training_edge_index,
-        }
-
-    return index, sha_file(path), value_rows, null_rows
-
 
 
 def load_rrdb_recommendation(
@@ -370,7 +288,6 @@ def load_rrdb_recommendation(
                 "recommendation_version": version,
             }
     return index, sha_file(path)
-
 
 
 def load_rrdb_recommendation_json(
@@ -727,7 +644,6 @@ def merge_day(
     iluka_json: Path | None = None,
     racenote_csv: Path | None = None,
     racenote_sparse_marks: bool = False,
-    my_index_csv: Path | None = None,
     rrdb_recommendation_csv: Path | None = None,
     rrdb_recommendation_json: Path | None = None,
 ) -> dict[str, Any]:
@@ -753,18 +669,6 @@ def merge_day(
     else:
         eval_index, eval_sha, eval_analysis_enabled = load_eval(eval_csv)
 
-    if my_index_csv is None:
-        my_index_index: dict[tuple[str, str, int, int], dict[str, Any]] = {}
-        my_index_sha = None
-        my_index_value_rows = 0
-        my_index_null_rows = 0
-    else:
-        (
-            my_index_index,
-            my_index_sha,
-            my_index_value_rows,
-            my_index_null_rows,
-        ) = load_my_index(my_index_csv)
 
     if rrdb_recommendation_csv is not None and rrdb_recommendation_json is not None:
         raise ValueError("supply only one of rrdb_recommendation_csv/json")
@@ -802,7 +706,6 @@ def merge_day(
         raise ValueError("duplicate keibailuka key")
 
     seen_eval: set[tuple[str, str, int, int]] = set()
-    seen_my_index: set[tuple[str, str, int, int]] = set()
     seen_iluka: set[tuple[str, int, str]] = set()
     seen_rn: set[tuple[str, int, int]] = set()
     seen_rn_races: set[tuple[str, int]] = set()
@@ -824,9 +727,6 @@ def merge_day(
         race_id = (venue_code, race_no)
 
         eval_merged = 0
-        my_index_merged = 0
-        my_index_values = 0
-        my_index_nulls = 0
         eval_race_analysis_comments = 0
         eval_race_status_counts = {"NONE": 0, "WATCH": 0, "MATCH": 0}
         iluka_merged = 0
@@ -926,25 +826,6 @@ def merge_day(
                 seen_eval.add(key)
                 eval_merged += 1
 
-            if my_index_csv is not None:
-                key = (race_date, venue_code, race_no, horse_no)
-                row = my_index_index.get(key)
-                if row is None:
-                    raise ValueError(
-                        f"Training Edge row missing for {key}: {horse_name}"
-                    )
-                value = row["training_edge_index"]
-                horse["addons"]["my_index"] = {
-                    "training_edge_index": value,
-                    "source": "Training Edge",
-                    "source_date": row["date"],
-                }
-                seen_my_index.add(key)
-                my_index_merged += 1
-                if value is None:
-                    my_index_nulls += 1
-                else:
-                    my_index_values += 1
 
             if iluka_json is not None:
                 key = (venue, race_no, horse_name)
@@ -1070,18 +951,6 @@ def merge_day(
                 expected=count,
                 resolved=eval_merged,
             )
-        if my_index_csv is not None:
-            status["my_index"] = _source_state(
-                version=my_index_csv.name,
-                generated_at=now,
-                sha=my_index_sha,
-                message=(
-                    f"merged={my_index_merged}/{count} "
-                    f"values={my_index_values} nulls={my_index_nulls}"
-                ),
-                expected=count,
-                resolved=my_index_merged,
-            )
         if iluka_json is not None:
             expected = sum(
                 entry["venue"] == venue
@@ -1130,9 +999,6 @@ def merge_day(
                 if eval_analysis_enabled
                 else {"NONE": 0, "WATCH": 0, "MATCH": 0}
             ),
-            "my_index_merged": my_index_merged,
-            "my_index_values": my_index_values,
-            "my_index_nulls": my_index_nulls,
             "keibailuka_merged": iluka_merged,
             "racenote_merged": rn_merged,
             "racenote_horse_comments": rn_comments,
@@ -1144,12 +1010,6 @@ def merge_day(
         raise ValueError(
             f"Eval rows not consumed: count={len(missing)} "
             f"sample={missing[:5]}"
-        )
-    if my_index_csv is not None and set(my_index_index) != seen_my_index:
-        extra = sorted(set(my_index_index) - seen_my_index)
-        raise ValueError(
-            f"Training Edge rows not consumed: count={len(extra)} "
-            f"sample={extra[:5]}"
         )
 
     if rrdb_recommendation_csv is not None and set(rrdb_recommendation_index) != seen_rrdb_recommendation:
@@ -1196,16 +1056,6 @@ def merge_day(
                 analysis_enabled=eval_analysis_enabled,
                 analysis_comments=eval_analysis_comments,
                 status_counts=eval_status_counts,
-            ),
-        }
-    if my_index_csv is not None:
-        manifest["source_status"]["my_index"] = {
-            "state": "READY",
-            "source_version": my_index_csv.name,
-            "generated_at": now,
-            "message": (
-                f"merged={len(seen_my_index)}/{len(my_index_index)} "
-                f"values={my_index_value_rows} nulls={my_index_null_rows}"
             ),
         }
     if iluka_json is not None:
@@ -1299,18 +1149,6 @@ def merge_day(
             },
         }
 
-    my_index_result = None
-    if my_index_csv is not None:
-        my_index_result = {
-            "source_file": my_index_csv.name,
-            "sha256": my_index_sha,
-            "expected_rows": len(my_index_index),
-            "merged_rows": len(seen_my_index),
-            "value_rows": my_index_value_rows,
-            "null_rows": my_index_null_rows,
-            "unmatched": 0,
-        }
-
 
     rrdb_recommendation_result = None
     if rrdb_recommendation_source_name is not None:
@@ -1373,7 +1211,6 @@ def merge_day(
         ),
         "generated_at": now,
         "eval": eval_result,
-        "my_index": my_index_result,
         "keibailuka": (
             None
             if iluka_json is None
@@ -1411,14 +1248,6 @@ def main() -> int:
         action="store_true",
         help="Treat RaceNote CSV as exactly five marked horses per race; unlisted horses remain blank.",
     )
-    parser.add_argument(
-        "--my-index-csv",
-        type=Path,
-        help=(
-            "Retired Training Edge/RL compatibility input only. "
-            "Normal production must omit this option and must not generate RL on demand."
-        ),
-    )
     parser.add_argument("--rrdb-recommendation-csv", type=Path)
     parser.add_argument("--rrdb-recommendation-json", type=Path)
     parser.add_argument("--revision", type=int, required=True)
@@ -1436,7 +1265,6 @@ def main() -> int:
             ),
             racenote_csv=args.racenote_csv,
             racenote_sparse_marks=args.racenote_sparse_marks,
-            my_index_csv=args.my_index_csv,
             rrdb_recommendation_csv=args.rrdb_recommendation_csv,
             rrdb_recommendation_json=args.rrdb_recommendation_json,
         ),

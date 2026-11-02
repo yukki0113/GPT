@@ -1,10 +1,14 @@
 # JRDB / Kenshow_Labo PWA
 
+## Phase 2 current contract — Issue #2329
+
+通常Newspaperは PACI → Base/history → 監査PASS → 日次artifact → 任意のEval/RaceNote/RRDB/イルカmerge → 個人/桃太郎投影 → Current候補 の経路を使う。EdgeDB STANDARD/v0.5・Training Edge入力を要求・探索・実行しない。日次requestは `date` とPACI取得元のみで起動し、`revision` は省略時1。旧requestのAnalysis追加フィールドは無視する。仕様は `horse-racing/jrdb/newspaper/DAY_REQUEST_V2.md`。
+
+旧Currentを基にした新revisionでは共通の `jrdb_newspaper_retired_sources.py` が廃止sourceを除去し、race SHA/size・manifest・package・auditを再生成する。通常mergeの `--my-index-csv` は廃止。既存immutable revisionやRelease/Drive正本は変更しない。Eval WATCH/MATCH、Eval.analysis、RRDB不利分析、JRDB/履歴、RaceNote、イルカ、桃太郎の予想/コメントは維持する。Fact Lite/Stats Mart/canonical Analysisは独立経路として維持する。
+
+STANDARD/v0.5本番再投入workflowはjob条件falseで停止。Pagesは通常full-site組立を維持し、Edge smoke・Edge再公開triggerを廃止。研究preview/計算/configと過去文書の資産廃止判定はPhase 3。本PRでは本番反映しないため、コード上の依存解除と実配信完了を区別する。Phase 1の本番画面確認も未完了。
+
 ## Phase 1 UI retirement (Issue #2324)
-
-個人新聞は EdgeDB（旧 edge_matches / special_memos と v0.5）および Training Edge / my_index を描画・参照しない。列・詳細モーダル・取込状態・legacy fallback を撤去済み。以下に残る旧表示契約は過去の記録であり、現行UIには適用しない。Eval WATCH/MATCH、RRDB不利分析、JRDB、過去走3/5/8、RaceNote、イルカ、予想者列を維持する。桃太郎の4列・公開allowlistを維持する。
-
-Phase 1はUIのみ。日次生成、EdgeDB計算・config、canonical Analysis、配信のEdge実行工程、Current/Releases/Driveデータは保持しており、上流の断線はPhase 2、資産廃止はPhase 3で扱う。研究用v0.5 previewは通常新聞とは独立した資産として保持する。
 
 `horse-racing/jrdb/pwa/` は、JRDB系の配布済みデータをブラウザで閲覧・集計する **consumer / presentation layer** の正本です。
 
@@ -66,21 +70,6 @@ Phase 1はUIのみ。日次生成、EdgeDB計算・config、canonical Analysis�
 - `../docs/README_build_jrdb_pwa_fact_lite.md` — build / validation contract
 
 ### 競馬新聞
-
-- `newspaper.html` — UI shell / shared dialog
-- `newspaper-day.js` — current day package取得・切替
-- `newspaper-v4.js` 以降 — 新聞表の段階的な表示互換・override
-- `NEWSPAPER_HISTORY_COMPACT.md` — 個人/桃太郎で共有する過去走compact表示の設計・段階導入記録
-- `newspaper-v6.js` — RaceNoteコメント等の既存dialog利用
-- `newspaper-v7.js` — 特注メモ表示
-- `newspaper-v8.js` — source status表示拡張
-- `newspaper-v9.js` / `newspaper-v9.css` — Eval分析コメントリンク・modal表示
-- `newspaper-v10.js` — 独自指数（Training Edge）表示とsource status
-- `newspaper-edge-v05.js` / `newspaper-edge-v05.css` — EdgeDB v0.5 production列・modal表示
-- `../src/jrdb_newspaper_merge_external.py` — Eval / RaceNote / keibailuka merge
-- `../src/jrdb_newspaper_merge_edge.py` — Edge merge
-- `../src/jrdb_newspaper_edge_adapter.py` — Edge reader-facing display boundary
-- `../newspaper/.gpt/HANDOFF.md` — Newspaper専用の引継ぎ正本
 
 既存の `newspaper-vN.js/css` は後方互換を維持するためのlayerです。理由なく大規模統合・全面書換えせず、現在のoverride順と回帰テストを確認して最小差分で変更します。
 
@@ -147,59 +136,13 @@ PWAの現在動作:
 
 旧日次JSONや旧Eval CSV由来の `analysis` なしデータも正常表示します。
 
-### 独自指数 / Training Edge
-
-PWAは上流で算出済みの独自指数を **再計算せずそのまま表示**します。canonicalな馬単位JSONは次を使用します。
-
-```json
-{
-  "addons": {
-    "my_index": {
-      "training_edge_index": 80.9
-    }
-  }
-}
-```
-
 表示rule:
-
-- preferred field: `addons.my_index.training_edge_index`
-- 旧互換: `display_value / index / score / value`
-- `addons.my_index` 自体が無い（source未取込）: `—`
-- `training_edge_index` が明示的にnull / 空（source取込済みだが指数なし）: **空欄**
-- `training_edge_index` が明示されている場合、nullでも旧互換fieldへfallbackしない
-- 数値はPWAの通常指数表示と同じ1桁小数表示
-- 日次manifestは `source_status.my_index.state` を使用し、`READY` のとき概要欄を `指数○` とする
-- PWA側で順位化、標準化、percentile、加重、他指数との合成を行わない
 
 元CSVの標準列は `date, venue_code, race_no, horse_no, training_edge_index`。CSVからNewspaper day packageへのexact join・source_status・auditはNewspaper生成側の責務であり、PWAは完成JSONだけをconsumerとして扱います。
 
-### Edge / EdgeDB v0.5
-
 PWA / NewspaperはEdge matcher / serving結果をconsumerとして表示します。PWA側でEdge条件を再match・再評価せず、reader-facing translationとaudit情報の表示境界を守ります。
 
-STANDARD Edgeの `special_memos` は後方互換・監査用途として残してよいですが、通常新聞では旧「特注メモ」列を表示しません。
-
-EdgeDB v0.5のcanonical表示入力:
-
-```text
-horse.addons.edge_v05.candidate_ids
-race.edge_v05_candidates
-```
-
 表示rule:
-
-- `source_status.edge_v05.state` が `PARTIAL` / `READY` の場合だけ候補表示
-- `ERROR` / missingではEdge列を空欄にし、RaceNote / Eval / JRDB等の他addonは維持
-- Edge列はmark群の直後、1走前の直前に置く独立34px列
-- candidateがある馬だけ `○`
-- `○` tap/clickで詳細modal
-- 先頭2件を表示し、3件以上は「その他のEdge」で展開
-- 2026診断 `CONFIRMED / STILL_PLAUSIBLE / INSUFFICIENT_OOS / DECAYING / CONTRADICTED` と複勝ROIは説明情報
-- 診断・ROIを予想印、買い推奨、自動馬券判断へ変換しない
-- PWA側でcandidate条件・rank・scoreを再計算しない
-
-日次生成・未接続feature・source stateの正本は `../newspaper/EDGE_V05_PRODUCTION.md` と `../newspaper/.gpt/DAILY_WORK_CONTRACT.md`。
 
 ## Distribution channels
 

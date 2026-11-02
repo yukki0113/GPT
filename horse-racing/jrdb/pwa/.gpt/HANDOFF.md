@@ -1,10 +1,14 @@
 # Kenshow_Labo PWA handoff
 
+## Phase 2 current contract — Issue #2329
+
+通常Newspaperは PACI → Base/history → 監査PASS → 日次artifact → 任意のEval/RaceNote/RRDB/イルカmerge → 個人/桃太郎投影 → Current候補 の経路を使う。EdgeDB STANDARD/v0.5・Training Edge入力を要求・探索・実行しない。日次requestは `date` とPACI取得元のみで起動し、`revision` は省略時1。旧requestのAnalysis追加フィールドは無視する。仕様は `horse-racing/jrdb/newspaper/DAY_REQUEST_V2.md`。
+
+旧Currentを基にした新revisionでは共通の `jrdb_newspaper_retired_sources.py` が廃止sourceを除去し、race SHA/size・manifest・package・auditを再生成する。通常mergeの `--my-index-csv` は廃止。既存immutable revisionやRelease/Drive正本は変更しない。Eval WATCH/MATCH、Eval.analysis、RRDB不利分析、JRDB/履歴、RaceNote、イルカ、桃太郎の予想/コメントは維持する。Fact Lite/Stats Mart/canonical Analysisは独立経路として維持する。
+
+STANDARD/v0.5本番再投入workflowはjob条件falseで停止。Pagesは通常full-site組立を維持し、Edge smoke・Edge再公開triggerを廃止。研究preview/計算/configと過去文書の資産廃止判定はPhase 3。本PRでは本番反映しないため、コード上の依存解除と実配信完了を区別する。Phase 1の本番画面確認も未完了。
+
 ## Phase 1 UI retirement (Issue #2324)
-
-個人新聞は EdgeDB（旧 edge_matches / special_memos と v0.5）および Training Edge / my_index を描画・参照しない。列・詳細モーダル・取込状態・legacy fallback を撤去済み。以下に残る旧表示契約は過去の記録であり、現行UIには適用しない。Eval WATCH/MATCH、RRDB不利分析、JRDB、過去走3/5/8、RaceNote、イルカ、予想者列を維持する。桃太郎の4列・公開allowlistを維持する。
-
-Phase 1はUIのみ。日次生成、EdgeDB計算・config、canonical Analysis、配信のEdge実行工程、Current/Releases/Driveデータは保持しており、上流の断線はPhase 2、資産廃止はPhase 3で扱う。研究用v0.5 previewは通常新聞とは独立した資産として保持する。
 
 この文書は、会話量上限・Chat/Workスレッド移動・担当交代後に `horse-racing/jrdb/pwa/` の保守を再開するための **durable handoff** です。
 
@@ -134,33 +138,7 @@ PWA表示rule:
 - `newspaper-v9.css`
 - `../tests/test_jrdb_newspaper_eval_analysis_pwa.py`
 
-## Independent index / Training Edge invariants
-
-独自指数は上流で算出済みの値をPWAがそのまま表示する。PWA側で指数を再計算・順位化・標準化・合成しない。
-
 canonical horse addon:
-
-```json
-{
-  "addons": {
-    "my_index": {
-      "training_edge_index": 80.9
-    }
-  }
-}
-```
-
-- preferred value: `addons.my_index.training_edge_index`
-- legacy fallback: `display_value / index / score / value`
-- `addons.my_index` missing（source未取込） -> `—`
-- explicit `training_edge_index: null` / empty（source取込済み・指数なし） -> **空欄**
-- `training_edge_index` が明示された場合はnullでもlegacy fallbackへ落とさない
-- day manifest source status: `source_status.my_index.state`
-- `READY` -> day summary `指数○`
-- source CSV standard columns: `date, venue_code, race_no, horse_no, training_edge_index`
-- CSV exact join / duplicate detection / audit / source_status creationはNewspaper生成側の責務
-- current PWA layer: `newspaper-v10.js`
-- focused test: `../tests/test_jrdb_newspaper_my_index_pwa.py`
 
 ## Edge display invariants
 
@@ -168,19 +146,7 @@ PWAはEdge outputを表示するconsumerです。
 
 ### STANDARD / legacy compatibility
 
-- exact matching / eligibilityはEdge / adapter側
-- PWAでconditionsを再評価しない
-- `special_memos` は互換データとして残っていてよい
-- 通常新聞では旧「特注メモ」列を表示しない
-
-### EdgeDB v0.5 production display
-
 canonical input:
-
-```text
-horse.addons.edge_v05.candidate_ids
-race.edge_v05_candidates
-```
 
 - source statusが `PARTIAL` または `READY` のときだけ表示する
 - `ERROR` / missing時はEdge cellを空欄にし、他addonを壊さない
@@ -194,9 +160,6 @@ race.edge_v05_candidates
 - PWAでcandidate順序を再評価・再scoreしない
 
 current assets:
-
-- `newspaper-edge-v05.js`
-- `newspaper-edge-v05.css`
 
 mobile-sensitive変更では360 / 390 / 430pxを目安に、sticky馬番・馬名、印列、Edge列、過去走、横スクロール、modalを確認する。
 

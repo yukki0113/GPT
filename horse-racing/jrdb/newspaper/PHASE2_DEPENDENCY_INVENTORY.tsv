@@ -1,0 +1,303 @@
+path	matching_lines	classification	reason
+.github/workflows/edgedb_v05_2026_match_freeze_pr.yml	14	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/edgedb_v05_2026_oos_eval_pr.yml	10	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/edgedb_v05_positive_freeze_issue.yml	14	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/edgedb_v05_turn4_sieve_pr.yml	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/jrdb_edge_analysis_parquet_equivalence_issue.yml	6	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/jrdb_edge_forward_settle_issue.yml	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/jrdb_edge_v02_operational_audit_issue.yml	6	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/jrdb_edge_v03_forward_shadow_freeze_issue.yml	6	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/jrdb_edge_v03_operational_replay_issue.yml	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/jrdb_edge_v04_stage_a_issue.yml	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/jrdb_edge_v04_stage_b_issue.yml	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/jrdb_momotaro_newspaper_publish_issue.yml	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+.github/workflows/jrdb_newspaper_current_audit_issue.yml	6	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+.github/workflows/jrdb_newspaper_edge_republish_issue.yml	14	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+.github/workflows/jrdb_newspaper_edge_v05_republish_issue.yml	14	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+.github/workflows/jrdb_newspaper_edgedb_live_parity_issue.yml	18	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.github/workflows/jrdb_newspaper_poc_issue.yml	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+.github/workflows/jrdb_newspaper_skeleton_publish_issue.yml	1	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+.github/workflows/jrdb_newspaper_v03_rehearsal_publish_issue.yml	8	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+.github/workflows/jrdb_pwa_fact_lite_publish.yml	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+.github/workflows/jrdb_pwa_pages.yml	2	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+.github/workflows/racenote_btday_v052_prepare.yml	4	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+.github/workflows/racenote_gen0_g001_manifest_issue.yml	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+.github/workflows/racenote_v056_forward_paci_t1.yml	4	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+.gpt/audit/issue_router_t3_inventory.json	11	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.gpt/audit/issue_router_t3_inventory.md	6	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.gpt/legacy_workflows/drive_direct/jrdb_edge_forward_freeze_issue.yml	16	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.gpt/legacy_workflows/drive_direct/jrdb_edge_preresult_reconstruct_issue.yml	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.gpt/legacy_workflows/drive_direct/jrdb_training_edge_v02_daily_issue.yml	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.gpt/legacy_workflows/drive_direct/jrdb_training_edge_v02_replay_issue.yml	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+.gpt/legacy_workflows/drive_direct/racenote_gen0_3_blind_marks_pipeline_v0_1.yml	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/brdb/docs/BRDB_ANCESTOR_CROSS_SIMILARITY_v0_1.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/brdb/docs/BRDB_EXISTING_PEDIGREE_ASSET_INVENTORY_v0_1.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/brdb/docs/BRDB_FUTURE_APTITUDE_SIMILARITY_SEGMENT_DESIGN_v0_1.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/.gpt/CONTEXT.md	11	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/.gpt/HANDOFF.md	12	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/.gpt/MIGRATION_STATUS.md	6	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/.gpt/WORKFLOW.md	5	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/README.md	10	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0049/20260322/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0050/20260905/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0051/20260404/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0052/20260110/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0053/20260926/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0054/20260509/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0055/20260105/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0056/20260606/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0057/20260104/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0058/20260809/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0059/20260510/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/BTDAY-0060/20260425/ab/ab_session.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0049.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0050.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0051.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0052.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0053.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0054.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0055.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0056.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0057.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0058.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0059.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0060.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0062.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0063.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0064.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0065.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0066.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0067.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0068.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0069.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0070.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/backtests/requests/BTDAY-0071.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/config/edgedb/current_manifest.json	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_match_freeze_manifest.json	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_oos_eval_manifest.json	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_freeze_manifest.json	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_turn4_sieve_review_manifest.json	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/config/racenote_forecast_2026_paci_backtest_v0_1.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/config/racenote_forecast_gen0_ledger_v0_2.json	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/config/racenote_forecast_gen0_ledger_v0_3.json	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/config/racenote_forecast_logic_baseline_v0_1.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/config/racenote_forecast_logic_baseline_v0_2.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/EdgeDB_Parquet_Canonical_Migration_Result_20260925.md	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/EdgeDB_Storage_Inventory_20260925.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/EdgeDB_v0_4_HighOrder_Transition_Value_Discovery_Design_20260926.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_Consumer_Integration_v0_1.md	10	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_Contract_v0_1.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_Current_Matching_v0_1.md	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_Forward_Evaluation_v0_1.md	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_Forward_Ledger_v0_1.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_Forward_Operations_v0_1.md	7	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_PreResult_Reconstruction_v0_1.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_Suggestive_Serving_Contract_v0_1.md	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_v0_3_Granularity_Conflict_Design_v0_1.md	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_v0_3_Operational_Audit_20260924.md	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Edge_v0_3_Stage_B2_Statistical_Gate_Design_v0_1.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/JRDB_Newspaper_Neutral_Dependency_Inventory_v0_1.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/JRDB_Newspaper_PWA_Display_PoC_v0_1_20260909.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/JRDB_PWA_Newspaper_Design_v0_1.md	7	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/RL_Retirement_Contract_20261002.md	7	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/RL_Retirement_Final_Report_20261002.md	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/RL_Retirement_T2_Workflow_Audit_20261002.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/RL_Retirement_T3_Downstream_Audit_20261002.md	18	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/RaceLift_RL_Research_Handoff_20260922.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/RaceNote_v1_0_EdgeAware_Backtest_Protocol.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/RaceNote_v1_0_EdgeAware_Prediction_Design_Candidate.md	5	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/RaceNote_v1_1_P_TRUE_FORWARD_Target_Selection_20260912_13.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/RaceNote_v1_1_PolarityAxis_Prediction_Design_Candidate.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/RaceNote_v1_1_PolarityAxis_Target_Selection_Freeze_20260919_20_21.md	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/RaceNote_v1_1_Polarity_Gated_Repeat_Blind_Result_20260705_11_12.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/Training_Edge_v0_2_Daily_Forward_Contract_20260915.md	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/Training_Edge_v0_2_Daily_Forward_Implementation_20260915.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/Training_Edge_v0_2_Work_Handoff_20260915.md	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/Training_Research_Stage1b_Stage2_Stage3_20260910.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/edgedb/EDGEDB_QUERY_AND_HORSE_HISTORY_DETAILED_DESIGN_v0_1_20261006.md	30	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/EdgeDB_v0_4_Research_Execution_Redesign_20261005.md	5	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/README.md	5	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261005_001_r0-existing-asset-audit_instruction.md	6	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261005_002_r1-preflight-and-wave-a-enable_instruction.md	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261005_003_r1-wave-a-full-3y_instruction.md	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261005_004_r1-duckdb-equivalence-and-r3-branch-decision_instruction.md	5	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261005_005_r1-canonical-actions-fallback-rerun-and-r3_instruction.md	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261005_006_pedigree-cross-frozen-5y-extension_instruction.md	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261006_007_resume-pedigree-cross-5y-after-family-planner-unblock_instruction.md	5	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261006_008_observe-only-cohort-freeze-and-prospective-shadow_instruction.md	10	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261006_009_complete-observe-cohort-membership-from-full-3y-reproduction_instruction.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261006_010_unified-edgedb-query-and-horse-history-foundation_instruction.md	19	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/20261006_011_complete-horse-history-via-data-storage-fallback_instruction.md	5	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/instructions/README.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/results/20261005_001_r0-existing-asset-audit_result.md	5	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/results/20261005_002_r1-preflight-and-wave-a-enable_result.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/results/20261005_005_r1-canonical-actions-fallback-rerun-and-r3_result.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/results/20261006_008_observe-only-cohort-freeze-and-prospective-shadow_result.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/results/20261006_010_unified-edgedb-query-and-horse-history-foundation_result.md	11	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_4/collab/results/README.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/EdgeDB_v0_5_Niche_Value_Memo_Discovery_Design_20261007.md	7	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/instructions/20261007_001_t1_t6_2024_2025_prototype_aggregation_instruction.md	12	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/instructions/20261007_002_v05_prototype_scientific_correction_and_roi_gate_instruction.md	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/instructions/20261007_003_first_surface_and_blinker_full_history_aggregation_instruction.md	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/instructions/20261007_004_2026_pre_race_match_freeze_instruction.md	17	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/instructions/20261007_005_t2_completion_missing_paci_and_going_instruction.md	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/20261007_001_t1_t6_2024_2025_prototype_aggregation_result.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/20261007_003_first_surface_and_blinker_full_history_aggregation_result.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/20261007_004_positive_value_freeze_result.md	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/20261007_005_2026_pre_race_match_freeze_result.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/20261007_007_2026_oos_outcome_join_result.md	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/20261007_008_turn4_density_and_sieve_review_result.md	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/feature_mart_manifest_audit.json	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/redundancy_summary.json	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/shortlist_summary.json	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/edgedb/v0_5/collab/results/t1_t6_summary.json	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_2_DESIGN_20260917.md	26	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_2_IMPLEMENTATION_20260917.md	5	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_2_PREDICTION_CONTRACT_v0_2.md	11	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_3_IMPLEMENTATION_20260925.md	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_3_PREDICTION_CONTRACT_v0_3.md	6	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_BASELINE_READER_v0_1.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_PLAN.md	6	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_PREDICTION_CONTRACT_v0_1.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_RESEARCH_PROTOCOL_v0_1.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/FORECAST_GEN0_SAMPLE_QUEUE_v0_1.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/GEN0_G001_ACTIVATION_STATUS.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/HORSE_EVIDENCE_CARD_v0_1.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/RACEREVIEW_ADAPTER_v0_1.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/README.md	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote/operation-backups/20261030_pre_pipeline/README.md	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/racenote/operation-backups/20261030_pre_pipeline/gpt__HANDOFF.md	12	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/racenote/operation-backups/20261030_pre_pipeline/gpt__WORKFLOW.md	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/docs/racenote_best_bet_research_v0_1.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote_best_bet_v0_1_blind_test_20260816_sapporo.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote_blind_marks_v0_1_backtest_20260531.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote_blind_marks_v0_1_backtest_20260614.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/docs/racenote_blind_marks_v0_1_backtest_20260816.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/newspaper/.gpt/CONTEXT.md	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/newspaper/.gpt/DAILY_WORK_CONTRACT.md	2	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/newspaper/.gpt/HANDOFF.md	2	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/newspaper/.gpt/REQUEST_CONTRACT.md	11	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/newspaper/.gpt/WORKFLOW.md	20	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/newspaper/.gpt/WORK_THREAD_BOOTSTRAP.md	11	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/newspaper/DAY_REQUEST_V2.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/newspaper/EDGE_V05_PREVIEW.md	12	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/newspaper/EDGE_V05_PRODUCTION.md	12	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/newspaper/README.md	21	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/newspaper/handoffs/20261006_EDGEDB_QUERY_PWA_NEWSPAPER_INTEGRATION_HANDOFF.md	38	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/prediction_runs/RaceNote_v1_0_EdgeAware_20260809_15_22_PRE_HJC_FREEZE.json	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/prediction_runs/RaceNote_v1_1_Polarity_Gated_20260704_PRE_HJC.json	36	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/prediction_runs/RaceNote_v1_1_Polarity_Gated_20260705_PRE_HJC.json	36	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/prediction_runs/RaceNote_v1_1_Polarity_Gated_20260711_PRE_HJC.json	36	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/prediction_runs/RaceNote_v1_1_Polarity_Gated_20260712_PRE_HJC.json	36	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/prediction_runs/RaceNote_v1_1_Polarity_Gated_20260725_PRE_HJC.json	36	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/prediction_runs/RaceNote_v1_1_Polarity_Gated_20260726_PRE_HJC.json	36	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/pwa/.gpt/HANDOFF.md	2	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/pwa/DEPLOYMENT_TRIGGER.md	2	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/pwa/README.md	3	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/pwa/SYNC_PROVIDER.md	2	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/pwa/momotaro/OPERATIONS.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/pwa/momotaro/README.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/pwa/newspaper-v05-preview.js	7	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/racenote/DESIGN_V1.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/racenote/PHASE2_STATUS.md	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/racenote/src/build_racenote_v1.py	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/racenote/src/run_racenote_trend_smoke_issue.py	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/schema/jrdb_pwa_newspaper_race_schema_v0_1.json	2	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/schema/racenote_btday_v046_request.json	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/aggregate_jrdb_edge_v05_first_history.py	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/audit_jrdb_edge_analysis_parquet_equivalence.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/audit_jrdb_edge_legacy_dependencies.py	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/audit_jrdb_edge_v02_operational_hits.py	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/audit_jrdb_edge_v03_operational_replay.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/audit_jrdb_edge_v04_feature_feasibility.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/audit_jrdb_newspaper_poc.py	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/audit_rl_retirement_downstream_dependencies.py	14	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/audit_rl_retirement_final.py	9	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/build_jrdb_edge_v04_candidate_templates.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/build_jrdb_edge_v04_candidates.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/build_momotaro_newspaper_projection.py	5	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/src/build_racenote_gen0_sample_manifest.py	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/evaluate_jrdb_edge_forward.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c1_shard.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c2b_shard.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_edge_matcher.py	5	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_edge_matcher_v0_2.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_edge_v04_preflight.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_edge_v04_preflight_3y_canonical.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_edge_v05_2026_oos_eval.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_edge_v05_2026_pre_race_match_freeze.py	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_edge_v05_prototype_aggregation.py	7	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_edgedb_query.py	6	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_newspaper_edge_adapter.py	18	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_newspaper_edge_v05_preview.py	10	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_newspaper_merge_edge.py	10	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/jrdb_newspaper_query_edge_day.py	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/jrdb_newspaper_retired_sources.py	8	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/src/merge_jrdb_edge_v04_stage_c1_shards.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/prepare_jrdb_edge_v04_stage_c2.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/racenote_ab_session.py	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/racenote_all_runner_synthesis.py	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/racenote_best_bet_research_v0_1.py	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/racenote_edge_performance_adapter.py	6	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/racenote_edge_prediction_policy.py	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/racenote_forecast_gen0_2.py	8	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/racenote_forecast_gen0_3.py	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/racenote_gen0_2_input_firewall.py	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/racenote_general_evidence.py	3	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/racenote_mark_policy_research_v0_1.py	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/racenote_pairwise_comparison.py	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/racenote_semantic_pairwise_research_v0_3.py	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/run_jrdb_edge_forward_backfill.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py	5	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/run_jrdb_edge_forward_settlement.py	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/run_jrdb_edge_match_current.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/run_jrdb_edge_preresult_reconstruct.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/run_jrdb_edge_v03_forward_shadow_freeze.py	7	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/run_jrdb_edge_v05_first_history_tests.py	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/run_jrdb_post_race_orchestrator.py	4	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/run_racenote_edge_prediction_freeze.py	5	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/src/run_racenote_v11p_blind_freeze.py	11	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/run_racenote_v11p_settlement_metrics.py	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/run_racenote_v11p_true_forward_day.py	5	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/src/score_training_edge_v0_2_daily.py	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/browser_newspaper_retirement.py	8	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_audit_jrdb_edge_v02_operational_hits.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_operational_replay.py	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_build_momotaro_newspaper_projection.py	10	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/tests/test_build_racenote_gen0_sample_manifest.py	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/tests/test_evaluate_jrdb_edge_forward.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_oos_eval.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_pre_race_match_freeze.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_edge_v05_first_history.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_edge_v05_prototype_aggregation.py	63	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_edge_v05_turn4_sieve_review.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_edge_v0_2.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_edgedb_query.py	12	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_newspaper_build.py	1	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/tests/test_jrdb_newspaper_edge_adapter.py	9	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_newspaper_edge_v05_preview.py	12	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_jrdb_newspaper_merge_edge.py	13	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/tests/test_jrdb_newspaper_merge_external.py	2	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/tests/test_jrdb_newspaper_my_index_pwa.py	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/tests/test_jrdb_newspaper_query_migration.py	10	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/tests/test_jrdb_newspaper_racenote_horse_comment.py	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/tests/test_newspaper_edge_v05_production.cjs	7	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_newspaper_source_retirement.py	12	Phase 2で対処	通常経路の依存解除・後方互換・非伝播契約
+horse-racing/jrdb/tests/test_newspaper_v05_preview.cjs	7	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_racenote_ab_harness.py	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/tests/test_racenote_edge_performance_adapter.py	4	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_racenote_edge_prediction_policy.py	26	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_racenote_forecast_gen0_2.py	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/tests/test_racenote_v11p_true_forward_day.py	2	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/tests/test_run_jrdb_edge_match_current.py	2	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_run_jrdb_edge_v03_forward_shadow_freeze.py	1	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+horse-racing/jrdb/tests/test_run_jrdb_post_race_orchestrator.py	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照
+horse-racing/jrdb/tests/test_score_training_edge_v0_2_daily.py	3	Phase 3へ送る	研究・廃止済み入口・過去証跡；通常実行経路から切断
+tools/data-storage/docs/CODEX_LOCAL_FIRST_ACTIONS_FALLBACK.md	1	他モジュール独立のため維持	独立機能のAnalysis/provenance・履歴契約・検証参照

@@ -134,7 +134,7 @@ def build_day(
             ),
         },
     }
-    for source in ("eval", "racenote_prediction", "keibailuka", "edge", "my_index"):
+    for source in ("eval", "racenote_prediction", "keibailuka"):
         source_status[source] = {
             "state": "PENDING",
             "source_version": None,

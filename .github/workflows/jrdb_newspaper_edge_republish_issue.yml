@@ -14,9 +14,8 @@ env:
 
 jobs:
   republish:
-    if: >-
-      github.event.issue.user.login == 'yukki0113' &&
-      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_EDGE_REPUBLISH]')
+    # Retired production entrypoint: retained as Phase 3 historical evidence.
+    if: ${{ false }}
     runs-on: ubuntu-latest
 
     steps:
