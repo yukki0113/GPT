@@ -17,7 +17,7 @@ sys.path.insert(0, str(REPO / "tools/data-storage"))
 from data_storage.common import sha256_file, sql_literal as lit, write_json
 from data_storage.validate import validate
 from jrdb_course_profile_identity import course_key_from_observation
-from jrdb_edge_v02_canonical import track_condition_bucket
+from jrdb_canonical_codes import track_condition_bucket
 from jrdb_postrace_review_reader import RaceReviewReader
 from jrdb_postrace_review import parse_sed_time_seconds
 from jrdb_recommendation_signals import performance_signal

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Canonical v0.2 Edge derivations shared by historical and current matching."""
+"""Shared JRDB canonical codes and derived values for active consumers."""
 from __future__ import annotations
 
 from datetime import date, datetime
@@ -64,8 +64,7 @@ def track_condition_bucket(value: Any) -> str | None:
 
     Historical SED may encode 10/11/12=良, 20/21/22=稍重,
     30/31/32=重, 40/41/42=不良. Older/derived sources may already
-    contain 1/2/3/4. Edge discovery intentionally uses only the broad
-    state so JRDB's speed subcodes do not fragment the sample.
+    contain 1/2/3/4. Use broad track states without splitting JRDB speed subcodes.
     """
     if value in (None, ""):
         return None
