@@ -115,6 +115,73 @@ def parse_paci(directory, inventory, start_year=2016, end_year=2025):
     return [entries[k] for k in sorted(entries)], dict(provenance)
 
 
+
+def normalize_member_date(raw):
+    """Warehouse provenance may encode member date as YYYYMMDD or YYYY-MM-DD."""
+    if not isinstance(raw, str):
+        raise ValueError("missing historical KYI member date")
+    value = raw.replace("-", "")
+    if not valid_date(value) or raw not in (value, value[:4]+"-"+value[4:6]+"-"+value[6:]):
+        raise ValueError("invalid historical KYI member date")
+    return value
+
+
+def load_kyi_warehouse(root, manifest_path, start_year, end_year):
+    """Use canonical normalized KYI Parquet, without re-parsing JRDB fixed width."""
+    manifest_path = Path(manifest_path)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if (manifest.get("artifact_type") != "jrdb_normalized_warehouse"
+            or manifest.get("status") != "PASS"
+            or not 2016 <= start_year <= end_year <= 2025):
+        raise ValueError("unsupported or non-PASS KYI warehouse manifest")
+    assets = [a for a in manifest.get("assets", [])
+              if a.get("family") == "kyi" and start_year <= a.get("year", -1) <= end_year]
+    if len(assets) != end_year - start_year + 1 or {a["year"] for a in assets} != set(range(start_year, end_year + 1)):
+        raise ValueError("missing or duplicated annual KYI warehouse assets")
+    files = []
+    base = Path(root).resolve()
+    for asset in sorted(assets, key=lambda a: a["year"]):
+        rel = asset["relative_path"]
+        if (not re.fullmatch(r"objects/kyi/year=\\d{4}/[0-9a-f]{64}\\.parquet", rel)
+                or int(rel.split("/")[2][5:]) != asset["year"]
+                or Path(rel).name != asset["sha256"] + ".parquet"):
+            raise ValueError("unsafe or invalid KYI asset path")
+        file = (base / rel).resolve()
+        if not file.is_relative_to(base):
+            raise ValueError("asset escaped warehouse root")
+        verify_archive(file, asset)
+        files.append((asset, file))
+    import duckdb
+    con = duckdb.connect(":memory:", read_only=False)
+    try:
+        result = []
+        for asset, file in files:
+            rows = con.execute("""SELECT race_key_raw, horse_no, blood_registration_no,
+                 source_member_date, year FROM read_parquet(?)""", [str(file)]).fetchall()
+            if len(rows) != asset["row_count"]:
+                raise ValueError("KYI warehouse row count mismatch")
+            for key, no, hid, source_date, year in rows:
+                date = normalize_member_date(source_date)
+                if (not isinstance(key, str) or not re.fullmatch(r"\\d{4}[0-9A-Fa-f]{2}\\d{2}", key)
+                        or key[2:4] != date[2:4] or int(year) != asset["year"]
+                        or int(date[:4]) != asset["year"] or not isinstance(hid, str)
+                        or not re.fullmatch(r"\\d{8}", hid) or type(no) is not int or not 1 <= no <= 18):
+                    raise ValueError("invalid normalized KYI identity or date")
+                result.append({"race_date": date, "race_key": key, "horse_no": no, "horse_id": hid})
+        seen = set()
+        for row in result:
+            key = row["race_date"], row["race_key"], row["horse_no"]
+            if key in seen:
+                raise ValueError("duplicate normalized KYI race horse identity")
+            seen.add(key)
+        return sorted(result, key=lambda r: (r["race_date"],r["race_key"],r["horse_no"])), {
+            "raw_declarations": len(result), "exact_duplicates": 0,
+            "warehouse_manifest_sha256": sha256(manifest_path),
+            "warehouse_generation_id": manifest["generation_id"]}
+    finally:
+        con.close()
+
+
 def classify_temporal(result, race_date):
     """A selected snapshot after the race must never be backdated."""
     profile = result.get("profile")
@@ -180,8 +247,8 @@ def evaluate(entries, reader, mapped_codes=None):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--paci-dir", type=Path, required=True)
-    p.add_argument("--inventory", type=Path, required=True, help="JSON list of {name,size_bytes,sha256}")
+    p.add_argument("--paci-dir", type=Path)
+    p.add_argument("--inventory", type=Path, help="JSON list of {name,size_bytes,sha256}")\n    p.add_argument("--kyi-warehouse-root", type=Path)\n    p.add_argument("--kyi-warehouse-manifest", type=Path)
     p.add_argument("--generation", type=Path, required=True)
     p.add_argument("--generation-id", required=True)
     p.add_argument("--manifest-sha256", required=True)
@@ -205,7 +272,7 @@ def main(argv=None):
     annual = evaluate(entries, reader, mapped_codes=mapped_codes)
     covered = {v["year"] for v in annual}
     result = {"version": VERSION, "research_only": True, "generation_id": reader.generation_id,
-        "source_inventory_sha256": sha256(args.inventory), "input_counts": input_counts,
+        "source_inventory_sha256": inventory_hash, "input_counts": input_counts,
         "coverage": annual,
         "unobserved_years": sorted(set(range(args.start_year, args.end_year + 1)) - covered),
         "actual_starts": None,
