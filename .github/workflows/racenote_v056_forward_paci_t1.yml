@@ -246,17 +246,17 @@ jobs:
           from pathlib import Path
           data=json.loads(os.environ["FRESHNESS_ACCEPTANCE_JSON"])
           Path("/tmp/racenote-freshness/acceptance.json").write_text(
-              json.dumps(data,ensure_ascii=False,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+              json.dumps(data,ensure_ascii=False,sort_keys=True,indent=2),encoding="utf-8")
           PY
-          python horse-racing/jrdb/src/racenote_v056_forward_freshness.py \\
-            --acceptance /tmp/racenote-freshness/acceptance.json \\
-            --target-date "$TARGET_DATE" \\
-            --analysis-root /tmp/racenote-analysis \\
-            --analysis-artifact-id "$ANALYSIS_ARTIFACT_ID" \\
-            --analysis-generation-id "$ANALYSIS_GENERATION" \\
-            --rrdb-root /tmp/racenote-rrdb/postrace_review/v0_1 \\
-            --rrdb-zip /tmp/v056-artifacts/rrdb.zip \\
-            --rrdb-receipt /tmp/v056-artifacts/rrdb-receipt.json \\
+          python horse-racing/jrdb/src/racenote_v056_forward_freshness.py \
+            --acceptance /tmp/racenote-freshness/acceptance.json \
+            --target-date "$TARGET_DATE" \
+            --analysis-root /tmp/racenote-analysis \
+            --analysis-artifact-id "$ANALYSIS_ARTIFACT_ID" \
+            --analysis-generation-id "$ANALYSIS_GENERATION" \
+            --rrdb-root /tmp/racenote-rrdb/postrace_review/v0_1 \
+            --rrdb-zip /tmp/v056-artifacts/rrdb.zip \
+            --rrdb-receipt /tmp/v056-artifacts/rrdb-receipt.json \
             --output /tmp/racenote-freshness/validated_preflight.json
       - name: Generate and seal v056 forward RaceNote from PACI
         run: |
