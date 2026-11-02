@@ -157,34 +157,31 @@ jobs:
           mkdir -p /tmp/rrdb
           unzip -q /tmp/current-rrdb/rrdb.zip -d /tmp/rrdb
           test -f /tmp/rrdb/postrace_review/v0_1/current.json
-      - name: Materialize approved Course Fit v0.1
+
+      - name: Materialize approved Course Fit v0.1 from immutable Drive baseline
         if: env.SKIP_T1 != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11799761734/zip > /tmp/approved-fit.zip
-          python - <<'PY'
-          import hashlib
-          from pathlib import Path
-          p=Path('/tmp/approved-fit.zip')
-          assert p.stat().st_size==170365515
-          h=hashlib.sha256()
-          with p.open('rb') as f:
-              for b in iter(lambda:f.read(1024*1024),b''): h.update(b)
-          assert h.hexdigest()=='18570ef9c366f78b2f8bb60c380e24b70f1b80e070ddf1961acaed7bde35627d'
-          PY
+          set -euo pipefail
+          baseline_root=/tmp/a03-accepted-baselines
+          manifest=horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json
+          python tools/gpt_io/public_drive/fetch.py --manifest "$manifest" --artifact course_fit_v01_part1 --output-root "$baseline_root" --receipt /tmp/course-fit-part1-receipt.json
+          python tools/gpt_io/public_drive/fetch.py --manifest "$manifest" --artifact course_fit_v01_part2 --output-root "$baseline_root" --receipt /tmp/course-fit-part2-receipt.json
           mkdir -p /tmp/course-fit
-          unzip -q /tmp/approved-fit.zip -d /tmp/course-fit
+          unzip -q "$baseline_root/course_fit/RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part1.zip" -d /tmp/course-fit
+          unzip -qn "$baseline_root/course_fit/RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part2.zip" -d /tmp/course-fit
           test -f /tmp/course-fit/fit/research/candidate_fit_view.parquet
-      - name: Materialize canonical RaceLap current
+
+      - name: Materialize approved RaceLap v0.1 from immutable Drive baseline
         if: env.SKIP_T1 != 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/racelap
-          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/12101869150/zip > /tmp/racelap-current.zip
-          unzip -q /tmp/racelap-current.zip -d /tmp/racelap-current
+          python tools/gpt_io/public_drive/fetch.py \
+            --manifest horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json \
+            --artifact racelap_canonical_20261017 \
+            --output-root /tmp/a03-accepted-baselines \
+            --receipt /tmp/racelap-baseline-receipt.json
+          unzip -q /tmp/a03-accepted-baselines/racelap/RaceLap_CURRENT_20261017.zip -d /tmp/racelap-current
           cp /tmp/racelap-current/current/race_lap.parquet /tmp/racelap/race_lap.parquet
           cp /tmp/racelap-current/current/audit.json /tmp/racelap/race_lap.audit.json
           python - <<'PY'

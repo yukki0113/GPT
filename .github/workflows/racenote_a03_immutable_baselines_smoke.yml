@@ -1,0 +1,62 @@
+name: RaceNote A03 immutable baseline transport smoke
+
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json'
+      - 'horse-racing/jrdb/tests/test_racenote_a03_immutable_baselines.py'
+      - '.github/workflows/racenote_a03_immutable_baselines_smoke.yml'
+      - '.github/workflows/racenote_v055_r6_btday_turn1_shared.yml'
+      - '.github/workflows/racenote_v056_btday_turn1_shared.yml'
+      - '.github/workflows/racenote_historical_v052_equivalence.yml'
+      - '.github/workflows/rrdb_horse_course_fit_validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline-transport:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install verified public Drive fetch dependency
+        run: python -m pip install 'gdown>=6.1,<7' pytest
+      - name: Regression test baseline manifest and consumer contracts
+        run: python -m pytest -q horse-racing/jrdb/tests/test_racenote_a03_immutable_baselines.py
+      - name: Materialize approved Course Fit and RaceLap ZIPs
+        run: |
+          set -euo pipefail
+          manifest=horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json
+          for artifact in course_fit_v01_part1 course_fit_v01_part2 racelap_canonical_20261017; do
+            python tools/gpt_io/public_drive/fetch.py \
+              --manifest "$manifest" \
+              --artifact "$artifact" \
+              --output-root /tmp/a03-smoke \
+              --receipt "/tmp/a03-$artifact-receipt.json"
+          done
+      - name: Validate extracted baseline source data
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/a03-course-fit /tmp/a03-racelap
+          unzip -q /tmp/a03-smoke/course_fit/RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part1.zip -d /tmp/a03-course-fit
+          unzip -qn /tmp/a03-smoke/course_fit/RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part2.zip -d /tmp/a03-course-fit
+          unzip -q /tmp/a03-smoke/racelap/RaceLap_CURRENT_20261017.zip -d /tmp/a03-racelap
+          test -f /tmp/a03-course-fit/fit/research/candidate_fit_view.parquet
+          test -f /tmp/a03-course-fit/fit/base/horse_performance_residual.parquet
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          parquet=Path('/tmp/a03-racelap/current/race_lap.parquet')
+          h=hashlib.sha256(parquet.read_bytes()).hexdigest()
+          assert h=='f39056cea12e1d3d694bcb829695121ac1df3426bf633d49f4f5f23fd637ce7d'
+          manifest=json.loads(Path('/tmp/a03-racelap/current/manifest.json').read_text())
+          assert manifest['validation_status']=='PASS'
+          assert manifest['generation_id']=='racelap-forward-canonical-20261017-01'
+          assert manifest['parquet_sha256']==h
+          print('A03_APPROVED_DRIVE_BASELINE_SMOKE_PASS')
+          PY

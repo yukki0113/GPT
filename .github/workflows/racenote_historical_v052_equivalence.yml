@@ -51,17 +51,13 @@ jobs:
           mkdir -p /tmp/golden/analysis /tmp/golden/rrdb
           tar -xJf /tmp/golden/analysis.tar.xz -C /tmp/golden/analysis
           unzip -q /tmp/golden/rrdb.zip -d /tmp/golden/rrdb
-          gh api repos/${GITHUB_REPOSITORY}/actions/artifacts/11799761734/zip > /tmp/golden/course-fit.zip
-          python - <<'PY'
-          import hashlib
-          from pathlib import Path
-          p=Path('/tmp/golden/course-fit.zip')
-          assert p.stat().st_size == 170365515
-          h=hashlib.sha256(p.read_bytes()).hexdigest()
-          assert h == '18570ef9c366f78b2f8bb60c380e24b70f1b80e070ddf1961acaed7bde35627d'
-          PY
+
+          python tools/gpt_io/public_drive/fetch.py --manifest horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json --artifact course_fit_v01_part1 --output-root /tmp/golden/a03-accepted --receipt /tmp/golden/course-fit-part1-receipt.json
+          python tools/gpt_io/public_drive/fetch.py --manifest horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json --artifact course_fit_v01_part2 --output-root /tmp/golden/a03-accepted --receipt /tmp/golden/course-fit-part2-receipt.json
           mkdir -p /tmp/golden/course-fit
-          unzip -q /tmp/golden/course-fit.zip -d /tmp/golden/course-fit
+          unzip -q /tmp/golden/a03-accepted/course_fit/RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part1.zip -d /tmp/golden/course-fit
+          unzip -qn /tmp/golden/a03-accepted/course_fit/RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part2.zip -d /tmp/golden/course-fit
+          test -f /tmp/golden/course-fit/fit/research/candidate_fit_view.parquet
       - name: Compare through v0.5.2 sealed session
         env:
           PYTHONPATH: horse-racing/jrdb/src
