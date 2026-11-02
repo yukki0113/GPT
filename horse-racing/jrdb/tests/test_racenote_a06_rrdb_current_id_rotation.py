@@ -34,7 +34,7 @@ def make_zip(path: Path, generation: str, period: str, *, corrupt_manifest=False
         "validation_status": "FAIL" if corrupt_manifest else "PASS",
         "generation_id": generation, "period_from": "2010-01-05", "period_to": period,
     }
-    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_STORED) as z:
         z.writestr(root+"current.json", json.dumps(current))
         z.writestr(root+current["manifest"], json.dumps(manifest))
         z.writestr(root+"objects/valid.parquet", b"p"*2048)
