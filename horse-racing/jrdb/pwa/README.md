@@ -1,5 +1,11 @@
 # JRDB / Kenshow_Labo PWA
 
+## Phase 1 UI retirement (Issue #2324)
+
+個人新聞は EdgeDB（旧 edge_matches / special_memos と v0.5）および Training Edge / my_index を描画・参照しない。列・詳細モーダル・取込状態・legacy fallback を撤去済み。以下に残る旧表示契約は過去の記録であり、現行UIには適用しない。Eval WATCH/MATCH、RRDB不利分析、JRDB、過去走3/5/8、RaceNote、イルカ、予想者列を維持する。桃太郎の4列・公開allowlistを維持する。
+
+Phase 1はUIのみ。日次生成、EdgeDB計算・config、canonical Analysis、配信のEdge実行工程、Current/Releases/Driveデータは保持しており、上流の断線はPhase 2、資産廃止はPhase 3で扱う。研究用v0.5 previewは通常新聞とは独立した資産として保持する。
+
 `horse-racing/jrdb/pwa/` は、JRDB系の配布済みデータをブラウザで閲覧・集計する **consumer / presentation layer** の正本です。
 
 このPWAは、JRDB Raw・Analysis・Eval・Edge・RaceNoteの条件や判定を再実装する場所ではありません。上流で確定・監査されたデータを受け取り、ブラウザで安全に同期・保存・表示することを責務とします。

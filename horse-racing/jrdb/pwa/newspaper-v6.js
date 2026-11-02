@@ -20,8 +20,6 @@ function newspaperV6ApplyMarkLayout() {
     }
     trainingHead.textContent = "追切";
 
-    const myHead = headRow.querySelector(".mark-my");
-    if (myHead) myHead.remove();
 
     const rnHead = headRow.querySelector(".mark-rn");
     if (rnHead) rnHead.textContent = "けん";
@@ -74,8 +72,6 @@ function newspaperV6ApplyMarkLayout() {
       }
     }
 
-    const myCell = row.querySelector(".mark-my");
-    if (myCell) myCell.remove();
 
     const orderedCells = [
       row.querySelector(".mark-ability"),
@@ -85,7 +81,7 @@ function newspaperV6ApplyMarkLayout() {
       rnCell,
       row.querySelector(".mark-iluka")
     ];
-    const anchor = row.querySelector(".newspaper-history-cell") || row.querySelector(".newspaper-edge");
+    const anchor = row.querySelector(".newspaper-history-cell");
     for (const cell of orderedCells) {
       if (cell && anchor) row.insertBefore(cell, anchor);
     }

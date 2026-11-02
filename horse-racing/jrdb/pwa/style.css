@@ -81,7 +81,6 @@ footer { padding: 8px 16px calc(22px + env(safe-area-inset-bottom)); text-align:
 .newspaper-table thead .newspaper-horse-info { z-index: 7; background: #f7f7f7; }
 .newspaper-table .newspaper-marks { width: 140px; min-width: 140px; max-width: 140px; }
 .newspaper-table .newspaper-history-head, .newspaper-table .newspaper-history-cell { width: 162px; min-width: 162px; max-width: 162px; }
-.newspaper-table .newspaper-edge { width: 180px; min-width: 180px; max-width: 180px; }
 .newspaper-horse-name { margin-bottom: 4px; font-size: 14px; font-weight: 700; line-height: 1.3; }
 .newspaper-subline { margin-top: 2px; color: #555; line-height: 1.35; }
 .newspaper-mark-line { margin-bottom: 4px; font-weight: 700; }
@@ -94,7 +93,6 @@ footer { padding: 8px 16px calc(22px + env(safe-area-inset-bottom)); text-align:
 .newspaper-abnormal { margin-top: 4px; font-weight: 700; }
 .newspaper-detail-button { min-height: 30px; margin-top: 6px; padding: 4px 8px; font-size: 11px; font-weight: 500; }
 .newspaper-history-empty { color: #aaa; }
-.newspaper-edge-item { margin-bottom: 4px; line-height: 1.35; }
 .newspaper-dialog { width: min(620px, calc(100% - 28px)); max-height: min(80vh, 760px); padding: 0; border: 1px solid #d4d4d4; border-radius: 14px; }
 .newspaper-dialog::backdrop { background: rgba(0,0,0,.32); }
 .newspaper-dialog-inner { padding: 16px; }

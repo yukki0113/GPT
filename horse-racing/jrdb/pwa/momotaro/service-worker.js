@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "momotaro-newspaper-shell-v32";
+const CACHE_NAME = "momotaro-newspaper-shell-v33";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -15,20 +15,20 @@ const APP_SHELL = [
   "./predictions.js?v=11",
   "../style.css",
   "../newspaper.css?v=3",
-  "../newspaper-v4.css?v=10",
-  "../newspaper-v5.css?v=1",
+  "../newspaper-v4.css?v=11",
+  "../newspaper-v5.css?v=2",
   "../newspaper-v6.css?v=1",
   "../newspaper-v9.css?v=2",
-  "../newspaper.js?v=3",
-  "../newspaper-v2.js?v=3",
+  "../newspaper.js?v=4",
+  "../newspaper-v2.js?v=4",
   "../newspaper-day.js?v=5",
-  "../newspaper-v4.js?v=8",
-  "../newspaper-v5.js?v=1",
-  "../newspaper-v6.js?v=2",
-  "../newspaper-v7.js?v=4",
-  "../newspaper-v8.js?v=1",
+  "../newspaper-v4.js?v=9",
+  "../newspaper-v5.js?v=2",
+  "../newspaper-v6.js?v=3",
+  "../newspaper-v7.js?v=5",
+  "../newspaper-v8.js?v=2",
   "../newspaper-v9.js?v=1",
-  "../newspaper-v10.js?v=2",
+  "../newspaper-v10.js?v=3",
   "../fact-lite.js?v=24",
   "../fact-lite-v3.js?v=4",
   "../fact-lite-sort.js?v=20",

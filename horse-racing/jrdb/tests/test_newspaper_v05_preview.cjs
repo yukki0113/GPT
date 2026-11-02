@@ -53,9 +53,9 @@ context.currentBundle.horses = [horse([]), horse(['a']), horse(['a', 'b', 'c'])]
 // Mirror the v4 output: seven mark heads, a separate two-row Edge head,
 // and a separate Edge cell in every horse row. v6 removes mark-my later.
 const v4Source = fs.readFileSync(path.join(__dirname, '../pwa/newspaper-v4.js'), 'utf8');
-assert.match(v4Source, /class="newspaper-mark-group-head" colspan="7"/);
-assert.match(v4Source, /<th class="newspaper-edge" rowspan="2">Edge<\/th>/);
-assert.match(v4Source, /<td class="newspaper-edge">\$\{edgeHtml\(horse\)\}<\/td>/);
+assert.match(v4Source, /class="newspaper-mark-group-head" colspan="6"/);
+assert.doesNotMatch(v4Source, /<th class="newspaper-edge" rowspan="2">Edge<\/th>/);
+assert.doesNotMatch(v4Source, /<td class="newspaper-edge">\$\{edgeHtml\(horse\)\}<\/td>/);
 const v4Marks = ['ability', 'training', 'jrdb', 'eval', 'rn', 'iluka', 'my'];
 function node(tag, className = '') {
   return {

@@ -1,9 +1,8 @@
 /* Newspaper display v5 overrides */
 
-/* Six-column mark block: 能力 -> 独自指数 -> Eval -> JRDB -> RN -> 🐬 */
+/* Six-column mark block: 能力 -> Eval -> JRDB -> RN -> 🐬 */
 .newspaper-table-v4 .newspaper-mark-group-head { min-width: 230px; }
 .newspaper-table-v4 .mark-ability { width: 36px; min-width: 36px; max-width: 36px; }
-.newspaper-table-v4 .mark-my { width: 52px; min-width: 52px; max-width: 52px; }
 .newspaper-table-v4 .mark-eval { width: 38px; min-width: 38px; max-width: 38px; }
 .newspaper-table-v4 .mark-jrdb { width: 42px; min-width: 42px; max-width: 42px; }
 .newspaper-table-v4 .mark-rn { width: 32px; min-width: 32px; max-width: 32px; }

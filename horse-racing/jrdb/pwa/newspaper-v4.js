@@ -77,7 +77,6 @@ function newspaperV4MarkCells(horse, horseIndex) {
   const training = newspaperV4TrainingValue(horse);
   const evalValue = newspaperV2AddonDisplay(addons.eval, ["eval", "score", "index", "value"]);
   const raceNoteValue = newspaperV2AddonDisplay(addons.racenote_prediction, ["mark", "symbol", "prediction_mark", "value"]);
-  const myValue = newspaperV2AddonDisplay(addons.my_index, ["index", "score", "value"]);
   const iluka = addons.keibailuka;
   const ilukaValue = iluka ? "○" : "—";
   const ilukaMarkup = newspaperV2IlukaComment(iluka)
@@ -92,7 +91,6 @@ function newspaperV4MarkCells(horse, horseIndex) {
     `<td class="newspaper-mark-col mark-eval">${escapeHtml(evalValue)}</td>`,
     `<td class="newspaper-mark-col mark-rn">${escapeHtml(raceNoteValue)}</td>`,
     `<td class="newspaper-mark-col mark-iluka">${ilukaMarkup}</td>`,
-    `<td class="newspaper-mark-col mark-my">${escapeHtml(myValue)}</td>`
   ].join("");
 }
 
@@ -360,7 +358,7 @@ renderTable = function () {
       <td class="newspaper-basic-info">${newspaperV4BasicInfoHtml(horse)}</td>
       ${newspaperV4MarkCells(horse, horseIndex)}
       ${historyCells}
-      <td class="newspaper-edge">${edgeHtml(horse)}</td>
+
     </tr>`;
   }).join("");
 
@@ -371,9 +369,9 @@ renderTable = function () {
         <th class="newspaper-horse-no" rowspan="2">馬</th>
         <th class="newspaper-horse-name-cell" rowspan="2">馬名</th>
         <th class="newspaper-basic-info" rowspan="2">基本</th>
-        <th class="newspaper-mark-group-head" colspan="7">印・指数</th>
+        <th class="newspaper-mark-group-head" colspan="6">印・指数</th>
         ${historyTopHeaders}
-        <th class="newspaper-edge" rowspan="2">Edge</th>
+
       </tr>
       <tr class="newspaper-mark-head-row">
         <th class="newspaper-mark-col mark-ability">能力</th>
@@ -382,7 +380,6 @@ renderTable = function () {
         <th class="newspaper-mark-col mark-eval">Eval</th>
         <th class="newspaper-mark-col mark-rn">RN</th>
         <th class="newspaper-mark-col mark-iluka">🐬</th>
-        <th class="newspaper-mark-col mark-my">指数</th>
       </tr>
     </thead>
     <tbody>${rows}</tbody>
