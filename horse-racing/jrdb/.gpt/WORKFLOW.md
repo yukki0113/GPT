@@ -102,11 +102,11 @@ RaceNote作業では追加で `docs/racenote/README.md` と `docs/racenote/FOREC
 8. entrypoint / default / contract / subsystem boundary / current-vs-legacy boundaryが変わる場合、README / CONTEXT / HANDOFF / dedicated docsの更新要否を同時確認。
 9. Gitへcommitし、以後Git版を正本とする。
 
-## Current daily Raw acquisition / post-race orchestration — 2026-10-19
+## Current daily Raw acquisition / post-race orchestration — 2026-11-02
 
 Routine 2026 acquisition requests use the canonical contract:
 
-`docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md`
+`docs/JRDB_Daily_Raw_Acquisition_Operation_v0_3.md`
 
 User-facing commands:
 
@@ -117,6 +117,11 @@ User-facing commands:
   - fetch/upload only missing SKB for those preceding-week race dates
   - re-fetch SED for every actual preceding-week race date even when a canonical SED already exists
   - compare refreshed SED with canonical Drive bytes; if changed, replace the existing Drive file bytes in place to preserve file ID and Drive revision history
+  - after all refreshed SED Drive readbacks pass, resolve canonical RaceLap CURRENT; expected `period_to` is the latest actual preceding-week race date
+  - if RaceLap is stale, determine every missing actual race date after its current `period_to`, materialize those canonical SEDs from Drive, and run `src/jrdb_race_lap_current_resolver.py` locally with explicit expected dates
+  - require `CURRENT_READY`, `network_access=false`, matching `period_to`, Parquet SHA/size/race-count/schema validation and target-date leakage guard
+  - on advance, publish immutable RaceLap generation and update stable `RaceLap_CURRENT.zip` in place, then read back and verify
+  - first-available post-race SED is not the routine RaceLap update source; do not refetch SED solely for RaceLap
   - do not fetch target-date SED/HJC as part of this command
 - `mmdd〜mmddの開催後取得をお願いします`
   - this is the single user-facing entrypoint for the full post-race update pipeline
@@ -138,7 +143,7 @@ Canonical full post-race contract: `docs/JRDB_PostRace_Update_Orchestrator_Opera
 
 The 2026-10-17 / 2026-10-18 cycle already served as the integration validation run. Do not rerun it just for the operational cutover; use this orchestration for the next post-race update onward.
 
-SKB is a delayed-recovery family in routine daily operation. A same-week `NOT_FOUND` for SKB is not by itself an error and must not trigger repeated blind retries. Missing SKB is recovered during the next pre-race acquisition after a Drive inventory check. That same pre-race operation also performs the routine late-finalization SED refresh for every preceding-week race date.
+SKB is a delayed-recovery family in routine daily operation. A same-week `NOT_FOUND` for SKB is not by itself an error and must not trigger repeated blind retries. Missing SKB is recovered during the next pre-race acquisition after a Drive inventory check. That same pre-race operation also performs the routine late-finalization SED refresh for every preceding-week race date, then advances RaceLap from the verified canonical SED. If a cycle was missed, RaceLap catch-up must cover all missing actual race dates rather than jumping directly to the newest weekend.
 
 For both commands:
 
