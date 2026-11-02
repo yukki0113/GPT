@@ -1,0 +1,35 @@
+name: BRDB research PR tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'horse-racing/brdb/src/build_brdb_result_mart.py'
+      - 'horse-racing/brdb/tests/test_build_brdb_result_mart.py'
+      - 'horse-racing/brdb/src/build_lineage_condition_report.py'
+      - 'horse-racing/brdb/tests/test_build_lineage_condition_report.py'
+      - '.github/workflows/brdb_research_pr_tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  brdb-research-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned shared Data Storage dependencies
+        run: python -m pip install -r tools/data-storage/requirements.txt
+      - name: Verify common data-storage dependencies
+        env:
+          PYTHONPATH: tools/data-storage
+        run: python -m data_storage check-deps
+      - name: BRDB P0-2 and P1-1 research unit tests
+        run: |
+          python -m unittest discover -s horse-racing/brdb/tests -p 'test_build_brdb_result_mart.py' -v
+          python -m unittest discover -s horse-racing/brdb/tests -p 'test_build_lineage_condition_report.py' -v
