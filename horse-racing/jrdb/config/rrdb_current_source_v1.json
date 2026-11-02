@@ -1,0 +1,15 @@
+{
+  "schema_version": "jrdb-rrdb-current-source-v1",
+  "status": "APPROVED",
+  "source_mode": "mutable_current_by_approved_drive_file_id",
+  "canonical_folder_id": "13m2MGibjEHOvBY6LmENQat4PuTZGcdwc",
+  "file_name": "RaceReviewDB_CURRENT.zip",
+  "file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
+  "source_revision": 1,
+  "approval_reference": "RaceReviewDB_Operation_v0_1.md stable CURRENT contract",
+  "approval_verified_at_utc": "2026-11-02T07:10:19.372Z",
+  "approval_method": "native_google_drive_connector",
+  "source_policy": "stable_id_replace_in_place_or_reviewed_id_promotion",
+  "sha_policy": "calculate_and_validate_actual_zip_each_execution",
+  "note": "Verified 2026-11-02 against canonical folder; changes to file_id require a new reviewed Git PR; no same-generation or fixed SHA pin."
+}
