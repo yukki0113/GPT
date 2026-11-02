@@ -120,9 +120,9 @@ Current Stage A instruction:
 - v0.4.5 chunk/checkpoint modules remain historical/reproducibility assets only.
 - Production `current_logic_version` remains unchanged and separate.
 
-### JRDB Daily Raw Acquisition v0.2 — 2026-10-14
+### JRDB Daily Raw Acquisition v0.3 — 2026-11-02
 
-- Current routine acquisition contract: `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md`.
+- Current routine acquisition contract: `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_3.md`.
 - Normal pre-race command: `mmddの開催前取得をお願いします`.
   - acquire target-date PACI;
   - resolve the immediately preceding JRA race week's actual race dates;
@@ -130,6 +130,10 @@ Current Stage A instruction:
   - recover/upload only missing preceding-week SKB;
   - re-fetch preceding-week SED for every actual race date even when canonical SED already exists;
   - if refreshed SED bytes differ, update the existing Drive file in place so the canonical file ID stays stable and the previous snapshot remains in Drive revision history.
+  - only after all refreshed SED canonical readbacks pass, resolve RaceLap CURRENT and compare its `period_to` with the latest preceding-week race date;
+  - if stale, materialize every missing actual race date's canonical SED after RaceLap `period_to`, run `src/jrdb_race_lap_current_resolver.py` with explicit local inputs, and advance RaceLap through the refreshed week;
+  - publish the new immutable RaceLap generation and replace stable `RaceLap_CURRENT.zip` bytes in place only after validation PASS; verify manifest/parquet SHA, race count, generation and `period_to` by readback;
+  - do not refresh RaceLap from the first-available post-race SED, and do not re-fetch SED solely for RaceLap.
 - Normal post-race command: `mmdd〜mmddの開催後取得をお願いします`.
   - treat this as the user-facing entrypoint for the full post-race pipeline, not as Raw-only acquisition;
   - resolve SED/HJC per family as `EXISTING_VALID` / `DOWNLOADED` / `POST_RACE_NOT_READY`;
@@ -146,7 +150,7 @@ Current Stage A instruction:
 - Canonical post-race pipeline contract: `docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md`.
 - 2026-10-17 / 2026-10-18 was the completed validation run for this integration; do not rerun it merely for cutover. Apply this standard from the next post-race update onward.
 - SKB is intentionally recovered on the following pre-race cycle because its publication timing lags SED/HJC. Same-week SKB `NOT_FOUND` is not a reason for blind retry.
-- Post-race SED remains the first-available analysis snapshot. The following pre-race cycle is the standard late-finalization refresh for the preceding race week's SED after JRDB's later update window.
+- Post-race SED remains the first-available analysis snapshot. The following pre-race cycle is the standard late-finalization refresh for the preceding race week's SED after JRDB's later update window. RaceLap is intentionally refreshed only after this late-finalization gate.
 - Always check Drive before upstream fetch, validate artifact ZIP + size/SHA, upload with the native Google Drive connector, then re-list Drive before claiming completion.
 - GitHub Actions is used for authenticated JRDB acquisition only; no Actions-to-Drive transport.
 
