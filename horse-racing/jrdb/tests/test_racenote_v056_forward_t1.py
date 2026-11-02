@@ -49,9 +49,31 @@ class ForwardPaciTest(unittest.TestCase):
             "--course-fit-root","fit","--racereview-root","rrdb",
             "--race-lap-current-bundle","lap",
             "--race-lap-expected-period-to","2026-10-30",
+            "--freshness-acceptance","accepted_freshness.json",
+            "--analysis-artifact-id","12345678",
+            "--analysis-generation-id","test-analysis-generation",
+            "--rrdb-zip","rrdb.zip","--rrdb-receipt","rrdb_receipt.json",
             "--output-root",str(self.root)]
+        self.accepted_freshness={
+            "status":"PASS","required_completed_through":"2026-10-25",
+            "analysis":{
+                "generation_id":"test-analysis-generation",
+                "manifest_sha256":"a"*64,"coverage_through":"2026-10-25",
+                "artifact_id":"12345678","acceptance_reference":"ANALYSIS-TEST-PASS",
+            },
+            "rrdb":{
+                "generation_id":"test-rrdb-generation",
+                "manifest_sha256":"b"*64,"coverage_through":"2026-10-25",
+                "zip_sha256":"c"*64,"file_id":"test-rrdb-current-1",
+                "acceptance_reference":"RRDB-TEST-PASS",
+            },
+        }
     def run_args(self,extra=()):
-        with patch.object(sys,"argv",self.argv+list(extra)):
+        # Dedicated A05 regression independently tests real Parquet, SHA and receipts.
+        # These tests focus on the existing FORWARD PACI/Reader seam.
+        with patch.object(sys,"argv",self.argv+list(extra)), \
+             patch("racenote_v056_forward_freshness.validate",
+                   return_value=self.accepted_freshness):
             return forward.main()
     def test_reject_noncanonical_target(self):
         a=self.argv.copy();a[-1]="somewhere_else"
@@ -101,12 +123,26 @@ class ForwardPaciTest(unittest.TestCase):
             self.assertEqual(handoff["execution_mode"],"FORWARD")
             self.assertEqual(handoff["paci_source"]["source"],"GOOGLE_DRIVE_CANONICAL_PACI")
             self.assertEqual(handoff["session_id"],"V056-test")
+            self.assertTrue(handoff["analysis_freshness"]["forward_t1_checked"])
+            self.assertTrue(handoff["rrdb_freshness"]["forward_t1_checked"])
+            self.assertEqual(handoff["analysis_freshness"]["status"],"PASS")
+            self.assertEqual(handoff["rrdb_freshness"]["coverage_through"],"2026-10-25")
+            self.assertTrue((self.root/"source_audit/forward_analysis_rrdb_freshness.json").is_file())
             self.assertEqual(handoff["reader_count"],1)
             self.assertEqual(handoff["authoring_bundle"]["path"],"v056/authoring_bundle")
             self.assertFalse(handoff["automated_marks"] if "automated_marks" in handoff else handoff["authoring_bundle"]["automated_marks"])
             cmd.assert_called_once()
             self.assertEqual(init.call_args.args[1],self.root/"v056")
             self.assertEqual(bundle.call_args.args[0],self.root/"v056")
+    def test_reject_unaccepted_freshness_before_any_daily_build(self):
+        from racenote_v056_forward_freshness import ForwardFreshnessError
+        with patch.object(sys,"argv",self.argv), \
+             patch("racenote_v056_forward_freshness.validate",
+                   side_effect=ForwardFreshnessError("missing dedicated acceptance")), \
+             self.assertRaisesRegex(ForwardFreshnessError,"dedicated acceptance"):
+            forward.main()
+        self.assertFalse(self.root.exists())
+
     def test_reject_missing_drive_receipt(self):
         self.receipt.unlink()
         with self.assertRaises(FileNotFoundError):
