@@ -248,7 +248,9 @@ def evaluate(entries, reader, mapped_codes=None):
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--paci-dir", type=Path)
-    p.add_argument("--inventory", type=Path, help="JSON list of {name,size_bytes,sha256}")\n    p.add_argument("--kyi-warehouse-root", type=Path)\n    p.add_argument("--kyi-warehouse-manifest", type=Path)
+    p.add_argument("--inventory", type=Path, help="JSON list of {name,size_bytes,sha256}")
+    p.add_argument("--kyi-warehouse-root", type=Path)
+    p.add_argument("--kyi-warehouse-manifest", type=Path)
     p.add_argument("--generation", type=Path, required=True)
     p.add_argument("--generation-id", required=True)
     p.add_argument("--manifest-sha256", required=True)
