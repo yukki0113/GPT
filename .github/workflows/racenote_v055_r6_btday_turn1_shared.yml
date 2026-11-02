@@ -9,6 +9,9 @@ on:
       base_sha:
         required: true
         type: string
+      race_lap_mode:
+        required: false
+        type: string
   push:
     branches: [main]
     paths:
@@ -44,6 +47,7 @@ jobs:
           AFTER: ${{ github.sha }}
           REQUESTED_SELECTION: ${{ inputs.selection_id }}
           REQUESTED_BASE_SHA: ${{ inputs.base_sha }}
+          REQUESTED_RACELAP_MODE: ${{ inputs.race_lap_mode }}
           TRIGGER_EVENT: ${{ github.event_name }}
         run: |
           set -euo pipefail
@@ -79,6 +83,12 @@ jobs:
               raise SystemExit('Invalid canonical single-day selection')
           if len(selection.get('sources',[]))!=1 or selection['sources'][0].get('source_mode')!='historical_warehouse':
               raise SystemExit('Shared historical T1 requires historical_warehouse source')
+          mode=selection.get('race_lap_mode','baseline')
+          if mode not in ('baseline','approved_current'):
+              raise SystemExit(f'Unsupported BTDAY RaceLap mode: {mode}')
+          requested=os.environ.get('REQUESTED_RACELAP_MODE','')
+          if requested and requested!=mode:
+              raise SystemExit(f'RaceLap mode request/selection mismatch: {requested} vs {mode}')
           date=selection['dates'][0]
           if not re.fullmatch(r'20\d{2}-\d{2}-\d{2}',date):
               raise SystemExit('Invalid target date')
@@ -91,6 +101,7 @@ jobs:
               raise SystemExit(f'Immutable T1 already exists: {target}')
           with open(os.environ['GITHUB_ENV'],'a') as f:
               f.write(f'BTDAY_ID={sid}\n')
+              f.write(f'RACELAP_INPUT_MODE={mode}\n')
               f.write(f'BTDAY_TARGET_DATE={date}\n')
               f.write(f'BTDAY_DATE_RAW={date.replace("-","")}\n')
               f.write(f'TARGET={target}\n')
@@ -171,30 +182,17 @@ jobs:
           unzip -qn "$baseline_root/course_fit/RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part2.zip" -d /tmp/course-fit
           test -f /tmp/course-fit/fit/research/candidate_fit_view.parquet
 
-      - name: Materialize approved RaceLap v0.1 from immutable Drive baseline
+      - name: Materialize RaceLap by explicitly selected BTDAY source contract
         if: env.SKIP_T1 != 'true'
         run: |
           set -euo pipefail
-          mkdir -p /tmp/racelap
-          python tools/gpt_io/public_drive/fetch.py \
-            --manifest horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json \
-            --artifact racelap_canonical_20261017 \
-            --output-root /tmp/a03-accepted-baselines \
-            --receipt /tmp/racelap-baseline-receipt.json
-          unzip -q /tmp/a03-accepted-baselines/racelap/RaceLap_CURRENT_20261017.zip -d /tmp/racelap-current
-          cp /tmp/racelap-current/current/race_lap.parquet /tmp/racelap/race_lap.parquet
-          cp /tmp/racelap-current/current/audit.json /tmp/racelap/race_lap.audit.json
-          python - <<'PY'
-          import hashlib, json
-          from pathlib import Path
-          parquet=Path('/tmp/racelap/race_lap.parquet')
-          h=hashlib.sha256(parquet.read_bytes()).hexdigest()
-          assert h=='f39056cea12e1d3d694bcb829695121ac1df3426bf633d49f4f5f23fd637ce7d'
-          manifest=json.loads(Path('/tmp/racelap-current/current/manifest.json').read_text())
-          assert manifest['validation_status']=='PASS'
-          assert manifest['generation_id']=='racelap-forward-canonical-20261017-01'
-          assert manifest['parquet_sha256']==h
-          PY
+          python horse-racing/jrdb/src/racenote_btday_racelap_source.py \
+            --mode "$RACELAP_INPUT_MODE" \
+            --output-root /tmp/racelap \
+            --selection-id "$BTDAY_ID" \
+            --target-date "$BTDAY_TARGET_DATE"
+          test -s /tmp/racelap/race_lap.parquet
+          test -f /tmp/racelap/race_lap.input_receipt.json
       - name: Build historical market-blind forecast prep
         if: env.SKIP_T1 != 'true'
         shell: bash
@@ -268,6 +266,7 @@ jobs:
           python horse-racing/jrdb/src/racenote_v055_authoring_bundle.py             --root "$TARGET/v055"
           cp /tmp/current-rrdb/receipt.json "$TARGET/source_audit/rrdb_current_receipt.json"
           cp /tmp/racelap/race_lap.audit.json "$TARGET/source_audit/race_lap.audit.json"
+          cp /tmp/racelap/race_lap.input_receipt.json "$TARGET/source_audit/race_lap_input_receipt.json"
       - name: Validate current TURN 1 final state
         if: env.SKIP_T1 != 'true'
         run: |

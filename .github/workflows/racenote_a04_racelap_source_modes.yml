@@ -1,0 +1,70 @@
+name: RaceNote A04 RaceLap BTDAY source modes
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/racenote_v056_btday_turn1_shared.yml'
+      - '.github/workflows/racenote_v055_r6_btday_turn1_shared.yml'
+      - '.github/workflows/racenote_a04_racelap_source_modes.yml'
+      - 'horse-racing/jrdb/src/racenote_btday_racelap_source.py'
+      - 'horse-racing/jrdb/config/racenote_btday_racelap_baseline_v1.json'
+      - 'horse-racing/jrdb/config/racenote_btday_racelap_approved_current_v1.json'
+      - 'horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json'
+      - 'horse-racing/jrdb/tests/test_racenote_a03_immutable_baselines.py'
+      - 'horse-racing/jrdb/tests/test_racenote_a04_racelap_source.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  modes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install offline test and public Drive approved download requirements
+        run: python -m pip install pytest 'gdown>=6.1,<7'
+      - name: Run A03/A04 pinned-transport and promotion regressions
+        run: |
+          python -m py_compile horse-racing/jrdb/src/racenote_btday_racelap_source.py
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_racenote_a03_immutable_baselines.py \
+            horse-racing/jrdb/tests/test_racenote_a04_racelap_source.py
+      - name: Live read-only smoke for reviewed baseline vs approved-current
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_btday_racelap_source.py \
+            --mode baseline --output-root /tmp/a04-baseline \
+            --selection-id BTDAY-9001 --target-date 2025-10-12
+          python horse-racing/jrdb/src/racenote_btday_racelap_source.py \
+            --mode approved_current --output-root /tmp/a04-approved-current \
+            --selection-id BTDAY-9001 --target-date 2025-10-12
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          baseline=json.loads(Path('/tmp/a04-baseline/race_lap.input_receipt.json').read_text())
+          current=json.loads(Path('/tmp/a04-approved-current/race_lap.input_receipt.json').read_text())
+          assert baseline['mode']=='baseline'
+          assert current['mode']=='approved_current'
+          assert baseline['approval_id'] is None and current['approval_id']
+          assert baseline['parquet_sha256']==current['parquet_sha256']
+          assert baseline['archive_sha256']==current['archive_sha256']
+          assert baseline['binding_sha256']!=current['binding_sha256']
+          assert baseline['validation_status']==current['validation_status']=='PASS'
+          assert baseline['generation_id']=='racelap-forward-canonical-20261017-01'
+          assert Path('/tmp/a04-baseline/race_lap.parquet').read_bytes()==Path('/tmp/a04-approved-current/race_lap.parquet').read_bytes()
+          print('A04_LIVE_IMMUTABLE_MODES_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: racenote-a04-racelap-source-receipts
+          path: |
+            /tmp/a04-baseline/race_lap.input_receipt.json
+            /tmp/a04-approved-current/race_lap.input_receipt.json
+          if-no-files-found: ignore
+          retention-days: 7

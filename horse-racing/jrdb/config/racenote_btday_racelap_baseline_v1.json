@@ -1,0 +1,14 @@
+{
+  "schema_version": "racenote-btday-racelap-source-v1",
+  "mode": "baseline",
+  "status": "ACCEPTED_BASELINE",
+  "selection_policy": "fixed-reproduction",
+  "transport_manifest": "horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json",
+  "artifact_id": "racelap_canonical_20261017",
+  "generation_id": "racelap-forward-canonical-20261017-01",
+  "period_to": "2026-10-17",
+  "race_count": 9675,
+  "parquet_sha256": "f39056cea12e1d3d694bcb829695121ac1df3426bf633d49f4f5f23fd637ce7d",
+  "archive_sha256": "a4b076e69e9d26c464b49fd8301640b07e89fbd28925a88229869a465a51ae96",
+  "source_run_id": 39037137243
+}
