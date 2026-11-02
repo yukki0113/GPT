@@ -24,8 +24,9 @@ from pathlib import Path
 from typing import Any
 
 from jrdb_postrace_review_reader import RaceReviewReader
+from rrdb_current_source_contract import approved_source
 
-STABLE_CURRENT_FILE_ID = "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg"
+STABLE_CURRENT_FILE_ID = approved_source()["file_id"]  # legacy adapter compatibility; Git-reviewed dynamic pointer
 EXPECTED_CURRENT_FILENAME = "RaceReviewDB_CURRENT.zip"
 RESOLVER_VERSION = "RaceNote-RaceReview-Current-Resolver-0.1"
 STATE_FILENAME = "racereview_current_resolver_state.json"
@@ -228,12 +229,19 @@ def _validated_cached(
 def resolve_racereview_current(
     cache_root: Path,
     *,
-    file_id: str = STABLE_CURRENT_FILE_ID,
+    file_id: str | None = None,
     force_refresh: bool = False,
     service: Any | None = None,
     automation_root_id: str | None = None,
 ) -> ResolvedRaceReviewCurrent:
     """Resolve stable Drive CURRENT to one validated local generation."""
+    # A06 only replaces the ID binding. This legacy connector-based resolver
+    # retains its existing authentication path; no new Drive API is introduced.
+    source = approved_source()
+    if file_id is None:
+        file_id = source["file_id"]
+    elif file_id != source["file_id"]:
+        raise RaceReviewCurrentResolverError("RRDB CURRENT ID differs from approved source")
     api = _drive_api()
     cache_root = Path(cache_root).resolve()
     cache_root.mkdir(parents=True, exist_ok=True)
@@ -393,7 +401,7 @@ def main() -> int:
     parser.add_argument("--cache-root", type=Path, required=True)
     parser.add_argument(
         "--file-id",
-        default=STABLE_CURRENT_FILE_ID,
+        default=None,
     )
     parser.add_argument(
         "--force-refresh",

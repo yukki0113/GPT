@@ -232,7 +232,17 @@ jobs:
       - name: Fetch RRDB CURRENT with receipt and CRC
         run: |
           set -euo pipefail
-          python horse-racing/jrdb/src/racenote_fetch_rrdb_current.py --output /tmp/v056-artifacts/rrdb.zip --receipt /tmp/v056-artifacts/rrdb-receipt.json
+          # The A05 accepted source identity must match the Git-approved A06 pointer
+          # before a possibly rotated RRDB CURRENT is downloaded.
+          EXPECTED_RRDB_ID="$(python - <<'PY'
+          import json,os
+          print(json.loads(os.environ["FRESHNESS_ACCEPTANCE_JSON"])["rrdb"]["file_id"])
+          PY
+          )"
+          python horse-racing/jrdb/src/racenote_fetch_rrdb_current.py \
+            --output /tmp/v056-artifacts/rrdb.zip \
+            --receipt /tmp/v056-artifacts/rrdb-receipt.json \
+            --expected-file-id "$EXPECTED_RRDB_ID"
           unzip -tq /tmp/v056-artifacts/rrdb.zip
           mkdir -p /tmp/racenote-rrdb
           unzip -q /tmp/v056-artifacts/rrdb.zip -d /tmp/racenote-rrdb
