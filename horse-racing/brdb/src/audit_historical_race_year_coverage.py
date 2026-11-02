@@ -208,7 +208,8 @@ def evaluate(entries, reader, mapped_codes=None):
         year = date[:4]
         group = annual.setdefault(year, {"entries": 0, "horse_ids": set(), "races": set(),
                 "static_join": 0, "static_ids": set(), "temporal_verified": 0, "profile_fields": Counter(),
-                "statuses": Counter(), "mapped": Counter()})
+                "statuses": Counter(), "mapped": Counter(), "static_fields": Counter(),
+                "static_mapped": Counter(), "static_unmapped_ids": set(), "temporal_ids": set()})
         group["entries"] += 1
         group["horse_ids"].add(hid)
         group["races"].add((date, row["race_key"]))
@@ -217,6 +218,15 @@ def evaluate(entries, reader, mapped_codes=None):
         group["static_join"] += int(static)
         if static:
             group["static_ids"].add(hid)
+            profile = reader.facts[hid]
+            for field in FIELDS:
+                group["static_fields"][field] += int(bool(profile.get(field)))
+            for field in ("sire_line_code", "broodmare_sire_line_code"):
+                code = profile.get(field)
+                group["static_mapped"][field] += int(bool(code) and code in mapped_codes)
+            if any(not profile.get(field) or profile.get(field) not in mapped_codes
+                   for field in ("sire_line_code", "broodmare_sire_line_code")):
+                group["static_unmapped_ids"].add(hid)
         key = hid, date
         if key not in cache:
             cache[key] = reader.horse_profile(hid, as_of=date)
@@ -226,6 +236,7 @@ def evaluate(entries, reader, mapped_codes=None):
         group["statuses"][temporal] += 1
         if temporal == "AS_OF_VERIFIED_DATE_ONLY":
             group["temporal_verified"] += 1
+            group["temporal_ids"].add(hid)
             for field in FIELDS:
                 group["profile_fields"][field] += int(bool(result["profile"].get(field)))
             for field in ("sire_line_code", "broodmare_sire_line_code"):
@@ -237,6 +248,11 @@ def evaluate(entries, reader, mapped_codes=None):
             "distinct_horses": len(g["horse_ids"]), "races": len(g["races"]),
             "static_join_entries": g["static_join"],
             "static_join_distinct_horses": len(g["static_ids"]),
+            "static_missing_distinct_horses": len(g["horse_ids"] - g["static_ids"]),
+            "static_profile_fields": dict(sorted(g["static_fields"].items())),
+            "static_official_lineage_mapped": dict(sorted(g["static_mapped"].items())),
+            "static_unmapped_distinct_horses": len(g["static_unmapped_ids"]),
+            "as_of_verified_distinct_horses": len(g["temporal_ids"]),
             "as_of_verified_date_only_entries": g["temporal_verified"],
             "as_of_unverified_entries": g["entries"] - g["temporal_verified"],
             **{field + "_asof_present": g["profile_fields"][field] for field in FIELDS},
