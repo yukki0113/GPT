@@ -8,7 +8,8 @@ Prediction remains outside this module. The wrapper only:
 4) creates lossless venue authoring bundles;
 5) writes a T1 handoff.
 
-Analysis/RRDB are consumed as supplied currents. Their freshness is not checked.
+Analysis/RRDB updates remain dedicated operations. A05 requires their accepted
+coverage and actual generation/SHA to pass a fail-closed preflight before T1.
 RaceLap freshness is checked by the existing RaceLap resolver.
 """
 from __future__ import annotations
@@ -38,6 +39,12 @@ def main() -> int:
     ap.add_argument("--racereview-root", type=Path, required=True)
     ap.add_argument("--race-lap-current-bundle", type=Path, required=True)
     ap.add_argument("--race-lap-expected-period-to", required=True)
+    ap.add_argument("--freshness-acceptance", type=Path, required=True,
+                    help="Accepted Analysis+RRDB coverage receipt from dedicated operations")
+    ap.add_argument("--analysis-artifact-id", required=True)
+    ap.add_argument("--analysis-generation-id", required=True)
+    ap.add_argument("--rrdb-zip", type=Path, required=True)
+    ap.add_argument("--rrdb-receipt", type=Path, required=True)
     ap.add_argument("--output-root", type=Path, required=True)
     ap.add_argument("--selection-id")
     args = ap.parse_args()
@@ -85,6 +92,18 @@ def main() -> int:
 
     if args.output_root.exists():
         raise FileExistsError(f"output root already exists: {args.output_root}")
+    # Fail before any forecast package, Reader or session can be created.
+    from racenote_v056_forward_freshness import validate as validate_freshness
+    freshness = validate_freshness(
+        args.freshness_acceptance,
+        target_date=args.date,
+        analysis_root=args.analysis_root,
+        analysis_artifact_id=args.analysis_artifact_id,
+        analysis_generation_id=args.analysis_generation_id,
+        rrdb_root=args.racereview_root,
+        rrdb_zip=args.rrdb_zip,
+        rrdb_receipt=args.rrdb_receipt,
+    )
     selection_id = args.selection_id or f"DAILY-{args.date.replace('-', '')}"
 
     src = Path(__file__).resolve().parent
@@ -166,11 +185,17 @@ def main() -> int:
         },
         "analysis_freshness": {
             "owner": "DEDICATED_ANALYSIS_OPERATION",
-            "forward_t1_checked": False,
+            "forward_t1_checked": True,
+            "status": freshness["status"],
+            "required_completed_through": freshness["required_completed_through"],
+            **freshness["analysis"],
         },
         "rrdb_freshness": {
             "owner": "DEDICATED_RRDB_OPERATION",
-            "forward_t1_checked": False,
+            "forward_t1_checked": True,
+            "status": freshness["status"],
+            "required_completed_through": freshness["required_completed_through"],
+            **freshness["rrdb"],
         },
         "race_lap_freshness": {
             "owner": "FORWARD_T1",
@@ -188,6 +213,9 @@ def main() -> int:
         raise ValueError("PACI/preparation identity changed")
     if authoring.get("race_count") != len(session["race_roster"]) or not session["race_roster"]:
         raise ValueError("Reader/authoring roster mismatch")
+    audit_root = args.output_root / "source_audit"
+    audit_root.mkdir(exist_ok=True)
+    write_json(audit_root / "forward_analysis_rrdb_freshness.json", freshness)
     write_json(args.output_root / "operation_handoff.json", base_handoff)
     print(json.dumps({
         "status": base_handoff["status"],

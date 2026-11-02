@@ -5,7 +5,7 @@
 ## 実行口
 
 1. GitHub Actions **RaceNote v0.5.6 Forward PACI T1** (`.github/workflows/racenote_v056_forward_paci_t1.yml`) をmainで手動実行。
-2. `target_date`（例 `2026-10-31`）、**Drive正本に存在する対象日PACIの`paci_drive_file_id`**、必要に応じ既知の`paci_drive_sha256`、`race_lap_expected_period_to`、承認済み `analysis_artifact_id` / `analysis_generation_id` / `course_fit_artifact_id` / `race_lap_artifact_id` を指定。不明なファイルID・Generationを推測して起動しない。
+2. `target_date`、**Drive正本に存在する対象日PACIの`paci_drive_file_id`**、必要に応じ既知の`paci_drive_sha256`、`race_lap_expected_period_to`、承認済み `analysis_artifact_id` / `analysis_generation_id` / `course_fit_artifact_id` / `race_lap_artifact_id` に加え、**`freshness_acceptance_json`（A05で必須）**を指定。専用Analysis／RRDB運用の受入結果と、結果取得で確定した最終開催日を含む。日時やSHAを推測して起動しない。契約と例は `RACENOTE_A05_ANALYSIS_RRDB_FRESHNESS_GATE_20261102.md` を参照。
 3. **PACIはGoogle Driveの既存正本から取得する。JRDBへの再取得は禁止。** 接続済みDriveでcanonical PACIフォルダ（[Drive/PACI](https://drive.google.com/drive/folders/1zFajenPU5jxInZCcmqZzkgiaYil3MD8r)）を直接確認し、`PACIyyMMdd.zip` の完全一致・親フォルダ・ファイルIDを確認する。Driveの検索0件を不存在と判定しない。GitHub Actionsの `racenote_v056_forward_drive_paci.py` が指定されたDrive IDを取得し、CRC/KYI日付/SHAを検証して取得証跡を作成。直接JRDBへfallbackせず、Drive取得不能時は停止する。RRDB CURRENTは従来どおり専用 `racenote_fetch_rrdb_current.py` を使用し、Analysis/Course Fit/RaceLapは指定された受入済みArtifactsから取得する。
 4. 既存 `racenote_v053_from_paci.py --prep-only` → `racenote_v054_kyi_bundle.build_bundle` → `racenote_v056_single_day.init_session` → `racenote_v056_authoring_bundle.build` の順。バージョン違いのLegacy Sessionを生成しない。
 5. ワークフローが `operation_handoff`、`session.json`、Reader/authoring Bundleの件数・Session ID・CLEAN BLINDを検査した後、mainへT1コミット。Artifact `racenote-v056-forward-YYYY-MM-DD-authoring` を発行する。
@@ -31,7 +31,7 @@
 - Drive正本PACIのIDを指定できない、同名別日付、CRC/KYI日付不正、取得証跡欠落、ダウンロード後SHA不一致、Rootの衝突、選択ID不一致は停止。対象日は実行日のJSTから7日以内。`fetch_jrdb_paci.py` とJRDB認証情報はこのforward T1で使用しない。Drive側のPACI未配置／非公開／取得障害でもJRDBへ自動fallbackしない。
 - RaceLap は現在承認済みの `CURRENT` で、指定 `expected_period_to` と一致し、対象日より前でなければ停止。T1では自動的に不明なSEDや未来データを補完しない。
 - バンドルのReader件数とSession件数が一致しなければ停止。
-- AnalysisとRRDBの鮮度管理は従来どおり専用運用責務。Workflowの `Analysis artifact ID` は受入済みのGenerationを指定すること（存在するだけでは最新版とみなさない）。
+- AnalysisとRRDBの更新処理自体は引き続き専用運用責務。A05以降のFORWARD T1は `freshness_acceptance_json` が必須。専用運用が検証した `required_completed_through`（実際の最終確定開催日）・双方のmanifest SHA・世代・source ID・ZIP SHAが、T1で取得した実データと一致するかpreflightで照合する。古い整合済みartifactだけではT1は進まない。`source_audit/forward_analysis_rrdb_freshness.json` と operation_handoff を確認する。
 - 本モジュールは印・予想・Confidenceを**一切生成しない**。これらは予想スレッドのLLM判断。
 - `v055` の既存Root/Freeze/workflowは変更しない。
 
@@ -50,6 +50,11 @@ PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/racenote_v056_forw
   --racereview-root /tmp/rrdb/postrace_review/v0_1 \
   --race-lap-current-bundle /tmp/racelap/current \
   --race-lap-expected-period-to 2026-10-25 \
+  --freshness-acceptance /tmp/a05/acceptance.json \
+  --analysis-artifact-id 12345678 \
+  --analysis-generation-id jrdb_analysis_approved_generation \
+  --rrdb-zip /tmp/rrdb.zip \
+  --rrdb-receipt /tmp/rrdb_receipt.json \
   --output-root horse-racing/jrdb/daily/20261031/v056_day
 ```
 
