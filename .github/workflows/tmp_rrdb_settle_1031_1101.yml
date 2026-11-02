@@ -1,0 +1,76 @@
+name: RRDB settle 20261031 20261101 temporary
+
+on:
+  push:
+    branches:
+      - tmp/rrdb-settle-1031-1101-20261102
+
+permissions:
+  contents: read
+
+jobs:
+  settle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install gdown
+
+      - name: Materialize exact JRDB Raw
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .result/20261031 .result/20261101 .out
+          python -m gdown 1oZKW56KAy1uHCTI9Ia7_jfPjzh_9ltAC -O .result/20261031/SED261031.zip
+          python -m gdown 1KCfgOF9jt9T3Zd3Wzy1B1IjaGkx1Y9yl -O .result/20261031/HJC261031.zip
+          python -m gdown 1xpd8u2FSMkjcNm1rg0sAW8YaS37EFujh -O .result/20261101/SED261101.zip
+          python -m gdown 1GDpO7nG1ggfDQrxOghNXdIo40GvopPor -O .result/20261101/HJC261101.zip
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          for token in ("261031","261101"):
+              root=Path(".result")/("20"+token[:2]+token[2:])
+              for fam in ("SED","HJC"):
+                  p=root/f"{fam}{token}.zip"
+                  assert p.is_file(), p
+                  with zipfile.ZipFile(p) as z:
+                      assert z.testzip() is None
+                      assert f"{fam}{token}.txt" in [Path(n).name for n in z.namelist()]
+          print("raw preflight PASS")
+          PY
+
+      - name: Query 2026-10-31
+        run: |
+          python horse-racing/jrdb/src/jrdb_result_query_runner.py             --date 2026-10-31             --local-root .result             --include-all-runners             --pretty             --output .out/20261031_JRDB_Result_Query.json
+
+      - name: Query 2026-11-01
+        run: |
+          python horse-racing/jrdb/src/jrdb_result_query_runner.py             --date 2026-11-01             --local-root .result             --include-all-runners             --pretty             --output .out/20261101_JRDB_Result_Query.json
+
+      - name: Validate result contracts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for d in ("20261031","20261101"):
+              p=Path(".out")/f"{d}_JRDB_Result_Query.json"
+              o=json.loads(p.read_text(encoding="utf-8"))
+              assert o["schema_version"]=="jrdb-result-query-v0.1"
+              assert o["status"]=="success"
+              assert o["provenance"]["web_used"] is False
+              assert len(o["races"])==24
+              print(d, "PASS", len(o["races"]))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rrdb-settle-1031-1101-${{ github.run_id }}
+          path: .out/
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
