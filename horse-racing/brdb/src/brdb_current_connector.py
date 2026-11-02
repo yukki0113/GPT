@@ -18,7 +18,7 @@ import time
 
 from brdb_current import (
     BRDBCurrentResolverError, EXPECTED_CURRENT_FILENAME, STATE_FILENAME,
-    RESOLVER_VERSION, ResolvedBRDBCurrent, _read_json, _sha256,
+    ResolvedBRDBCurrent, _read_json, _sha256,
     _safe_extract, _write_state,
 )
 from brdb_pedigree_reader import BloodReviewReader, REQUIRED_FILES
@@ -98,7 +98,13 @@ def _read_state(path: Path) -> dict:
 
 
 def _cache_reader(cache_root: Path, state: dict, identity: dict):
-    if state.get("source") != identity or state.get("transport") != TRANSPORT:
+    previous = state.get("source")
+    if state.get("transport") != TRANSPORT or not isinstance(previous, dict):
+        return None
+    # Observation timestamp is per handoff, not a remote content revision.
+    stable_keys = ("file_id", "folder_id", "file_name", "size_bytes",
+                   "source_modified_time", "zip_sha256")
+    if any(previous.get(key) != identity.get(key) for key in stable_keys):
         return None
     relative = state.get("root_relative_path")
     generation = state.get("generation_id")
