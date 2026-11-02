@@ -32,3 +32,17 @@ jobs:
           name: brdb-duckdb-cp313-wheel
           path: /tmp/brdb-wheels/*.whl
           retention-days: 1
+      - name: Store exact source checkout bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: brdb-p01-audit-source
+          path: |
+            horse-racing/brdb/src/audit_historical_race_year_coverage.py
+            horse-racing/brdb/src/brdb_research_history_reader_v03.py
+            horse-racing/brdb/src/brdb_research_reader_v02.py
+            horse-racing/brdb/src/brdb_research_reader.py
+            horse-racing/brdb/src/brdb_pedigree_reader.py
+            horse-racing/jrdb/src/jrdb_raw.py
+            horse-racing/jrdb/src/jrdb_ukc.py
+            horse-racing/brdb/tests/test_audit_historical_race_year_coverage.py
+          retention-days: 1
