@@ -187,39 +187,39 @@ The first stable operational CURRENT file is now published:
 - size: `6,923,691` bytes
 - SHA-256: `c0eda6fc55472a4a7a327dcbee6498063bf19209285dfa0b4bc0284ba554305f`
 
-Repository transport pin:
+## Operational BRDB CURRENT after A02
 
-`config/public_drive/brdb_current_v0_1.json`
+The original `config/public_drive/brdb_current_v0_1.json` remains a historical,
+SHA-pinned immutable replay artifact. It is **not** the default current source.
 
-Resolver:
-
-`src/brdb_current.py`
-
-The resolver uses the repository's reviewed public Drive read-only transport. It:
-
-1. verifies the transport manifest identity;
-2. downloads only the pinned stable file ID;
-3. requires exact size and SHA-256;
-4. safely extracts the ZIP;
-5. validates the extracted root through `BloodReviewReader`;
-6. promotes only a fully validated generation into local cache;
-7. never replaces an accepted cache after a failed refresh.
-
-Resolver cache identity includes the reviewed transport-manifest SHA. A changed Git manifest therefore forces a fresh verification path.
-
-### Drive permission hardening
-
-At implementation time, Drive metadata reported the stable CURRENT object as publicly writable (`anyone: writer`).
-
-This is not an integrity bypass because the repository pins exact SHA-256 and the resolver fails closed on byte changes, but it is an availability and source-governance risk.
-
-Before normal operational use, change the BRDB Drive folder / CURRENT file general access to:
+Normal CURRENT is obtained by the agreed native Google Drive connector route:
 
 ```text
-Anyone with the link: Viewer
+Native Google Drive connector (ChatGPT/Work)
+ -> exact-name/current-folder discovery and metadata confirmation
+ -> freshly downloaded BloodReviewDB_CURRENT.zip + source receipt
+ -> src/brdb_current.py --current-zip ... --connector-receipt ...
+ -> Reader-validated generation and atomic local cache state
 ```
 
-Do not make the artifact private while the public read-only transport is the operational download path.
+The resolver never calls an authenticated Drive REST API, service-account
+credential, public gdown or Drive folder listing itself. It must be given a fresh
+ZIP and source receipt each time; missing handoff fails closed.
+It validates actual bytes and candidate identity before reusing cache,
+rejects malformed ZIPs/Reader generations, and preserves the previous accepted
+state on failure without silently returning it as CURRENT.
+
+Historical replay explicitly uses `--transport-manifest` (the existing pinned
+transport and SHA verification are unchanged). For procedures, receipt v1,
+cache refresh policy and tests see `docs/BRDB_A02_CONNECTOR_HANDOFF_20261102.md`.
+
+### Drive sharing governance
+
+Google Drive folder/file permission configuration is owned by the established
+user-administered governance: only designated ledger-related folders have editing
+access; other shared folders are read-only as already configured. The BRDB
+resolver neither reads nor writes sharing settings. Historical observations about
+`anyone: writer` are not a standing request to change permissions.
 
 ## Tests
 
