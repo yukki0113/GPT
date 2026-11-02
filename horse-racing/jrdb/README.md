@@ -49,14 +49,14 @@
 
 2026 current-operation raw acquisition is defined in:
 
-- `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_2.md`
+- `docs/JRDB_Daily_Raw_Acquisition_Operation_v0_3.md`
 
 Normal user-facing commands:
 
-- `mmddの開催前取得をお願いします` -> target PACI + missing SKB from the immediately preceding JRA race week + fresh SED re-fetch for every preceding-week race date
+- `mmddの開催前取得をお願いします` -> target PACI + missing SKB from the immediately preceding JRA race week + fresh SED re-fetch for every preceding-week race date -> canonical SED readback -> RaceLap Parquet catch-up/CURRENT verification through the refreshed week
 - `mmdd〜mmddの開催後取得をお願いします` -> end-to-end post-race pipeline: SED/HJC readiness -> canonical PACI resolution -> Analysis v1.4 -> Fact Lite v0.3 publish / full PWA Pages distribution (Kenshow_Labo + Momotaro) -> RaceReviewDB -> final CURRENT/readback audit
 
-SKB is intentionally excluded from immediate post-race acquisition and is recovered on the following pre-race cycle after checking canonical Drive inventory. The same pre-race cycle also re-fetches the preceding race week's SED and refreshes canonical Drive SED in place when JRDB has revised it.
+SKB is intentionally excluded from immediate post-race acquisition and is recovered on the following pre-race cycle after checking canonical Drive inventory. The same pre-race cycle also re-fetches the preceding race week's SED and refreshes canonical Drive SED in place when JRDB has revised it. Only after that late-finalization/readback gate, RaceLap is advanced from the verified canonical SED using `src/jrdb_race_lap_current_resolver.py`. If a pre-race cycle was missed, RaceLap catch-up covers every missing actual race date through the latest preceding-week race date.
 
 Authenticated JRDB acquisition remains GitHub Actions-native; Drive publication is performed only through the connected native Google Drive connector after artifact validation. The canonical end-to-end post-race contract is `docs/JRDB_PostRace_Update_Orchestrator_Operation_v0_1.md`; users do not need separate Analysis or RaceReviewDB update requests.
 
