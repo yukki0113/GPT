@@ -26,6 +26,7 @@ from typing import Any
 from jrdb_postrace_review_reader import RaceReviewReader
 from rrdb_current_source_contract import approved_source
 
+STABLE_CURRENT_FILE_ID = approved_source()["file_id"]  # legacy adapter compatibility; Git-reviewed dynamic pointer
 EXPECTED_CURRENT_FILENAME = "RaceReviewDB_CURRENT.zip"
 RESOLVER_VERSION = "RaceNote-RaceReview-Current-Resolver-0.1"
 STATE_FILENAME = "racereview_current_resolver_state.json"
