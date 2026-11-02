@@ -187,25 +187,30 @@ The first stable operational CURRENT file is now published:
 - size: `6,923,691` bytes
 - SHA-256: `c0eda6fc55472a4a7a327dcbee6498063bf19209285dfa0b4bc0284ba554305f`
 
-Repository transport pin:
+Historical transport pin (first accepted generation, immutable replay only):
 
 `config/public_drive/brdb_current_v0_1.json`
 
-Resolver:
+Operational resolver: `src/brdb_current.py` defaults to **dynamic canonical-folder CURRENT**.
+Its implementation is `src/brdb_current_live.py`. Each resolution:
 
-`src/brdb_current.py`
+1. discovers exactly one `BloodReviewDB_CURRENT.zip` inside canonical folder `1WhcWthqKlTvVrbK3-gkiPZW70yr9e6Bv`;
+2. confirms Drive ID, filename, parent, ZIP type, size, MD5, modifiedTime, and version before cache use;
+3. accepts a warm cache only when this complete Drive fingerprint matches the locally accepted state, and checks the fingerprint again before returning;
+4. on change, downloads the observed file ID to temporary staging; rejects size/MD5 mismatch or source changes during download/validation;
+5. computes SHA-256 for this execution, safely extracts, and fully validates the new generation through `BloodReviewReader`;
+6. rejects conflicting contents under an already-accepted generation ID; publishes a new generation and local pointer only after validation;
+7. preserves prior accepted state on failure; never silently falls back to stale CURRENT.
 
-The resolver uses the repository's reviewed public Drive read-only transport. It:
+The historical transport's fixed ID, size and SHA remain valid for **explicit** replay via
+`--transport-manifest config/public_drive/brdb_current_v0_1.json`.
+This historical snapshot is not the default CURRENT input and must not be updated merely because the weekly CURRENT changes.
 
-1. verifies the transport manifest identity;
-2. downloads only the pinned stable file ID;
-3. requires exact size and SHA-256;
-4. safely extracts the ZIP;
-5. validates the extracted root through `BloodReviewReader`;
-6. promotes only a fully validated generation into local cache;
-7. never replaces an accepted cache after a failed refresh.
+The dynamic metadata path uses the repository's Google Drive bridge and requires an authenticated
+`GPT_GDRIVE_SERVICE_ACCOUNT_JSON` service account with read access to the canonical folder.
+The resolver never guesses an object from a global Drive search. Without credentials or without one unambiguous canonical file it fails closed.
 
-Resolver cache identity includes the reviewed transport-manifest SHA. A changed Git manifest therefore forces a fresh verification path.
+Detailed operations and regression scenarios: `docs/BRDB_A02_DYNAMIC_CURRENT_20261102.md`.
 
 ### Drive permission hardening
 

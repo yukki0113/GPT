@@ -12,7 +12,7 @@ from tools.gpt_io.common.checksum import file_integrity
 SERVICE_ACCOUNT_ENV = "GPT_GDRIVE_SERVICE_ACCOUNT_JSON"
 ROOT_ENV = "GPT_GDRIVE_AUTOMATION_ROOT_ID"
 NATIVE_PREFIX = "application/vnd.google-apps."
-FILE_FIELDS = "id,name,mimeType,size,modifiedTime,md5Checksum,parents,webViewLink,trashed"
+FILE_FIELDS = "id,name,mimeType,size,modifiedTime,md5Checksum,parents,webViewLink,trashed,version"
 
 
 class DriveError(RuntimeError):
