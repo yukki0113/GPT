@@ -1,0 +1,1556 @@
+[
+  {
+    "original": ".github/workflows/edgedb_v05_2026_match_freeze_pr.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/edgedb_v05_2026_match_freeze_pr.yml.txt",
+    "sha256": "2e57fb18b9790c624ca449ba2fd5e1ef55b162530574ff073621f9207919e43c",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/edgedb_v05_2026_oos_eval_pr.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/edgedb_v05_2026_oos_eval_pr.yml.txt",
+    "sha256": "cdc3fdfb423a60ce67be9d4c18f3aac05111ebfa3c339af87799d4549efc76ac",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/edgedb_v05_positive_freeze_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/edgedb_v05_positive_freeze_issue.yml.txt",
+    "sha256": "933a22db53308e4c72953f302fe228282a7cf86c3187eddce068302ad8dcb7e7",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/edgedb_v05_turn4_sieve_pr.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/edgedb_v05_turn4_sieve_pr.yml.txt",
+    "sha256": "8551f6895052069ed2b9f25052593b93f06720faeb4e6d01487969d04f2acdd4",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_analysis_parquet_equivalence_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_analysis_parquet_equivalence_issue.yml.txt",
+    "sha256": "4584d5922867b3aa7d0c5ee850af5bdef065ab769b195dc94fac6a8d118d34bd",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_forward_selftest_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_forward_selftest_issue.yml.txt",
+    "sha256": "98193e1376c3dd5e75ab6b5b88244e1eaf5b9db9486b29774ed574363b212dd6",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_forward_settle_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_forward_settle_issue.yml.txt",
+    "sha256": "926c2a1b9ec088f6b574ac4e6e1ee04d0ecd73bf585002984078b10cdf2b106d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_legacy_audit_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_legacy_audit_issue.yml.txt",
+    "sha256": "9cccf15d25fc398446a4f77dce92e6a2d31d5558f2c58656ba8deedac46e9163",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_parquet_completion_audit_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_parquet_completion_audit_issue.yml.txt",
+    "sha256": "d2a08dc08a6acc8ac35c5affa92e37d7e7667798d8c6aa1b1e2dd8abfe9107be",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_parquet_tests.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_parquet_tests.yml.txt",
+    "sha256": "c3d5f26793dec30794ccd15da7471342d58142430551e4dfbc5e81cf207b2c6b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_registry_build_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_registry_build_issue.yml.txt",
+    "sha256": "c3b447160dd5953eb25e8eed4cb541194e2f98c1198dbbcbccded58885246062",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_registry_build_v2_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_registry_build_v2_issue.yml.txt",
+    "sha256": "62d79928694ad22012982669b065d9bfa79cc192a1a19801e33a863d33385121",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_registry_parquet_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_registry_parquet_issue.yml.txt",
+    "sha256": "2e14673dbb59e0a24be89bc4d9a9f0f283506d27d5f8e5adcb69f0d5340a79f8",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_registry_v02_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_registry_v02_issue.yml.txt",
+    "sha256": "6cc567e8c3c5a0d4b5da312abf304335c363a2f7f5c1cd25f4db331b353c403c",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_serving_publication_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_serving_publication_issue.yml.txt",
+    "sha256": "d9bb494f51ad70bdcbd2c83e852d3bbfebe789c8eccd90b63c3fb5a52e58d794",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v02_operational_audit_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v02_operational_audit_issue.yml.txt",
+    "sha256": "492f151104ab08ce1eaf09fce0ab7b94bdb281168305d4b76b1503731399fac7",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v03_b2b_gate_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v03_b2b_gate_issue.yml.txt",
+    "sha256": "de172d6cfa4c6cabf90ada16a55d63ac91b55556df6f08f44b820ab0cef44742",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v03_forward_shadow_freeze_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v03_forward_shadow_freeze_issue.yml.txt",
+    "sha256": "75f72347dd87b1cd7bd91ec992e16a9028990f0e35f93154800b77fb01da78e6",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v03_operational_replay_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v03_operational_replay_issue.yml.txt",
+    "sha256": "9ef0d5cf3f56e458902bf2ed2c0d3d6d1321abdfd1fd75d22a3becb2f4dab09a",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v03_shadow_catalog_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v03_shadow_catalog_issue.yml.txt",
+    "sha256": "c5332bd3fdd2c49a7e82c511a0e46af89de991aaaca6c69fff5b5bdafeeef98a",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v04_artifact_cleanup_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v04_artifact_cleanup_issue.yml.txt",
+    "sha256": "280cf5f474b1eb31465499a885d304de5587188cb5c949deba9ff196dac299b1",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v04_c1_pool_audit_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v04_c1_pool_audit_issue.yml.txt",
+    "sha256": "8232b80b1d90a5844758206943579226c6c0099b4f4bef21575c381a7011d2aa",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v04_stage_a_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v04_stage_a_issue.yml.txt",
+    "sha256": "491561d7e20aa29c3df3f48eb1b9f20555fa913231a4e06fba920fbdea4393aa",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v04_stage_b_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v04_stage_b_issue.yml.txt",
+    "sha256": "ec78d6ca8038ef3b278d51fdd3912483591be6ae73e0f45900ff6632b4bb2e45",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v04_stage_c1_sharded_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v04_stage_c1_sharded_issue.yml.txt",
+    "sha256": "65ac78a38b2416169336383cf68a7d4c9db0e160e2b2f49a0a9ec7c2439c968c",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v04_stage_c2a_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v04_stage_c2a_issue.yml.txt",
+    "sha256": "3154458304355fb4e0833c0a3d9fedbc60a7d62f99be06212dfb0402893b41e5",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_edge_v04_stage_c_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_edge_v04_stage_c_issue.yml.txt",
+    "sha256": "be626ce1a2f940b38120448408fca59e0d599c6cb37f92e2d32804dbdba1b96d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_newspaper_edge_republish_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_newspaper_edge_republish_issue.yml.txt",
+    "sha256": "dfc8b761a954572d600c6ad4cb97f0f188e7e5426e15ee6bccf9a2e9f7a5ed44",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_newspaper_edge_v05_republish_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_newspaper_edge_v05_republish_issue.yml.txt",
+    "sha256": "4cca781c1922b5c7bf106eb1df49f09d06c25513df978b29ce28e5f854dfe2ef",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_newspaper_edgedb_live_parity_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_newspaper_edgedb_live_parity_issue.yml.txt",
+    "sha256": "5487080654de0bf6015d142d4c00a58a9361e998efdd36db67a81e285973d234",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/jrdb_newspaper_v03_rehearsal_publish_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/jrdb_newspaper_v03_rehearsal_publish_issue.yml.txt",
+    "sha256": "7b94a0ca2c295746c0b0562e5972b71970fc1c54fc9e3d777be06b65482ee301",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/rlt_historical_warehouse_audit_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/rlt_historical_warehouse_audit_issue.yml.txt",
+    "sha256": "b6cb930a37721375b0601bf2f4e0c5a60c8e3c75cf3a2de90363e021a26701b8",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/rlt_record_hash_compat_direct_smoke_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/rlt_record_hash_compat_direct_smoke_issue.yml.txt",
+    "sha256": "506f071172877e3e6afc4482cc1d618416dbb05b857b566e8b3eeb2679435b61",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/rlt_record_hash_compat_export_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/rlt_record_hash_compat_export_issue.yml.txt",
+    "sha256": "f95158c17c845addeead2c2bc0e3abd5ac2a8cb6dcd0c30c8c3db98f15c8ad87",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/rlt_record_hash_compat_split_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/rlt_record_hash_compat_split_issue.yml.txt",
+    "sha256": "ddaaaefee33695d969ce682dce917b278b4eb85e6a36d0ddd04725c8d06fc4b7",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": ".github/workflows/rlt_warehouse_direct_materialize_issue.yml",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/.github/workflows/rlt_warehouse_direct_materialize_issue.yml.txt",
+    "sha256": "155679bb8e11983ebf63ac79bffbc7c39b28c19cec1d17658c9234197ff5f92d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/assets/edge_serving_catalog_v0_2_34620664640.jsonl.xz.b64",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/assets/edge_serving_catalog_v0_2_34620664640.jsonl.xz.b64",
+    "sha256": "cd4b489329b41883b18b32122a109553bc18d19fb7c5f006f4404291bb74814b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/assets/edge_serving_catalog_v0_3_shadow_36045237262.jsonl.xz.b64",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/assets/edge_serving_catalog_v0_3_shadow_36045237262.jsonl.xz.b64",
+    "sha256": "eb4b4e7776ce15db551dd5d38503566f37b58eb7c4d9aa84202257ac85f4a7f9",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/current_manifest.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/current_manifest.json",
+    "sha256": "b3e086704ec0ec31093f017f1ec0f3065317c1933ee6e2976780f2aa448f9bae",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/v0_4/observe_only_cohort_source_v0_1.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/v0_4/observe_only_cohort_source_v0_1.json",
+    "sha256": "13882d4daefbfe50cda5851ca4c8c82ce17095f07e9cea7dd263d1a60cb95290",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/v0_4/observe_only_cohort_v0_1.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/v0_4/observe_only_cohort_v0_1.json",
+    "sha256": "c93b4e4f7f899e42eb94738603ce0bbe2f7ac092da43528e42d83cbdc776da71",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_match_freeze_manifest.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_match_freeze_manifest.json",
+    "sha256": "3422b83a3e05182dd1d7b0f31d84ff512f668ae42ef894d1c270784ea858c860",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_oos_eval_artifact.zip",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_oos_eval_artifact.zip",
+    "sha256": "f10034cf6d2d730dcb3d76b6c9be41c90d36e61e49c94b70ab7458f296eb9f13",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_oos_eval_manifest.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_oos_eval_manifest.json",
+    "sha256": "4eec0269f4b26ba0e527693c3193008fe266048094e06c2c8297c2d9e362acbc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_paci_drive_inventory.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_2026_paci_drive_inventory.json",
+    "sha256": "30a4a898e1b315ae28d21b564372b30cf6eddb95fad7951581cd1f546f5ce3fc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_freeze_manifest.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_freeze_manifest.json",
+    "sha256": "1ac5c345b051837b4d9fe46010722d1b3a63c38ac9dc23b2c99e04c10ae418d7",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_positive_value_frozen_cohort.json",
+    "sha256": "a85a7ee86dc21b6e081fd5a637245b06a2ba23eef2e22628a14468b004e2cdc9",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_turn4_sieve_review_manifest.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/edgedb/v0_5/frozen/v05_turn4_sieve_review_manifest.json",
+    "sha256": "5f0a7385e903a2fb87095953379aad9f01b13bd38fa5fe4432b8522f8888187b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/training_edge_v0_2_calibration.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/training_edge_v0_2_calibration.json",
+    "sha256": "01637903c32d4d3799b718631f156f41d37a5c79dbdc10014bd58b9b0f0dd778",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/training_edge_v0_2_runtime_fingerprint.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/training_edge_v0_2_runtime_fingerprint.json",
+    "sha256": "c105161789edcde67857c318fc9b25d58a7a25ef52d553bd29846ea6b05a8033",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/training_edge_v0_2_runtime_freeze.pending.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/training_edge_v0_2_runtime_freeze.pending.json",
+    "sha256": "9e93885d3e9907625accd764f13fefd8fdb1e0ffa685727bb7b10788996a3922",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/training_edge_v0_2_runtime_versions.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/training_edge_v0_2_runtime_versions.json",
+    "sha256": "1e2e7521b9f5f6e59fc49da439afa6bda885f0fa694ef802cfe9ecc941a075bc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/pwa/newspaper-v05-preview.css",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/pwa/newspaper-v05-preview.css.txt",
+    "sha256": "33da9b090f814fa41d702d54e69bd2ddf448a066004b95c3c2170ca0ea6502cc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/pwa/newspaper-v05-preview.html",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/pwa/newspaper-v05-preview.html.txt",
+    "sha256": "997325bfe9c8f1dc86eee6e3302c1ede1c061f06b5790da406af7e14fe7a9d41",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/pwa/newspaper-v05-preview.js",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/pwa/newspaper-v05-preview.js.txt",
+    "sha256": "a8b38993f7b5d061d1b99a303d16981c0797d716238d282c2f558e98f7ebb569",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/aggregate_jrdb_edge_v05_first_history.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/aggregate_jrdb_edge_v05_first_history.py.txt",
+    "sha256": "5d2600813e07817c978f325012d45756b0ee1fbd8b7870750d31aedb919ee2c3",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/apply_jrdb_edge_statistical_guard.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/apply_jrdb_edge_statistical_guard.py.txt",
+    "sha256": "d8483e8e97167899423a25246eaab90261535bd322486ce319a89c368cc69dbd",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/apply_jrdb_edge_statistical_guard_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/apply_jrdb_edge_statistical_guard_v0_2.py.txt",
+    "sha256": "881872a74158308f4bcd7fc1b818b43c6b7708467c5fd090abda7b40e7020a9b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/apply_jrdb_edge_v03_statistical_gates_shadow.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/apply_jrdb_edge_v03_statistical_gates_shadow.py.txt",
+    "sha256": "08574ace350fab653d4149b4f151a4d5c267b4953c47ff4e7cbe699db2269834",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_analysis_parquet_equivalence.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_analysis_parquet_equivalence.py.txt",
+    "sha256": "38dbaa3d50f27afed4a761105abbd709b3026670644dd7cb1b156236390b924c",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_feature_mart_parquet_equivalence.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_feature_mart_parquet_equivalence.py.txt",
+    "sha256": "5495c31773a581ca47e174da7ca87201182004e4e011d22c2e83256c03122684",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_legacy_dependencies.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_legacy_dependencies.py.txt",
+    "sha256": "9de76d501b64d877f603bacb583db60e6be09d876ce4cd7b8dc3e5e4929c56f1",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_registry_parquet_equivalence.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_registry_parquet_equivalence.py.txt",
+    "sha256": "0d7bab42e2d20052859a3473f0d9ea4531ee791b7f0eb0589f5c19a05a1d51b0",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_stat_watch.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_stat_watch.py.txt",
+    "sha256": "4fd2aecafe9633d4ad5edcbee8421fbd0950bb0915d0167a6761e0d3859d1d0e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_v02_operational_hits.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_v02_operational_hits.py.txt",
+    "sha256": "38589b2696ac75a8535a537c8d863067ad7e0fc094fdd9dad3bb15acc1ad0d98",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_v03_incremental_shadow.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_v03_incremental_shadow.py.txt",
+    "sha256": "02e89399584a9dca0a6065f5e56d96be50d2633e6957d77ee6c63f03065361d0",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_v03_operational_replay.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_v03_operational_replay.py.txt",
+    "sha256": "998c4b66b25323a53b413cd0fecbb39f3c5a13ae0c6acd69d142222746366058",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_v03_statistical_shadow.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_v03_statistical_shadow.py.txt",
+    "sha256": "4ab8f69c4cabbe864ee379fc2bd7f594f3401101335e4942d062659c8682c124",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_v04_feature_feasibility.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_v04_feature_feasibility.py.txt",
+    "sha256": "bccddfeb7471b312d15a8035e9e136089f110cabe9e84a9710b9d8ca09142a42",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_v04_stage_c1_pool.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_v04_stage_c1_pool.py.txt",
+    "sha256": "2c86b3418eabd5b3a67ebe046da468d92b3cfa517b647365b7128ca6db3fd16e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_jrdb_edge_watch.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_jrdb_edge_watch.py.txt",
+    "sha256": "516c9a0975b87fe8330015367d774ec61416b447ddad77a8c89ffca9ecf21210",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_rl_retirement_downstream_dependencies.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_rl_retirement_downstream_dependencies.py.txt",
+    "sha256": "d8320246203d3490b791295f7d55ce5b0c0b2ecbfa56c3a53bef7d7de36b4cef",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_rl_retirement_final.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_rl_retirement_final.py.txt",
+    "sha256": "6ea166d79c0f880ca0ca8106df4013d0ba064b4e8a9b8f18648ebc46ca99288c",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_rl_t_production_warehouse_cutover.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_rl_t_production_warehouse_cutover.py.txt",
+    "sha256": "f4b5fbf99371f01305455e727831f134f6725b7b64d550438ad09d0550dda6fc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_rl_t_training_research_parquet_cutover.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_rl_t_training_research_parquet_cutover.py.txt",
+    "sha256": "94c55e3e1a84b1c149ddfc99310ab33d11ffa43c9acb088bcfc1fcc8bbc15b52",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/audit_rl_t_warehouse_downstream_nonregression.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/audit_rl_t_warehouse_downstream_nonregression.py.txt",
+    "sha256": "dff7b036206b72f6e88c7615cb36251c0c56dc91ab0ad33ceaa3b7c171506456",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_current_facts.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_current_facts.py.txt",
+    "sha256": "97222c7b6e6fae72593c8f45cbffcacc8df763cd7cece727cbd188a9ae5b9487",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_current_facts_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_current_facts_v0_2.py.txt",
+    "sha256": "e52a87f644cb9458707ba84a73b0ce8871777b9510da07004632ce351964cc39",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_feature_mart.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_feature_mart.py.txt",
+    "sha256": "ff57a5fc0090f471497e4a2b708d6e1a961504c35c898c972cde3e3f915bd7d3",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_feature_mart_parquet_generation.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_feature_mart_parquet_generation.py.txt",
+    "sha256": "d030bd8f982c63270df676ae7c500416dc151f75dd2c94f6f141002176abc038",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_feature_mart_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_feature_mart_v0_2.py.txt",
+    "sha256": "0da853c140f2010552b810f74150029ade0bf245c6661bcb95c90d6dce9a839d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_forward_ledger.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_forward_ledger.py.txt",
+    "sha256": "eeb8d5ffe809d179b0066e25050faa05dcb62f770546f4823e45cb3a21b0d28a",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_publication_manifest.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_publication_manifest.py.txt",
+    "sha256": "c271c5a45d044da75dc79f3f95521275b5427f4df92b64aedd7d829a03e3d659",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_registry.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_registry.py.txt",
+    "sha256": "6f4282cf2ba98ad53defb3b0dcc615fe9e8dcb693e9c80a864c6968dbeae9ca2",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_registry_parquet_generation.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_registry_parquet_generation.py.txt",
+    "sha256": "edfec671d3dab5ea077ef4d46fa0ef6e5a86204ca3471cbcbb071dee0cde1a3c",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_registry_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_registry_v0_2.py.txt",
+    "sha256": "f53bc892e1821b6bf5e51a28fcaac36a4f35ba7f7d7fe8c3e2717e5cfa579377",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_suggestive_publication_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_suggestive_publication_v0_2.py.txt",
+    "sha256": "c054bdb32528ce620edbf456d0adb83ee3114dbfbd28b814bcf1b0bacdbf7978",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_v03_shadow_catalog.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_v03_shadow_catalog.py.txt",
+    "sha256": "3c113c2cf82c664d5c9f40fc189bbb5b7b3fc6986630d06ef1190f24cdcf8986",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_v04_candidate_templates.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_v04_candidate_templates.py.txt",
+    "sha256": "3ae6420920e904c0d46979c8ef7bd2a2c48511ff2723a554a4e9f4c917e90aac",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/build_jrdb_edge_v04_candidates.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/build_jrdb_edge_v04_candidates.py.txt",
+    "sha256": "86841f05e464688fbc178c97bbe1fbaf3a36920f7368a19bd7efb009ec0af4e1",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/evaluate_jrdb_edge_forward.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/evaluate_jrdb_edge_forward.py.txt",
+    "sha256": "07c5d1c327039e70968cf9f5f1473186a9dbefc7af75598f81622d845c7120b8",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c.py.txt",
+    "sha256": "a19d31ca3f72cad3ef71566502a8d8067635523a12d6abe506cb1b9ce22ccb33",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c1_shard.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c1_shard.py.txt",
+    "sha256": "dfa8476d8f5c003386c03bb406f1231bc3f40786bf6161f53a3ef5f9c53347e8",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c2b_shard.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/evaluate_jrdb_edge_v04_stage_c2b_shard.py.txt",
+    "sha256": "1144c58a5e63792487c730bc3b252e9dc8ac7c610d801c5ec3672c91b3f329fb",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/evaluate_training_edge_v0_1_holdout.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/evaluate_training_edge_v0_1_holdout.py.txt",
+    "sha256": "bc96ff396cb8b4852db404deceb62299c7cf37fe8d9bbc16c8013a418dfe325d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/evaluate_training_edge_v0_2_oot.py.txt",
+    "sha256": "ae10c2ad1fa4a083e02e1a5ce3bfcd4b530b3fa58cfb1edbc379f85d9fb95579",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/export_jrdb_edge_v04_5y_full_enriched.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/export_jrdb_edge_v04_5y_full_enriched.py.txt",
+    "sha256": "8159420f51782796784fc03b5d698906f53b75596e19f9b172ed3d0f0248a803",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/fingerprint_training_edge_v0_2_runtime.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/fingerprint_training_edge_v0_2_runtime.py.txt",
+    "sha256": "cfc48d5f946734a8b8b0ab2d30ab45f824afb45aca2c0c9f2b3c3ae495f51e60",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_analysis_history.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_analysis_history.py.txt",
+    "sha256": "77adaeeb51157aae2a190a5aea552ef2fec1b4a88932c79958cdf70667fb2444",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_canonical.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_canonical.py.txt",
+    "sha256": "14de9d0f8f5c3f4a14e2afa3e7e0ca657789a1c1421d5771c4071d07983087e9",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_discovery.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_discovery.py.txt",
+    "sha256": "93f8f365121fd525b0dc8fc4ddda204d67c9ece625c02b4a418fa33343f05479",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_discovery_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_discovery_v0_2.py.txt",
+    "sha256": "cbd6114fd4fccc54195ba49fe3a788401b5f8ee8e3322b1ebfc01432008c82a1",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_display_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_display_v0_2.py.txt",
+    "sha256": "246b11f32bb99f2593a109bdbf0324eab27c6736217dfca30614ee7b16ca0325",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_feature_mart_parquet.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_feature_mart_parquet.py.txt",
+    "sha256": "f051d1b03089a733be7a9de2b952a2b1c44d118d352e8ab34e898999c7a002bb",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_human_residual_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_human_residual_v0_2.py.txt",
+    "sha256": "827b51afc190923714f553b5489dd4923926bf70d8654552020bbfb50ffecaea",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_matcher.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_matcher.py.txt",
+    "sha256": "b25c0caba476ceb8c5640db146cd94ee2f5b6efded779c8d8f7962e1a8fc77bc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_matcher_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_matcher_v0_2.py.txt",
+    "sha256": "9bc366d7d737f727aceb4c5da99525ea061fabb76ccdc45f93be9248a2a7b48c",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_registry_parquet.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_registry_parquet.py.txt",
+    "sha256": "818b6e37a39f6c2ca87b60e5aad51fff5fec345e153a84e3cefe2153c195f8bd",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_relational.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_relational.py.txt",
+    "sha256": "95d3a4aa35352820ff9fb8cf6180532eaad72b761975263c7691a7a00eaf9a92",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_statistical_guard.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_statistical_guard.py.txt",
+    "sha256": "b2bbf11e332d0f501628bc4682e2b90dc763bdf30cb89d16dfab7d9d7eb4fe9e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_temporal_validator.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_temporal_validator.py.txt",
+    "sha256": "23f422136b006733ca12e869927e64d88023669dd23b93a174f389f9c5b8e7c8",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_v04_observe_cohort.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_v04_observe_cohort.py.txt",
+    "sha256": "e9c225eab004d627a892cf8ed42ebe0ab8cc24af0f63d9592055ada0e7e4c46e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_v04_observe_shadow.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_v04_observe_shadow.py.txt",
+    "sha256": "b0d41bf26ebc893df21ae5f239482d8199264b5896841322b0dec2c52532405d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_v04_preflight.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_v04_preflight.py.txt",
+    "sha256": "0447526841e72bb6b5eff97cfe3465e07cd8e24b6fdca5435243905fe6478f55",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_v04_preflight_3y_canonical.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_v04_preflight_3y_canonical.py.txt",
+    "sha256": "797903a1c8a1ca75c97e370e65db2a2e5fc3eb052478fde76a5586670fb782c3",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_v05_2026_oos_eval.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_v05_2026_oos_eval.py.txt",
+    "sha256": "8b031a5b6566afeb20a8e50862f6a537945c3293ac7bd61b201ecb11cb237ab9",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_v05_2026_pre_race_match_freeze.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_v05_2026_pre_race_match_freeze.py.txt",
+    "sha256": "e0b3ce0f5d7ec5b18da0007d9bf59ecd298191222d788a0c8f62970b7f9cb712",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_v05_prototype_aggregation.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_v05_prototype_aggregation.py.txt",
+    "sha256": "58a66479735e5ba418048a0489325152034435a736e79fc0c329651fbadf2bce",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_v05_turn4_sieve_review.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_v05_turn4_sieve_review.py.txt",
+    "sha256": "f56000a53e1c480363fb961d6205dc8b0ee07efc8b8cd9595c52b3cbd89c844f",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edge_validation.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edge_validation.py.txt",
+    "sha256": "e32ad6345e851b6d3ecfaeceb54048354419a4403bd35b87f3c695c658e37222",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_edgedb_query.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_edgedb_query.py.txt",
+    "sha256": "bde5bace8f06dbf98420b1693e18766ad67394aa1ad9bf6a46a5a8d005c60edc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_newspaper_edge_adapter.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_newspaper_edge_adapter.py.txt",
+    "sha256": "87fcc2c21344a7967b78f59ba7eb82f2cdf66b1820cafedf7fc63f4b2e5637de",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_newspaper_edge_v05_preview.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_newspaper_edge_v05_preview.py.txt",
+    "sha256": "9a7ada5cf2d0cc47478c5d14df929f5a01a627befd8d322b8b18abfa30bdbe28",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_newspaper_merge_edge.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_newspaper_merge_edge.py.txt",
+    "sha256": "e37ff50d2623c81b439d873cd582eeaaa2126966c73b004cdbf2b94e185bd0fd",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/jrdb_newspaper_query_edge_day.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/jrdb_newspaper_query_edge_day.py.txt",
+    "sha256": "39aa03eb9759d4a52de4e6e459486360955dec292cea00b9459df198c320147d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/merge_jrdb_edge_v04_stage_c1_shards.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/merge_jrdb_edge_v04_stage_c1_shards.py.txt",
+    "sha256": "821bebaf97bfd0514ca898c40b14320d37e1b89954575e9b1b33a29dd50abf00",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/merge_jrdb_edge_v04_stage_c2b.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/merge_jrdb_edge_v04_stage_c2b.py.txt",
+    "sha256": "7bfc37220c89b5b2b7488de74ad004601cfa4a180a8c74528c23f00947973856",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards.py.txt",
+    "sha256": "c467fb9e922bc350a5312b00ec1ab19f3d9a051f6eccc8a9a10d778f33a85481",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards_3y_canonical.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/plan_jrdb_edge_v04_stage_c1_shards_3y_canonical.py.txt",
+    "sha256": "b3c1af4043663c9c282d39278d860c06e5cdf64a1e12de70ff7fbe4ddac3eb61",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/prepare_jrdb_edge_feature_mart_duckdb.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/prepare_jrdb_edge_feature_mart_duckdb.py.txt",
+    "sha256": "bd9fa7a262f93b9ecf0891cd259c6af9861e99eb7b4b3b0e33c39a6466b336d1",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/prepare_jrdb_edge_v04_stage_c2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/prepare_jrdb_edge_v04_stage_c2.py.txt",
+    "sha256": "f02fe7c2572824aa734ff5207d6c80924a6e162419c8a13caf4b01709b870c9c",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/prepare_rl_t_historical_warehouse_inputs.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/prepare_rl_t_historical_warehouse_inputs.py.txt",
+    "sha256": "89aef829c5b496bd1b12265e24ec5856aa80e28e0b380d4617b5ec80db562d9a",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/project_training_edge_v0_2_input.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/project_training_edge_v0_2_input.py.txt",
+    "sha256": "1eefc6674b84cbfcd125214c70e6fcd081d009b60e49036a07eb36e6b180d9b9",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/recover_jrdb_edge_v05_2026_paci.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/recover_jrdb_edge_v05_2026_paci.py.txt",
+    "sha256": "a702a01250290582f0e508a2117b9f9cc25716eca3d9bca950b13f8dd3952cfc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/report_jrdb_edge_registry.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/report_jrdb_edge_registry.py.txt",
+    "sha256": "eb6c96414c05bd98f93a4f75a6946a6bb11dc0dbb097bf033b12a5745c2c98e2",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/report_jrdb_edge_v04_pedigree_cross_5y.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/report_jrdb_edge_v04_pedigree_cross_5y.py.txt",
+    "sha256": "a495de3678567cf834e7bae2c567edfc15e8cc7bfda33eed9b391c7cba1b7869",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/reproduce_jrdb_edge_v04_3y_full_enriched.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/reproduce_jrdb_edge_v04_3y_full_enriched.py.txt",
+    "sha256": "0ed8ee6e45186eba99809447cfffed4b6f3a9e14a6b7abbc452174eeac7c03c2",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/research_jrdb_edge_suggestive_bootstrap_sensitivity_v0_1.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/research_jrdb_edge_suggestive_bootstrap_sensitivity_v0_1.py.txt",
+    "sha256": "04bab408bac29398b6367ffd6655816e649675816a9b893375c42a93cf1ba14d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/research_jrdb_edge_suggestive_bootstrap_v0_1.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/research_jrdb_edge_suggestive_bootstrap_v0_1.py.txt",
+    "sha256": "4abb2809a22effc103ef5a1e5566212a7b3b1f558adda5ff8fd53cc7b7a90f8b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_forward_backfill.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_forward_backfill.py.txt",
+    "sha256": "bb36a26bae4de36c5000aea12bf249820d45b2710e4474724b02e45761e172dc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_forward_freeze.py.txt",
+    "sha256": "40ed5808d038100b467726ce80a511137404e70e31c4d6e47639c834078a28c5",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_forward_settlement.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_forward_settlement.py.txt",
+    "sha256": "0ff983f5ac930b647a19d9f23ab029abc8e2c023a1e0b446bb51c6bdc7a09786",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_match_current.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_match_current.py.txt",
+    "sha256": "31c48259291d3706442a5491d5f3a08d8b5744cbf3868824ba62d527787f75bf",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_match_current_v0_2.py.txt",
+    "sha256": "a03ce60b0177dce3f37163c72344d49e30c51e6a4e8b2f8945e10e18c3bf2940",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_preresult_reconstruct.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_preresult_reconstruct.py.txt",
+    "sha256": "5786240dfc91da0d05bd255c2c18fc1a0e88aa1253a74ea28b99f6fcd66ce11e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline.py.txt",
+    "sha256": "1e1cbf418192f751874b299e04810cc58ece442b1f58d203893723ccdaef88f4",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_registry_pipeline_v0_2.py.txt",
+    "sha256": "3f8e1367a71ca37bba57afafeef5287237a5cf1142306c78f583d6a3c92b6d24",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_v03_forward_shadow_freeze.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_v03_forward_shadow_freeze.py.txt",
+    "sha256": "b579e95c84cf84bd0a165057174dac668e9434c1baf443e0ec6ab8de3e5fca21",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_v04_r1_actions_fallback.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_v04_r1_actions_fallback.py.txt",
+    "sha256": "80fb70a8eaff8c9215d43584d3a7998afc0bf574b25d57d9d5262d1c9214049e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_jrdb_edge_v05_first_history_tests.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_jrdb_edge_v05_first_history_tests.py.txt",
+    "sha256": "afa7a09bbed95bf14c3aaf94588e8c08f5e573e8fb249c1a23fcca6f0927e00b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_rl_t_historical_warehouse_minimum_cutover.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_rl_t_historical_warehouse_minimum_cutover.py.txt",
+    "sha256": "eb78e694ae41376ac1f351695f1a9ccb90caa52f55d061faf93413a427ab74fd",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/run_rl_t_warehouse_downstream_nonregression.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/run_rl_t_warehouse_downstream_nonregression.py.txt",
+    "sha256": "3593a4bc3a7ecb44c24cd167be3e861d3e6405a42aaacd4fbb49226455548a64",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/score_training_edge_v0_2_daily.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/score_training_edge_v0_2_daily.py.txt",
+    "sha256": "34c05d2ad4c0048f2d33fb7867b9d455059574ba7812c27e65d8add4f87b5df6",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/training_edge_v0_2_core.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/training_edge_v0_2_core.py.txt",
+    "sha256": "30a7e05459e0382b6d072ee149fe0d2a416389f8f40ea73044a7248f2bd8a239",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/src/validate_jrdb_edge_semantic_hierarchy_v0_3.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/validate_jrdb_edge_semantic_hierarchy_v0_3.py.txt",
+    "sha256": "0aa84dc47e9bc026dfdc99d5cbb607b3b26926377b84a6a6a3546ccd7462d16b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_apply_jrdb_edge_v03_statistical_gates_shadow.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_apply_jrdb_edge_v03_statistical_gates_shadow.py.txt",
+    "sha256": "fdccd4c099a8103f9147170407f733a89239d0d94d384c81565ae7cac0095dbc",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_audit_jrdb_edge_stat_watch.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_audit_jrdb_edge_stat_watch.py.txt",
+    "sha256": "bf50036376fd6b14097254135fbbc3c8b30d97762f9a860593a670b16ac11594",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_audit_jrdb_edge_v02_operational_hits.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_audit_jrdb_edge_v02_operational_hits.py.txt",
+    "sha256": "4ec4066e51f4b48f310f9104d50aabde09831258d561c55b5f0782698963aac4",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_incremental_shadow.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_incremental_shadow.py.txt",
+    "sha256": "406a263d05da5c4e4c15f81e8b59adbb1590e48962049f2c89a5a8fd44a0d196",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_operational_replay.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_operational_replay.py.txt",
+    "sha256": "23a53e967635591622a9e6319a20d5f13a0e5de68a4ac3596254b76e1eeb7856",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_statistical_shadow.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_audit_jrdb_edge_v03_statistical_shadow.py.txt",
+    "sha256": "9577c6300831fbfe0e939c67384a1e5a823f683575afba288aa1219e0e127cd6",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_audit_jrdb_edge_watch.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_audit_jrdb_edge_watch.py.txt",
+    "sha256": "698530b5ec68954452054eb9796a3934c5fa60027423f4d13161910d4ef88a7b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_build_jrdb_edge_current_facts.py.txt",
+    "sha256": "15ebfd2093ef6ca535480cb6511c062d34728c7323707f8c9c0fc36507531dda",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_build_jrdb_edge_feature_mart.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_build_jrdb_edge_feature_mart.py.txt",
+    "sha256": "76195412cc06ca6eb8b821ffd0d94d07b7a3cd728f6677128f9a56761ff86b87",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_build_jrdb_edge_forward_ledger.py.txt",
+    "sha256": "1c8cee85f2cc0fb788a15b22fc1858574bf0ad8ac6a3b7bff8ff6053f9e6e5e2",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_build_jrdb_edge_publication_manifest.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_build_jrdb_edge_publication_manifest.py.txt",
+    "sha256": "47e04f00fff77d059a40f654ae40e548064f55f9a8e4ca7d939b7aaaa53091b9",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_build_jrdb_edge_registry.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_build_jrdb_edge_registry.py.txt",
+    "sha256": "4e1350e91c6913fc75337c843663bc74c40d8fd3ed8f92a2acfb3b6b61dff387",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_build_jrdb_edge_v03_shadow_catalog.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_build_jrdb_edge_v03_shadow_catalog.py.txt",
+    "sha256": "4bdf88ea6354bbc92ceae10b58b6e75c48747358ab52221c8de6d6511a4b3623",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_edge_v04_preflight.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_edge_v04_preflight.py.txt",
+    "sha256": "3e9ef105033371d4307520594d246c0c6d926268cb75d90fe459b34195df61a2",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_evaluate_jrdb_edge_forward.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_evaluate_jrdb_edge_forward.py.txt",
+    "sha256": "9bda457a991fc5995f3db16b254654b2199eb7a49ba7b56be4eafc045f04576e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_fingerprint_training_edge_v0_2_runtime.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_fingerprint_training_edge_v0_2_runtime.py.txt",
+    "sha256": "c299a9b14be5fba904ca2035742cd7193d600a3224691efc4be85112406ecb6c",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_analysis_history.py.txt",
+    "sha256": "73080e3456ad80f6cebce76acd619b3f027101e41b72f31aa26c4bb61ea4e963",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_canonical.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_canonical.py.txt",
+    "sha256": "3fc4b7e192128d5e92df2cd57c8b4b6476b8cfdcc457284166acd062a1d90a5b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_discovery.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_discovery.py.txt",
+    "sha256": "434461ac3bf02b3c75568af2bcfcee8a9b006233ecf247b0b85d43b55232618e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_feature_mart_parquet.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_feature_mart_parquet.py.txt",
+    "sha256": "a664a33343043608403ae90ce05e4ca1e973c4a7dc1322ade83189e5593bc1c4",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_forward_operations.py.txt",
+    "sha256": "42d55182d82cbac3443ec05156673fd9214cfc2281aedb3b8e793bc3a9baa2c9",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_lifecycle_anchor.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_lifecycle_anchor.py.txt",
+    "sha256": "d40c114ac746421640522bc315d4b705715a9edc7bd46fa0756dc6cc38b1eaa2",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_matcher.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_matcher.py.txt",
+    "sha256": "6b90192fc60fec9cae200d57de60ef82431a358230e1653f610c3fe70b78ff07",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_matcher_v0_2_serving.py.txt",
+    "sha256": "d2e94c4f2cf6eb0753f9b4d0a798210d79f8cba98480bbba196705e855bff441",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_paci_matcher_integration.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_paci_matcher_integration.py.txt",
+    "sha256": "c49914937b5208436717ad5567ccf40da4ae1bd5ee74ad922734eb14148e6f64",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_preresult_reconstruct.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_preresult_reconstruct.py.txt",
+    "sha256": "50601f6c24c670faf4eebf377bf5aa939efe09c9ce5370ecfda30393866dd1ec",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_registry_parquet.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_registry_parquet.py.txt",
+    "sha256": "8e0f52417149d9f35176f42dc95b91039282e095dee122524c2f95e196ce4193",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_relational.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_relational.py.txt",
+    "sha256": "5ceede27fe19663914442b7658b6af48ff012a19bb7163bb4b0a8dc5d7bfd89b",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_statistical_guard.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_statistical_guard.py.txt",
+    "sha256": "a3e0b2e1cb9891cef49074ce6a28b0fdddc279c95b3f665ceac2373feaf23822",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_suggestive_publication_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_suggestive_publication_v0_2.py.txt",
+    "sha256": "a319cf5ccfe16a9588bf95f1d4d43f5a2719e835613bd958b80efb8e85dec902",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_temporal_validator.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_temporal_validator.py.txt",
+    "sha256": "9a178ca12b4b27a6e462fe66640202c9c520309edb4cfcadf56ac273157f5368",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v02_recent_code_canonical.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v02_recent_code_canonical.py.txt",
+    "sha256": "ec8a5567cb8f898279376504e9acc07cd755dc0d65ddf54b193b2bfad5a50f23",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v04_family_preflight.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v04_family_preflight.py.txt",
+    "sha256": "9cc9110f76cc31c4ed16e05e32b8548878e9b2bf677c054eb2db2d5db71fa133",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v04_observe_shadow.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v04_observe_shadow.py.txt",
+    "sha256": "68c42301c3ecf2b698c907aa7f4bbe83fa04dec275e7d327942bad707667cfe7",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_oos_eval.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_oos_eval.py.txt",
+    "sha256": "a19bcbea45359605bf54b897f112d3f190762b486b17aabb0082acf4d3f12377",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_pre_race_match_freeze.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v05_2026_pre_race_match_freeze.py.txt",
+    "sha256": "339335afdf8a0b66058f79e41e055b97b1dfb2a6dc77f10fc9d21964a1adf1c8",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v05_first_history.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v05_first_history.py.txt",
+    "sha256": "9b250bb47b23bac65385cc3058ffa3da1668068fb6f5a285e67034524e3c24c6",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v05_prototype_aggregation.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v05_prototype_aggregation.py.txt",
+    "sha256": "e877aa521ccf53b63577e25c38a0b10fd607e1f320e3c40a287dcb9d63e1d191",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v05_turn4_sieve_review.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v05_turn4_sieve_review.py.txt",
+    "sha256": "bd3aa11ddacf37bca16d9ab350225d4e8208848345c7be397963aa1dfd5c2b94",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v0_2.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v0_2.py.txt",
+    "sha256": "268d1c6e806d2f231ac1126a6cf319400fb5671154ae0b86db58f9f1c1f9033e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_v0_2_status_semantics.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_v0_2_status_semantics.py.txt",
+    "sha256": "ad8011ae882068a4221a882064caf1927901fdf4b824f21f81bb77a46104ce84",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edge_validation.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edge_validation.py.txt",
+    "sha256": "5e060b7ababe152b302f2ef92515aa728f93a6c7b39fa62855fddd9d6476725e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_edgedb_query.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_edgedb_query.py.txt",
+    "sha256": "113b9ec20527c09660cfa34d3f4b1d377b978c31da03fc81ea94e6cf9576ebf2",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_newspaper_edge_adapter.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_newspaper_edge_adapter.py.txt",
+    "sha256": "43809c079151cdd6e83454670ee5e4a94dc3bb9e1c0d0a55f692fccfc6a88fe0",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_newspaper_edge_display.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_newspaper_edge_display.py.txt",
+    "sha256": "029bbf3fc6aa753f791474a8de04934fb3e0d79dc41d39a50836d09582bd8d81",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_newspaper_edge_v05_preview.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_newspaper_edge_v05_preview.py.txt",
+    "sha256": "a3f67ac60b1ef8edbbb9f23f7589722290fb47044803e10f261d53016f11e70e",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_newspaper_merge_edge.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_newspaper_merge_edge.py.txt",
+    "sha256": "3c82bd456fff2948d9666e54fd17a40213320027ef0ec6b66c316bba351fd695",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_jrdb_newspaper_query_migration.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_jrdb_newspaper_query_migration.py.txt",
+    "sha256": "6d025d5216a8676be1d196df9eb4ccee9945e2767b947411e8c6129e818eb255",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_project_training_edge_v0_2_input.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_project_training_edge_v0_2_input.py.txt",
+    "sha256": "f7728b139169778df1968d982e2a9b1917a7f64f240b67d080fbc848138fd299",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_research_jrdb_edge_suggestive_bootstrap_sensitivity_v0_1.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_research_jrdb_edge_suggestive_bootstrap_sensitivity_v0_1.py.txt",
+    "sha256": "48bfbef2aae0fde6fbb1c3f447cb50d688db4ab8523fde17ea91e8a196aab063",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_research_jrdb_edge_suggestive_bootstrap_v0_1.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_research_jrdb_edge_suggestive_bootstrap_v0_1.py.txt",
+    "sha256": "0eb05a2fe140ead87985a382d1014094481943871669d049c1e90a454bf074b0",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_run_jrdb_edge_match_current.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_run_jrdb_edge_match_current.py.txt",
+    "sha256": "fc8f192358c124fe0c8b53f01b93930b99dbb705a08be06cd1038cf659bf519d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_run_jrdb_edge_registry_pipeline.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_run_jrdb_edge_registry_pipeline.py.txt",
+    "sha256": "46bf648f95a556e2f0612d38efc80ad63ee0ee09bcc81a2acfb0b5ac42443b2d",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_run_jrdb_edge_v03_forward_shadow_freeze.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_run_jrdb_edge_v03_forward_shadow_freeze.py.txt",
+    "sha256": "063e81daae192f33d4212568024a10fe12fb43c15b2ed62401426c465a390299",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_score_training_edge_v0_2_daily.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_score_training_edge_v0_2_daily.py.txt",
+    "sha256": "c32855629ed68e3375098be44388a582a64c12a14277b4d558dd5dd7f4c95f54",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_training_edge_v0_2_core.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_training_edge_v0_2_core.py.txt",
+    "sha256": "0e960f45bc98b83e64bd32a784f735d5d599faa7d80ef6400eb0b59e9cc4cec9",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_validate_jrdb_edge_semantic_hierarchy_v0_3.py.txt",
+    "sha256": "d9c8613747bfccf812563c391fa32333f622e34eaace789563805a1571ec6593",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "専用workflow/専用実装の閉包。独立runtimeからreverse referenceなし"
+  },
+  {
+    "original": "horse-racing/jrdb/config/jrdb_edge_candidate_templates_v0_1.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/jrdb_edge_candidate_templates_v0_1.json",
+    "sha256": "b32c764b6ec61ff0e33bda3eebf16c1d8e18d09775ce523bfba9673663808cf3",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "保持されたruntimeに参照なし；専用policy/config・旧保守手順"
+  },
+  {
+    "original": "horse-racing/jrdb/config/jrdb_edge_candidate_templates_v0_2.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/jrdb_edge_candidate_templates_v0_2.json",
+    "sha256": "9015cb4d3dc678dfd52ab88276a99d937b521c033bd2de5c855602f9d167bf66",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "保持されたruntimeに参照なし；専用policy/config・旧保守手順"
+  },
+  {
+    "original": "horse-racing/jrdb/config/jrdb_edge_canonical_drive_v0_2.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/jrdb_edge_canonical_drive_v0_2.json",
+    "sha256": "82ada324be2a165f9703af595f44ebaccdbab83486dc5acf684ef23f9f2ada09",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "保持されたruntimeに参照なし；専用policy/config・旧保守手順"
+  },
+  {
+    "original": "horse-racing/jrdb/config/jrdb_edge_semantic_hierarchy_v0_3.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/jrdb_edge_semantic_hierarchy_v0_3.json",
+    "sha256": "266419603c5e3ccb9ec63f1545786a8c38b6255f0f3467543182c9dff7f146d5",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "保持されたruntimeに参照なし；専用policy/config・旧保守手順"
+  },
+  {
+    "original": "horse-racing/jrdb/config/jrdb_edge_v03_statistical_gate_policy_shadow.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/jrdb_edge_v03_statistical_gate_policy_shadow.json",
+    "sha256": "f020ee641fab2a1b3fc4366d436361d13e1559f954bd8950fa3cb3b7593f3940",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "保持されたruntimeに参照なし；専用policy/config・旧保守手順"
+  },
+  {
+    "original": "horse-racing/jrdb/config/jrdb_edge_validation_policies_v0_1.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/jrdb_edge_validation_policies_v0_1.json",
+    "sha256": "9bbaf472a083d081bde5f251fe09bdb701be965c505b5e2ae26dfa576ad969ff",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "保持されたruntimeに参照なし；専用policy/config・旧保守手順"
+  },
+  {
+    "original": "horse-racing/jrdb/config/jrdb_edge_validation_policies_v0_2.json",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/jrdb_edge_validation_policies_v0_2.json",
+    "sha256": "7f17a16ada7d68803112972f8ab4ba6f61362c1b6835920780bd72cfa390d005",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "保持されたruntimeに参照なし；専用policy/config・旧保守手順"
+  },
+  {
+    "original": "horse-racing/jrdb/config/README_training_edge_v0_2_runtime.md",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/config/README_training_edge_v0_2_runtime.md",
+    "sha256": "eef5cd2de99c9ccea51c1cb0183f15b97b5bf4b1f03465f354f570bc66b5dbc0",
+    "classification": "削除可（実行場所から撤去し非実行証跡へ移管）",
+    "reason": "保持されたruntimeに参照なし；専用policy/config・旧保守手順"
+  },
+  {
+    "original": "horse-racing/jrdb/tests/test_newspaper_v05_preview.cjs",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/tests/test_newspaper_v05_preview.cjs.txt",
+    "sha256": "59b96fda934ea0c16a651102f999e87586e857cf32da22c270206f210a9592be",
+    "classification": "削除可（非実行アーカイブへ）",
+    "reason": "撤去済み研究preview専用DOMテスト；通常非伝播テストは保持"
+  },
+  {
+    "original": "horse-racing/jrdb/src/extract_jrdb_training_holdout_lite.py",
+    "archive": "horse-racing/jrdb/archive/retired-edge-training/horse-racing/jrdb/src/extract_jrdb_training_holdout_lite.py.txt",
+    "sha256": "587636cd1d68e65ef185e578ad37af3eeca235011d38e9cb0137211263f5f2b4",
+    "classification": "削除可（非実行アーカイブへ）",
+    "reason": "Training Edge v0.1専用holdout projection；全域runtime reverse referenceなし"
+  }
+]

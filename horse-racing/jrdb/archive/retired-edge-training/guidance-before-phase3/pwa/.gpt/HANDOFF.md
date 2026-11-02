@@ -1,0 +1,323 @@
+# Kenshow_Labo PWA handoff
+
+## Phase 2 current contract — Issue #2329
+
+通常Newspaperは PACI → Base/history → 監査PASS → 日次artifact → 任意のEval/RaceNote/RRDB/イルカmerge → 個人/桃太郎投影 → Current候補 の経路を使う。EdgeDB STANDARD/v0.5・Training Edge入力を要求・探索・実行しない。日次requestは `date` とPACI取得元のみで起動し、`revision` は省略時1。旧requestのAnalysis追加フィールドは無視する。仕様は `horse-racing/jrdb/newspaper/DAY_REQUEST_V2.md`。
+
+旧Currentを基にした新revisionでは共通の `jrdb_newspaper_retired_sources.py` が廃止sourceを除去し、race SHA/size・manifest・package・auditを再生成する。通常mergeの `--my-index-csv` は廃止。既存immutable revisionやRelease/Drive正本は変更しない。Eval WATCH/MATCH、Eval.analysis、RRDB不利分析、JRDB/履歴、RaceNote、イルカ、桃太郎の予想/コメントは維持する。Fact Lite/Stats Mart/canonical Analysisは独立経路として維持する。
+
+STANDARD/v0.5本番再投入workflowはjob条件falseで停止。Pagesは通常full-site組立を維持し、Edge smoke・Edge再公開triggerを廃止。研究preview/計算/configと過去文書の資産廃止判定はPhase 3。本PRでは本番反映しないため、コード上の依存解除と実配信完了を区別する。Phase 1の本番画面確認も未完了。
+
+## Phase 1 UI retirement (Issue #2324)
+
+この文書は、会話量上限・Chat/Workスレッド移動・担当交代後に `horse-racing/jrdb/pwa/` の保守を再開するための **durable handoff** です。
+
+ここには変わりやすいDrive File ID、current SHA、current run IDを固定しません。再開時はこの文書で思想と入口を復元し、動的な現在状態は必ずlatest `main` / current Release / manifest / workflow runから取得してください。
+
+## Start here
+
+新しいスレッドでは次の順で確認します。
+
+1. `horse-racing/jrdb/pwa/.gpt/HANDOFF.md` — この文書
+2. `horse-racing/jrdb/pwa/README.md` — architecture / module map / consumer semantics
+3. `horse-racing/jrdb/pwa/SYNC_PROVIDER.md` — data Release / browser sync / OPFS
+4. `horse-racing/jrdb/pwa/DEPLOYMENT_TRIGGER.md` — deploy trigger / completion
+5. 対象subsystemの正本
+   - 条件別集計: `horse-racing/jrdb/docs/README_build_jrdb_pwa_fact_lite.md`
+   - 競馬新聞: `horse-racing/jrdb/newspaper/.gpt/HANDOFF.md`
+   - Eval分析コメント: `horse-racing/eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
+   - Edge: current Edge serving / consumer contract
+6. latest `main` の対象source / workflow / tests
+7. current Release / manifest / Newspaper current pointer / relevant Pages run
+
+推奨の再開指示:
+
+> `horse-racing/jrdb/pwa/.gpt/HANDOFF.md` と参照先のGit正本を確認し、Kenshow_Labo PWA保守スレッドとして継続してください。
+
+## Mission
+
+PWAの責務は **上流で確定・監査されたデータを安全に同期し、スマホ/ブラウザで読みやすく表示・集計すること** です。
+
+PWAで行わないこと:
+
+- Eval条件、H1/H2、WATCH/MATCHの再判定
+- Edge matcher / serving条件の再実装
+- RaceNote predictionの再計算
+- 欠損sourceのfuzzy join / 推測補完
+- historical ROIやEdge strength等を表示層で加算して新しい評価を作る
+- UI上の色やリンクを独自の買い推奨へ変換する
+
+## Current surfaces and authority
+
+### 条件別集計
+
+主DBは **Fact Lite** です。
+
+- builder: `horse-racing/jrdb/src/build_jrdb_pwa_fact_lite.py`
+- schema: `horse-racing/jrdb/schema/jrdb_pwa_fact_lite_schema_v0_3.sql`
+- build contract: `horse-racing/jrdb/docs/README_build_jrdb_pwa_fact_lite.md`
+- browser compatibility: `fact-lite-v3.js`
+- current Release tag: `jrdb-pwa-fact-lite-current`
+
+Stats Martは補助データです。通常の条件別集計を最新開催へ進める必須工程は、更新済みAnalysisからFact Liteを再生成・検証・配布することです。
+
+### 競馬新聞
+
+NewspaperはJRDB-first day packageのconsumerです。
+
+- Newspaper専用運用: `../newspaper/.gpt/HANDOFF.md`
+- external merge: `../src/jrdb_newspaper_merge_external.py`
+- Edge merge: `../src/jrdb_newspaper_merge_edge.py`
+- Edge display boundary: `../src/jrdb_newspaper_edge_adapter.py`
+- current Release tag: `jrdb-newspaper-current`
+
+PWA側は既存day packageの意味を変更せず表示します。
+
+### Stats Mart
+
+- current Release tag: `jrdb-stats-mart-current`
+- heavier aggregate / future extension用の補助channel
+- normal Fact Lite画面の主DBではない
+
+## Fact Lite v0.3 invariants
+
+条件別集計browserの正式contractは **SQLite + sql.js + OPFS**。AnalysisはParquet正本を維持し、そこからFact Lite SQLiteを生成・配布する。Parquet/DuckDB-Wasm直読は再読み込み負荷・ローカルcache安定性の観点から通常運用には採用しない。Fact Lite Parquetが検証資産として残っていてもbrowserは参照しない。
+
+current schemaはv0.3。PWAは旧v0.2のread compatibilityを維持します。
+
+WIN5:
+
+- source field: `win5_leg_no`
+- non-WIN5 = `NULL`
+- WIN5 legs = `1..5`
+- checkbox default = OFF
+- ON = `win5_leg_no IS NOT NULL`
+- capability/columnなし = checkbox disabled
+- PWAで日付・レース番号からWIN5を推測しない
+
+Fact Liteの検索・集計条件を追加する場合、できるだけupstream fact/schemaへ明示的に持たせ、browserだけに隠れた派生条件を増やさないことを優先します。
+
+## Eval analysis comment invariants
+
+Eval分析コメントはEval研究側が確定します。
+
+Newspaper JSONの概念:
+
+```json
+{
+  "addons": {
+    "eval": {
+      "eval": 52,
+      "analysis": {
+        "status": "WATCH",
+        "codes": ["H1_PRE"],
+        "title": "...",
+        "comment": "...",
+        "version": "...",
+        "asof": "..."
+      }
+    }
+  }
+}
+```
+
+PWA表示rule:
+
+- `analysis.comment` null/empty -> 通常Eval値
+- non-empty -> Eval値そのものをtap/click可能にする
+- 別アイコン・別詳細列を増やさない
+- link styleはイルカ列と同じ青字 + 下線
+- 既存 `newspaper-detail-dialog` を共用
+- codes/status/version/asofを表示してよいが、意味を再解釈しない
+- WATCH = 条件成立/買い推奨ではない
+- MATCH = 的中保証ではない
+
+関連layer:
+
+- `newspaper-v9.js`
+- `newspaper-v9.css`
+- `../tests/test_jrdb_newspaper_eval_analysis_pwa.py`
+
+canonical horse addon:
+
+## Edge display invariants
+
+PWAはEdge outputを表示するconsumerです。
+
+### STANDARD / legacy compatibility
+
+canonical input:
+
+- source statusが `PARTIAL` または `READY` のときだけ表示する
+- `ERROR` / missing時はEdge cellを空欄にし、他addonを壊さない
+- Edge列は既存印群の直後・過去走列の直前に置く独立列
+- mark groupのcolSpanへ含めない
+- current widthは34px
+- candidate 1件以上の馬だけ `○` を表示
+- `○` tap/clickで既存dialog系の詳細modalを開く
+- 代表2件を表示し、3件以上は「その他のEdge」で展開する
+- 2026診断と複勝ROIは説明情報。印・買い推奨・自動馬券判断へ変換しない
+- PWAでcandidate順序を再評価・再scoreしない
+
+current assets:
+
+mobile-sensitive変更では360 / 390 / 430pxを目安に、sticky馬番・馬名、印列、Edge列、過去走、横スクロール、modalを確認する。
+
+## Shared compact past-run display
+
+過去走の高密度表示は `newspaper-v4.js/css` の共有runtimeで実装する。
+
+- durable design: `../NEWSPAPER_HISTORY_COMPACT.md`
+- config: `JRDB_PWA_CONFIG.newspaperHistoryDisplayMode`
+- default: `standard`
+- personal Kenshow_Labo: `compact` enabled / 3・5・8走切替
+- Momotaro: `compact` enabled / 5走固定
+- smartphone history width: 94pxを実用上の下限として確定
+- compactで省略した情報は既存の詳細dialogへ保持
+- JSON schema / PACI / history生成は変更しない
+- 回帰正本: `tests/test_newspaper_compact_history_pwa.py` + `tests/test_momotaro_pwa_contract.py`
+
+## Layered Newspaper frontend
+
+Newspaper frontendは `newspaper.js` と複数の `newspaper-vN.js/css` overrideで進化しています。
+
+変更時は:
+
+1. `newspaper.html` のload順を確認
+2. override対象function / CSS selectorを確認
+3. 既存layerを無視して同じfunctionを重複実装しない
+4. 最小の新overrideまたは既存current layerへの修正を選ぶ
+5. asset query version / Service Worker cacheを更新する必要があるか確認
+6. iPhoneの横幅・sticky列・tap領域を壊していないか確認
+
+大規模なfrontend再統合は、専用refactorとして回帰範囲を明示して行います。
+
+## Distribution architecture
+
+配布channel:
+
+```text
+Stats Mart Release  : jrdb-stats-mart-current
+Fact Lite Release   : jrdb-pwa-fact-lite-current
+Newspaper Release   : jrdb-newspaper-current
+```
+
+full-site組み立て:
+
+```text
+current Releases
++ pwa static shell
++ sql.js / wasm
+-> .github/workflows/jrdb_pwa_pages.yml
+-> JRDB PWA Pages
+-> GitHub Pages
+```
+
+full-site Pages workflowが最終的なconsumer配布artifactを作ります。
+
+## Pages completion rule
+
+Fact Lite publisherはSQLite Releaseのみを更新します。successful completionはfull Pagesの`workflow_run` triggerになり、partial Pages deployを行いません。したがってFact Lite更新後は:
+
+```text
+Fact Lite SQLite publisher success
+-> current Release / manifest確認
+-> workflow_runでfull JRDB PWA Pages再構成
+-> Pages success確認
+```
+
+までを完了条件にします。
+
+この制約は将来refactorされる可能性があるため、再開時は必ずcurrent workflow sourceを確認してください。
+
+## Current data retention
+
+Analysis LiteのDrive正本とFact Lite配布物は、通常**current世代のみ**を保持する。
+
+1. 新Analysisを所定の共有Driveフォルダへuploadする。
+2. filename・size・SHA-256・ZIP/SQLite検査を再fetchで確認する。
+3. Fact Liteのschema/integrity/SHA検証、current Release更新、full Pages配布を成功させる。
+4. この三段階がすべて成功した後だけ、直前のDrive Analysisを削除する。
+
+Fact Lite Releaseはcurrent assetを置換する。旧Fact Liteを別のDrive保管や旧Release assetとして積み増さない。いずれかが失敗した場合は旧currentを維持し、原因を修正してから再公開する。
+
+## Browser/offline invariants
+
+- static app shell: Service Worker cache
+- `/data/`: Service Worker cache対象外
+- SQLite current: OPFS
+- Fact LiteのOPFS永続保持は `current.sqlite` 1世代のみ。`incoming.sqlite` は同期中だけ使用し、旧 `previous.sqlite` は起動時に削除する
+- remote manifest / SHAで更新判定
+- download後にsize / SHA / schema / integrity等をvalidate
+- validation失敗時は既存currentを維持
+
+PWAの見た目が更新されない場合、dataだけでなくHTML asset query versionとService Worker `CACHE_NAME` も確認します。
+
+## Git / change policy
+
+通常のPWA source / docs / test変更:
+
+```text
+latest main
+-> target path exists / current blob SHA
+-> current content
+-> minimal diff
+-> direct Git update
+-> tests
+-> Pages deploy確認
+```
+
+Issue駆動をsource変更のdefaultにしません。
+
+Actionsが必要なのは、Drive download、Secrets、大容量build、Release publish、Pages artifact等のActions-native処理です。
+
+## Pre-change checklist
+
+- latest mainを確認したか
+- 現在の正本contractを読んだか
+- PWA側へ上流条件ロジックを持ち込んでいないか
+- old JSON / old SQLiteへの後方互換が必要か
+- mobile width / sticky / tapに影響しないか
+- testsを追加/更新したか
+- Service Worker / cache bustが必要か
+- data Releaseとfull Pages deployを混同していないか
+
+## Completion checklist
+
+UI/code変更:
+
+- source commit
+- relevant test PASS
+- full `JRDB PWA Pages` success
+- mobile-sensitive変更なら実機確認
+
+Fact Lite / Stats Mart data更新:
+
+- upstream canonical保存・audit
+- publisher validation
+- current Release更新
+- full Pages recomposition
+
+
+## Post-race orchestration integration — 2026-10-19
+
+The normal JRDB user-facing `開催後取得` operation now owns Fact Lite DataSource
+refresh as a mandatory downstream stage.
+
+Order:
+
+```text
+Analysis CURRENT promotion + round-trip PASS
+  -> Fact Lite v0.3 rebuild / validation
+  -> jrdb-pwa-fact-lite-current Release update + readback
+  -> full JRDB PWA Pages recomposition
+  -> verify Kenshow_Labo/fact-lite.html and momotaro/fact-lite.html distribution
+  -> continue remaining post-race promotion
+```
+
+Kenshow_Labo and Momotaro share the same Fact Lite SQLite distribution asset.
+Do not create a Momotaro-specific Fact Lite database. Their OPFS namespaces and
+UI surfaces remain separate.
+
+A Fact Lite Release update alone is not completion. The full Pages workflow must
+succeed before the post-race operation can proceed past this distribution gate.
