@@ -8,6 +8,7 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_horse_course_fit.py'
       - '.github/workflows/rrdb_horse_course_fit_validation.yml'
       - 'horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json'
+      - 'horse-racing/jrdb/tests/test_racenote_a03_immutable_baselines.py'
   workflow_dispatch:
 
 permissions:
@@ -30,6 +31,8 @@ jobs:
       - name: Focused leakage and restart regressions
         run: python -m pytest horse-racing/jrdb/tests/test_jrdb_horse_course_fit.py -q
 
+      - name: A03 immutable-baseline manifest and consumer regressions
+        run: python -m pytest horse-racing/jrdb/tests/test_racenote_a03_immutable_baselines.py -q
       - name: Materialize immutable accepted RRDB validation baseline
         run: |
           set -euo pipefail
