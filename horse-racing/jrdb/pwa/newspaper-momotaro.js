@@ -100,7 +100,7 @@ function personalMomotaroApplyMarks() {
     const horse = horses[index];
     if (!horse || row.querySelector(".mark-ryota")) return;
     const ilukaCell = row.querySelector(".mark-iluka");
-    const anchor = ilukaCell || row.querySelector(".newspaper-history-cell") || row.querySelector(".newspaper-edge");
+    const anchor = ilukaCell || row.querySelector(".newspaper-history-cell");
     PERSONAL_MOMOTARO_CONTRIBUTORS.forEach(function (contributor) {
       const holder = document.createElement("tbody");
       holder.innerHTML = "<tr>" + personalMomotaroCell(horse, index, contributor) + "</tr>";

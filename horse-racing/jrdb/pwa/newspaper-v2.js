@@ -73,7 +73,6 @@ function newspaperV2MarkHtml(horse, horseIndex) {
   const trainingIndex = analysis.training_index ?? summary.training_index;
   const evalValue = newspaperV2AddonDisplay(addons.eval, ["eval", "score", "index", "value"]);
   const raceNoteValue = newspaperV2AddonDisplay(addons.racenote_prediction, ["mark", "symbol", "prediction_mark", "value"]);
-  const myValue = newspaperV2AddonDisplay(addons.my_index, ["index", "score", "value"]);
   const iluka = addons.keibailuka;
   const ilukaValue = iluka ? "○" : "—";
   const ilukaMarkup = newspaperV2IlukaComment(iluka)
@@ -86,7 +85,6 @@ function newspaperV2MarkHtml(horse, horseIndex) {
     <div><span>Eval</span><strong>${escapeHtml(evalValue)}</strong></div>
     <div><span>RN</span><strong>${escapeHtml(raceNoteValue)}</strong></div>
     <div><span>🐬</span><strong>${ilukaMarkup}</strong></div>
-    <div><span>My</span><strong>${escapeHtml(myValue)}</strong></div>
   </div><div class="newspaper-jrdb-marks">JRDB印 ${markLine}</div>`;
 }
 
@@ -162,13 +160,13 @@ renderTable = function () {
       <td class="newspaper-horse-no">${escapeHtml(text(horse.key && horse.key.horse_no))}</td>
       <td class="newspaper-horse-info">${newspaperV2HorseInfoHtml(horse)}</td>
       <td class="newspaper-marks">${newspaperV2MarkHtml(horse, horseIndex)}</td>
-      ${historyCells}<td class="newspaper-edge">${edgeHtml(horse)}</td>
+      ${historyCells}
     </tr>`;
   }).join("");
 
   tableWrap.innerHTML = `<table class="newspaper-table"><thead><tr>
     <th class="newspaper-frame">枠</th><th class="newspaper-horse-no">馬番</th><th class="newspaper-horse-info">馬情報</th><th class="newspaper-marks">印群</th>
-    ${historyHeaders}<th class="newspaper-edge">Edge</th>
+    ${historyHeaders}
   </tr></thead><tbody>${rows}</tbody></table>`;
 
   tableWrap.querySelectorAll(".newspaper-detail-button").forEach(button => {

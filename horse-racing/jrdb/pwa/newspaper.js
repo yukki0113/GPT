@@ -268,11 +268,6 @@ function historyCellHtml(run, horseIndex, runIndex) {
   </div>`;
 }
 
-function edgeHtml(horse) {
-  const edges = Array.isArray(horse.edge_matches) ? horse.edge_matches : [];
-  if (!edges.length) return "—";
-  return edges.map(edge => `<div class="newspaper-edge-item">${escapeHtml(text(edge.display_text))}</div>`).join("");
-}
 
 function renderTable() {
   const horses = [...currentBundle.horses].sort((a, b) => Number(a.key.horse_no) - Number(b.key.horse_no));
@@ -285,7 +280,7 @@ function renderTable() {
       <td class="newspaper-horse-info">${horseInfoHtml(horse)}</td>
       <td class="newspaper-marks">${markHtml(horse)}</td>
       ${historyCells}
-      <td class="newspaper-edge">${edgeHtml(horse)}</td>
+
     </tr>`;
   }).join("");
 
@@ -295,7 +290,7 @@ function renderTable() {
       <th class="newspaper-horse-info">馬情報</th>
       <th class="newspaper-marks">JRDB</th>
       ${historyHeaders}
-      <th class="newspaper-edge">Edge</th>
+
     </tr></thead>
     <tbody>${rows}</tbody>
   </table>`;

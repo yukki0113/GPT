@@ -43,14 +43,12 @@ function newspaperV5ApplyMarkLayout() {
     const head = {
       ability: headRow.querySelector(".mark-ability"),
       training: headRow.querySelector(".mark-training"),
-      my: headRow.querySelector(".mark-my"),
       eval: headRow.querySelector(".mark-eval"),
       jrdb: headRow.querySelector(".mark-jrdb"),
       rn: headRow.querySelector(".mark-rn"),
       iluka: headRow.querySelector(".mark-iluka")
     };
     if (head.training) head.training.remove();
-    if (head.my) head.my.remove();
     if (head.ability) head.ability.textContent = "能力";
     if (head.eval) head.eval.textContent = "Eval";
     if (head.jrdb) head.jrdb.textContent = "JRDB";
@@ -72,14 +70,12 @@ function newspaperV5ApplyMarkLayout() {
     const cells = {
       ability: row.querySelector(".mark-ability"),
       training: row.querySelector(".mark-training"),
-      my: row.querySelector(".mark-my"),
       eval: row.querySelector(".mark-eval"),
       jrdb: row.querySelector(".mark-jrdb"),
       rn: row.querySelector(".mark-rn"),
       iluka: row.querySelector(".mark-iluka")
     };
     if (cells.training) cells.training.remove();
-    if (cells.my) cells.my.remove();
 
     if (cells.ability) {
       const value = ability.idm;
@@ -109,7 +105,7 @@ function newspaperV5ApplyMarkLayout() {
       }
     }
 
-    const anchor = row.querySelector(".newspaper-history-cell") || row.querySelector(".newspaper-edge");
+    const anchor = row.querySelector(".newspaper-history-cell");
     for (const cell of [cells.ability, cells.eval, cells.jrdb, cells.rn, cells.iluka]) {
       if (cell && anchor) row.insertBefore(cell, anchor);
     }

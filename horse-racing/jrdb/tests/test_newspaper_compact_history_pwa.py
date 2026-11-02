@@ -25,11 +25,11 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
 
         config_position = html.index('newspaperHistoryDisplayMode: "compact"')
-        runtime_position = html.index('<script src="./newspaper.js?v=3"></script>')
+        runtime_position = html.index('<script src="./newspaper.js?v=4"></script>')
         self.assertLess(config_position, runtime_position)
-        self.assertIn('./newspaper-v4.css?v=10', html)
-        self.assertIn('./newspaper-v4.js?v=8', html)
-        self.assertIn('./newspaper-v6.js?v=5', html)
+        self.assertIn('./newspaper-v4.css?v=11', html)
+        self.assertIn('./newspaper-v4.js?v=9', html)
+        self.assertIn('./newspaper-v6.js?v=6', html)
 
     def test_personal_surface_merges_momotaro_public_companion(self) -> None:
         html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
@@ -39,7 +39,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
 
         self.assertIn('newspaperCompanionBase: "./momotaro/data/newspaper/current/"', html)
         self.assertIn('./newspaper-day.js?v=5', html)
-        self.assertIn('./newspaper-momotaro.js?v=5', html)
+        self.assertIn('./newspaper-momotaro.js?v=6', html)
         self.assertIn("function mergeNewspaperCompanion", day)
         self.assertIn("horse.addons.momotaro = companionAddons.momotaro", day)
         self.assertIn("momotaro_comments", day)
@@ -58,8 +58,8 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         overlay = (PWA_ROOT / "newspaper-momotaro.js").read_text(encoding="utf-8")
         css = (PWA_ROOT / "newspaper-v6.css").read_text(encoding="utf-8")
 
-        self.assertIn("if (head.my) head.my.remove();", v5)
-        self.assertIn("if (myCell) myCell.remove();", v6)
+        self.assertNotIn("mark-my", v5)
+        self.assertNotIn("mark-my", v6)
         self.assertIn('headRow.querySelector(".mark-ability")', v6)
         self.assertIn('headRow.querySelector(".mark-eval")', v6)
         self.assertIn("trainingHead", v6)
@@ -82,13 +82,13 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         script = (PWA_ROOT / "newspaper-v10.js").read_text(encoding="utf-8")
         html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
 
-        self.assertIn('./newspaper-v10.js?v=3', html)
+        self.assertIn('./newspaper-v10.js?v=4', html)
         self.assertIn('Eval○', script)
         self.assertIn('🐬○', script)
-        self.assertIn('Edge○', script)
+        self.assertNotIn('Edge○', script)
         self.assertNotIn('RN○', script)
         self.assertNotIn('指数○', script)
-        self.assertIn('${value.manifest.date} / ${count}R / ${evalState} / ${ilukaState} / ${edgeState}', script)
+        self.assertIn('${value.manifest.date} / ${count}R / ${evalState} / ${ilukaState}', script)
 
     def test_personal_history_selector_remains_3_5_8(self) -> None:
         html = (PWA_ROOT / "newspaper.html").read_text(encoding="utf-8")
@@ -109,8 +109,8 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn('newspaperHistoryDisplayMode: "compact"', html)
         self.assertIn('historyCount = 5', script)
         self.assertIn('newspaperV4HistoryTableClass()', script)
-        self.assertIn('../newspaper-v4.css?v=10', html)
-        self.assertIn('../newspaper-v4.js?v=8', html)
+        self.assertIn('../newspaper-v4.css?v=11', html)
+        self.assertIn('../newspaper-v4.js?v=9', html)
 
     def test_compact_layout_uses_shared_dense_width_contract(self) -> None:
         css = (PWA_ROOT / "newspaper-v4.css").read_text(encoding="utf-8")
@@ -167,10 +167,10 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
     def test_personal_service_worker_does_not_delete_other_pwa_caches(self) -> None:
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v78"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v79"', service_worker)
         self.assertIn('cacheName.startsWith("jrdb-pwa-shell-")', service_worker)
-        self.assertIn('"./newspaper-v4.css?v=10"', service_worker)
-        self.assertIn('"./newspaper-v4.js?v=8"', service_worker)
+        self.assertIn('"./newspaper-v4.css?v=11"', service_worker)
+        self.assertIn('"./newspaper-v4.js?v=9"', service_worker)
 
 
 if __name__ == "__main__":
