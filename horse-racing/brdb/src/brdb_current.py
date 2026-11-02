@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resolve BRDB operational CURRENT from a SHA-pinned public Drive artifact."""
+"""Resolve BRDB CURRENT through native-connector handoff or explicit pinned replay."""
 from __future__ import annotations
 
 import argparse
@@ -186,11 +186,28 @@ def _cached(
 def resolve_brdb_current(
     cache_root: Path,
     *,
-    transport_manifest: Path = DEFAULT_TRANSPORT_MANIFEST,
+    transport_manifest: Path | None = None,
     force_refresh: bool = False,
     fetcher: Callable[[Path, Path], Path] | None = None,
+    current_zip: Path | None = None,
+    connector_receipt: Path | None = None,
 ) -> ResolvedBRDBCurrent:
-    """Resolve one pinned BRDB CURRENT without replacing a valid cache on failure."""
+    """Default is a fresh native-connector handoff; pinned replay is explicit."""
+    if transport_manifest is None:
+        if fetcher is not None:
+            raise BRDBCurrentResolverError("fetcher requires explicit pinned transport manifest")
+        if current_zip is None or connector_receipt is None:
+            raise BRDBCurrentResolverError(
+                "current_zip and connector_receipt are both required; "
+                "resolve BRDB CURRENT with the native Google Drive connector first"
+            )
+        from brdb_current_connector import resolve_connector_current
+        return resolve_connector_current(
+            cache_root, current_zip=current_zip, connector_receipt=connector_receipt,
+            force_refresh=force_refresh,
+        )
+    if current_zip is not None or connector_receipt is not None:
+        raise BRDBCurrentResolverError("connector handoff cannot mix with pinned replay")
     cache_root = Path(cache_root).resolve()
     cache_root.mkdir(parents=True, exist_ok=True)
     transport_manifest = Path(transport_manifest).resolve()
@@ -276,13 +293,20 @@ def resolve_brdb_current(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache-root", required=True, type=Path)
-    parser.add_argument("--transport-manifest", type=Path, default=DEFAULT_TRANSPORT_MANIFEST)
+    parser.add_argument("--transport-manifest", type=Path,
+                        help="Explicit immutable historical replay only")
+    parser.add_argument("--current-zip", type=Path,
+                        help="Fresh ZIP materialized through native Google Drive connector")
+    parser.add_argument("--connector-receipt", type=Path,
+                        help="Fresh source metadata from native Google Drive connector")
     parser.add_argument("--force-refresh", action="store_true")
     args = parser.parse_args()
     resolved = resolve_brdb_current(
         args.cache_root,
         transport_manifest=args.transport_manifest,
         force_refresh=args.force_refresh,
+        current_zip=args.current_zip,
+        connector_receipt=args.connector_receipt,
     )
     print(json.dumps({"status": "PASS", **resolved.provenance}, ensure_ascii=False, indent=2))
     return 0
