@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "rrdb_validation_g38327108923",
+      "file_id": "1xbOGJzGIQsXaHUYhKMuRfy1UfmgHEhYY",
+      "destination": "rrdb/RaceReviewDB_jrdb_race_review_v0_1_incremental_g38327108923.zip",
+      "expected_name": "RaceReviewDB_jrdb_race_review_v0_1_incremental_g38327108923.zip",
+      "expected_size": 47451277,
+      "sha256": "ea1d4e1f3f0efdebee512a3ba09f7f9fd253a3851b42c562698bc11102fb011a"
+    },
+    {
+      "artifact_id": "course_fit_v01_part1",
+      "file_id": "1ljLg_jxVdZtpJ_Aqku0L93y8nwnfXUTQ",
+      "destination": "course_fit/RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part1.zip",
+      "expected_name": "RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part1.zip",
+      "expected_size": 79086971,
+      "sha256": "b27f2293a100755aa1ac0c902c2e6338a8393cd208c5de0912ff7a81f89783ba"
+    },
+    {
+      "artifact_id": "course_fit_v01_part2",
+      "file_id": "1yxP0EtPRmcTnrAgmgBMlAAj257r3pgYE",
+      "destination": "course_fit/RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part2.zip",
+      "expected_name": "RRDB_Horse_Course_Fit_v0_1_asof20260101_g38370479179_part2.zip",
+      "expected_size": 91263391,
+      "sha256": "ddc07eca88fe1b56391efcaa3b84ff4cf34121f69c7262a024177b82702dea72"
+    },
+    {
+      "artifact_id": "racelap_canonical_20261017",
+      "file_id": "1q7pmoTRsg27d--xi5HhtTaJXAI_TdzUi",
+      "destination": "racelap/RaceLap_CURRENT_20261017.zip",
+      "expected_name": "RaceLap_CURRENT_20261017.zip",
+      "expected_size": 1663722,
+      "sha256": "a4b076e69e9d26c464b49fd8301640b07e89fbd28925a88229869a465a51ae96"
+    }
+  ]
+}
