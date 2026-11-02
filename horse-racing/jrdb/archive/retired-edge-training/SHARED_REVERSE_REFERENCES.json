@@ -1,0 +1,10 @@
+{
+  "horse-racing/jrdb/src/jrdb_edge_v02_canonical.py": [
+    "horse-racing/jrdb/src/jrdb_horse_course_fit.py"
+  ],
+  "horse-racing/jrdb/src/jrdb_previous_start_research_ledger.py": [
+    "horse-racing/jrdb/src/analyze_rrdb_time_pace.py",
+    "horse-racing/jrdb/src/audit_rrdb_time_pace_quantile_scope.py",
+    "horse-racing/jrdb/src/report_rrdb_time_pace.py"
+  ]
+}

@@ -1,5 +1,11 @@
 # Kenshow_Labo PWA handoff
 
+## Phase 3 retirement boundary — Issue #2334
+
+EdgeDB/Training Edge専用のworkflow・計算/取込/preview・config・専用テストを通常の実行場所から撤去し、`horse-racing/jrdb/archive/retired-edge-training/README.md` に証跡を集約した。旧ファイルを直接起動・復元しない。RaceNoteの独立した凍結実験adapter、馬コース適性のcanonical utility、RRDBのprevious-start ledgerは現行依存のため保持する。独立JRDB追切/training_indexと廃止Training Edgeを混同しない。
+
+通常NewspaperはPACI-onlyで起動し、Eval/RaceNote/RRDB/イルカ/桃太郎の既存経路を維持する。`jrdb_newspaper_retired_sources.py` と旧データ非伝播テストは恒久保持。Release/Drive/immutable revisionおよびActions履歴は削除しない。全域監査と本番確認の範囲は `horse-racing/jrdb/newspaper/PHASE3_AUDIT.md` を参照。
+
 ## Phase 2 current contract — Issue #2329
 
 通常Newspaperは PACI → Base/history → 監査PASS → 日次artifact → 任意のEval/RaceNote/RRDB/イルカmerge → 個人/桃太郎投影 → Current候補 の経路を使う。EdgeDB STANDARD/v0.5・Training Edge入力を要求・探索・実行しない。日次requestは `date` とPACI取得元のみで起動し、`revision` は省略時1。旧requestのAnalysis追加フィールドは無視する。仕様は `horse-racing/jrdb/newspaper/DAY_REQUEST_V2.md`。
@@ -67,8 +73,6 @@ NewspaperはJRDB-first day packageのconsumerです。
 
 - Newspaper専用運用: `../newspaper/.gpt/HANDOFF.md`
 - external merge: `../src/jrdb_newspaper_merge_external.py`
-- Edge merge: `../src/jrdb_newspaper_merge_edge.py`
-- Edge display boundary: `../src/jrdb_newspaper_edge_adapter.py`
 - current Release tag: `jrdb-newspaper-current`
 
 PWA側は既存day packageの意味を変更せず表示します。

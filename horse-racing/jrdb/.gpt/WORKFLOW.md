@@ -1,5 +1,11 @@
 ## RaceNote v0.5.6 日次PACI forward運用（明示指定時の優先手順／2026-10-30）
 
+## Phase 3 retirement boundary — Issue #2334
+
+EdgeDB/Training Edge専用のworkflow・計算/取込/preview・config・専用テストを通常の実行場所から撤去し、`horse-racing/jrdb/archive/retired-edge-training/README.md` に証跡を集約した。旧ファイルを直接起動・復元しない。RaceNoteの独立した凍結実験adapter、馬コース適性のcanonical utility、RRDBのprevious-start ledgerは現行依存のため保持する。独立JRDB追切/training_indexと廃止Training Edgeを混同しない。
+
+通常NewspaperはPACI-onlyで起動し、Eval/RaceNote/RRDB/イルカ/桃太郎の既存経路を維持する。`jrdb_newspaper_retired_sources.py` と旧データ非伝播テストは恒久保持。Release/Drive/immutable revisionおよびActions履歴は削除しない。全域監査と本番確認の範囲は `horse-racing/jrdb/newspaper/PHASE3_AUDIT.md` を参照。
+
 > ユーザーが **v0.5.6でforward／明日の予想／日次PACI予想** を明示した場合、この節を先に読み、`docs/racenote/RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md` に従う。下記のv0.5.5 r6 BTDAY手順および旧v0.5.2～v0.5.5 forward文書を混用しない。**v0.5.6本番PACIの初回E2Eは未受入**であり、正常実行前に本番完走と断言しない。
 
 1. **T1（機械処理）**：`RaceNote v0.5.6 Forward PACI T1`（`.github/workflows/racenote_v056_forward_paci_t1.yml`）をmainで起動する。`target_date`、Drive正本PACIの`paci_drive_file_id`、確定済みRaceLapの`race_lap_expected_period_to`、承認済み`analysis_artifact_id`・`analysis_generation_id`・`course_fit_artifact_id`・`race_lap_artifact_id`を実物と照合して指定する。不明なartifact IDや更新日を推測・固定流用しない。Workflowは既存Drive正本からのPACI取得、RRDB CURRENT取得、Analysis／Course Fit／RaceLapの入力確認を行う。PACIのDrive正本は `PACI` フォルダ `1zFajenPU5jxInZCcmqZzkgiaYil3MD8r`。実行前に対象日 `PACIyyMMdd.zip` のファイルIDをDriveで確認して `paci_drive_file_id` に指定する。`paci_drive_sha256` は既知の場合に指定。**JRDBからPACIを再取得すること・取得失敗時のJRDB fallbackは禁止**。取得証跡は `operation_handoff.json.paci_source` に保存する。
@@ -281,36 +287,6 @@ JRDBのRaw / Analysis / Fact Lite / research asset等をGoogle Driveへ保存・
 
 正本: repository root `tools/gpt_io/DRIVE_ROUTING_DECISION_v0_1.md`。
 
-### Edge Registry / EdgeDBでの標準適用
-
-- Registry/source/docs/configの参照、Issue/run/artifact/SHA確認: **A**
-- Edge Registry / v0.2 matcher / current facts / publicationのPython/test/docs/config修正: **B**
-- 既存Registry artifactに対するWATCH/statistical audit、focused tests: **C**
-- fixed current facts / matcher / newspaper adapterの決定的回帰: **C**
-- 2025-only real-data smoke build（Raw取得を含む）: **D** — JRDB Secrets + artifact監査
-- Full 2010-2025 Registry rebuild: **D** — Secrets + 長時間/大容量 + publication artifact
-- PACI等の認証取得を伴うofficial current matching / artifact chain: **D**
-
-Current operational boundary:
-
-- ordinary `run_jrdb_edge_match_current_v0_2.py` defaultは `STANDARD`
-- low-level `jrdb_edge_matcher_v0_2.py` defaultは意図的に `CONFIRMED_ONLY`
-- SUGGESTIVEはRegistry ACTIVEへ昇格させない
-- Performance / Valueを混ぜない
-- consumerでEdge条件を再実装しない
-
-詳細は `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md` を優先する。
-
-#### Edge storage execution rule
-
-- Feature Mart canonicalはParquet。通常のfull Registry buildでは `prepare_jrdb_edge_feature_mart_duckdb.py` でDuckDB execution workspaceを1回作成し、そのworkspaceをdiscovery / validation / HUMAN calibration / statistical guardで共有する。
-- `jrdb_edge_feature_mart_parquet.materialize_current_sqlite()` を通常workflowから呼ばない。Feature Mart SQLiteはlegacy reproductionだけ。
-- Feature Mart再生成は `build_jrdb_edge_feature_mart_v0_2.py --output-engine duckdb` → `build_jrdb_edge_feature_mart_parquet_generation.py --workspace ...` を標準とする。
-- Registryはmutable build中のみtransient SQLiteを許容する。v0.2 full build成功時は同じrunでRegistry Parquet candidateも生成し、長期保存/current sourceはParquetとする。
-- Registry canonical readは `jrdb_edge_registry_parquet.connect_current()` を使用する。ParquetからSQLiteへ戻す通常経路は禁止。SQLite再materializeは明示的なlegacy reproductionのみ。
-- Edge scientific semantics、v0.2 STANDARD、v0.3 SHADOW、TRUE_FORWARD境界はstorage実装変更と同時に変更しない。
-
-
 ### RaceNote day-level buildでの標準適用
 
 D5 PASS後のfull-day production entrypointは `src/build_racenote_daily.py`。
@@ -400,7 +376,6 @@ LegacyからGen0へ再利用してよいのは、pre-race guard、as-of validati
 責務境界:
 
 - NewspaperはEdge matcher outputをconsumeし、Edge条件を再計算しない
-- `jrdb_newspaper_edge_adapter.py` はdisplay boundaryでありmatching semanticsを変更しない
 - internal code / raw condition / Edge IDはaudit可能に保持し、ordinary reader-facing proseでは必要に応じて翻訳する
 - PWA / Newspaperのdelivery都合でForecast policyを決めない。forecastは先にfreezeし、consumerは安定したoutput contractを表示する
 - 表示だけの修正でEdge threshold / eligibility / Registry status / prediction markを変えない

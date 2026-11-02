@@ -1,5 +1,11 @@
 # Current Phase 2 operation
 
+## Phase 3 retirement boundary — Issue #2334
+
+EdgeDB/Training Edge専用のworkflow・計算/取込/preview・config・専用テストを通常の実行場所から撤去し、`horse-racing/jrdb/archive/retired-edge-training/README.md` に証跡を集約した。旧ファイルを直接起動・復元しない。RaceNoteの独立した凍結実験adapter、馬コース適性のcanonical utility、RRDBのprevious-start ledgerは現行依存のため保持する。独立JRDB追切/training_indexと廃止Training Edgeを混同しない。
+
+通常NewspaperはPACI-onlyで起動し、Eval/RaceNote/RRDB/イルカ/桃太郎の既存経路を維持する。`jrdb_newspaper_retired_sources.py` と旧データ非伝播テストは恒久保持。Release/Drive/immutable revisionおよびActions履歴は削除しない。全域監査と本番確認の範囲は `horse-racing/jrdb/newspaper/PHASE3_AUDIT.md` を参照。
+
 日次運用は `.gpt/DAILY_WORK_CONTRACT.md` と `DAY_REQUEST_V2.md` を参照。EdgeDB/Training Edgeは通常生成・merge・配信から除去。以下のEdge統合・指数取込に関する節は過去の実装記録であり、現在の操作指示ではない。研究資産はPhase 3まで保持する。
 
 # JRDB Newspaper module
@@ -65,8 +71,6 @@ RaceNoteの予想結果・印・短評は外部addonとして `addons.racenote_p
 - `../src/jrdb_newspaper_build.py`: 1レースNewspaper Base生成
 - `../src/jrdb_newspaper_day_build.py`: 1日分のmanifest + race JSON群生成
 - `../src/jrdb_newspaper_merge_external.py`: 外部sourceのnamespace-safe merge + day-package生成
-- `../src/jrdb_newspaper_merge_edge.py`: Edge matcher出力のexact merge
-- `../src/jrdb_newspaper_edge_adapter.py`: Edge evidenceのreader-facing表示変換
 - `../src/jrdb_newspaper_publish_current.py`: Drive canonicalからCurrent Publish候補を検証・配布
 - `../src/audit_jrdb_newspaper_poc.py`: real-data PoC監査
 - `../pwa/newspaper.html`: Newspaper PWA
@@ -216,9 +220,7 @@ No standalone RRDB mark column is created.
 
 ### 日次 EdgeDB Query consumer
 
-日次Actions `jrdb_newspaper_day_issue.yml` はBaseをPACIから生成した後、同じPACIを `jrdb_edgedb_query.py --profile STANDARD` に一度渡し、全出走馬を照合する。入力の `analysis_bundle_drive_file_id`、`analysis_generation_id`、`analysis_manifest_sha256` は既存のcanonical Analysis Parquet current世代を指定する。Actionsはbundleを取得して `resolve_current()` とmanifest SHAを検証し、独自のAnalysisコピーを正本にしない。
 
-`jrdb_newspaper_query_edge_day.py` がQuery JSONLを既存Edge adapterとexact mergeに渡す。Queryまたはmergeが失敗してもBase成果物を残し、manifestと各raceの `source_status.edge.state` を `ERROR` にしてauditに理由を記録する。成功時は `READY`。通常の `special_memos` には `STANDARD` かつ `production_eligible=true` のsignalだけを表示する。旧matcher JSONLは互換入力として引き続き受けられる。
 
 ### EdgeDB v0.5 preview（研究表示）
 

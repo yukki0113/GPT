@@ -1,5 +1,11 @@
 **2026-10-31 v0.5.6 FORWARD PACI正本変更**：対象日PACIは既存Google Driveのcanonical PACIフォルダ（ID `1zFajenPU5jxInZCcmqZzkgiaYil3MD8r`）を正とする。Driveで対象日 `PACIyyMMdd.zip` のファイルIDを確認し、workflow `paci_drive_file_id` へ指定。`src/racenote_v056_forward_drive_paci.py` がDriveから取得してCRC・日付・SHAを検証し、PACIのJRDB直接再取得は禁止。取得証跡は `operation_handoff.json.paci_source`。Drive取得不可なら停止しJRDB fallbackしない。詳細 `docs/racenote/RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md`。
 
+## Phase 3 retirement boundary — Issue #2334
+
+EdgeDB/Training Edge専用のworkflow・計算/取込/preview・config・専用テストを通常の実行場所から撤去し、`horse-racing/jrdb/archive/retired-edge-training/README.md` に証跡を集約した。旧ファイルを直接起動・復元しない。RaceNoteの独立した凍結実験adapter、馬コース適性のcanonical utility、RRDBのprevious-start ledgerは現行依存のため保持する。独立JRDB追切/training_indexと廃止Training Edgeを混同しない。
+
+通常NewspaperはPACI-onlyで起動し、Eval/RaceNote/RRDB/イルカ/桃太郎の既存経路を維持する。`jrdb_newspaper_retired_sources.py` と旧データ非伝播テストは恒久保持。Release/Drive/immutable revisionおよびActions履歴は削除しない。全域監査と本番確認の範囲は `horse-racing/jrdb/newspaper/PHASE3_AUDIT.md` を参照。
+
 **2026-10-30 v0.5.6 FORWARD実行口**：PACI→CLEAN BLIND RaceNote→v056 Reader/Authoring Bundle は `src/racenote_v056_forward_turn1.py` と `.github/workflows/racenote_v056_forward_paci_t1.yml`。正式手順 `docs/racenote/RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md`。Prediction/ConfidenceはBTDAY共通v056二段階Freeze。新聞短評清書・PWA JSONは別工程。本番PACI経路の初回E2E成功はまだ未判定。旧v055の通常経路は不変更。
 
 > **v0.5.6 初回BTDAY受入（試験経路）**：新規v0.5.6を明示指定する予想スレッドは docs/racenote/RACENOTE_V056_BTDAY_PREDICTION_THREAD_HANDOFF_20261030.md を最優先し、専用T1 Orchestrator／v056 Prediction・Confidence Freezeを使用する。これは初回BTDAYの本番相当検証用であり、v0.5.5 r6の通常運用を自動的に置換しない。初回試験の両Freeze成功前に「v0.5.6正式稼働」と報告しない。
@@ -445,70 +451,6 @@ JRDB Raw / PACI
 
 大きな原則は、**Raw解釈・evidence生成・予想判断・表示・結果評価を分離すること** です。
 
-## 3. Current EdgeDB default
-
-現行は EdgeDB v0.2 STANDARD servingです。
-
-- operational current runner: `src/run_jrdb_edge_match_current_v0_2.py`
-- normal default: `STANDARD`
-- low-level matcher: `src/jrdb_edge_matcher_v0_2.py`
-- low-level default: `CONFIRMED_ONLY` のまま。これは意図したfail-safe
-- normal unified serving input: `edge_serving_catalog_v0_2.jsonl`
-- current contract: `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md`
-- activation audit: `docs/JRDB_Edge_v0_2_STANDARD_Activation_Audit_20260911.md`
-
-絶対に混同しないこと:
-
-- `SUGGESTIVE` はRegistry昇格ではない。通常 `registry_status=REJECTED` のまま
-- ACTIVE thresholdをSUGGESTIVEのために緩めない
-- Performance evidence と Value evidence は別channel
-- Performance-positiveを「馬券妙味あり」と言い換えない
-- CONFIRMED / SUGGESTIVEやoverlap Edgeのstrength・ROI・lift・qを加算しない
-- current matchingはpre-race exact match。SED結果、着順、払戻、最終オッズ等を混入させない
-- Edge current factsのAnalysis history正本はAnalysis v1.3 Parquet current generation。`src/jrdb_edge_analysis_history.py` がvalidated currentをDuckDBでexact lookupする
-- SQLite Analysisはrollback / compatibility / equivalence audit専用。通常のEdge current matchingで独立正本として使わない
-- TRUE_FORWARD FreezeではAnalysis bundle内 `current.json` が指すgenerationを固定し、generation ID / manifest SHAをprovenanceへ残す
-- 2026-09-19実データでSQLite compatibilityとParquet currentの `current_facts.jsonl` / `edge_matches.jsonl` がbyte-identicalであることをIssue #1197 / run 35814265623で確認済み
-- consumer側でEdge条件を再実装しない
-- v0.1 matcherはbackward compatibility資産。v0.2仕様を直接混ぜない
-
-### EdgeDB v0.3 shadow redesign — 2026-09-24
-
-Production defaultは引き続き **v0.2 STANDARD**。v0.3はshadow research onlyで、Newspaper / RaceNote production servingへ未接続。
-
-Original goal:
-
-- 市場が見落としている、または複雑・多重でまだ市場に十分反映されていない条件を発見し、出馬表へ自動突合する
-- broad statistical contextとreader-facing Niche / Market Edgeを同一視しない
-
-Formal operational audit:
-
-- Issue #1230 / run 35885211521
-- 対象: 2026-09-12, 09-13, 09-19
-- 917runner中 Performance +/-一致 751 (81.9%)
-- + / -同時一致 269runner、Performance一致runner内35.8%
-- 5件以上68runner、6件以上32runner
-- 複数redundancy group 562runner
-- COURSE_FRAME_V1 / COURSE_EXACT_FRAME_V2は234回共起し234回同方向
-
-Current v0.3 references:
-
-- operational audit: `docs/JRDB_Edge_v0_3_Operational_Audit_20260924.md`
-- shadow design: `docs/JRDB_Edge_v0_3_Granularity_Conflict_Design_v0_1.md`
-- semantic map: `config/jrdb_edge_semantic_hierarchy_v0_3.json`
-- audit code: `src/audit_jrdb_edge_v02_operational_hits.py`
-
-Design boundary:
-
-- v0.2 Registry / STANDARD servingを破壊・上書きしない
-- Context parentとincremental childを分離する
-- childはnearest parent / parent-complementに対する追加効果をshadow監査してからNiche候補にする
-- PerformanceとValueを別channelのまま保持
-- 独立axisの+ / -が残る場合は任意net scoreへ加算せずMIXED
-- 次工程はsemantic parent mapを用いたparent-relative metric shadow audit
-
-
-
 ### 2026 PACI historical backtest lane — 2026-09-29
 
 2026 PACI historical replay is now a separate blinded research lane for
@@ -722,14 +664,11 @@ current reader contract:
 
 主要module:
 
-- `src/jrdb_newspaper_merge_edge.py`
-- `src/jrdb_newspaper_edge_adapter.py`
 - `src/jrdb_newspaper_merge_external.py`
 - `src/jrdb_newspaper_publish_current.py`
 
 Newspaperはmatcher outputを受け取るconsumerです。Edge条件を再判定しません。
 
-`jrdb_newspaper_edge_adapter.py` はdisplay boundaryです。
 
 - raw condition / `display_text` / evidenceはaudit用に保持
 - reader-facing condition / memoだけを人間向けへ翻訳
@@ -1185,7 +1124,6 @@ Evidence:
 - artifact `11203452444`
 - report: `docs/RL_Retirement_T3_Downstream_Audit_20261002.md`
 
-Keep `src/audit_rl_retirement_downstream_dependencies.py` for the final T6 audit.
 The temporary T3 Actions workflow was removed after PASS, so no new active RL workflow remains.
 
 Next: T4 — inventory and freeze RL research assets. Do not delete shared Warehouse / Index Base infrastructure.
@@ -1205,7 +1143,6 @@ Next: T5 shared-infrastructure naming/role audit; preserve active JRDB Warehouse
 
 ## RL retirement T5 — 2026-10-02
 
-T5 is complete. The five active rlt_* workflows and prepare_rl_t_historical_warehouse_inputs.py remain by name with explicit ACTIVE_SHARED_INFRA role comments. Names/issue prefixes remain for compatibility; functional behavior is unchanged. No active rlt workflow generates RL output. Audit: docs/RL_Retirement_T5_Shared_Infrastructure_Audit_20261002.md.
 
 SHARED_WAREHOUSE_INFRA_ACTIVE = TRUE
 SHARED_INDEX_BASE_ACTIVE = TRUE

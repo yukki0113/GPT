@@ -64,7 +64,8 @@ class SourceRetirementTest(unittest.TestCase):
 
     def test_production_edge_entrypoints_disabled_and_pages_independent(self):
         for name in ['jrdb_newspaper_edge_republish_issue.yml','jrdb_newspaper_edge_v05_republish_issue.yml']:
-            workflow=yaml.safe_load((ROOT/'.github/workflows'/name).read_text())
+            self.assertFalse((ROOT/'.github/workflows'/name).exists())
+            workflow=yaml.safe_load((ROOT/'horse-racing/jrdb/archive/retired-edge-training/.github/workflows'/(name+'.txt')).read_text())
             self.assertEqual(next(iter(workflow['jobs'].values()))['if'],'${{ false }}')
         pages=(ROOT/'.github/workflows/jrdb_pwa_pages.yml').read_text()
         self.assertNotIn('v05-smoke',pages)
