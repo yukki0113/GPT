@@ -36,6 +36,10 @@ on:
         description: Accepted RaceLap CURRENT Actions artifact ID
         required: true
         type: string
+      freshness_acceptance_json:
+        description: Dedicated Analysis and RRDB accepted freshness receipt JSON, with confirmed race coverage cutoff
+        required: true
+        type: string
 permissions:
   contents: write
   actions: read
@@ -58,6 +62,7 @@ jobs:
       ANALYSIS_GENERATION: ${{ inputs.analysis_generation_id }}
       COURSE_FIT_ARTIFACT_ID: ${{ inputs.course_fit_artifact_id }}
       RACE_LAP_ARTIFACT_ID: ${{ inputs.race_lap_artifact_id }}
+      FRESHNESS_ACCEPTANCE_JSON: ${{ inputs.freshness_acceptance_json }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -84,6 +89,7 @@ jobs:
               "analysis_generation_id": "ANALYSIS_GENERATION",
               "course_fit_artifact_id": "COURSE_FIT_ARTIFACT_ID",
               "race_lap_artifact_id": "RACE_LAP_ARTIFACT_ID",
+              "freshness_acceptance_json": "FRESHNESS_ACCEPTANCE_JSON",
           }
           if os.environ["GITHUB_EVENT_NAME"] == "repository_dispatch":
               number = os.environ.get("ROUTED_ISSUE_NUMBER", "")
@@ -119,6 +125,15 @@ jobs:
               raise SystemExit("bad Analysis generation")
           if values["paci_drive_sha256"] and not re.fullmatch(r"[0-9a-f]{64}", values["paci_drive_sha256"]):
               raise SystemExit("bad PACI SHA256")
+          try:
+              freshness=json.loads(values["freshness_acceptance_json"])
+          except (ValueError,TypeError) as exc:
+              raise SystemExit("A05 freshness acceptance must be JSON") from exc
+          if not isinstance(freshness,dict) or freshness.get("schema_version")!="racenote-forward-analysis-rrdb-acceptance-v1":
+              raise SystemExit("Missing A05 dedicated-operation freshness receipt")
+          if len(values["freshness_acceptance_json"])>12000:
+              raise SystemExit("A05 acceptance receipt unreasonably large")
+          values["freshness_acceptance_json"]=json.dumps(freshness,separators=(",",":"),ensure_ascii=False)
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
               for key, env in keys.items():
                   stream.write(f"{env}={values[key]}\n")
@@ -222,6 +237,27 @@ jobs:
           mkdir -p /tmp/racenote-rrdb
           unzip -q /tmp/v056-artifacts/rrdb.zip -d /tmp/racenote-rrdb
           test -f /tmp/racenote-rrdb/postrace_review/v0_1/current.json
+      - name: A05 preflight accepted Analysis and RRDB coverage before T1
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/racenote-freshness
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          data=json.loads(os.environ["FRESHNESS_ACCEPTANCE_JSON"])
+          Path("/tmp/racenote-freshness/acceptance.json").write_text(
+              json.dumps(data,ensure_ascii=False,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+          PY
+          python horse-racing/jrdb/src/racenote_v056_forward_freshness.py \\
+            --acceptance /tmp/racenote-freshness/acceptance.json \\
+            --target-date "$TARGET_DATE" \\
+            --analysis-root /tmp/racenote-analysis \\
+            --analysis-artifact-id "$ANALYSIS_ARTIFACT_ID" \\
+            --analysis-generation-id "$ANALYSIS_GENERATION" \\
+            --rrdb-root /tmp/racenote-rrdb/postrace_review/v0_1 \\
+            --rrdb-zip /tmp/v056-artifacts/rrdb.zip \\
+            --rrdb-receipt /tmp/v056-artifacts/rrdb-receipt.json \\
+            --output /tmp/racenote-freshness/validated_preflight.json
       - name: Generate and seal v056 forward RaceNote from PACI
         run: |
           set -euo pipefail
@@ -237,6 +273,11 @@ jobs:
             --racereview-root /tmp/racenote-rrdb/postrace_review/v0_1 \
             --race-lap-current-bundle /tmp/racenote-lap/current \
             --race-lap-expected-period-to "$EXPECTED_PERIOD_TO" \
+            --freshness-acceptance /tmp/racenote-freshness/acceptance.json \
+            --analysis-artifact-id "$ANALYSIS_ARTIFACT_ID" \
+            --analysis-generation-id "$ANALYSIS_GENERATION" \
+            --rrdb-zip /tmp/v056-artifacts/rrdb.zip \
+            --rrdb-receipt /tmp/v056-artifacts/rrdb-receipt.json \
             --output-root "$TARGET"
           python - <<'PY'
           import os, json
@@ -251,6 +292,11 @@ jobs:
           assert handoff['paci_source']['source']=='GOOGLE_DRIVE_CANONICAL_PACI'
           assert handoff['paci_source']['jrdb_direct_fetch'] is False
           assert handoff['paci_source']['sha256']==handoff['paci']['sha256']
+          assert handoff['analysis_freshness']['forward_t1_checked'] is True
+          assert handoff['rrdb_freshness']['forward_t1_checked'] is True
+          assert handoff['analysis_freshness']['status']=='PASS'
+          assert handoff['rrdb_freshness']['status']=='PASS'
+          assert (root/'source_audit/forward_analysis_rrdb_freshness.json').is_file()
           assert session['contract_revision']=='v056-prediction-confidence-audit-newspaper-v1'
           assert session['session_id']==handoff['session_id']==authoring['session_id']
           assert session['target_date']==handoff['target_date']==os.environ['TARGET_DATE']
