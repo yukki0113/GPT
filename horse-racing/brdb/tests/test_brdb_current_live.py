@@ -186,8 +186,17 @@ class LiveResolverTest(unittest.TestCase):
     def test_same_generation_modified_data_refused(self):
         self.resolve()
         old = self.state()
-        variant = self.bundle_zip("0123456789abcdef", "one-again")
-        # The ZIP is still structurally valid, but manifest differs under the same generation.
+        variant_folder = self.root / "gen-one-again"
+        variant_folder.mkdir()
+        make_generation(variant_folder)
+        (variant_folder / "audit.json").write_bytes(b'{"repackaged":true}\n')
+        manifest_path = variant_folder / "manifest.json"
+        manifest = json.loads(manifest_path.read_text())
+        manifest["output_sha256"]["audit.json"] = hashlib.sha256(
+            (variant_folder / "audit.json").read_bytes()).hexdigest()
+        manifest_path.write_text(json.dumps(manifest))
+        variant = self.root / "source-one-again.zip"
+        bundle.build_current_bundle(variant_folder, variant)
         self.drive.add(self.id1, variant, version=2)
         with self.assertRaisesRegex(current.BRDBCurrentResolverError, "generation payload conflict"):
             self.resolve()
