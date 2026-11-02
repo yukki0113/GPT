@@ -18,6 +18,7 @@ import zipfile
 
 from rrdb_current_source_contract import approved_source
 
+CURRENT_FILE_ID = approved_source()["file_id"]  # legacy import alias; no hardcoded ID
 CURRENT_MEMBER = "postrace_review/v0_1/current.json"
 MAX_BYTES = 150_000_000
 HEX64 = re.compile(r"[a-f0-9]{64}\Z")
