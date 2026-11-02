@@ -25,8 +25,8 @@ def test_manifest_identity_and_hashes():
 def test_consumers_no_longer_reference_expiring_actions_artifacts():
     expected = {
       ".github/workflows/rrdb_horse_course_fit_validation.yml": ("rrdb_validation_g38327108923",),
-      ".github/workflows/racenote_v056_btday_turn1_shared.yml": ("course_fit_v01_part1","course_fit_v01_part2","racelap_canonical_20261017"),
-      ".github/workflows/racenote_v055_r6_btday_turn1_shared.yml": ("course_fit_v01_part1","course_fit_v01_part2","racelap_canonical_20261017"),
+      ".github/workflows/racenote_v056_btday_turn1_shared.yml": ("course_fit_v01_part1","course_fit_v01_part2"),
+      ".github/workflows/racenote_v055_r6_btday_turn1_shared.yml": ("course_fit_v01_part1","course_fit_v01_part2"),
       ".github/workflows/racenote_historical_v052_equivalence.yml": ("course_fit_v01_part1","course_fit_v01_part2"),
     }
     for path,artifacts in expected.items():
@@ -40,4 +40,11 @@ def test_consumers_no_longer_reference_expiring_actions_artifacts():
     for path in (".github/workflows/racenote_v056_btday_turn1_shared.yml",".github/workflows/racenote_v055_r6_btday_turn1_shared.yml"):
         body=(ROOT/path).read_text(encoding="utf-8")
         assert "unzip -qn " in body
-        assert "assert manifest['generation_id']=='racelap-forward-canonical-20261017-01'" in body
+        # A04 delegates RaceLap generation/pin validation to the reviewed source helper.
+        assert "racenote_btday_racelap_source.py" in body
+        assert 'source_audit/race_lap_input_receipt.json' in body
+    source=(ROOT/"horse-racing/jrdb/src/racenote_btday_racelap_source.py").read_text(encoding="utf-8")
+    baseline=(ROOT/"horse-racing/jrdb/config/racenote_btday_racelap_baseline_v1.json").read_text(encoding="utf-8")
+    assert "racenote_a03_accepted_baselines_v1.json" in baseline
+    assert "racelap_canonical_20261017" in baseline
+    assert "fetch(source[\"manifest\"]," in source
