@@ -292,8 +292,7 @@
         "basic",
         "jrdb",
         "addons",
-        "history",
-        "edge_matches"
+        "history"
       ],
       "properties": {
         "key": {
@@ -450,8 +449,7 @@
           "required": [
             "eval",
             "racenote_prediction",
-            "keibailuka",
-            "my_index"
+            "keibailuka"
           ],
           "properties": {
             "eval": {

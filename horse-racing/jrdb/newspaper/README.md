@@ -1,3 +1,7 @@
+# Current Phase 2 operation
+
+日次運用は `.gpt/DAILY_WORK_CONTRACT.md` と `DAY_REQUEST_V2.md` を参照。EdgeDB/Training Edgeは通常生成・merge・配信から除去。以下のEdge統合・指数取込に関する節は過去の実装記録であり、現在の操作指示ではない。研究資産はPhase 3まで保持する。
+
 # JRDB Newspaper module
 
 Status: OPERATIONAL / DAILY PACKAGE + EXTERNAL MERGE + CURRENT PUBLISH + PWA DELIVERY

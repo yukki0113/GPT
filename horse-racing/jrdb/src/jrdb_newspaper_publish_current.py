@@ -25,6 +25,7 @@ import shutil
 import tempfile
 from pathlib import Path
 from typing import Any
+from jrdb_newspaper_retired_sources import clean_retired_sources
 
 SAFE_RACE_PATH = re.compile(r"^races/[^/]+\.json$")
 
@@ -57,6 +58,7 @@ def load_package(path: Path) -> dict[str, Any]:
 
 
 def prepare_publish(package: dict[str, Any]) -> tuple[dict[str, Any], list[tuple[str, bytes]]]:
+    package = clean_retired_sources(package)
     manifest = json.loads(json.dumps(package["manifest"], ensure_ascii=False))
     entries = manifest.get("races")
     races = package["races"]

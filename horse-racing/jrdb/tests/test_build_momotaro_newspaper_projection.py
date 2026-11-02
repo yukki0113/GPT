@@ -288,7 +288,7 @@ class MomotaroProjectionTest(unittest.TestCase):
             self.assertTrue(
                 addons["momotaro"]["oji"]["review_horse"]
             )
-            self.assertEqual(horse["edge_matches"], [])
+            self.assertNotIn("edge_matches", horse)
             self.assertNotIn(
                 "racenote_short_comment",
                 projected["race_notes"],

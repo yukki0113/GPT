@@ -253,6 +253,7 @@ jobs:
           set -euo pipefail
           rm -rf /tmp/personal-current
           mkdir -p /tmp/personal-current
+          python horse-racing/jrdb/src/jrdb_newspaper_retired_sources.py --staged-day /tmp/merged-day
           cp /tmp/merged-day/manifest.json /tmp/personal-current/manifest.json
           cp -a /tmp/merged-day/races /tmp/personal-current/races
 

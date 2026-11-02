@@ -11,9 +11,8 @@ permissions:
 
 jobs:
   publish:
-    if: >-
-      github.event.issue.user.login == 'yukki0113' &&
-      startsWith(github.event.issue.title, '[JRDB_NEWSPAPER_V03_REHEARSAL_PUBLISH_REQUEST]')
+    # Retired production Edge rehearsal; research assets retained for Phase 3.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -229,6 +228,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
+          python horse-racing/jrdb/src/jrdb_newspaper_retired_sources.py --staged-day /tmp/day_final
           tar --sort=name --mtime='UTC 1970-01-01' --owner=0 --group=0 --numeric-owner             -C /tmp/day_final -cJf /tmp/work/jrdb_newspaper_current.tar.xz manifest.json races
           python - <<'PY'
           import hashlib,json,os

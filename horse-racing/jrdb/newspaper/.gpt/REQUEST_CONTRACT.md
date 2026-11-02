@@ -1,3 +1,7 @@
+# Current day-build request
+
+日次Base起動は `../DAY_REQUEST_V2.md` を参照。Analysis追加フィールドは必須ではなく旧request互換として無視する。EdgeDB/Training Edge入力は通常取込の対象外。以下の過去request例を再利用する場合も現行契約を優先する。
+
 # JRDB Newspaper Actions request contract
 
 この文書は **Actions-Native Execution (D) のみ** を扱います。通常のread/audit、Git更新、取得済み入力に対するNewspaper build/mergeはIssueを使いません。標準経路は `.gpt/WORKFLOW.md` を参照してください。

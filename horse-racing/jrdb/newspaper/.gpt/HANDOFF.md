@@ -1,5 +1,13 @@
 # JRDB Newspaper thread handoff
 
+## Phase 2 current contract — Issue #2329
+
+通常Newspaperは PACI → Base/history → 監査PASS → 日次artifact → 任意のEval/RaceNote/RRDB/イルカmerge → 個人/桃太郎投影 → Current候補 の経路を使う。EdgeDB STANDARD/v0.5・Training Edge入力を要求・探索・実行しない。日次requestは `date` とPACI取得元のみで起動し、`revision` は省略時1。旧requestのAnalysis追加フィールドは無視する。仕様は `horse-racing/jrdb/newspaper/DAY_REQUEST_V2.md`。
+
+旧Currentを基にした新revisionでは共通の `jrdb_newspaper_retired_sources.py` が廃止sourceを除去し、race SHA/size・manifest・package・auditを再生成する。通常mergeの `--my-index-csv` は廃止。既存immutable revisionやRelease/Drive正本は変更しない。Eval WATCH/MATCH、Eval.analysis、RRDB不利分析、JRDB/履歴、RaceNote、イルカ、桃太郎の予想/コメントは維持する。Fact Lite/Stats Mart/canonical Analysisは独立経路として維持する。
+
+STANDARD/v0.5本番再投入workflowはjob条件falseで停止。Pagesは通常full-site組立を維持し、Edge smoke・Edge再公開triggerを廃止。研究preview/計算/configと過去文書の資産廃止判定はPhase 3。本PRでは本番反映しないため、コード上の依存解除と実配信完了を区別する。Phase 1の本番画面確認も未完了。
+
 ## Purpose
 
 この文書は、会話量上限・担当交代・新しいWorkスレッドから、JRDB Newspaperの日次生成と公開を安全に再開するための短い入口です。日付付きの作業結果は保持せず、current contractと実装への導線だけを固定します。
@@ -11,27 +19,9 @@
 3. 親JRDBの `README.md`、`.gpt/HANDOFF.md`、`.gpt/WORKFLOW.md` を確認する。
 4. 対象日の `publish/current.json`、直近のCurrent Publish / Pages run、対象sourceのartifactまたはcanonical Drive fileをread/auditする。
 5. 当日の入力を attachment -> Library -> Drive canonical -> verified Actions/frozen artifact の順でresolveする。
-6. build前に、使用する `jrdb_newspaper_day_build.py`、`jrdb_newspaper_merge_external.py`、`jrdb_newspaper_merge_edge.py`、schema、PWAのlatest mainを確認する。
+6. build前に、使用する `jrdb_newspaper_day_build.py`、`jrdb_newspaper_merge_external.py`、schema、PWAのlatest mainを確認する。
 
 ## Current operating model
-
-```text
-PACI / Base
-  -> day build
-  -> canonical Analysis
-  -> STANDARD EdgeDB Query
-  -> EdgeDB v0.5 addon
-  -> Eval (PWA submission preferred)
-  -> Training Edge / 独自指数 (available day only)
-  -> RaceNote prediction
-  -> keibailuka
-  -> audit / day package
-  -> immutable Drive revision
-  -> current.json
-  -> Current Publish
-  -> JRDB PWA Pages
-  -> public Newspaper verification
-```
 
 - PACI/BaseだけがHard Stop対象。optional addonの欠損は`READY / NOT_FOUND / ERROR / NOT_EXPECTED`で扱い、可能な範囲でrevisionを公開する。
 - 同日更新は既存JSONを編集せず、前revisionのverified inputsと新入力からclean rebuildして次revisionを作る。
@@ -40,33 +30,8 @@ PACI / Base
 
 ## Ownership and non-negotiable boundaries
 
-| Source | Newspaperの責務 | 禁止事項 |
-| --- | --- | --- |
-| Eval PWA提出CSV | exact joinと`addons.eval.analysis`への透過格納 | 条件、WATCH/MATCH、H1/H2、コメントの再判定・補正 |
-| Training Edge CSV | `--my-index-csv`で全馬exact joinし、numeric/nullを`addons.my_index`へ透過格納 | 再計算・補正・丸め・順位化、null行の除外、近似join |
-| RaceNote prediction | 完成handoffのnamespace merge | Base/historyへのRaceNote内部実装依存 |
-| keibailuka | sparse exact match | 馬名の近似・自動補正 |
-| STANDARD EdgeDB | `jrdb_edgedb_query.py --profile STANDARD` の結果をexact mergeし、互換`special_memos`を保持 | Edge条件の再実装・再判定、SHADOW/OBSERVE_ONLYの通常表示 |
-| EdgeDB v0.5 | frozen cohort / matcherの確定済みcandidateを`addons.edge_v05.candidate_ids`と`edge_v05_candidates`へ格納 | 未取得featureの推測補完、PWA側再判定、ROI/診断の買い推奨化 |
-
 Eval PWA提出CSVは旧Eval完成CSVより優先する。analysis列が無い旧CSVは正常で、`analysis: null`として扱う。
 
 ## Minimum publication checklist
 
-- Base date、race count、runner headcount、canonical key一意性
-- Eval/RaceNote exact join、keibailuka sparse coverage、STANDARD Edge exact join
-- Edge v0.5 `state`、matched runner / signal count、`missing_join_count=0`、`extra_join_count=0`
-- Training Edge CSV使用時は全馬exact join、merged/value/null件数、CSV extra/missing=0
-- history `as_of < target_date`、schema、SHA-256、same-input merge idempotence
-- Eval提出CSVではcomment行数と`NONE / WATCH / MATCH`受領件数
-- Drive保存済み、`current.json`更新済み、Current Publish success、`JRDB PWA Pages` full deploy success、公開新聞確認済み
-
 ## Where to investigate
-
-- 日次契約・例外規則: `DAILY_WORK_CONTRACT.md`
-- D routeのIssue/body/parser規約: `REQUEST_CONTRACT.md`
-- 実行経路A/B/C/D: `WORKFLOW.md`
-- UI表示とPWA配布: `../../pwa/README.md`、`../../pwa/newspaper.html`、`../../pwa/newspaper-edge-v05.js`、`../../pwa/newspaper-edge-v05.css`
-- EdgeDB v0.5 production contract: `../EDGE_V05_PRODUCTION.md`
-- Eval分析コメント契約: `../../../eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
-- Current publish contract: `../publish/README.md`

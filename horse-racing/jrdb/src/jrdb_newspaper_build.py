@@ -62,7 +62,7 @@ TRAINING_ARROW = {"1": "デキ抜群", "2": "上昇", "3": "平行線", "4": "�
 PACE = {"H": "ハイ", "M": "平均", "S": "スロー"}
 
 PACI_KINDS = ("BAC", "KYI", "CHA", "CYB", "ZED", "ZKB", "UKC")
-EXTERNAL_SOURCES = ("eval", "racenote_prediction", "keibailuka", "edge", "my_index")
+EXTERNAL_SOURCES = ("eval", "racenote_prediction", "keibailuka")
 
 
 def _text(value: Any) -> str:
@@ -576,10 +576,8 @@ def _runner_row(
             "eval": None,
             "racenote_prediction": None,
             "keibailuka": None,
-            "my_index": None,
         },
         "history": history,
-        "edge_matches": [],
     }
 
 

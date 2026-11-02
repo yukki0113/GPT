@@ -24,6 +24,7 @@ import re
 import shutil
 from pathlib import Path
 from typing import Any
+from jrdb_newspaper_retired_sources import clean_retired_sources
 
 MEMBER_ALIASES = {
     "ryota": "ryota",
@@ -65,6 +66,7 @@ def sha_file(path: Path) -> str:
 
 
 def write_json(value: Any, path: Path, *, compact: bool = False) -> None:
+    value = clean_retired_sources(value)
     """Write UTF-8 JSON with deterministic trailing newline."""
     if compact:
         payload = json.dumps(
@@ -402,7 +404,7 @@ def project_horse(
         shared_addons["momotaro"] = momotaro
 
     projected["addons"] = shared_addons
-    projected["edge_matches"] = []
+
     projected.pop("special_memos", None)
     return projected
 
