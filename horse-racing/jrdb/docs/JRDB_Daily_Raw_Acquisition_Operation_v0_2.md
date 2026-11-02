@@ -1,8 +1,9 @@
 # JRDB Daily Raw Acquisition Operation v0.2
 
-Status: CURRENT  
+Status: SUPERSEDED  
 Effective: 2026-10-14  
-Supersedes: `JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`
+Supersedes: `JRDB_Daily_Raw_Acquisition_Operation_v0_1.md`  
+Superseded by: `JRDB_Daily_Raw_Acquisition_Operation_v0_3.md`
 
 ## 1. Purpose
 
