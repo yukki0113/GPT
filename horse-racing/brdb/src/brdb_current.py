@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resolve BRDB operational CURRENT dynamically, or explicit immutable historical input."""
+"""Resolve BRDB operational CURRENT from a SHA-pinned public Drive artifact."""
 from __future__ import annotations
 
 import argparse
@@ -186,22 +186,11 @@ def _cached(
 def resolve_brdb_current(
     cache_root: Path,
     *,
-    transport_manifest: Path | None = None,
+    transport_manifest: Path = DEFAULT_TRANSPORT_MANIFEST,
     force_refresh: bool = False,
     fetcher: Callable[[Path, Path], Path] | None = None,
-    drive_folder_id: str | None = None,
-    drive_service: Any | None = None,
-    drive_api: Any | None = None,
 ) -> ResolvedBRDBCurrent:
-    """Default: live canonical CURRENT. Explicit transport_manifest: pinned replay."""
-    if transport_manifest is None:
-        if fetcher is not None:
-            raise BRDBCurrentResolverError("fetcher requires an explicit pinned transport_manifest")
-        from brdb_current_live import DEFAULT_DRIVE_FOLDER_ID, resolve_brdb_current_live
-        return resolve_brdb_current_live(
-            cache_root, folder_id=drive_folder_id or DEFAULT_DRIVE_FOLDER_ID,
-            force_refresh=force_refresh, service=drive_service, api=drive_api,
-        )
+    """Resolve one pinned BRDB CURRENT without replacing a valid cache on failure."""
     cache_root = Path(cache_root).resolve()
     cache_root.mkdir(parents=True, exist_ok=True)
     transport_manifest = Path(transport_manifest).resolve()
@@ -287,17 +276,13 @@ def resolve_brdb_current(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--cache-root", required=True, type=Path)
-    parser.add_argument("--transport-manifest", type=Path, default=None,
-                        help="Explicit immutable SHA-pinned replay only; default resolves live Drive CURRENT")
-    parser.add_argument("--drive-folder-id", default=None,
-                        help="Override canonical Drive CURRENT folder for live mode")
+    parser.add_argument("--transport-manifest", type=Path, default=DEFAULT_TRANSPORT_MANIFEST)
     parser.add_argument("--force-refresh", action="store_true")
     args = parser.parse_args()
     resolved = resolve_brdb_current(
         args.cache_root,
         transport_manifest=args.transport_manifest,
         force_refresh=args.force_refresh,
-        drive_folder_id=args.drive_folder_id,
     )
     print(json.dumps({"status": "PASS", **resolved.provenance}, ensure_ascii=False, indent=2))
     return 0
