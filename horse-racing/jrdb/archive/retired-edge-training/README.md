@@ -1,7 +1,7 @@
-# Retired EdgeDB / Training Edge archive
+# Retired Training Edge / RL and shared infrastructure archive
 
-This directory is forensic evidence, not an execution or deployment source. Original executable files have `.txt` appended and workflows live outside `.github/workflows`. Do not restore or run them as part of daily work. Config/frozen outputs retain their bytes and are not active current inputs. Git history, historical documents, archived `.gpt/legacy_workflows`, workflow runs, Releases and Drive canonical data remain intact.
+This directory contains preserved, non-executable historical assets. EdgeDB-only entries were removed under the November 2026 decommission plan; their historical versions remain available through Git history. No restored executable startup or workflow is authorized here.
 
-`ASSET_MAP.json` lists each original path, archive path, SHA-256 and classification. `SHARED_REVERSE_REFERENCES.json` identifies the two shared utilities retained for live independent consumers. `guidance-before-phase3/` preserves replaced operational instructions. Archive paths intentionally preserve the original layout for auditing; their old relative links/commands are not runnable.
+`ASSET_MAP.json` records the remaining original paths, archived paths, SHA-256 hashes, and classifications. `WORKFLOW_TRIGGER_AUDIT.tsv` tracks only retained archived workflows. `SHARED_REVERSE_REFERENCES.json` identifies live shared utilities that must not be removed. `guidance-before-phase3/` remains historical, not current instructions. Preserve Training Edge, retired RL, and non-Edge shared assets.
 
-The archive removes dedicated EdgeDB/Training Edge startup surfaces. Independent RaceNote frozen evidence consumers remain in place, without calling archived EdgeDB compute modules. The permanent Newspaper retired-source filter and tests remain active. See `../../newspaper/PHASE3_AUDIT.md` for precise zero-dependency scope and production evidence.
+Newspaper's retired-source guard remains active; no archive content is deployed to Pages.
