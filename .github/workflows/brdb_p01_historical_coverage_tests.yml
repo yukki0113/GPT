@@ -23,26 +23,3 @@ jobs:
         run: python -m py_compile horse-racing/brdb/src/audit_historical_race_year_coverage.py horse-racing/brdb/tests/test_audit_historical_race_year_coverage.py
       - name: Historical auditor tests
         run: python -m unittest discover -s horse-racing/brdb/tests -p 'test_audit_historical_race_year_coverage.py' -v
-      - name: Prepare offline Linux CPython 3.13 DuckDB wheel
-        run: |
-          python -m pip download --only-binary=:all: --python-version 313 --implementation cp --abi cp313 --platform manylinux_2_17_x86_64 --dest /tmp/brdb-wheels 'duckdb>=1.0,<2'
-      - name: Store dependency-only wheel for local audit runtime
-        uses: actions/upload-artifact@v4
-        with:
-          name: brdb-duckdb-cp313-wheel
-          path: /tmp/brdb-wheels/*.whl
-          retention-days: 1
-      - name: Store exact source checkout bundle
-        uses: actions/upload-artifact@v4
-        with:
-          name: brdb-p01-audit-source
-          path: |
-            horse-racing/brdb/src/audit_historical_race_year_coverage.py
-            horse-racing/brdb/src/brdb_research_history_reader_v03.py
-            horse-racing/brdb/src/brdb_research_reader_v02.py
-            horse-racing/brdb/src/brdb_research_reader.py
-            horse-racing/brdb/src/brdb_pedigree_reader.py
-            horse-racing/jrdb/src/jrdb_raw.py
-            horse-racing/jrdb/src/jrdb_ukc.py
-            horse-racing/brdb/tests/test_audit_historical_race_year_coverage.py
-          retention-days: 1
