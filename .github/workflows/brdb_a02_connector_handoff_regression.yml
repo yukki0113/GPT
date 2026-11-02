@@ -1,0 +1,34 @@
+name: BRDB A02 native connector handoff regression
+
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/brdb/src/brdb_current.py'
+      - 'horse-racing/brdb/src/brdb_current_connector.py'
+      - 'horse-racing/brdb/tests/test_brdb_current.py'
+      - 'horse-racing/brdb/tests/test_brdb_current_connector.py'
+      - 'horse-racing/brdb/docs/BRDB_CURRENT_READER_CONTRACT_v0_1.md'
+      - 'horse-racing/brdb/docs/BRDB_A02_CONNECTOR_HANDOFF_20261102.md'
+      - '.github/workflows/brdb_a02_connector_handoff_regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Syntax check scoped BRDB code
+        run: |
+          python -m py_compile horse-racing/brdb/src/brdb_current.py \
+            horse-racing/brdb/src/brdb_current_connector.py \
+            horse-racing/brdb/tests/test_brdb_current.py \
+            horse-racing/brdb/tests/test_brdb_current_connector.py
+      - name: Run BRDB CURRENT connector and explicit-pinned-replay tests (no Drive API)
+        run: python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_current*.py' -v
