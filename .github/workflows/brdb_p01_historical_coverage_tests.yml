@@ -1,0 +1,25 @@
+name: BRDB P0-1 historical KYI auditor tests
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/brdb/src/audit_historical_race_year_coverage.py'
+      - 'horse-racing/brdb/tests/test_audit_historical_race_year_coverage.py'
+      - '.github/workflows/brdb_p01_historical_coverage_tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install canonical BRDB reader dependency
+        run: python -m pip install 'duckdb>=1.0,<2'
+      - name: Syntax check
+        run: python -m py_compile horse-racing/brdb/src/audit_historical_race_year_coverage.py horse-racing/brdb/tests/test_audit_historical_race_year_coverage.py
+      - name: Historical auditor tests
+        run: python -m unittest discover -s horse-racing/brdb/tests -p 'test_audit_historical_race_year_coverage.py' -v
