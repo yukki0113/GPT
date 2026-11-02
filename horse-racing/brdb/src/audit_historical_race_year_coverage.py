@@ -142,7 +142,7 @@ def load_kyi_warehouse(root, manifest_path, start_year, end_year):
     base = Path(root).resolve()
     for asset in sorted(assets, key=lambda a: a["year"]):
         rel = asset["relative_path"]
-        if (not re.fullmatch(r"objects/kyi/year=\\d{4}/[0-9a-f]{64}\\.parquet", rel)
+        if (not re.fullmatch(r"objects/kyi/year=\d{4}/[0-9a-f]{64}\.parquet", rel)
                 or int(rel.split("/")[2][5:]) != asset["year"]
                 or Path(rel).name != asset["sha256"] + ".parquet"):
             raise ValueError("unsafe or invalid KYI asset path")
@@ -162,10 +162,10 @@ def load_kyi_warehouse(root, manifest_path, start_year, end_year):
                 raise ValueError("KYI warehouse row count mismatch")
             for key, no, hid, source_date, year in rows:
                 date = normalize_member_date(source_date)
-                if (not isinstance(key, str) or not re.fullmatch(r"\\d{4}[0-9A-Fa-f]{2}\\d{2}", key)
+                if (not isinstance(key, str) or not re.fullmatch(r"\d{4}[0-9A-Fa-f]{2}\d{2}", key)
                         or key[2:4] != date[2:4] or int(year) != asset["year"]
                         or int(date[:4]) != asset["year"] or not isinstance(hid, str)
-                        or not re.fullmatch(r"\\d{8}", hid) or type(no) is not int or not 1 <= no <= 18):
+                        or not re.fullmatch(r"\d{8}", hid) or type(no) is not int or not 1 <= no <= 18):
                     raise ValueError("invalid normalized KYI identity or date")
                 result.append({"race_date": date, "race_key": key, "horse_no": no, "horse_id": hid})
         seen = set()
@@ -256,8 +256,17 @@ def main(argv=None):
     p.add_argument("--start-year", type=int, default=2016)
     p.add_argument("--end-year", type=int, default=2025)
     args = p.parse_args(argv)
-    inventory = json.loads(args.inventory.read_text(encoding="utf-8"))
-    entries, input_counts = parse_paci(args.paci_dir, inventory, args.start_year, args.end_year)
+    if args.kyi_warehouse_root or args.kyi_warehouse_manifest:
+        if not args.kyi_warehouse_root or not args.kyi_warehouse_manifest or args.paci_dir or args.inventory:
+            p.error("warehouse mode requires root and manifest, and excludes PACI inputs")
+        entries, input_counts = load_kyi_warehouse(args.kyi_warehouse_root, args.kyi_warehouse_manifest, args.start_year, args.end_year)
+        inventory_hash = input_counts["warehouse_manifest_sha256"]
+    else:
+        if not args.paci_dir or not args.inventory:
+            p.error("PACI mode requires --paci-dir and --inventory")
+        inventory = json.loads(args.inventory.read_text(encoding="utf-8"))
+        entries, input_counts = parse_paci(args.paci_dir, inventory, args.start_year, args.end_year)
+        inventory_hash = sha256(args.inventory)
     reader = ResearchHistoryReader(args.generation, expected_generation_id=args.generation_id,
                                    expected_manifest_sha256=args.manifest_sha256)
     underlying = reader.latest._reader
