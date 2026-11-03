@@ -25,7 +25,7 @@
 - **Follow-up Pages CI correction: PASS.** The first post-merge Pages [41632408437](https://github.com/yukki0113/GPT/actions/runs/41632408437) surfaced a deleted test filename. [PR #2346](https://github.com/yukki0113/GPT/pull/2346) migrated the Pages gate to retained `test_retired_training_asset_boundary.py`; regression audit PASS and merged as `066e6cb1b43a78b7a3386cfd6c231a9555c08dd6`.
 - **Main full-site Pages: PASS.** [Run 41633046397](https://github.com/yukki0113/GPT/actions/runs/41633046397): focused tests, Prepare Pages artifact, Upload Pages artifact, Deploy to GitHub Pages **all SUCCESS**. Pages environment URL `https://yukki0113.github.io/GPT/`. The deployed artifact includes the current Newspaper Release, passes SHA/size/manifest validation and retired-source scrub, and includes independent Momotaro Newspaper Release.
 - **PACI-only source day: PASS as day build, not as post-cutover Current publish.** [Issue #2338](https://github.com/yukki0113/GPT/issues/2338) reports [run 41450479244](https://github.com/yukki0113/GPT/actions/runs/41450479244), 2026-11-01, 24/24R, 318 runners, 1059 resolved histories, `audit_status=PASS`. The independently queried `jrdb-newspaper-current` Release metadata last updated 2026-10-31 16:17 UTC, before the Phase 2 merger; a fresh PACI-only production Current publication cannot be claimed from that evidence.
-- **Remaining: NOT VERIFIED.** Direct HTTP inspection of personal/Momotaro published races and the user's iOS browser were not available from this environment. The successful Pages deploy is not a substitute for those checks. No Drive data or old immutable revisions were changed.
+- **User PWA acceptance (2026-11-03): REPORTED PASS.** The user checked the PWA and reported `動作問題ありません` (no operational problems). This is direct user feedback, not an independently reproduced HTTP/device or per-surface inspection. The user did not separately specify personal versus Momotaro screens, offline/sync cases, or inspected addon fields; do not infer those individual checks as complete. No Drive data or old immutable revisions were changed.
 
 ## Acceptance gates — verified results
 
@@ -33,7 +33,8 @@
 - [x] Main Pages run: focused tests, preparation, upload and deployment PASS.
 - [x] PACI-only synthetic and real 2026-11-01 day build audit PASS (24R/318 runners; **not** the same as Current Publish).
 - [ ] Newly published post-Phase-2 PACI-only Current Release verified end-to-end with its own source identity, SHA/size and source_status.
-- [ ] Personal and Momotaro public surfaces directly inspected for retired UI absence and independent addon preservation.
+- [x] User-reported PWA basic operational check on 2026-11-03: no problems observed (scope not specified).
+- [ ] Separate personal and Momotaro UI/addon/retired-field checks documented individually if required for formal acceptance.
 - [ ] iOS real-device UI/offline/sync verification, if required by the operating team.
 
-**T5 Git/CI/Pages cutover complete. The last three production/data/user-device gates remain pending. Do not start T6 deletion or declare T7 final retirement based on the successful Pages run alone.**
+**T5 Git/CI/Pages cutover complete; user-reported PWA basic operation also PASS. Fresh post-cutover Current publication and any separately required per-surface/offline/sync verification remain pending. Do not declare T7 final retirement or delete T6 Drive sources based solely on a Pages run or general PWA feedback.**
