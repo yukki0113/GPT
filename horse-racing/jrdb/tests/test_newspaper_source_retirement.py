@@ -65,8 +65,8 @@ class SourceRetirementTest(unittest.TestCase):
     def test_production_edge_entrypoints_disabled_and_pages_independent(self):
         for name in ['jrdb_newspaper_edge_republish_issue.yml','jrdb_newspaper_edge_v05_republish_issue.yml']:
             self.assertFalse((ROOT/'.github/workflows'/name).exists())
-            workflow=yaml.safe_load((ROOT/'horse-racing/jrdb/archive/retired-edge-training/.github/workflows'/(name+'.txt')).read_text())
-            self.assertEqual(next(iter(workflow['jobs'].values()))['if'],'${{ false }}')
+            # T3 removed the forensic EdgeDB archive copies; verify absence in both locations.
+            self.assertFalse((ROOT/'horse-racing/jrdb/archive/retired-edge-training/.github/workflows'/(name+'.txt')).exists())
         pages=(ROOT/'.github/workflows/jrdb_pwa_pages.yml').read_text()
         self.assertNotIn('v05-smoke',pages)
         self.assertNotIn('Edge v0.5 Republish',pages)

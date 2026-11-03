@@ -1,0 +1,58 @@
+name: EdgeDB decommission T4 regression audit
+
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/jrdb/src/**'
+      - 'horse-racing/jrdb/tests/**'
+      - 'horse-racing/brdb/src/**'
+      - 'horse-racing/brdb/tests/**'
+      - '.github/workflows/**'
+      - 'horse-racing/jrdb/archive/retired-edge-training/**'
+      - 'tools/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install focused test dependencies
+        run: python -m pip install -r tools/data-storage/requirements.txt 'jsonschema>=4.22,<5' pytest pyyaml 'pandas==2.2.3' 'scipy>=1.13,<2' 'scikit-learn>=1.5,<2'
+      - name: Scan active runtime for retired EdgeDB dependencies
+        run: python horse-racing/jrdb/tests/audit_edgedb_decommission_t4.py
+      - name: Core RRDB, retired boundaries, Newspaper and Fact Lite
+        run: |
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_jrdb_canonical_codes.py \
+            horse-racing/jrdb/tests/test_jrdb_horse_course_fit.py \
+            horse-racing/jrdb/tests/test_jrdb_previous_start_research_ledger.py \
+            horse-racing/jrdb/tests/test_retired_training_asset_boundary.py \
+            horse-racing/jrdb/tests/test_newspaper_source_retirement.py \
+            horse-racing/jrdb/tests/test_jrdb_pwa_fact_lite_query_adapter.py
+      - name: Training Research, Momotaro and BRDB regression
+        run: |
+          python -m pytest -q \
+            horse-racing/jrdb/tests/test_analyze_jrdb_training_stage2b_parquet.py \
+            horse-racing/jrdb/tests/test_audit_jrdb_training_stage2b_parquet_regression.py \
+            horse-racing/jrdb/tests/test_build_momotaro_newspaper_projection.py \
+            horse-racing/brdb/tests/test_brdb_current.py \
+            horse-racing/brdb/tests/test_brdb_blood_review.py
+      - name: JS retired-source and Fact Lite adapter contracts
+        run: |
+          node horse-racing/jrdb/tests/test_newspaper_edge_v05_production.cjs
+          node horse-racing/jrdb/tests/test_fact_lite_query_adapter.cjs
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: edgedb-t4-audit-${{ github.run_id }}
+          path: horse-racing/jrdb/archive/retired-edge-training/T4_AUDIT_REPORT.json
+          if-no-files-found: warn
