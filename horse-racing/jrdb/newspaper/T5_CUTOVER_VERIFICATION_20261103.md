@@ -32,9 +32,20 @@
 - [x] T5 PRs merged with related CI and T4 retirement audit PASS.
 - [x] Main Pages run: focused tests, preparation, upload and deployment PASS.
 - [x] PACI-only synthetic and real 2026-11-01 day build audit PASS (24R/318 runners; **not** the same as Current Publish).
-- [ ] Newly published post-Phase-2 PACI-only Current Release verified end-to-end with its own source identity, SHA/size and source_status.
+- [x] Newly published post-Phase-2 PACI-only Current release verified through source run identity, built output audit, Release asset update, manifest/size/SHA checks and Pages assembly. Raw current Release metadata lacks a day-package SHA field but preserves the accepted source run ID.
 - [x] User-reported PWA basic operational check on 2026-11-03: no problems observed (scope not specified).
 - [ ] Separate personal and Momotaro UI/addon/retired-field checks documented individually if required for formal acceptance.
 - [ ] iOS real-device UI/offline/sync verification, if required by the operating team.
 
-**T5 Git/CI/Pages cutover complete; user-reported PWA basic operation also PASS. Fresh post-cutover Current publication and any separately required per-surface/offline/sync verification remain pending. Do not declare T7 final retirement or delete T6 Drive sources based solely on a Pages run or general PWA feedback.**
+## Post-retirement Current publication — 2026-11-03 (JST)
+
+User explicitly authorized replacing the current PWA data from 2026-11-01 PACI even if predictions were lost. This was a distribution-cache update, not a Drive canonical overwrite or historical immutable-revision rewrite.
+
+- Canonical PACI on Drive: `PACI261101.zip`, file ID `12nGKaoJpYBfbOweuuC0aRux4FeJDRY0N`; metadata confirmed as existing ZIP (343989 bytes) in the canonical PACI folder. Drive metadata modified 2026-10-31 UTC. The old timestamp is a metadata fact, not a forecast/result claim.
+- Source: PACI-only audited day [run 41450479244](https://github.com/yukki0113/GPT/actions/runs/41450479244) from [Issue #2338](https://github.com/yukki0113/GPT/issues/2338), artifact `jrdb-newspaper-day-20261101` (artifact ID 13144612246, 405515-byte ZIP). Full audit PASS: 24/24R, 318 runners, 1059/1059 history rows, unresolved 0.
+- Re-publication: [Issue #2349](https://github.com/yukki0113/GPT/issues/2349) with `date=2026-11-01`, `revision=9`, `base_run_id=41450479244`, no optional Iluka/member predictions/race comments. [Skeleton Publish run 41636124794](https://github.com/yukki0113/GPT/actions/runs/41636124794) SUCCESS, personal PASS, Momotaro PASS, 24 races, 0 member prediction rows and 0 Iluka rows. Retired-source cleaner and SHA/size manifest validation ran before publication.
+- Mutable Current Release update confirmed via GitHub: `jrdb-newspaper-current` archive and metadata updated 2026-11-03 12:29:57 UTC (new archive asset ID 705535802); `jrdb-momotaro-newspaper-current` archive and metadata updated 2026-11-03 12:29:59 UTC (new archive asset ID 705535875). Both release tags are **mutable distribution caches**; unrelated historical immutable data and Google Drive source were untouched.
+- Post-publish [Pages run 41636235066](https://github.com/yukki0113/GPT/actions/runs/41636235066) SUCCESS: PWA focused tests, artifact preparation, upload, Pages deploy all PASS. Logs show both current releases assembled and 24 race JSON files on both personal and Momotaro surfaces. This is machine-verified publish/deployment; browser interaction with the **newly replaced** data was not independently observed.
+- Caveat: Git-tracked `newspaper/publish/current.json` is an older 2026-09-20 publish request (not the active mutable release pointer). Do not manually dispatch `JRDB Newspaper Current Publish` against that stale request; doing so could roll back the current cache. Update/request a fresh validated source before any such dispatch.
+
+**T5 Git/CI/PACI-only Current publish/Pages machine acceptance: PASS. User-reported prior PWA operation: PASS. Per-surface interactive checks of the newly published r9 data remain optional, separate evidence. T6 Google Drive asset deletion and T7 final decommission were not performed.**
