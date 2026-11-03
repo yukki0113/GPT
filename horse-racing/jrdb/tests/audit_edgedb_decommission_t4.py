@@ -20,15 +20,15 @@ ACTIVE = (".github/workflows", "horse-racing/jrdb/src",
 SUFFIXES = {".py", ".yml", ".yaml", ".sh", ".cjs", ".js", ".mjs", ".ts"}
 RETIRED_MODULE = re.compile(r"^(?:jrdb_edge_|jrdb_edgedb_|racenote_edge_)")
 RETIRED_FILENAME = re.compile(
-    r"(?<![A-Za-z_])(?:jrdb_edge_|jrdb_edgedb_|racenote_edge_)[A-Za-z0-9_]*\\.py"
+    r"(?<![A-Za-z_])(?:jrdb_edge_|jrdb_edgedb_|racenote_edge_)[A-Za-z0-9_]*\.py"
 )
 RETIRED_OPERATION = re.compile(
     r"(?:edge_feature_mart_v0_2|edge_registry_v0_2|edge_serving_catalog|"
     r"GPT/horse-racing/20_mart/edge|(?<![a-z])20_mart/edge)"
 )
 RETIRED_KEY = re.compile(r"EDGEDB_PERFORMANCE_OVERLAY|edge_v05")
-RUNTIME_INVOKE = re.compile(r"\\b(?:python(?:3)?|pytest|py_compile|runpy|importlib|"
-                            r"source|bash|sh|node)\\b", re.I)
+RUNTIME_INVOKE = re.compile(r"\b(?:python(?:3)?|pytest|py_compile|runpy|importlib|"
+                            r"source|bash|sh|node)\b", re.I)
 EXEMPT_GUARD = ("jrdb_newspaper_retired_sources.py", "test_newspaper_source_retirement.py",
                 "test_retired_training_asset_boundary.py", "test_newspaper_retired_sources.cjs",
                 "test_newspaper_edge_v05_production.cjs")
