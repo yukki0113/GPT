@@ -1,7 +1,7 @@
 # JRDB Newspaper project context
 
 ## Status
-OPERATIONAL。日次Base/history生成、external merge、Edge merge、immutable Drive revision、Current Publish、GitHub Pages/PWA deliveryまで実装・運用済みです。
+OPERATIONAL。日次Base/history生成、external merge、廃止source非伝播、immutable Drive revision、Current Publish、GitHub Pages/PWA deliveryまで実装・運用済みです。
 
 この文書内の札幌記念PoCや5+3 PoCは受入証跡です。現在の運用判断はlatest mainのsource、`DAILY_WORK_CONTRACT.md`、`HANDOFF.md`、対象日のverified inputを優先します。
 
@@ -11,7 +11,7 @@ OPERATIONAL。日次Base/history生成、external merge、Edge merge、immutable
 UI meaning order:
 
 ```text
-馬情報 -> 印群 -> 過去走 -> Edge
+馬情報 -> 印群 -> 過去走
 ```
 
 ## Source of truth
@@ -20,7 +20,7 @@ UI meaning order:
 - Newspaper Base builder: `../../src/jrdb_newspaper_build.py`
 - Newspaper day builder: `../../src/jrdb_newspaper_day_build.py`
 - external addon merger: `../../src/jrdb_newspaper_merge_external.py`
-- Edge merger / display adapter: `../../src/jrdb_newspaper_merge_edge.py` / `../../src/jrdb_newspaper_edge_adapter.py`
+- retired-source guard: `../../src/jrdb_newspaper_retired_sources.py`
 - current publisher: `../../src/jrdb_newspaper_publish_current.py`
 - real-data PoC auditor: `../../src/audit_jrdb_newspaper_poc.py`
 - Newspaper design: `../../docs/JRDB_PWA_Newspaper_Design_v0_1.md`
@@ -32,8 +32,8 @@ UI meaning order:
 - thread restart handoff: `HANDOFF.md`
 - Eval analysis contract: `../../../eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
 - RaceNote source truth remains RaceNote v1.0. Newspaper does not replace or mutate it.
-- Edge source truth remains JRDB Edge Registry.
-- Eval / keibailuka / independent index remain separate source systems.
+- EdgeDB/Training Edgeは廃止済み。履歴は `../../archive/retired-edge-training/`。
+- Eval / keibailuka / RRDBは独立source systems。
 
 ## Hard architecture rule
 NewspaperのJRDB Base/historyはRaceNote実装に依存させない。
@@ -149,8 +149,8 @@ MMDDの競馬新聞用JSONを作成し、アップロードしてください。
 - Eval: addons.eval
 - RaceNote prediction: addons.racenote_prediction and owned race note fields
 - keibailuka: addons.keibailuka
-- independent index: addons.my_index
-- Edge matcher: `special_memos`（旧`edge_matches`はread fallback）
+- RRDB recommendation: addons.rrdb_recommendation
+- 廃止sourceは新規出力せず、既存旧Currentのread-only互換だけを保護
 
 各consumerは他source namespaceを上書きしない。
 
