@@ -14,7 +14,7 @@ on:
       - "horse-racing/jrdb/src/build_momotaro_newspaper_projection.py"
       - "horse-racing/jrdb/src/jrdb_newspaper_retired_sources.py"
       - "horse-racing/jrdb/tests/test_newspaper_source_retirement.py"
-      - "horse-racing/jrdb/tests/test_retired_edge_asset_boundary.py"
+      - "horse-racing/jrdb/tests/test_retired_training_asset_boundary.py"
       - ".github/workflows/jrdb_pwa_pages.yml"
       - ".github/workflows/jrdb_pwa_publish_data.yml"
       - ".github/workflows/jrdb_pwa_fact_lite_publish.yml"
@@ -93,7 +93,7 @@ jobs:
             horse-racing/jrdb/tests/test_jrdb_newspaper_my_index_pwa.py
           PYTHONPATH=horse-racing/jrdb/src:horse-racing/jrdb/tests python -m unittest \
             horse-racing/jrdb/tests/test_newspaper_source_retirement.py \
-            horse-racing/jrdb/tests/test_retired_edge_asset_boundary.py
+            horse-racing/jrdb/tests/test_retired_training_asset_boundary.py
           node --check horse-racing/jrdb/pwa/newspaper-v4.js
           node horse-racing/jrdb/tests/test_newspaper_edge_v05_production.cjs
           node --check horse-racing/jrdb/pwa/newspaper-confidence.js
