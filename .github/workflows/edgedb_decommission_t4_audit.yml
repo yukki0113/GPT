@@ -25,7 +25,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install focused test dependencies
-        run: python -m pip install -r tools/data-storage/requirements.txt 'jsonschema>=4.22,<5' pytest pyyaml pandas
+        run: python -m pip install -r tools/data-storage/requirements.txt 'jsonschema>=4.22,<5' pytest pyyaml 'pandas==2.2.3'
       - name: Scan active runtime for retired EdgeDB dependencies
         run: python horse-racing/jrdb/tests/audit_edgedb_decommission_t4.py
       - name: Core RRDB, retired boundaries, Newspaper and Fact Lite
