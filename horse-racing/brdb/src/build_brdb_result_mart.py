@@ -126,6 +126,14 @@ def materialize(kyi, sed, bac, pedigree, output, *, years=range(2016, 2026),
                   WHERE s.race_key_raw=b.race_key_raw)>1""",
                 "BAC multiple result dates")
 
+        # JRDB SED official abnormal codes: 0=normal, 1=cancelled,
+        # 2=excluded, 3=stopped, 4=disqualified, 5=demoted,
+        # 6=remounted. Unknown or NULL codes must not silently affect rates.
+        fail_if(con, """SELECT count(*) FROM sed
+                        WHERE abnormal_code IS NULL
+                           OR abnormal_code NOT IN ('0','1','2','3','4','5','6')""",
+                "unknown JRDB SED abnormal code")
+
         con.execute("""CREATE TEMP TABLE joined AS
           SELECT try_cast(k.year AS INT) AS race_year,
                  k.race_key_raw AS race_key, k.horse_no,
