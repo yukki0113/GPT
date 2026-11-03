@@ -6,19 +6,19 @@ EdgeDB/Training Edge専用のworkflow・計算/取込/preview・config・専用�
 
 通常NewspaperはPACI-onlyで起動し、Eval/RaceNote/RRDB/イルカ/桃太郎の既存経路を維持する。`jrdb_newspaper_retired_sources.py` と旧データ非伝播テストは恒久保持。Release/Drive/immutable revisionおよびActions履歴は削除しない。全域監査と本番確認の範囲は `horse-racing/jrdb/newspaper/PHASE3_AUDIT.md` を参照。
 
-## Phase 2 current contract — Issue #2329
+## Current PACI-only contract (Phase 2 origin; Issue #2329)
 
 通常Newspaperは PACI → Base/history → 監査PASS → 日次artifact → 任意のEval/RaceNote/RRDB/イルカmerge → 個人/桃太郎投影 → Current候補 の経路を使う。EdgeDB STANDARD/v0.5・Training Edge入力を要求・探索・実行しない。日次requestは `date` とPACI取得元のみで起動し、`revision` は省略時1。旧requestのAnalysis追加フィールドは無視する。仕様は `horse-racing/jrdb/newspaper/DAY_REQUEST_V2.md`。
 
 旧Currentを基にした新revisionでは共通の `jrdb_newspaper_retired_sources.py` が廃止sourceを除去し、race SHA/size・manifest・package・auditを再生成する。通常mergeの `--my-index-csv` は廃止。既存immutable revisionやRelease/Drive正本は変更しない。Eval WATCH/MATCH、Eval.analysis、RRDB不利分析、JRDB/履歴、RaceNote、イルカ、桃太郎の予想/コメントは維持する。Fact Lite/Stats Mart/canonical Analysisは独立経路として維持する。
 
-STANDARD/v0.5本番再投入workflowはjob条件falseで停止。Pagesは通常full-site組立を維持し、Edge smoke・Edge再公開triggerを廃止。研究preview/計算/configと過去文書の資産廃止判定はPhase 3。本PRでは本番反映しないため、コード上の依存解除と実配信完了を区別する。Phase 1の本番画面確認も未完了。
+Phase 3（Issue #2334）でEdgeDB/Training Edge専用実行資産はactive領域からarchiveへ移動済み。通常配信はPACI-only。完了判定ではコード監査と本番Current/Pages配信を区別し、最新のRelease・workflow run・公開画面を毎回確認する。過去runや旧PR時点の未完了記述を現在の状態として流用しない。
 
 ## Phase 1 UI retirement (Issue #2324)
 
 `horse-racing/jrdb/pwa/` は、JRDB系の配布済みデータをブラウザで閲覧・集計する **consumer / presentation layer** の正本です。
 
-このPWAは、JRDB Raw・Analysis・Eval・Edge・RaceNoteの条件や判定を再実装する場所ではありません。上流で確定・監査されたデータを受け取り、ブラウザで安全に同期・保存・表示することを責務とします。
+このPWAは、JRDB Raw・Analysis・Eval・RaceNoteの条件や判定を再実装する場所ではありません。上流で確定・監査されたデータを受け取り、ブラウザで安全に同期・保存・表示することを責務とします。
 
 スレッド移動や会話量上限後にPWA保守を再開する場合は、まず `.gpt/HANDOFF.md` を確認してください。
 
@@ -26,7 +26,7 @@ STANDARD/v0.5本番再投入workflowはjob条件falseで停止。Pagesは通常f
 
 1. **PWAはconsumerであり、研究ロジックを再計算しない**
    - EvalのH1/H2等の条件判定、WATCH/MATCHの意味付けはEval側の責務。
-   - Edge条件のmatching / serving判定はEdge側の責務。
+   - 旧EdgeDB/Training Edgeは廃止済み。旧Currentからの表示復活を認めない。
    - RaceNote予想や印の決定はRaceNote prediction側の責務。
 2. **配布物と正本を分離する**
    - Analysis / Stats Mart / Fact Lite等の大容量正本はGit管理外。
@@ -144,11 +144,7 @@ PWAの現在動作:
 
 表示rule:
 
-元CSVの標準列は `date, venue_code, race_no, horse_no, training_edge_index`。CSVからNewspaper day packageへのexact join・source_status・auditはNewspaper生成側の責務であり、PWAは完成JSONだけをconsumerとして扱います。
-
-PWA / NewspaperはEdge matcher / serving結果をconsumerとして表示します。PWA側でEdge条件を再match・再評価せず、reader-facing translationとaudit情報の表示境界を守ります。
-
-表示rule:
+廃止されたTraining Edge/EdgeDBのsourceは通常表示・通常取得を行いません。旧Currentの入力互換と新revisionの廃止field除去は別の責務であり、`../src/jrdb_newspaper_retired_sources.py` およびUI回帰テストを保護します。
 
 ## Distribution channels
 
@@ -198,7 +194,7 @@ PWA変更・データ更新を「完了」とする際は、commitやRelease更�
 2. 必要なtest / validationを通す
 3. current Release / manifestが想定世代か確認
 4. **`JRDB PWA Pages` がfull-site artifactを成功deployしたことを確認**
-5. Newspaper更新では公開 `newspaper.html` の対象日・主要addon・Edge列を確認
+5. Newspaper更新では公開 `newspaper.html` の対象日・主要addon維持・旧EdgeDB/Training Edge列の非表示を確認
 6. 必要に応じてiPhone実機でlayout / tap / offline / syncを確認
 
 コード更新経路・データpublisherごとのtrigger差は `DEPLOYMENT_TRIGGER.md` を正本とします。

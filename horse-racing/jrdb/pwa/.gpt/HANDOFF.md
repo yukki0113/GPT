@@ -6,13 +6,13 @@ EdgeDB/Training Edge専用のworkflow・計算/取込/preview・config・専用�
 
 通常NewspaperはPACI-onlyで起動し、Eval/RaceNote/RRDB/イルカ/桃太郎の既存経路を維持する。`jrdb_newspaper_retired_sources.py` と旧データ非伝播テストは恒久保持。Release/Drive/immutable revisionおよびActions履歴は削除しない。全域監査と本番確認の範囲は `horse-racing/jrdb/newspaper/PHASE3_AUDIT.md` を参照。
 
-## Phase 2 current contract — Issue #2329
+## Current PACI-only contract (Phase 2 origin; Issue #2329)
 
 通常Newspaperは PACI → Base/history → 監査PASS → 日次artifact → 任意のEval/RaceNote/RRDB/イルカmerge → 個人/桃太郎投影 → Current候補 の経路を使う。EdgeDB STANDARD/v0.5・Training Edge入力を要求・探索・実行しない。日次requestは `date` とPACI取得元のみで起動し、`revision` は省略時1。旧requestのAnalysis追加フィールドは無視する。仕様は `horse-racing/jrdb/newspaper/DAY_REQUEST_V2.md`。
 
 旧Currentを基にした新revisionでは共通の `jrdb_newspaper_retired_sources.py` が廃止sourceを除去し、race SHA/size・manifest・package・auditを再生成する。通常mergeの `--my-index-csv` は廃止。既存immutable revisionやRelease/Drive正本は変更しない。Eval WATCH/MATCH、Eval.analysis、RRDB不利分析、JRDB/履歴、RaceNote、イルカ、桃太郎の予想/コメントは維持する。Fact Lite/Stats Mart/canonical Analysisは独立経路として維持する。
 
-STANDARD/v0.5本番再投入workflowはjob条件falseで停止。Pagesは通常full-site組立を維持し、Edge smoke・Edge再公開triggerを廃止。研究preview/計算/configと過去文書の資産廃止判定はPhase 3。本PRでは本番反映しないため、コード上の依存解除と実配信完了を区別する。Phase 1の本番画面確認も未完了。
+Phase 3（Issue #2334）でEdgeDB/Training Edge専用実行資産はactive領域からarchiveへ移動済み。通常配信はPACI-only。完了判定ではコード監査と本番Current/Pages配信を区別し、最新のRelease・workflow run・公開画面を毎回確認する。過去runや旧PR時点の未完了記述を現在の状態として流用しない。
 
 ## Phase 1 UI retirement (Issue #2324)
 
@@ -32,7 +32,7 @@ STANDARD/v0.5本番再投入workflowはjob条件falseで停止。Pagesは通常f
    - 条件別集計: `horse-racing/jrdb/docs/README_build_jrdb_pwa_fact_lite.md`
    - 競馬新聞: `horse-racing/jrdb/newspaper/.gpt/HANDOFF.md`
    - Eval分析コメント: `horse-racing/eval/docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md`
-   - Edge: current Edge serving / consumer contract
+   - retired-source policy: `horse-racing/jrdb/newspaper/PHASE3_AUDIT.md`
 6. latest `main` の対象source / workflow / tests
 7. current Release / manifest / Newspaper current pointer / relevant Pages run
 
@@ -47,10 +47,10 @@ PWAの責務は **上流で確定・監査されたデータを安全に同期�
 PWAで行わないこと:
 
 - Eval条件、H1/H2、WATCH/MATCHの再判定
-- Edge matcher / serving条件の再実装
+- 廃止済みEdgeDB / Training Edgeの表示・取得・再判定
 - RaceNote predictionの再計算
 - 欠損sourceのfuzzy join / 推測補完
-- historical ROIやEdge strength等を表示層で加算して新しい評価を作る
+- historical ROI等を表示層で加算して新しい評価を作る
 - UI上の色やリンクを独自の買い推奨へ変換する
 
 ## Current surfaces and authority
@@ -144,28 +144,11 @@ PWA表示rule:
 
 canonical horse addon:
 
-## Edge display invariants
+## Retired-source UI invariants
 
-PWAはEdge outputを表示するconsumerです。
+旧EdgeDB（STANDARD/v0.5）およびTraining Edgeの列・詳細モーダル・状態表示・fallbackは個人/桃太郎の通常新聞へ復活させません。旧Current/old daily JSONの互換フィールドを受け取っても表示せず、新revisionへ伝播させないことをテストします。
 
-### STANDARD / legacy compatibility
-
-canonical input:
-
-- source statusが `PARTIAL` または `READY` のときだけ表示する
-- `ERROR` / missing時はEdge cellを空欄にし、他addonを壊さない
-- Edge列は既存印群の直後・過去走列の直前に置く独立列
-- mark groupのcolSpanへ含めない
-- current widthは34px
-- candidate 1件以上の馬だけ `○` を表示
-- `○` tap/clickで既存dialog系の詳細modalを開く
-- 代表2件を表示し、3件以上は「その他のEdge」で展開する
-- 2026診断と複勝ROIは説明情報。印・買い推奨・自動馬券判断へ変換しない
-- PWAでcandidate順序を再評価・再scoreしない
-
-current assets:
-
-mobile-sensitive変更では360 / 390 / 430pxを目安に、sticky馬番・馬名、印列、Edge列、過去走、横スクロール、modalを確認する。
+mobile-sensitive変更では360 / 390 / 430pxで、sticky馬番・馬名、既存印、3/5/8走、Eval分析modal、横スクロールを検証します。
 
 ## Shared compact past-run display
 
