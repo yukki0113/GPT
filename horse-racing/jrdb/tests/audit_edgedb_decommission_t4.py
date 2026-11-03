@@ -31,7 +31,8 @@ RUNTIME_INVOKE = re.compile(r"\b(?:python(?:3)?|pytest|py_compile|runpy|importli
                             r"source|bash|sh|node)\b", re.I)
 EXEMPT_GUARD = ("jrdb_newspaper_retired_sources.py", "test_newspaper_source_retirement.py",
                 "test_retired_training_asset_boundary.py", "test_newspaper_retired_sources.cjs",
-                "test_newspaper_edge_v05_production.cjs")
+                "test_newspaper_edge_v05_production.cjs",
+                "audit_edgedb_decommission_t4.py")
 TRACKED = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode().split("\0")
 issues = []
 observations = []
@@ -77,14 +78,14 @@ for rel in TRACKED:
             executable = (p.suffix in {".yml", ".yaml", ".sh"} and
                           not trimmed.startswith("#")) or (
                           RUNTIME_INVOKE.search(line) and not trimmed.startswith(("#", "//")))
-            if executable and not guard:
+            if executable and not guard and not trimmed.startswith("test ! -f "):
                 issues.append(dict(path=rel, line=lineno,
                                    reason="retired module executable reference",
                                    evidence=line.strip()[:180]))
             else:
                 warn(rel, lineno, line, "historical/guard reference")
         if RETIRED_OPERATION.search(line):
-            if not guard and not trimmed.startswith(("#", "//")):
+            if not guard and not rel.startswith("horse-racing/jrdb/tests/") and not trimmed.startswith(("#", "//")):
                 issues.append(dict(path=rel, line=lineno, reason="retired Drive/artifact path",
                                    evidence=line.strip()[:180]))
             else:

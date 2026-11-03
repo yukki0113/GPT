@@ -5,7 +5,6 @@ on:
     paths:
       - 'horse-racing/jrdb/src/jrdb_horse_course_fit.py'
       - 'horse-racing/jrdb/src/jrdb_canonical_codes.py'
-      - 'horse-racing/jrdb/src/jrdb_edge_v02_canonical.py'
       - 'horse-racing/jrdb/tests/test_jrdb_canonical_codes.py'
       - 'horse-racing/jrdb/tests/test_retired_training_asset_boundary.py'
       - 'horse-racing/jrdb/src/run_rrdb_horse_course_fit_validation.py'
