@@ -447,10 +447,8 @@ JRDB Raw / PACI
      │                                                    -> result join / evaluation
      ├─> Eval adapters
      ├─> Canonical / research materialization
-     └─> Edge Current Facts -> Edge Matcher
-                               -> edge_matches
-                                  -> Forecast evidence where explicitly used
-                                  -> Newspaper / PWA special memo
+     └─> Newspaper Base/history -> optional Eval / RaceNote / RRDB / イルカ
+                                   -> retired-source scrub -> Current / PWA
 ```
 
 大きな原則は、**Raw解釈・evidence生成・予想判断・表示・結果評価を分離すること** です。
@@ -664,24 +662,11 @@ current reader contract:
 
 表示層は予想を再計算しません。
 
-## 5. Newspaper / PWA Edge boundary
+## 5. Newspaper / PWA current boundary (PACI-only)
 
-主要module:
+通常のNewspaperは `src/jrdb_newspaper_build.py` / `src/jrdb_newspaper_day_build.py` を用い、PACIからBase/historyを生成します。独立したEval / RaceNote / RRDB / イルカの完成addonのみmergeします。旧EdgeDB Query・Registry・Training Edgeの手動取込・再公開は行いません。
 
-- `src/jrdb_newspaper_merge_external.py`
-- `src/jrdb_newspaper_publish_current.py`
-
-Newspaperはmatcher outputを受け取るconsumerです。Edge条件を再判定しません。
-
-
-- raw condition / `display_text` / evidenceはaudit用に保持
-- reader-facing condition / memoだけを人間向けへ翻訳
-- 系統code等の内部codeは、masterで解決できる場合は読者名へ変換
-- unknown codeは意味を捏造せずfail-safe / fallback
-
-join identityは `race_key / race_horse_key / horse_no` を中心に扱います。
-
-PWA / Newspaperの都合でForecast policyを決めません。predictionを先にfreezeし、consumerはそのcontractを表示します。
+旧Currentの互換データは `src/jrdb_newspaper_retired_sources.py` により新revisionへの伝播を防ぎます。これは廃止すべき残骸ではなく恒久安全ガードです。公開完了は `pwa/DEPLOYMENT_TRIGGER.md` の最新Pages runとCurrent Release / 公開画面で判定します。
 
 ## 6. Post-race Analysis / Mart / Fact Lite
 

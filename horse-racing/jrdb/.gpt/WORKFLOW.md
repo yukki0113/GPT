@@ -380,10 +380,10 @@ LegacyからGen0へ再利用してよいのは、pre-race guard、as-of validati
 
 責務境界:
 
-- NewspaperはEdge matcher outputをconsumeし、Edge条件を再計算しない
-- internal code / raw condition / Edge IDはaudit可能に保持し、ordinary reader-facing proseでは必要に応じて翻訳する
+- Newspaperの通常生成はPACI-onlyで行い、EdgeDB Query / Training Edgeの入力や算出を再導入しない
+- 旧Currentから新revisionを生成する場合は `jrdb_newspaper_retired_sources.py` の非伝播・SHA/size・manifest監査を維持する
 - PWA / Newspaperのdelivery都合でForecast policyを決めない。forecastは先にfreezeし、consumerは安定したoutput contractを表示する
-- 表示だけの修正でEdge threshold / eligibility / Registry status / prediction markを変えない
+- Eval / RaceNote / RRDB / イルカ / Fact Lite等の独立機能をEdgeDB廃止に巻き込まない
 
 既存v1.1-P frozen predictionを表示する場合のreader wordingは `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` を参照する。
 
