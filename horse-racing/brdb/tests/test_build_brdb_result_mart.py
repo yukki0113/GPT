@@ -102,6 +102,27 @@ class ResearchMartTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unpinned object"):
             self.run_mart()
 
+    def test_unknown_sed_abnormal_code_fails_closed(self):
+        m = json.loads((self.s / "manifest.json").read_text())
+        original = self.s / m["assets"][0]["relative_path"]
+        self.c.execute("""CREATE TEMP TABLE abnormal_fixture AS
+            SELECT race_key_raw, horse_no, blood_registration_no, date_raw,
+                   distance_m, surface_code, race_class_code, finish,
+                   CASE WHEN horse_no=1 THEN '9' ELSE abnormal_code END
+                     AS abnormal_code
+            FROM read_parquet(?)""", [str(original)])
+        changed = self.s / "unknown_code.parquet"
+        self.c.execute("COPY abnormal_fixture TO '" +
+                       str(changed) + "' (FORMAT PARQUET)")
+        sha = hashlib.sha256(changed.read_bytes()).hexdigest()
+        target = original.parent / (sha + ".parquet")
+        target.write_bytes(changed.read_bytes())
+        m["assets"][0].update(relative_path=str(target.relative_to(self.s)),
+                              sha256=sha, size_bytes=target.stat().st_size)
+        (self.s / "manifest.json").write_text(json.dumps(m))
+        with self.assertRaisesRegex(ValueError, "unknown JRDB SED abnormal code"):
+            self.run_mart()
+
     def test_mismatched_kyi_sed_horse_id_fails_closed(self):
         m = json.loads((self.s / "manifest.json").read_text())
         original = self.s / m["assets"][0]["relative_path"]
