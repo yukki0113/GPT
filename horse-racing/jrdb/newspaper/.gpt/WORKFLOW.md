@@ -54,7 +54,6 @@ latest main
 - `jrdb_newspaper_build.py`
 - `jrdb_newspaper_day_build.py`
 - `jrdb_newspaper_merge_external.py`
-- `jrdb_newspaper_merge_edge.py`
 - schema validation
 - CSV / JSON join
 - day-package生成
@@ -121,17 +120,15 @@ previous revision verified inputs
   -> republish
 ```
 
-旧revisionは削除・上書きしない。同一source versionを重複付与しない。前revisionでREADYだったsourceを欠落させない。
+旧revisionは削除・上書きしない。同一source versionを重複付与しない。前revisionでREADYだった現行sourceを欠落させない。ただし廃止済みEdgeDB/Training Edgeは非伝播とし、復活させない。
 
 ## External source handling
 
 - Eval完成OCR CSV: deterministic exact-key merge対象
 - keibailuka CSV/JSON: sparse source。exact matchのみmergeし、近似馬名を自動補正しない
 - RaceNote prediction output: `addons.racenote_prediction` とrace-level RaceNote noteのみを所有
-- independent index: `addons.my_index` を所有。`独自指数_YYYYMMDD.csv` がverifiedなら`--my-index-csv`で全馬exact mergeし、numeric/nullを透過格納する。未着は`NOT_FOUND`、運用対象外だけ`NOT_EXPECTED`を許容
-- Edge Registry matcher output: Edge側の照合結果のみをconsumer入力とし、Newspaper側でEdge条件を再判定しない
-- new Newspaper package: `special_memos` を現行Edge表示正本とする
-- legacy package: `edge_matches` は後方互換fallbackに限定する
+- RRDB recommendation: `addons.rrdb_recommendation` の完成成果物のみをexact-keyでmerge
+- EdgeDB STANDARD/v0.5・Training Edge `my_index` は廃止済み入力として拒否し、新revisionへ伝播させない
 
 RaceNote prediction成果物の入力契約は別途正式化する。RaceNote本体bundleをNewspaper Base/historyへ流用しない。
 
