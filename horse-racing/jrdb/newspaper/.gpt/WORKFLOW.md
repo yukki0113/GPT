@@ -54,7 +54,6 @@ latest main
 - `jrdb_newspaper_build.py`
 - `jrdb_newspaper_day_build.py`
 - `jrdb_newspaper_merge_external.py`
-- `jrdb_newspaper_merge_edge.py`
 - schema validation
 - CSV / JSON join
 - day-package生成
@@ -90,37 +89,20 @@ Pagesのsource変更はBでdirect commitし、そのpushでPages Actionsを起�
 
 ## Newspaper routine route
 
-日次Workの詳細契約は `.gpt/DAILY_WORK_CONTRACT.md` を正本とする。
+日次Workの正式契約は `.gpt/DAILY_WORK_CONTRACT.md`、request schemaは `../DAY_REQUEST_V2.md` を正本とします。
 
-ユーザーが通常、
+1. target dateとPACIのcanonical取得元を確認する。
+2. 添付 → Library → Drive canonical → verified artifactの順で実物・SHA・日付を照合する。
+3. PACI取得済みならC（deterministic）。認証取得が必要な場合のみDでJRDB Raw/PACIを取得する。
+4. 最新mainの `jrdb_newspaper_day_build.py` でPACI-only Base/historyと日次race JSONを生成する。
+5. Eval / RaceNote prediction / RRDB / イルカの独立addonをnamespace-safe・exact-keyでmergeする。未着addonはsource stateとして記録。
+6. 新revisionの前に `jrdb_newspaper_retired_sources.py` で廃止sourceの非伝播を検証し、旧Currentやimmutable revisionは書き換えない。
+7. schema、key、headcount、history as-of、race count、SHA/size/manifest、idempotenceを監査する。
+8. verified day-packageをDrive canonicalへimmutable revisionとして保存し、current pointerを検証して更新する。
+9. `JRDB Newspaper Current Publish` でReleaseを更新し、`JRDB PWA Pages` のfull-site deploy成功を確認する。
+10. 個人・桃太郎の公開表示で日付・主要addon維持・旧EdgeDB/Training Edge非表示を確認し、provenanceと未検証事項を報告する。
 
-```text
-MMDDの競馬新聞用JSONを作成し、アップロードしてください。
-```
-
-と依頼した場合の標準:
-
-1. target date確定
-2. current thread attachment -> File Library -> Drive canonical -> verified artifact の順で入力をresolve
-3. 各sourceを `READY / NOT_FOUND / ERROR / NOT_EXPECTED` で管理
-4. PACIが既に取得可能ならそのままCへ進む
-5. PACI未取得かつ公式認証取得が必要ならDでJRDB Raw/PACI取得だけを実行
-6. latest mainのNewspaper正本moduleを取得
-7. Cで日次Base/history生成
-8. canonical Analysisを解決し、既存経路で `jrdb_edgedb_query.py --profile STANDARD` を日全体に1回実行してSTANDARD EdgeDBを付与
-9. 同じPACI / canonical Analysisを使う既存v0.5 addon処理で `addons.edge_v05` / `edge_v05_candidates` を付与
-10. 利用可能なEval / RaceNote prediction / keibailuka / independent indexをCでnamespace-safe merge
-11. optional addonが未着でもBaseが成立する限り処理を継続
-12. Cでschema / key / headcount / as-of / source coverage / SHA / idempotence監査。Edge v0.5はstate・matched runner・signal・missing/extra joinも確認
-13. Cでday-package.json生成
-14. immutable revisionとしてDrive canonicalへ保存
-15. current pointerを新revisionへ更新
-16. 正式な `JRDB Newspaper Current Publish` でcurrent Releaseを更新
-17. downstream `JRDB PWA Pages` のfull-site deploy successを確認
-18. 公開 `newspaper.html` の対象日・Edge列・既存addon表示を確認
-19. 各source stateと成果物、監査、publication状態を報告
-
-PACI / Base identityが成立しない場合だけHard Stopを許容する。Eval / RaceNote / keibailuka / Edge / independent indexの欠損だけを理由にHard Stopしない。
+EdgeDB STANDARD/v0.5、`special_memos`、Training Edge `my_index` を通常入力に追加しません。canonical Analysis ParquetはFact Lite等の独立経路で引き続き使用します。
 
 ## Partial completion and revision rule
 
@@ -138,17 +120,15 @@ previous revision verified inputs
   -> republish
 ```
 
-旧revisionは削除・上書きしない。同一source versionを重複付与しない。前revisionでREADYだったsourceを欠落させない。
+旧revisionは削除・上書きしない。同一source versionを重複付与しない。前revisionでREADYだった現行sourceを欠落させない。ただし廃止済みEdgeDB/Training Edgeは非伝播とし、復活させない。
 
 ## External source handling
 
 - Eval完成OCR CSV: deterministic exact-key merge対象
 - keibailuka CSV/JSON: sparse source。exact matchのみmergeし、近似馬名を自動補正しない
 - RaceNote prediction output: `addons.racenote_prediction` とrace-level RaceNote noteのみを所有
-- independent index: `addons.my_index` を所有。`独自指数_YYYYMMDD.csv` がverifiedなら`--my-index-csv`で全馬exact mergeし、numeric/nullを透過格納する。未着は`NOT_FOUND`、運用対象外だけ`NOT_EXPECTED`を許容
-- Edge Registry matcher output: Edge側の照合結果のみをconsumer入力とし、Newspaper側でEdge条件を再判定しない
-- new Newspaper package: `special_memos` を現行Edge表示正本とする
-- legacy package: `edge_matches` は後方互換fallbackに限定する
+- RRDB recommendation: `addons.rrdb_recommendation` の完成成果物のみをexact-keyでmerge
+- EdgeDB STANDARD/v0.5・Training Edge `my_index` は廃止済み入力として拒否し、新revisionへ伝播させない
 
 RaceNote prediction成果物の入力契約は別途正式化する。RaceNote本体bundleをNewspaper Base/historyへ流用しない。
 
@@ -223,26 +203,6 @@ Issue発行前に:
 
 を全PASSさせ、Issueは1回だけ作成する。失敗時はfailed stepを確認し、blind rerunしない。
 
-## EdgeDB Query日次consumer
+## Retired-source gate
 
-PACI Base後、同じPACIとcanonical Analysis Parquet currentを使い `jrdb_edgedb_query.py --profile STANDARD` を日全体に一回実行する。`edgedb-query/v1` をadapterで `special_memos` に投影し、`race_key + race_horse_key + horse_no` の完全一致でmergeする。SHADOW / OBSERVE_ONLY / production_eligible=falseは通常表示不可。Edgeの単独失敗は `edge.state=ERROR` と監査し、PACI/Baseを停止しない。旧generation-specific matcherの直接実行は日次経路から外し、旧JSONL入力互換のみ維持する。
-
-
-## EdgeDB v0.5 production route
-
-通常新聞の日次Edge処理は次の二段です。
-
-1. **STANDARD EdgeDB**
-   - `jrdb_edgedb_query.py --profile STANDARD`
-   - 同日のPACIを全馬一括で1回queryする。
-   - adapter / exact mergeを使い、PWA側で条件を再判定しない。
-   - `special_memos` は互換・監査用途として保持可能。
-
-2. **EdgeDB v0.5**
-   - `.github/workflows/jrdb_newspaper_day_issue.yml` の既存addon stepを使用する。
-   - frozen cohort / matcher / addon mergeを独自再実装しない。
-   - 馬単位 `addons.edge_v05.candidate_ids` とレース単位 `edge_v05_candidates` を生成する。
-   - 正常な部分対応は `PARTIAL`。PWAは `PARTIAL` / `READY` のみ表示する。
-   - `ERROR` の場合はEdge v0.5だけを空欄にし、Base・STANDARD Edge・他addonを維持する。
-
-現行の未接続項目・表示契約・leakage制約は `../EDGE_V05_PRODUCTION.md` を参照する。未取得情報を推測で補完しない。
+EdgeDB/Training Edgeの旧workflow/CLIはarchive上の監査資料であり、通常運用から起動しません。新revision/PWA projectionへ廃止sourceが残らないかを `jrdb_newspaper_retired_sources.py` と現行テストで監査します。旧JSONの後方互換・既存Releases・immutable revisionは維持します。

@@ -1,4 +1,4 @@
-# Current Phase 2 operation
+# JRDB Newspaper — current PACI-only operation
 
 ## Phase 3 retirement boundary — Issue #2334
 
@@ -6,9 +6,9 @@ EdgeDB/Training Edge専用のworkflow・計算/取込/preview・config・専用�
 
 通常NewspaperはPACI-onlyで起動し、Eval/RaceNote/RRDB/イルカ/桃太郎の既存経路を維持する。`jrdb_newspaper_retired_sources.py` と旧データ非伝播テストは恒久保持。Release/Drive/immutable revisionおよびActions履歴は削除しない。全域監査と本番確認の範囲は `horse-racing/jrdb/newspaper/PHASE3_AUDIT.md` を参照。
 
-日次運用は `.gpt/DAILY_WORK_CONTRACT.md` と `DAY_REQUEST_V2.md` を参照。EdgeDB/Training Edgeは通常生成・merge・配信から除去。以下のEdge統合・指数取込に関する節は過去の実装記録であり、現在の操作指示ではない。研究資産はPhase 3まで保持する。
+日次運用は `.gpt/DAILY_WORK_CONTRACT.md` と `DAY_REQUEST_V2.md` を参照。以下は現行のPACI-only経路です。旧資産はarchiveおよび `PHASE3_AUDIT.md` に分離済みです。
 
-# JRDB Newspaper module
+## Module boundary
 
 Status: OPERATIONAL / DAILY PACKAGE + EXTERNAL MERGE + CURRENT PUBLISH + PWA DELIVERY
 
@@ -17,8 +17,6 @@ Status: OPERATIONAL / DAILY PACKAGE + EXTERNAL MERGE + CURRENT PUBLISH + PWA DEL
 ## PWA display data limits (2026-10-12)
 
 両PWAの「けん」ヘッダは検証済み RaceNote レース自信度だけを表示し、値がなければ `–`（未提供）を表示する。2026-10-12 の frozen `records.json` はレース自信度を持たず、正式な `jrdb_newspaper_kensho_merge_issue.yml` の疎形式変換も空欄とするため、この日の実データは個人版・桃太郎版とも `–` となる。画像用出力や他 revision から A/B/C を補わない。将来、正本に確定値が追加された場合は、正式な変換・merge 経路の確認と実データでの受け入れテストが必要。
-
-v0.5 Edge の方向別 `○/△/×` は未確定・未実装。凍結候補辞書に承認済みの方向フィールドと統合規則がなく、複勝ROI、研究ラベル、条件文章から独自に判定しない。現行の `○` は候補該当を示す既存表示であり、プラス方向や買い推奨を意味しない。方向別表示は正式な契約・判定規則が決まってから別タスクで実装する。
 
 ## Design source of truth
 
@@ -60,8 +58,7 @@ JRDB Raw / PACI
         - Eval
         - RaceNote prediction output
         - keibailuka
-        - independent index
-        - Edge Registry
+        - RRDB recommendation
 ```
 
 RaceNoteの予想結果・印・短評は外部addonとして `addons.racenote_prediction` とrace-level noteへmergeできます。RaceNote内部実装はNewspaper Base/historyの依存にしません。
@@ -79,18 +76,9 @@ RaceNoteの予想結果・印・短評は外部addonとして `addons.racenote_p
 
 Base/historyはCommon Reader / neutral JRDB accessから生成し、最大8走を保持します。初期表示3走、切替5走/8走。外部source欠損はBase失敗にせずnull/PENDINGで保持します。
 
-## Training Edge / 独自指数
+## Retired EdgeDB / Training Edge input boundary
 
-Training Edgeの日次handoff `独自指数_YYYYMMDD.csv` は、`--my-index-csv` で取り込みます。必須列は `date,venue_code,race_no,horse_no,training_edge_index` です。
-
-- `date + venue_code + race_no + horse_no` の全馬exact joinのみを許容する
-- 数値は再計算・補正・丸め・順位化せず透過格納する
-- CSVに行がある空欄値は `addons.my_index.training_edge_index: null` として保持する
-- CSV自体が未指定のときだけ `addons.my_index` は追加しない
-- duplicate / missing / extra / 非数値・非finite値はfail-closedとする
-- auditには merged/value/null 件数、raceごとの同件数、manifestには `source_status.my_index` を残す
-
-この区別によりPWAは、addonなしを `—`、明示nullを空欄、数値を指数値として表示できます。NewspaperはTraining Edgeの算出ロジックを所有しません。
+EdgeDB STANDARD/v0.5および旧Training Edge `my_index` は日次要求・merge・配信から廃止済みです。旧入力CSVや `--my-index-csv` を新規に取り込まず、旧Currentから廃止データを引き継ぎません。旧形式の読み取り互換と非伝播guardは維持します。独立したJRDB追切・`training_index` は別機能です。
 
 ## Eval PWA analysis comment
 
@@ -121,22 +109,13 @@ Eval側が条件判定・注目馬選定・コメント作成を所有します�
 
 ## External source ownership
 
-- Eval merger: `addons.eval`
-- RaceNote prediction merger: `addons.racenote_prediction` + race-level RaceNote note
-- RaceReviewDB recommendation merger: `addons.rrdb_recommendation` (sparse target horse + supplied short comment)
+- Eval merger: `addons.eval`（WATCH/MATCHと分析コメント）
+- RaceNote prediction merger: `addons.racenote_prediction` + race-level note
+- RRDB recommendation merger: `addons.rrdb_recommendation`
 - keibailuka merger: `addons.keibailuka`
-- independent index merger: `addons.my_index`
-- Edge matcher input: EdgeDB matcher output
-- current Newspaper Edge display field: `special_memos`
-- legacy Newspaper Edge compatibility field: `edge_matches`
+- 桃太郎member predictions: 独立projectionの所有namespace
 
-基本join key:
-
-```text
-date + venue_code + race_no + horse_no
-```
-
-馬名は照合には使えますが、文字列の近似・推測による自動joinを標準経路にしません。
+join keyは `date + venue_code + race_no + horse_no` のexact identity。馬名の近似・推測joinを標準経路へ導入しません。廃止したEdgeDB/Training Edge namespaceを新規生成しません。
 
 ## GitHub routing standard — 2026-09-10
 
@@ -163,7 +142,7 @@ MMDDの競馬新聞用JSONを作成し、アップロードしてください。
 
 - 添付 -> File Library -> Drive canonical -> verified artifact の順で入力をresolveする
 - PACI / JRDB RawをBase必須sourceとする
-- Eval / RaceNote prediction / RaceReviewDB recommendation / keibailuka / Edge / independent indexはoptional addonとして扱う
+- Eval / RaceNote prediction / RaceReviewDB recommendation / keibailuka等の独立sourceをoptional addonとして扱う
 - optional addonが未着でも処理を止めず、その時点の完成JSONを正式revisionとして保存・公開する
 - source状態は `READY / NOT_FOUND / ERROR / NOT_EXPECTED` で報告する
 - 同日更新は既存JSONへの直接追記ではなく、verified inputsから再構成してimmutable revisionを上げる
@@ -176,7 +155,7 @@ MMDDの競馬新聞用JSONを作成し、アップロードしてください。
 2. 添付 / Library / Drive / 既存artifactから入力をresolve
 3. PACIがなければActions-Nativeで公式取得のみ実施
 4. GitHub `main` の正本moduleを取得してローカルで日次Base生成
-5. 利用可能なEval / RaceNote prediction / keibailuka / Edge / independent indexをmerge
+5. 利用可能なEval / RaceNote prediction / RRDB / keibailuka等の独立sourceをmerge
 6. schema / key / headcount / as-of / source coverage / SHA / idempotenceを監査
 7. day-package.jsonを生成
 8. immutable revisionとしてDrive canonical保存
@@ -218,10 +197,6 @@ PWA presentation reuses the existing RaceNote mark cell:
 
 No standalone RRDB mark column is created.
 
-### 日次 EdgeDB Query consumer
+### Retired-source verification
 
-
-
-### EdgeDB v0.5 preview（研究表示）
-
-v0.5の出馬表 `Edge` 列と専用addonは通常新聞の日次生成にも接続されています。運用と表示条件は [EDGE_V05_PRODUCTION.md](EDGE_V05_PRODUCTION.md) を参照してください。別の手動import previewでも検証できます。取得元、未接続の初系履歴・レース前馬場、dry-run手順は [EDGE_V05_PREVIEW.md](EDGE_V05_PREVIEW.md) を参照してください。通常のSTANDARD Query・`special_memos`・Current Publishはこのpreviewで変更しません。
+通常NewspaperではEdgeDB Query/Previewを起動しません。新revisionのレースJSON・manifest・配信projectionに旧 `edge`、`edge_v05`、`special_memos`、`edge_matches`、`my_index` が再伝播しないことを `../tests/test_newspaper_source_retirement.py` と `PHASE3_AUDIT.md` で確認します。研究資産は `../archive/retired-edge-training/` の履歴へ分離済みです。

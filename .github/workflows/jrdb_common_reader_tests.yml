@@ -49,7 +49,6 @@ on:
       - 'horse-racing/jrdb/tests/test_jrdb_hjc_common.py'
       - 'horse-racing/jrdb/tests/test_jrdb_store.py'
       - 'horse-racing/jrdb/tests/test_racenote_store_resolution.py'
-      - 'horse-racing/jrdb/tests/test_racenote_v11p_true_forward_day.py'
       - 'horse-racing/jrdb/tests/test_racenote_request_workflow_contract.py'
       - 'horse-racing/jrdb/tests/test_racenote_analysis_only_enrichment.py'
       - 'horse-racing/jrdb/tests/test_racenote_reader_view.py'
@@ -217,4 +216,4 @@ jobs:
       - name: Run RaceNote Phase A regressions
         working-directory: horse-racing/jrdb/tests
         run: |
-          PYTHONPATH=../src pytest -q test_racenote_analysis_only_enrichment.py test_racenote_request_workflow_contract.py test_racenote_v11p_true_forward_day.py
+          PYTHONPATH=../src pytest -q test_racenote_analysis_only_enrichment.py test_racenote_request_workflow_contract.py

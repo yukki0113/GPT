@@ -218,36 +218,11 @@ RaceReviewDB consumer default (2026-09-25):
 - publishable条件は `full_month`、authoritative expected identity完全一致、source provenanceあり、SQLite/full bundle validation PASS。partial/test shardはproduction backendで拒否する。
 - 通常 `[RACENOTE_REQUEST]` から対象月Releaseの自動resolution → Archive利用まで実データで確認済み。利用者がArchive path/tagを指定する必要はない。
 
-## EdgeDB v0.2 current serving
-- current serving contract: `docs/JRDB_Edge_Suggestive_Serving_Contract_v0_2.md`。
-- STANDARD activation audit: `docs/JRDB_Edge_v0_2_STANDARD_Activation_Audit_20260911.md`。
-- `src/run_jrdb_edge_match_current_v0_2.py` はordinary operational entrypointで、default serving profileは `STANDARD`。
-- `src/jrdb_edge_matcher_v0_2.py` のlow-level primitivesは意図的に `CONFIRMED_ONLY` defaultを維持する。embedded callerはSTANDARDを明示opt-inする。
-- v0.2 publicationは `edge_registry_active.jsonl`（legacy compatibility）、`edge_registry_suggestive.jsonl`、`edge_serving_catalog_v0_2.jsonl`、publication auditを分離する。ordinary STANDARD consumerはunified catalogを使う。
-- SUGGESTIVEはserving evidence classificationでありRegistry promotionではない。通常 `registry_status=REJECTED` のまま。
-- CONFIRMEDとSUGGESTIVEはPerformance / Value channelごとに独立して扱う。ACTIVEだから両channel confirmedとは推測しない。
-- SUGGESTIVEを「統計的確認済み」と表現しない。
-- Performance-positiveとValue-positiveを相互代用しない。Performance-positiveを馬券価値・期待収益の保証として説明しない。
-- redundancy group内でもstrength / ROI / lift / q-value等を加算しない。same-directionはevidence level/specificityによるpresentation role、opposite directionはCONFLICTとして保持する。
-- EdgeDB servingはevidence delivery。automatic additive point scoreは別calibration contractなしには許可しない。
-- current facts / matchingはexact-match・pre-race only。fuzzy matching、推測前走、対象結果、最終オッズ、後日履歴を混入させない。
-- Edge current matchingのAnalysis履歴は、通常はvalidated Analysis v1.3 Parquet `current.json` / immutable generationを直接参照する。`src/jrdb_edge_analysis_history.py` がDuckDB lookupを担当する。
-- Analysis SQLiteはEdgeの通常正本ではなくrollback / compatibility / equivalence audit用途。storage migrationのためにtransition意味論・matcher・serving thresholdを変えない。
-- Edge Feature Martの通常research/build経路は、canonical Parquetをvalidated DuckDB execution workspaceへ1回だけ展開し、discovery / temporal validation / HUMAN calibration / statistical guardをDuckDB上で実行する。ParquetからFeature Mart SQLiteへのmaterializationは通常運用で禁止する。
-- Feature Mart新規生成も `Index Base compatibility SQLite -> DuckDB workspace -> Parquet canonical` を標準とし、Feature Mart SQLiteを中間正本にしない。
-- Edge Registryのmutable build workspaceは小規模・書込中心のためtransient SQLiteを許容する。ただし成功したfull buildでは同一run内でRegistry Parquet candidateを必ず生成する。canonical/current consumerは `jrdb_edge_registry_parquet.connect_current()` のDuckDB direct readを使い、Registry ParquetからSQLiteへのmaterializationを通常運用で禁止する。legacy再現だけ `--legacy-materialize-sqlite` を明示使用する。
-- 2026-09-19 PACIでParquet currentとcompatibility SQLiteを同一STANDARD catalogへ通し、current facts / matchesのbyte identityをIssue #1197 / run 35814265623で確認済み。
-- v0.1 matcher / legacy ACTIVE publicationはbackward compatibility資産として保持し、v0.2実装のために意味を書き換えない。
+## EdgeDB / Training Edge — retired operation
 
-主要module:
-- `src/build_jrdb_edge_feature_mart_v0_2.py`
-- `src/jrdb_edge_discovery_v0_2.py`
-- `src/build_jrdb_edge_registry_v0_2.py`
-- `src/apply_jrdb_edge_statistical_guard_v0_2.py`
-- `src/build_jrdb_edge_suggestive_publication_v0_2.py`
-- `src/build_jrdb_edge_current_facts_v0_2.py`
-- `src/jrdb_edge_matcher_v0_2.py`
-- `src/run_jrdb_edge_match_current_v0_2.py`
+2026-11-02のPhase 3でEdgeDB（STANDARD/v0.5を含む）とTraining Edge（RL / my_index）の専用実行資産を現行pathから撤去しました。通常のJRDB/Newspaper/PWAへ再接続しません。保存された履歴は `archive/retired-edge-training/README.md`、依存監査は `newspaper/PHASE3_AUDIT.md` を参照してください。
+
+独立したRaceNote凍結実験adapter、JRDB canonical code、RRDB previous-start ledgerは廃止対象ではありません。共有Analysis Parquet / Fact Lite / Stats Mart / Warehouseも引き続き現行資産です。
 
 ## Existing v1.1-P presentation / reader language
 - `src/racenote_prediction_presentation_v0_2.py` はfreeze済みv1.1-P prediction / Edge axis decisionを説明用evidenceへ投影するpresentation layerで、印・順位・Edge判定を再計算しない。
@@ -258,24 +233,11 @@ RaceReviewDB consumer default (2026-09-25):
 - `good`は複合基礎評価。JRDBゴール予測などbase scoreへ含まれるcomponentを、Edge比較後の別の独立voteとして二重加算・二重説明しない。
 - このpresentation contractはv1.1-PをGen0のcurrent prediction policyへ戻す根拠ではない。current Gen0でも「presentationがfrozen predictionを書き換えない」という境界だけは継承する。
 
-## Newspaper / PWA Edge consumer boundary
-- main flow: `PACI + Analysis history -> Edge Current Facts -> Edge Matcher -> edge_matches.jsonl -> Newspaper merge -> PWA / special memo`。
-- `src/jrdb_newspaper_merge_edge.py` は `src/jrdb_newspaper_edge_adapter.py` を通してmatcher outputを取り込む。
-- Newspaper / PWA側でEdge条件を再計算・再判定しない。
-- join identityは `race_key / race_horse_key / horse_no` を中心にfail-closedで扱う。
-- `jrdb_newspaper_edge_adapter.py` はdisplay boundary。raw `display_text` / evidence / conditionをaudit用に保持しつつ、reader-facing condition / memoだけを人間向けへ翻訳する。
-- 系統code等はJRDB masterで解決できる場合に表示名へ変換する。unknown codeに意味を捏造しない。
-- 表示修正はmatching semantics、q threshold、eligibility、raw conditionを変更しない。
-- sourceを修正しても既発行day packageは自動で書き変わらない。必要な場合はgeneration/publishを明示的に更新する。
-- PWA / Newspaperのdelivery都合でForecast policyを変更しない。安定したfrozen prediction contractをconsumerが表示する。
+## Newspaper / PWA — PACI-only consumer boundary
 
-主要module:
-- `src/jrdb_newspaper_build.py`
-- `src/jrdb_newspaper_day_build.py`
-- `src/jrdb_newspaper_merge_external.py`
-- `src/jrdb_newspaper_merge_edge.py`
-- `src/jrdb_newspaper_edge_adapter.py`
-- `src/jrdb_newspaper_publish_current.py`
+通常day workflowはPACIからBase/historyを構築し、Eval / RaceNote prediction / RRDB / イルカのoptional addonをmergeします。EdgeDB Query、Registry、v0.5候補、Training Edge CSVを要求しません。旧Currentから新revisionを生成するときは `src/jrdb_newspaper_retired_sources.py` が廃止sourceを除去し、race SHA/size・manifestを検証します。
+
+主要source: `src/jrdb_newspaper_build.py`、`src/jrdb_newspaper_day_build.py`、`src/jrdb_newspaper_merge_external.py`、`src/jrdb_newspaper_retired_sources.py`、`src/jrdb_newspaper_publish_current.py`。保護テスト: `tests/test_newspaper_source_retirement.py`。
 
 ## Cross-subsystem prohibitions
 - consumer/PWAがupstream evidence logicを重複実装しない。

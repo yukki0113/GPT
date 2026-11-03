@@ -1,6 +1,6 @@
 \nCurrent next-generation Forecast contract: `RaceNote-Forecast-Gen0.3`; planned first activation `Gen0-G001`. Gen0.2 was never activated and is reference-only.\n# JRDB project
 
-中央競馬予想で使用するJRDB系の取得・解析・RaceNote・EdgeDB・競馬新聞/PWA・研究資産を管理する現行プロジェクトです。
+中央競馬予想で使用するJRDB系の取得・解析・RaceNote・競馬新聞/PWA・研究資産を管理する現行プロジェクトです。
 
 このREADMEは **入口と全体像** を担当します。スレッド移動や会話量上限後の再開では、READMEだけで作業を始めず、下記の引継ぎ順を使ってください。
 
@@ -203,52 +203,11 @@ pre-race evidence
 
 旧v0.2 control / v1.1-P gated policyは再現性・比較研究のため保持しますが、現行Gen0の予想ロジックではありません。詳細は `docs/racenote/legacy/README.md` を参照してください。
 
-### EdgeDB v0.2
+### EdgeDB / Training Edge — retired (2026-11-03)
 
-主要module:
+EdgeDB（v0.2〜v0.5）と旧Training Edge（RL / my_index）の通常運用は廃止済みです。旧Query・Registry・Matcher・専用workflow・previewは起動しません。旧研究資産のインデックスは `archive/retired-edge-training/README.md`、依存監査は `newspaper/PHASE3_AUDIT.md` にあります。
 
-- `src/build_jrdb_edge_feature_mart_v0_2.py`
-- `src/jrdb_edge_discovery_v0_2.py`
-- `src/build_jrdb_edge_registry_v0_2.py`
-- `src/apply_jrdb_edge_statistical_guard_v0_2.py`
-- `src/build_jrdb_edge_suggestive_publication_v0_2.py`
-- `src/build_jrdb_edge_current_facts_v0_2.py`
-- `src/jrdb_edge_matcher_v0_2.py`
-- `src/run_jrdb_edge_match_current_v0_2.py`
-
-現在のordinary current-runnerは **STANDARD** がdefaultです。
-
-```text
-run_jrdb_edge_match_current_v0_2.py
-  -> STANDARD
-  -> ACTIVE / CONFIRMED + eligible SUGGESTIVE
-```
-
-ただしlow-level `jrdb_edge_matcher_v0_2` のdefaultは意図的に **CONFIRMED_ONLY** のままです。library importだけでserved evidenceが増えないためのfail-safeです。
-
-重要な不変条件:
-
-- ACTIVEのproduction statistical thresholdを緩めない
-- SUGGESTIVEをRegistry ACTIVEへ昇格させない。通常は `registry_status=REJECTED` のまま
-- Performance evidenceとValue evidenceを別channelとして扱う
-- SUGGESTIVEを「統計的に確認済み」と表現しない
-- overlapping Edgeのstrength / ROI / lift / q-valueを加算しない
-- current matchingはexact-match・pre-race only
-- consumer / PWA / NewspaperでEdge条件を再実装しない
-- v0.1 matcherはbackward compatibility用として保持し、v0.2仕様を混入させない
-
-通常v0.2 consumer inputは `edge_serving_catalog_v0_2.jsonl`。詳細条件はServing Contractを優先します。
-
-#### EdgeDB v0.3 shadow research
-
-Production defaultはまだv0.2 STANDARDです。v0.3は、実運用で確認された過剰ヒット・+/-混在・semantic overlapを解消し、EdgeDBを「市場が見落としやすい複雑・多重条件」へ戻すためのshadow redesignです。
-
-- 実運用監査: `docs/JRDB_Edge_v0_3_Operational_Audit_20260924.md`
-- 設計: `docs/JRDB_Edge_v0_3_Granularity_Conflict_Design_v0_1.md`
-- semantic hierarchy config: `config/jrdb_edge_semantic_hierarchy_v0_3.json`
-- v0.2 density audit code: `src/audit_jrdb_edge_v02_operational_hits.py`
-
-v0.3ではlower-orderなContextとincremental Niche candidateを分離し、childをnearest parent / parent-complementに対して再評価します。PerformanceとValueは引き続き別channelで、独立した+/- evidenceを任意weightでnet score化しません。v0.2 servingは比較・rollback用に保持します。
+Newspaper/PWAはPACI-onlyでBaseを生成し、独立addonと合流後に `src/jrdb_newspaper_retired_sources.py` で廃止sourceの非伝播を保証します。Analysis Parquet / Fact Lite / Stats Mart / RaceNote / RRDB / Eval / JRDB Common Readerは引き続き現行資産です。
 
 ### Legacy RaceNote prediction presentation
 
@@ -265,31 +224,22 @@ JRDBゴール予測など、すでに基礎評価へ含まれるcomponentをEdge
 
 ### Newspaper / PWA
 
-- `src/jrdb_newspaper_build.py`
-- `src/jrdb_newspaper_day_build.py`
-- `src/jrdb_newspaper_merge_external.py`
-- `src/jrdb_newspaper_merge_edge.py`
-- `src/jrdb_newspaper_edge_adapter.py`
-- `src/jrdb_newspaper_publish_current.py`
+現行のPACI-only経路:
 
-概念フロー:
+- `src/jrdb_newspaper_build.py`: 1レースBase/history
+- `src/jrdb_newspaper_day_build.py`: 日次race JSON/manifest
+- `src/jrdb_newspaper_merge_external.py`: Eval / RaceNote / RRDB / イルカ等の独立addon
+- `src/jrdb_newspaper_retired_sources.py`: 旧Currentからの廃止source非伝播
+- `src/jrdb_newspaper_publish_current.py`: 監査済みCurrent Publish
+- `pwa/`: 個人・桃太郎の公開consumer
 
 ```text
-PACI + Analysis history
-  -> Edge Current Facts
-  -> Edge Matcher
-  -> edge_matches.jsonl
-  -> Newspaper merge / adapter
-  -> reader-facing special memo / PWA
+PACI -> neutral JRDB Common Reader -> Newspaper Base/history
+  -> optional addon merge -> retired-source scrub
+  -> verified immutable revision / Current Publish -> Pages / Momotaro projection
 ```
 
-`jrdb_newspaper_edge_adapter.py` は **display boundary** です。matcher結果の意味を変更せず、structured evidenceを人間向け表示へ翻訳します。Raw `display_text` / evidenceはaudit用に保持します。
-
-joinの中心は `race_key / race_horse_key / horse_no`。Newspaper側でEdge条件を再判定しません。
-
-PWA / Newspaperの都合でForecast policyを変更しません。まずfrozen prediction contractを作り、その出力をconsumerが表示します。
-
-PWAの表示・同期・配布・スレッド再開は `pwa/.gpt/HANDOFF.md` を入口とし、Newspaperの日次生成・source mergeは `newspaper/.gpt/HANDOFF.md` を入口とします。
+旧EdgeDB/Training Edgeを要求・取得・表示しません。過去のimmutable revision / Releaseは履歴として保持します。現行操作は `newspaper/.gpt/DAILY_WORK_CONTRACT.md`、`newspaper/DAY_REQUEST_V2.md`、公開検証は `pwa/DEPLOYMENT_TRIGGER.md` に従います。
 
 ### Eval / training research
 
