@@ -100,5 +100,28 @@ class CurrentMonotonicTest(unittest.TestCase):
                 self.assertLess(gates[0], min(publishers))
 
 
+    def test_all_current_release_writers_are_serialized(self):
+        import yaml
+
+        group = "jrdb-newspaper-current-publish"
+        root = ROOT / ".github/workflows"
+        cases = (
+            ("jrdb_newspaper_publish_current.yml", "workflow"),
+            ("jrdb_newspaper_skeleton_publish_issue.yml", "job"),
+            ("jrdb_momotaro_newspaper_publish_issue.yml", "job"),
+            ("jrdb_newspaper_kensho_merge_issue.yml", "job"),
+        )
+        for name, owner in cases:
+            with self.subTest(workflow=name):
+                workflow = yaml.safe_load((root / name).read_text())
+                if owner == "workflow":
+                    concurrency = workflow.get("concurrency") or {}
+                else:
+                    job = next(iter(workflow["jobs"].values()))
+                    concurrency = job.get("concurrency") or {}
+                self.assertEqual(concurrency.get("group"), group)
+                self.assertFalse(concurrency.get("cancel-in-progress", True))
+
+
 if __name__ == "__main__":
     unittest.main()
