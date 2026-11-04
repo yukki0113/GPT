@@ -72,3 +72,13 @@ python -m unittest discover -s horse-racing/brdb/tests \
 ```
 
 No BRDB CURRENT, frozen Review v0.1, RaceNote, PWA, publishing pipeline, source archives, nor predictive logic was changed.
+
+## GitHub committed-source synthetic regression
+
+- Initial [Issue #2376](https://github.com/yukki0113/GPT/issues/2376) at source `6bf695ef...`: **FAIL**, revealed that canonical `split_fixed_records` returns CRLF-inclusive 292-byte records while `parse_ukc_record` requires 290-byte bodies.
+- [Issue #2377](https://github.com/yukki0113/GPT/issues/2377): **FAIL**, CRLF normalization branch had a double-escaped bytes literal.
+- Corrected source commit `bef054bee6b2d6f74b1e2aea22da4cc5a6b06105`: canonical reader is still reused, with strict CRLF (13,10) framing validation and removal only when present.
+- [Issue #2379](https://github.com/yukki0113/GPT/issues/2379) returned `DATA_STORAGE_FALLBACK_RESULT=PASS` on [run 41768347583](https://github.com/yukki0113/GPT/actions/runs/41768347583), job `completed/success`; DuckDB 1.1.3, PyArrow 25.0.1. Artifact `data-storage-fallback-41768347583` exists.
+- Synthetic fixture checks 14 positive date-checked ZIPs (with `prediction_safe=false`), late modification refusal, ZIP SHA tamper refusal and conflicting UKC/KYI horse-ID refusal: **4 tests PASS**. The private 14-ZIP audit was independently executed locally using the observed canonical JRDB byte offsets. No actual licensed JRDB rows were uploaded to Actions.
+
+The synthetic test PASS is independent from the 4,945-record real-data structure audit; neither establishes historical JRDB release logs nor validates the 2016–2025 as-of static cohort.
