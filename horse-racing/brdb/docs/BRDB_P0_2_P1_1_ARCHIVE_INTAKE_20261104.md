@@ -29,6 +29,24 @@ From the archive audit records, with corresponding stored result file SHA-256 ch
 - P1-1: `total_entries=481627`; `normal_finishers=477650`; `groups_all=18367`; `groups_eligible=1935`; source P0-2 SHA as above.
 - P1-1 output SHA-256: `lineage_conditions_all.csv` `707c43343cadd9578dbee8f5e16d8bbf0b421d9ef69b26ef76be00dcac6c1bad`; `lineage_conditions_eligible.csv` `331f873075fc11c63cb4818e3ef7d7d1fc3fa553e7d34c3fd60e3d8ffa2d7af7`; `baseline_surface_distance.json` `81419a93ae02de85d5a3de2a54e9d76cb9ed411fb191f7ac6c9f3d1bb102f822`.
 
+## Independent CSV structural checks (without DuckDB)
+
+The archived P1-1 CSVs were parsed in their entirety with Python standard-library `csv`:
+
+| File | Data rows | Key duplicates | Role split | `wins > n` |
+|---|---:|---:|---|---:|
+| `lineage_conditions_all.csv` | 18,367 | 0 | SIRE 6,616 / BMS 11,751 | 0 |
+| `lineage_conditions_eligible.csv` | 1,935 | 0 | SIRE 948 / BMS 987 | 0 |
+
+The group key used for this check is `(lineage_role,lineage_code,surface_code,distance_band,venue_code,race_class_code)`. These are **structural checks only**; they do not demonstrate scientific row-equivalence of a committed-code rerun.
+
+## Actions fallback smoke requests
+
+- P0-2 pinned source ref `59b742e743075a334277e730218b2caae28d1ea7`: [Issue #2351](https://github.com/yukki0113/GPT/issues/2351).
+- P1-1 pinned source ref `bedd3219d1424198381020f77418b96b4ef0b18b`: [Issue #2353](https://github.com/yukki0113/GPT/issues/2353).
+
+These requests are **synthetic tests only**, not real-data acceptance. A request Issue being open or started is **not** proof of PASS. Check the machine-readable workflow result and artifact before changing HOLD.
+
 ## Current acceptance gates
 
 1. Validate new source changes on **DuckDB 1.1.3**, using repository shared `tools/data-storage/` and its documented local-first / Actions fallback.
