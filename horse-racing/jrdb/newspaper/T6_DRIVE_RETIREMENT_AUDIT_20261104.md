@@ -60,3 +60,14 @@ These are **historical locations and identifiers only**; no current Drive file I
 | Proof historical Edge-only assets are fully absent from all locations/connections | **NOT ESTABLISHED** |
 
 **Operational conclusion:** T6 inventory is complete for currently visible connected Drive locations, but no physical cleanup took place. Mark `T6_DELETE_EXECUTED = NO`; mark `T6_VERIFIED_TARGETS = 0`. Never record this as “deleted” or as a verified global absence. If an Edge-only folder/file resurfaces in another accessible account/legacy root, repeat exact metadata, dependency and ownership checks before a targeted deletion. The preceding T5 PACI-only Current and Pages publish is unaffected.
+
+## Follow-up: user-completed cleanup (2026-11-04)
+
+After the connected-Drive inventory above, the user clarified that the old assets had been **moved to a separate holding location** and explicitly reported: 「退避していたのを忘れてました。私が削除しておきました。」 (the user had forgotten the assets were held elsewhere and has deleted them personally).
+
+Classification:
+- **User-attested deletion of relocated retirement assets: DONE (reported).** This explains why they were not found under the previously recorded canonical Drive folder.
+- **Deletion by the assistant/Google Drive connector: 0 files.** No delete request or Drive write was made by the assistant during T6.
+- **Independent verification of the holding location, exact file IDs, complete deletion coverage and trash/permanent-delete status: NOT PERFORMED / UNKNOWN.** No deleted-file inventory or metadata was supplied.
+- **T6 status:** `INVENTORY_COMPLETE; RELOCATED_ASSET_CLEANUP_USER_REPORTED_DONE`. Do not treat the earlier zero-candidate observation as proof of global absence; do not retroactively claim tool-verified deletion.
+- **T7 implication:** The reported asset cleanup resolves the known intended manual-cleanup action on a user-attestation basis. A final retirement conclusion should distinguish this from independently audited Drive deletion and keep other projects' independent research/frozen files out of scope.
