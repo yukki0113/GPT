@@ -1,0 +1,794 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "marks": [
+      10,
+      13,
+      15,
+      7,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        13,
+        15,
+        7,
+        9
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番リケアペンネも4着IDM31があるが、9番ベルオーシャンの3着IDM28を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "10番コウジハラは前走2着IDM37、KYI18.1で先行力と現状完成度が最上位。",
+      "main_risk": "13番トコシエノヒトミは大出遅れから2着まで伸びた末脚が最大の逆転材料。"
+    },
+    "shot_case": {
+      "case": "15番ジャメビュも出遅れ込みでIDM36があり能力上限は高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "コウジハラは好位から崩れない直近内容を軸視。トコシエノヒトミの末脚は脅威だが、位置取り再現性で10番を上位とした。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "marks": [
+      8,
+      7,
+      14,
+      12,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        7,
+        14,
+        12,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番グスタフも初戦5着だが、1番ゴットタレントの連続3・4着IDM34を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "8番ビービーアジャイルは前走2着IDM38、KYI17で現状の勝ち切り根拠が最も明確。",
+      "main_risk": "7番ウインビギニングは3着IDM38、KYI17.6、上昇調教で逆転候補。"
+    },
+    "shot_case": {
+      "case": "14番コウソクルリアンは2着IDM33と先行力で相手上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ビービーアジャイルの直近2着を最重視。ウインビギニングも地力差は小さく、先行勢の持続力比較で8番を◎に取った。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "marks": [
+      16,
+      5,
+      1,
+      8,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        16,
+        5,
+        1,
+        8,
+        11
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番コロッセウムにも3着歴はあるが、11番サントマーレのKYI11.5を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "16番ライヴレッドアイは連続2着IDM36・30、KYI21.6で勝ち切りに最も近い。",
+      "main_risk": "5番パータリプトラは2・3着、KYI18.8、末脚反復で逆転可能。"
+    },
+    "shot_case": {
+      "case": "1番チュラヴェールは3着IDM31があり相手候補。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ライヴレッドアイは先手を取って連続2着と再現性が高い。パータリプトラの差し脚を警戒しつつ16番を本命とした。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "marks": [
+      5,
+      8,
+      13,
+      15,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        8,
+        13,
+        15,
+        7
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番オメガディコンも2着歴があるが、7番シーギリヤロックの2着IDM33を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "5番サトノフレアは初戦2着IDM41、KYI19、上昇調教で最上位。",
+      "main_risk": "8番ウルフマンは初戦4着ながらIDM44で能力上限は高い。"
+    },
+    "shot_case": {
+      "case": "13番ポッドクロスは2・3着IDM40前後と反復上位能力が強い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "サトノフレアの初戦内容と仕上がりを軸に評価。ウルフマンのIDM44が最大の逆転材料だが、実戦の完成度で5番を上に置いた。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "marks": [
+      13,
+      12,
+      6,
+      14,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        12,
+        6,
+        14,
+        8
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15番アーデルブリックスもIDM30.8だが、8番ニシノマルガリートのIDM31.8を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "13番アルデマンは新馬比較でIDM39.2、KYI19.7、デキ抜群と総合完成度が最上位。",
+      "main_risk": "12番ルールザウェイヴはIDM39.4、上昇調教で能力値はほぼ互角。"
+    },
+    "shot_case": {
+      "case": "6番ルージュフローラはIDM35.9、KYI13.7で相手上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "新馬戦のため実戦比較はなく、仕上がりと事前能力を重視。アルデマンとルールザウェイヴは僅差だがKYIとデキで13番を先に取る。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "marks": [
+      1,
+      11,
+      2,
+      10,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        11,
+        2,
+        10,
+        7
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番ハリエンジュもIDM19.6だが、7番スペシャルギフトのIDM24.6を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "1番アイアンクラッドは新馬比較でIDM33.8、KYI16.9、上昇調教と最上位級。",
+      "main_risk": "11番ジェラートキティはIDM33.5、KYI16.2でほぼ互角。"
+    },
+    "shot_case": {
+      "case": "2番アイスメルティングはIDM32、KYI18.1で完成度が高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "アイアンクラッドは能力値と調教上昇が両立。ジェラートキティとの差は小さいが、総合のバランスで1番を本命とした。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "marks": [
+      9,
+      12,
+      14,
+      15,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        12,
+        14,
+        15,
+        1
+      ],
+      "external_challenger_horse_no": 17,
+      "excluded_horse_no": 17,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "17番マイネルアレスも前走1着IDM48だが、1番ツインピークスのIDM52歴を五番手に残す。"
+    },
+    "honmei_win": {
+      "evidence": "9番ウィッシュツリーは前走1着IDM47、KYI20.7、上昇調教で昇級でも勝ち筋が明確。",
+      "main_risk": "12番クラッチプレイヤーは前走3着IDM52で地力最上位級。"
+    },
+    "shot_case": {
+      "case": "14番ノクターンはIDM50.2、KYI15.8で相手上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ウィッシュツリーの上昇度と勝ち切り実績を評価。クラッチプレイヤーの地力が逆転要素だが、勢いとKYIで9番を先に取った。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "marks": [
+      1,
+      15,
+      14,
+      2,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        15,
+        14,
+        2,
+        12
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番キングベルベットも不利込みのIDM40があるが、12番ガラスノブルースのIDM43を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "1番ホークライトは前走2着IDM53、KYI17.4、反復逆風耐性で現級突破に最も近い。",
+      "main_risk": "15番ニシノブレイゼストは3・4着IDM51・47、KYI16.4で安定。"
+    },
+    "shot_case": {
+      "case": "14番ミダースは2着IDM49、デキ抜群で上積みが大きい。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ホークライトは近2走の内容が直接的で、ニシノブレイゼストやミダースより勝ち筋が明瞭。1番を軸に固定した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "marks": [
+      11,
+      9,
+      10,
+      7,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        9,
+        10,
+        7,
+        6
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番アップストロークも末脚反復は強いが、6番ミニョンマルーンの1勝IDM49と現級5着を五番手に取る。"
+    },
+    "honmei_win": {
+      "evidence": "11番ルシードは前々走1着IDM58、直近3着IDM55、KYI20.7で最上位。",
+      "main_risk": "9番ヴァンヴィーヴは連続2着IDM58・55、KYI23で逆転候補。"
+    },
+    "shot_case": {
+      "case": "10番トーセントラムはIDM55、末脚材料があり相手上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ルシードは勝ち上がり時IDM58と直近3着の両方が強い。ヴァンヴィーヴも僅差だが、勝ち切り履歴を重視して11番を◎。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "marks": [
+      4,
+      6,
+      1,
+      3,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        6,
+        1,
+        3,
+        9
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番フェーレンベルクも1・3着実績があるが、9番プラチナドリームの2着歴を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "4番エコロデュエルは障害G1級で1・2着、KYI23.8、デキ抜群と最上位。",
+      "main_risk": "6番ジューンベロシティは障害重賞で1・2着を繰り返し逆転候補。"
+    },
+    "shot_case": {
+      "case": "1番ネビーイームは連勝中で勢いがある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山大障害は特殊条件のため障害実績を中心に比較。エコロデュエルはG1級の再現性と仕上がりで6番を僅かに上回ると判断した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "marks": [
+      13,
+      12,
+      3,
+      6,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        12,
+        3,
+        6,
+        15
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番フォルテアンジェロも1・2着で安定するが、15番アスクエジンバラの2着IDM50を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "13番ショウナンガルフは連勝、直近IDM49、末脚反復と逆風耐性で完成度が高い。",
+      "main_risk": "12番アンドゥーリルは連勝IDM52・49、KYI15.2で能力値は上位。"
+    },
+    "shot_case": {
+      "case": "3番ジャスティンビスタは前走1着IDM53で地力最上位級。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ショウナンガルフは末脚と勝ち切りの両方を備える点を評価。アンドゥーリル、ジャスティンビスタとの能力差は小さく、混戦前提で13番を先に取った。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "marks": [
+      14,
+      4,
+      12,
+      7,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        4,
+        12,
+        7,
+        3
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番レッドテリオスもIDM58.1歴があるが、3番アマキヒのIDM59.1を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "14番ミクニインスパイアは連勝、IDM60、KYI21、上昇調教で明確に最上位。",
+      "main_risk": "4番ローザサンリヴァルは前走1着IDM59、末脚反復で逆転候補。"
+    },
+    "shot_case": {
+      "case": "12番サークルオブジョイは1・2着IDM58・56で安定。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ミクニインスパイアは連勝内容、IDM、KYIの三点が揃う。ローザサンリヴァルの末脚を警戒しても14番の勝ち筋が一段明瞭。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 1,
+    "marks": [
+      13,
+      2,
+      8,
+      4,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        2,
+        8,
+        4,
+        10
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番レジーナテンペスタにも先行力はあるが、10番アカウフリューゲルのKYI12を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "13番メイショウイブキは前走2着IDM34、KYI20.4、上昇調教で勝ち切りに最も近い。",
+      "main_risk": "2番ルージュルガーノは3・4着IDM34・35、KYI17.2で安定。"
+    },
+    "shot_case": {
+      "case": "8番ファイブタンゴは4着IDM26、能力上限IDM32で相手候補。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "メイショウイブキは直近2着と仕上がりが明確。ルージュルガーノの安定感を上回る上昇度を重視して13番を◎とした。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 2,
+    "marks": [
+      3,
+      11,
+      2,
+      1,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        11,
+        2,
+        1,
+        5
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番アビラーシャもKYI14だが、5番サイモンエクセラーのIDM27を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "3番ロードステラートは2・3着IDM37・34、KYI21.4で現状の軸。",
+      "main_risk": "11番ディアギレフはIDM29、KYI12.3で相手上位。"
+    },
+    "shot_case": {
+      "case": "2番サンライズアーサーはIDM31歴があり地力は僅差。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ロードステラートは連続好走とKYIが他馬より明確。相手は拮抗しているが3番の勝ち筋が最も具体的。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 3,
+    "marks": [
+      13,
+      2,
+      7,
+      4,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        2,
+        7,
+        4,
+        1
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番タントレーベルもIDM30.1だが、1番カフジクロミエの3着IDM30を五番手に取る。"
+    },
+    "honmei_win": {
+      "evidence": "13番ハグレジョーは連続2着IDM41・37、KYI19.7で勝ち切り候補筆頭。",
+      "main_risk": "2番ゴディアンフィンチは前走3着IDM32、上昇調教で相手筆頭。"
+    },
+    "shot_case": {
+      "case": "7番ナルキッソスは初戦5着IDM30、KYI14.4で上積み余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ハグレジョーは連続2着の再現性が抜ける。2番以下の上積みを考慮しても、13番の安定した勝ち負け実績を優先。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 4,
+    "marks": [
+      7,
+      12,
+      5,
+      14,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        12,
+        5,
+        14,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番ラミエルノムスコもKYI14.1だが、4番ダノンベルビューの2着IDM33を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "7番ルビドゥソレイユは4着IDM39、デキ抜群、反復上位能力で最上位。",
+      "main_risk": "12番マゲバスピードは初戦2着IDM34、KYI21.4で逆転候補。"
+    },
+    "shot_case": {
+      "case": "5番パーシャングレーは3・5着IDM36前後で安定。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ルビドゥソレイユは能力値と反復性を重視。マゲバスピードは上昇度が高く最大の脅威だが、地力比較で7番を本命。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 5,
+    "marks": [
+      3,
+      10,
+      5,
+      14,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        10,
+        5,
+        14,
+        13
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番ジャスティンレビンもIDM19.1だが、13番レッドレグルスのIDM23.8を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "3番ローズラフィネは新馬比較でIDM37.8、KYI15.1、上昇調教と最上位。",
+      "main_risk": "10番ダノンミッドナイトはIDM36.1、KYI14.4でほぼ互角。"
+    },
+    "shot_case": {
+      "case": "5番ショウナンハヤナミはIDM35.1、KYI19で仕上がり上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "新馬戦のため事前能力と仕上がりを比較。ローズラフィネは10番・5番より能力とKYIのバランスが良く3番を最上位とした。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 6,
+    "marks": [
+      11,
+      6,
+      1,
+      8,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        6,
+        1,
+        8,
+        5
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番クラテロスも上昇調教だが、5番アメリカンコールのIDM24.1を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "11番グランシャンは新馬比較でIDM30.2と能力値トップ。",
+      "main_risk": "6番サヴォアフェールはIDM27、KYI12.9、上昇調教で逆転候補。"
+    },
+    "shot_case": {
+      "case": "1番ワンダーデリエールはIDM26.6で完成度上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "グランシャンは能力値を最優先。サヴォアフェールのKYIは強いが、総合の事前完成度で11番を◎とした。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 7,
+    "marks": [
+      9,
+      15,
+      4,
+      3,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        15,
+        4,
+        3,
+        10
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番ムーンストラックも安定するが、10番ヤエギリの連続4着IDM46・48を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "9番コスモグローリーは2・3着IDM50・52、KYI19.3、上昇調教で現級最上位。",
+      "main_risk": "15番サタデーサンライズは前走2着IDM50、前々走IDM56で逆転候補。"
+    },
+    "shot_case": {
+      "case": "4番サトノブリジャールはIDM54歴と上位能力反復。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "コスモグローリーは近走の安定度とKYIが強い。サタデーサンライズの能力上限は高いが、再現性で9番を軸視。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 8,
+    "marks": [
+      3,
+      9,
+      14,
+      7,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        9,
+        14,
+        7,
+        6
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15番アスクアイルビゼアも2着IDM52歴があるが、6番ベルジュロネットのKYI15.8を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "3番ゲイルライダーは前走1着IDM51、基礎IDM55.6、上昇調教で最上位。",
+      "main_risk": "9番フィドルファドルは4・5着IDM54・49、KYI15.3で逆転候補。"
+    },
+    "shot_case": {
+      "case": "14番ドンパッショーネはIDM54.5、上位能力反復で相手上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ゲイルライダーは勝ち上がりの勢いと能力値が両立。9番・14番の現級実績は警戒するが、3番の上昇余地を上に取った。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 9,
+    "marks": [
+      5,
+      10,
+      8,
+      1,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        10,
+        8,
+        1,
+        6
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番ネネキリマルも勝ち上がり済みだが、6番グロリアスマーチの3着IDM46歴を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "5番トライアンフパスは前走1着IDM46、反復上位能力で最も完成度が高い。",
+      "main_risk": "10番アスミルは前走2着IDM45、先行して粘る内容で逆転候補。"
+    },
+    "shot_case": {
+      "case": "8番メイクワンズデイは前走1着IDM44、KYI20.7、上昇調教。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "トライアンフパスはIDM46の勝ち切り実績を重視。アスミルとメイクワンズデイの先行力を相手に、5番の地力を上位とした。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 10,
+    "marks": [
+      7,
+      9,
+      16,
+      10,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        9,
+        16,
+        10,
+        2
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番クァンタムウェーブもKYI16.9と上昇度があるが、2番リトルハピのIDM62勝ち歴を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "7番ツキノアカリは前走1着IDM60、基礎IDM63で能力上限が最上位。",
+      "main_risk": "9番クロニクルは前走2着IDM60、KYI12.7で逆転候補。"
+    },
+    "shot_case": {
+      "case": "16番シンビリーブはIDM61、前々走2着IDM58で地力上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ツキノアカリは直近勝利IDM60と能力上限63を軸に評価。クロニクルとの差は小さいが、勝ち切り実績で7番を先に取る。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 11,
+    "marks": [
+      12,
+      9,
+      11,
+      15,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        9,
+        11,
+        15,
+        7
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番ミッキーゴージャスも前走1着IDM67だが、7番フォーチュンタイムの勝ちIDM66を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "12番ナムラクレアはIDM68.4、KYI21.1、デキ抜群と重賞級比較で最上位。",
+      "main_risk": "9番ジューンブレアは直近2着IDM71・67で能力上限は非常に高い。"
+    },
+    "shot_case": {
+      "case": "11番ダノンマッキンリーはIDM67.5で相手上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ナムラクレアは能力、末脚反復、仕上がりの三点が揃う。ジューンブレアの近走指数は脅威だが、総合安定度で12番を◎。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 12,
+    "marks": [
+      4,
+      1,
+      3,
+      7,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        1,
+        3,
+        7,
+        9
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番モモンウールーもIDM48歴があるが、9番ショウナンハウルのIDM45を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "4番カリーニョは前々走2着IDM55、KYI17.5、上昇調教と末脚反復で最上位。",
+      "main_risk": "1番ミュージシャンは前走3着IDM52、KYI21.3、デキ抜群で逆転候補。"
+    },
+    "shot_case": {
+      "case": "3番マンオブノーブルは前走2着IDM46、反復上位能力がある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "カリーニョはIDM55の地力と調教上昇を重視。ミュージシャンは仕上がりで迫るが、能力上限で4番を本命とした。"
+  }
+]
