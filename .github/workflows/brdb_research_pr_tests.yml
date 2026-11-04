@@ -8,6 +8,8 @@ on:
       - 'horse-racing/brdb/tests/test_build_brdb_result_mart.py'
       - 'horse-racing/brdb/src/build_lineage_condition_report.py'
       - 'horse-racing/brdb/tests/test_build_lineage_condition_report.py'
+      - 'horse-racing/brdb/src/build_brdb_annual_stability_report.py'
+      - 'horse-racing/brdb/tests/test_build_brdb_annual_stability_report.py'
       - '.github/workflows/brdb_research_pr_tests.yml'
   workflow_dispatch:
 
@@ -29,7 +31,8 @@ jobs:
         env:
           PYTHONPATH: tools/data-storage
         run: python -m data_storage check-deps
-      - name: BRDB P0-2 and P1-1 research unit tests
+      - name: BRDB P0-2, P1-1 and P1-2 research unit tests
         run: |
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_build_brdb_result_mart.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_build_lineage_condition_report.py' -v
+          python -m unittest discover -s horse-racing/brdb/tests -p 'test_build_brdb_annual_stability_report.py' -v
