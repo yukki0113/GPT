@@ -1,0 +1,5756 @@
+{
+  "schema_version": "racenote-v054-kyi-supplemental-0.1",
+  "target_date": "2025-12-13",
+  "source_selection_id": "BTDAY-0157",
+  "rrdb_contract": "rrdb-recommendation-signals-v0.5",
+  "rrdb_execution": "USE_PREPARED_CANONICAL_RECOMMENDATION",
+  "policy": {
+    "target_final_odds": false,
+    "target_result": false,
+    "hidden_value_role": "CORROBORATION_AND_RECHECK_ONLY",
+    "additive_score": false
+  },
+  "coverage": {
+    "reader_horse_count": 125,
+    "kyi_matched_count": 125,
+    "kyi_missing_count": 0
+  },
+  "races": [
+    {
+      "venue": "中京",
+      "race_no": 9,
+      "horses": [
+        {
+          "horse_no": 1,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10515",
+            "ticket_index": 46,
+            "ticket_mark": "3",
+            "longshot_type": "",
+            "longshot_index": 185,
+            "previous": [
+              {
+                "result_key": "2310647720251101",
+                "race_key_raw": "08253a11"
+              },
+              {
+                "result_key": "2310647720250928",
+                "race_key_raw": "06254909"
+              },
+              {
+                "result_key": "2310647720250816",
+                "race_key_raw": "04252705"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253a11",
+            "06254909",
+            "04252705"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 2,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10515",
+            "ticket_index": 21,
+            "ticket_mark": "",
+            "longshot_type": "B2",
+            "longshot_index": 84,
+            "previous": [
+              {
+                "result_key": "2310581520250830",
+                "race_key_raw": "01252309"
+              },
+              {
+                "result_key": "2310581520250823",
+                "race_key_raw": "01252109"
+              },
+              {
+                "result_key": "2310581520250720",
+                "race_key_raw": "02251c11"
+              },
+              {
+                "result_key": "2310581520250629",
+                "race_key_raw": "02251605"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "01252309",
+            "01252109",
+            "02251c11",
+            "02251605"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 3,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10555",
+            "ticket_index": 23,
+            "ticket_mark": "",
+            "longshot_type": "A4",
+            "longshot_index": 76,
+            "previous": [
+              {
+                "result_key": "2310499120251019",
+                "race_key_raw": "04254205"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254205"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 4,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10512",
+            "ticket_index": 39,
+            "ticket_mark": "5",
+            "longshot_type": "",
+            "longshot_index": 177,
+            "previous": [
+              {
+                "result_key": "2310115920251004",
+                "race_key_raw": "08253109"
+              },
+              {
+                "result_key": "2310115920250809",
+                "race_key_raw": "07253504"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253109",
+            "07253504"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 5,
+          "kyi": {
+            "reference_previous_raw": "",
+            "reference_jockey_code": "10522",
+            "ticket_index": 27,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 17,
+            "previous": [
+              {
+                "result_key": "2310752020251115",
+                "race_key_raw": "08254306"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254306"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 6,
+          "kyi": {
+            "reference_previous_raw": "2",
+            "reference_jockey_code": "10535",
+            "ticket_index": 48,
+            "ticket_mark": "2",
+            "longshot_type": "B1",
+            "longshot_index": 151,
+            "previous": [
+              {
+                "result_key": "2310350320251130",
+                "race_key_raw": "08254809"
+              },
+              {
+                "result_key": "2310350320251005",
+                "race_key_raw": "08253202"
+              },
+              {
+                "result_key": "2310350320250914",
+                "race_key_raw": "09254402"
+              },
+              {
+                "result_key": "2310350320250705",
+                "race_key_raw": "02251701"
+              },
+              {
+                "result_key": "2310350320250621",
+                "race_key_raw": "02251305"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254809",
+            "08253202",
+            "09254402",
+            "02251701",
+            "02251305"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 7,
+          "kyi": {
+            "reference_previous_raw": "2",
+            "reference_jockey_code": "10598",
+            "ticket_index": 31,
+            "ticket_mark": "8",
+            "longshot_type": "",
+            "longshot_index": 116,
+            "previous": [
+              {
+                "result_key": "2310091420251030",
+                "race_key_raw": "2325AU11"
+              },
+              {
+                "result_key": "2310091420250824",
+                "race_key_raw": "04253211"
+              },
+              {
+                "result_key": "2310091420250810",
+                "race_key_raw": "04252601"
+              },
+              {
+                "result_key": "2310091420250720",
+                "race_key_raw": "03252803"
+              },
+              {
+                "result_key": "2310091420250706",
+                "race_key_raw": "03252404"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "2325AU11",
+            "04253211",
+            "04252601",
+            "03252803",
+            "03252404"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 8,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10578",
+            "ticket_index": 53,
+            "ticket_mark": "1",
+            "longshot_type": "A1",
+            "longshot_index": 153,
+            "previous": [
+              {
+                "result_key": "2310404720250928",
+                "race_key_raw": "09254902"
+              },
+              {
+                "result_key": "2310404720250830",
+                "race_key_raw": "01252301"
+              },
+              {
+                "result_key": "2310404720250720",
+                "race_key_raw": "02251c11"
+              },
+              {
+                "result_key": "2310404720250713",
+                "race_key_raw": "02251a05"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254902",
+            "01252301",
+            "02251c11",
+            "02251a05"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 9,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10607",
+            "ticket_index": 34,
+            "ticket_mark": "7",
+            "longshot_type": "A2",
+            "longshot_index": 130,
+            "previous": [
+              {
+                "result_key": "2310361520251130",
+                "race_key_raw": "08254809"
+              },
+              {
+                "result_key": "2310361520250915",
+                "race_key_raw": "09254502"
+              },
+              {
+                "result_key": "2310361520250817",
+                "race_key_raw": "07253803"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254809",
+            "09254502",
+            "07253803"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 10,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10626",
+            "ticket_index": 38,
+            "ticket_mark": "6",
+            "longshot_type": "A3",
+            "longshot_index": 101,
+            "previous": [
+              {
+                "result_key": "2310581220250906",
+                "race_key_raw": "01252502"
+              },
+              {
+                "result_key": "2310581220250831",
+                "race_key_raw": "01252401"
+              },
+              {
+                "result_key": "2310581220250816",
+                "race_key_raw": "01251705"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "01252502",
+            "01252401",
+            "01251705"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 11,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10355",
+            "ticket_index": 39,
+            "ticket_mark": "4",
+            "longshot_type": "",
+            "longshot_index": 186,
+            "previous": [
+              {
+                "result_key": "2310719120251025",
+                "race_key_raw": "05254811"
+              },
+              {
+                "result_key": "2310719120250712",
+                "race_key_raw": "02251905"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05254811",
+            "02251905"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        }
+      ]
+    },
+    {
+      "venue": "中京",
+      "race_no": 10,
+      "horses": [
+        {
+          "horse_no": 1,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10545",
+            "ticket_index": 29,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 126,
+            "previous": [
+              {
+                "result_key": "2210213120251025",
+                "race_key_raw": "04254305"
+              },
+              {
+                "result_key": "2210213120250831",
+                "race_key_raw": "07254407"
+              },
+              {
+                "result_key": "2210213120250504",
+                "race_key_raw": "04251203"
+              },
+              {
+                "result_key": "2210213120250330",
+                "race_key_raw": "09252202"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254305",
+            "07254407",
+            "04251203",
+            "09252202"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 2,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10546",
+            "ticket_index": 36,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 183,
+            "previous": [
+              {
+                "result_key": "2210073620251116",
+                "race_key_raw": "08254407"
+              },
+              {
+                "result_key": "2210073620251019",
+                "race_key_raw": "08253712"
+              },
+              {
+                "result_key": "2210073620251005",
+                "race_key_raw": "08253206"
+              },
+              {
+                "result_key": "2210073620250426",
+                "race_key_raw": "08252107"
+              },
+              {
+                "result_key": "2210073620250412",
+                "race_key_raw": "09252505"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254407",
+            "08253712",
+            "08253206",
+            "08252107",
+            "09252505"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 3,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10599",
+            "ticket_index": 44,
+            "ticket_mark": "4",
+            "longshot_type": "",
+            "longshot_index": 128,
+            "previous": [
+              {
+                "result_key": "2010567020251129",
+                "race_key_raw": "05255708"
+              },
+              {
+                "result_key": "2010567020251013",
+                "race_key_raw": "08253509"
+              },
+              {
+                "result_key": "2010567020250906",
+                "race_key_raw": "09254109"
+              },
+              {
+                "result_key": "2010567020250824",
+                "race_key_raw": "07254210"
+              },
+              {
+                "result_key": "2010567020250802",
+                "race_key_raw": "07253306"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255708",
+            "08253509",
+            "09254109",
+            "07254210",
+            "07253306"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 4,
+          "kyi": {
+            "reference_previous_raw": "13",
+            "reference_jockey_code": "10603",
+            "ticket_index": 39,
+            "ticket_mark": "",
+            "longshot_type": "B1",
+            "longshot_index": 166,
+            "previous": [
+              {
+                "result_key": "2010639920251025",
+                "race_key_raw": "04254310"
+              },
+              {
+                "result_key": "2010639920250907",
+                "race_key_raw": "09254208"
+              },
+              {
+                "result_key": "2010639920250824",
+                "race_key_raw": "07254210"
+              },
+              {
+                "result_key": "2010639920250531",
+                "race_key_raw": "05252b12"
+              },
+              {
+                "result_key": "2010639920250511",
+                "race_key_raw": "04251410"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254310",
+            "09254208",
+            "07254210",
+            "05252b12",
+            "04251410"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 5,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10561",
+            "ticket_index": 39,
+            "ticket_mark": "8",
+            "longshot_type": "A4",
+            "longshot_index": 135,
+            "previous": [
+              {
+                "result_key": "2110616420251025",
+                "race_key_raw": "04254310"
+              },
+              {
+                "result_key": "2110616420251004",
+                "race_key_raw": "08253112"
+              },
+              {
+                "result_key": "2110616420250824",
+                "race_key_raw": "07254210"
+              },
+              {
+                "result_key": "2110616420250802",
+                "race_key_raw": "07253306"
+              },
+              {
+                "result_key": "2110616420250531",
+                "race_key_raw": "05252b12"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254310",
+            "08253112",
+            "07254210",
+            "07253306",
+            "05252b12"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 6,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10586",
+            "ticket_index": 28,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 109,
+            "previous": [
+              {
+                "result_key": "2110169120250906",
+                "race_key_raw": "09254109"
+              },
+              {
+                "result_key": "2110169120250802",
+                "race_key_raw": "07253306"
+              },
+              {
+                "result_key": "2110169120250329",
+                "race_key_raw": "07252509"
+              },
+              {
+                "result_key": "2110169120250222",
+                "race_key_raw": "08251712"
+              },
+              {
+                "result_key": "2110169120250125",
+                "race_key_raw": "07251810"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254109",
+            "07253306",
+            "07252509",
+            "08251712",
+            "07251810"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 7,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10419",
+            "ticket_index": 7,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 37,
+            "previous": [
+              {
+                "result_key": "2010093120240929",
+                "race_key_raw": "07243908"
+              },
+              {
+                "result_key": "2010093120240908",
+                "race_key_raw": "07243209"
+              },
+              {
+                "result_key": "2010093120240810",
+                "race_key_raw": "07242110"
+              },
+              {
+                "result_key": "2010093120240622",
+                "race_key_raw": "05243710"
+              },
+              {
+                "result_key": "2010093120240512",
+                "race_key_raw": "05242810"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "07243908",
+            "07243209",
+            "07242110",
+            "05243710",
+            "05242810"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 8,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10598",
+            "ticket_index": 25,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 97,
+            "previous": [
+              {
+                "result_key": "2110403920250907",
+                "race_key_raw": "01252612"
+              },
+              {
+                "result_key": "2110403920250831",
+                "race_key_raw": "01252412"
+              },
+              {
+                "result_key": "2110403920250816",
+                "race_key_raw": "01251708"
+              },
+              {
+                "result_key": "2110403920250511",
+                "race_key_raw": "04251407"
+              },
+              {
+                "result_key": "2110403920250413",
+                "race_key_raw": "09252606"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "01252612",
+            "01252412",
+            "01251708",
+            "04251407",
+            "09252606"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 9,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10546",
+            "ticket_index": 43,
+            "ticket_mark": "6",
+            "longshot_type": "",
+            "longshot_index": 107,
+            "previous": [
+              {
+                "result_key": "2110509420240427",
+                "race_key_raw": "08243311"
+              },
+              {
+                "result_key": "2110509420240317",
+                "race_key_raw": "09241806"
+              },
+              {
+                "result_key": "2110509420240121",
+                "race_key_raw": "08241706"
+              },
+              {
+                "result_key": "2110509420231228",
+                "race_key_raw": "09235906"
+              },
+              {
+                "result_key": "2110509420231104",
+                "race_key_raw": "08233106"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08243311",
+            "09241806",
+            "08241706",
+            "09235906",
+            "08233106"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 10,
+          "kyi": {
+            "reference_previous_raw": "13",
+            "reference_jockey_code": "10460",
+            "ticket_index": 52,
+            "ticket_mark": "1",
+            "longshot_type": "A1",
+            "longshot_index": 181,
+            "previous": [
+              {
+                "result_key": "1810295620250802",
+                "race_key_raw": "07253306"
+              },
+              {
+                "result_key": "1810295620250427",
+                "race_key_raw": "08252212"
+              },
+              {
+                "result_key": "1810295620250406",
+                "race_key_raw": "09252407"
+              },
+              {
+                "result_key": "1810295620250322",
+                "race_key_raw": "09251712"
+              },
+              {
+                "result_key": "1810295620250106",
+                "race_key_raw": "07251209"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "07253306",
+            "08252212",
+            "09252407",
+            "09251712",
+            "07251209"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 11,
+          "kyi": {
+            "reference_previous_raw": "13",
+            "reference_jockey_code": "10558",
+            "ticket_index": 30,
+            "ticket_mark": "",
+            "longshot_type": "B2",
+            "longshot_index": 131,
+            "previous": [
+              {
+                "result_key": "1710326720250928",
+                "race_key_raw": "09254912"
+              },
+              {
+                "result_key": "1710326720250915",
+                "race_key_raw": "06254509"
+              },
+              {
+                "result_key": "1710326720250831",
+                "race_key_raw": "04253410"
+              },
+              {
+                "result_key": "1710326720250816",
+                "race_key_raw": "04252708"
+              },
+              {
+                "result_key": "1710326720250518",
+                "race_key_raw": "05252810"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254912",
+            "06254509",
+            "04253410",
+            "04252708",
+            "05252810"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 12,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10613",
+            "ticket_index": 28,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 108,
+            "previous": [
+              {
+                "result_key": "2110026020251025",
+                "race_key_raw": "04254310"
+              },
+              {
+                "result_key": "2110026020250907",
+                "race_key_raw": "01252609"
+              },
+              {
+                "result_key": "2110026020250824",
+                "race_key_raw": "01252210"
+              },
+              {
+                "result_key": "2110026020250615",
+                "race_key_raw": "05253412"
+              },
+              {
+                "result_key": "2110026020250518",
+                "race_key_raw": "04251608"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254310",
+            "01252609",
+            "01252210",
+            "05253412",
+            "04251608"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 13,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10508",
+            "ticket_index": 40,
+            "ticket_mark": "7",
+            "longshot_type": "A3",
+            "longshot_index": 151,
+            "previous": [
+              {
+                "result_key": "2110417620250913",
+                "race_key_raw": "09254310"
+              },
+              {
+                "result_key": "2110417620250824",
+                "race_key_raw": "07254210"
+              },
+              {
+                "result_key": "2110417620250322",
+                "race_key_raw": "09251712"
+              },
+              {
+                "result_key": "2110417620241124",
+                "race_key_raw": "08246805"
+              },
+              {
+                "result_key": "2110417620240831",
+                "race_key_raw": "01242707"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254310",
+            "07254210",
+            "09251712",
+            "08246805",
+            "01242707"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 14,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10455",
+            "ticket_index": 43,
+            "ticket_mark": "5",
+            "longshot_type": "A2",
+            "longshot_index": 176,
+            "previous": [
+              {
+                "result_key": "2210587820251101",
+                "race_key_raw": "08253a08"
+              },
+              {
+                "result_key": "2210587820251025",
+                "race_key_raw": "08253809"
+              },
+              {
+                "result_key": "2210587820250810",
+                "race_key_raw": "07253610"
+              },
+              {
+                "result_key": "2210587820250727",
+                "race_key_raw": "07253208"
+              },
+              {
+                "result_key": "2210587820250713",
+                "race_key_raw": "10252608"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253a08",
+            "08253809",
+            "07253610",
+            "07253208",
+            "10252608"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 15,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10529",
+            "ticket_index": 48,
+            "ticket_mark": "2",
+            "longshot_type": "",
+            "longshot_index": 148,
+            "previous": [
+              {
+                "result_key": "2110104520251115",
+                "race_key_raw": "03253310"
+              },
+              {
+                "result_key": "2110104520250928",
+                "race_key_raw": "06254908"
+              },
+              {
+                "result_key": "2110104520250830",
+                "race_key_raw": "01252310"
+              },
+              {
+                "result_key": "2110104520250810",
+                "race_key_raw": "01251612"
+              },
+              {
+                "result_key": "2110104520250720",
+                "race_key_raw": "02251c10"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253310",
+            "06254908",
+            "01252310",
+            "01251612",
+            "02251c10"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 16,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10547",
+            "ticket_index": 47,
+            "ticket_mark": "3",
+            "longshot_type": "",
+            "longshot_index": 184,
+            "previous": [
+              {
+                "result_key": "2110719220251123",
+                "race_key_raw": "05255508"
+              },
+              {
+                "result_key": "2110719220251025",
+                "race_key_raw": "04254310"
+              },
+              {
+                "result_key": "2110719220250712",
+                "race_key_raw": "03252508"
+              },
+              {
+                "result_key": "2110719220250607",
+                "race_key_raw": "09253110"
+              },
+              {
+                "result_key": "2110719220250504",
+                "race_key_raw": "08252409"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255508",
+            "04254310",
+            "03252508",
+            "09253110",
+            "08252409"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        }
+      ]
+    },
+    {
+      "venue": "中京",
+      "race_no": 11,
+      "horses": [
+        {
+          "horse_no": 1,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10617",
+            "ticket_index": 49,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 214,
+            "previous": [
+              {
+                "result_key": "2110562320251129",
+                "race_key_raw": "05255711"
+              },
+              {
+                "result_key": "2110562320250927",
+                "race_key_raw": "09254811"
+              },
+              {
+                "result_key": "2110562320250913",
+                "race_key_raw": "09254311"
+              },
+              {
+                "result_key": "2110562320250413",
+                "race_key_raw": "03251211"
+              },
+              {
+                "result_key": "2110562320250223",
+                "race_key_raw": "10251a11"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255711",
+            "09254811",
+            "09254311",
+            "03251211",
+            "10251a11"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 2,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10604",
+            "ticket_index": 38,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 169,
+            "previous": [
+              {
+                "result_key": "2010703020251115",
+                "race_key_raw": "08254310"
+              },
+              {
+                "result_key": "2010703020251013",
+                "race_key_raw": "05254511"
+              },
+              {
+                "result_key": "2010703020250622",
+                "race_key_raw": "05253611"
+              },
+              {
+                "result_key": "2010703020250309",
+                "race_key_raw": "09251411"
+              },
+              {
+                "result_key": "2010703020250215",
+                "race_key_raw": "08251511"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254310",
+            "05254511",
+            "05253611",
+            "09251411",
+            "08251511"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 3,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10564",
+            "ticket_index": 63,
+            "ticket_mark": "4",
+            "longshot_type": "A3",
+            "longshot_index": 253,
+            "previous": [
+              {
+                "result_key": "2110091320251005",
+                "race_key_raw": "08253211"
+              },
+              {
+                "result_key": "2110091320250913",
+                "race_key_raw": "09254311"
+              },
+              {
+                "result_key": "2110091320250615",
+                "race_key_raw": "09253411"
+              },
+              {
+                "result_key": "2110091320250510",
+                "race_key_raw": "05252511"
+              },
+              {
+                "result_key": "2110091320240922",
+                "race_key_raw": "07243711"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253211",
+            "09254311",
+            "09253411",
+            "05252511",
+            "07243711"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 4,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10546",
+            "ticket_index": 57,
+            "ticket_mark": "6",
+            "longshot_type": "",
+            "longshot_index": 223,
+            "previous": [
+              {
+                "result_key": "2110065120250921",
+                "race_key_raw": "09254710"
+              },
+              {
+                "result_key": "2110065120250831",
+                "race_key_raw": "07254409"
+              },
+              {
+                "result_key": "2110065120250614",
+                "race_key_raw": "09253308"
+              },
+              {
+                "result_key": "2110065120250518",
+                "race_key_raw": "04251610"
+              },
+              {
+                "result_key": "2110065120250315",
+                "race_key_raw": "07252108"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254710",
+            "07254409",
+            "09253308",
+            "04251610",
+            "07252108"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 5,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10355",
+            "ticket_index": 56,
+            "ticket_mark": "7",
+            "longshot_type": "",
+            "longshot_index": 171,
+            "previous": [
+              {
+                "result_key": "1910475620251206",
+                "race_key_raw": "09255111"
+              },
+              {
+                "result_key": "1910475620250913",
+                "race_key_raw": "09254311"
+              },
+              {
+                "result_key": "1910475620250713",
+                "race_key_raw": "03252611"
+              },
+              {
+                "result_key": "1910475620250614",
+                "race_key_raw": "05253311"
+              },
+              {
+                "result_key": "1910475620250525",
+                "race_key_raw": "08252a11"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09255111",
+            "09254311",
+            "03252611",
+            "05253311",
+            "08252a11"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 6,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10512",
+            "ticket_index": 67,
+            "ticket_mark": "3",
+            "longshot_type": "A2",
+            "longshot_index": 255,
+            "previous": [
+              {
+                "result_key": "2110479120251013",
+                "race_key_raw": "05254511"
+              },
+              {
+                "result_key": "2110479120250720",
+                "race_key_raw": "10252811"
+              },
+              {
+                "result_key": "2110479120250601",
+                "race_key_raw": "05252c10"
+              },
+              {
+                "result_key": "2110479120250504",
+                "race_key_raw": "05252409"
+              },
+              {
+                "result_key": "2110479120250412",
+                "race_key_raw": "09252510"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05254511",
+            "10252811",
+            "05252c10",
+            "05252409",
+            "09252510"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 7,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10512",
+            "ticket_index": 53,
+            "ticket_mark": "8",
+            "longshot_type": "",
+            "longshot_index": 227,
+            "previous": [
+              {
+                "result_key": "1910474220251115",
+                "race_key_raw": "08254310"
+              },
+              {
+                "result_key": "1910474220240406",
+                "race_key_raw": "09242510"
+              },
+              {
+                "result_key": "1910474220240114",
+                "race_key_raw": "08241511"
+              },
+              {
+                "result_key": "1910474220231105",
+                "race_key_raw": "05235211"
+              },
+              {
+                "result_key": "1910474220230909",
+                "race_key_raw": "09234110"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254310",
+            "09242510",
+            "08241511",
+            "05235211",
+            "09234110"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 8,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10436",
+            "ticket_index": 35,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 185,
+            "previous": [
+              {
+                "result_key": "2010310120251115",
+                "race_key_raw": "08254310"
+              },
+              {
+                "result_key": "2010310120250831",
+                "race_key_raw": "04253411"
+              },
+              {
+                "result_key": "2010310120250720",
+                "race_key_raw": "10252811"
+              },
+              {
+                "result_key": "2010310120250607",
+                "race_key_raw": "09253111"
+              },
+              {
+                "result_key": "2010310120250511",
+                "race_key_raw": "08252609"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254310",
+            "04253411",
+            "10252811",
+            "09253111",
+            "08252609"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 9,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10324",
+            "ticket_index": 60,
+            "ticket_mark": "5",
+            "longshot_type": "",
+            "longshot_index": 229,
+            "previous": [
+              {
+                "result_key": "2110113420251025",
+                "race_key_raw": "08253811"
+              },
+              {
+                "result_key": "2110113420250927",
+                "race_key_raw": "06254811"
+              },
+              {
+                "result_key": "2110113420241020",
+                "race_key_raw": "08245611"
+              },
+              {
+                "result_key": "2110113420240818",
+                "race_key_raw": "04243410"
+              },
+              {
+                "result_key": "2110113420240615",
+                "race_key_raw": "05243508"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253811",
+            "06254811",
+            "08245611",
+            "04243410",
+            "05243508"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 10,
+          "kyi": {
+            "reference_previous_raw": "2",
+            "reference_jockey_code": "10548",
+            "ticket_index": 51,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 193,
+            "previous": [
+              {
+                "result_key": "2010578120251115",
+                "race_key_raw": "08254310"
+              },
+              {
+                "result_key": "2010578120250525",
+                "race_key_raw": "08252a11"
+              },
+              {
+                "result_key": "2010578120250413",
+                "race_key_raw": "03251211"
+              },
+              {
+                "result_key": "2010578120250222",
+                "race_key_raw": "05251711"
+              },
+              {
+                "result_key": "2010578120241130",
+                "race_key_raw": "06245111"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254310",
+            "08252a11",
+            "03251211",
+            "05251711",
+            "06245111"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 11,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10515",
+            "ticket_index": 48,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 192,
+            "previous": [
+              {
+                "result_key": "2010574920251013",
+                "race_key_raw": "05254511"
+              },
+              {
+                "result_key": "2010574920250629",
+                "race_key_raw": "02251611"
+              },
+              {
+                "result_key": "2010574920250316",
+                "race_key_raw": "07252211"
+              },
+              {
+                "result_key": "2010574920250201",
+                "race_key_raw": "05251111"
+              },
+              {
+                "result_key": "2010574920250105",
+                "race_key_raw": "06251111"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05254511",
+            "02251611",
+            "07252211",
+            "05251111",
+            "06251111"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 12,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10588",
+            "ticket_index": 20,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 152,
+            "previous": [
+              {
+                "result_key": "1610217520251122",
+                "race_key_raw": "03253511"
+              },
+              {
+                "result_key": "1610217520250907",
+                "race_key_raw": "01252611"
+              },
+              {
+                "result_key": "1610217520250720",
+                "race_key_raw": "10252811"
+              },
+              {
+                "result_key": "1610217520250601",
+                "race_key_raw": "05252c12"
+              },
+              {
+                "result_key": "1610217520250413",
+                "race_key_raw": "09252610"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253511",
+            "01252611",
+            "10252811",
+            "05252c12",
+            "09252610"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 13,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10455",
+            "ticket_index": 50,
+            "ticket_mark": "",
+            "longshot_type": "B1",
+            "longshot_index": 218,
+            "previous": [
+              {
+                "result_key": "1910523920251109",
+                "race_key_raw": "05255211"
+              },
+              {
+                "result_key": "1910523920250817",
+                "race_key_raw": "01251811"
+              },
+              {
+                "result_key": "1910523920250720",
+                "race_key_raw": "10252811"
+              },
+              {
+                "result_key": "1910523920250517",
+                "race_key_raw": "04251511"
+              },
+              {
+                "result_key": "1910523920250223",
+                "race_key_raw": "10251a11"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255211",
+            "01251811",
+            "10252811",
+            "04251511",
+            "10251a11"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 14,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10578",
+            "ticket_index": 47,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 164,
+            "previous": [
+              {
+                "result_key": "2110557420251025",
+                "race_key_raw": "04254311"
+              },
+              {
+                "result_key": "2110557420250615",
+                "race_key_raw": "05253410"
+              },
+              {
+                "result_key": "2110557420250511",
+                "race_key_raw": "05252607"
+              },
+              {
+                "result_key": "2110557420250302",
+                "race_key_raw": "06252209"
+              },
+              {
+                "result_key": "2110557420250216",
+                "race_key_raw": "05251608"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254311",
+            "05253410",
+            "05252607",
+            "06252209",
+            "05251608"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 15,
+          "kyi": {
+            "reference_previous_raw": "2",
+            "reference_jockey_code": "70234",
+            "ticket_index": 74,
+            "ticket_mark": "2",
+            "longshot_type": "A1",
+            "longshot_index": 262,
+            "previous": [
+              {
+                "result_key": "2210483220250810",
+                "race_key_raw": "04252607"
+              },
+              {
+                "result_key": "2210483220250420",
+                "race_key_raw": "06253811"
+              },
+              {
+                "result_key": "2210483220250309",
+                "race_key_raw": "06252411"
+              },
+              {
+                "result_key": "2210483220241130",
+                "race_key_raw": "06245109"
+              },
+              {
+                "result_key": "2210483220240831",
+                "race_key_raw": "04243705"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04252607",
+            "06253811",
+            "06252411",
+            "06245109",
+            "04243705"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 16,
+          "kyi": {
+            "reference_previous_raw": "",
+            "reference_jockey_code": "10636",
+            "ticket_index": 45,
+            "ticket_mark": "",
+            "longshot_type": "B2",
+            "longshot_index": 205,
+            "previous": [
+              {
+                "result_key": "1910541620250927",
+                "race_key_raw": "09254811"
+              },
+              {
+                "result_key": "1910541620250713",
+                "race_key_raw": "10252611"
+              },
+              {
+                "result_key": "1910541620250517",
+                "race_key_raw": "08252710"
+              },
+              {
+                "result_key": "1910541620250413",
+                "race_key_raw": "09252612"
+              },
+              {
+                "result_key": "1910541620240511",
+                "race_key_raw": "08243710"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254811",
+            "10252611",
+            "08252710",
+            "09252612",
+            "08243710"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 17,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10570",
+            "ticket_index": 74,
+            "ticket_mark": "1",
+            "longshot_type": "A4",
+            "longshot_index": 242,
+            "previous": [
+              {
+                "result_key": "1810422520251122",
+                "race_key_raw": "03253511"
+              },
+              {
+                "result_key": "1810422520250831",
+                "race_key_raw": "04253411"
+              },
+              {
+                "result_key": "1810422520250727",
+                "race_key_raw": "04252207"
+              },
+              {
+                "result_key": "1810422520250713",
+                "race_key_raw": "03252611"
+              },
+              {
+                "result_key": "1810422520250302",
+                "race_key_raw": "06252211"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253511",
+            "04253411",
+            "04252207",
+            "03252611",
+            "06252211"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 18,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10600",
+            "ticket_index": 41,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 185,
+            "previous": [
+              {
+                "result_key": "2010308220251005",
+                "race_key_raw": "08253211"
+              },
+              {
+                "result_key": "2010308220250913",
+                "race_key_raw": "09254311"
+              },
+              {
+                "result_key": "2010308220250720",
+                "race_key_raw": "10252811"
+              },
+              {
+                "result_key": "2010308220250517",
+                "race_key_raw": "04251511"
+              },
+              {
+                "result_key": "2010308220250412",
+                "race_key_raw": "09252510"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253211",
+            "09254311",
+            "10252811",
+            "04251511",
+            "09252510"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "07255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        }
+      ]
+    },
+    {
+      "venue": "中山",
+      "race_no": 9,
+      "horses": [
+        {
+          "horse_no": 1,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10457",
+            "ticket_index": 57,
+            "ticket_mark": "3",
+            "longshot_type": "A2",
+            "longshot_index": 197,
+            "previous": [
+              {
+                "result_key": "2310520320251101",
+                "race_key_raw": "08253a11"
+              },
+              {
+                "result_key": "2310520320251005",
+                "race_key_raw": "08253204"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253a11",
+            "08253204"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 2,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10582",
+            "ticket_index": 57,
+            "ticket_mark": "2",
+            "longshot_type": "",
+            "longshot_index": 203,
+            "previous": [
+              {
+                "result_key": "2310371020251116",
+                "race_key_raw": "03253409"
+              },
+              {
+                "result_key": "2310371020251019",
+                "race_key_raw": "05254706"
+              },
+              {
+                "result_key": "2310371020250809",
+                "race_key_raw": "04252508"
+              },
+              {
+                "result_key": "2310371020250713",
+                "race_key_raw": "02251a05"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253409",
+            "05254706",
+            "04252508",
+            "02251a05"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 3,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10542",
+            "ticket_index": 54,
+            "ticket_mark": "4",
+            "longshot_type": "B1",
+            "longshot_index": 200,
+            "previous": [
+              {
+                "result_key": "2310289720251116",
+                "race_key_raw": "03253409"
+              },
+              {
+                "result_key": "2310289720250920",
+                "race_key_raw": "06254609"
+              },
+              {
+                "result_key": "2310289720250802",
+                "race_key_raw": "04252303"
+              },
+              {
+                "result_key": "2310289720250712",
+                "race_key_raw": "03252506"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253409",
+            "06254609",
+            "04252303",
+            "03252506"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 4,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10500",
+            "ticket_index": 52,
+            "ticket_mark": "6",
+            "longshot_type": "A3",
+            "longshot_index": 190,
+            "previous": [
+              {
+                "result_key": "2310640520251108",
+                "race_key_raw": "05255111"
+              },
+              {
+                "result_key": "2310640520251019",
+                "race_key_raw": "05254706"
+              },
+              {
+                "result_key": "2310640520250809",
+                "race_key_raw": "04252508"
+              },
+              {
+                "result_key": "2310640520250719",
+                "race_key_raw": "03252704"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255111",
+            "05254706",
+            "04252508",
+            "03252704"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 5,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10570",
+            "ticket_index": 34,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 177,
+            "previous": [
+              {
+                "result_key": "2310303220251115",
+                "race_key_raw": "03253304"
+              },
+              {
+                "result_key": "2310303220250914",
+                "race_key_raw": "06254402"
+              },
+              {
+                "result_key": "2310303220250720",
+                "race_key_raw": "02251c01"
+              },
+              {
+                "result_key": "2310303220250628",
+                "race_key_raw": "02251505"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253304",
+            "06254402",
+            "02251c01",
+            "02251505"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 6,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "30182",
+            "ticket_index": 18,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 108,
+            "previous": [
+              {
+                "result_key": "2310490920251108",
+                "race_key_raw": "05255106"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255106"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 7,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10547",
+            "ticket_index": 27,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 76,
+            "previous": [
+              {
+                "result_key": "2310047920251108",
+                "race_key_raw": "03253105"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253105"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 8,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10429",
+            "ticket_index": 41,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 147,
+            "previous": [
+              {
+                "result_key": "2310072820251124",
+                "race_key_raw": "05255611"
+              },
+              {
+                "result_key": "2310072820251108",
+                "race_key_raw": "05255111"
+              },
+              {
+                "result_key": "2310072820251013",
+                "race_key_raw": "05254508"
+              },
+              {
+                "result_key": "2310072820250824",
+                "race_key_raw": "04253211"
+              },
+              {
+                "result_key": "2310072820250809",
+                "race_key_raw": "04252508"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255611",
+            "05255111",
+            "05254508",
+            "04253211",
+            "04252508"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 9,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "30468",
+            "ticket_index": 47,
+            "ticket_mark": "7",
+            "longshot_type": "",
+            "longshot_index": 224,
+            "previous": [
+              {
+                "result_key": "2310512820250920",
+                "race_key_raw": "06254609"
+              },
+              {
+                "result_key": "2310512820250809",
+                "race_key_raw": "04252508"
+              },
+              {
+                "result_key": "2310512820250705",
+                "race_key_raw": "03252304"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254609",
+            "04252508",
+            "03252304"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 10,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10588",
+            "ticket_index": 44,
+            "ticket_mark": "8",
+            "longshot_type": "",
+            "longshot_index": 210,
+            "previous": [
+              {
+                "result_key": "2310335520251116",
+                "race_key_raw": "03253409"
+              },
+              {
+                "result_key": "2310335520250920",
+                "race_key_raw": "06254609"
+              },
+              {
+                "result_key": "2310335520250720",
+                "race_key_raw": "03252803"
+              },
+              {
+                "result_key": "2310335520250614",
+                "race_key_raw": "05253306"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253409",
+            "06254609",
+            "03252803",
+            "05253306"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 11,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10604",
+            "ticket_index": 52,
+            "ticket_mark": "5",
+            "longshot_type": "B2",
+            "longshot_index": 171,
+            "previous": [
+              {
+                "result_key": "2310303720251116",
+                "race_key_raw": "03253409"
+              },
+              {
+                "result_key": "2310303720250927",
+                "race_key_raw": "06254803"
+              },
+              {
+                "result_key": "2310303720250907",
+                "race_key_raw": "06254203"
+              },
+              {
+                "result_key": "2310303720250810",
+                "race_key_raw": "04252601"
+              },
+              {
+                "result_key": "2310303720250622",
+                "race_key_raw": "05253606"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253409",
+            "06254803",
+            "06254203",
+            "04252601",
+            "05253606"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 12,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10617",
+            "ticket_index": 57,
+            "ticket_mark": "1",
+            "longshot_type": "A1",
+            "longshot_index": 207,
+            "previous": [
+              {
+                "result_key": "2310682320250920",
+                "race_key_raw": "06254609"
+              },
+              {
+                "result_key": "2310682320250720",
+                "race_key_raw": "02251c11"
+              },
+              {
+                "result_key": "2310682320250614",
+                "race_key_raw": "09253305"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254609",
+            "02251c11",
+            "09253305"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 13,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10515",
+            "ticket_index": 38,
+            "ticket_mark": "",
+            "longshot_type": "A4",
+            "longshot_index": 150,
+            "previous": [
+              {
+                "result_key": "2310355720251025",
+                "race_key_raw": "04254301"
+              },
+              {
+                "result_key": "2310355720250830",
+                "race_key_raw": "04253305"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254301",
+            "04253305"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        }
+      ]
+    },
+    {
+      "venue": "中山",
+      "race_no": 10,
+      "horses": [
+        {
+          "horse_no": 1,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10515",
+            "ticket_index": 46,
+            "ticket_mark": "5",
+            "longshot_type": "A3",
+            "longshot_index": 188,
+            "previous": [
+              {
+                "result_key": "2111010420250920",
+                "race_key_raw": "06254612"
+              },
+              {
+                "result_key": "2111010420250726",
+                "race_key_raw": "07253106"
+              },
+              {
+                "result_key": "2111010420250706",
+                "race_key_raw": "03252409"
+              },
+              {
+                "result_key": "2111010420250420",
+                "race_key_raw": "06253807"
+              },
+              {
+                "result_key": "2111010420250111",
+                "race_key_raw": "06251308"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254612",
+            "07253106",
+            "03252409",
+            "06253807",
+            "06251308"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 2,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10515",
+            "ticket_index": 48,
+            "ticket_mark": "4",
+            "longshot_type": "",
+            "longshot_index": 181,
+            "previous": [
+              {
+                "result_key": "2010525020251019",
+                "race_key_raw": "08253710"
+              },
+              {
+                "result_key": "2010525020250622",
+                "race_key_raw": "02251411"
+              },
+              {
+                "result_key": "2010525020250420",
+                "race_key_raw": "09252810"
+              },
+              {
+                "result_key": "2010525020250308",
+                "race_key_raw": "09251310"
+              },
+              {
+                "result_key": "2010525020250126",
+                "race_key_raw": "06251910"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253710",
+            "02251411",
+            "09252810",
+            "09251310",
+            "06251910"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 3,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "30113",
+            "ticket_index": 41,
+            "ticket_mark": "",
+            "longshot_type": "B2",
+            "longshot_index": 155,
+            "previous": [
+              {
+                "result_key": "1810659720251129",
+                "race_key_raw": "05255710"
+              },
+              {
+                "result_key": "1810659720251116",
+                "race_key_raw": "05255409"
+              },
+              {
+                "result_key": "1810659720251102",
+                "race_key_raw": "05254b10"
+              },
+              {
+                "result_key": "1810659720251012",
+                "race_key_raw": "05254410"
+              },
+              {
+                "result_key": "1810659720250607",
+                "race_key_raw": "05253111"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255710",
+            "05255409",
+            "05254b10",
+            "05254410",
+            "05253111"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 4,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10547",
+            "ticket_index": 21,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 103,
+            "previous": [
+              {
+                "result_key": "2010127120250607",
+                "race_key_raw": "05253111"
+              },
+              {
+                "result_key": "2010127120250315",
+                "race_key_raw": "07252111"
+              },
+              {
+                "result_key": "2010127120250118",
+                "race_key_raw": "07251611"
+              },
+              {
+                "result_key": "2010127120241214",
+                "race_key_raw": "07244510"
+              },
+              {
+                "result_key": "2010127120241201",
+                "race_key_raw": "07244210"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05253111",
+            "07252111",
+            "07251611",
+            "07244510",
+            "07244210"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 5,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10633",
+            "ticket_index": 57,
+            "ticket_mark": "3",
+            "longshot_type": "A2",
+            "longshot_index": 193,
+            "previous": [
+              {
+                "result_key": "2110123720251115",
+                "race_key_raw": "03253311"
+              },
+              {
+                "result_key": "2110123720250413",
+                "race_key_raw": "03251210"
+              },
+              {
+                "result_key": "2110123720250201",
+                "race_key_raw": "10251310"
+              },
+              {
+                "result_key": "2110123720250105",
+                "race_key_raw": "06251112"
+              },
+              {
+                "result_key": "2110123720241109",
+                "race_key_raw": "03243307"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253311",
+            "03251210",
+            "10251310",
+            "06251112",
+            "03243307"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 6,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10594",
+            "ticket_index": 68,
+            "ticket_mark": "1",
+            "longshot_type": "A1",
+            "longshot_index": 221,
+            "previous": [
+              {
+                "result_key": "2111015320251115",
+                "race_key_raw": "08254309"
+              },
+              {
+                "result_key": "2111015320251026",
+                "race_key_raw": "08253912"
+              },
+              {
+                "result_key": "2111015320250517",
+                "race_key_raw": "04251510"
+              },
+              {
+                "result_key": "2111015320250412",
+                "race_key_raw": "03251110"
+              },
+              {
+                "result_key": "2111015320250330",
+                "race_key_raw": "09252212"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254309",
+            "08253912",
+            "04251510",
+            "03251110",
+            "09252212"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 7,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10522",
+            "ticket_index": 19,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 114,
+            "previous": [
+              {
+                "result_key": "2010387620250928",
+                "race_key_raw": "06254912"
+              },
+              {
+                "result_key": "2010387620250907",
+                "race_key_raw": "06254209"
+              },
+              {
+                "result_key": "2010387620250823",
+                "race_key_raw": "04253109"
+              },
+              {
+                "result_key": "2010387620250614",
+                "race_key_raw": "09253310"
+              },
+              {
+                "result_key": "2010387620250525",
+                "race_key_raw": "04251810"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254912",
+            "06254209",
+            "04253109",
+            "09253310",
+            "04251810"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 8,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10603",
+            "ticket_index": 41,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 164,
+            "previous": [
+              {
+                "result_key": "1910210220251129",
+                "race_key_raw": "05255710"
+              },
+              {
+                "result_key": "1910210220251101",
+                "race_key_raw": "05254a08"
+              },
+              {
+                "result_key": "1910210220251004",
+                "race_key_raw": "05254106"
+              },
+              {
+                "result_key": "1910210220250913",
+                "race_key_raw": "06254308"
+              },
+              {
+                "result_key": "1910210220250906",
+                "race_key_raw": "06254112"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255710",
+            "05254a08",
+            "05254106",
+            "06254308",
+            "06254112"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 9,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "30113",
+            "ticket_index": 45,
+            "ticket_mark": "6",
+            "longshot_type": "",
+            "longshot_index": 206,
+            "previous": [
+              {
+                "result_key": "2210007120250927",
+                "race_key_raw": "06254812"
+              },
+              {
+                "result_key": "2210007120250915",
+                "race_key_raw": "06254512"
+              },
+              {
+                "result_key": "2210007120250510",
+                "race_key_raw": "08252506"
+              },
+              {
+                "result_key": "2210007120250413",
+                "race_key_raw": "06253608"
+              },
+              {
+                "result_key": "2210007120250222",
+                "race_key_raw": "05251702"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254812",
+            "06254512",
+            "08252506",
+            "06253608",
+            "05251702"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 10,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10560",
+            "ticket_index": 44,
+            "ticket_mark": "7",
+            "longshot_type": "",
+            "longshot_index": 181,
+            "previous": [
+              {
+                "result_key": "1910201120250928",
+                "race_key_raw": "06254912"
+              },
+              {
+                "result_key": "1910201120250615",
+                "race_key_raw": "09253412"
+              },
+              {
+                "result_key": "1910201120250504",
+                "race_key_raw": "08252412"
+              },
+              {
+                "result_key": "1910201120241027",
+                "race_key_raw": "05244810"
+              },
+              {
+                "result_key": "1910201120240929",
+                "race_key_raw": "06244912"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254912",
+            "09253412",
+            "08252412",
+            "05244810",
+            "06244912"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 11,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10580",
+            "ticket_index": 33,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 169,
+            "previous": [
+              {
+                "result_key": "2110011420251115",
+                "race_key_raw": "03253311"
+              },
+              {
+                "result_key": "2110011420250928",
+                "race_key_raw": "06254912"
+              },
+              {
+                "result_key": "2110011420250913",
+                "race_key_raw": "06254311"
+              },
+              {
+                "result_key": "2110011420250705",
+                "race_key_raw": "03252311"
+              },
+              {
+                "result_key": "2110011420250504",
+                "race_key_raw": "08252412"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "03253311",
+            "06254912",
+            "06254311",
+            "03252311",
+            "08252412"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 12,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10515",
+            "ticket_index": 43,
+            "ticket_mark": "8",
+            "longshot_type": "",
+            "longshot_index": 165,
+            "previous": [
+              {
+                "result_key": "2110173720251109",
+                "race_key_raw": "08254210"
+              },
+              {
+                "result_key": "2110173720250928",
+                "race_key_raw": "06254912"
+              },
+              {
+                "result_key": "2110173720250615",
+                "race_key_raw": "09253412"
+              },
+              {
+                "result_key": "2110173720250323",
+                "race_key_raw": "09251810"
+              },
+              {
+                "result_key": "2110173720250210",
+                "race_key_raw": "08251309"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254210",
+            "06254912",
+            "09253412",
+            "09251810",
+            "08251309"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 13,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10600",
+            "ticket_index": 42,
+            "ticket_mark": "",
+            "longshot_type": "B1",
+            "longshot_index": 178,
+            "previous": [
+              {
+                "result_key": "1810586020250928",
+                "race_key_raw": "06254912"
+              },
+              {
+                "result_key": "1810586020250525",
+                "race_key_raw": "08252a10"
+              },
+              {
+                "result_key": "1810586020250308",
+                "race_key_raw": "09251310"
+              },
+              {
+                "result_key": "1810586020241207",
+                "race_key_raw": "06245310"
+              },
+              {
+                "result_key": "1810586020241005",
+                "race_key_raw": "08245110"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254912",
+            "08252a10",
+            "09251310",
+            "06245310",
+            "08245110"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 14,
+          "kyi": {
+            "reference_previous_raw": "",
+            "reference_jockey_code": "10375",
+            "ticket_index": 36,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 132,
+            "previous": [
+              {
+                "result_key": "2010408820251004",
+                "race_key_raw": "05254110"
+              },
+              {
+                "result_key": "2010408820250907",
+                "race_key_raw": "06254210"
+              },
+              {
+                "result_key": "2010408820250726",
+                "race_key_raw": "04252107"
+              },
+              {
+                "result_key": "2010408820250510",
+                "race_key_raw": "04251311"
+              },
+              {
+                "result_key": "2010408820250330",
+                "race_key_raw": "06253210"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05254110",
+            "06254210",
+            "04252107",
+            "04251311",
+            "06253210"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 15,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10598",
+            "ticket_index": 59,
+            "ticket_mark": "2",
+            "longshot_type": "A4",
+            "longshot_index": 187,
+            "previous": [
+              {
+                "result_key": "2010364320251004",
+                "race_key_raw": "08253110"
+              },
+              {
+                "result_key": "2010364320250823",
+                "race_key_raw": "07254111"
+              },
+              {
+                "result_key": "2010364320250615",
+                "race_key_raw": "09253412"
+              },
+              {
+                "result_key": "2010364320250301",
+                "race_key_raw": "06252110"
+              },
+              {
+                "result_key": "2010364320250113",
+                "race_key_raw": "06251510"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253110",
+            "07254111",
+            "09253412",
+            "06252110",
+            "06251510"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        }
+      ]
+    },
+    {
+      "venue": "中山",
+      "race_no": 11,
+      "horses": [
+        {
+          "horse_no": 1,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10612",
+            "ticket_index": 43,
+            "ticket_mark": "6",
+            "longshot_type": "",
+            "longshot_index": 143,
+            "previous": [
+              {
+                "result_key": "2010049520251025",
+                "race_key_raw": "04254311"
+              },
+              {
+                "result_key": "2010049520250830",
+                "race_key_raw": "04253311"
+              },
+              {
+                "result_key": "2010049520250713",
+                "race_key_raw": "03252611"
+              },
+              {
+                "result_key": "2010049520250628",
+                "race_key_raw": "03252111"
+              },
+              {
+                "result_key": "2010049520250518",
+                "race_key_raw": "04251610"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254311",
+            "04253311",
+            "03252611",
+            "03252111",
+            "04251610"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 2,
+          "kyi": {
+            "reference_previous_raw": "14",
+            "reference_jockey_code": "30113",
+            "ticket_index": 26,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 130,
+            "previous": [
+              {
+                "result_key": "1910415920251116",
+                "race_key_raw": "05255410"
+              },
+              {
+                "result_key": "1910415920251019",
+                "race_key_raw": "04254211"
+              },
+              {
+                "result_key": "1910415920250831",
+                "race_key_raw": "01252411"
+              },
+              {
+                "result_key": "1910415920250713",
+                "race_key_raw": "02251a11"
+              },
+              {
+                "result_key": "1910415920250607",
+                "race_key_raw": "09253111"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255410",
+            "04254211",
+            "01252411",
+            "02251a11",
+            "09253111"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 3,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "70176",
+            "ticket_index": 26,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 138,
+            "previous": [
+              {
+                "result_key": "2210239120250927",
+                "race_key_raw": "06254811"
+              },
+              {
+                "result_key": "2210239120250615",
+                "race_key_raw": "05253409"
+              },
+              {
+                "result_key": "2210239120250223",
+                "race_key_raw": "05251805"
+              },
+              {
+                "result_key": "2210239120241123",
+                "race_key_raw": "05245705"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254811",
+            "05253409",
+            "05251805",
+            "05245705"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 4,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10512",
+            "ticket_index": 34,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 174,
+            "previous": [
+              {
+                "result_key": "2010455020251116",
+                "race_key_raw": "08254412"
+              },
+              {
+                "result_key": "2010455020250816",
+                "race_key_raw": "07253707"
+              },
+              {
+                "result_key": "2010455020250719",
+                "race_key_raw": "03252711"
+              },
+              {
+                "result_key": "2010455020250628",
+                "race_key_raw": "03252111"
+              },
+              {
+                "result_key": "2010455020250406",
+                "race_key_raw": "06253411"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254412",
+            "07253707",
+            "03252711",
+            "03252111",
+            "06253411"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 5,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10600",
+            "ticket_index": 71,
+            "ticket_mark": "1",
+            "longshot_type": "A1",
+            "longshot_index": 205,
+            "previous": [
+              {
+                "result_key": "2110595320250615",
+                "race_key_raw": "09253410"
+              },
+              {
+                "result_key": "2110595320250209",
+                "race_key_raw": "05251410"
+              },
+              {
+                "result_key": "2110595320241201",
+                "race_key_raw": "08247210"
+              },
+              {
+                "result_key": "2110595320240901",
+                "race_key_raw": "04243811"
+              },
+              {
+                "result_key": "2110595320240519",
+                "race_key_raw": "05242a11"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09253410",
+            "05251410",
+            "08247210",
+            "04243811",
+            "05242a11"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 6,
+          "kyi": {
+            "reference_previous_raw": "14",
+            "reference_jockey_code": "10555",
+            "ticket_index": 39,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 156,
+            "previous": [
+              {
+                "result_key": "2010080920251019",
+                "race_key_raw": "04254211"
+              },
+              {
+                "result_key": "2010080920250914",
+                "race_key_raw": "06254410"
+              },
+              {
+                "result_key": "2010080920250802",
+                "race_key_raw": "01251311"
+              },
+              {
+                "result_key": "2010080920250420",
+                "race_key_raw": "03251411"
+              },
+              {
+                "result_key": "2010080920250316",
+                "race_key_raw": "06252609"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254211",
+            "06254410",
+            "01251311",
+            "03251411",
+            "06252609"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 7,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10497",
+            "ticket_index": 35,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 127,
+            "previous": [
+              {
+                "result_key": "2110432620250927",
+                "race_key_raw": "06254811"
+              },
+              {
+                "result_key": "2110432620250719",
+                "race_key_raw": "03252711"
+              },
+              {
+                "result_key": "2110432620250510",
+                "race_key_raw": "05252509"
+              },
+              {
+                "result_key": "2110432620250412",
+                "race_key_raw": "06253510"
+              },
+              {
+                "result_key": "2110432620250315",
+                "race_key_raw": "06252510"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254811",
+            "03252711",
+            "05252509",
+            "06253510",
+            "06252510"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 8,
+          "kyi": {
+            "reference_previous_raw": "31",
+            "reference_jockey_code": "10542",
+            "ticket_index": 51,
+            "ticket_mark": "4",
+            "longshot_type": "",
+            "longshot_index": 157,
+            "previous": [
+              {
+                "result_key": "2110557820251116",
+                "race_key_raw": "08254412"
+              },
+              {
+                "result_key": "2110557820251019",
+                "race_key_raw": "05254712"
+              },
+              {
+                "result_key": "2110557820250601",
+                "race_key_raw": "05252c10"
+              },
+              {
+                "result_key": "2110557820250504",
+                "race_key_raw": "05252409"
+              },
+              {
+                "result_key": "2110557820250222",
+                "race_key_raw": "05251708"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254412",
+            "05254712",
+            "05252c10",
+            "05252409",
+            "05251708"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 9,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10628",
+            "ticket_index": 35,
+            "ticket_mark": "",
+            "longshot_type": "B2",
+            "longshot_index": 154,
+            "previous": [
+              {
+                "result_key": "1810515720251116",
+                "race_key_raw": "08254412"
+              },
+              {
+                "result_key": "1810515720251019",
+                "race_key_raw": "05254712"
+              },
+              {
+                "result_key": "1810515720250719",
+                "race_key_raw": "03252711"
+              },
+              {
+                "result_key": "1810515720250615",
+                "race_key_raw": "09253410"
+              },
+              {
+                "result_key": "1810515720250601",
+                "race_key_raw": "05252c10"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254412",
+            "05254712",
+            "03252711",
+            "09253410",
+            "05252c10"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 10,
+          "kyi": {
+            "reference_previous_raw": "",
+            "reference_jockey_code": "10500",
+            "ticket_index": 40,
+            "ticket_mark": "8",
+            "longshot_type": "",
+            "longshot_index": 201,
+            "previous": [
+              {
+                "result_key": "2210132920251123",
+                "race_key_raw": "05255510"
+              },
+              {
+                "result_key": "2210132920250823",
+                "race_key_raw": "01252111"
+              },
+              {
+                "result_key": "2210132920250629",
+                "race_key_raw": "03252211"
+              },
+              {
+                "result_key": "2210132920250420",
+                "race_key_raw": "06253811"
+              },
+              {
+                "result_key": "2210132920250316",
+                "race_key_raw": "06252611"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255510",
+            "01252111",
+            "03252211",
+            "06253811",
+            "06252611"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 11,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10544",
+            "ticket_index": 40,
+            "ticket_mark": "7",
+            "longshot_type": "B1",
+            "longshot_index": 172,
+            "previous": [
+              {
+                "result_key": "2110676620251116",
+                "race_key_raw": "08254412"
+              },
+              {
+                "result_key": "2110676620251026",
+                "race_key_raw": "04254410"
+              },
+              {
+                "result_key": "2110676620250824",
+                "race_key_raw": "01252212"
+              },
+              {
+                "result_key": "2110676620250809",
+                "race_key_raw": "01251510"
+              },
+              {
+                "result_key": "2110676620250608",
+                "race_key_raw": "05253209"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254412",
+            "04254410",
+            "01252212",
+            "01251510",
+            "05253209"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 12,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10594",
+            "ticket_index": 62,
+            "ticket_mark": "2",
+            "longshot_type": "A2",
+            "longshot_index": 200,
+            "previous": [
+              {
+                "result_key": "2010348620251019",
+                "race_key_raw": "05254712"
+              },
+              {
+                "result_key": "2010348620250824",
+                "race_key_raw": "04253209"
+              },
+              {
+                "result_key": "2010348620250323",
+                "race_key_raw": "06252810"
+              },
+              {
+                "result_key": "2010348620250112",
+                "race_key_raw": "07251410"
+              },
+              {
+                "result_key": "2010348620241117",
+                "race_key_raw": "05245610"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05254712",
+            "04253209",
+            "06252810",
+            "07251410",
+            "05245610"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 13,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10529",
+            "ticket_index": 39,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 164,
+            "previous": [
+              {
+                "result_key": "2010696620251019",
+                "race_key_raw": "04254211"
+              },
+              {
+                "result_key": "2010696620250824",
+                "race_key_raw": "01252212"
+              },
+              {
+                "result_key": "2010696620250802",
+                "race_key_raw": "01251310"
+              },
+              {
+                "result_key": "2010696620250719",
+                "race_key_raw": "02251b10"
+              },
+              {
+                "result_key": "2010696620250614",
+                "race_key_raw": "02251110"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04254211",
+            "01252212",
+            "01251310",
+            "02251b10",
+            "02251110"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 14,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "70234",
+            "ticket_index": 47,
+            "ticket_mark": "5",
+            "longshot_type": "A3",
+            "longshot_index": 183,
+            "previous": [
+              {
+                "result_key": "2110578820251122",
+                "race_key_raw": "08254510"
+              },
+              {
+                "result_key": "2110578820250628",
+                "race_key_raw": "03252111"
+              },
+              {
+                "result_key": "2110578820250601",
+                "race_key_raw": "05252c10"
+              },
+              {
+                "result_key": "2110578820250406",
+                "race_key_raw": "06253410"
+              },
+              {
+                "result_key": "2110578820250201",
+                "race_key_raw": "08251111"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254510",
+            "03252111",
+            "05252c10",
+            "06253410",
+            "08251111"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 15,
+          "kyi": {
+            "reference_previous_raw": "21",
+            "reference_jockey_code": "10515",
+            "ticket_index": 39,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 173,
+            "previous": [
+              {
+                "result_key": "2110681620251109",
+                "race_key_raw": "05255210"
+              },
+              {
+                "result_key": "2110681620250713",
+                "race_key_raw": "02251a11"
+              },
+              {
+                "result_key": "2110681620250518",
+                "race_key_raw": "04251611"
+              },
+              {
+                "result_key": "2110681620250329",
+                "race_key_raw": "06253108"
+              },
+              {
+                "result_key": "2110681620250302",
+                "race_key_raw": "10251c10"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255210",
+            "02251a11",
+            "04251611",
+            "06253108",
+            "10251c10"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 16,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10598",
+            "ticket_index": 51,
+            "ticket_mark": "3",
+            "longshot_type": "A4",
+            "longshot_index": 173,
+            "previous": [
+              {
+                "result_key": "1910076820251005",
+                "race_key_raw": "08253209"
+              },
+              {
+                "result_key": "1910076820250914",
+                "race_key_raw": "06254410"
+              },
+              {
+                "result_key": "1910076820250823",
+                "race_key_raw": "01252111"
+              },
+              {
+                "result_key": "1910076820250810",
+                "race_key_raw": "04252606"
+              },
+              {
+                "result_key": "1910076820250601",
+                "race_key_raw": "05252c10"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253209",
+            "06254410",
+            "01252111",
+            "04252606",
+            "05252c10"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "06255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        }
+      ]
+    },
+    {
+      "venue": "阪神",
+      "race_no": 9,
+      "horses": [
+        {
+          "horse_no": 1,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "70359",
+            "ticket_index": 41,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 200,
+            "previous": [
+              {
+                "result_key": "2310688720250823",
+                "race_key_raw": "01252101"
+              },
+              {
+                "result_key": "2310688720250803",
+                "race_key_raw": "01251405"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "01252101",
+            "01251405"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 2,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10515",
+            "ticket_index": 54,
+            "ticket_mark": "5",
+            "longshot_type": "A3",
+            "longshot_index": 168,
+            "previous": [
+              {
+                "result_key": "2310109020251116",
+                "race_key_raw": "08254409"
+              },
+              {
+                "result_key": "2310109020250802",
+                "race_key_raw": "01251301"
+              },
+              {
+                "result_key": "2310109020250719",
+                "race_key_raw": "02251b01"
+              },
+              {
+                "result_key": "2310109020250629",
+                "race_key_raw": "02251601"
+              },
+              {
+                "result_key": "2310109020250614",
+                "race_key_raw": "02251105"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254409",
+            "01251301",
+            "02251b01",
+            "02251601",
+            "02251105"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 3,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10636",
+            "ticket_index": 38,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 210,
+            "previous": [
+              {
+                "result_key": "2310381720251012",
+                "race_key_raw": "08253403"
+              },
+              {
+                "result_key": "2310381720250928",
+                "race_key_raw": "09254903"
+              },
+              {
+                "result_key": "2310381720250706",
+                "race_key_raw": "10252405"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253403",
+            "09254903",
+            "10252405"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 4,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10583",
+            "ticket_index": 50,
+            "ticket_mark": "6",
+            "longshot_type": "",
+            "longshot_index": 198,
+            "previous": [
+              {
+                "result_key": "2310438920251129",
+                "race_key_raw": "08254711"
+              },
+              {
+                "result_key": "2310438920250927",
+                "race_key_raw": "09254805"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254711",
+            "09254805"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 5,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10612",
+            "ticket_index": 40,
+            "ticket_mark": "",
+            "longshot_type": "A4",
+            "longshot_index": 128,
+            "previous": [
+              {
+                "result_key": "2310247720250823",
+                "race_key_raw": "04253101"
+              },
+              {
+                "result_key": "2310247720250809",
+                "race_key_raw": "04252502"
+              },
+              {
+                "result_key": "2310247720250720",
+                "race_key_raw": "03252805"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "04253101",
+            "04252502",
+            "03252805"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 6,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10438",
+            "ticket_index": 63,
+            "ticket_mark": "2",
+            "longshot_type": "A2",
+            "longshot_index": 257,
+            "previous": [
+              {
+                "result_key": "2310692120251011",
+                "race_key_raw": "08253308"
+              },
+              {
+                "result_key": "2310692120250914",
+                "race_key_raw": "09254405"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253308",
+            "09254405"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 7,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10591",
+            "ticket_index": 82,
+            "ticket_mark": "1",
+            "longshot_type": "A1",
+            "longshot_index": 291,
+            "previous": [
+              {
+                "result_key": "2310736820250915",
+                "race_key_raw": "09254503"
+              },
+              {
+                "result_key": "2310736820250719",
+                "race_key_raw": "10252701"
+              },
+              {
+                "result_key": "2310736820250706",
+                "race_key_raw": "10252405"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254503",
+            "10252701",
+            "10252405"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 8,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10522",
+            "ticket_index": 56,
+            "ticket_mark": "4",
+            "longshot_type": "",
+            "longshot_index": 231,
+            "previous": [
+              {
+                "result_key": "2310698320250720",
+                "race_key_raw": "10252805"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "10252805"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 9,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10633",
+            "ticket_index": 60,
+            "ticket_mark": "3",
+            "longshot_type": "B1",
+            "longshot_index": 229,
+            "previous": [
+              {
+                "result_key": "2310052120251026",
+                "race_key_raw": "08253909"
+              },
+              {
+                "result_key": "2310052120250719",
+                "race_key_raw": "10252701"
+              },
+              {
+                "result_key": "2310052120250621",
+                "race_key_raw": "09253505"
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              },
+              {
+                "result_key": "",
+                "race_key_raw": ""
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253909",
+            "10252701",
+            "09253505"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255309",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        }
+      ]
+    },
+    {
+      "venue": "阪神",
+      "race_no": 10,
+      "horses": [
+        {
+          "horse_no": 1,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10500",
+            "ticket_index": 29,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 114,
+            "previous": [
+              {
+                "result_key": "1910657320251108",
+                "race_key_raw": "05255109"
+              },
+              {
+                "result_key": "1910657320250726",
+                "race_key_raw": "01251112"
+              },
+              {
+                "result_key": "1910657320250706",
+                "race_key_raw": "02251810"
+              },
+              {
+                "result_key": "1910657320250622",
+                "race_key_raw": "02251410"
+              },
+              {
+                "result_key": "1910657320250615",
+                "race_key_raw": "02251210"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255109",
+            "01251112",
+            "02251810",
+            "02251410",
+            "02251210"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 2,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10632",
+            "ticket_index": 44,
+            "ticket_mark": "7",
+            "longshot_type": "B1",
+            "longshot_index": 142,
+            "previous": [
+              {
+                "result_key": "2010412620251207",
+                "race_key_raw": "07255209"
+              },
+              {
+                "result_key": "2010412620251005",
+                "race_key_raw": "05254212"
+              },
+              {
+                "result_key": "2010412620250420",
+                "race_key_raw": "09252812"
+              },
+              {
+                "result_key": "2010412620250301",
+                "race_key_raw": "10251b11"
+              },
+              {
+                "result_key": "2010412620241228",
+                "race_key_raw": "08247909"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "07255209",
+            "05254212",
+            "09252812",
+            "10251b11",
+            "08247909"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 3,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10547",
+            "ticket_index": 52,
+            "ticket_mark": "2",
+            "longshot_type": "A1",
+            "longshot_index": 201,
+            "previous": [
+              {
+                "result_key": "2010522820251011",
+                "race_key_raw": "05254310"
+              },
+              {
+                "result_key": "2010522820250928",
+                "race_key_raw": "09254912"
+              },
+              {
+                "result_key": "2010522820250622",
+                "race_key_raw": "09253612"
+              },
+              {
+                "result_key": "2010522820250607",
+                "race_key_raw": "09253110"
+              },
+              {
+                "result_key": "2010522820250329",
+                "race_key_raw": "09252112"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05254310",
+            "09254912",
+            "09253612",
+            "09253110",
+            "09252112"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 4,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10512",
+            "ticket_index": 45,
+            "ticket_mark": "6",
+            "longshot_type": "",
+            "longshot_index": 231,
+            "previous": [
+              {
+                "result_key": "2210618620250920",
+                "race_key_raw": "09254612"
+              },
+              {
+                "result_key": "2210618620250831",
+                "race_key_raw": "04253410"
+              },
+              {
+                "result_key": "2210618620250503",
+                "race_key_raw": "08252311"
+              },
+              {
+                "result_key": "2210618620250406",
+                "race_key_raw": "06253406"
+              },
+              {
+                "result_key": "2210618620250202",
+                "race_key_raw": "10251408"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254612",
+            "04253410",
+            "08252311",
+            "06253406",
+            "10251408"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 5,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10628",
+            "ticket_index": 39,
+            "ticket_mark": "",
+            "longshot_type": "B2",
+            "longshot_index": 123,
+            "previous": [
+              {
+                "result_key": "2110462220251207",
+                "race_key_raw": "09255209"
+              },
+              {
+                "result_key": "2110462220250323",
+                "race_key_raw": "07252407"
+              },
+              {
+                "result_key": "2110462220241109",
+                "race_key_raw": "08246306"
+              },
+              {
+                "result_key": "2110462220241027",
+                "race_key_raw": "08245807"
+              },
+              {
+                "result_key": "2110462220240706",
+                "race_key_raw": "02241904"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09255209",
+            "07252407",
+            "08246306",
+            "08245807",
+            "02241904"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 6,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10546",
+            "ticket_index": 42,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 217,
+            "previous": [
+              {
+                "result_key": "2110669420251025",
+                "race_key_raw": "08253809"
+              },
+              {
+                "result_key": "2110669420250928",
+                "race_key_raw": "09254912"
+              },
+              {
+                "result_key": "2110669420250525",
+                "race_key_raw": "08252a12"
+              },
+              {
+                "result_key": "2110669420250511",
+                "race_key_raw": "05252609"
+              },
+              {
+                "result_key": "2110669420250413",
+                "race_key_raw": "06253609"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253809",
+            "09254912",
+            "08252a12",
+            "05252609",
+            "06253609"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 7,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10574",
+            "ticket_index": 51,
+            "ticket_mark": "3",
+            "longshot_type": "",
+            "longshot_index": 167,
+            "previous": [
+              {
+                "result_key": "2111009720251129",
+                "race_key_raw": "08254709"
+              },
+              {
+                "result_key": "2111009720251109",
+                "race_key_raw": "08254206"
+              },
+              {
+                "result_key": "2111009720251005",
+                "race_key_raw": "08253206"
+              },
+              {
+                "result_key": "2111009720250914",
+                "race_key_raw": "09254408"
+              },
+              {
+                "result_key": "2111009720250608",
+                "race_key_raw": "09253208"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254709",
+            "08254206",
+            "08253206",
+            "09254408",
+            "09253208"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 8,
+          "kyi": {
+            "reference_previous_raw": "13",
+            "reference_jockey_code": "10455",
+            "ticket_index": 26,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 129,
+            "previous": [
+              {
+                "result_key": "2110141920251004",
+                "race_key_raw": "08253112"
+              },
+              {
+                "result_key": "2110141920250920",
+                "race_key_raw": "09254612"
+              },
+              {
+                "result_key": "2110141920250622",
+                "race_key_raw": "09253612"
+              },
+              {
+                "result_key": "2110141920250510",
+                "race_key_raw": "08252508"
+              },
+              {
+                "result_key": "2110141920250420",
+                "race_key_raw": "09252808"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253112",
+            "09254612",
+            "09253612",
+            "08252508",
+            "09252808"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 9,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10591",
+            "ticket_index": 45,
+            "ticket_mark": "5",
+            "longshot_type": "A3",
+            "longshot_index": 145,
+            "previous": [
+              {
+                "result_key": "2110243620251025",
+                "race_key_raw": "08253809"
+              },
+              {
+                "result_key": "2110243620251011",
+                "race_key_raw": "05254310"
+              },
+              {
+                "result_key": "2110243620250614",
+                "race_key_raw": "05253309"
+              },
+              {
+                "result_key": "2110243620250531",
+                "race_key_raw": "05252b12"
+              },
+              {
+                "result_key": "2110243620250315",
+                "race_key_raw": "06252509"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253809",
+            "05254310",
+            "05253309",
+            "05252b12",
+            "06252509"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 10,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10640",
+            "ticket_index": 42,
+            "ticket_mark": "8",
+            "longshot_type": "A2",
+            "longshot_index": 159,
+            "previous": [
+              {
+                "result_key": "2110299320250928",
+                "race_key_raw": "09254912"
+              },
+              {
+                "result_key": "2110299320250830",
+                "race_key_raw": "01252310"
+              },
+              {
+                "result_key": "2110299320250531",
+                "race_key_raw": "05252b12"
+              },
+              {
+                "result_key": "2110299320250413",
+                "race_key_raw": "09252608"
+              },
+              {
+                "result_key": "2110299320250301",
+                "race_key_raw": "09251106"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254912",
+            "01252310",
+            "05252b12",
+            "09252608",
+            "09251106"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 11,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "70298",
+            "ticket_index": 46,
+            "ticket_mark": "4",
+            "longshot_type": "",
+            "longshot_index": 200,
+            "previous": [
+              {
+                "result_key": "2210598720251115",
+                "race_key_raw": "08254307"
+              },
+              {
+                "result_key": "2210598720250927",
+                "race_key_raw": "09254806"
+              },
+              {
+                "result_key": "2210598720250719",
+                "race_key_raw": "10252712"
+              },
+              {
+                "result_key": "2210598720250608",
+                "race_key_raw": "09253208"
+              },
+              {
+                "result_key": "2210598720250518",
+                "race_key_raw": "08252805"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254307",
+            "09254806",
+            "10252712",
+            "09253208",
+            "08252805"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 12,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10591",
+            "ticket_index": 30,
+            "ticket_mark": "",
+            "longshot_type": "A4",
+            "longshot_index": 130,
+            "previous": [
+              {
+                "result_key": "1710318420250920",
+                "race_key_raw": "09254612"
+              },
+              {
+                "result_key": "1710318420250907",
+                "race_key_raw": "01252609"
+              },
+              {
+                "result_key": "1710318420250726",
+                "race_key_raw": "01251112"
+              },
+              {
+                "result_key": "1710318420250705",
+                "race_key_raw": "10252310"
+              },
+              {
+                "result_key": "1710318420250622",
+                "race_key_raw": "09253612"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254612",
+            "01252609",
+            "01251112",
+            "10252310",
+            "09253612"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 13,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10600",
+            "ticket_index": 24,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 90,
+            "previous": [
+              {
+                "result_key": "2110257220251123",
+                "race_key_raw": "08254608"
+              },
+              {
+                "result_key": "2110257220251101",
+                "race_key_raw": "08253a08"
+              },
+              {
+                "result_key": "2110257220250427",
+                "race_key_raw": "08252208"
+              },
+              {
+                "result_key": "2110257220250413",
+                "race_key_raw": "09252606"
+              },
+              {
+                "result_key": "2110257220250330",
+                "race_key_raw": "09252208"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254608",
+            "08253a08",
+            "08252208",
+            "09252606",
+            "09252208"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 14,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10594",
+            "ticket_index": 53,
+            "ticket_mark": "1",
+            "longshot_type": "",
+            "longshot_index": 123,
+            "previous": [
+              {
+                "result_key": "2110122620251123",
+                "race_key_raw": "08254608"
+              },
+              {
+                "result_key": "2110122620251101",
+                "race_key_raw": "08253a08"
+              },
+              {
+                "result_key": "2110122620251019",
+                "race_key_raw": "08253712"
+              },
+              {
+                "result_key": "2110122620251004",
+                "race_key_raw": "08253112"
+              },
+              {
+                "result_key": "2110122620250525",
+                "race_key_raw": "08252a12"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08254608",
+            "08253a08",
+            "08253712",
+            "08253112",
+            "08252a12"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255310",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        }
+      ]
+    },
+    {
+      "venue": "阪神",
+      "race_no": 11,
+      "horses": [
+        {
+          "horse_no": 1,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10636",
+            "ticket_index": 57,
+            "ticket_mark": "2",
+            "longshot_type": "A3",
+            "longshot_index": 193,
+            "previous": [
+              {
+                "result_key": "2110013920250601",
+                "race_key_raw": "08252c10"
+              },
+              {
+                "result_key": "2110013920250323",
+                "race_key_raw": "07252411"
+              },
+              {
+                "result_key": "2110013920241026",
+                "race_key_raw": "08245711"
+              },
+              {
+                "result_key": "2110013920240817",
+                "race_key_raw": "07242311"
+              },
+              {
+                "result_key": "2110013920240623",
+                "race_key_raw": "08244809"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08252c10",
+            "07252411",
+            "08245711",
+            "07242311",
+            "08244809"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 2,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "70345",
+            "ticket_index": 45,
+            "ticket_mark": "6",
+            "longshot_type": "",
+            "longshot_index": 156,
+            "previous": [
+              {
+                "result_key": "2110581720250614",
+                "race_key_raw": "05253311"
+              },
+              {
+                "result_key": "2110581720250510",
+                "race_key_raw": "05252511"
+              },
+              {
+                "result_key": "2110581720241130",
+                "race_key_raw": "08247111"
+              },
+              {
+                "result_key": "2110581720241006",
+                "race_key_raw": "05244211"
+              },
+              {
+                "result_key": "2110581720240526",
+                "race_key_raw": "05242c11"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05253311",
+            "05252511",
+            "08247111",
+            "05244211",
+            "05242c11"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 3,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10604",
+            "ticket_index": 27,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 113,
+            "previous": [
+              {
+                "result_key": "2010700120250920",
+                "race_key_raw": "06254611"
+              },
+              {
+                "result_key": "2010700120250727",
+                "race_key_raw": "04252207"
+              },
+              {
+                "result_key": "2010700120250510",
+                "race_key_raw": "05252511"
+              },
+              {
+                "result_key": "2010700120250315",
+                "race_key_raw": "06252510"
+              },
+              {
+                "result_key": "2010700120250216",
+                "race_key_raw": "05251608"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "06254611",
+            "04252207",
+            "05252511",
+            "06252510",
+            "05251608"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 4,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10516",
+            "ticket_index": 39,
+            "ticket_mark": "",
+            "longshot_type": "B2",
+            "longshot_index": 136,
+            "previous": [
+              {
+                "result_key": "1910140820251018",
+                "race_key_raw": "05254611"
+              },
+              {
+                "result_key": "1910140820250906",
+                "race_key_raw": "06254111"
+              },
+              {
+                "result_key": "1910140820250727",
+                "race_key_raw": "04252207"
+              },
+              {
+                "result_key": "1910140820250524",
+                "race_key_raw": "05252911"
+              },
+              {
+                "result_key": "1910140820241006",
+                "race_key_raw": "05244211"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05254611",
+            "06254111",
+            "04252207",
+            "05252911",
+            "05244211"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 5,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "70370",
+            "ticket_index": 34,
+            "ticket_mark": "",
+            "longshot_type": "B1",
+            "longshot_index": 142,
+            "previous": [
+              {
+                "result_key": "2111012820251101",
+                "race_key_raw": "05254a11"
+              },
+              {
+                "result_key": "2111012820250621",
+                "race_key_raw": "05253511"
+              },
+              {
+                "result_key": "2111012820250504",
+                "race_key_raw": "05252410"
+              },
+              {
+                "result_key": "2111012820250112",
+                "race_key_raw": "06251410"
+              },
+              {
+                "result_key": "2111012820241005",
+                "race_key_raw": "05244110"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05254a11",
+            "05253511",
+            "05252410",
+            "06251410",
+            "05244110"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 6,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "30468",
+            "ticket_index": 43,
+            "ticket_mark": "7",
+            "longshot_type": "",
+            "longshot_index": 194,
+            "previous": [
+              {
+                "result_key": "2110586420251013",
+                "race_key_raw": "08253511"
+              },
+              {
+                "result_key": "2110586420250726",
+                "race_key_raw": "04252107"
+              },
+              {
+                "result_key": "2110586420250112",
+                "race_key_raw": "07251410"
+              },
+              {
+                "result_key": "2110586420241117",
+                "race_key_raw": "08246612"
+              },
+              {
+                "result_key": "2110586420240901",
+                "race_key_raw": "07242809"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253511",
+            "04252107",
+            "07251410",
+            "08246612",
+            "07242809"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 7,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10438",
+            "ticket_index": 47,
+            "ticket_mark": "5",
+            "longshot_type": "A2",
+            "longshot_index": 195,
+            "previous": [
+              {
+                "result_key": "1910667020250223",
+                "race_key_raw": "10251a11"
+              },
+              {
+                "result_key": "1910667020250105",
+                "race_key_raw": "07251111"
+              },
+              {
+                "result_key": "1910667020241026",
+                "race_key_raw": "08245711"
+              },
+              {
+                "result_key": "1910667020240908",
+                "race_key_raw": "06244211"
+              },
+              {
+                "result_key": "1910667020240721",
+                "race_key_raw": "10243811"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "10251a11",
+            "07251111",
+            "08245711",
+            "06244211",
+            "10243811"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 8,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10578",
+            "ticket_index": 51,
+            "ticket_mark": "3",
+            "longshot_type": "",
+            "longshot_index": 206,
+            "previous": [
+              {
+                "result_key": "2110528320250928",
+                "race_key_raw": "09254911"
+              },
+              {
+                "result_key": "2110528320250817",
+                "race_key_raw": "07253807"
+              },
+              {
+                "result_key": "2110528320250615",
+                "race_key_raw": "09253410"
+              },
+              {
+                "result_key": "2110528320250427",
+                "race_key_raw": "08252210"
+              },
+              {
+                "result_key": "2110528320250329",
+                "race_key_raw": "09252110"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "09254911",
+            "07253807",
+            "09253410",
+            "08252210",
+            "09252110"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 9,
+          "kyi": {
+            "reference_previous_raw": "3",
+            "reference_jockey_code": "10570",
+            "ticket_index": 67,
+            "ticket_mark": "1",
+            "longshot_type": "A1",
+            "longshot_index": 197,
+            "previous": [
+              {
+                "result_key": "2010346420250907",
+                "race_key_raw": "632597A1"
+              },
+              {
+                "result_key": "2010346420250817",
+                "race_key_raw": "63258HA1"
+              },
+              {
+                "result_key": "2010346420250405",
+                "race_key_raw": "06253311"
+              },
+              {
+                "result_key": "2010346420250209",
+                "race_key_raw": "05251411"
+              },
+              {
+                "result_key": "2010346420241228",
+                "race_key_raw": "06245912"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "632597A1",
+            "63258HA1",
+            "06253311",
+            "05251411",
+            "06245912"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 10,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10636",
+            "ticket_index": 41,
+            "ticket_mark": "8",
+            "longshot_type": "",
+            "longshot_index": 199,
+            "previous": [
+              {
+                "result_key": "2210440120251013",
+                "race_key_raw": "08253511"
+              },
+              {
+                "result_key": "2210440120250511",
+                "race_key_raw": "05252611"
+              },
+              {
+                "result_key": "2210440120250405",
+                "race_key_raw": "09252311"
+              },
+              {
+                "result_key": "2210440120250209",
+                "race_key_raw": "08251411"
+              },
+              {
+                "result_key": "2210440120241215",
+                "race_key_raw": "08247611"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "08253511",
+            "05252611",
+            "09252311",
+            "08251411",
+            "08247611"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 11,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "70312",
+            "ticket_index": 29,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 139,
+            "previous": [
+              {
+                "result_key": "2110542320251129",
+                "race_key_raw": "05255711"
+              },
+              {
+                "result_key": "2110542320250906",
+                "race_key_raw": "06254111"
+              },
+              {
+                "result_key": "2110542320250727",
+                "race_key_raw": "04252207"
+              },
+              {
+                "result_key": "2110542320250622",
+                "race_key_raw": "09253611"
+              },
+              {
+                "result_key": "2110542320250406",
+                "race_key_raw": "09252410"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255711",
+            "06254111",
+            "04252207",
+            "09253611",
+            "09252410"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 12,
+          "kyi": {
+            "reference_previous_raw": "12",
+            "reference_jockey_code": "10455",
+            "ticket_index": 27,
+            "ticket_mark": "",
+            "longshot_type": "",
+            "longshot_index": 113,
+            "previous": [
+              {
+                "result_key": "1810631820251116",
+                "race_key_raw": "05255411"
+              },
+              {
+                "result_key": "1810631820251102",
+                "race_key_raw": "08253b11"
+              },
+              {
+                "result_key": "1810631820250817",
+                "race_key_raw": "07253807"
+              },
+              {
+                "result_key": "1810631820250727",
+                "race_key_raw": "04252207"
+              },
+              {
+                "result_key": "1810631820250601",
+                "race_key_raw": "08252c10"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05255411",
+            "08253b11",
+            "07253807",
+            "04252207",
+            "08252c10"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        },
+        {
+          "horse_no": 13,
+          "kyi": {
+            "reference_previous_raw": "1",
+            "reference_jockey_code": "10594",
+            "ticket_index": 48,
+            "ticket_mark": "4",
+            "longshot_type": "A4",
+            "longshot_index": 189,
+            "previous": [
+              {
+                "result_key": "2210305120250511",
+                "race_key_raw": "05252611"
+              },
+              {
+                "result_key": "2210305120250322",
+                "race_key_raw": "07252311"
+              },
+              {
+                "result_key": "2210305120241221",
+                "race_key_raw": "08247709"
+              },
+              {
+                "result_key": "2210305120241102",
+                "race_key_raw": "05245111"
+              },
+              {
+                "result_key": "2210305120240713",
+                "race_key_raw": "02241b11"
+              }
+            ]
+          },
+          "source_race_keys": [
+            "05252611",
+            "07252311",
+            "08247709",
+            "05245111",
+            "02241b11"
+          ],
+          "provenance": {
+            "source_kind": "JRDB_KYI",
+            "target_race_key": "09255311",
+            "archive": "KYI_2025.zip",
+            "member": "KYI251213.txt"
+          }
+        }
+      ]
+    }
+  ]
+}
