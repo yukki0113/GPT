@@ -1,0 +1,1190 @@
+[
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "marks": [
+      10,
+      11,
+      4,
+      6,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        11,
+        4,
+        6,
+        13
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番より13番は障害4着歴と中山適性を持ち、五番手として再現性を上に取る。"
+    },
+    "honmei_win": {
+      "evidence": "10番は障害3戦で3・4・7着と前進し、KYI22.6で先行力も明確。",
+      "main_risk": "11番は直近障害4着まで詰めており、10番が飛越や終いで甘くなると逆転可能。"
+    },
+    "shot_case": {
+      "case": "4番は障害経験を重ね、RaceReviewの反復上位能力が残る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山1Rは10番を◎、11番を○、4番を▲。10番は障害3戦で3・4・7着と前進し、KYI22.6で先行力も明確。11番は直近障害4着まで詰めており、10番が飛越や終いで甘くなると逆転可能。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "marks": [
+      11,
+      9,
+      1,
+      14,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        9,
+        1,
+        14,
+        7
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番も末脚はあるが、7番の1600m3・4着とKYI16.9を上回る安定根拠まではない。"
+    },
+    "honmei_win": {
+      "evidence": "11番は芝1600～1800mで2・3・3着、KYI19.0かつ反復上位能力が強い。",
+      "main_risk": "9番は1600mで2・3着と近況安定し、先行して押し切る形なら逆転。"
+    },
+    "shot_case": {
+      "case": "1番は前走1400m3着で最速上がり系の反復があり距離延長で浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山2Rは11番を◎、9番を○、1番を▲。11番は芝1600～1800mで2・3・3着、KYI19.0かつ反復上位能力が強い。9番は1600mで2・3着と近況安定し、先行して押し切る形なら逆転。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "marks": [
+      13,
+      11,
+      4,
+      2,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        11,
+        4,
+        2,
+        10
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も芝で善戦するが、10番の先行力と上昇調教を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "13番は初ダート1400mで2着相当のIDM37、KYI20.9で能力と仕上がりが最上位。",
+      "main_risk": "11番は芝で連続3着、先行力がありダート替わりで前進余地。"
+    },
+    "shot_case": {
+      "case": "4番は初ダート1200m4着で最速上がり、差しが届く流れなら浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山3Rは13番を◎、11番を○、4番を▲。13番は初ダート1400mで2着相当のIDM37、KYI20.9で能力と仕上がりが最上位。11番は芝で連続3着、先行力がありダート替わりで前進余地。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "marks": [
+      6,
+      4,
+      7,
+      3,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        4,
+        7,
+        3,
+        9
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番より9番は前走5着でも先手を取れており、展開利の可能性を残す。"
+    },
+    "honmei_win": {
+      "evidence": "6番は前走2000m2着IDM30、KYI15.4で現状の完成度が最も高い。",
+      "main_risk": "4番はKYI23.4、CYB71/71と抜群の仕上がりで一気の上積みが怖い。"
+    },
+    "shot_case": {
+      "case": "7番は前走3着で先行持続力があり相手候補。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山4Rは6番を◎、4番を○、7番を▲。6番は前走2000m2着IDM30、KYI15.4で現状の完成度が最も高い。4番はKYI23.4、CYB71/71と抜群の仕上がりで一気の上積みが怖い。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "marks": [
+      3,
+      6,
+      1,
+      2,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        6,
+        1,
+        2,
+        10
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番より10番はIDM33.4と情報指数を持ち、五番手で総合力を取る。"
+    },
+    "honmei_win": {
+      "evidence": "3番は新馬比較でIDM46.5、KYI22.1、調教上昇と最も強い事前材料。",
+      "main_risk": "6番はIDM41.2、KYI18.3で3番に次ぐ完成度。"
+    },
+    "shot_case": {
+      "case": "1番はIDM37.2とKYI13.7で初戦から動ける余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山5Rは3番を◎、6番を○、1番を▲。3番は新馬比較でIDM46.5、KYI22.1、調教上昇と最も強い事前材料。6番はIDM41.2、KYI18.3で3番に次ぐ完成度。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "marks": [
+      9,
+      6,
+      16,
+      8,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        6,
+        16,
+        8,
+        3
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は調教値は高いが、3番のIDM16.9を五番手で僅かに優先。"
+    },
+    "honmei_win": {
+      "evidence": "9番は新馬比較でIDM33.8、KYI19.5とダート初戦の基礎評価が最上位。",
+      "main_risk": "6番はIDM29.7、KYI12.9、戸崎騎乗で完成度が高い。"
+    },
+    "shot_case": {
+      "case": "16番はKYI16.3と調教上昇、条件適応の余地が大きい。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山6Rは9番を◎、6番を○、16番を▲。9番は新馬比較でIDM33.8、KYI19.5とダート初戦の基礎評価が最上位。6番はIDM29.7、KYI12.9、戸崎騎乗で完成度が高い。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "marks": [
+      16,
+      15,
+      14,
+      6,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        16,
+        15,
+        14,
+        6,
+        9
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番も反復末脚はあるが、9番の差し脚と近走内容を五番手に残す。"
+    },
+    "honmei_win": {
+      "evidence": "16番は前走2着IDM44、KYI18.8で近走能力と上昇度が最上位。",
+      "main_risk": "15番は近2走5・3着、IDM42で先行して押し切る余地。"
+    },
+    "shot_case": {
+      "case": "14番はIDM40と最速上がり型で展開が速ければ逆転候補。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山7Rは16番を◎、15番を○、14番を▲。16番は前走2着IDM44、KYI18.8で近走能力と上昇度が最上位。15番は近2走5・3着、IDM42で先行して押し切る余地。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "marks": [
+      11,
+      2,
+      14,
+      15,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        2,
+        14,
+        15,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は1勝歴があるが直近13着の振れが大きく、6番の安定した3着歴を優先。"
+    },
+    "honmei_win": {
+      "evidence": "11番は1勝クラスで1・2着、KYI22.8、デキ抜群で勝ち切り根拠が最も明確。",
+      "main_risk": "2番は前走1着IDM55で能力上限は高く、昇級でも先行できれば逆転。"
+    },
+    "shot_case": {
+      "case": "14番は反復最速上がりがあり差し届く流れで浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山8Rは11番を◎、2番を○、14番を▲。11番は1勝クラスで1・2着、KYI22.8、デキ抜群で勝ち切り根拠が最も明確。2番は前走1着IDM55で能力上限は高く、昇級でも先行できれば逆転。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "marks": [
+      4,
+      15,
+      14,
+      5,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        15,
+        14,
+        5,
+        12
+      ],
+      "external_challenger_horse_no": 16,
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "16番は近走3着も、12番のIDM53と末脚反復を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "4番は前走1着IDM54で反復上位能力・先行逆風耐性が揃う。",
+      "main_risk": "15番はIDM55、近走3着で地力上位。14番も2・3着で差が小さい。"
+    },
+    "shot_case": {
+      "case": "14番はKYI20.4と上昇調教で前受けなら粘り込み。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山9Rは4番を◎、15番を○、14番を▲。4番は前走1着IDM54で反復上位能力・先行逆風耐性が揃う。15番はIDM55、近走3着で地力上位。14番も2・3着で差が小さい。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "marks": [
+      6,
+      9,
+      3,
+      2,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        9,
+        3,
+        2,
+        10
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番も安定するが、10番の反復最速上がりとCYB73を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "6番は前走1着IDM56、KYI19.8で昇級でも末脚の再現性が高い。",
+      "main_risk": "9番はIDM59で前走2着、開幕週のスピード勝負なら逆転可能。"
+    },
+    "shot_case": {
+      "case": "3番はIDM56.5と反復先行逆風耐性があり崩れにくい。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山10Rは6番を◎、9番を○、3番を▲。6番は前走1着IDM56、KYI19.8で昇級でも末脚の再現性が高い。9番はIDM59で前走2着、開幕週のスピード勝負なら逆転可能。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "marks": [
+      5,
+      1,
+      4,
+      9,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        1,
+        4,
+        9,
+        6
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番も能力はあるが近走13着で、6番の逃げ切り実績と安定材料を五番手に取る。"
+    },
+    "honmei_win": {
+      "evidence": "5番は前走1着IDM61、反復最速上がりと低い脆弱性で勝ち筋が明瞭。",
+      "main_risk": "1番は重賞級IDM64.3とKYI18.3で地力は互角以上、展開次第で逆転。"
+    },
+    "shot_case": {
+      "case": "4番は前走1着IDM61で反復末脚が強く差し展開なら上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山11Rは5番を◎、1番を○、4番を▲。5番は前走1着IDM61、反復最速上がりと低い脆弱性で勝ち筋が明瞭。1番は重賞級IDM64.3とKYI18.3で地力は互角以上、展開次第で逆転。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "marks": [
+      5,
+      9,
+      12,
+      11,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        9,
+        12,
+        11,
+        15
+      ],
+      "external_challenger_horse_no": 16,
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "16番も前走勝ちだが、15番のIDM46.1と末脚反復を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "5番は近2走2・3着、IDM50.2、KYI17.9で現級の軸として最も安定。",
+      "main_risk": "9番は前走1着でKYI15.1、上昇調教もあり連勝可能。"
+    },
+    "shot_case": {
+      "case": "12番は近2走1・2着で先行持続力が高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "中山12Rは5番を◎、9番を○、12番を▲。5番は近2走2・3着、IDM50.2、KYI17.9で現級の軸として最も安定。9番は前走1着でKYI15.1、上昇調教もあり連勝可能。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 1,
+    "marks": [
+      7,
+      3,
+      1,
+      6,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        3,
+        1,
+        6,
+        4
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番は初戦3着で魅力あるが、4番のIDM32と不利を含む前走4着を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "7番は2・3着、IDM33.1、KYI24.2と反復上位能力で最も信頼。",
+      "main_risk": "3番は3・2着でIDM33、KYI20.9とほぼ互角。"
+    },
+    "shot_case": {
+      "case": "1番は初戦2着で上昇調教、伸びしろを評価。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌1Rは7番を◎、3番を○、1番を▲。7番は2・3着、IDM33.1、KYI24.2と反復上位能力で最も信頼。3番は3・2着でIDM33、KYI20.9とほぼ互角。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 2,
+    "marks": [
+      4,
+      5,
+      1,
+      3,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        5,
+        1,
+        3,
+        6
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番も不利を含む5着だが、6番の安定した4着と基礎能力を五番手に残す。"
+    },
+    "honmei_win": {
+      "evidence": "4番は連続2着、IDM34、KYI23で勝ち切りに最も近い。",
+      "main_risk": "5番は初戦2着IDM34、KYI21.7で逆転可能。"
+    },
+    "shot_case": {
+      "case": "1番は反復逆風耐性と最速上がりで差し展開なら浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌2Rは4番を◎、5番を○、1番を▲。4番は連続2着、IDM34、KYI23で勝ち切りに最も近い。5番は初戦2着IDM34、KYI21.7で逆転可能。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 3,
+    "marks": [
+      10,
+      13,
+      2,
+      9,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        13,
+        2,
+        9,
+        11
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も連続3着だが、11番の2着と捲り脚を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "10番は2・3着、IDM42.1、KYI21.1で近走内容が最上位。",
+      "main_risk": "13番は連続3着と反復上位能力、条件適性が高い。"
+    },
+    "shot_case": {
+      "case": "2番はIDM43で末脚の裏付けがあり差し展開なら逆転。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌3Rは10番を◎、13番を○、2番を▲。10番は2・3着、IDM42.1、KYI21.1で近走内容が最上位。13番は連続3着と反復上位能力、条件適性が高い。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 4,
+    "marks": [
+      3,
+      13,
+      4,
+      8,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        13,
+        4,
+        8,
+        6
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番は地力あるが近走振れがあり、6番の最速上がり・不利補正を五番手に取る。"
+    },
+    "honmei_win": {
+      "evidence": "3番は2・3着、IDM44.3、KYI17.7で反復上位能力も明確。",
+      "main_risk": "13番は前走2着IDM44、KYI12.9で勝ち切り候補。"
+    },
+    "shot_case": {
+      "case": "4番は前走2着で差し脚が安定。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌4Rは3番を◎、13番を○、4番を▲。3番は2・3着、IDM44.3、KYI17.7で反復上位能力も明確。13番は前走2着IDM44、KYI12.9で勝ち切り候補。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 5,
+    "marks": [
+      13,
+      4,
+      5,
+      6,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        4,
+        5,
+        6,
+        8
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も3着歴があるが、8番の反復上位能力と末脚を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "13番は連続2着、IDM43、KYI23.7で勝ち切りに最も近い。",
+      "main_risk": "4番は前走2着IDM43.1で逃げ残りの形が明瞭。"
+    },
+    "shot_case": {
+      "case": "5番は連続3着で反復先行逆風耐性が強い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌5Rは13番を◎、4番を○、5番を▲。13番は連続2着、IDM43、KYI23.7で勝ち切りに最も近い。4番は前走2着IDM43.1で逃げ残りの形が明瞭。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 6,
+    "marks": [
+      4,
+      8,
+      12,
+      5,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        8,
+        12,
+        5,
+        11
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番も末脚はあるが、11番のIDM46と先行スピードを五番手に残す。"
+    },
+    "honmei_win": {
+      "evidence": "4番は前走3着IDM42、KYI20.3、上昇調教で1000mの先行力が強い。",
+      "main_risk": "8番はKYI18.8で反復最速上がりを持ち、前が止まれば逆転。"
+    },
+    "shot_case": {
+      "case": "12番は2着歴と反復最速上がりで差し候補。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌6Rは4番を◎、8番を○、12番を▲。4番は前走3着IDM42、KYI20.3、上昇調教で1000mの先行力が強い。8番はKYI18.8で反復最速上がりを持ち、前が止まれば逆転。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 7,
+    "marks": [
+      9,
+      10,
+      6,
+      2,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        10,
+        6,
+        2,
+        11
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番は反復上位能力があるが近走9・6着で、11番の4着内容を五番手に優先。"
+    },
+    "honmei_win": {
+      "evidence": "9番は前走2着IDM47、KYI14で現級の先行力が一段上。",
+      "main_risk": "10番はIDM45、KYI17.9と上昇調教で差を詰める。"
+    },
+    "shot_case": {
+      "case": "6番は連続3・4着、反復上位能力で安定。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌7Rは9番を◎、10番を○、6番を▲。9番は前走2着IDM47、KYI14で現級の先行力が一段上。10番はIDM45、KYI17.9と上昇調教で差を詰める。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 8,
+    "marks": [
+      15,
+      10,
+      3,
+      12,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        10,
+        3,
+        12,
+        7
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番も先行力はあるが、7番の現級3・5着とIDM46を五番手に取る。"
+    },
+    "honmei_win": {
+      "evidence": "15番は連続2着、IDM52、KYI21.7で現級突破に最も近い。",
+      "main_risk": "10番は前走1着IDM50で逃げ切り再現なら逆転。"
+    },
+    "shot_case": {
+      "case": "3番はIDM50.3と反復上位能力で安定。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌8Rは15番を◎、10番を○、3番を▲。15番は連続2着、IDM52、KYI21.7で現級突破に最も近い。10番は前走1着IDM50で逃げ切り再現なら逆転。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 9,
+    "marks": [
+      10,
+      13,
+      4,
+      1,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        13,
+        4,
+        1,
+        14
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も3着歴があるが近走11着で、14番の連続IDM51を五番手に優先。"
+    },
+    "honmei_win": {
+      "evidence": "10番は前走1着IDM52、KYI9.7で昇級後も伸びしろがある。",
+      "main_risk": "13番は前走1着、KYI18.1と反復上位能力で逆転十分。"
+    },
+    "shot_case": {
+      "case": "4番はIDM50.2と差し脚で展開が向けば浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌9Rは10番を◎、13番を○、4番を▲。10番は前走1着IDM52、KYI9.7で昇級後も伸びしろがある。13番は前走1着、KYI18.1と反復上位能力で逆転十分。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 10,
+    "marks": [
+      6,
+      4,
+      13,
+      5,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        4,
+        13,
+        5,
+        12
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番も2着歴があるが、12番の連続IDM54と安定性を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "6番は前走2着IDM55で現級能力が最上位。",
+      "main_risk": "4番はIDM56、逃げて3着とコース形態に合う。"
+    },
+    "shot_case": {
+      "case": "13番は前走1着、反復上位能力と最速上がりで昇級対応。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌10Rは6番を◎、4番を○、13番を▲。6番は前走2着IDM55で現級能力が最上位。4番はIDM56、逃げて3着とコース形態に合う。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 11,
+    "marks": [
+      6,
+      9,
+      2,
+      10,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        9,
+        2,
+        10,
+        7
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番もIDM61.2で堅実だが、7番の長距離先行実績と反復上位能力を五番手に取る。"
+    },
+    "honmei_win": {
+      "evidence": "6番は重賞級IDM65.3、KYI24.8で長距離の勝ち切り根拠が最も強い。",
+      "main_risk": "9番はIDM64で前々走1着、反復上位能力があり逆転候補。"
+    },
+    "shot_case": {
+      "case": "2番は前走2着IDM62で先行持続力が高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌11Rは6番を◎、9番を○、2番を▲。6番は重賞級IDM65.3、KYI24.8で長距離の勝ち切り根拠が最も強い。9番はIDM64で前々走1着、反復上位能力があり逆転候補。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 12,
+    "marks": [
+      13,
+      12,
+      10,
+      2,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        12,
+        10,
+        2,
+        14
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番もIDM44だが近走7・10着で、14番の連勝実績を五番手に残す。"
+    },
+    "honmei_win": {
+      "evidence": "13番は前走1着IDM46、KYI18.1で反復上位能力と先行力が揃う。",
+      "main_risk": "12番は前々走1着IDM48で現級上位の地力。"
+    },
+    "shot_case": {
+      "case": "10番は近2走3・5着、KYI14.5で安定。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "札幌12Rは13番を◎、12番を○、10番を▲。13番は前走1着IDM46、KYI18.1で反復上位能力と先行力が揃う。12番は前々走1着IDM48で現級上位の地力。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 1,
+    "marks": [
+      1,
+      3,
+      4,
+      6,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        3,
+        4,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番より2番は調教上昇と初戦経験を五番手で僅かに優先。"
+    },
+    "honmei_win": {
+      "evidence": "1番は近2走2・4着、KYI13.7、デキ抜群で最も安定。",
+      "main_risk": "3番はKYI19.4で逃げ経験があり展開利なら逆転。"
+    },
+    "shot_case": {
+      "case": "4番は初戦IDM23で能力上限が高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神1Rは1番を◎、3番を○、4番を▲。1番は近2走2・4着、KYI13.7、デキ抜群で最も安定。3番はKYI19.4で逃げ経験があり展開利なら逆転。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 2,
+    "marks": [
+      7,
+      3,
+      5,
+      6,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        3,
+        5,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番より2番は初戦経験とIDM19.2を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "7番は連続2着、IDM39.2、KYI19.2でデキも抜群。",
+      "main_risk": "3番はIDM39、KYI20で末脚が強く逆転可能。"
+    },
+    "shot_case": {
+      "case": "5番は初戦4着、KYI13.4で上積み余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神2Rは7番を◎、3番を○、5番を▲。7番は連続2着、IDM39.2、KYI19.2でデキも抜群。3番はIDM39、KYI20で末脚が強く逆転可能。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 3,
+    "marks": [
+      3,
+      7,
+      6,
+      11,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        7,
+        6,
+        11,
+        10
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番も連続3着だが、10番のKYI14.4と反復逆風耐性を五番手に取る。"
+    },
+    "honmei_win": {
+      "evidence": "3番は連続2着IDM40、先行力が安定し勝ち切りに最も近い。",
+      "main_risk": "7番はIDM44とKYI19.8で末脚上位、差し切り可能。"
+    },
+    "shot_case": {
+      "case": "6番は前々走2着IDM46と反復上位能力があり地力上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神3Rは3番を◎、7番を○、6番を▲。3番は連続2着IDM40、先行力が安定し勝ち切りに最も近い。7番はIDM44とKYI19.8で末脚上位、差し切り可能。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 4,
+    "marks": [
+      10,
+      3,
+      14,
+      4,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        3,
+        14,
+        4,
+        15
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も差し脚があるが、15番の反復上位能力と上昇調教を五番手に優先。"
+    },
+    "honmei_win": {
+      "evidence": "10番は連続2着、IDM45、KYI14.6で勝ち切りに最も近い。",
+      "main_risk": "3番は前走3着IDM44で先行力があり展開利なら逆転。"
+    },
+    "shot_case": {
+      "case": "14番は前走2着、KYI16.3で反復上位能力も強い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神4Rは10番を◎、3番を○、14番を▲。10番は連続2着、IDM45、KYI14.6で勝ち切りに最も近い。3番は前走3着IDM44で先行力があり展開利なら逆転。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 5,
+    "marks": [
+      6,
+      4,
+      2,
+      5,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        4,
+        2,
+        5,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番より3番はIDM25.5と情報量を持ち五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "6番は新馬比較でIDM41.4、KYI21、調教上昇と最も強い。",
+      "main_risk": "4番はIDM41.3、KYI18.2でほぼ互角。"
+    },
+    "shot_case": {
+      "case": "2番はIDM31.6とCYB71で完成度が高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神5Rは6番を◎、4番を○、2番を▲。6番は新馬比較でIDM41.4、KYI21、調教上昇と最も強い。4番はIDM41.3、KYI18.2でほぼ互角。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 6,
+    "marks": [
+      5,
+      13,
+      2,
+      3,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        13,
+        2,
+        3,
+        12
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も安定するが、12番のIDM45と反復最速上がりを五番手に取る。"
+    },
+    "honmei_win": {
+      "evidence": "5番は前走2着IDM43、KYI20.7で現級の勝ち切り候補。",
+      "main_risk": "13番はIDM47で地力最上位、展開が噛み合えば逆転。"
+    },
+    "shot_case": {
+      "case": "2番は1勝歴IDM44と反復上位能力を持つ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神6Rは5番を◎、13番を○、2番を▲。5番は前走2着IDM43、KYI20.7で現級の勝ち切り候補。13番はIDM47で地力最上位、展開が噛み合えば逆転。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 7,
+    "marks": [
+      5,
+      2,
+      7,
+      9,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        2,
+        7,
+        9,
+        3
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は前走勝ちも展開利が大きく、3番の1勝歴と反復逆風耐性を五番手に優先。"
+    },
+    "honmei_win": {
+      "evidence": "5番は前々走2着IDM50、反復上位能力で現級突破に最も近い。",
+      "main_risk": "2番は前走2着IDM46、KYI21.5で長く脚を使える。"
+    },
+    "shot_case": {
+      "case": "7番は前走3着IDM45で捲り脚がある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神7Rは5番を◎、2番を○、7番を▲。5番は前々走2着IDM50、反復上位能力で現級突破に最も近い。2番は前走2着IDM46、KYI21.5で長く脚を使える。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 8,
+    "marks": [
+      4,
+      3,
+      1,
+      5,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        3,
+        1,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": null,
+      "excluded_horse_no": null,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5頭立てのため外部候補なし。全頭比較で2番を五番手とした。"
+    },
+    "honmei_win": {
+      "evidence": "4番はIDM53、KYI20.8、近2走2・3着で少頭数でも末脚の信頼度が高い。",
+      "main_risk": "3番は前走1着IDM48、KYI18.4、デキ抜群で連勝余地。"
+    },
+    "shot_case": {
+      "case": "1番は反復上位能力があり相手候補。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神8Rは4番を◎、3番を○、1番を▲。4番はIDM53、KYI20.8、近2走2・3着で少頭数でも末脚の信頼度が高い。3番は前走1着IDM48、KYI18.4、デキ抜群で連勝余地。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 9,
+    "marks": [
+      7,
+      10,
+      2,
+      8,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        10,
+        2,
+        8,
+        6
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も前走勝ちだが、6番の反復逆風耐性を五番手で評価。"
+    },
+    "honmei_win": {
+      "evidence": "7番は前走1着IDM48、KYI13.9、上昇調教で連勝可能。",
+      "main_risk": "10番はIDM48、KYI22.4で先行安定性が高く逆転候補。"
+    },
+    "shot_case": {
+      "case": "2番は連続4着IDM42で現級安定。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神9Rは7番を◎、10番を○、2番を▲。7番は前走1着IDM48、KYI13.9、上昇調教で連勝可能。10番はIDM48、KYI22.4で先行安定性が高く逆転候補。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 10,
+    "marks": [
+      5,
+      2,
+      7,
+      10,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        2,
+        7,
+        10,
+        1
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番も差し脚はあるが、1番のIDM57.1と近2走2・4着を五番手に優先。"
+    },
+    "honmei_win": {
+      "evidence": "5番は連勝でIDM63、KYI22.4、デキ抜群と明確な勝ち切り材料。",
+      "main_risk": "2番は連続3着IDM59で先行粘りが強い。"
+    },
+    "shot_case": {
+      "case": "7番はIDM56と反復逆風耐性、近走内容が安定。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神10Rは5番を◎、2番を○、7番を▲。5番は連勝でIDM63、KYI22.4、デキ抜群と明確な勝ち切り材料。2番は連続3着IDM59で先行粘りが強い。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 11,
+    "marks": [
+      14,
+      3,
+      5,
+      11,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        3,
+        5,
+        11,
+        2
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番もIDM63.9だが、2番の逃げて1・2着という明確な展開利を五番手に取る。"
+    },
+    "honmei_win": {
+      "evidence": "14番は前走G級1着IDM76、KYI18.1で能力が明確に最上位。",
+      "main_risk": "3番はIDM74、近2走2・3着で地力は高く逆転候補。"
+    },
+    "shot_case": {
+      "case": "5番は1・2着、デキ抜群で先行差し両面の安定感。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神11Rは14番を◎、3番を○、5番を▲。14番は前走G級1着IDM76、KYI18.1で能力が明確に最上位。3番はIDM74、近2走2・3着で地力は高く逆転候補。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 12,
+    "marks": [
+      5,
+      11,
+      10,
+      4,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        11,
+        10,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も末脚は強いが、2番の勝ち上がりIDM56と反復末脚を五番手で優先。"
+    },
+    "honmei_win": {
+      "evidence": "5番は近2走2・4着IDM55、KYI16.8で末脚の再現性が最も高い。",
+      "main_risk": "11番は前々走1着IDM53、KYI19.3と反復上位能力で逆転可能。"
+    },
+    "shot_case": {
+      "case": "10番は前々走1着IDM57で地力上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神12Rは5番を◎、11番を○、10番を▲。5番は近2走2・4着IDM55、KYI16.8で末脚の再現性が最も高い。11番は前々走1着IDM53、KYI19.3と反復上位能力で逆転可能。"
+  }
+]
