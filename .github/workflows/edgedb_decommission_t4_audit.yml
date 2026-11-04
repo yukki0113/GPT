@@ -36,7 +36,8 @@ jobs:
             horse-racing/jrdb/tests/test_jrdb_previous_start_research_ledger.py \
             horse-racing/jrdb/tests/test_retired_training_asset_boundary.py \
             horse-racing/jrdb/tests/test_newspaper_source_retirement.py \
-            horse-racing/jrdb/tests/test_jrdb_pwa_fact_lite_query_adapter.py
+            horse-racing/jrdb/tests/test_jrdb_pwa_fact_lite_query_adapter.py \
+            horse-racing/jrdb/tests/test_jrdb_newspaper_current_monotonic.py
       - name: Training Research, Momotaro and BRDB regression
         run: |
           python -m pytest -q \
