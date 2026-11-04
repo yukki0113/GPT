@@ -1,6 +1,6 @@
 # BRDB P0-2 / P1-1 acceptance — supplied archive intake (2026-11-04)
 
-Status: **HOLD (research-only)**. This record is an intake/integrity audit, **not** a rerun of the GitHub committed code or a publication approval.
+Historical intake status at initial verification: **HOLD (research-only)**. **Superseded on 2026-11-04 by formal research-only acceptance PASS:** see [BRDB_P0_2_P1_1_FORMAL_ACCEPTANCE_20261104.md](BRDB_P0_2_P1_1_FORMAL_ACCEPTANCE_20261104.md), which records the subsequent real 481,627-row committed-source replay and row-equivalence checks. This record is an intake/integrity audit, **not** a rerun of the GitHub committed code or a publication approval.
 
 ## Supplied archive byte identities
 
