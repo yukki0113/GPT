@@ -52,6 +52,19 @@ Both request Issues have now closed with **DATA_STORAGE_FALLBACK_RESULT status: 
 
 **These are synthetic regression PASS results only, NOT a real-data acceptance or a source-equivalence claim.**
 
+## Additional independent verification (2026-11-04)
+
+With only the attached archives and the standalone SED canonical manifest, without a DuckDB engine:
+
+- Independently recomputed **202,037** P1-1 formula values across all **18,367** groups: rates, lifts, Wilson intervals and sample eligibility; **zero differences**.
+- Recomputed the eligible subset: **1,935** rows, exact row membership and full CSV content equality with the all-groups file; **zero differences**.
+- Checked key uniqueness (18,367 unique keys), 365 consistent baseline race-condition strata and per-row arithmetic bounds; **zero differences**.
+- SHA-256 of the supplied SED canonical manifest: `ca922611b5bb2db73a0e1f5b1d5ba591b9b18e4eabf9ef109389c707341377ee`, matching the archived P0-2 audit input record.
+- For **every 2016–2025 year**, P0-2 audit `entries` exactly matched the corresponding accepted SED manifest object's `row_count`; sum **481,627**.
+- Supplied BRDB research pedigree archive manifest SHA-256 `7efb70ab370cafd18d39eb20ea4fc2bb32490653364a58b44b1382cf9fa5f16c`; `pedigree_fact.parquet` SHA-256 `1e7574f78703d79d8d83797f9e350a8927b728fc68c659cf5d340ee0f79b3536`, both matching the P0-2 input audit.
+
+**Input location / legal boundary:** Attached ZIPs contain the derived P0-2/P1-1 results and the BRDB pedigree generation, but not the full 2016–2025 KYI/SED/BAC annual Parquet objects. The official JRDB terms <https://jrdb.com/terms> Article 5 prohibit sharing/public disclosure of JRDB information, including unpaid third-party provision. Consequently, Google Drive `anyone:reader` metadata is **not** permission to create or use public GitHub Actions artifacts or public Drive fallback manifests containing proprietary JRDB rows. Do not bootstrap full-data Actions with these files without separate explicit licensing/security authorization. Prefer private authorized execution and keep the raw data off GitHub.
+
 ## Current acceptance gates
 
 1. Validate new source changes on **DuckDB 1.1.3**, using repository shared `tools/data-storage/` and its documented local-first / Actions fallback.
