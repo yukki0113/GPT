@@ -1,0 +1,1190 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 1,
+    "marks": [
+      1,
+      6,
+      2,
+      4,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        6,
+        2,
+        4,
+        3
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番イチザペガサスも比較したが、3番リントゥラウルの能力値19と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "1番ローベルクランツは能力値37、調整評価21.6でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "6番メイショウナルカミは能力値31で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "2番ビアリッツは能力値27と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ローベルクランツを本命。能力値37と調整面を軸に、メイショウナルカミの逆転余地、ビアリッツの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 2,
+    "marks": [
+      4,
+      12,
+      9,
+      10,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        12,
+        9,
+        10,
+        8
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番ドンエレクトスも比較したが、8番リオクリスハーレーの能力値19.8と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "4番リアライズブルームは能力値34.1、調整評価16.8でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "12番パドゼフィールは能力値30.6で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "9番キーンセンスは能力値30.1と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "リアライズブルームを本命。能力値34.1と調整面を軸に、パドゼフィールの逆転余地、キーンセンスの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 3,
+    "marks": [
+      1,
+      2,
+      3,
+      7,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        2,
+        3,
+        7,
+        5
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番メイショウメゴヒメも比較したが、5番ジーティービキニの能力値23.3と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "1番メイクワンズデイは能力値38.9、調整評価20.2でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "2番スウィッチインラヴは能力値37.6で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "3番エスティヴァリスは能力値33.9と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "メイクワンズデイを本命。能力値38.9と調整面を軸に、スウィッチインラヴの逆転余地、エスティヴァリスの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 4,
+    "marks": [
+      11,
+      10,
+      3,
+      12,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        10,
+        3,
+        12,
+        2
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番キングベルも比較したが、2番カフジアッサムの能力値36.9と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "11番デルタフォーは能力値39、調整評価22.1でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "10番マイネルビスマルクは能力値40.2で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "3番オゴオゴは能力値40.1と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "デルタフォーを本命。能力値39と調整面を軸に、マイネルビスマルクの逆転余地、オゴオゴの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 5,
+    "marks": [
+      3,
+      12,
+      2,
+      16,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        12,
+        2,
+        16,
+        14
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番エスタンシアも比較したが、14番クイーンハピの能力値36と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "3番タマモマサユメは能力値43.1、調整評価17でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "12番オリビアサンライズは能力値43で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "2番ラテライトは能力値39と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "タマモマサユメを本命。能力値43.1と調整面を軸に、オリビアサンライズの逆転余地、ラテライトの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 6,
+    "marks": [
+      5,
+      4,
+      8,
+      14,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        4,
+        8,
+        14,
+        1
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15番タイガースパークも比較したが、1番アスクアイルビゼアの能力値54.2と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "5番ノヴァエクスプレスは能力値57、調整評価14.7でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "4番スズカコーズは能力値54.3で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "8番マイティマイティーは能力値51.7と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ノヴァエクスプレスを本命。能力値57と調整面を軸に、スズカコーズの逆転余地、マイティマイティーの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 7,
+    "marks": [
+      3,
+      8,
+      9,
+      11,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        8,
+        9,
+        11,
+        7
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番トランキリテも比較したが、7番ウォーターリヒトの能力値65と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "3番エルトンバローズは能力値73.3、調整評価17.5でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "8番エコロヴァルツは能力値69で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "9番ブルーミンデザインは能力値65.1と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "エルトンバローズを本命。能力値73.3と調整面を軸に、エコロヴァルツの逆転余地、ブルーミンデザインの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 8,
+    "marks": [
+      6,
+      4,
+      2,
+      5,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        4,
+        2,
+        5,
+        1
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番バヤシーフェイスも比較したが、1番メアヴィアの能力値38.3と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "6番ダノンジョーカーは能力値48、調整評価22.4でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "4番タマモランプは能力値44で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "2番ジャスティンガルフは能力値40と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ダノンジョーカーを本命。能力値48と調整面を軸に、タマモランプの逆転余地、ジャスティンガルフの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 9,
+    "marks": [
+      10,
+      8,
+      16,
+      1,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        8,
+        16,
+        1,
+        15
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番リードプリンシパルも比較したが、15番アイファーモービルの能力値37と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "10番リリードリーマーは能力値45、調整評価18.2でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "8番スマートフランキーは能力値43で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "16番デーモンスレイヤーは能力値38と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "リリードリーマーを本命。能力値45と調整面を軸に、スマートフランキーの逆転余地、デーモンスレイヤーの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 10,
+    "marks": [
+      2,
+      1,
+      7,
+      11,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        1,
+        7,
+        11,
+        5
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番パルメリータも比較したが、5番リトルスカーレットの能力値43.9と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "2番ステアハートは能力値52.9、調整評価16.3でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "1番セレジェイラは能力値50.7で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "7番エイプリルインパリは能力値47と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ステアハートを本命。能力値52.9と調整面を軸に、セレジェイラの逆転余地、エイプリルインパリの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 11,
+    "marks": [
+      6,
+      15,
+      2,
+      14,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        15,
+        2,
+        14,
+        3
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番ティプタラも比較したが、3番ドンファーラウェイの能力値37と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "6番タイセイフィオーレは能力値44、調整評価18.5でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "15番コスモグローリーは能力値40で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "2番ジーティームッシュは能力値39と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "タイセイフィオーレを本命。能力値44と調整面を軸に、コスモグローリーの逆転余地、ジーティームッシュの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 12,
+    "marks": [
+      18,
+      16,
+      10,
+      4,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        18,
+        16,
+        10,
+        4,
+        8
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番アートフォームも比較したが、8番ブルーサンセットの能力値45と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "18番ラインピクシーは能力値50、調整評価16.6でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "16番ワインクーラーは能力値48で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "10番フォティックは能力値47と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ラインピクシーを本命。能力値50と調整面を軸に、ワインクーラーの逆転余地、フォティックの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "marks": [
+      6,
+      2,
+      4,
+      12,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        2,
+        4,
+        12,
+        10
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番ローンウルフも比較したが、10番コパノニコルソンの能力値10.1と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "6番ネロコルヴィーノは能力値10.5、調整評価23.7でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "2番アルデドゥオーモは能力値10.3で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "4番スマラグドスは能力値10.2と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ネロコルヴィーノを本命。能力値10.5と調整面を軸に、アルデドゥオーモの逆転余地、スマラグドスの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "marks": [
+      8,
+      1,
+      13,
+      10,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        1,
+        13,
+        10,
+        6
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番ミンナデガンバルも比較したが、6番ノイシュタットの能力値39と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "8番ヨドノタイヨウは能力値42、調整評価20.4でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "1番パワーオブドリームは能力値39.1で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "13番クラウンアールシーは能力値40と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ヨドノタイヨウを本命。能力値42と調整面を軸に、パワーオブドリームの逆転余地、クラウンアールシーの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "marks": [
+      2,
+      1,
+      7,
+      5,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        1,
+        7,
+        5,
+        3
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番ガミーヌも比較したが、3番シルバーゴールドの能力値27と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "2番アルバンヌは能力値32、調整評価22.1でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "1番ヒメヒオウギは能力値30で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "7番ニシノマーレは能力値31と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "アルバンヌを本命。能力値32と調整面を軸に、ヒメヒオウギの逆転余地、ニシノマーレの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "marks": [
+      3,
+      5,
+      8,
+      6,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        5,
+        8,
+        6,
+        1
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番ワインダークシーも比較したが、1番ルージュアリスタの能力値35.3と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "3番レイキャネスは能力値47.5、調整評価20.9でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "5番ラフターラインズは能力値39.5で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "8番スウィフトミモザは能力値37.9と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "レイキャネスを本命。能力値47.5と調整面を軸に、ラフターラインズの逆転余地、スウィフトミモザの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "marks": [
+      7,
+      13,
+      12,
+      4,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        13,
+        12,
+        4,
+        8
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番アイファーシャドーも比較したが、8番エレレラナキラの能力値37と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "7番ハニーローリエは能力値43、調整評価20.2でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "13番ガンバレベアーは能力値38.1で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "12番ダイタエリュシオンは能力値40と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ハニーローリエを本命。能力値43と調整面を軸に、ガンバレベアーの逆転余地、ダイタエリュシオンの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "marks": [
+      4,
+      9,
+      1,
+      2,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        9,
+        1,
+        2,
+        6
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番カンパニョーラも比較したが、6番スコーピオンの能力値53と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "4番カフジテトラゴンは能力値58.1、調整評価21.9でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "9番エコロレジーナは能力値56.2で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "1番ニシノコニャックは能力値58と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "カフジテトラゴンを本命。能力値58.1と調整面を軸に、エコロレジーナの逆転余地、ニシノコニャックの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "marks": [
+      10,
+      7,
+      11,
+      4,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        7,
+        11,
+        4,
+        15
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番シークレットヴァウも比較したが、15番コパノパサディナの能力値60と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "10番テイエムトッキュウは能力値62、調整評価12.3でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "7番アルファマムは能力値61で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "11番クロジシジョーは能力値59.1と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "テイエムトッキュウを本命。能力値62と調整面を軸に、アルファマムの逆転余地、クロジシジョーの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "marks": [
+      2,
+      5,
+      7,
+      1,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        5,
+        7,
+        1,
+        9
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番ピンキープロミスも比較したが、9番プレイリードリームの能力値48.5と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "2番イクリールは能力値57、調整評価20.1でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "5番アマキヒは能力値55で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "7番エコロレイズは能力値53と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "イクリールを本命。能力値57と調整面を軸に、アマキヒの逆転余地、エコロレイズの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "marks": [
+      12,
+      11,
+      13,
+      14,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        11,
+        13,
+        14,
+        8
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番ルーフオブヘヴンも比較したが、8番キミハスコールの能力値42.8と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "12番マーズオデッセイは能力値51.7、調整評価15.9でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "11番ピコテンダーは能力値49で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "13番フェスタリアは能力値48と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "マーズオデッセイを本命。能力値51.7と調整面を軸に、ピコテンダーの逆転余地、フェスタリアの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "marks": [
+      6,
+      9,
+      5,
+      2,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        9,
+        5,
+        2,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番カーマンラインも比較したが、7番ブルーゴールドの能力値46と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "6番ワスカルは能力値52、調整評価21.3でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "9番マーゴットゲインは能力値47.2で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "5番ゴットランドは能力値47と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ワスカルを本命。能力値52と調整面を軸に、マーゴットゲインの逆転余地、ゴットランドの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "marks": [
+      5,
+      11,
+      10,
+      9,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        11,
+        10,
+        9,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番ネイチャーズロウも比較したが、4番ダノンピクチャーの能力値43と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "5番ルージュスティーズは能力値48.2、調整評価18.1でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "11番ウインリュクスは能力値50で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "10番オビドスは能力値49と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ルージュスティーズを本命。能力値48.2と調整面を軸に、ウインリュクスの逆転余地、オビドスの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "marks": [
+      8,
+      2,
+      18,
+      3,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        2,
+        18,
+        3,
+        12
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番タイキオーベロンも比較したが、12番スターリーナイトの能力値36.1と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "8番タイヨウノキセツは能力値43、調整評価21.3でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "2番ラウレアは能力値42で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "18番ナギサノバルコニーは能力値38と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "タイヨウノキセツを本命。能力値43と調整面を軸に、ラウレアの逆転余地、ナギサノバルコニーの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 1,
+    "marks": [
+      10,
+      3,
+      6,
+      9,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        3,
+        6,
+        9,
+        4
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番ウチュウノセカイも比較したが、4番ココソラーレの能力値25と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "10番ハルヒメは能力値38、調整評価19.3でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "3番マーゴットミストは能力値33で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "6番マスキュラーは能力値30と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ハルヒメを本命。能力値38と調整面を軸に、マーゴットミストの逆転余地、マスキュラーの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 2,
+    "marks": [
+      3,
+      2,
+      12,
+      10,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        2,
+        12,
+        10,
+        11
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番クレヨンポップも比較したが、11番オオタチの能力値42と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "3番マブアンドフェールは能力値46、調整評価20.9でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "2番ステイアンビシャスは能力値44で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "12番アルデフォックスは能力値42と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "マブアンドフェールを本命。能力値46と調整面を軸に、ステイアンビシャスの逆転余地、アルデフォックスの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 3,
+    "marks": [
+      7,
+      1,
+      13,
+      12,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        1,
+        13,
+        12,
+        4
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番シャインフリーリーも比較したが、4番ヒルノレーダンの能力値39と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "7番メイショウキンタイは能力値41.1、調整評価17.9でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "1番クランドゥイユは能力値41で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "13番ラマヌジャンは能力値40.1と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "メイショウキンタイを本命。能力値41.1と調整面を軸に、クランドゥイユの逆転余地、ラマヌジャンの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 4,
+    "marks": [
+      1,
+      5,
+      3,
+      12,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        5,
+        3,
+        12,
+        10
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番ファンタズマも比較したが、10番ボールドハーテッドの能力値36と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "1番マナエトレは能力値41、調整評価13.6でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "5番ミュージックマンは能力値39で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "3番ビービーバザークは能力値36.6と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "マナエトレを本命。能力値41と調整面を軸に、ミュージックマンの逆転余地、ビービーバザークの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 5,
+    "marks": [
+      1,
+      5,
+      4,
+      2,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        5,
+        4,
+        2,
+        3
+      ],
+      "external_challenger_horse_no": null,
+      "excluded_horse_no": null,
+      "decision": "NO_EXTERNAL_CHALLENGER",
+      "boundary_reason": "札幌5Rは5頭立てのため、出走全馬を比較対象として五頭をそのまま保持した。"
+    },
+    "honmei_win": {
+      "evidence": "1番ジャスティンシカゴは能力値49.6、調整評価28.1でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "5番ジーティーメティオは能力値46.5で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "4番ショウナンバーボンは能力値37.2と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ジャスティンシカゴを本命。能力値49.6と調整面を軸に、ジーティーメティオの逆転余地、ショウナンバーボンの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 6,
+    "marks": [
+      12,
+      7,
+      2,
+      6,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        7,
+        2,
+        6,
+        9
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番ミルフルールも比較したが、9番セイゲンの能力値41と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "12番ミニョンマルーンは能力値46.1、調整評価22.3でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "7番フェリーニは能力値46で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "2番ペレグリンは能力値44と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ミニョンマルーンを本命。能力値46.1と調整面を軸に、フェリーニの逆転余地、ペレグリンの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 7,
+    "marks": [
+      1,
+      6,
+      2,
+      5,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        6,
+        2,
+        5,
+        14
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番ヒットザグラウンドも比較したが、14番ラヴスコールの能力値45.1と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "1番ルナルーチェットは能力値49、調整評価14.3でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "6番ユーティジャーニーは能力値49.2で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "2番クリールスルは能力値49.1と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ルナルーチェットを本命。能力値49と調整面を軸に、ユーティジャーニーの逆転余地、クリールスルの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 8,
+    "marks": [
+      4,
+      13,
+      2,
+      1,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        13,
+        2,
+        1,
+        12
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番ニシノブレイゼストも比較したが、12番タマモジャスミンの能力値46と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "4番ディアウスは能力値54、調整評価16.5でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "13番ローズマイスターは能力値52で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "2番ホウオウバローロは能力値50と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ディアウスを本命。能力値54と調整面を軸に、ローズマイスターの逆転余地、ホウオウバローロの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 9,
+    "marks": [
+      9,
+      13,
+      11,
+      6,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        13,
+        11,
+        6,
+        2
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番ハリウッドメモリーも比較したが、2番クインズスピカの能力値46と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "9番マキシマムドライブは能力値48.1、調整評価17.5でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "13番ミクストベリーズは能力値47で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "11番マイネルステラートは能力値46.9と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "マキシマムドライブを本命。能力値48.1と調整面を軸に、ミクストベリーズの逆転余地、マイネルステラートの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 10,
+    "marks": [
+      4,
+      2,
+      7,
+      3,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        2,
+        7,
+        3,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番カウスリップも比較したが、1番クラリティスケールの能力値49と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "4番ペイシャヴァルツーは能力値58、調整評価14でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "2番パールフロントは能力値52で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "7番サベージラヴは能力値50と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ペイシャヴァルツーを本命。能力値58と調整面を軸に、パールフロントの逆転余地、サベージラヴの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 11,
+    "marks": [
+      5,
+      15,
+      10,
+      8,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        15,
+        10,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番リビアングラスも比較したが、7番ハヤテノフクノスケの能力値65と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "5番ホウオウビスケッツは能力値70、調整評価19.5でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "15番ココナッツブラウンは能力値69で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "10番ヴェローチェエラは能力値67.1と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ホウオウビスケッツを本命。能力値70と調整面を軸に、ココナッツブラウンの逆転余地、ヴェローチェエラの相手妙味まで比較して五頭を決めた。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 12,
+    "marks": [
+      2,
+      7,
+      6,
+      14,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        7,
+        6,
+        14,
+        4
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番シテフローラルも比較したが、4番フィーリウスの能力値53.2と直前評価を五番手で優先した。"
+    },
+    "honmei_win": {
+      "evidence": "2番シュバルツマサムネは能力値56.1、調整評価10.3でこの組み合わせの中心。位置取り見込みも含めて勝ち切り候補の最上位と判断した。",
+      "main_risk": "7番レクスノヴァスは能力値56で差が小さく、展開次第では逆転まで警戒する。"
+    },
+    "shot_case": {
+      "case": "6番ウインマクシマムは能力値53と直前気配を評価し、三番手の相手候補とした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "シュバルツマサムネを本命。能力値56.1と調整面を軸に、レクスノヴァスの逆転余地、ウインマクシマムの相手妙味まで比較して五頭を決めた。"
+  }
+]
