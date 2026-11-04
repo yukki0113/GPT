@@ -57,3 +57,17 @@ python horse-racing/brdb/src/build_brdb_historical_ukc_kyi_candidate.py \
 
 **M6全体・P1-5/6/7予測効果は依然HOLD。今回のPASSは483k規模の研究入力候補の組み立てに限定。**
 BRDB CURRENT、RaceNote、PWA、予想・販売ロジックは未変更。
+
+## GitHub正本の20 ZIP実データ実行と決定性確認
+
+GitHub正本 `src/build_brdb_historical_ukc_kyi_candidate.py` の**Git blob SHA `f6e8300f33a4d5edee6815a7a009359c2f3b4545`**と一致する実ソースを、Source-only transport [Issue #2401](https://github.com/yukki0113/GPT/issues/2401) / [Actions run 41798327664](https://github.com/yukki0113/GPT/actions/runs/41798327664) を経由して私的実行環境へ取得。初回のSHA計算がUKC各馬行ごとで非効率だった点を修正し、日次メンバーごとに一度だけ計算するようにした。変更後のGit blobを照合し、合成テスト4/4 PASS。
+
+2016〜2025年の20 ZIP・1,082対の実データを正本コードで**2つの独立出力ディレクトリにて再実行**。次の結果がそれぞれ一致し、出力バイトも同一だった。
+
+- `kyi_entries=481627`、`matched_entries=481503`、`same_day_ukc_entries=480904`、`prior_day_ukc_entries=599`、`missing_ukc_entries=124`。
+- `private_historical_ukc_kyi_candidate.csv.gz` SHA-256: `9b59a097bd8883fb771fcf2baf23df6e7dad0c4b52163af2ca7f5467ba87c805`、サイズ14,883,720バイト。ユーザーの非公開環境に限り保存し、GitHubにコミットしない。
+- `historical_daily_candidate_aggregate.json` SHA-256: `35bbbe9e79b2d02de5552d012e25624b987344c953275bff2cf3222b594914f8`。
+- 同日UKC重複は2025年12月13日14件、12月14日6件であり、同じ馬の内容は意味論的に一致している。矛盾プロフィールはfail-closed。
+- 古い試作ファイルのSHAは正本実行のSHAとして採用しない。
+
+以上が通っても**独立した当時の配信原本受領・訂正履歴の証明は依然0件**。データ再構成をP1-5/6/7予測性能のPASSに改ざんしない。
