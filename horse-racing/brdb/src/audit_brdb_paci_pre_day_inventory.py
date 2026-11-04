@@ -51,6 +51,20 @@ def parse_provider_time(value):
         raise ValueError("timestamp timezone required")
     return parsed
 
+def body_records(data: bytes, kind: str, body_size: int):
+    """Normalize CRLF framing after canonical JRDB split_fixed_records."""
+    records = split_fixed_records(data, kind)
+    if not records:
+        raise ValueError("invalid fixed record framing")
+    result = []
+    for row in records:
+        if len(row) == body_size + 2 and row.endswith(b"\\r\\n"):
+            row = row[:-2]
+        if len(row) != body_size:
+            raise ValueError("invalid fixed record body length")
+        result.append(row)
+    return result
+
 def audit(root: Path, manifest: dict) -> dict:
     root = Path(root).resolve()
     archives = manifest.get("archives")
@@ -94,8 +108,8 @@ def audit(root: Path, manifest: dict) -> dict:
             raise ValueError("invalid ZIP") from exc
         if sha_bytes(uk_bytes) != item.get("ukc_sha256") or sha_bytes(ky_bytes) != item.get("kyi_sha256"):
             raise ValueError("member SHA mismatch")
-        uk_records = split_fixed_records(uk_bytes, "UKC")
-        ky_records = split_fixed_records(ky_bytes, "KYI")
+        uk_records = body_records(uk_bytes, "UKC", 290)
+        ky_records = body_records(ky_bytes, "KYI", 1022)
         if not uk_records or len(uk_records) != len(ky_records):
             raise ValueError("UKC/KYI record count mismatch")
         ids = [parse_ukc_record(record) for record in uk_records]
