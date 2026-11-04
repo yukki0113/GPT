@@ -42,3 +42,10 @@ The established canonical JRDB Raw folder was inspected via native Drive folder 
 - Do not send licensed JRDB ZIP/member rows to public GitHub. This report includes aggregates only.
 
 Local reproducibility artifacts: `audit_ukc_historical_zip_timestamps.py`, `test_audit_ukc_historical_zip_timestamps.py`, and private manifest of source SHAs/sizes/Drive metadata. Private aggregate JSON SHA-256 `e300bfa54efcf7631700b10d3f23b9cb0bd5fed6d62a2026a7e8caf0450ab132`. Exact input archive SHA values are in the already committed source-pinned UKC manifest.
+
+## Committed regression verification
+
+- Exact source commit for synthetic CI: `33a905395bcc39539ba546e508be93182db57c49`.
+- [DATA_STORAGE_FALLBACK Issue #2372](https://github.com/yukki0113/GPT/issues/2372) closed with `status=PASS`.
+- [GitHub Actions run 41766791567](https://github.com/yukki0113/GPT/actions/runs/41766791567): job `completed/success`, DuckDB 1.1.3 / PyArrow 25.0.1, artifact `data-storage-fallback-41766791567` present.
+- Synthetic-only tests do not verify historical JRDB release provenance. The full real ZIP archive inventory was run locally with the connector-fetched, SHA-pinned private data. The published report holds aggregate counts only.
