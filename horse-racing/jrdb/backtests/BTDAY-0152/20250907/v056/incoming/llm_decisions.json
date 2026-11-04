@@ -1042,8 +1042,8 @@
       ],
       "external_challenger_horse_no": null,
       "excluded_horse_no": null,
-      "decision": "KEEP_ORDINARY_FIVE",
-      "boundary_reason": "5頭立てのため外部候補なし。全頭比較で2番を五番手とした。"
+      "decision": "NO_EXTERNAL_CHALLENGER",
+      "boundary_reason": "5頭立てのため外部候補は存在せず、Reader全頭をそのまま5頭として比較した。"
     },
     "honmei_win": {
       "evidence": "4番はIDM53、KYI20.8、近2走2・3着で少頭数でも末脚の信頼度が高い。",
