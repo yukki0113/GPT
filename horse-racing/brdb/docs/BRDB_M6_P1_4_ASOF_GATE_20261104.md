@@ -68,3 +68,11 @@ python -m unittest discover -s horse-racing/brdb/tests \
 ```
 
 Output is the aggregate-only JSON `asof_eligibility_audit.json`. **Neither the 2016–2025 historical row-level mart nor the 2026 history ZIP is submitted to public GitHub Actions.**
+## Committed-source synthetic CI acceptance
+
+- GitHub source commit: `166cda67989a951314efdad686a7c1a097a81ece` (source/test/docs at test time).
+- [Fallback Issue #2371](https://github.com/yukki0113/GPT/issues/2371) — `DATA_STORAGE_FALLBACK_RESULT status: PASS`, closed.
+- [Actions run #41763353407](https://github.com/yukki0113/GPT/actions/runs/41763353407) — `run` job `completed/success`; DuckDB `1.1.3`, PyArrow `25.0.1`; artifact `data-storage-fallback-41763353407` available.
+- Local aggregate-only audit JSON SHA-256: `8ce3992dd4f26416ae347a5c28a19eb2bd7fb04b0be25173ccca437bd7a1f4ec`; no licensed row data uploaded to GitHub.
+
+**Gate acceptance = PASS (conservative exclusion). M6 predictive acceptance = HOLD (0 as-of-attested rows).**
