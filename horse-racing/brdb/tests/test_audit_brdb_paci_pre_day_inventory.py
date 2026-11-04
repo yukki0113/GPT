@@ -1,5 +1,6 @@
 """Synthetic-only tests for P1-4c; no JRDB raw rows are committed."""
 import hashlib
+from datetime import datetime, timedelta
 import json
 from pathlib import Path
 import sys
@@ -27,10 +28,11 @@ def synthetic(root):
             z.writestr("KYI" + day[2:] + ".txt", ky_data)
             for k in range(12):
                 z.writestr("AUX%02d%s.txt" % (k, day[2:]), b"fixture")
+        earlier = (datetime.strptime(day, "%Y%m%d") - timedelta(days=1)).strftime("%Y-%m-%dT10:00:00Z")
         archives.append({
             "date": day,
-            "created_time": "%s-%s-%sT10:00:00Z" % (day[:4], day[4:6], str(int(day[6:8])-1).zfill(2)),
-            "modified_time": "%s-%s-%sT10:00:00Z" % (day[:4], day[4:6], str(int(day[6:8])-1).zfill(2)),
+            "created_time": earlier,
+            "modified_time": earlier,
             "revision_count": 1,
             "zip_size": p.stat().st_size,
             "zip_sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
