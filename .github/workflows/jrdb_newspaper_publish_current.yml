@@ -126,6 +126,23 @@ jobs:
               env_file.write(f"SOURCE_COMMIT={source_commit}\n")
           PY
 
+      - name: Reject stale or equal-revision Current request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$NEWSPAPER_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p .publish/existing-current
+            gh release download "$NEWSPAPER_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern "$NEWSPAPER_RELEASE_META" \
+              --dir .publish/existing-current
+            python horse-racing/jrdb/src/jrdb_newspaper_current_monotonic.py \
+              --candidate .publish/request.normalized.json \
+              --current ".publish/existing-current/$NEWSPAPER_RELEASE_META" \
+              --expected-release-kind jrdb_newspaper_current_cache
+          fi
+
       - name: Download day-package from Google Drive
         run: |
           set -euo pipefail
