@@ -65,6 +65,18 @@ With only the attached archives and the standalone SED canonical manifest, witho
 
 **Input location / legal boundary:** Attached ZIPs contain the derived P0-2/P1-1 results and the BRDB pedigree generation, but not the full 2016–2025 KYI/SED/BAC annual Parquet objects. The official JRDB terms <https://jrdb.com/terms> Article 5 prohibit sharing/public disclosure of JRDB information, including unpaid third-party provision. Consequently, Google Drive `anyone:reader` metadata is **not** permission to create or use public GitHub Actions artifacts or public Drive fallback manifests containing proprietary JRDB rows. Do not bootstrap full-data Actions with these files without separate explicit licensing/security authorization. Prefer private authorized execution and keep the raw data off GitHub.
 
+## P1-1 GitHub output-contract repair and pinned regression
+
+Review found that the committed P1-1 builder omitted `baseline_entries` from the per-lineage CSV output (the archived, full-cohort-tested script included it) and omitted `identities` and `baseline_surface_distance` audit fields. This was a substantive output-contract difference, despite earlier negative-only tests PASSing.
+
+Fixed on P1-1 branch:
+
+- Builder commit `c535f45d0441c390eac30a280a812f205db1e0c0`: restored `baseline_entries` and original descriptive audit contract while retaining the committed input SHA, temporal, cohort and key guards.
+- Test commit `9a4ba9930919246c6958e21e4aa4bbabd5e6a823`: added positive regression using **481,627 generated synthetic rows** without proprietary inputs, verifying 2 lineage roles, baseline entries/denominator, eligibility and audit fields.
+- [Fallback Issue #2359](https://github.com/yukki0113/GPT/issues/2359) closed with `status: PASS`; [run 41746337349](https://github.com/yukki0113/GPT/actions/runs/41746337349) job `success`; artifact `data-storage-fallback-41746337349`; DuckDB `1.1.3`, PyArrow `25.0.1`, source commit `9a4ba9930919246c6958e21e4aa4bbabd5e6a823`.
+
+This is still **not** a full proprietary-data replay or row-level identity validation against archived P1-1 CSVs. Keep the PRs HOLD pending legitimate complete-data access and actual committed-code equivalence.
+
 ## Current acceptance gates
 
 1. Validate new source changes on **DuckDB 1.1.3**, using repository shared `tools/data-storage/` and its documented local-first / Actions fallback.
