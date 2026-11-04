@@ -71,7 +71,7 @@ class CohortTests(unittest.TestCase):
     def test_sha_tamper_denied(self):
         with tempfile.TemporaryDirectory() as x:
             root=Path(x);manifest=fixtures(root)
-            (root/"SED"+DATES[0][2:]+".zip").write_bytes(b"bad")
+            (root/("SED"+DATES[0][2:]+".zip")).write_bytes(b"bad")
             with self.assertRaisesRegex(ValueError,"source SHA or size mismatch"):
                 audit(root,manifest,root/"output")
 
