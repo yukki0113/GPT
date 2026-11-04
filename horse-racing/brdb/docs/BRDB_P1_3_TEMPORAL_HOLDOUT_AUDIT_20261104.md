@@ -64,3 +64,11 @@ python horse-racing/brdb/src/build_brdb_temporal_holdout.py \
   --mart-sha256 8b41f4b7132bc268428133535cce9c4aff79ac5b7b4c0dca5a5cdd5c1df13b63 \
   --out <PRIVATE_OUTPUT_DIR>
 ```
+
+## GitHub Actions 回帰検証
+
+- 対象source commit: `766a7d53dedd29e572823d552bfd592e94e83d4c`。
+- [GitHub Actions run 41759884203](https://github.com/yukki0113/GPT/actions/runs/41759884203) — `status=PASS`、ジョブ `completed/success`。
+- DuckDB `1.1.3` / PyArrow `25.0.1`。実行済みの合成データ回帰テスト4件はPASS。
+- [Fallback Issue #2368](https://github.com/yukki0113/GPT/issues/2368) は `completed`、artifact `data-storage-fallback-41759884203` の存在を確認。
+- GitHub Actionsへ渡したのはソース・合成データのみ。ライセンス付きJRDB行、研究マート、private仮説CSVは送信していない。
