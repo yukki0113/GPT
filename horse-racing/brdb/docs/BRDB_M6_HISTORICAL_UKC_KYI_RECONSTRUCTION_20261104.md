@@ -71,3 +71,8 @@ GitHub正本 `src/build_brdb_historical_ukc_kyi_candidate.py` の**Git blob SHA 
 - 古い試作ファイルのSHAは正本実行のSHAとして採用しない。
 
 以上が通っても**独立した当時の配信原本受領・訂正履歴の証明は依然0件**。データ再構成をP1-5/6/7予測性能のPASSに改ざんしない。
+
+## 正本CIの最終受入
+
+- [GitHub Actions Run #41799067192](https://github.com/yukki0113/GPT/actions/runs/41799067192)：`completed/success`、合成テスト4/4 PASS、artifact `data-storage-fallback-41799067192`の存在を確認。対応Issue [#2402](https://github.com/yukki0113/GPT/issues/2402) は完了済み。
+- 実データのGitHub正本コード再実行2回で、481,503件の私的候補CSV.gz／集計JSONが**双方byte-identical**。保管済みの20原本ZIP・復元候補の予測用as-of資格は引き続きHOLD。
