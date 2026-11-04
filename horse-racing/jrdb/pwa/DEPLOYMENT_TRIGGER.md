@@ -14,6 +14,8 @@ EdgeDB/Training Edge専用のworkflow・計算/取込/preview・config・専用�
 
 Phase 3（Issue #2334）でEdgeDB/Training Edge専用実行資産はactive領域からarchiveへ移動済み。通常配信はPACI-only。完了判定ではコード監査と本番Current/Pages配信を区別し、最新のRelease・workflow run・公開画面を毎回確認する。過去runや旧PR時点の未完了記述を現在の状態として流用しない。
 
+2026-11-04 T7最終監査は `../newspaper/T7_FINAL_RETIREMENT_AUDIT_20261104.md`。通常運用廃止・本番配信は範囲限定で完了、Drive退避先資産の物理削除はユーザー申告ベースと区別する。
+
 この文書はKenshow_Labo PWAの **何がdeployを起動し、どこまで確認したら完了か** を定義します。
 
 GitHub運用の全体方針は `../.gpt/WORKFLOW.md` ではなく、JRDB rootの `.gpt/WORKFLOW.md` を正本とします。PWAのsource/docs変更は原則direct Git change、Secrets・大容量配布・Release連鎖等はActions-Nativeで扱います。
@@ -62,12 +64,12 @@ PWA code / CSS / HTML / Service Worker / PWA docsをdirect Git updateした場�
 
 - workflow: `.github/workflows/jrdb_newspaper_publish_current.yml`
 - workflow name: `JRDB Newspaper Current Publish`
-- request pointer: `horse-racing/jrdb/newspaper/publish/current.json`
+- legacy request file: `horse-racing/jrdb/newspaper/publish/current.json`（現在の可変Releaseポインタではない。2026-09-20 r2の古い要求を残している）
 - current Release: `jrdb-newspaper-current`
 
 です。
 
-`workflow_run` で `JRDB Newspaper Current Publish` のsuccessful completionを受けてPagesを再構成します。Newspaper current更新は、検証済みday-packageをDrive canonicalへ保存し、`publish/current.json` を更新してCurrent Publishを完走させた後、full-site Pagesへ自動連携します。
+`workflow_run` で `JRDB Newspaper Current Publish`、`JRDB Newspaper Skeleton Publish`、`JRDB Momotaro Newspaper Current Publish`、`JRDB Newspaper Kensho Merge via Issue` など正式publisherのsuccessful completionを受けてPagesを再構成します。通常のPACI-only日次配布では監査済みartifactを基に個人/桃太郎Currentを更新します。Git-tracked `publish/current.json` は古い要求のままなので、**現在の公開ポインタとして使用せず、検証なしでworkflow_dispatchしない**でください。現行の公開入口は日付・revisionの単調前進を要求し、Current書き込みを共通concurrency groupで直列化します。
 
 ### 3. Fact Lite publish completion
 
