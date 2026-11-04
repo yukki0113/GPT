@@ -2,7 +2,7 @@
 
 ## Status and limitations
 
-**Local full-data exploratory audit PASS; GitHub review/merge PENDING.** This audit describes year-stratified data support; it does **not** prove predictive stability or promote historical static pedigree to a pre-race as-of feature.
+**Formal P1-2 research-only descriptive acceptance: PASS.** This is an accepted year-stratified *descriptive* audit, not a claim of forward predictive stability. This audit describes year-stratified data support; it does **not** prove predictive stability or promote historical static pedigree to a pre-race as-of feature.
 
 ## Input identity
 
@@ -39,6 +39,8 @@ Independent invariant: summing `entries`, `n`, `wins`, `top3` over the 10 annual
 ## Determinism and tests
 
 - Local DuckDB 1.1.3 full-data run: `PASS`.
+- GitHub Actions [BRDB research PR tests #41755843294](https://github.com/yukki0113/GPT/actions/runs/41755843294): `success` at source head `ab9368b5d4fb31d85ff685fedc453ca295101096`, DuckDB 1.1.3; P0-2, P1-1 and P1-2 suites PASS.
+- Earlier import-path CI failure [#41755701093](https://github.com/yukki0113/GPT/actions/runs/41755701093) was fixed and revalidated.
 - Synthetic-only unit tests: **4/4 PASS**; verify 481,627-row generated positive cohort, deterministic repeated output, input SHA fail-closed, support threshold fail-closed, malformed P1-1 selected cohort rejection.
 - Private annual CSV SHA-256: `ba9342b81d9554b34611fb9f2123e95c6110ae3fcf1610f7e6f52598bc72a699` (not distributed through the public GitHub repository).
 - Output summary: `annual_stability_summary.json`, does not include horse/lineage/year rows.
