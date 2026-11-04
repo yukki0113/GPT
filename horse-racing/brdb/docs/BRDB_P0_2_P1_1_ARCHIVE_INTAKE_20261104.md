@@ -45,7 +45,12 @@ The group key used for this check is `(lineage_role,lineage_code,surface_code,di
 - P0-2 pinned source ref `59b742e743075a334277e730218b2caae28d1ea7`: [Issue #2351](https://github.com/yukki0113/GPT/issues/2351).
 - P1-1 pinned source ref `bedd3219d1424198381020f77418b96b4ef0b18b`: [Issue #2353](https://github.com/yukki0113/GPT/issues/2353).
 
-These requests are **synthetic tests only**, not real-data acceptance. A request Issue being open or started is **not** proof of PASS. Check the machine-readable workflow result and artifact before changing HOLD.
+Both request Issues have now closed with **DATA_STORAGE_FALLBACK_RESULT status: PASS**, and each underlying GitHub Actions job completed successfully with a result artifact:
+
+- P0-2: [run 41743585539](https://github.com/yukki0113/GPT/actions/runs/41743585539); `source_commit=59b742e743075a334277e730218b2caae28d1ea7`; `duckdb_version=1.1.3`; `pyarrow_version=25.0.1`; artifact `data-storage-fallback-41743585539`.
+- P1-1: [run 41743678023](https://github.com/yukki0113/GPT/actions/runs/41743678023); `source_commit=bedd3219d1424198381020f77418b96b4ef0b18b`; `duckdb_version=1.1.3`; `pyarrow_version=25.0.1`; artifact `data-storage-fallback-41743678023`.
+
+**These are synthetic regression PASS results only, NOT a real-data acceptance or a source-equivalence claim.**
 
 ## Current acceptance gates
 
