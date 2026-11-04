@@ -77,6 +77,15 @@ Fixed on P1-1 branch:
 
 This is still **not** a full proprietary-data replay or row-level identity validation against archived P1-1 CSVs. Keep the PRs HOLD pending legitimate complete-data access and actual committed-code equivalence.
 
+## Stacked PR reconciliation and combined regression (2026-11-04)
+
+- P1-1 branch synchronized with latest P0-2 using merge commit `2e62a4484e70d0b1ceee65985bcc664ca40f1310`, preserving both parents and all P1-1 files.
+- GitHub comparison of current P0-2 base to P1-1 head: **ahead 7, behind 0**, PR #2342 reports `mergeable=true`.
+- [DATA_STORAGE_FALLBACK Issue #2360](https://github.com/yukki0113/GPT/issues/2360) closed with `status=PASS`. The **same source commit** ran both `test_build_brdb_result_mart.py` and `test_build_lineage_condition_report.py`, including the 481,627-row **synthetic** positive fixture, on DuckDB `1.1.3`, PyArrow `25.0.1`.
+- [Actions run 41747039718](https://github.com/yukki0113/GPT/actions/runs/41747039718): job completed `success`, artifact `data-storage-fallback-41747039718` present.
+
+**Full cohort replay remains unverified for the GitHub source commits.** The archived source versions and later GitHub versions are distinct Git blobs; the synthetic regression, archived artifact hashes, independent CSV arithmetic, and 10 annual SED manifest row counts do **not** prove row-level equivalence of a full committed-code replay. The attached ZIP carries the finished P0-2 mart but **not** the 2016–2025 complete KYI/SED/BAC annual assets. The current managed Python runtime also lacks DuckDB and its package source is unavailable. Do not substitute a hand-written data parser or publish record-level data to Actions to manufacture a PASS.
+
 ## Current acceptance gates
 
 1. Validate new source changes on **DuckDB 1.1.3**, using repository shared `tools/data-storage/` and its documented local-first / Actions fallback.
