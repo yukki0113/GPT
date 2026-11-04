@@ -58,7 +58,7 @@ def body_records(data: bytes, kind: str, body_size: int):
         raise ValueError("invalid fixed record framing")
     result = []
     for row in records:
-        if len(row) == body_size + 2 and row.endswith(b"\\r\\n"):
+        if len(row) == body_size + 2 and row.endswith(bytes((13, 10))):
             row = row[:-2]
         if len(row) != body_size:
             raise ValueError("invalid fixed record body length")
