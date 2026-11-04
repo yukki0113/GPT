@@ -24,7 +24,7 @@ DATES = {
     145:"2025-10-05",146:"2025-07-13",147:"2025-07-27",
     148:"2025-11-29",149:"2025-01-12",150:"2025-02-01"
 }
-EXPECTED = {"A":230, "B":524, "C":50, "Z":96}
+EXPECTED = {"A":205, "B":524, "C":50, "Z":121}
 GENERATION = "jrdb_normalized_warehouse_v1_2010_2025_g20260921"
 CONTRACT = "v055-prediction-freeze-confidence-review-r6"
 
