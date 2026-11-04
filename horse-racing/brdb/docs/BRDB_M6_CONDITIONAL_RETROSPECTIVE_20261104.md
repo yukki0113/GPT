@@ -74,3 +74,33 @@ python horse-racing/brdb/src/run_brdb_m6_conditional_retrospective.py \
 ```
 
 この結果が同方向でも、最初の`M6_FINAL_COMPLETION_DECISION`が定義する厳密な全体完了は**HOLD**のまま。完了判定は測定値と科学的妥当性の検証が揃ったときに更新する。
+
+## 正本ソースによる実データ再実行・受入（2026-11-04確定）
+
+GitHub PRの本体実行ソースは `src/run_brdb_m6_conditional_retrospective.py`、source-only transportで取り出したGitHub側の**実ソースSHA-256 `a07dfc3ecbdd728f7d4e99e8e56da3f8ed73655f6b0e98d6520380a8bf49f6e4`**（GitHub commit `7ad200146647b8867de21c4d2310cae4031f8ff4`）。[Source export run 41805498600](https://github.com/yukki0113/GPT/actions/runs/41805498600)は`completed/success`、source-only artifactとファイルSHAを取得・検証した。転送したのはソースと合成テストだけであり、私的な馬別行は転送していない。
+
+取得した正本コードをprivate runtimeで2016〜2025年の固定マート＋日付別血統候補の**全件**に再実行。ソースSHA・入力SHAを検証し、予測対象235,700件／17,239レースを再現した。
+
+| 指標 | 正本コードの確定値 |
+|---|---:|
+| 非血統baseline log loss | **0.26121709072530674** |
+| 血統追加challenger log loss | **0.2608869015289739** |
+| blood − baseline（低いほど改善） | **−0.0003301891963328283** |
+| 非血統Brier | 0.06772457168820525 |
+| 血統追加Brier | 0.06768624566521274 |
+| Brier差 | −0.000038326022992529754 |
+| raceクラスタ95%区間 | [−0.00048094, −0.00018389] |
+| dateクラスタ95%区間 | [−0.00045929, −0.00018029] |
+| horseクラスタ95%区間 | [−0.00051423, −0.00014539] |
+| test yearクラスタ95%区間（わずか5群） | [−0.00052649, −0.00017381] |
+
+- 正本由来の集計JSON `conditional_retrospective_aggregate.json` SHA-256 `44733616a44c596da8347e83967c94e673a3f4a6e78045acb83169d9e7f8ee2c`。
+- 私的な全馬予測ペア `PRIVATE_conditional_holdout_predictions.csv.gz` SHA-256 `0fcf84e43c8cb7b9ca657dbb9cc417c47a2610182e2d8643957e4888ff492063`（235,700行）。**GitHub公開は禁止。**
+- 正本予測ペアによる別個の感度監査 `conditional_p1_5_robustness_exact.json` SHA-256 `7c0b5b334d71748de4a9add4807b307a17c29a024295632cc33bdec7c36b78d7`。同日UKC 235,105テスト行のみの後付け比較差`−0.00033217281`、過去UKC fallback 595行の差`+0.00045360560`。
+- 初回試作スクリプトとの結果差は`9.1005e-8`（log loss差）。**試作と正本の予測バイト同一性は主張しない**。正式値として上表を採用。
+
+### CI強度についての留意事項
+
+- [Actions run 41805180644](https://github.com/yukki0113/GPT/actions/runs/41805180644)：`completed/success`。合成テスト3件中、実行済み1件（ソースSHA検査）、**pandas・scikit-learn未導入のActions環境では2件がskip**。これは合成モデル検証3/3 PASSを意味しない。
+- 一方、**私的な実データ実行環境では同じ正本ソース添付の合成テスト3件すべてPASS（skipなし）**し、さらに上表の235,700件フルスコープを実行した。今後Actionsに必要パッケージを追加する場合は、運用用Workflowを変更せず研究用途限定とする。
+- 研究データはユーザー報告による配信版同等性の仮定を保持。P1-6条件付き研究実測と、本来の独立as-of・既存RaceNote対比の正式前向きM6受入を混同しない。
