@@ -396,6 +396,23 @@ jobs:
           )
           PY
 
+      - name: Reject stale or equal-revision Momotaro Current
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$MOMOTARO_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            mkdir -p /tmp/momotaro-request/existing-current
+            gh release download "$MOMOTARO_RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --pattern "$MOMOTARO_RELEASE_META" \
+              --dir /tmp/momotaro-request/existing-current
+            python horse-racing/jrdb/src/jrdb_newspaper_current_monotonic.py \
+              --candidate /tmp/momotaro-request/validation-summary.json \
+              --current "/tmp/momotaro-request/existing-current/$MOMOTARO_RELEASE_META" \
+              --expected-release-kind jrdb_momotaro_newspaper_current_cache
+          fi
+
       - name: Publish Momotaro current release
         env:
           GH_TOKEN: ${{ github.token }}

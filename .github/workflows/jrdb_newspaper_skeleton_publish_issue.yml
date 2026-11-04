@@ -450,6 +450,30 @@ jobs:
           )
           PY
 
+      - name: Reject stale or equal-revision personal and Momotaro Current
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          check_current() {
+            local tag="$1" meta="$2" kind="$3" destination="$4"
+            if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+              mkdir -p "$destination"
+              gh release download "$tag" \
+                --repo "$GITHUB_REPOSITORY" \
+                --pattern "$meta" \
+                --dir "$destination"
+              python horse-racing/jrdb/src/jrdb_newspaper_current_monotonic.py \
+                --candidate /tmp/skeleton-request/validation-summary.json \
+                --current "$destination/$meta" \
+                --expected-release-kind "$kind"
+            fi
+          }
+          check_current "$PERSONAL_RELEASE_TAG" "$PERSONAL_RELEASE_META" \
+            jrdb_newspaper_current_cache /tmp/skeleton-request/existing-personal
+          check_current "$MOMOTARO_RELEASE_TAG" "$MOMOTARO_RELEASE_META" \
+            jrdb_momotaro_newspaper_current_cache /tmp/skeleton-request/existing-momotaro
+
       - name: Publish both current releases
         env:
           GH_TOKEN: ${{ github.token }}
