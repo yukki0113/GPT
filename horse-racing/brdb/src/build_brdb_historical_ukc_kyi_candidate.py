@@ -80,6 +80,8 @@ def assemble(ukc_root:Path, kyi_root:Path, output:Path, *, years:tuple[int,...])
                             ulines=ub.splitlines();klines=kb.splitlines()
                             if any(len(x)!=290 for x in ulines) or any(len(x)!=1022 for x in klines):
                                 raise ValueError('noncanonical UKC/KYI row length')
+                            ush=hashlib.sha256(ub).hexdigest()
+                            ksh=hashlib.sha256(kb).hexdigest()
                             today={};daystats=Counter()
                             for row in ulines:
                                 record=parse_ukc_record(row)
@@ -97,8 +99,8 @@ def assemble(ukc_root:Path, kyi_root:Path, output:Path, *, years:tuple[int,...])
                                     if getattr(first,field)!=getattr(record,field):
                                         changes[field].add(record.horse_id)
                             for hid,record in today.items():
-                                latest[hid]=(record,day,sources[str(year)]['ukc_sha256'],hashlib.sha256(ub).hexdigest())
-                            seen=set();entrants=set();ush=hashlib.sha256(ub).hexdigest();ksh=hashlib.sha256(kb).hexdigest()
+                                latest[hid]=(record,day,sources[str(year)]['ukc_sha256'],ush)
+                            seen=set();entrants=set()
                             for row in klines:
                                 race=raw_field(row,1,8)
                                 no=raw_field(row,9,2)
