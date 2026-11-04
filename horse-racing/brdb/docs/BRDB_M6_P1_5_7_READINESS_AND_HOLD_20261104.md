@@ -68,3 +68,10 @@ python horse-racing/brdb/src/audit_brdb_m6_p1_5_7_readiness.py \
   --dependence <PRIVATE_P1_5_AGGREGATE_JSON> --dependence-sha 431f7568752d1a4a2f6c0d69bc0439c8ba854e5b441d9ca4497a0d9fa7e050a7 \
   --out <PRIVATE_OUTPUT_DIR>
 ```
+
+## 実行・CI受入証跡（予測研究の受入とは別）
+
+- 2026-11-04 private runtime にてSHA固定された3集計JSONを読み、ゲート監査 **PASS_READINESS_AUDIT_HOLD_PREDICTION**。出力は `m6_p1_5_7_readiness.json`（SHA-256 `240c889c6b34d40272b9f35870461cfe34dc12a1c1c2069ab84b6c0a93c4e360`）。
+- 研究用ゲートの合成回帰テスト：ローカル4/4 PASS。GitHubコミット `f318ab12fd6e65963031cf14aa3c348f4d050dda` を対象とした[Actions Run #41779241556](https://github.com/yukki0113/GPT/actions/runs/41779241556)は `completed/success`、artifact `data-storage-fallback-41779241556` 確認済み。
+- [Fallback Issue #2386](https://github.com/yukki0113/GPT/issues/2386)は `completed`。GitHub Actionsには合成入力のみを渡し、JRDBライセンス付き行を送信していない。
+- **成功したのは受入ゲートの実装・実行・検証のみであり、P1-5の血統予測頑健性、P1-6の予測バックテスト、P1-7の追加価値は未実施／HOLDである。**
