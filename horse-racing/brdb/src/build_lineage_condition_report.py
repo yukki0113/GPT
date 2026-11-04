@@ -64,7 +64,8 @@ def run(mart, output, *, expected_sha, min_n=100, min_years=3):
             venue_code,race_class_code,
             count(*) FILTER (WHERE normal_finisher) AS baseline_n,
             count(*) FILTER (WHERE winner) AS baseline_wins,
-            count(*) FILTER (WHERE top3) AS baseline_top3
+            count(*) FILTER (WHERE top3) AS baseline_top3,
+            count(*) AS baseline_entries
             FROM classified GROUP BY 1,2,3,4""")
         c.execute("""CREATE VIEW roles AS
             SELECT 'SIRE' AS lineage_role, sire_line_code AS lineage_code,
@@ -76,7 +77,8 @@ def run(mart, output, *, expected_sha, min_n=100, min_years=3):
               surface_code,distance_band,venue_code,race_class_code,
               race_year,horse_id,normal_finisher,winner,top3
             FROM classified WHERE pedigree_status='STATIC_ONLY'""")
-        sql = """SELECT g.*, b.baseline_n,b.baseline_wins,b.baseline_top3
+        sql = """SELECT g.*, b.baseline_n,b.baseline_wins,b.baseline_top3,
+                   b.baseline_entries
             FROM (SELECT lineage_role,lineage_code,surface_code,distance_band,
                  venue_code,race_class_code,
                  count(*) AS entries,count(DISTINCT horse_id) AS unique_horses,
@@ -143,16 +145,19 @@ def run(mart, output, *, expected_sha, min_n=100, min_years=3):
             'status':'PASS','version':VERSION,'research_only':True,'prediction_safe':False,
             'input_sha256':expected_sha,'total_entries':total,
             'normal_finishers':c.execute('SELECT count(*) FROM mart WHERE normal_finisher').fetchone()[0],
+            'baseline_surface_distance':index,
             'groups_all':len(rows),'groups_eligible':good,
             'filters':{'min_n':min_n,'min_years':min_years},
             'denominator':'NORMAL_FINISHERS_NOT_ALL_STARTERS',
             'baseline':'SAME_SURFACE_DISTANCE_BAND_VENUE_CLASS_ALL_NORMAL_FINISHERS',
+            'identities':'SIRE_AND_BMS_OFFICIAL_LINEAGE_CODES_ONLY',
             'temporal_status':TEMPORAL_LABEL,
             'interval':'WILSON_95_PERCENT_DESCRIPTIVE_NOT_MULTIPLE_TEST_ADJUSTED',
-            'notes':['Static pedigree cannot be used in pre-race backtests.',
-                'Repeated horse starts violate independence; intervals are indicative.',
-                'Multiple-testing correction and annual stability not established.',
-                'Official lineage CODES only; venue/class codes not guessed.'],
+            'notes':['No horse-name identity inference; no regional-root inference.',
+                'Rates and lifts are descriptive historical associations, not validated predictive aptitude.',
+                'Repeated starts of the same horse are not independent; Wilson ranges are indicative only.',
+                'No multiple-testing correction or race-date as-of verification; do not rank for betting.',
+                'Venue/race class codes retained as JRDB codes; no invented labels.'],
             'output_sha256':{p.name:sha(p) for p in files+[base_path]}}
         (output/'audit.json').write_text(json.dumps(audit,ensure_ascii=False,
                                                     sort_keys=True,indent=2)+'\n')
