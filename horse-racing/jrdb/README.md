@@ -203,11 +203,13 @@ pre-race evidence
 
 旧v0.2 control / v1.1-P gated policyは再現性・比較研究のため保持しますが、現行Gen0の予想ロジックではありません。詳細は `docs/racenote/legacy/README.md` を参照してください。
 
-### EdgeDB / Training Edge — retired (2026-11-03)
+### EdgeDB / Training Edge — retired / T7 accepted (2026-11-04)
 
 EdgeDB（v0.2〜v0.5）と旧Training Edge（RL / my_index）の通常運用は廃止済みです。旧Query・Registry・Matcher・専用workflow・previewは起動しません。旧研究資産のインデックスは `archive/retired-edge-training/README.md`、依存監査は `newspaper/PHASE3_AUDIT.md` にあります。
 
 Newspaper/PWAはPACI-onlyでBaseを生成し、独立addonと合流後に `src/jrdb_newspaper_retired_sources.py` で廃止sourceの非伝播を保証します。Analysis Parquet / Fact Lite / Stats Mart / RaceNote / RRDB / Eval / JRDB Common Readerは引き続き現行資産です。
+
+最終監査・終結判定は `newspaper/T7_FINAL_RETIREMENT_AUDIT_20261104.md`。T5のPACI-only本番配布・Current検証はPASS、T6の退避先Drive資産削除はユーザーによる実施報告（全ファイルIDの独立検証ではない）として記録。旧 `newspaper/publish/current.json` は現行Currentポインタではなく、古い2026-09-20要求であるため再公開に使わない。現在のCurrent publisherは日付・revisionの巻き戻しを拒否し、関連4ルートを直列化します。
 
 ### Legacy RaceNote prediction presentation
 
