@@ -2,10 +2,12 @@ import csv
 import hashlib
 import json
 import tempfile
+import sys
 import unittest
 from pathlib import Path
 
 import duckdb
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 from build_brdb_temporal_holdout import bh, run, sha
 
 
