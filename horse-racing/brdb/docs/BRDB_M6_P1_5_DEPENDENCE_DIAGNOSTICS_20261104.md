@@ -65,3 +65,10 @@ python -m unittest discover -s horse-racing/brdb/tests \
 ```
 
 Private source rows must not be uploaded to public GitHub Actions; CI runs synthetic fixtures only.
+
+## Committed-source regression validation
+
+- GitHub source commit `968b185bc87468e1ab7764e412fd965e1b1bc3ea`.
+- [Actions run 41776929226](https://github.com/yukki0113/GPT/actions/runs/41776929226): `run` job `completed/success`, DuckDB 1.1.3, PyArrow 25.0.1, artifact `data-storage-fallback-41776929226` exists.
+- Four synthetic tests PASS: deterministic full fixture with repeat horse IDs, pinned-input SHA tampering denial, duplicate identity denial, invalid SED outcome/actual-starter flag denial.
+- Actions tests use synthetic fixtures only, not licensed JRDB rows. Real 4,945-row original private input audit and aggregate output completed locally. GitHub CI PASS is independent from the private real-data replay.
