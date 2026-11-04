@@ -1,0 +1,22 @@
+{
+  "schema_version": "racenote-btday-racelap-input-receipt-v1",
+  "mode": "baseline",
+  "selection_id": "BTDAY-0155",
+  "target_date": "2025-08-16",
+  "approval_id": null,
+  "selection_policy": "fixed-reproduction",
+  "transport_manifest": "horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json",
+  "transport_manifest_sha256": "a2680735ed846594f3d082ffee79ba659c19d20d42da866e2d0d03d4c7f7a1f2",
+  "binding_sha256": "e296fa09c5580891a4c687c38ea5052e1cc9ea0025debf9c910bcb3ad5bb73e5",
+  "artifact_id": "racelap_canonical_20261017",
+  "drive_file_id": "1q7pmoTRsg27d--xi5HhtTaJXAI_TdzUi",
+  "archive_sha256": "a4b076e69e9d26c464b49fd8301640b07e89fbd28925a88229869a465a51ae96",
+  "archive_size_bytes": 1663722,
+  "generation_id": "racelap-forward-canonical-20261017-01",
+  "period_to": "2026-10-17",
+  "race_count": 9675,
+  "parquet_sha256": "f39056cea12e1d3d694bcb829695121ac1df3426bf633d49f4f5f23fd637ce7d",
+  "parquet_size_bytes": 1659860,
+  "source_manifest_sha256": "ebb0dba0b98467eea9e40d34a9e5d3eb1f0e87ecce7b1b3c732ec0c262f31ad9",
+  "validation_status": "PASS"
+}
