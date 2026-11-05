@@ -1,3 +1,7 @@
+## RaceNote v0.5.6 Confidence B/C 選定正式契約（2026-11-05）
+
+新規未Freezeのv0.5.6 BTDAY / FORWARD の独立LLM Confidence工程は `docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md` を最優先する。Aの勝ち切り基準とZの特殊区分は従来どおり。B/CはShadow v2.2の「◎の着内再現性対具体的な4着以下の経路」で判定する。○の逆転可能性のみでCへ落とさず、件数目標でB/Cを調整しない。印・既存Freeze・v055の運用は不変。下記2026-10-30説明のB/C勝ち切り基準に優先する。
+
 ## RaceNote v0.5.6 日次PACI forward運用（明示指定時の優先手順／2026-10-30）
 
 ## Phase 3 retirement boundary — Issue #2334

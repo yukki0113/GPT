@@ -2,6 +2,10 @@
 
 更新 2026-10-30。**運用区分: 実戦試験候補（正式昇格は初回BTDAY成功後）**。
 
+## 2026-11-05 Confidence B/C本ロジック昇格（新規未Freezeのみ）
+
+A/Zは従来どおり。A/ZでないB/Cは `docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md` を最優先し、Shadow v2.2の**◎着内軸の積極根拠対具体的な4着以下の経路**で判定する。○の勝利可能性だけを根拠にCへ下げず、初出走・根拠不足も機械判定しない。全頭の印・既存Freezeは不変。本書の後段に残る「勝ち切り確信度(A/B/C)」の旧説明は、B/Cに関して本節が優先する。
+
 ## 守るべき設計
 
 - BTDAY / FORWARD のLLM判断、Prediction Freeze、Confidence Freezeは単一共通処理。印選定はv0.5.5 r6同様、全頭比較LLM著述。Confidenceは勝ち切りの確信度(A/B/C)、対象外Z。

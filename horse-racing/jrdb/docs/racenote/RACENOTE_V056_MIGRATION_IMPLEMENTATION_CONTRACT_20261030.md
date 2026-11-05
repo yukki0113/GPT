@@ -28,6 +28,8 @@ Status: **APPROVED DESIGN / NOT YET IMPLEMENTED OR CUT OVER**. This document is 
 6. BTDAY: **skip all newspaper authoring**, then only after unlock do post-freeze evaluation.
 7. FORWARD: after *all target races* Prediction + Confidence are frozen, separately produce `forward_newspaper_comment` from sealed pre-race RaceNote, frozen Decision Core, `prediction_audit_comment` and `confidence_review`. This is editorial post-processing, not another prediction. Never open results or target-day market data to write it. Publication gate checks correctness and rendering.
 
+> **2026-11-05後継運用決定**：以下の2026-10-30設計時点のB/C勝ち切り区分は履歴として保持する。新規未Freeze v0.5.6の正式Confidence選定は `docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md` を優先し、A/Zは従来定義、B/CはShadow v2.2の◎着内軸評価を採用する。既存Freezeや旧v055には遡及しない。
+
 ## Confidence decision policy
 
 Confidence means likelihood judgment of ◎ finishing **first**, not confidence in winning a ticket / in-the-money:

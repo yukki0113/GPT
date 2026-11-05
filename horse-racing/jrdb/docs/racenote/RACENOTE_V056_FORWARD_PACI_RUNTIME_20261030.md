@@ -1,3 +1,5 @@
+> **Confidence B/C選定の優先契約（2026-11-05）**：新規未Freezeのv0.5.6 FORWARDでは `docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md` を参照し、A/Zは維持、B/CにはShadow v2.2の◎着内軸・具体的着外経路比較を適用する。自動採点・既存Freezeの変更禁止。
+
 # RaceNote v0.5.6 FORWARD — PACI → RaceNote → 二段階Freeze
 
 更新: 2026-10-30。対象は日次PACI由来の**開催前**Reader生成と、既存v0.5.6二段階Freezeへの接続。新聞短評清書とPWA送信JSON生成は別工程として切り離す。
