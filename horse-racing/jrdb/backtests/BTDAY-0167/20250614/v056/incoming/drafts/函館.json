@@ -1,0 +1,398 @@
+[
+  {
+    "venue": "函館",
+    "race_no": 1,
+    "marks": [
+      12,
+      1,
+      15,
+      9,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        1,
+        15,
+        9,
+        7
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も外部候補として検討。６番エスペシャリーは小倉1200で２着だが直近福島1200は11着。状態の良い９番、直近２着の７番までを五頭に優先。"
+    },
+    "honmei_win": {
+      "evidence": "新潟芝1200で連続２着、調整61で差し脚の再現性が高い。函館の小回りでも中団から早めに動けると見た。",
+      "main_risk": "ペイシャアーサーは1200で２着・３着・３着と最も安定。外を回らず脚を使えば逆転される。"
+    },
+    "shot_case": {
+      "case": "アセンディアは新潟1200で２着、中山1200でも３着。先行位置を生かせる点で▲にした。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "函館開幕の芝1200、差し馬12番と１番の比較が中心。９番は調整指数73の上昇気配。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 2,
+    "marks": [
+      12,
+      11,
+      5,
+      13,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        11,
+        5,
+        13,
+        14
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番も外部候補として検討。10番ダイヤノゴトクは芝の実績主体でダート1700の確証が乏しい。中央ダートで着順を残す14番を残す。"
+    },
+    "honmei_win": {
+      "evidence": "デルマアポロニアは中山1800で２着が続き、前で競馬を作る。函館1700への短縮でも持続力は生きる。",
+      "main_risk": "アレーティアは京都1800で直近３着、阪神1800でも３着。先行馬の末脚が鈍れば逆転する。"
+    },
+    "shot_case": {
+      "case": "リュウゼツランは新潟1800で２着・４着があり先行勢が争うと差し込める。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "◎は中山1800の安定した逃げ、○は京都1800の堅実さ。先行ペース次第で５番の差しが届く。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 3,
+    "marks": [
+      5,
+      11,
+      10,
+      3,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        11,
+        10,
+        3,
+        7
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番も外部候補として検討。12番コッコラーレは小倉1000で８着、京都芝1200で８着で勝ち切る根拠が弱い。福島1150６着の３番を残す。"
+    },
+    "honmei_win": {
+      "evidence": "ゴッドテソロは小倉ダート1000で５着、中京1200で３着と短距離の適性がある。仕上がり64も支持。",
+      "main_risk": "イチトゼロノアイダは中京1200で３着、先行して脚を使える。函館1000で早めに前へ出ると怖い。"
+    },
+    "shot_case": {
+      "case": "ストラテージュは近走京都1200で８着も能力36で同距離の前半速さを持つ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "短距離で実績がある５番の先行を◎にしたが、逃げ候補が多く、先手争いが激しくなる場合は７番も拾う。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 4,
+    "marks": [
+      11,
+      13,
+      7,
+      2,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        13,
+        7,
+        2,
+        15
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番も外部候補として検討。10番レディオンステージは小倉1800２着も前走阪神ダート1800で大敗。芝中距離好走を重ねる２番と15番を採る。"
+    },
+    "honmei_win": {
+      "evidence": "ウインベラーノは福島1800で２着、京都マイル５着と安定。函館1800の立ち回りに合う先行力と調整62がある。",
+      "main_risk": "セリオヴェローチェは京都1800デビュー２着、能力42。キャリア浅くても先に抜ける力で逆転する。"
+    },
+    "shot_case": {
+      "case": "コンドゥイアは京都1800で３着、京都2000でも３着。中距離での持続力に穴として期待。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "京都1800初戦２着の13番の上積みは怖いが、11番は福島1800２着を含む豊富な芝実戦を持つ。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 5,
+    "marks": [
+      1,
+      4,
+      9,
+      3,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        4,
+        9,
+        3,
+        7
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番も外部候補として検討。12番ファニーバニーも能力36はあるが調整40で仕上がりに不安。調教58の３番を選んだ。"
+    },
+    "honmei_win": {
+      "evidence": "カイショーは新馬事前能力50.3、調教65・状態63で完成度が最も高い。初戦の芝1000でも発馬の速さを期待する。",
+      "main_risk": "ムーンリットアイルは能力43と調整55が揃い、スタートで先手を取れば新馬でも勝ち負け。"
+    },
+    "shot_case": {
+      "case": "マルモリラピダスは調教65、能力37.4。追走に対応すれば穴で上位へ届く。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "函館芝1000の新馬。全馬未走で、能力評価と調教から１番を優先。発馬と馬群適性は未知数。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 6,
+    "marks": [
+      13,
+      4,
+      3,
+      11,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        4,
+        3,
+        11,
+        8
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番も外部候補として検討。14番ダイゴセイリュウは1400中心で1700の持久力を未証明。直近1800２着の11番を優先。"
+    },
+    "honmei_win": {
+      "evidence": "マンオブザマッチは福島・小倉1700で３走続けて２着。函館1700でも長く差す持続力が優勢。",
+      "main_risk": "コスモシェルベットは新潟1800２着と福島1700２着。前受けできる強みで差し遅れを誘う。"
+    },
+    "shot_case": {
+      "case": "シュヴァルノワールは中京1800２着、新潟1800４着から先団で前進できる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "13番の1700連続２着を本線に、４番の前受けと３番の状態63の良さを評価した。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 7,
+    "marks": [
+      8,
+      10,
+      14,
+      12,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        10,
+        14,
+        12,
+        6
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も外部候補として検討。１番スウィートリワードは京都1200で３着と経験豊富だが直近勝利に届かない。前走福島1200勝ちの６番を拾う。"
+    },
+    "honmei_win": {
+      "evidence": "ラパンチュールは中京1400で能力52の５着、東京1400でも47。1200への短縮なら持続する差し脚を生かす。",
+      "main_risk": "ラブディーヴァは新潟1200３着と調整64が優秀。先行できれば◎より先に直線へ向ける。"
+    },
+    "shot_case": {
+      "case": "ハリウッドメモリーは福島1200前走勝ち、小倉1200２着で近況の勝ち切り力が魅力。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1400の能力上位８番を軸に、新潟1200３着10番と福島1200勝ち14番の短距離実績を評価。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 8,
+    "marks": [
+      11,
+      5,
+      8,
+      4,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        5,
+        8,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も外部候補として検討。１番ナンヨークリスタルは小倉1000２着も中京1200で前走８着。小倉同距離で実績を持つ11番を優先。"
+    },
+    "honmei_win": {
+      "evidence": "ブルドッグキングは小倉ダート1000を前走勝ち、同距離で４着・２着もあり逃げる形が固まる。",
+      "main_risk": "タッカージーティーは中山1200で３着・勝ち、前へ行ける。函館1000の速さ勝負で逆転も。"
+    },
+    "shot_case": {
+      "case": "ミッキースピナッチは小倉1000３着と調整68。逃げ馬が争えば好位から差し込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "逃げ馬が多くハナ争いは厳しいが、小倉1000の直近勝利と連続好走で11番を◎。５番の先行力を警戒。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 9,
+    "marks": [
+      10,
+      1,
+      2,
+      12,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        1,
+        2,
+        12,
+        7
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番も外部候補として検討。４番サングラデーションも福島2000で３着４着と堅実だが、前走能力51の２番を上位に取った。"
+    },
+    "honmei_win": {
+      "evidence": "エイシンジェンマは小倉芝2000で２着・３着、京都1800でも４着。牝馬らしい差し脚を函館の小回りでも生かす。",
+      "main_risk": "マイネルモメンタムは福島2000２着、新潟1800２着で先に動ける持続力がある。"
+    },
+    "shot_case": {
+      "case": "マイネルゼウスは中山2000勝ちがあり追走の上積み次第で穴として浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "芝2000で２・３着の10番、福島2000で２着の１番を重視。12番は少キャリアで未知の上積み。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 10,
+    "marks": [
+      8,
+      12,
+      16,
+      11,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        12,
+        16,
+        11,
+        4
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番も外部候補として検討。10番ピンクジンは直近６着が続き、函館1800の先行競馬では有利を取りにくい。二千で２着の４番を残す。"
+    },
+    "honmei_win": {
+      "evidence": "トーアライデンは中山2000・小倉1800で連続２着、指数56と仕上がり72。先行持続が相手より明瞭。",
+      "main_risk": "リラボニートは中山1800３着、小倉2000３着、京都2000３着と複数場で安定しており差しが届けば逆転。"
+    },
+    "shot_case": {
+      "case": "オルノアは中山1800勝ちがあり先手を握ると粘る。函館の小回りは展開の後押し。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "小回り1800で８番と16番の前受けが焦点。12番は差し馬の中でも直近の安定性が高い。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 11,
+    "marks": [
+      7,
+      4,
+      1,
+      11,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        4,
+        1,
+        11,
+        16
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番も外部候補として検討。14番レイベリングは芝1400４着と力はあるが1200では距離短縮が新材料。芝1200で連勝する１番を評価。"
+    },
+    "honmei_win": {
+      "evidence": "ナムラクレアは中京1200G1２着、京都1400勝ち、中山1200３着と高い級の1200実績が揃う。調整も73で末脚が強い。",
+      "main_risk": "カピリナは中京1400３着、中山1200勝ちで先行持続に優れ、◎が差し遅れると逆転する。"
+    },
+    "shot_case": {
+      "case": "ジューンブレアは中山1200で連勝し逃げる脚が明瞭。小回りで先手を取れば粘り込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "函館スプリントＳはＧⅠ級の７番と高い先行力の４番・１番を比較。差し遅れが最大の懸念。"
+  },
+  {
+    "venue": "函館",
+    "race_no": 12,
+    "marks": [
+      13,
+      6,
+      11,
+      9,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        6,
+        11,
+        9,
+        10
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番も外部候補として検討。５番タイヨウフレアは近走1800で８着・12着・10着で、同距離実績のある９番を残した。"
+    },
+    "honmei_win": {
+      "evidence": "プラムダンディは新潟1800、福島1700で３戦続けて２着。中団から長く脚を使え、函館1700でも同距離再現性が高い。",
+      "main_risk": "ゴルデールスカーは阪神1800で前走２着、中京1800でも３着。先行持続で差し遅れを誘う。"
+    },
+    "shot_case": {
+      "case": "サンダーロードは京都1800３着、東京1600４着があり先行から粘る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "◎は1700で連続２着。６番の1800前走２着も強く、函館の短い直線で前残りに注意する。"
+  }
+]
