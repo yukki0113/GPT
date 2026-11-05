@@ -1,0 +1,17 @@
+{
+  "selection_id": "BTDAY-0171",
+  "selected_at": "2026-11-05T02:00:36+00:00",
+  "seed": "e54b30290a955f8abe0e517e26c3f4fd",
+  "n": 1,
+  "dates": [
+    "2025-03-01"
+  ],
+  "sources": [
+    {
+      "target_date": "2025-03-01",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "selection_cycle": 1
+    }
+  ]
+}
