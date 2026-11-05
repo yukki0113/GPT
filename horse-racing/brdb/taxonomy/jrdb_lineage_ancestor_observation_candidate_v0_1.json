@@ -1,0 +1,361 @@
+{
+  "version": "brdb-jrdb-observed-ancestor-lineage-v0.1-candidate",
+  "status": "OBSERVATION_ONLY_NOT_IDENTITY_CROSSWALK",
+  "official_lineage_master": {
+    "generation_id": "5279af0bd8226cde",
+    "actual_archive": "issue2223_research_generation_v02_5279af0bd8226cde_20261030.zip",
+    "path": "generation/lineage_code_master.parquet",
+    "sha256": "6263f4b239e9018e03fe6ce8333ba843b05c2eac32470369368e7be0fe7bd54b",
+    "records": 83,
+    "source_name": "JRDB code__keito",
+    "source_version": "2003-05-15",
+    "official_public_url": "https://jrdb.com/data_introduction/keito_code.html"
+  },
+  "pedigree_observations": {
+    "generation_id": "5279af0bd8226cde",
+    "path": "generation/pedigree_fact.parquet",
+    "source_warning": "Later-selected research profile; names are NOT canonical IDs nor historic-as-of certified",
+    "counts_unit": "pedigree_fact rows whose sire_name/broodmare_sire_name exactly equals label; NOT starts, NOT horses with ancestor anywhere in 5-generation pedigree"
+  },
+  "official_codes_subset": [
+    {
+      "lineage_code": "1103",
+      "major_name": "ノーザンダンサー系",
+      "minor_name": "ヴァイスリージェント系"
+    },
+    {
+      "lineage_code": "1105",
+      "major_name": "ノーザンダンサー系",
+      "minor_name": "ノーザンテースト系"
+    },
+    {
+      "lineage_code": "1106",
+      "major_name": "ノーザンダンサー系",
+      "minor_name": "ダンジグ系"
+    },
+    {
+      "lineage_code": "1107",
+      "major_name": "ノーザンダンサー系",
+      "minor_name": "ヌレイエフ系"
+    },
+    {
+      "lineage_code": "1108",
+      "major_name": "ノーザンダンサー系",
+      "minor_name": "ストームバード系"
+    },
+    {
+      "lineage_code": "1109",
+      "major_name": "ノーザンダンサー系",
+      "minor_name": "サドラーズウェルズ系"
+    },
+    {
+      "lineage_code": "1206",
+      "major_name": "ロイヤルチャージャー系",
+      "minor_name": "ヘイロー系"
+    },
+    {
+      "lineage_code": "1207",
+      "major_name": "ロイヤルチャージャー系",
+      "minor_name": "ロベルト系"
+    },
+    {
+      "lineage_code": "1307",
+      "major_name": "ナスルーラ系",
+      "minor_name": "ゼダーン系"
+    },
+    {
+      "lineage_code": "1311",
+      "major_name": "ナスルーラ系",
+      "minor_name": "シアトルスルー系"
+    },
+    {
+      "lineage_code": "1501",
+      "major_name": "ネイティヴダンサー系",
+      "minor_name": "ネイティヴダンサー系"
+    },
+    {
+      "lineage_code": "1503",
+      "major_name": "ネイティヴダンサー系",
+      "minor_name": "ミスタープロスペクター系"
+    }
+  ],
+  "observed_label_code_pairs": [
+    {
+      "label": "ヘイロー",
+      "observed_sire_line_codes": [
+        {
+          "code": "1206",
+          "rows": 6
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1206",
+          "rows": 167
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "ストームキャット",
+      "observed_sire_line_codes": [
+        {
+          "code": "1108",
+          "rows": 37
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1108",
+          "rows": 773
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "トニービン",
+      "observed_sire_line_codes": [
+        {
+          "code": "1307",
+          "rows": 511
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1307",
+          "rows": 1938
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "ダンジグ",
+      "observed_sire_line_codes": [
+        {
+          "code": "1106",
+          "rows": 24
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1106",
+          "rows": 654
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "サンデーサイレンス",
+      "observed_sire_line_codes": [
+        {
+          "code": "1206",
+          "rows": 1179
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1206",
+          "rows": 4665
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "ロベルト",
+      "observed_sire_line_codes": [],
+      "observed_bms_line_codes": [
+        {
+          "code": "1207",
+          "rows": 93
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "サドラーズウェルズ",
+      "observed_sire_line_codes": [
+        {
+          "code": "1109",
+          "rows": 23
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1109",
+          "rows": 848
+        },
+        {
+          "code": "1107",
+          "rows": 1
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "MULTIPLE_OFFICIAL_CODES_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "キングマンボ",
+      "observed_sire_line_codes": [
+        {
+          "code": "1503",
+          "rows": 89
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1503",
+          "rows": 543
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "エーピーインディ",
+      "observed_sire_line_codes": [
+        {
+          "code": "1311",
+          "rows": 46
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1311",
+          "rows": 294
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "デピュティミニスター",
+      "observed_sire_line_codes": [
+        {
+          "code": "1103",
+          "rows": 35
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1103",
+          "rows": 250
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "ノーザンテースト",
+      "observed_sire_line_codes": [
+        {
+          "code": "1105",
+          "rows": 164
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1105",
+          "rows": 2292
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "フォーティナイナー",
+      "observed_sire_line_codes": [
+        {
+          "code": "1503",
+          "rows": 465
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1503",
+          "rows": 1016
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "NONE_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    },
+    {
+      "label": "ミスタープロスペクター",
+      "observed_sire_line_codes": [
+        {
+          "code": "1501",
+          "rows": 9
+        },
+        {
+          "code": "1503",
+          "rows": 2
+        }
+      ],
+      "observed_bms_line_codes": [
+        {
+          "code": "1503",
+          "rows": 286
+        },
+        {
+          "code": "1501",
+          "rows": 188
+        }
+      ],
+      "canonical_ancestor_id": null,
+      "approved_mapping": false,
+      "identity_verification": "NOT_STARTED",
+      "discrepancy_flag": "MULTIPLE_OFFICIAL_CODES_OBSERVED",
+      "source": "BRDB pedigree_fact research generation 5279af0bd8226cde"
+    }
+  ],
+  "hard_guards": {
+    "mapping_by_name_forbidden": true,
+    "transitive_branch_to_person_forbidden": true,
+    "official_code_is_not_country": true,
+    "history_asof_unverified": true,
+    "multi_code_rows_must_be_audited": true,
+    "sire_and_bms_roles_differ": true,
+    "do_not_auto_write_d1_mappings": true,
+    "do_not_auto_generate_aptitude": true
+  }
+}
