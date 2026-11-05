@@ -187,3 +187,9 @@ Do not conflate the target's own prior races, descendant/sibling results, and re
 7. Shared PWA view/release only after user explicitly approves display fields/wording/screenshots/scope.
 
 **No new UKC download, official JRDB site access, production CURRENT update, PWA UI modification, or predictive capability is claimed by this design.**
+
+## 9. 追加参考資料（2026-11-05、未採用）
+
+ユーザー提供のGemini Web調査要約について、父系の大小分類、日本型・米国型・欧州型・南半球型の地域的なタイプ案、母父・個別血脈（Halo / Storm Cat / Tony Bin / Danzig）の適性**仮説**、条件別DB集計手順（父・BMS・系統／勝率・複勝率・回収率・件数／条件変更）を、[BRDB_GEMINI_PEDIGREE_CLASSIFICATION_RESEARCH_NOTE_20261105.md](BRDB_GEMINI_PEDIGREE_CLASSIFICATION_RESEARCH_NOTE_20261105.md) に整理して保存した。
+
+**位置づけは参考資料のみ**。個別の外部出典URLと独立検証が未添付のため、列挙された適性・地域タイプ・目安サンプル20〜30頭をtaxonomy・スコア・採用閾値として自動登録しない。ここまでの設計方針と既存review contractは変更しない。
