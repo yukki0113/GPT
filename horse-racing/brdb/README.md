@@ -216,3 +216,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - **地域の正式対応=0件、実証された適性=0件**。Gemini参考資料からJRDB公式系統コードや祖先IDを推測割当てせず、候補全件を `CANDIDATE` として隔離。⑥⑦の候補は本番の⑤へ加点・自動表示しない。
 - ①〜③ ＞ ④ ≫ ⑥⑦は数値の加重係数ではなく、将来の血統レビューの主根拠・補強・補足の優先関係。⑤への接続には独立した `supplemental_insights` 契約の受入を要する。
 - D2祖先経路検索、D3条件別成績検証、D4統合レビュー接続、D5時系列検証は**未実施**。旧 `brdb-review-v0.1`、BRDB CURRENT、RaceNote、PWA、新聞は変更なし。
+
+## 2026-11-05 — D2 祖先位置・世代・観測クロス抽出（研究用）
+
+- [D2 祖先位置モジュール](src/brdb_d2_ancestry_positions.py) / [合成回帰テスト（10件）](tests/test_brdb_d2_ancestry_positions.py) / [受入境界と実行例](docs/BRDB_D2_ANCESTRY_POSITIONS_ACCEPTANCE_20261105.md)。
+- BRDBの既存`ancestor_graph`と`ancestor_evidence`を再利用し、canonical祖先IDの`S`/`D`経路、世代、父母別coverage、同一IDの複数経路による観測クロスを記述。未解決の枝は`UNKNOWN`で保持し、名寄せ推測をしない。
+- D1の地域ルーツ・Halo/Storm Cat/トニービン/Danzig候補は祖先IDの対応が未確認のため、**candidate_bloodline_matchesとregional_root_assignmentsは空**。地域ラベルや適性を自動付与しない。
+- 対象日以前のプロフィール日付だけでは、当時の全祖先辺の存在を保証できない。D2は`historical_asof_status=AS_OF_UNVERIFIED`、`prediction_safe=false`に固定し、自己申告の時点検証フラグでも昇格させない。
+- GitHub登録と読み戻しは確認。Python回帰テストの実行、実レースE2E、D1候補ID対応レビュー、D3条件別集計は未実施。⑤、BRDB CURRENT、RaceNote、PWAの本番処理は変更なし。
