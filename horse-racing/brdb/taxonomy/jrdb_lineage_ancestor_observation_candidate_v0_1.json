@@ -9,13 +9,16 @@
     "records": 83,
     "source_name": "JRDB code__keito",
     "source_version": "2003-05-15",
-    "official_public_url": "https://jrdb.com/data_introduction/keito_code.html"
+    "official_public_url": "https://jrdb.com/data_introduction/keito_code.html",
+    "manifest_sha_matches": true
   },
   "pedigree_observations": {
     "generation_id": "5279af0bd8226cde",
     "path": "generation/pedigree_fact.parquet",
     "source_warning": "Later-selected research profile; names are NOT canonical IDs nor historic-as-of certified",
-    "counts_unit": "pedigree_fact rows whose sire_name/broodmare_sire_name exactly equals label; NOT starts, NOT horses with ancestor anywhere in 5-generation pedigree"
+    "counts_unit": "pedigree_fact rows whose sire_name/broodmare_sire_name exactly equals label; NOT starts, NOT horses with ancestor anywhere in 5-generation pedigree",
+    "sha256": "1e7574f78703d79d8d83797f9e350a8927b728fc68c659cf5d340ee0f79b3536",
+    "manifest_sha_matches": true
   },
   "official_codes_subset": [
     {
