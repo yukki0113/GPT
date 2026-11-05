@@ -27,16 +27,16 @@ def relation(role, parent=None):
 class D2PositionsTest(unittest.TestCase):
     def setUp(self):
         self.data = {
-            "A": [relation("sire", "F"), relation("dam", "M")],
-            "F": [relation("sire", "FF"), relation("dam", "FM")],
-            "M": [relation("sire", "BMS"), relation("dam", "MM")],
-            "FF": [relation("sire", "X")],
-            "BMS": [relation("sire", "X")],
+            "00000001": [relation("sire", "00000002"), relation("dam", "00000003")],
+            "00000002": [relation("sire", "00000004"), relation("dam", "00000005")],
+            "00000003": [relation("sire", "00000006"), relation("dam", "00000007")],
+            "00000004": [relation("sire", "00000008")],
+            "00000006": [relation("sire", "00000008")],
         }
         self.catalogs = load_catalog(REGIONS), load_catalog(BLOOD)
 
     def build(self, depth=3, data=None, **kw):
-        return from_relations("A", lambda h: (data or self.data).get(h, []),
+        return from_relations("00000001", lambda h: (data or self.data).get(h, []),
                               source_generation="SYNTHETIC-GEN",
                               target_date="2026-11-01",
                               source_profile_as_of="2026-10-31",
@@ -45,27 +45,27 @@ class D2PositionsTest(unittest.TestCase):
     def test_parent_position_and_bms_ds_distinguished(self):
         r = self.build(depth=3)
         by = {v["ancestor_horse_id"]: v for v in r["ancestors"]}
-        self.assertEqual(by["F"]["paths"], ["S"])
-        self.assertEqual(by["F"]["roles"], ["SIRE_EXACT"])
-        self.assertEqual(by["M"]["paths"], ["D"])
-        self.assertEqual(by["BMS"]["paths"], ["DS"])
-        self.assertEqual(by["BMS"]["roles"], ["BMS_EXACT"])
-        self.assertEqual(by["FF"]["paths"], ["SS"])
-        self.assertEqual(by["X"]["paths"], ["SSS", "DSS"])
-        self.assertEqual(by["X"]["observed_occurrences"], 2)
-        self.assertEqual(by["X"]["sides"], ["MATERNAL", "SIRE"])
+        self.assertEqual(by["00000002"]["paths"], ["S"])
+        self.assertEqual(by["00000002"]["roles"], ["SIRE_EXACT"])
+        self.assertEqual(by["00000003"]["paths"], ["D"])
+        self.assertEqual(by["00000006"]["paths"], ["DS"])
+        self.assertEqual(by["00000006"]["roles"], ["BMS_EXACT"])
+        self.assertEqual(by["00000004"]["paths"], ["SS"])
+        self.assertEqual(by["00000008"]["paths"], ["SSS", "DSS"])
+        self.assertEqual(by["00000008"]["observed_occurrences"], 2)
+        self.assertEqual(by["00000008"]["sides"], ["MATERNAL", "SIRE"])
 
     def test_cross_is_same_id_two_paths_not_name(self):
         r = self.build(depth=3)
         self.assertEqual(r["observed_cross_count"], 1)
         cross = r["observed_crosses"][0]
-        self.assertEqual(cross["ancestor_horse_id"], "X")
+        self.assertEqual(cross["ancestor_horse_id"], "00000008")
         self.assertEqual(cross["notation"], "3×3")
         self.assertEqual(cross["paths"], ["DSS", "SSS"])
         self.assertFalse(r["no_observed_cross_absence_proven"])
 
     def test_partial_graph_unknown_not_negative(self):
-        r = self.build(depth=5, data={"A": [relation("sire", "F")]})
+        r = self.build(depth=5, data={"00000001": [relation("sire", "00000002")]})
         self.assertFalse(r["complete"])
         self.assertEqual(r["max_depth"], 5)
         self.assertEqual(sum(v["expected_paths"] for v in r["generation_coverage"]), 62)
@@ -94,10 +94,10 @@ class D2PositionsTest(unittest.TestCase):
 
     def test_future_profile_rejected(self):
         with self.assertRaises(PositionError):
-            from_relations("A", lambda h: self.data.get(h, []),
+            from_relations("00000001", lambda h: self.data.get(h, []),
                            source_generation="SYNTH", target_date="2026-11-01",
                            source_profile_as_of="2026-11-02")
-        graph = ancestor_graph("A", lambda h: self.data.get(h, []), max_depth=2)
+        graph = ancestor_graph("00000001", lambda h: self.data.get(h, []), max_depth=2)
         with self.assertRaises(PositionError):
             describe_positions(graph, source_generation="SYNTH",
                                target_date="2026-11-01",
@@ -110,14 +110,14 @@ class D2PositionsTest(unittest.TestCase):
         self.assertTrue(r["research_only"])
 
     def test_tampered_graph_unresolved_id_rejected(self):
-        graph = ancestor_graph("A", lambda h: self.data.get(h, []), max_depth=3)
+        graph = ancestor_graph("00000001", lambda h: self.data.get(h, []), max_depth=3)
         graph["paths"][0]["resolution_status"] = "NO_CANDIDATE"
         with self.assertRaises(PositionError):
             describe_positions(graph, source_generation="SYNTH",
                                target_date="2026-11-01")
 
     def test_tampered_graph_orphan_path_rejected(self):
-        graph = ancestor_graph("A", lambda h: self.data.get(h, []), max_depth=3)
+        graph = ancestor_graph("00000001", lambda h: self.data.get(h, []), max_depth=3)
         for row in graph["paths"]:
             if row["path"] == "S":
                 row["horse_id"] = None
@@ -131,7 +131,7 @@ class D2PositionsTest(unittest.TestCase):
     def test_bad_d1_approval_rejected(self):
         regions, blood = copy.deepcopy(self.catalogs)
         blood["hypotheses"][0]["review_status"] = "REVIEWED"
-        graph = ancestor_graph("A", lambda h: self.data.get(h, []), max_depth=2)
+        graph = ancestor_graph("00000001", lambda h: self.data.get(h, []), max_depth=2)
         with self.assertRaises(ValueError):
             describe_positions(graph, source_generation="SYNTH",
                                target_date="2026-11-01",
