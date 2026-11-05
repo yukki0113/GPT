@@ -198,3 +198,13 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - 2026-11-01東京5Rでは母canonical ID **6/8頭**、母共有兄姉14頭（全兄姉1頭）、母方のおじ/おば21頭、合計35頭の近親を検出。うち21頭は対象芝中距離帯に少なくとも1走。ローカル検証で約0.65〜0.75秒（Drive転送なし）、合成テスト5件PASS。
 - **研究用の歴史関係グラフは当時配信時点の完全再演保証なし**。出力 `prediction_safe=false`、⑤へは `AS_OF_UNVERIFIED`、母未同定は `SOURCE_UNAVAILABLE` として引き継ぐ方針。近親の不在・0走を「適性がない」とは判定しない。いとこ・父方近親・遠縁の完全探索は未実装。
 - ④も数値の取得までであり、⑤の総合解釈ロジックは未実装。BRDB CURRENT、Blood Review v0.1、RaceNote、PWAの本番コードは変更なし。
+
+## 2026-11-05 — ⑥ 地域ルーツ・⑦ 内包血統（設計）
+
+- [⑥⑦ 補足レビュー設計 v0.1](docs/BRDB_REGIONAL_ROOTS_EMBEDDED_BLOOD_DESIGN_v0_1_20261105.md)。
+- ⑤統合レビューにおける判断優先関係は **①〜③ ＞ ④ ≫ ⑥⑦**。これは加重点数ではなく、主根拠・補強根拠・補足洞察の**解釈と表示順**。
+- ⑥: 日本/米国/欧州/南半球を出生国ではなく競馬環境由来の分類候補として扱い、父母双方の確認済み経路と未解決範囲、出典とtaxonomy versionを保持。確認できた一部の祖先だけで「米国色が強い」などと断定しない。
+- ⑦: Halo / Storm Cat / トニービン / Danzig等の内包血脈・経路・深さ・観測クロスをcanonical ancestor IDベースで把握し、母父`DS`と遠祖を区別。既存ancestor graphを再利用し、完全に解決されない枝はUNKNOWN。
+- Gemini資料は未検証の仮説候補。血脈/地域タグ自体を芝ダ・馬場・コース適性として即時採点しない。条件別の時系列検証がない文は仮説として限定的に記す。
+- 将来の⑤には**非採点の`supplemental_insights`**を別契約版で追加する計画。⑥⑦から①〜④の評価・信頼度・結論を自動上書きしない。
+- **設計のみ**。⑥⑦の実行エンジン、⑤の統合判断、schema変更、BRDB CURRENT/RaceNote/PWA本番更新は未実施。
