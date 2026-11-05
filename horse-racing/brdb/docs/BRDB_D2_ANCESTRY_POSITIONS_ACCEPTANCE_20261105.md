@@ -29,6 +29,7 @@
 
 - 既存 `ancestor_graph` の解決済み `resolved_parent_horse_id` のみを使用。`resolution_status=RESOLVED_EXACT|RESOLVED_ALIAS` の場合だけIDの記録を採用。
 - graph version、path文法、重複path、確定IDと解決statusの矛盾、未解決中間ノードより先の孤立path、resolved/expected数の矛盾、FULL宣言の整合性を拒否。
+- 対象馬IDと、確定した各祖先IDはJRDB正式の**8桁数字**であることを検証。合成テストの架空IDも同形式に揃える。
 - 対象日より未来の `source_profile_as_of` はエラー。**過去の日付だけで全血統辺の配信時点が立証されるわけではない**。呼び出し元が `profile_timing_verified=True` と指定してもD2は拒否し、`prediction_safe=false` を固定する。
 - D1辞書を入力したときは既存ガバナンスvalidatorで未承認状態を確認。未確認の祖先を名前・大系統・類似文字列からID推定しない。
 - 祖先IDの観測結果は`CANONICAL_GRAPH_ONLY`。D1のHalo/Storm Cat/トニービン/Danzigと同じIDかどうかは、独立に監査したID対応表が導入されるまで`UNBOUND`。
