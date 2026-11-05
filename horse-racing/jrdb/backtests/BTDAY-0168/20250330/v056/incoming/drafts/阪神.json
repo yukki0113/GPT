@@ -1,0 +1,398 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 1,
+    "marks": [
+      4,
+      10,
+      3,
+      12,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        10,
+        3,
+        12,
+        9
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補6番と比較した。６番アレーティアは初出走で能力23.4、事前状態は悪くないが同距離の連対歴を持つ上位３頭に及ばず、９番の京都1800６着まで五頭に採る。"
+    },
+    "honmei_win": {
+      "evidence": "シュドゥンは阪神ダ1800前走２着、京都1800でも２着。近走能力42と先行力から最も勝利に近い。",
+      "main_risk": "タマモジャスミンは阪神1800３着、京都1800で２着３着と粘り強く、逃げの形で逆転できる。"
+    },
+    "shot_case": {
+      "case": "スーパーチャンドは阪神1800で３着４着。後方から持続して脚を使う点を穴として評価。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "同距離連対の４番・10番と阪神1800３・４着の３番の争い。逃げる10番のペースが鍵。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 2,
+    "marks": [
+      15,
+      9,
+      4,
+      14,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        9,
+        4,
+        14,
+        5
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補8番と比較した。８番ノヴァエスペランサは初出走で能力22.5・調教62。実戦で同距離３着の９番や同距離６着の14番を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "メイショウゴールドは阪神ダ1200初戦４着で能力41。阪神1400延長でも直線で長く差せると判断する。",
+      "main_risk": "ブルーカミングは阪神1400前走３着で同舞台を経験。末脚が決まれば本命を上回る。"
+    },
+    "shot_case": {
+      "case": "サンライズジュピタは京都1400で７着も近走はダート適性が上向く。先団を追える力を穴とする。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "距離短縮前走阪神1200４着の15番と同舞台３着の９番の直接比較。５番は距離延長で先行が利く余地。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 3,
+    "marks": [
+      9,
+      1,
+      7,
+      8,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        1,
+        7,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補6番と比較した。６番ヴィータレヴィスは芝1800の過去走が中心でダート経験がなく、京都1800の６着と５着がある８番を残す。"
+    },
+    "honmei_win": {
+      "evidence": "アートレスマインドは阪神1800前走２着、京都1800でも２着３着と先行して勝ち切る競馬が明瞭。",
+      "main_risk": "ディープオーシャンは中京1800前走３着。逃げて本命を相手に直線まで粘る力がある。"
+    },
+    "shot_case": {
+      "case": "レイデラティエラは京都1800で６着、調教61と上積みを見込める穴。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神1800前走２着の９番を軸に中京1800前走３着の１番を対抗。９頭立てで前残りに注意。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 4,
+    "marks": [
+      12,
+      6,
+      11,
+      1,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        6,
+        11,
+        1,
+        2
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補8番と比較した。８番タイセイジャスパーは平地で能力があっても障害の実走経験がなく、障害戦で５着の１番を優先した。"
+    },
+    "honmei_win": {
+      "evidence": "アメリカンピースは中京障害3000で２着、京都2910で２着、小倉2860で３着。飛越の安定が最も明瞭。",
+      "main_risk": "テイエムマジックは小倉障害2860で２着３着と先行して好走し、逃げると本命を脅かす。"
+    },
+    "shot_case": {
+      "case": "コスモチプリアは小倉障害2860で３着４着があり、後方から浮上可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神障害2970は12番の障害連続連対と６番の小倉障害２・３着の比較。ConfidenceはZ対象。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 5,
+    "marks": [
+      9,
+      17,
+      7,
+      18,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        17,
+        7,
+        18,
+        13
+      ],
+      "external_challenger_horse_no": 16,
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補16番と比較した。16番パーフェクトパールは阪神1800で13着、能力32。実戦マイル連対の９番17番と東京芝1600５着の13番を優先。"
+    },
+    "honmei_win": {
+      "evidence": "タイセイフィオーレは中京芝1600で前走２着、京都マイルでも２着。先行力と距離適性が明確。",
+      "main_risk": "ニュークレドは阪神マイル４着、京都マイル２着と同じ距離で安定し、差して先着する可能性。"
+    },
+    "shot_case": {
+      "case": "シャイフは阪神1400初戦２着で指数39、マイル延長が合えば末脚が生きる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "芝マイル連続２着の９番と阪神マイル４着の17番が主役。７番は阪神1400初戦２着の伸びしろ。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 6,
+    "marks": [
+      9,
+      6,
+      4,
+      8,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        6,
+        4,
+        8,
+        5
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補14番と比較した。14番ワンダーイロネは中山1200勝ちも阪神1400前走８着。京都1200で勝ちと２着２回の５番を五頭に選ぶ。"
+    },
+    "honmei_win": {
+      "evidence": "テーオーエルビスは中京ダ1400３着、東京ダ1600３着、京都1200勝ち。能力53の持続と先行力が一枚上。",
+      "main_risk": "ロードヴァルカンは阪神1200前走勝ちで直接コース適性があり、本命が差し遅れれば逆転。"
+    },
+    "shot_case": {
+      "case": "サウンドモリアーナは中京1200前走勝ち、調整67で逃げの形が決まると一発。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "◎９番の複数距離の能力53と○６番の阪神1200前走勝ちの比較。４番や８番の先行も強い。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 7,
+    "marks": [
+      9,
+      14,
+      8,
+      13,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        14,
+        8,
+        13,
+        15
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補2番と比較した。２番ダイシンビヨンドは中京1400８着と直近の同条件で一押し不足。中京1400５着の13番と福島1200２着の15番を優先。"
+    },
+    "honmei_win": {
+      "evidence": "コーリングユーは新潟芝1400前走２着、小倉1200でも２着続きで末脚の再現性が高い。",
+      "main_risk": "サクは中京マイル３着続きで調整72・追い切り72。距離短縮でも先行勢へ迫ると逆転できる。"
+    },
+    "shot_case": {
+      "case": "レディマリオンは札幌芝1500３着、京都芝1600６着の能力48。芝1400でも直線の末脚を使える。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "好走を重ねる９番と調整万全の14番の比較。８番は能力上位、13番は同距離５着を重ねる。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 8,
+    "marks": [
+      6,
+      4,
+      2,
+      9,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        4,
+        2,
+        9,
+        8
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補7番と比較した。７番ムーンスカイは中京1800で５着、新潟1800４着と近走掲示板でも同距離勝ちの６番と直近阪神1800３着４番を上位とする。"
+    },
+    "honmei_win": {
+      "evidence": "アーロンイメルは阪神ダ1800勝ち、京都1800前走２着と先行して強い内容。現級でも能力45で主導権を握れる。",
+      "main_risk": "メイショウオオコは阪神1800前走３着、中京1800勝ちもあり、前崩れなら差し切れる。"
+    },
+    "shot_case": {
+      "case": "タケノシンセイは阪神ダ2000前走３着、小倉1700２着と持久力があり穴として侮れない。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神1800勝ちと京都1800２着の６番を中心に、阪神1800３着の４番、阪神2000３着の２番が迫る。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 9,
+    "marks": [
+      4,
+      1,
+      6,
+      2,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        1,
+        6,
+        2,
+        7
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補8番と比較した。８番ヴァンルーラーは調整79と好調でも阪神2000前走11着で同コースの走りが弱い。京都2200２着の２番を残した。"
+    },
+    "honmei_win": {
+      "evidence": "ステラクラウンは阪神芝2000の前走勝ちで同コースの適性がある。昇級でも差し脚を引き出せる。",
+      "main_risk": "ファミリーツリーは小倉2000前走２着、前々走同距離勝ち。持続する末脚で本命を差し切る可能性。"
+    },
+    "shot_case": {
+      "case": "ラビットアイは小倉2000前走勝ち、京都2000では不振も能力52と先団へ迫る地力がある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神2000前走勝ち４番のコース経験を軸に小倉2000で勝ちと２着の１番、同距離勝ち６番を比較。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 10,
+    "marks": [
+      2,
+      4,
+      8,
+      12,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        4,
+        8,
+        12,
+        1
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補3番と比較した。３番ミステリーウェイは阪神3000前走２着と持久力があるが状態46で近走2200３着止まり。京都2400勝ちの８番を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "タガノデュードは阪神2200前走勝ち、中京2000２着・勝ちと連続好走。調教69・調整68の上積みもある。",
+      "main_risk": "シェイクユアハートは京都2000３着、中京2000２着、京都2200２着と中距離で安定。阪神2400へ延びても末脚を生かせる。"
+    },
+    "shot_case": {
+      "case": "ギャンブルルームは京都2400勝ち、東京2400６着で直接の距離適性があり上位候補。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神2200勝ち２番の先行力と京都2400勝ち８番の距離適性、京都2200連対４番の安定性を比較。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 11,
+    "marks": [
+      12,
+      5,
+      6,
+      11,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        5,
+        6,
+        11,
+        3
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補7番と比較した。７番トランキリテは京都1600で近２走８、10着と伸び切れず、阪神1800４着の11番を五頭へ残す。"
+    },
+    "honmei_win": {
+      "evidence": "レディントンは東京芝1600前走勝ち、中京1600も勝ち、前々走３着。マイルでの勝ち切りと先行力が最も明瞭。",
+      "main_risk": "ニホンピロキーフは京都1600前走３着と能力60、脚を溜めれば直線で本命を差し切る。"
+    },
+    "shot_case": {
+      "case": "セオは東京1600６着・中京1600４着で能力60、調整66。先行して粘る位置が鍵になる穴。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神芝1600オープンはマイル連勝の12番を本線、京都1600３着の５番と中京1600４着の６番の差しを警戒。"
+  },
+  {
+    "venue": "阪神",
+    "race_no": 12,
+    "marks": [
+      13,
+      7,
+      4,
+      3,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        7,
+        4,
+        3,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "外部候補8番と比較した。８番アスクアイルビゼアは阪神1400５着の実績でも小倉1000近走８着４着で同距離の勝利実績が弱く、中山1200５着の１番を残す。"
+    },
+    "honmei_win": {
+      "evidence": "ノボリショウリュウは阪神ダ1200前走２着の能力58。短距離で差す競馬の直接証拠がある。",
+      "main_risk": "クリノオリーブは阪神1200前走４着、京都1200勝ちと能力54。先行できれば本命が差し届かない。"
+    },
+    "shot_case": {
+      "case": "イミュータブルは阪神1200で５着、中京1200勝ち。先行位置から伸びると一角へ入る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "阪神1200前走２着の13番の末脚を軸に、阪神1200４着７番と阪神1200５着４番を比較する。"
+  }
+]
