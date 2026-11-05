@@ -1,0 +1,229 @@
+{
+  "version": "brdb-stage3b-external-stallion-pedigree-v0.1",
+  "as_of": "2026-11-05",
+  "status": "PERSON_SOURCE_NATIVE_ID_VERIFIED_PARENT_PATH_NAMES_ONLY",
+  "no_jrdb_person_identity_inference": true,
+  "pedigrees": [
+    {
+      "jrdb_observed_label": "ハービンジャー",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001115148",
+      "source_url": "https://www.jbis.jp/horse/0001115148/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Dansili",
+        "D": "Penang Pearl",
+        "SS": "Danehill",
+        "SD": "Hasili",
+        "DS": "Bering",
+        "DD": "Guapa"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "ブリックスアンドモルタル",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001293348",
+      "source_url": "https://www.jbis.jp/horse/0001293348/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Giant's Causeway",
+        "D": "Beyond the Waves",
+        "SS": "Storm Cat",
+        "SD": "Mariah's Storm",
+        "DS": "Ocean Crest",
+        "DD": "Excedent"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "ドレフォン",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001240055",
+      "source_url": "https://www.jbis.jp/horse/0001240055/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Gio Ponti",
+        "D": "Eltimaas",
+        "SS": "Tale of the Cat",
+        "SD": "Chipeta Springs",
+        "DS": "Ghostzapper",
+        "DD": "Najecam"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "エンパイアメーカー",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0000749845",
+      "source_url": "https://www.jbis.jp/horse/0000749845/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Unbridled",
+        "D": "Toussaud",
+        "SS": "Fappiano",
+        "SD": "Gana Facil",
+        "DS": "El Gran Senor",
+        "DD": "Image of Reality"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "ヘニーヒューズ",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001028940",
+      "source_url": "https://www.jbis.jp/horse/0001028940/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Hennessy",
+        "D": "Meadow Flyer",
+        "SS": "Storm Cat",
+        "SD": "Island Kitty",
+        "DS": "Meadowlake",
+        "DD": "Shortley"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "パイロ",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001085636",
+      "source_url": "https://www.jbis.jp/horse/0001085636/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Pulpit",
+        "D": "Wild Vision",
+        "SS": "A.P. Indy",
+        "SD": "Preach",
+        "DS": "Wild Again",
+        "DD": "Carol's Wonder"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "ナダル",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001328857",
+      "source_url": "https://www.jbis.jp/horse/0001328857/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Blame",
+        "D": "Ascending Angel",
+        "SS": "Arch",
+        "SD": "Liable",
+        "DS": "Pulpit",
+        "DD": "Solar Colony"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "デクラレーションオブウォー",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001181460",
+      "source_url": "https://www.jbis.jp/horse/0001181460/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "War Front",
+        "D": "Tempo West",
+        "SS": "Danzig",
+        "SD": "Starry Dreamer",
+        "DS": "Rahy",
+        "DD": "Tempo"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "シニスターミニスター",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001025279",
+      "source_url": "https://www.jbis.jp/horse/0001025279/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Old Trieste",
+        "D": "Sweet Minister",
+        "SS": "A.P. Indy",
+        "SD": "Lovlier Linda",
+        "DS": "The Prime Minister",
+        "DD": "Sweet Blue"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "マインドユアビスケッツ",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001302899",
+      "source_url": "https://www.jbis.jp/horse/0001302899/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Posse",
+        "D": "Jazzmane",
+        "SS": "Silver Deputy",
+        "SD": "Raska",
+        "DS": "Toccet",
+        "DD": "Alljazz"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "カルフォルニアクローム",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001211258",
+      "source_url": "https://www.jbis.jp/horse/0001211258/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Lucky Pulpit",
+        "D": "Love the Chase",
+        "SS": "Pulpit",
+        "SD": "Lucky Soph",
+        "DS": "Not For Love",
+        "DD": "Chase It Down"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "ニューイヤーズデイ",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001298815",
+      "source_url": "https://www.jbis.jp/horse/0001298815/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Street Cry",
+        "D": "Justwhistledixie",
+        "SS": "Machiavellian",
+        "SD": "Helen Street",
+        "DS": "Dixie Union",
+        "DD": "General Jeanne"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_observed_label": "サンダースノー",
+      "external_identity_namespace": "JBIS",
+      "jbis_horse_id": "0001226963",
+      "source_url": "https://www.jbis.jp/horse/0001226963/",
+      "jrdb_horse_id": null,
+      "source_name_paths": {
+        "S": "Helmet",
+        "D": "Eastern Joy",
+        "SS": "Exceed And Excel",
+        "SD": "Accessories",
+        "DS": "Dubai Destination",
+        "DD": "Red Slippers"
+      },
+      "ancestor_person_ids_verified": false,
+      "as_of_status": "AS_OF_UNVERIFIED"
+    }
+  ]
+}
