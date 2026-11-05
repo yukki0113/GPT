@@ -4,7 +4,6 @@
 .newspaper-table-v4 .newspaper-mark-group-head {
   min-width: 255px;
 }
-.newspaper-table-v4 .mark-ability,
 .newspaper-table-v4 .mark-training,
 .newspaper-table-v4 .mark-rn,
 .newspaper-table-v4 .mark-ryota,
@@ -14,15 +13,16 @@
   min-width: 27px;
   max-width: 27px;
 }
+.newspaper-table-v4 .mark-ability,
 .newspaper-table-v4 .mark-eval {
   width: 45px;
   min-width: 45px;
   max-width: 45px;
 }
 .newspaper-table-v4 .mark-jrdb {
-  width: 45px;
-  min-width: 45px;
-  max-width: 45px;
+  width: 27px;
+  min-width: 27px;
+  max-width: 27px;
 }
 .newspaper-table-v4 .mark-momotaro,
 .newspaper-table-v4 .newspaper-addon-link {
