@@ -76,6 +76,7 @@ def validate_registry(registry: dict, shortlist: dict, observations: dict) -> di
     seen_candidates = set()
     by_key = {}
     total_parent_refs = 0
+    total_second_gen_refs = 0
     verified_links = set()
 
     # Guard each source-native person identity and both immediate parent labels.
@@ -152,6 +153,25 @@ def validate_registry(registry: dict, shortlist: dict, observations: dict) -> di
                        "unverified external edge")
                 verified_links.add((key, ref["path"], f"JBIS:{parent_id}"))
             total_parent_refs += 1
+        # Preserve source-observed grandparent paths without minting person IDs.
+        second_gen = subject.get("observed_second_generation_name_paths")
+        _check(isinstance(second_gen, list) and len(second_gen) == 4,
+               "four second-generation name observations required")
+        _check({row.get("path") for row in second_gen} ==
+               {"SS", "SD", "DS", "DD"},
+               "second-generation S/D paths missing or duplicated")
+        for row in second_gen:
+            _check(isinstance(row.get("ancestor_name_as_displayed"), str) and
+                   bool(row["ancestor_name_as_displayed"]),
+                   "second-generation name missing")
+            _check(row.get("ancestor_external_id") is None and
+                   row.get("identity_status") ==
+                   "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+                   "unverified grandparent ID inferred from name")
+            _check(row.get("source_url") == identity["source_url"] and
+                   row.get("as_of_status") == "AS_OF_UNVERIFIED",
+                   "grandparent provenance or historical as-of violated")
+            total_second_gen_refs += 1
         by_key[key] = subject
 
     # A linked parent must be a separate, verified source person with matching name.
@@ -193,6 +213,7 @@ def validate_registry(registry: dict, shortlist: dict, observations: dict) -> di
         "status": "STAGE2_RESEARCH_SEED_VALID",
         "subject_profiles_verified": len(by_key),
         "parent_name_observations": total_parent_refs,
+        "second_generation_name_observations": total_second_gen_refs,
         "verified_external_direct_paths": len(by_edges),
         "jrdb_identity_crosswalks": 0,
         "review_safe": False,
