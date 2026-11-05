@@ -173,3 +173,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - [2026-11-01東京5Rの実データ検証](docs/BRDB_SIRE_BMS_EVIDENCE_V01_REAL_RACE_20261105.md): 8/8頭で①②の実成績集計PASS、ウォーム実行約0.5〜0.6秒（元データのダウンロード時間を除く）。**PACI直接CLIの正本Readerを含むE2Eは別途確認要**。
 - **適性ラベル確定や⑤全馬評価はまだ未実装**。父の少サンプルを近縁種牡馬の産駒で自動補完しない。母父実績は独立した参考根拠として保持する。各スコープを全て返し、`NO_SAMPLE`/`LOW_SAMPLE` はそのまま報告する。自動的な最良スコープ選択は行わず、予想判断はRaceNoteなどconsumerの責務。③配合・④近親は次段階。
 - BRDB CURRENT、Blood Review v0.1、RaceNote、PWAには変更なし。
+
+## 2026-11-05 — ⑤ 統合血統レビュー出力契約 v0.2 candidate
+
+- [統合血統レビュー出力契約 v0.2 candidate](docs/BRDB_INTEGRATED_BLOOD_REVIEW_CONTRACT_v0_2_CANDIDATE.md) — **出力仕様のみ確定**。①父/②母父/③配合/④近親の根拠と解釈を⑤が統合してRaceNoteへ渡す。RaceNote側では統計を再集計しない。
+- [JSON Schema](schema/brdb_integrated_review_v0_2_candidate.schema.json) / [合成サンプル](tests/fixtures/brdb_integrated_review_v0_2_candidate_example.json) / [契約テスト](tests/test_brdb_integrated_review_contract_v02_candidate.py)。
+- ③④が未実装でも明確に `NOT_IMPLEMENTED` と返せる構造。父の `NO_SAMPLE` / `LOW_SAMPLE` は母父や系統によって上書きしない。根拠IDと同一集団の重複可能性を保持する。
+- ⑤の**解釈判定規則・根拠の統合・全馬比較・実行APIは未実装**。正負の要因や血統総評を勝手に生成しない。BRDBは予想スコア・印・勝率を出さず、予想上の利用判断はRaceNote側の責務。
+- このcandidateは**research-only**であり、現行凍結 `brdb-review-v0.1`、BRDB CURRENT、RaceNote、PWA、新聞の本番連携は変更しない。
