@@ -240,3 +240,12 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - 12候補の個別祖先profileは全てマスターに見つからず、独立したcanonical祖先IDは未確定。正式IDによる候補含有率は「0%」ではなく**測定不能**。母父名完全一致による直接観測は別表で保管。
 - 2026-11-01東京5Rの8頭は当該研究世代にhorse_id未収録。最新PACI自体の問題ではなく研究用世代のスコープ外であり、母集団から除いて扱う。
 - 次は古い祖先の一意ID対応を独立監査し、当時の公開時点を保証できる範囲でD3の検証軸を選択する。⑥⑦から主評価やPWAへ加点しない。
+
+## 2026-11-05 — 6工程の①「父・母父を中心とした種牡馬特徴マスタ」
+
+- [①設計契約](docs/BRDB_STALLION_FEATURE_MASTER_DESIGN_V0_1_20261105.md) / [研究用候補SQL](schema/brdb_stallion_feature_master_candidate_v0_1.sql)。
+- 父・母父を**必須の分析起点**とし、母母を含む遠い母系は取得できた範囲のみ補足（欠損`UNKNOWN`）。種牡馬の祖先経路を出走馬へ展開する際は父側`S+`、母父側`DS+`を使用。
+- JRDB大/小系統の公式コードは既存`lineage_code_master`を使用。種牡馬個体とJRDB系統、地域ルーツ、祖先・クロス候補を別表で区分。内部subject keyとJRDB 8桁horse_idを別管理し、馬名推測で個体IDを発行しない。
+- マスタ結合はBRDB研究用世代の**生成時のみ**。RaceNote/PWAは完成した⑤レビューのみ参照。
+- ②12候補の登録 → ③既存BRDB結合 → ④母母ラインの任意補完 → ⑤D3条件実績検証 → ⑥D4補足コメント接続の順で進める。
+- 今回は**①の設計・SQL候補のみ**。既存CURRENT、凍結Review v0.1、⑤schema、RaceNote、PWA、本番workflowのデータ/処理は変更していない。
