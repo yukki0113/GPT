@@ -77,15 +77,16 @@
     "confidence_artifact": "<output-root>/v055/confidence_frozen/records.json"
   },
   "v056_confidence_selection_policy": {
-    "status": "PROMOTED_FOR_NEW_UNFROZEN_V056",
+    "status": "CORRECTED_FOR_NEW_UNFROZEN_V056",
     "contract": "docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md",
-    "grades": "A=WIN_CONFIDENCE_UNCHANGED; B/C=IN_THE_MONEY_AXIS_V22; Z=EXCLUDED_UNCHANGED",
+    "grades": "A=ACTIVE_WIN_SUPPORT_UNCHANGED; B=PREFERRED_BUT_CONTESTED; C=FIVE_HORSE_WIN_ORDER_LOW_CONVICTION; Z=SPECIAL_UNCHANGED",
     "scope": "BTDAY_AND_FORWARD",
     "prohibitions": [
       "NO_QUOTA",
       "NO_AUTOMATED_GRADING",
       "NO_RETROACTIVE_REGRADING",
       "NO_RESULT_OR_TARGET_MARKET_BEFORE_FREEZE"
-    ]
+    ],
+    "shadow_v22_role": "SUPPLEMENTARY_REVIEW_ONLY_NOT_GRADE_DEFINITION"
   }
 }
