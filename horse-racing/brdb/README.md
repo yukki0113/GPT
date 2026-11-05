@@ -164,3 +164,12 @@ Status: **IMPLEMENTED FOUNDATION / COVERAGE VALIDATION PENDING**.
 - `docs/BRDB_ANCESTOR_CROSS_SIMILARITY_v0_1.md`: research/coverage/ancestor-source acceptance gates.
 
 Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/Newspaper release or inferred score is authorized. Source expansion and 2025 depth 2–5 coverage audit are required before Phase 4 can be called complete.
+
+
+## 2026-11-05 — ①父産駒・②母父条件別実績（研究用）
+
+- [単一PACIレース実績エンジン](src/run_brdb_sire_bms_evidence.py): PACIの1レースを指定し、父4段階（同場・同コース/距離 → 同場/距離 → 全場/距離 → 全場/距離帯）と母父の芝ダ別・芝ダ×距離帯の、時点以前の実出走成績を読取専用で取得。
+- [合成回帰テスト](tests/test_brdb_sire_bms_evidence.py): 取消/中止・対象日以降の結果除外・SHA改ざん等の3テスト。
+- [2026-11-01東京5Rの実データ検証](docs/BRDB_SIRE_BMS_EVIDENCE_V01_REAL_RACE_20261105.md): 8/8頭で①②の実成績集計PASS、ウォーム実行約0.5秒（元データのダウンロード時間を除く）。**PACI直接CLIの正本Readerを含むE2Eは別途確認要**。
+- **適性ラベル確定や⑤全馬評価はまだ未実装**。父の少サンプルを近縁種牡馬の産駒で自動補完しない。母父実績は独立した参考根拠として保持する。③配合・④近親は次段階。
+- BRDB CURRENT、Blood Review v0.1、RaceNote、PWAには変更なし。
