@@ -249,3 +249,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - マスタ結合はBRDB研究用世代の**生成時のみ**。RaceNote/PWAは完成した⑤レビューのみ参照。
 - ②12候補の登録 → ③既存BRDB結合 → ④母母ラインの任意補完 → ⑤D3条件実績検証 → ⑥D4補足コメント接続の順で進める。
 - 今回は**①の設計・SQL候補のみ**。既存CURRENT、凍結Review v0.1、⑤schema、RaceNote、PWA、本番workflowのデータ/処理は変更していない。
+
+## 2026-11-05 — 6工程② 12種牡馬の外部ID・祖先経路登録
+
+- [工程②の登録監査・進捗](docs/BRDB_STALLION_FEATURE_MASTER_STAGE2_REGISTRATION_20261105.md)。
+- [外部個体ID付き12プロフィール・祖先経路JSON](taxonomy/stallion_master_stage2_external_profiles_v0_1.json)、[登録validator](src/brdb_stage2_master_registry.py)、[合成回帰テスト](tests/test_brdb_stage2_master_registry.py)。
+- JBIS各馬の**外部個体ID12件**と直接父母名24件・2代前の`SS/SD/DS/DD`名前経路48件を出典URL付きで記録。12候補間の確定した個体ID父系リンクはSunday Silence→Haloの`S` **1件のみ**。
+- **JBISのID≠JRDB horse_id**。外部IDを8桁JRDB IDへ流用せず、旧祖先の個体ID一致・観測経路を偽装しない。残る親名・祖父母名は人名として出典にあるが個体ID未確認なので、クロス検出/適性採点に投入しない。
+- 地域分類・適性実証・歴史的as-of認証は未実施。研究用D2の入力候補に限定し、①〜③＞④≫⑥⑦、BRDB CURRENT/Review v0.1/RaceNote/PWAの未変更を維持。
