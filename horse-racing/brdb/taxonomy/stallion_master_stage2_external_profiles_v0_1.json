@@ -3,7 +3,7 @@
   "research_only": true,
   "generated_date": "2026-11-05",
   "identity_rule": "JBIS IDs are source-native, NEVER JRDB horse_id. Sire/dam names from each source profile are not independent canonical IDs.",
-  "source_policy": "Human-curated public JBIS horse profiles; each row retains page URL and explicit publication-time uncertainty; no whole-site scrape.",
+  "source_policy": "Human-curated public JBIS horse profiles; each row retains page URL and explicit publication-time uncertainty; no whole-site scrape. Direct second-generation pedigree names preserve S/D paths but do not assert person-level ID equivalence.",
   "candidate_catalog": "taxonomy/embedded_blood_research_shortlist_candidate_v0_2.json",
   "official_jrdb_lineage_master_generation": "5279af0bd8226cde",
   "subjects": [
@@ -54,7 +54,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Northern Dancer",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337102/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "South Ocean",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337102/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Secretariat",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337102/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Crimson Saint",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337102/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "TONY_BIN",
@@ -103,7 +137,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Kalamoun",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000161740/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "State Pension",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000161740/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Hornbeam",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000161740/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Priddy Fair",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000161740/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "DANZIG",
@@ -152,7 +220,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Nearctic",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336082/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "Natalma",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336082/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Admiral's Voyage",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336082/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Petitioner",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336082/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "SADLERS_WELLS",
@@ -201,7 +303,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Nearctic",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336572/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "Natalma",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336572/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Bold Reason",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336572/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Special",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336572/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "KINGMAMBO",
@@ -250,7 +386,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Raise a Native",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000347989/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "Gold Digger",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000347989/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Nureyev",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000347989/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Pasadoble",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000347989/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "ROBERTO",
@@ -299,7 +469,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Turn-to",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335167/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "Nothirdchance",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335167/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Nashua",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335167/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Rarelea",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335167/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "A_P_INDY",
@@ -348,7 +552,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Bold Reasoning",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000339653/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "My Charmer",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000339653/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Secretariat",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000339653/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Lassie Dear",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000339653/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "DEPUTY_MINISTER",
@@ -397,7 +635,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Northern Dancer",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000338072/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "Victoria Regina",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000338072/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Bunty's Flight",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000338072/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Shakney",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000338072/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "NORTHERN_TASTE",
@@ -446,7 +718,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Nearctic",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333544/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "Natalma",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333544/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Victoria Park",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333544/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Lady Angela",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333544/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "FORTY_NINER",
@@ -495,7 +801,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Raise a Native",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337550/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "Gold Digger",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337550/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Tom Rolfe",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337550/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Continue",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337550/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "HALO",
@@ -544,7 +884,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Turn-to",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335154/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "Nothirdchance",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335154/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Cosmic Bomb",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335154/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Almahmoud",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335154/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     },
     {
       "candidate_id": "SUNDAY_SILENCE",
@@ -593,7 +967,41 @@
       "historical_asof_status": "AS_OF_UNVERIFIED",
       "regional_roots": [],
       "aptitude_claims": [],
-      "approved_for_review": false
+      "approved_for_review": false,
+      "observed_second_generation_name_paths": [
+        {
+          "path": "SS",
+          "ancestor_name_as_displayed": "Hail to Reason",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333862/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "SD",
+          "ancestor_name_as_displayed": "Cosmah",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333862/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DS",
+          "ancestor_name_as_displayed": "Understanding",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333862/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "DD",
+          "ancestor_name_as_displayed": "Mountain Flower",
+          "ancestor_external_id": null,
+          "identity_status": "ANCESTOR_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333862/",
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ]
     }
   ],
   "verified_ancestor_edges": [
@@ -615,7 +1023,8 @@
     "jrdb_crosswalk_verified": 0,
     "regional_roots_approved": 0,
     "aptitude_claims_validated": 0,
-    "asof_verified": 0
+    "asof_verified": 0,
+    "grandparent_name_path_observations": 48
   },
   "release_policy": {
     "can_merge_to_jrdb_by_name": false,
