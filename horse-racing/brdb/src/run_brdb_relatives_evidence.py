@@ -7,6 +7,7 @@ certified by a full historical replay. No prediction, score or CURRENT update.
 """
 from __future__ import annotations
 import argparse
+import datetime as dt
 import json
 import re
 import time
@@ -88,9 +89,16 @@ def _records(con, field, ids):
     }
 
 
-def analyze(paci, race_key, research_root, analysis_root):
+def analyze(paci, race_key, research_root, analysis_root, *, years=10):
     t0 = time.perf_counter()
     field, target = _target_profiles(Path(paci), race_key)
+    if not isinstance(years, int) or not 1 <= years <= 20:
+        raise ValueError('years must be 1..20')
+    target_date_obj = dt.date.fromisoformat(field['target_date'])
+    try:
+        window_start = target_date_obj.replace(year=target_date_obj.year - years).isoformat()
+    except ValueError:
+        window_start = target_date_obj.replace(year=target_date_obj.year - years, day=28).isoformat()
     generation, assets = _research_assets(research_root)
     analysis_generation, parts = _paths(analysis_root)
     con = duckdb.connect(database=':memory:')
@@ -199,8 +207,8 @@ def analyze(paci, race_key, research_root, analysis_root):
                  WHEN distance<1800 THEN 'MILE'
                  WHEN distance<2400 THEN 'MIDDLE' ELSE 'LONG' END AS band
             FROM read_parquet({parts_sql})
-            WHERE race_date<? AND abnormal_code IN ('0','3','4','5','6')
-            AND track_type IN ('1','2')''', [field['target_date']])
+            WHERE race_date>=? AND race_date<? AND abnormal_code IN ('0','3','4','5','6')
+            AND track_type IN ('1','2')''', [window_start, field['target_date']])
         details = _records(con, field, sorted(set(all_found)))
         for horse in ret:
             for rel in horse['relatives']:
@@ -221,6 +229,7 @@ def analyze(paci, race_key, research_root, analysis_root):
             pedigree_generation=generation, analysis_generation=analysis_generation,
             relationship_policy='GUARDED_CANONICAL_DAM_ID_ONLY',
             older_birth_only=True, as_of_exclusive=field['target_date'],
+            historical_window_start=window_start,
             sample_policy='NO_RESULTS_IS_NOT_NEGATIVE_APTITUDE',
             horses=ret, timing_ms={'total': round((time.perf_counter() - t0) * 1000, 1)},
         )
@@ -235,8 +244,9 @@ def main():
     p.add_argument('--research-generation-root', type=Path, required=True)
     p.add_argument('--analysis-root', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--years', type=int, default=10)
     a = p.parse_args()
-    result = analyze(a.paci, a.race_key, a.research_generation_root, a.analysis_root)
+    result = analyze(a.paci, a.race_key, a.research_generation_root, a.analysis_root, years=a.years)
     a.output.parent.mkdir(parents=True, exist_ok=True)
     a.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n',
                         encoding='utf-8')
