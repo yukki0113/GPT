@@ -224,3 +224,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - D1の地域ルーツ・Halo/Storm Cat/トニービン/Danzig候補は祖先IDの対応が未確認のため、**candidate_bloodline_matchesとregional_root_assignmentsは空**。地域ラベルや適性を自動付与しない。
 - 対象日以前のプロフィール日付だけでは、当時の全祖先辺の存在を保証できない。D2は`historical_asof_status=AS_OF_UNVERIFIED`、`prediction_safe=false`に固定し、自己申告の時点検証フラグでも昇格させない。
 - GitHub登録と読み戻しは確認。Python回帰テストの実行、実レースE2E、D1候補ID対応レビュー、D3条件別集計は未実施。⑤、BRDB CURRENT、RaceNote、PWAの本番処理は変更なし。
+
+## 2026-11-05 — JRDB公式系統コード実査と⑦血脈・条件候補の再整理
+
+- [系統対応観測辞書（13個別ラベル）](taxonomy/jrdb_lineage_ancestor_observation_candidate_v0_1.json) / [⑦優先6＋次点6の候補・条件辞書](taxonomy/embedded_blood_research_shortlist_candidate_v0_2.json) / [出典・分類境界と検証条件監査](docs/BRDB_D1_D2_ANCESTOR_CODE_RECONCILIATION_AND_HYPOTHESIS_REVIEW_20261105.md)。
+- JRDB研究用血統世代`5279af0bd8226cde`の**83件公式系統コード表**をmanifest SHA付きで読み取り、JRDB公開コード表の代表項目と一致。独自の系統体系は作らず、JRDBの大・小系統を継続利用。
+- 代表例: Tony Binの父・母父ラベルは1307ゼダーン系に観測、Storm Catは1108ストームバード系、Halo/SSはともに1206ヘイロー系。**系統コードは特定の祖先馬IDとは別**。Sadler's WellsおよびMr. Prospectorの名前に複数コードが観測される例は未解決監査対象。
+- 研究用辞書には正式canonical祖先IDを推測入力せず`null`で保持。地域ルーツ4分類と①〜③＞④≫⑥⑦の優先関係は維持。
+- 内包血統の候補は12に拡張してレビュー用に整理しただけで、D1正式仮説辞書・⑤のschema・BRDB CURRENT・RaceNote/PWA本番を更新していない。適性は一件も検証済みと認定していない。
