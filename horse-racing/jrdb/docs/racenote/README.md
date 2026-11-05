@@ -1,4 +1,4 @@
-> **2026-11-05 B/C正式選定規則（新規・未Freezeのv0.5.6のみ）**：Shadow v2.2の着内軸判断を通常ConfidenceのB/C境界へ昇格。Aは従来の◎勝ち切り確信度、Zは従来の対象区分を維持。Aに当てはまらない通常レースについて、◎が3着以内に残る積極根拠と着外経路をReaderで比較しB/Cを判断する。具体的な4着以下の経路と事前根拠が重要で、着内軸に据えられない場合だけC。○の逆転可能性だけでCにしない。件数割当・自動格付け・結果参照禁止。正本は [RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md](RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md)。既存Freezeは不変。
+> **2026-11-05 Confidence B/C定義訂正（新規・未Freezeのv0.5.6）**：初回Shadow v2.2昇格時の「B/Cを◎の3着内軸の可否で分ける」定義変更は撤回。A＝◎の勝ち切りを積極支持、B＝◎最有力だが他にも勝ち負け候補がいる、C＝最終5頭の勝利候補間で優劣がつけにくい、Z＝従来の別枠。Shadow v2.2は比較・リスクの補助レビューに限定する。正本は [RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md](RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md)。既存Freeze・印は不変。
 
 > **2026-10-30 v0.5.6日次PACI forward候補経路**：PACI入力は既存Driveの `PACI` フォルダを正本とし（PACIのJRDB直接取得は禁止）、新規v056 forward T1/Reader出力は [RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md](RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md) を参照。BTDAY/forwardのPrediction・Confidenceは共通v056二段階Freeze。新聞清書/PWA提出は別工程。実日次PACI E2E未検証につき旧v055の通常運用を自動置換しない。
 
