@@ -1,0 +1,156 @@
+{
+  "catalog_version": "brdb-embedded-blood-hypotheses-candidate-v0.1",
+  "status": "RESEARCH_CANDIDATES_NOT_APPROVED",
+  "source_note": "docs/BRDB_GEMINI_PEDIGREE_CLASSIFICATION_RESEARCH_NOTE_20261105.md",
+  "identity_policy": "REQUIRE_CANONICAL_ANCESTOR_ID_AND_EXACT_ROLE_PATH_BEFORE_EXECUTION",
+  "hypotheses": [
+    {
+      "hypothesis_id": "HYP-HALO-BMS-NAKAYAMA",
+      "bloodline_label": "Halo",
+      "role_filter": "BMS_EXACT",
+      "ancestor_id": null,
+      "allowed_paths": [
+        "DS"
+      ],
+      "target_condition": {
+        "venue_code": "06",
+        "course_geometry": "SMALL_TURNS_VERIFICATION_REQUIRED",
+        "surface_code": null,
+        "distance_m": null,
+        "going": null
+      },
+      "candidate_claim": "母父Haloの配置と小回り・機敏さとの関連を検証する",
+      "source_status": "USER_GEMINI_UNVERIFIED",
+      "review_status": "CANDIDATE",
+      "source_refs": [
+        {
+          "kind": "LOCAL_RESEARCH_NOTE",
+          "ref": "BRDB_GEMINI_PEDIGREE_CLASSIFICATION_RESEARCH_NOTE_20261105.md"
+        }
+      ],
+      "validated_cohorts": [],
+      "effective_from": null,
+      "can_assert_aptitude": false
+    },
+    {
+      "hypothesis_id": "HYP-STORMCAT-BMS-DIRT",
+      "bloodline_label": "Storm Cat",
+      "role_filter": "BMS_EXACT",
+      "ancestor_id": null,
+      "allowed_paths": [
+        "DS"
+      ],
+      "target_condition": {
+        "venue_code": null,
+        "course_geometry": null,
+        "surface_code": "2",
+        "distance_m": null,
+        "going": null
+      },
+      "candidate_claim": "母父Storm Catとダート条件での実績差を検証する",
+      "source_status": "USER_GEMINI_UNVERIFIED",
+      "review_status": "CANDIDATE",
+      "source_refs": [
+        {
+          "kind": "LOCAL_RESEARCH_NOTE",
+          "ref": "BRDB_GEMINI_PEDIGREE_CLASSIFICATION_RESEARCH_NOTE_20261105.md"
+        }
+      ],
+      "validated_cohorts": [],
+      "effective_from": null,
+      "can_assert_aptitude": false
+    },
+    {
+      "hypothesis_id": "HYP-TONIBIN-ANCESTOR-TOKYO",
+      "bloodline_label": "トニービン",
+      "role_filter": "ANY_VERIFIED_ANCESTOR",
+      "ancestor_id": null,
+      "allowed_paths": [],
+      "target_condition": {
+        "venue_code": "05",
+        "course_geometry": null,
+        "surface_code": "1",
+        "distance_m": null,
+        "going": null
+      },
+      "candidate_claim": "トニービンの確認済み祖先配置と東京芝での条件別成績を検証する",
+      "source_status": "USER_GEMINI_UNVERIFIED",
+      "review_status": "CANDIDATE",
+      "source_refs": [
+        {
+          "kind": "LOCAL_RESEARCH_NOTE",
+          "ref": "BRDB_GEMINI_PEDIGREE_CLASSIFICATION_RESEARCH_NOTE_20261105.md"
+        }
+      ],
+      "validated_cohorts": [],
+      "effective_from": null,
+      "can_assert_aptitude": false
+    },
+    {
+      "hypothesis_id": "HYP-DANZIG-ANCESTOR-MILE",
+      "bloodline_label": "Danzig",
+      "role_filter": "ANY_VERIFIED_ANCESTOR",
+      "ancestor_id": null,
+      "allowed_paths": [],
+      "target_condition": {
+        "venue_code": null,
+        "course_geometry": null,
+        "surface_code": null,
+        "distance_m": [
+          1200,
+          1600
+        ],
+        "going": null
+      },
+      "candidate_claim": "Danzigの確認済み祖先配置と1200–1600mの実績差を検証する",
+      "source_status": "USER_GEMINI_UNVERIFIED",
+      "review_status": "CANDIDATE",
+      "source_refs": [
+        {
+          "kind": "LOCAL_RESEARCH_NOTE",
+          "ref": "BRDB_GEMINI_PEDIGREE_CLASSIFICATION_RESEARCH_NOTE_20261105.md"
+        }
+      ],
+      "validated_cohorts": [],
+      "effective_from": null,
+      "can_assert_aptitude": false
+    },
+    {
+      "hypothesis_id": "HYP-USROOT-WET-DIRT",
+      "bloodline_label": "US_RACING",
+      "role_filter": "REVIEWED_REGION_COMPOSITION",
+      "ancestor_id": null,
+      "allowed_paths": [],
+      "target_condition": {
+        "venue_code": null,
+        "course_geometry": null,
+        "surface_code": "2",
+        "distance_m": null,
+        "going": [
+          "重",
+          "不良"
+        ]
+      },
+      "candidate_claim": "独立に確認された米国競馬背景と重・不良ダートでの上昇仮説を検証する",
+      "source_status": "USER_REQUEST_PLUS_GEMINI_HYPOTHESIS",
+      "review_status": "CANDIDATE",
+      "source_refs": [
+        {
+          "kind": "LOCAL_RESEARCH_NOTE",
+          "ref": "BRDB_GEMINI_PEDIGREE_CLASSIFICATION_RESEARCH_NOTE_20261105.md"
+        }
+      ],
+      "validated_cohorts": [],
+      "effective_from": null,
+      "can_assert_aptitude": false
+    }
+  ],
+  "release_policy": {
+    "all_candidates_unexecutable": true,
+    "require_verified_id": true,
+    "require_condition_source": true,
+    "require_historical_asof": true,
+    "require_oos_for_validated_trend": true,
+    "never_override_primary_review": true
+  }
+}
