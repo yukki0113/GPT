@@ -1,0 +1,32 @@
+name: BRDB M6 prospective candidate synthetic regression
+
+on:
+  pull_request:
+    paths:
+      - 'horse-racing/brdb/src/run_brdb_m6_prospective_pair_candidate.py'
+      - 'horse-racing/brdb/tests/test_run_brdb_m6_prospective_pair_candidate.py'
+      - 'horse-racing/brdb/src/audit_brdb_m6_v056_freeze_evidence.py'
+      - '.github/workflows/brdb_m6_prospective_candidate_ci.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install model/test dependencies (no private source transfer)
+        run: |
+          python -m pip install --disable-pip-version-check \
+            'numpy>=1.26,<3' 'pandas==2.2.3' 'scikit-learn>=1.5,<2' pytest
+      - name: Run isolated prospect candidate and existing Freeze-gate tests
+        run: |
+          python -m pytest -q \
+            horse-racing/brdb/tests/test_run_brdb_m6_prospective_pair_candidate.py \
+            horse-racing/brdb/tests/test_audit_brdb_m6_v056_freeze_evidence.py
