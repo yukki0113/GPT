@@ -195,6 +195,6 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - [④近親根拠エンジン](src/run_brdb_relatives_evidence.py) / [合成テスト](tests/test_brdb_relatives_evidence.py) / [東京5R実データ検証](docs/BRDB_RELATIVES_EVIDENCE_V0_1_20261105.md)。
 - PACI 1レース全出走馬の母を、母名・生年・性別・母父名・公式母父系をguardにしたcanonical IDで同定。BRDBの `parent_relation` の確定IDのみから**母を共有する兄姉・母方のおじ/おば**を取得。全兄姉の認定には父ID一致も必要。馬名だけから親族を断定しない。
 - ①と共通の5階層（同場コース/距離、同場距離、同場距離帯、全場距離、全場距離帯）で、**対象と同じ芝ダートのみ**の近親出走・勝ち・3着内数を返す。生年月日とレース日付が対象前、登録プロフィール日付が対象以前の候補のみ。
-- 2026-11-01東京5Rでは母canonical ID **6/8頭**、母共有兄姉14頭（全兄姉1頭）、母方のおじ/おば21頭、合計35頭の近親を検出。うち22頭は対象芝中距離帯に少なくとも1走。ローカル検証で約0.65〜0.75秒（Drive転送なし）、合成テスト5件PASS。
+- 2026-11-01東京5Rでは母canonical ID **6/8頭**、母共有兄姉14頭（全兄姉1頭）、母方のおじ/おば21頭、合計35頭の近親を検出。うち21頭は対象芝中距離帯に少なくとも1走。ローカル検証で約0.65〜0.75秒（Drive転送なし）、合成テスト5件PASS。
 - **研究用の歴史関係グラフは当時配信時点の完全再演保証なし**。出力 `prediction_safe=false`、⑤へは `AS_OF_UNVERIFIED`、母未同定は `SOURCE_UNAVAILABLE` として引き継ぐ方針。近親の不在・0走を「適性がない」とは判定しない。いとこ・父方近親・遠縁の完全探索は未実装。
 - ④も数値の取得までであり、⑤の総合解釈ロジックは未実装。BRDB CURRENT、Blood Review v0.1、RaceNote、PWAの本番コードは変更なし。
