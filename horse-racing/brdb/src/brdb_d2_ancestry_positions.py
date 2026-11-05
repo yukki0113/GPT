@@ -100,8 +100,10 @@ def describe_positions(graph, *, source_generation, target_date,
         profile_date = _date(source_profile_as_of)
         if profile_date > target:
             raise PositionError("future pedigree profile")
-    if profile_timing_verified and profile_date is None:
-        raise PositionError("cannot attest as-of without profile date")
+    # D2 has no audited, per-edge historical replay contract.
+    # A caller's boolean must never certify the graph's publication time.
+    if profile_timing_verified:
+        raise PositionError("historical as-of attestation not implemented in D2")
     if candidate_catalogs is not None:
         if (not isinstance(candidate_catalogs, (tuple, list))
                 or len(candidate_catalogs) != 2):
@@ -136,7 +138,7 @@ def describe_positions(graph, *, source_generation, target_date,
             "unknown_paths": expected - count,
             "coverage": "FULL" if count == expected else "PARTIAL",
         }
-    status = PROVENANCE_VERIFIED if profile_timing_verified else PROVENANCE_UNVERIFIED
+    status = PROVENANCE_UNVERIFIED
     catalog_status = ("D1_CANDIDATE_UNBOUND" if candidate_catalogs is not None
                       else "NO_CATALOG_PROVIDED")
     return {
