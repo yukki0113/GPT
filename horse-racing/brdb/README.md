@@ -208,3 +208,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - Gemini資料は未検証の仮説候補。血脈/地域タグ自体を芝ダ・馬場・コース適性として即時採点しない。条件別の時系列検証がない文は仮説として限定的に記す。
 - 将来の⑤には**非採点の`supplemental_insights`**を別契約版で追加する計画。⑥⑦から①〜④の評価・信頼度・結論を自動上書きしない。
 - **設計のみ**。⑥⑦の実行エンジン、⑤の統合判断、schema変更、BRDB CURRENT/RaceNote/PWA本番更新は未実施。
+
+## 2026-11-05 — D1 地域・血脈特性の候補辞書
+
+- [D1候補辞書・受入記録](docs/BRDB_D1_TAXONOMY_HYPOTHESES_ACCEPTANCE_20261105.md)。
+- [⑥地域ルーツ候補（4分類）](taxonomy/regional_roots_candidate_v0_1.json) / [⑦内包血統・適性仮説（5件）](taxonomy/embedded_blood_hypotheses_candidate_v0_1.json) / [承認ゲート検査](src/brdb_d1_catalog.py) / [合成回帰テスト](tests/test_brdb_d1_catalog.py)。
+- **地域の正式対応=0件、実証された適性=0件**。Gemini参考資料からJRDB公式系統コードや祖先IDを推測割当てせず、候補全件を `CANDIDATE` として隔離。⑥⑦の候補は本番の⑤へ加点・自動表示しない。
+- ①〜③ ＞ ④ ≫ ⑥⑦は数値の加重係数ではなく、将来の血統レビューの主根拠・補強・補足の優先関係。⑤への接続には独立した `supplemental_insights` 契約の受入を要する。
+- D2祖先経路検索、D3条件別成績検証、D4統合レビュー接続、D5時系列検証は**未実施**。旧 `brdb-review-v0.1`、BRDB CURRENT、RaceNote、PWA、新聞は変更なし。
