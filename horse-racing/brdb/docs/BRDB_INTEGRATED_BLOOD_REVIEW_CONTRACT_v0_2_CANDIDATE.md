@@ -97,3 +97,16 @@ BRDB側が血統条件適性について「好材料・懸念・判断保留」�
 - ③の数値自体は参考記述統計として研究用成果に保管し、RaceNote本番へ接続しない。
 
 **今回の⑤本文・Schemaの本番採用やレビュー本体実装を意味しない。**
+
+## 9. ④ 母を共有する兄姉・母方近親（2026-11-05）
+
+[④の研究用実装と検証](BRDB_RELATIVES_EVIDENCE_V0_1_20261105.md)を追加。PACI上の対象馬の母を、独立の母父氏名・生年・公式系統コードのguardを通したcanonical IDで特定し、BRDB研究用parent_relationで同母の兄姉、さらに母方祖母を経由しておじ・おばを特定する。
+
+⑤へ繋ぐ場合の契約解釈：
+- `components.relatives` は研究用データから実際の候補を取得できても、**関係グラフの歴史的な配信時点保証がない限り `availability=AS_OF_UNVERIFIED`** とする。母を安全に特定できない場合は `SOURCE_UNAVAILABLE`。
+- `evidence.component=relatives` の各根拠は、**親族ごと・関係種別ごと・条件scopeごと**に独立したIDを与え、出走・勝ち・3着内、0走null、出典、as-ofを保持。複数近親を無条件に1つの複勝率へまとめない。
+- 全兄姉は**父母双方のcanonical IDの一致**が検証された場合のみ。母だけ確認できたものは半兄姉、父名一致のみは `SAME_DAM_SAME_SIRE_NAME_UNVERIFIED` と区別する。
+- この段階では `factors.positive`、`negative`、`summary` を④の実績から自動生成しない。近親の実績不足は「不適性」ではない。
+- **この研究出力は⑤のSchemaに変換するadapterを実装したという意味ではない。** ⑤の出力契約・現行Review v0.1・RaceNote本番は変更しない。
+
+④は母方の確認可能な近親までを対象とし、父方近親・いとこ・3〜5代全祖先の完全探索は未対応。
