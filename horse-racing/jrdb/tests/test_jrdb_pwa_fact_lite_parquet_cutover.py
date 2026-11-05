@@ -41,7 +41,7 @@ class FactLiteSqliteDeliveryTest(unittest.TestCase):
         self.assertNotIn("fact-lite-duckdb.js", html)
         self.assertNotIn("fact-lite-query-adapter.js", html)
         self.assertNotIn("apache-arrow", html)
-        self.assertIn('CACHE_NAME = "jrdb-pwa-shell-v80"', worker)
+        self.assertIn('CACHE_NAME = "jrdb-pwa-shell-v81"', worker)
         self.assertIn("./vendor/sql-wasm.js", worker)
         self.assertIn("./vendor/sql-wasm.wasm", worker)
         self.assertNotIn("./vendor/duckdb/", worker)

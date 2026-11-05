@@ -77,7 +77,8 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn("width: 27px", css)
         self.assertIn(".mark-jrdb", css)
         self.assertIn(".mark-eval", css)
-        self.assertIn("width: 45px", css)
+        self.assertRegex(css, r"(?s)\.mark-ability,\s*\.newspaper-table-v4 \.mark-eval \{\s*width: 45px;\s*min-width: 45px;\s*max-width: 45px;")
+        self.assertRegex(css, r"(?s)\.mark-jrdb \{\s*width: 27px;\s*min-width: 27px;\s*max-width: 27px;")
 
     def test_personal_day_summary_keeps_only_requested_external_states(self) -> None:
         script = (PWA_ROOT / "newspaper-v10.js").read_text(encoding="utf-8")
@@ -170,7 +171,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
     def test_personal_service_worker_does_not_delete_other_pwa_caches(self) -> None:
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v80"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v81"', service_worker)
         self.assertIn('cacheName.startsWith("jrdb-pwa-shell-")', service_worker)
         self.assertIn('"./newspaper-v4.css?v=12"', service_worker)
         self.assertIn('"./newspaper-v4.js?v=9"', service_worker)
