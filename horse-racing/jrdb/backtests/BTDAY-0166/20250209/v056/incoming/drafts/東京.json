@@ -1,0 +1,398 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      3,
+      15,
+      5,
+      11,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        15,
+        5,
+        11,
+        12
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も比較した。サトノエバーは追い切り74と良いが中山ダート1200で前走８着。東京1400２着の15番と中山1200２着の11番を選ぶ。"
+    },
+    "honmei_win": {
+      "evidence": "ショウナンヤッホーは中京ダート1400で前走３着、東京1600でも５着と距離経験があり、先行して押し切れる。",
+      "main_risk": "ウフドゥウフは東京ダート1400で２着の直接実績。先手を奪われたら最後に差される。"
+    },
+    "shot_case": {
+      "case": "コオリナラグーンは中山ダート1200で４着に好転し、東京1400延長が合えば差し込める。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1400を経験した15番よりも中京1400３着の３番の先行力と調整71を重視。11番も中山1200２着から進出可能。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      4,
+      8,
+      3,
+      12,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        8,
+        3,
+        12,
+        14
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番も比較した。ノイシュタットは中山1800で着順８、６、５と改善しているが、同距離で既に２着の14番に先行力を見込む。"
+    },
+    "honmei_win": {
+      "evidence": "ダカラフェスティヴは中山ダート1800で前走２着、直近３走４着４着２着と持続力が安定し、2100延長にも対応を期待できる。",
+      "main_risk": "キタノブレイクは中山1800の前走２着、同距離でも５着。直線の伸び次第で本命に先着する。"
+    },
+    "shot_case": {
+      "case": "ラストレガシーは札幌1700で２着３着があり、距離を延ばすことで差し脚を長く使える可能性。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "距離延長が多い中で中山1800４・４・２着の４番を◎。８番の前走２着、３番の札幌1700連対が相手。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      3,
+      12,
+      6,
+      4,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        12,
+        6,
+        4,
+        11
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番も比較した。ブルージュは芝1600４着の能力が高い一方、ダート未経験。中山1800３着の11番を五頭に残した。"
+    },
+    "honmei_win": {
+      "evidence": "コンティオは中山ダート1800の初戦２着で能力34。マイルへの短縮で中団から伸びる余地がある。",
+      "main_risk": "ライズトゥザトップは中山1800３着、1200でも大崩れせず追走し先行で押し切れる。"
+    },
+    "shot_case": {
+      "case": "アイスリーディングは東京ダート1600で３着の実績があり、最も直接の舞台適性を持つ穴。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1600３着の６番のコース適性に対し、初戦ダート1800２着の３番の底力を優先した。12番は先行が脅威。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      15,
+      9,
+      3,
+      16,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        9,
+        3,
+        16,
+        5
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番も比較した。ジェイエルバースは調整57・訓練60が良いが能力16.7。能力23.5の16番を上位に取った。"
+    },
+    "honmei_win": {
+      "evidence": "リラキトスは新馬の事前能力37.1が高く、調整58と訓練54も揃い、東京ダート1400の初戦から脚を使えそう。",
+      "main_risk": "ミッキーズベストは能力34.1で訓練60。先手を取れるかは未知だが初戦の仕上がりが同等。"
+    },
+    "shot_case": {
+      "case": "メイショウウメゴチは能力28.4、調整56・訓練57で実走のない組の中では準備が整う。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "新馬戦につき能力と調教を比較。15番と９番が中心、発馬と砂被りへの対応は未知。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      4,
+      16,
+      15,
+      12,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        16,
+        15,
+        12,
+        5
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も比較した。ノーブルリリーは訓練62でも事前能力25で上位３頭との差が大きい。能力36.6の12番を採る。"
+    },
+    "honmei_win": {
+      "evidence": "メランジェは新馬の事前能力43.7、調整58・訓練72が高く、東京マイル初戦への完成度が目立つ。",
+      "main_risk": "ダノンブギは事前能力46と最上位で、素質面で本命を上回る。調整49と訓練52が勝負の鍵。"
+    },
+    "shot_case": {
+      "case": "マイドリームガールは能力41.1に調整66、訓練68が揃い、直線で上がってくる可能性。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1600の新馬。能力では16番、調整を含めた総合の完成度では４番を支持。15番の良い追い切りも魅力。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      7,
+      15,
+      1,
+      4,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        15,
+        1,
+        4,
+        9
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番も比較した。テルケンユミカグラは中山1600５着でも能力29とやや物足りず、調整71の９番を優先した。"
+    },
+    "honmei_win": {
+      "evidence": "スターエンブレムは東京芝1600の初戦で２着、先行して前に粘る競馬ができた。今回も同舞台の再現を狙う。",
+      "main_risk": "サクラアドリアは中山1600で前走３着、能力40と仕上がり67。直線で本命を上回る末脚の可能性。"
+    },
+    "shot_case": {
+      "case": "フロウアンドライムは中京1600の初戦３着で距離経験を持ち、差しが届く展開なら上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1600初戦２着の７番と中山1600３着の15番が好勝負。１番も距離で３着があり穴候補。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "marks": [
+      1,
+      5,
+      7,
+      9,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        5,
+        7,
+        9,
+        11
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番も比較した。ハイエスティームは東京2000３着でも前走福島1800で12着。中山1800勝ちの７番と東京1800勝ちの９番を優先。"
+    },
+    "honmei_win": {
+      "evidence": "フォーザボーイズは東京芝2000で前走２着、同距離勝ちもあり、芝1800短縮でも先行して押し切る地力を示す。",
+      "main_risk": "コンテネレッツアは東京1600前走勝ちと新潟1600勝ちの連勝で、距離延長も東京2000２着経験から克服し得る。"
+    },
+    "shot_case": {
+      "case": "オルノアは中山芝1800前走勝ち、福島同距離２着で芝1800の先行力が明瞭。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "フォーザボーイズの東京中距離での実績を中心に、マイル連勝の５番と芝1800勝ちの７番の逆転を警戒。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "marks": [
+      9,
+      15,
+      4,
+      13,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        15,
+        4,
+        13,
+        1
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も比較した。ケンキョは東京1400で３着の実績があるが前走京都1400９着で、直近２着がある15番と中山連続２着の４番を優先。"
+    },
+    "honmei_win": {
+      "evidence": "モンドプリュームは中京ダート1200で前走２着、中山1200でも３着と短距離の持続力があり、東京1300にも適応できる。",
+      "main_risk": "ノットファウンドは京都1200２着、東京1400２着と同程度の距離で強く、差し脚が届くと勝ち切る。"
+    },
+    "shot_case": {
+      "case": "テセラリアンは中山1200で２戦連続２着。好位を取れるため直線で残る穴材料が明確。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "９番の短距離連続好走を◎とし、東京1400２着の15番、中山1200連続２着の４番が相手。13番の訓練70も強い。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "marks": [
+      3,
+      10,
+      11,
+      7,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        10,
+        11,
+        7,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番も比較した。マーズオデッセイは福島1800勝ちでも中山2000で７着、東京2000を勝った７番を五頭に採る。"
+    },
+    "honmei_win": {
+      "evidence": "ファイアンクランツは札幌芝1800勝ちと３着、東京1800で４着。距離延長は課題でも持続して脚を使える。",
+      "main_risk": "ジュンアサヒソラは東京芝2000を勝利、先行力と仕上がり69があり、2400でも先手を取れば逆転。"
+    },
+    "shot_case": {
+      "case": "レーゼドラマは中京芝2000前走勝ちで仕上がりの上積みがあり、長距離適性次第で残る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ゆりかもめ賞は３番の前走東京1800４着の地力を軸に、10番の東京2000勝ちと７番の同舞台勝ちを比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "marks": [
+      1,
+      10,
+      11,
+      12,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        10,
+        11,
+        12,
+        4
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番も比較した。カナテープは東京1800で４着の能力があるが近走の同距離勝ちがなく、福島1800勝ちの４番を先に選んだ。"
+    },
+    "honmei_win": {
+      "evidence": "アドマイヤマツリは東京芝1800を連勝し、東京2000の前走も勝ち。今回と同じ芝1800で先行して決め手を使える強みがある。",
+      "main_risk": "ライトバックは東京2400で３着、東京1800で高い能力を示した過去もあり、追い込みが決まれば直線で逆転する。"
+    },
+    "shot_case": {
+      "case": "キュクヌスは中山・京都の芝1800を連勝。クラス昇級でも先行できれば一発がある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1800で連勝の１番を本命に、10番の上位クラス地力と11番の中山・京都1800連勝が主な対抗関係。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "marks": [
+      7,
+      8,
+      1,
+      15,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        8,
+        1,
+        15,
+        12
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番も比較した。ボンドガールは秋華賞２着など芝中距離の地力があるが東京マイルの直近直接実績が薄く、東京マイル１着の８番と同距離連勝の12番を優先した。"
+    },
+    "honmei_win": {
+      "evidence": "ブレイディヴェーグは東京芝1800と京都芝2200で勝ち、京都芝1600でも４着。上位G1級の能力と仕上がり72でマイルにも対応可能。",
+      "main_risk": "ジュンブロッサムは東京芝1600の前々走勝ちで能力71、東京マイル直接実績は本命以上に明瞭。"
+    },
+    "shot_case": {
+      "case": "サクラトゥジュールは中京1600前走勝ち、東京1600勝ちもありマイルの経験が厚い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京新聞杯は７番の高いG1級地力と８番・１番の東京マイル勝ちの対比が中心。15番の1400連続好走も差し込み候補。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "marks": [
+      3,
+      11,
+      6,
+      7,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        11,
+        6,
+        7,
+        1
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番も比較した。ゲキザルは東京1600５着の経験があるが直近短距離では６着５着と一押し不足、同距離２着の６番を優先。"
+    },
+    "honmei_win": {
+      "evidence": "オオタニサーンは東京ダート1400勝ち、函館芝1200４着とスピードを示し、中山ダート1200でも４着。東京1600延長をこなすと先行で押し切れる。",
+      "main_risk": "イデアイゴッソウは中山ダート1800前走３着、距離短縮でも差し脚があり能力48と優勢。"
+    },
+    "shot_case": {
+      "case": "ノルドヴェストは東京ダート1600で２着の直接実績があり、中京1400でも４着。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1600に未経験の３番の追走力を買うが11番の1800３着と６番の東京1600２着が強敵。"
+  }
+]
