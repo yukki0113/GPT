@@ -1,3 +1,5 @@
+**2026-11-05 v0.5.6 自信度Aの馬券収支研究開始**：BTDAY-0152〜0171の20日・645R（A121R）をJRDB SED/HJC公式検証＋20日分確定単勝オッズで再監査。A◎単勝回収率66.9%、◎3連複軸6点76.6%、BOX追加分の回収率は極めて低い。A121R中95Rが最終1番人気。Aは優先検討枠だが自動購入しない。結果・制約・リスク検証：`docs/racenote/research-work/reports/20261105_RACENOTE_V056_A_BETTING_645R_REPORT.md`。次の未使用BTDAYで独立の購入／見送りシャドー検証を始める手順：`docs/racenote/research-work/instructions/20261105_RACENOTE_V056_A_BETTING_FORWARD_PROTOCOL.md`。予想印・自信度定義・既存Freezeは不変。確定最終オッズを購入時価格と同一視しない。
+
 **2026-10-31 v0.5.6 FORWARD PACI正本変更**：対象日PACIは既存Google Driveのcanonical PACIフォルダ（ID `1zFajenPU5jxInZCcmqZzkgiaYil3MD8r`）を正とする。Driveで対象日 `PACIyyMMdd.zip` のファイルIDを確認し、workflow `paci_drive_file_id` へ指定。`src/racenote_v056_forward_drive_paci.py` がDriveから取得してCRC・日付・SHAを検証し、PACIのJRDB直接再取得は禁止。取得証跡は `operation_handoff.json.paci_source`。Drive取得不可なら停止しJRDB fallbackしない。詳細 `docs/racenote/RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md`。
 
 ## Phase 3 retirement boundary — Issue #2334
