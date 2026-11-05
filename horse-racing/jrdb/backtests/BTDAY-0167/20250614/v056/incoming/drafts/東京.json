@@ -1,0 +1,398 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      1,
+      9,
+      3,
+      8,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        9,
+        3,
+        8,
+        13
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番も外部候補として比較した。７番ミッキーキャンディは調教72と良いが実戦未経験。既走の東京1600で堅実な８番を優先した。"
+    },
+    "honmei_win": {
+      "evidence": "クインズエクレアは中山1800で２着、新潟1800３着とダート中距離の能力が安定。東京1600短縮でも後半に差す余地がある。",
+      "main_risk": "サンタアニタは東京芝1400で３着・４着、状態70と良く初ダートで先行して押し切る未知数が残る。"
+    },
+    "shot_case": {
+      "case": "ロフティストーリーは東京1600ダート６着・中京1800４着で実戦経験があり、差し展開なら迫る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ダート1800で２・３着の１番と東京芝1400好走からダートへ替わる９番の比較。９番の初砂対応が鍵。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      10,
+      1,
+      3,
+      6,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        1,
+        3,
+        6,
+        5
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番も外部候補として比較した。９番タナハシは東京2400で４着も同距離２着の10番、１番、３番に対し勝ち切りの証拠が弱い。"
+    },
+    "honmei_win": {
+      "evidence": "オビドスは東京芝2400で前走２着、調整62で差し脚の再現性が高い。同舞台で長く脚を使える根拠がある。",
+      "main_risk": "イフルジャンスは東京2400で２着・３着と安定、調教70。仕掛けの位置次第で本命を逆転する。"
+    },
+    "shot_case": {
+      "case": "クラレットは東京2400前走２着で同舞台適性が強い。仕上がりが整えば３頭の勝負になる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京2400で直近２着の10番と複数回２・３着の１番が本線。同舞台前走２着の３番も互角。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      10,
+      16,
+      11,
+      5,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        16,
+        11,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も外部候補として比較した。６番トラストパイロは東京1400前走７着、実戦上位実績が乏しく、東京1400５着の５番を優先。"
+    },
+    "honmei_win": {
+      "evidence": "キタノライブリーは東京1400ダートで前走２着、中山1200でも２着を重ね先行力が高い。調整62で先手を取る競馬を支持。",
+      "main_risk": "ガストフロントは東京1400で２着・５着、追走が安定する。先行争いが長引くと逆転する。"
+    },
+    "shot_case": {
+      "case": "アルテボーイは福島1700で３着、東京1600で５着と前で粘る実績があり短縮で穴。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1400前走２着の10番と16番を中心に、逃げ・先行争いを読み11番の好位を穴に置いた。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      7,
+      5,
+      4,
+      12,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        5,
+        4,
+        12,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番も外部候補として比較した。８番ブリエヴェールは新潟障害2890勝ちも東京3110実績で５番に劣る。東京3110で２着を持つ４番を優先。"
+    },
+    "honmei_win": {
+      "evidence": "ジューンベロシティは阪神障害3900で２着、中山の長距離重賞でも４着。東京3110へ戻り飛越と先行持続が武器。",
+      "main_risk": "ロスコフは東京障害3110で２着、中京3300でも勝利。同舞台の直接実績と差し脚で本命を脅かす。"
+    },
+    "shot_case": {
+      "case": "サイードは東京3110で２着があり、中京障害3300勝ち。早めに動ければ浮上する。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京ジャンプＳの飛越持久力比較。７番の大障害級実績を重視し、５番の東京3110２着を相手とした。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      3,
+      11,
+      8,
+      1,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        11,
+        8,
+        1,
+        9
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も外部候補として比較した。２番セルリアは能力31.7、調教55と整うが、能力差と状態で３番・11番・８番らを優先した。"
+    },
+    "honmei_win": {
+      "evidence": "ドリームコアは新馬事前能力47.1、調教61。東京1600で発馬から好位に付ければ直線の伸びを出せる仕上がり。",
+      "main_risk": "ルージュカルデアは事前能力40.5と調教58を持ち、上積みの少ない新馬の比較では最大の相手。"
+    },
+    "shot_case": {
+      "case": "オラヴィンリンナは能力41.6、状態59で良好。調教35と未完成ながら初戦の穴で警戒。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "新馬につき実戦証拠はない。能力と仕上がりの両方が強い３番を◎、11番と８番が相手。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      9,
+      7,
+      6,
+      2,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        7,
+        6,
+        2,
+        4
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番も外部候補として比較した。５番エンヴィーミーは調教51も能力30.8で主力と差があり、状態48の２番を残す。"
+    },
+    "honmei_win": {
+      "evidence": "サンアントワーヌは芝1400新馬で事前能力46.6と抜ける。体調45と仕上げ途中でも素質で優位を取る。",
+      "main_risk": "ハミングディストは能力37.5、調教60、状態52。実戦前の完成度では本命より上で逆転もある。"
+    },
+    "shot_case": {
+      "case": "クリエープキーは能力38.8と高く、初戦の追走に対応すれば連下に残る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京芝1400新馬は能力９番が最上位、仕上がり７番が上回る。発馬不確実性を考えた比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "marks": [
+      12,
+      9,
+      16,
+      4,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        9,
+        16,
+        4,
+        10
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も外部候補として比較した。６番ベイビーベリッシモは千八～千九で近走６、７、６着。調教77の10番の上積みを五頭に残す。"
+    },
+    "honmei_win": {
+      "evidence": "デュピュイドロームは東京ダート1600初戦３着で能力41、調整63。前へ行く再現性が見込める。",
+      "main_risk": "フェアゴーは東京1600前走２着と実戦好走の直接根拠があり、直線で先着も十分。"
+    },
+    "shot_case": {
+      "case": "ヴィジブルライトは東京1600５着と中山1800３着、先行して粘れば３着争いに食い込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1600で３着の12番と２着の９番を比較。近走では９番が上でも、12番の指数41と前受けを重視した。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "marks": [
+      17,
+      10,
+      5,
+      3,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        17,
+        10,
+        5,
+        3,
+        4
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番も外部候補として比較した。12番アサクサヴィーナスは芝1600近走４、４、６着と堅実でも東京1400直接２着の17番や東京1400３着の４番を重視。"
+    },
+    "honmei_win": {
+      "evidence": "ボンヌソワレは阪神芝1400３着、東京同距離２着と安定。直線の好位運びを再現でき、調教72と仕上がりも良い。",
+      "main_risk": "フロウアンドライムは東京1400前走勝ち、東京1600２着。先行して上位へ届く能力に対抗馬中最大の怖さ。"
+    },
+    "shot_case": {
+      "case": "ラヴスコールは東京1400４着、中山1600３着と差す脚を維持し、先行争いが厳しいほど穴。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "芝1400同舞台の直近２着17番と前走勝ち10番の比較。４番も東京1400３着で穴を拾える。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "marks": [
+      9,
+      14,
+      1,
+      11,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        14,
+        1,
+        11,
+        3
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番も外部候補として比較した。10番ノットイナフは京都1900３着の実績があるが東京2100では未証明。同舞台３着の３番を残した。"
+    },
+    "honmei_win": {
+      "evidence": "ライジンマルは中山ダート1800で１着３着２着、指数60と調整80・調教81が抜ける。先手を取れると東京2100でも押し切れる。",
+      "main_risk": "レッドリベルタは東京2100前走２着と直接の適性で本命以上。早めの仕掛けなら逆転される。"
+    },
+    "shot_case": {
+      "case": "タイセイアディクトは東京2100で２着２回、前走４着。距離実績で最も堅実な穴。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "◎は地力と状態で９番、○▲は東京2100に直接実績のある14番と１番。逃げ馬の距離延長が勝負を分ける。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "marks": [
+      6,
+      7,
+      2,
+      12,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        7,
+        2,
+        12,
+        4
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番も外部候補として比較した。10番レッドラパルマは中山1800３着の能力はあるが東京1600の安定性は６番の方が明瞭。追込馬４番を五頭に残した。"
+    },
+    "honmei_win": {
+      "evidence": "ナイトアクアリウムは東京ダート1600で前走２着、同舞台３着歴、調整50でも末脚の使い方が確立している。",
+      "main_risk": "ジャスパーロブストは新潟ダート1800を連勝し先行力が強い。東京マイルへの短縮で逃げ残る可能性。"
+    },
+    "shot_case": {
+      "case": "ヴァンドームは東京1400勝ち・２着があり差し脚は上位。1600延長が合えば差し切りまで。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1600で２・３着の６番を本線に新潟1800連勝７番の逃げ、東京1400勝ち２番の末脚を警戒。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "marks": [
+      9,
+      6,
+      12,
+      1,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        6,
+        12,
+        1,
+        8
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番も外部候補として比較した。５番ダノンエアズロックは東京1800近走６着続き、同条件で２・３着の９番らを先に採った。"
+    },
+    "honmei_win": {
+      "evidence": "トーセンリョウは東京芝1800前走３着、阪神同距離２着。指数66と追い切り68で差し脚の再現性が高い。",
+      "main_risk": "クルゼイロドスルは東京1800前走４着、中山1800５着で指数66。先に動けば本命に先着し得る。"
+    },
+    "shot_case": {
+      "case": "アドマイヤハダルは過去の東京1800指数71が高く、東京2000でも能力69を発揮。状態改善なら一発。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ジューンＳは９番の東京1800３着と阪神同距離２着を強調。６番との末脚比べ、12番の底力に注意。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "marks": [
+      12,
+      16,
+      9,
+      14,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        16,
+        9,
+        14,
+        13
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も外部候補として比較した。２番アトリウムチャペルは東京1400５着、東京1600３着もあるが直近の好走再現性で13番に劣る。先行馬13番を拾った。"
+    },
+    "honmei_win": {
+      "evidence": "パラサイコロジーは中山1200を前走勝ち、東京1400でも２着。先行して自力で勝つ形を持ち、能力56と状態は上位。",
+      "main_risk": "モーニングマジックは東京1400前走勝ち、調教81・状態77が目立つ。好位で先に動くと逆転する。"
+    },
+    "shot_case": {
+      "case": "アイアンソリッドは新潟1200前走勝ち、東京1400３着経験あり、逃げの形なら上位へ残る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "東京1400２着の12番と同舞台前走勝ち16番が中心。９番も近走短距離勝ちで先行争いが厳しくなる。"
+  }
+]
