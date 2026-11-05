@@ -1,38 +1,53 @@
-# RaceNote v0.5.6 Confidence B/C — Shadow v2.2 本選定規則への昇格
-制定: 2026-11-05
-状態: **PROMOTED / CURRENT FOR NEW UNFROZEN v0.5.6 CONFIDENCE AUTHORING**
-対象: BTDAYとFORWARDの共通LLM Confidence工程。新規未Freezeレースのみ。Prediction、既存Freeze、v0.5.5再現系は不変。
+# RaceNote v0.5.6 Confidence B/C — Shadow v2.2 研究の採用範囲と正式定義（2026-11-05訂正）
 
-## 1. 昇格の決定と根拠
-- 事前固定したShadow v2.2のB/C境界を、新しいv0.5.6 Confidence著述の運用正本に採用する。
-- 研究一次情報: `RACENOTE_V056_BC_SHADOW_V2_FORWARD_OPERATION_20261104.md` と `RACENOTE_V056_BC_SHADOW_V22_NO_PRIOR_RUN_EVIDENCE_POLICY_20261105.md`（研究ブランチ `research/racenote-shadow-v2-0162-0171-pre-result-20261105` に保存）。
-- 第1期 BTDAY-0152〜0161: 10日・309R・B/C224R（v1開発標本）。第2期 BTDAY-0162〜0171: 10日・336R・B/C231R（v2.2事前固定検証）。第2期はB→B168、B→C9、C→B9、C→C45。分類としてのB/C差は改善したが、馬券収益の優位性は未確認。
-- **この昇格は馬券回収率の保証やCを増やすための件数最適化ではない。** 公開予想におけるB/Cの理由を説明可能にする運用上の採用。A購入戦略の検証は別研究とする。
+Status: **CURRENT / CONFIDENCE DEFINITIONS RESTORED**  
+対象: 新規・未Freezeのv0.5.6 BTDAY / FORWARD。予想印、既存Freeze、v0.5.5再現系には遡及しない。
 
-## 2. 判定順序（必須）
-1. Prediction Freezeで固定済みの◎○▲△△と、同一レースの市場・結果非参照Readerを使う。印を変えず、まず既存の勝ち切り基準でAを独立評価する。対象外区分のZは従来どおり。
-2. **AでもZでもない通常レース**について、◎自身の3着以内への再現性を評価する。類似条件での着内、位置取り、末脚、ペース耐性、実走履歴・事前指数・調教などの具体的根拠を挙げる。
-3. ○▲△△と比較する。相手の勝利可能性と◎自身の着外可能性を混同しない。
-4. ◎が4着以下となる今回固有の経路を、事前証拠つきで検討する。単なる混戦、○との差が僅少、勝ち切り不安、数値順位、曖昧な展開不安だけを根拠にCへ落とさない。
-5. **B**：◎の着内軸としての正の根拠が具体的にあり、着外経路を検討しても固定軸として合理的な場合。相手の逆転余地や◎の勝ち切り不安はBと両立する。
-6. **C**：◎が4着以下になる具体的シナリオと今回の事前裏付けが重要で、正の着内証拠と比較しても固定軸に据える合理性が弱い場合。元々Bに相当する積極根拠を覆すには、その反証を明記する。
-7. **情報不足**：Readerやpre-race根拠を追加点検する。単なる欠損による自動B/Cや件数調整は禁止。必要な説明が成立しなければレビューを止め、`review_required`として**Confidence Freeze前に**解消する。
+## 1. 初回昇格判断の訂正
 
-## 3. 既走0・初出走に関する補足（v2.2）
-- 過去走0と入力欠損を区別し、初出走だけでB/Cの自動判定をしない。
-- 事前IDM、CYB、KYI、追い切り、隊列・条件、厩舎騎手、血統（補助）を、印5頭の相対比較と合わせて評価する。
-- 実走の裏付けがない不確実性を明記しつつ、複数の独立した積極根拠があり着外を強く見込む材料がないならBを認める。具体的な着外経路に事前の裏付けがあるならC。
-- 根拠出所を `EVIDENCE_SOURCE=PRE_RACE_PROXY_NO_HISTORY`／`EVIDENCE_SOURCE=RACE_HISTORY` と理由中に明記する。**新しい等級Uは作らない。**
+初回コミット `f2d5fe440b460ce23b0cb3de7af5674f6ff7ece4` は、Shadow v2.2の「◎が3着内に残る軸の信頼性」を正式ConfidenceのB/C定義に置き換えた。この**定義変更を撤回**する。
 
-## 4. LLM著述と機械検証
-- 正規の既存レコード `confidence`（A/B/C/Z）と `confidence_review` 構造を維持。別の「Shadow」フィールドや自動スコア生成は不要。
-- 既存 `winning_case`／`primary_rival`／`relative_advantage`／`main_defeat_scenario`／`risk_assessment`／`final_grade_reason` を満たし、B/Cでは勝ち切りの判断に加えて**◎3着以内の積極根拠・4着以下の具体的経路・他4印との比較衡量**が理由から読み取れるよう個別に記述する。フィールドは変更しない。
-- 既存のValidatorは構造・Freeze整合性を確認するだけであり、競馬的な説明品質や採用規則の意味論を自動保証しない。LLM・人手による意味論レビューをFreeze前に行う。
-- Aは既存の1着確信度を維持し、Zは従来どおり。A/ZにShadowを適用しない。Aからの機械的降格やラベル数の目標設定は禁止。
-- BTDAY／FORWARDともPrediction Freeze後の独立Confidence著述に適用し、Confidence Freeze前に市場・結果・確定人気を閲覧しない。
-- B/Cの境界を着内軸の信頼性で分類するため、A（勝ち切り確信度）とB/C（着内軸としての堅さ）は**同一尺度の順序確率ではない**。特にA/B/Cの勝率順を採用条件とする際にはこの意味上の違いを明記する。
+Shadow v2.2の研究成果は、レースごとの証拠照合・印5頭の比較・不確実性の説明を丁寧に行う**補助レビュー手法**として採用する。ShadowのB/Cラベルを正式Confidenceへそのままコピーしない。
 
-## 5. 発効・監査・次の研究
-- 本文のGit `main`反映後の**新規Confidence著述**に適用する。既に開始・Freezeした事例に遡及適用せず、古いPrediction/Confidence/Shadow原票を変更しない。
-- 新しい未Freezeセッションでは本規則をLLMに明示して判定する。新規BTDAYのConfidence ReviewでB/Cの固有理由を品質監査し、Cを無理に増やさない。
-- Aの購入戦略研究は別トラック。Aの「優先検討」はA全件買いを意味せず、オッズに対する購入価値・見送り・単勝/馬連/3連複の損益を独立して評価する。B/Cは収益優位性未証明のため標準購入推奨には使わない。
+## 2. 正式なA/B/C/Z
+
+- **A — 勝ち切りを積極支持**：◎を勝ち馬として強く支持できる。単に「◎が最有力」というだけでなく、現在条件で再現性のある勝ち筋と、他の勝利候補への十分な比較優位がある。従来のA基準を維持する。
+- **B — ◎最有力だが勝ち負けできる他馬もいる**：◎が勝つ可能性を最も高いと判断している一方、○や他の候補にも現実的な勝利経路がある。勝ち馬としての◎の比較優位は説明できるが、Aほど明確ではない。
+- **C — 印5頭間で勝利の優劣がつけにくい**：最終5頭の勝利候補について、◎を最上位とする比較根拠が拮抗・非決定的で、勝ち馬の序列への確信が低い。◎を1頭選んだことと、◎を強く支持できることは別。
+- **Z — 特殊対象**：従来の新馬戦・障害戦等の別枠。A/B/Cの上下関係に置かない。従来の適用対象を維持する。
+
+**重要：Cに「◎が4着以下になる具体的な懸念・根拠」を必須条件として要求しない。** ◎が3着内に残る見込みが高くても、勝ち馬としての5頭間序列を確信できない場合はCでよい。Bも「◎が3着内の軸に適する」という条件で定義しない。
+
+A/B/Cの目標件数や比率、固定スコアや機械的な件数調整は禁止する。公開上の見た目を理由にCを増やさない一方、拮抗しているレースを根拠なくBに寄せない。
+
+## 3. PredictionとConfidenceの工程・責務
+
+1. LLMが全出走馬を比較して、通常の展開で有力な**ordinary five**を構成する。
+2. ordinary fiveから、勝ち馬として最有力の◎と、次に重要な勝ち筋の○を選ぶ。
+3. 外部Challengerを最大1頭検討する。既存契約どおり、十分な根拠がある場合のみ◎○以外の下位ordinary候補と入れ替える。KEEPが原則。
+4. 最終印 ◎○▲△△ とDecision Coreを **Prediction Freeze** する。
+5. その後の独立Confidence Reviewで、既に固定した◎が他の勝利候補を上回る確信度をA/B/C/Zで著述し **Confidence Freeze** する。
+
+◎や最終5頭の選別に重大な疑義があるなら、Prediction Freeze**前**に序列やChallengerとの比較を見直す。Confidence Reviewで新たに問題が見つかっても、既に凍結した◎・印を黙って変更せず、品質問題として監査する。Confidenceを使って既存Predictionを後から改変しない。
+
+## 4. Shadow v2.2から利用する観点（補助レビューのみ）
+
+- ◎○▲△△の5頭について、実走履歴、同条件再現性、脚質、展開、相手関係、リスクと不確実性を具体的に比較する。
+- 「○が◎に勝つ」ことと「◎が4着以下になる」ことを混同しない。ただし後者をCの成立要件にはしない。
+- 初出走・既走0では入力欠損と実走履歴なしを区別し、事前IDM・KYI・CYB・調教等の複数の独立した材料を印5頭と比較する。初出走だけで機械的にCへ落とさない。
+- B/Cいずれも、◎を最上位とする根拠、ほかの勝利候補の根拠、優劣の明確さ／曖昧さをレース固有の証拠で言語化する。
+
+第1期BTDAY-0152〜0161（309R）はv2設計に用いた標本、第2期BTDAY-0162〜0171（336R）は事前固定したv2.2の研究検証標本である。両期のShadow判定・原票・結果は不変。Shadowの着内軸判定やROIを正式Confidenceの意味へ転用しない。
+
+## 5. 実装・Freeze境界
+
+- BTDAY/FORWARDに同じLLM著述規則を用いる。Pythonによる印・Confidenceの自動格付けは行わない。
+- 既存の `confidence` と `confidence_review`（`winning_case`, `primary_rival`, `relative_advantage`, `main_defeat_scenario`, `risk_assessment`, `final_grade_reason`）の構造を維持する。レビューの主語は「◎が勝つか／ほかの候補に勝つか」である。
+- Confidence Freeze前の結果・払戻・対象当日市場は参照禁止。既存Prediction/ConfidenceのSHAを変えない。A/Zと従来v0.5.5運用を変更しない。
+- 構造ValidatorのPASSは競馬的な意味論のPASSではない。Freeze前に判定理由の質を確認する。
+- 馬券収益の研究はConfidenceから独立させ、次段階はAの購入価値・見送り判断を優先する。
+
+## 原典
+- `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_5_CANDIDATE.md`：ordinary five・Challenger・A/B/C。
+- `docs/racenote/RACENOTE_V056_MIGRATION_IMPLEMENTATION_CONTRACT_20261030.md`：v0.5.6の独立Confidenceと二段階Freeze。
+- 研究資料：`research/racenote-shadow-v2-0162-0171-pre-result-20261105`（Shadow v2.2。正式Confidenceの定義とは別）。
