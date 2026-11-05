@@ -84,3 +84,16 @@ BRDB側が血統条件適性について「好材料・懸念・判断保留」�
 7. 実データ再演・速度計測・利用文言の確認、ユーザーによる採用承認が完了するまで現行v0.1と本番は変更しない。
 
 この仕様は**⑤の出力契約のみ**。モデルやReview本体の開発完了を意味しない。
+
+## 8. ③ 父系×母父系の根拠接続（2026-11-05）
+
+研究モジュール `src/run_brdb_pairing_evidence.py` と [③検証記録](BRDB_LINEAGE_PAIRING_EVIDENCE_V0_1_20261105.md) を追加した。②までの出力と同一の対象レース/horse_id/as-ofを使用し、父系×母父系コードの組合せについて5段階の同芝ダ条件で実績を取得する。
+
+**⑤契約への接続方針（未実装）:**
+- `components.pairing` は、歴史的系統プロフィールの公開時点が未検証の現状では `availability=AS_OF_UNVERIFIED` とする。集計数が存在しても `AVAILABLE` と偽装しない。
+- ③の各scopeのペア実績を `evidence.component=pairing` / `evidence_kind=OBSERVED_CONDITIONAL_RESULT` で参照できるようにする。父系単独・母父系単独の比較実績は**組合せの参考比較母集団**であって独立の好材料ではない。
+- `evidence.source_name` / `source_generation` にAnalysis v1.4、`scope_key` と `condition` に同芝ダ/同場/距離を保持。パーセンテージ差は元の③研究出力に残し、現行candidate JSON Schemaで未定義の新フィールドを無断追加しない。
+- 時点未検証である限り、③から `factors.positive` / `negative` を自動生成しない。summaryやpredictive confidenceへの加点も行わない。
+- ③の数値自体は参考記述統計として研究用成果に保管し、RaceNote本番へ接続しない。
+
+**今回の⑤本文・Schemaの本番採用やレビュー本体実装を意味しない。**
