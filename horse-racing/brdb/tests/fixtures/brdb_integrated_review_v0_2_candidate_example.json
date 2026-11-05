@@ -1,0 +1,138 @@
+{
+  "contract_version": "brdb-integrated-blood-review-v0.2-candidate",
+  "release_status": "RESEARCH_CANDIDATE",
+  "race": {
+    "race_key": "05264B05",
+    "target_date": "2026-11-01",
+    "venue_code": "05",
+    "surface_code": "1",
+    "distance_m": 2000,
+    "course_code": "4",
+    "field_size": 1
+  },
+  "as_of_exclusive": "2026-11-01",
+  "source_generations": {
+    "brdb": null,
+    "jrdb_analysis": "SYNTHETIC_GEN",
+    "paci": "SYNTHETIC_PACI"
+  },
+  "horses": [
+    {
+      "horse_id": "00000001",
+      "horse_no": 1,
+      "horse_name": "架空馬A",
+      "status": "INSUFFICIENT_EVIDENCE",
+      "pedigree_facts": {
+        "sire_name": "架空父",
+        "dam_name": "架空母",
+        "broodmare_sire_name": "架空母父",
+        "sire_line_code": null,
+        "broodmare_sire_line_code": null
+      },
+      "components": {
+        "sire": {
+          "availability": "NO_SAMPLE",
+          "evidence_ids": [
+            "SIRE_VENUE_COURSE_EXACT"
+          ]
+        },
+        "broodmare_sire": {
+          "availability": "LOW_SAMPLE",
+          "evidence_ids": [
+            "BMS_1_MIDDLE"
+          ]
+        },
+        "pairing": {
+          "availability": "NOT_IMPLEMENTED",
+          "evidence_ids": []
+        },
+        "relatives": {
+          "availability": "NOT_IMPLEMENTED",
+          "evidence_ids": []
+        }
+      },
+      "evidence": [
+        {
+          "evidence_id": "SIRE_VENUE_COURSE_EXACT",
+          "component": "sire",
+          "evidence_kind": "OBSERVED_CONDITIONAL_RESULT",
+          "scope_key": "VENUE_COURSE_EXACT",
+          "condition": {
+            "venue_code": "05",
+            "course_code": "4",
+            "surface_code": "1",
+            "distance_m": 2000,
+            "distance_band": null
+          },
+          "observations": {
+            "unique_horses": 0,
+            "starts": 0,
+            "wins": 0,
+            "top3": 0,
+            "win_rate": null,
+            "top3_rate": null,
+            "top3_wilson95": null,
+            "baseline_starts": 1200,
+            "baseline_top3_rate": 0.25,
+            "top3_delta_pp": null
+          },
+          "sample_status": "NO_SAMPLE",
+          "as_of_exclusive": "2026-11-01",
+          "source_generation": "SYNTHETIC_GEN",
+          "source_name": "SYNTHETIC_TEST_ONLY",
+          "overlap_group": null
+        },
+        {
+          "evidence_id": "BMS_1_MIDDLE",
+          "component": "broodmare_sire",
+          "evidence_kind": "OBSERVED_CONDITIONAL_RESULT",
+          "scope_key": "1:MIDDLE",
+          "condition": {
+            "venue_code": null,
+            "course_code": null,
+            "surface_code": "1",
+            "distance_m": null,
+            "distance_band": "MIDDLE"
+          },
+          "observations": {
+            "unique_horses": 4,
+            "starts": 5,
+            "wins": 1,
+            "top3": 2,
+            "win_rate": 0.2,
+            "top3_rate": 0.4,
+            "top3_wilson95": [
+              0.1176,
+              0.7693
+            ],
+            "baseline_starts": 1900,
+            "baseline_top3_rate": 0.23,
+            "top3_delta_pp": 17
+          },
+          "sample_status": "LOW_SAMPLE",
+          "as_of_exclusive": "2026-11-01",
+          "source_generation": "SYNTHETIC_GEN",
+          "source_name": "SYNTHETIC_TEST_ONLY",
+          "overlap_group": null
+        }
+      ],
+      "factors": {
+        "positive": [],
+        "negative": [],
+        "unknown": []
+      },
+      "summary": null,
+      "coverage": {
+        "sire": "NO_SAMPLE",
+        "broodmare_sire": "LOW_SAMPLE",
+        "pairing": "NOT_IMPLEMENTED",
+        "relatives": "NOT_IMPLEMENTED"
+      },
+      "confidence": "UNASSESSED"
+    }
+  ],
+  "aggregate_coverage": {
+    "field_size": 1,
+    "reviewed_horses": 1
+  }
+}
