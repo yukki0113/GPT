@@ -257,3 +257,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - JBIS各馬の**外部個体ID12件**と直接父母名24件・2代前の`SS/SD/DS/DD`名前経路48件を出典URL付きで記録。12候補間の確定した個体ID父系リンクはSunday Silence→Haloの`S` **1件のみ**。
 - **JBISのID≠JRDB horse_id**。外部IDを8桁JRDB IDへ流用せず、旧祖先の個体ID一致・観測経路を偽装しない。残る親名・祖父母名は人名として出典にあるが個体ID未確認なので、クロス検出/適性採点に投入しない。
 - 地域分類・適性実証・歴史的as-of認証は未実施。研究用D2の入力候補に限定し、①〜③＞④≫⑥⑦、BRDB CURRENT/Review v0.1/RaceNote/PWAの未変更を維持。
+
+## 2026-11-05 — 6工程③ 既存BRDBと種牡馬マスタの父・母父結合（研究用）
+
+- [工程③adapter](src/brdb_stage3_feature_adapter.py) / [10ケース合成テスト](tests/test_brdb_stage3_feature_adapter.py) / [実データ照合率監査](docs/BRDB_STAGE3_STALLION_JOIN_REAL_COVERAGE_20261105.md)。
+- 既存pedigree_factの`sire_name, sire_birth_year, sire_line_code`と`broodmare_sire_name, broodmare_sire_birth_year, broodmare_sire_line_code`を厳密に照合し、父`S+`と母父`DS+`の別laneに名前観測経路を展開。ただし、外部IDとJRDB horse_idの承認済みcrosswalkは0なので**正式個体結合は0**、すべて`GUARDED_NAME_YEAR_LINEAGE_PROXY_ONLY`または未登録/矛盾。
+- 研究用全132,652頭では父proxy2,579件（1.944%）、母父proxy13,533件（10.202%）。2015〜2024生45,428頭では父0件、母父1,765件（3.885%）。2022〜2024生12,018頭では父0件、母父98件（0.815%）。
+- 父種牡馬・母父の**現役入口マスタを拡充する必要**があり、古い12血脈は祖先候補であって現役種牡馬マスタ全体ではない。母母`DD`は工程④で任意扱い。
+- `prediction_safe=false`、`as_of=AS_OF_UNVERIFIED`、`supplemental_insights=[]`。⑤の主評価・BRDB CURRENT/RaceNote/PWA本番は変更なし。
