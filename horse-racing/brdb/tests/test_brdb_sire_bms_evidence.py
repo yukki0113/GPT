@@ -28,6 +28,15 @@ class SireBMSTest(unittest.TestCase):
             ("2025-01-01", 2025, "05", "4", "1", 2000, "H4", "SIRE_Z", "BMS_Z", 3, "3"),
             ("2026-11-01", 2026, "05", "4", "1", 2000, "H5", "SIRE_A", "BMS_A", 1, "0"),
             ("2026-10-30", 2026, "05", "4", "2", 1200, "H6", "SIRE_Z", "BMS_A", 2, "0"),
+            # Same-venue turf band, different distance.
+            ("2025-02-01", 2025, "05", "4", "1", 2200, "H7", "SIRE_A", "BMS_A", 2, "0"),
+            # Same-venue same-distance DIRT: must not enter any sire evidence scope for turf.
+            ("2025-02-01", 2025, "05", "4", "2", 2000, "H8", "SIRE_A", "BMS_A", 1, "0"),
+            # Other venues only appear in widened all-venue scopes.
+            ("2025-02-01", 2025, "06", "4", "1", 2000, "H9", "SIRE_A", "BMS_A", 3, "0"),
+            ("2025-02-01", 2025, "06", "4", "1", 2200, "H10", "SIRE_A", "BMS_A", 2, "0"),
+            # Same venue/distance/surface but a different course configuration.
+            ("2025-02-01", 2025, "05", "5", "1", 2000, "H11", "SIRE_A", "BMS_A", 1, "0"),
         ])
         c.execute(f"COPY sample TO '{f}' (FORMAT PARQUET)")
         c.close()
@@ -52,10 +61,29 @@ class SireBMSTest(unittest.TestCase):
         self.assertEqual((sire["starts"], sire["wins"], sire["top3"]), (2, 1, 1))
         self.assertEqual(sire["baseline_starts"], 3)  # H4 did start, H3 withdrew
         self.assertEqual(sire["baseline_top3_rate"], 0.3333)
-        self.assertEqual(h["bms_evidence"]["surface"]["2"]["starts"], 1)
-        self.assertEqual(h["bms_evidence"]["surface"]["2"]["top3"], 1)
+        self.assertEqual(h["bms_evidence"]["surface"]["2"]["starts"], 2)
+        self.assertEqual(h["bms_evidence"]["surface"]["2"]["top3"], 2)
         self.assertEqual(r["policy"]["as_of_exclusive"], "2026-11-01")
-        self.assertIsNone(h["sire_evidence"]["best_supported_scope"])
+        self.assertNotIn("best_supported_scope", h["sire_evidence"])
+
+    def test_venue_band_keeps_surface_and_precedes_all_venues_distance(self):
+        review = engine.analyse(self.field, self.root)
+        horse = review["horses"][0]
+        scopes = horse["sire_evidence"]["scopes"]
+        self.assertEqual(list(scopes), [
+            "VENUE_COURSE_EXACT", "VENUE_DISTANCE", "VENUE_BAND",
+            "ALL_VENUES_DISTANCE", "ALL_VENUES_BAND",
+        ])
+        # Turf-only counts: exact=2, venue distance=3, venue band=4,
+        # all venues exact=4, all venues band=6. H8 is dirt and excluded.
+        self.assertEqual([stats["starts"] for stats in scopes.values()], [2, 3, 4, 4, 6])
+        self.assertTrue(review["policy"]["all_sire_scopes_preserve_target_surface"])
+        self.assertEqual(review["policy"]["sire_scopes_narrow_to_broad"], list(scopes))
+        self.assertTrue(review["policy"]["no_imputation_or_automatic_selection"])
+        self.assertTrue(horse["sire_evidence"]["no_imputation_or_automatic_selection"])
+        self.assertNotIn("score", horse)
+        self.assertNotIn("rank", horse)
+        self.assertNotIn("best_supported_scope", horse["sire_evidence"])
 
     def test_manifest_tamper_rejected(self):
         (self.root / "data.parquet").write_bytes(b"tampered")
