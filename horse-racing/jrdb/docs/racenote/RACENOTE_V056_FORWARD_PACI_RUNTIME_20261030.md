@@ -1,4 +1,4 @@
-> **Confidence B/C選定の優先契約（2026-11-05）**：新規未Freezeのv0.5.6 FORWARDでは `docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md` を参照し、A/Zは維持、B/CにはShadow v2.2の◎着内軸・具体的着外経路比較を適用する。自動採点・既存Freezeの変更禁止。
+> **2026-11-05 Confidence B/C正式定義の訂正**：新規未Freezeのv056 FORWARDでは `docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md` に従う。A＝◎の勝ち切りを積極支持、B＝◎最有力だが他にも勝ち負け候補あり、C＝最終5頭の勝利候補の優劣が付きにくい、Z＝従来の別枠。Shadow v2.2の着内軸の可否は補助レビューのみ。印・既存Freezeは不変。
 
 # RaceNote v0.5.6 FORWARD — PACI → RaceNote → 二段階Freeze
 
