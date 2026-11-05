@@ -36,6 +36,7 @@ class Stage2RegistryTest(unittest.TestCase):
         result = self.validate()
         self.assertEqual(result["subject_profiles_verified"], 12)
         self.assertEqual(result["parent_name_observations"], 24)
+        self.assertEqual(result["second_generation_name_observations"], 48)
         self.assertEqual(result["verified_external_direct_paths"], 1)
         self.assertEqual(result["jrdb_identity_crosswalks"], 0)
         self.assertFalse(result["review_safe"])
@@ -111,6 +112,19 @@ class Stage2RegistryTest(unittest.TestCase):
             self.validate(changed)
         changed = copy.deepcopy(self.registry)
         changed["subjects"][0]["aptitude_claims"] = ["DIRT_STRONG"]
+        with self.assertRaises(Stage2RegistryError):
+            self.validate(changed)
+
+    def test_grandparent_names_remain_unbound_to_ids(self):
+        changed = copy.deepcopy(self.registry)
+        row = changed["subjects"][0]["observed_second_generation_name_paths"][0]
+        row["ancestor_external_id"] = "0000335154"
+        with self.assertRaises(Stage2RegistryError):
+            self.validate(changed)
+
+    def test_second_generation_paths_are_complete_and_distinct(self):
+        changed = copy.deepcopy(self.registry)
+        changed["subjects"][0]["observed_second_generation_name_paths"][0]["path"] = "DS"
         with self.assertRaises(Stage2RegistryError):
             self.validate(changed)
 
