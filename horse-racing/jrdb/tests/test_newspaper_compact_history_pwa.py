@@ -27,7 +27,7 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         config_position = html.index('newspaperHistoryDisplayMode: "compact"')
         runtime_position = html.index('<script src="./newspaper.js?v=4"></script>')
         self.assertLess(config_position, runtime_position)
-        self.assertIn('./newspaper-v4.css?v=11', html)
+        self.assertIn('./newspaper-v4.css?v=12', html)
         self.assertIn('./newspaper-v4.js?v=9', html)
         self.assertIn('./newspaper-v6.js?v=6', html)
 
@@ -76,7 +76,8 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn(".mark-iluka", css)
         self.assertIn("width: 27px", css)
         self.assertIn(".mark-jrdb", css)
-        self.assertIn("width: 38px", css)
+        self.assertIn(".mark-eval", css)
+        self.assertIn("width: 45px", css)
 
     def test_personal_day_summary_keeps_only_requested_external_states(self) -> None:
         script = (PWA_ROOT / "newspaper-v10.js").read_text(encoding="utf-8")
@@ -109,14 +110,16 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
         self.assertIn('newspaperHistoryDisplayMode: "compact"', html)
         self.assertIn('historyCount = 5', script)
         self.assertIn('newspaperV4HistoryTableClass()', script)
-        self.assertIn('../newspaper-v4.css?v=11', html)
+        self.assertIn('../newspaper-v4.css?v=12', html)
         self.assertIn('../newspaper-v4.js?v=9', html)
 
     def test_compact_layout_uses_shared_dense_width_contract(self) -> None:
         css = (PWA_ROOT / "newspaper-v4.css").read_text(encoding="utf-8")
 
         self.assertIn("--newspaper-history-compact-width: 124px", css)
-        self.assertIn("--newspaper-history-compact-width: 94px", css)
+        self.assertIn("--newspaper-history-compact-width: 110px", css)
+        self.assertIn("white-space: nowrap", css)
+        self.assertIn(".newspaper-run-compact-finish", css)
         self.assertIn(".newspaper-table-v4.newspaper-history-compact", css)
         self.assertIn(".newspaper-run-v4-compact", css)
         self.assertIn("width: 82px", css)
@@ -167,9 +170,9 @@ class NewspaperCompactHistoryPwaTest(unittest.TestCase):
     def test_personal_service_worker_does_not_delete_other_pwa_caches(self) -> None:
         service_worker = (PWA_ROOT / "service-worker.js").read_text(encoding="utf-8")
 
-        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v79"', service_worker)
+        self.assertIn('const CACHE_NAME = "jrdb-pwa-shell-v80"', service_worker)
         self.assertIn('cacheName.startsWith("jrdb-pwa-shell-")', service_worker)
-        self.assertIn('"./newspaper-v4.css?v=11"', service_worker)
+        self.assertIn('"./newspaper-v4.css?v=12"', service_worker)
         self.assertIn('"./newspaper-v4.js?v=9"', service_worker)
 
 
