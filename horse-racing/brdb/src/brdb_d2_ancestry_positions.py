@@ -80,22 +80,9 @@ def _role(path):
     return "SIRE_SIDE_ANCESTOR" if path[0] == "S" else "MATERNAL_SIDE_ANCESTOR"
 
 
-def _branch_coverage(summary):
-    # All theoretical paths are retained, including prefixes not expanded by
-    # existing graph algorithm. They are unresolved, NOT proven absent.
-    depth = len(summary["generation_coverage"])
-    return {
-        side: {
-            "expected_paths": 2 ** depth - 1,
-            "resolved_paths": sum(1 for n in summary["_resolved_nodes"] if n["path"][0] == side),
-        }
-        for side in ("S", "D")
-    }
-
-
 def describe_positions(graph, *, source_generation, target_date,
                        source_profile_as_of=None, profile_timing_verified=False,
-                       candidate_catalogs=None, verified_ancestor_ids=()):
+                       candidate_catalogs=None):
     """Describe *observed* canonical IDs; identity bindings must be audited.
 
     profile_timing_verified=True asserts that the entire graph's parent edges and
@@ -120,11 +107,6 @@ def describe_positions(graph, *, source_generation, target_date,
                 or len(candidate_catalogs) != 2):
             raise PositionError("D1 catalog pair required")
         validate_catalogs(candidate_catalogs[0], candidate_catalogs[1])
-    allowed = set()
-    for hid in verified_ancestor_ids:
-        if not isinstance(hid, str) or not hid:
-            raise PositionError("invalid audited ancestor ID")
-        allowed.add(hid)
     observed = defaultdict(list)
     for node in graph["paths"]:
         hid = node.get("horse_id")
@@ -140,7 +122,7 @@ def describe_positions(graph, *, source_generation, target_date,
             "sides": sorted({"SIRE" if p[0] == "S" else "MATERNAL" for p in positions}),
             "roles": [_role(p) for p in positions],
             "observed_occurrences": len(positions),
-            "identity_binding": "AUDITED_ID" if hid in allowed else "CANONICAL_GRAPH_ONLY",
+            "identity_binding": "CANONICAL_GRAPH_ONLY",
         })
     crossed = describe_crosses(graph)
     depth = graph["max_depth"]
