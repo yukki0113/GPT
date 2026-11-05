@@ -181,3 +181,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - ③④が未実装でも明確に `NOT_IMPLEMENTED` と返せる構造。父の `NO_SAMPLE` / `LOW_SAMPLE` は母父や系統によって上書きしない。根拠IDと同一集団の重複可能性を保持する。
 - ⑤の**解釈判定規則・根拠の統合・全馬比較・実行APIは未実装**。正負の要因や血統総評を勝手に生成しない。BRDBは予想スコア・印・勝率を出さず、予想上の利用判断はRaceNote側の責務。
 - このcandidateは**research-only**であり、現行凍結 `brdb-review-v0.1`、BRDB CURRENT、RaceNote、PWA、新聞の本番連携は変更しない。
+
+## 2026-11-05 — ③ 父系×母父系の組合せ分析（研究用）
+
+- [③系統ペア集計エンジン](src/run_brdb_pairing_evidence.py) / [合成テスト](tests/test_brdb_pairing_evidence.py) / [東京5R・8頭の検証レポート](docs/BRDB_LINEAGE_PAIRING_EVIDENCE_V0_1_20261105.md)。
+- ①②の全馬JSONとJRDB Analysis v1.4 CURRENTを受け取り、**父系×母父系の公式コード組合せ**について同場同コース/距離、同場距離、同場距離帯、全場距離、全場距離帯の5段階を対象芝ダ固定で集計。各段階で、組合せ、父系単独、母父系単独、同条件全体の比較値・標本情報を返す。関連系統や母父単独の実績をペアの実績に代入しない。
+- 東京5R・8頭は7組合せ。ローカル実測では約0.4〜0.8秒（入力転送なし）。合成テスト5件PASS。
+- **歴史UKC系統コードの当時配信時点が未検証**のため、出力は `HISTORICAL_LINEAGE_PROFILE_ASOF_UNVERIFIED` / `prediction_safe=false`。③の履歴成績は記述研究に限り、検証済みニックス・予想傾向として⑤に自動採用しない。[⑤候補契約](docs/BRDB_INTEGRATED_BLOOD_REVIEW_CONTRACT_v0_2_CANDIDATE.md) には `AS_OF_UNVERIFIED` として接続する方針。
+- 現行Blood Review v0.1、BRDB CURRENT、RaceNote、PWA、新聞の本番変更なし。④兄姉・近親と⑤統合ロジックは未実装。
