@@ -1,0 +1,627 @@
+{
+  "schema_version": "brdb-stallion-master-stage2-external-profiles-v0.1",
+  "research_only": true,
+  "generated_date": "2026-11-05",
+  "identity_rule": "JBIS IDs are source-native, NEVER JRDB horse_id. Sire/dam names from each source profile are not independent canonical IDs.",
+  "source_policy": "Human-curated public JBIS horse profiles; each row retains page URL and explicit publication-time uncertainty; no whole-site scrape.",
+  "candidate_catalog": "taxonomy/embedded_blood_research_shortlist_candidate_v0_2.json",
+  "official_jrdb_lineage_master_generation": "5279af0bd8226cde",
+  "subjects": [
+    {
+      "candidate_id": "STORM_CAT",
+      "subject_key": "JBIS:0000337102",
+      "display_name_jp": "ストームキャット",
+      "display_name_en": "Storm Cat",
+      "birth_year": 1983,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000337102",
+        "source_url": "https://www.jbis.jp/horse/0000337102/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1108",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Storm Bird",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337102/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Terlingua",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337102/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "TONY_BIN",
+      "subject_key": "JBIS:0000161740",
+      "display_name_jp": "トニービン",
+      "display_name_en": "Tony Bin",
+      "birth_year": 1983,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000161740",
+        "source_url": "https://www.jbis.jp/horse/0000161740/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1307",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Kampala",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000161740/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Severn Bridge",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000161740/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "DANZIG",
+      "subject_key": "JBIS:0000336082",
+      "display_name_jp": "ダンジグ",
+      "display_name_en": "Danzig",
+      "birth_year": 1977,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000336082",
+        "source_url": "https://www.jbis.jp/horse/0000336082/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1106",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Northern Dancer",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336082/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Pas de Nom",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336082/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "SADLERS_WELLS",
+      "subject_key": "JBIS:0000336572",
+      "display_name_jp": "サドラーズウェルズ",
+      "display_name_en": "Sadler's Wells",
+      "birth_year": 1981,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000336572",
+        "source_url": "https://www.jbis.jp/horse/0000336572/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1109",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Northern Dancer",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336572/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Fairy Bridge",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000336572/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "KINGMAMBO",
+      "subject_key": "JBIS:0000347989",
+      "display_name_jp": "キングマンボ",
+      "display_name_en": "Kingmambo",
+      "birth_year": 1990,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000347989",
+        "source_url": "https://www.jbis.jp/horse/0000347989/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1503",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Mr. Prospector",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000347989/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Miesque",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000347989/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "ROBERTO",
+      "subject_key": "JBIS:0000335167",
+      "display_name_jp": "ロベルト",
+      "display_name_en": "Roberto",
+      "birth_year": 1969,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000335167",
+        "source_url": "https://www.jbis.jp/horse/0000335167/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1207",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Hail to Reason",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335167/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Bramalea",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335167/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "A_P_INDY",
+      "subject_key": "JBIS:0000339653",
+      "display_name_jp": "エーピーインディ",
+      "display_name_en": "A.P. Indy",
+      "birth_year": 1989,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000339653",
+        "source_url": "https://www.jbis.jp/horse/0000339653/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1311",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Seattle Slew",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000339653/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Weekend Surprise",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000339653/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "DEPUTY_MINISTER",
+      "subject_key": "JBIS:0000338072",
+      "display_name_jp": "デピュティミニスター",
+      "display_name_en": "Deputy Minister",
+      "birth_year": 1979,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000338072",
+        "source_url": "https://www.jbis.jp/horse/0000338072/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1103",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Vice Regent",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000338072/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Mint Copy",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000338072/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "NORTHERN_TASTE",
+      "subject_key": "JBIS:0000333544",
+      "display_name_jp": "ノーザンテースト",
+      "display_name_en": "Northern Taste",
+      "birth_year": 1971,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000333544",
+        "source_url": "https://www.jbis.jp/horse/0000333544/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1105",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Northern Dancer",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333544/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Lady Victoria",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333544/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "FORTY_NINER",
+      "subject_key": "JBIS:0000337550",
+      "display_name_jp": "フォーティナイナー",
+      "display_name_en": "Forty Niner",
+      "birth_year": 1985,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000337550",
+        "source_url": "https://www.jbis.jp/horse/0000337550/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1503",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Mr. Prospector",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337550/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "File",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000337550/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "HALO",
+      "subject_key": "JBIS:0000335154",
+      "display_name_jp": "ヘイロー",
+      "display_name_en": "Halo",
+      "birth_year": 1969,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000335154",
+        "source_url": "https://www.jbis.jp/horse/0000335154/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1206",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Hail to Reason",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335154/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Cosmah",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000335154/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    },
+    {
+      "candidate_id": "SUNDAY_SILENCE",
+      "subject_key": "JBIS:0000333862",
+      "display_name_jp": "サンデーサイレンス",
+      "display_name_en": "Sunday Silence",
+      "birth_year": 1986,
+      "identity": {
+        "namespace": "JBIS",
+        "external_id": "0000333862",
+        "source_url": "https://www.jbis.jp/horse/0000333862/",
+        "source_organization": "JBBA / JBIS-Search",
+        "identity_status": "EXTERNAL_PROFILE_VERIFIED",
+        "source_checked_on": "2026-11-05",
+        "jrdb_horse_id": null,
+        "jrdb_crosswalk_status": "UNRESOLVED",
+        "name_only_merge_forbidden": true
+      },
+      "observed_jrdb_lineage": {
+        "lineage_code": "1206",
+        "mapping_status": "CODE_OBSERVED_ON_MATCHING_PARENT_LABEL_ONLY",
+        "based_on": "pedigree_fact sire_name and broodmare_sire_name exact label observations",
+        "official_lineage_source_generation": "5279af0bd8226cde",
+        "verified_person_to_lineage": false
+      },
+      "immediate_parent_observations": [
+        {
+          "path": "S",
+          "parent_name_as_displayed": "Halo",
+          "parent_external_id": "0000335154",
+          "status": "EXTERNAL_ID_DIRECT_LINK",
+          "source_url": "https://www.jbis.jp/horse/0000333862/",
+          "person_id_verified": true,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        },
+        {
+          "path": "D",
+          "parent_name_as_displayed": "Wishing Well",
+          "parent_external_id": null,
+          "status": "PARENT_NAME_OBSERVED_ID_UNRESOLVED",
+          "source_url": "https://www.jbis.jp/horse/0000333862/",
+          "person_id_verified": false,
+          "as_of_status": "AS_OF_UNVERIFIED"
+        }
+      ],
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "regional_roots": [],
+      "aptitude_claims": [],
+      "approved_for_review": false
+    }
+  ],
+  "verified_ancestor_edges": [
+    {
+      "subject_key": "JBIS:0000333862",
+      "path": "S",
+      "ancestor_subject_key": "JBIS:0000335154",
+      "depth": 1,
+      "source_url": "https://www.jbis.jp/horse/0000333862/",
+      "ancestor_source_url": "https://www.jbis.jp/horse/0000335154/",
+      "verification": "EXTERNAL_PERSON_ID_PATH_VERIFIED",
+      "historical_asof_status": "AS_OF_UNVERIFIED"
+    }
+  ],
+  "status_summary": {
+    "subject_profiles_verified": 12,
+    "person_paths_verified": 1,
+    "parent_name_observations": 24,
+    "jrdb_crosswalk_verified": 0,
+    "regional_roots_approved": 0,
+    "aptitude_claims_validated": 0,
+    "asof_verified": 0
+  },
+  "release_policy": {
+    "can_merge_to_jrdb_by_name": false,
+    "can_autofill_region": false,
+    "can_autofill_blood_aptitude": false,
+    "can_publish_to_racenote": false,
+    "can_publish_to_pwa": false
+  }
+}
