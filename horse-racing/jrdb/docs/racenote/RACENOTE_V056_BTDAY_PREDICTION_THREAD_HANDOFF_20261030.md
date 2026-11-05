@@ -2,9 +2,9 @@
 
 更新 2026-10-30。**運用区分: 実戦試験候補（正式昇格は初回BTDAY成功後）**。
 
-## 2026-11-05 Confidence B/C本ロジック昇格（新規未Freezeのみ）
+## 2026-11-05 Confidence B/C定義訂正（新規未Freezeのみ）
 
-A/Zは従来どおり。A/ZでないB/Cは `docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md` を最優先し、Shadow v2.2の**◎着内軸の積極根拠対具体的な4着以下の経路**で判定する。○の勝利可能性だけを根拠にCへ下げず、初出走・根拠不足も機械判定しない。全頭の印・既存Freezeは不変。本書の後段に残る「勝ち切り確信度(A/B/C)」の旧説明は、B/Cに関して本節が優先する。
+初回Shadow v2.2昇格時の「B/Cを3着内軸の可否で分ける」定義変更は撤回。正式ConfidenceはA＝◎を勝ち馬として積極支持、B＝◎が最有力だが他にも勝ち負けできる馬がいる、C＝最終5頭の勝利候補の優劣が付きにくい、Z＝従来の別枠。Shadowの着内軸評価は補助レビューに限る。正本は `docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md`。Predictionでordinary five→◎○→Challenger→最終印を決定しFreezeした後、Confidenceは印を変更せず独立評価する。
 
 ## 守るべき設計
 
