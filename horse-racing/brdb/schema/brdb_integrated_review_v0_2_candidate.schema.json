@@ -1,0 +1,614 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BRDB ⑤ integrated blood review candidate / research only",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "release_status",
+    "race",
+    "as_of_exclusive",
+    "source_generations",
+    "horses",
+    "aggregate_coverage"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "brdb-integrated-blood-review-v0.2-candidate"
+    },
+    "release_status": {
+      "const": "RESEARCH_CANDIDATE"
+    },
+    "race": {
+      "$ref": "#/$defs/race"
+    },
+    "as_of_exclusive": {
+      "$ref": "#/$defs/date"
+    },
+    "source_generations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "brdb",
+        "jrdb_analysis",
+        "paci"
+      ],
+      "properties": {
+        "brdb": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "jrdb_analysis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "paci": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "horses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/horse"
+      },
+      "minItems": 1
+    },
+    "aggregate_coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "field_size",
+        "reviewed_horses"
+      ],
+      "properties": {
+        "field_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reviewed_horses": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "$defs": {
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "availability": {
+      "enum": [
+        "AVAILABLE",
+        "LOW_SAMPLE",
+        "NO_SAMPLE",
+        "NOT_IMPLEMENTED",
+        "SOURCE_UNAVAILABLE",
+        "AS_OF_UNVERIFIED"
+      ]
+    },
+    "race": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "race_key",
+        "target_date",
+        "venue_code",
+        "surface_code",
+        "distance_m",
+        "course_code",
+        "field_size"
+      ],
+      "properties": {
+        "race_key": {
+          "type": "string",
+          "pattern": "^[0-9A-Za-z]{8}$"
+        },
+        "target_date": {
+          "$ref": "#/$defs/date"
+        },
+        "venue_code": {
+          "type": "string"
+        },
+        "surface_code": {
+          "enum": [
+            "1",
+            "2"
+          ]
+        },
+        "distance_m": {
+          "type": "integer",
+          "minimum": 600,
+          "maximum": 5000
+        },
+        "course_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "field_size": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "pedigree": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sire_name",
+        "dam_name",
+        "broodmare_sire_name",
+        "sire_line_code",
+        "broodmare_sire_line_code"
+      ],
+      "properties": {
+        "sire_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dam_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "broodmare_sire_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sire_line_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "broodmare_sire_line_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "availability",
+        "evidence_ids"
+      ],
+      "properties": {
+        "availability": {
+          "$ref": "#/$defs/availability"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "condition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "venue_code",
+        "course_code",
+        "surface_code",
+        "distance_m",
+        "distance_band"
+      ],
+      "properties": {
+        "venue_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "course_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "surface_code": {
+          "enum": [
+            "1",
+            "2",
+            null
+          ]
+        },
+        "distance_m": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "distance_band": {
+          "enum": [
+            "SHORT",
+            "MILE",
+            "MIDDLE",
+            "LONG",
+            null
+          ]
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unique_horses",
+        "starts",
+        "wins",
+        "top3",
+        "win_rate",
+        "top3_rate",
+        "top3_wilson95",
+        "baseline_starts",
+        "baseline_top3_rate",
+        "top3_delta_pp"
+      ],
+      "properties": {
+        "unique_horses": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "starts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wins": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "top3": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "win_rate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "top3_rate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "top3_wilson95": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              ],
+              "minItems": 2,
+              "maxItems": 2,
+              "items": false
+            }
+          ]
+        },
+        "baseline_starts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "baseline_top3_rate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "top3_delta_pp": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      }
+    },
+    "factor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "factor_id",
+        "direction",
+        "statement",
+        "evidence_ids",
+        "interpretation_status"
+      ],
+      "properties": {
+        "factor_id": {
+          "type": "string"
+        },
+        "direction": {
+          "enum": [
+            "POSITIVE",
+            "NEGATIVE",
+            "UNKNOWN"
+          ]
+        },
+        "statement": {
+          "type": "string"
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "interpretation_status": {
+          "enum": [
+            "OBSERVATION_ONLY",
+            "HYPOTHESIS_NOT_VALIDATED",
+            "VALIDATED_CONDITION_TREND",
+            "INSUFFICIENT_EVIDENCE"
+          ]
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "component",
+        "evidence_kind",
+        "scope_key",
+        "condition",
+        "observations",
+        "sample_status",
+        "as_of_exclusive",
+        "source_generation",
+        "source_name",
+        "overlap_group"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "component": {
+          "enum": [
+            "sire",
+            "broodmare_sire",
+            "pairing",
+            "relatives"
+          ]
+        },
+        "evidence_kind": {
+          "enum": [
+            "OBSERVED_CONDITIONAL_RESULT",
+            "PEDIGREE_FACT",
+            "REVIEWED_TAXONOMY"
+          ]
+        },
+        "scope_key": {
+          "type": "string"
+        },
+        "condition": {
+          "$ref": "#/$defs/condition"
+        },
+        "observations": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/observation"
+            }
+          ]
+        },
+        "sample_status": {
+          "enum": [
+            "DESCRIPTIVE",
+            "LOW_SAMPLE",
+            "NO_SAMPLE",
+            "NOT_APPLICABLE"
+          ]
+        },
+        "as_of_exclusive": {
+          "$ref": "#/$defs/date"
+        },
+        "source_generation": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "overlap_group": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "horse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "horse_id",
+        "horse_no",
+        "horse_name",
+        "status",
+        "pedigree_facts",
+        "components",
+        "evidence",
+        "factors",
+        "summary",
+        "coverage",
+        "confidence"
+      ],
+      "properties": {
+        "horse_id": {
+          "type": "string",
+          "pattern": "^[0-9]{8}$"
+        },
+        "horse_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "horse_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "AVAILABLE",
+            "PARTIAL",
+            "INSUFFICIENT_EVIDENCE",
+            "NO_PEDIGREE",
+            "AS_OF_UNVERIFIED"
+          ]
+        },
+        "pedigree_facts": {
+          "$ref": "#/$defs/pedigree"
+        },
+        "components": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sire",
+            "broodmare_sire",
+            "pairing",
+            "relatives"
+          ],
+          "properties": {
+            "sire": {
+              "$ref": "#/$defs/component"
+            },
+            "broodmare_sire": {
+              "$ref": "#/$defs/component"
+            },
+            "pairing": {
+              "$ref": "#/$defs/component"
+            },
+            "relatives": {
+              "$ref": "#/$defs/component"
+            }
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "factors": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "positive",
+            "negative",
+            "unknown"
+          ],
+          "properties": {
+            "positive": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/factor"
+              }
+            },
+            "negative": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/factor"
+              }
+            },
+            "unknown": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/factor"
+              }
+            }
+          }
+        },
+        "summary": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "coverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sire",
+            "broodmare_sire",
+            "pairing",
+            "relatives"
+          ],
+          "properties": {
+            "sire": {
+              "$ref": "#/$defs/availability"
+            },
+            "broodmare_sire": {
+              "$ref": "#/$defs/availability"
+            },
+            "pairing": {
+              "$ref": "#/$defs/availability"
+            },
+            "relatives": {
+              "$ref": "#/$defs/availability"
+            }
+          }
+        },
+        "confidence": {
+          "enum": [
+            "UNASSESSED",
+            "DESCRIPTIVE_ONLY",
+            "LIMITED",
+            "SUPPORTED"
+          ]
+        }
+      }
+    }
+  }
+}
