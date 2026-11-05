@@ -354,7 +354,7 @@
 
 @media (max-width: 640px) {
   .newspaper-table-v4 {
-    --newspaper-history-compact-width: 94px;
+    --newspaper-history-compact-width: 110px;
     --newspaper-history-compact-font-size: 8.2px;
     --newspaper-history-compact-line-height: 1.12;
     --newspaper-history-compact-padding-x: 2px;
@@ -459,4 +459,18 @@
     padding: 1px 3px;
     font-size: 7.3px;
   }
+}
+
+/* Keep passing orders on a predictable line in compact past-run cards. */
+.newspaper-run-v4-compact .newspaper-run-compact-finish {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1px;
+}
+.newspaper-run-v4-compact .newspaper-run-compact-finish > span:first-child {
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.newspaper-run-v4-compact .newspaper-run-compact-finish .newspaper-last3f {
+  align-self: flex-end;
 }
