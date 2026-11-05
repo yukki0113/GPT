@@ -7,6 +7,7 @@ No region tag, ability inference, predictions, weights or ⑤ changes.
 from __future__ import annotations
 
 import datetime as dt
+import re
 from collections import defaultdict
 from collections.abc import Mapping
 
@@ -39,8 +40,8 @@ def _validate_graph(graph):
     if not isinstance(graph, Mapping) or graph.get("graph_version") != GRAPH_VERSION:
         raise PositionError("must use canonical BRDB ancestor graph")
     root = graph.get("horse_id")
-    if not isinstance(root, str) or not root:
-        raise PositionError("root ID required")
+    if not isinstance(root, str) or not re.fullmatch(r"[0-9]{8}", root):
+        raise PositionError("canonical 8-digit JRDB root ID required")
     depth = graph.get("max_depth")
     summary = summarize_graph(graph)  # rejects duplicated/illegal paths
     paths = graph["paths"]
@@ -48,8 +49,9 @@ def _validate_graph(graph):
     for node in paths:
         p = node["path"]
         hid = node.get("horse_id")
-        if hid is not None and (not isinstance(hid, str) or not hid):
-            raise PositionError("invalid canonical ancestor ID")
+        if hid is not None and (
+                not isinstance(hid, str) or not re.fullmatch(r"[0-9]{8}", hid)):
+            raise PositionError("canonical 8-digit JRDB ancestor ID required")
         if hid is not None and (node.get("status") != "RESOLVED" or
                                 node.get("resolution_status") not in
                                 {"RESOLVED_EXACT", "RESOLVED_ALIAS"}):
