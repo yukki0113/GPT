@@ -17,7 +17,7 @@ from pathlib import Path
 
 import duckdb
 
-SOURCE_VERSION = 'brdb-sire-bms-field-evidence-v0.1'
+SOURCE_VERSION = 'brdb-sire-bms-field-evidence-v0.2'
 STARTER_CODES = ('0', '3', '4', '5', '6') # JRDB: normal / DNF / disqualified / demoted / remounted
 # Non-overlapping bands; intentionally not the overlapping RaceNote P2 ranges.
 BANDS = ((0, 1399, 'SHORT'), (1400, 1799, 'MILE'),
@@ -188,6 +188,8 @@ def analyse(field, root, *, years=10):
         scope_queries = [
             ('VENUE_COURSE_EXACT', 'venue_code=? AND track_type=? AND distance=? AND course_code=?', [*args_venue, field['course_code']]),
             ('VENUE_DISTANCE', 'venue_code=? AND track_type=? AND distance=?', args_venue),
+            ('VENUE_BAND', 'venue_code=? AND track_type=? AND band=?',
+             [field['venue_code'], field['surface_code'], distance_band(field['distance'])]),
             ('ALL_VENUES_DISTANCE', 'track_type=? AND distance=?', [field['surface_code'], field['distance']]),
             ('ALL_VENUES_BAND', 'track_type=? AND band=?', [field['surface_code'], distance_band(field['distance'])]),
         ]
@@ -201,17 +203,21 @@ def analyse(field, root, *, years=10):
         rows = []
         for h in field['horses']:
             sire_scopes = {label: s_agg[label][h['sire']] for label, _, _ in scope_queries}
-            selected_scope = next((k for k,v in sire_scopes.items() if v['status']=='DESCRIPTIVE'),None)
             bms = {'surface': {surface:bs_agg[surface][h['bms']] for surface in ('1','2')},
                    'surface_band': {key:agg[h['bms']] for key,agg in bb_agg.items()}}
-            rows.append({**h, 'sire_evidence': {'scopes':sire_scopes,'best_supported_scope':selected_scope,
-                                               'no_sire_substitution':True},
+            rows.append({**h, 'sire_evidence': {'scopes':sire_scopes,
+                                               'no_sire_substitution':True,
+                                               'no_imputation_or_automatic_selection':True},
                          'bms_evidence': {**bms,'interpretation':'DESCRIPTIVE_ONLY_NO_AUTOMATIC_TURF_DIRT_TYPE'}})
         t_query=time.perf_counter()
         return {'version':SOURCE_VERSION,'source_generation':gen,'race':{k:v for k,v in field.items() if k!='horses'},
                 'policy':{'historical_window_start':first_date,'as_of_exclusive':target_date,
                           'starter_codes': list(STARTER_CODES),'low_sample':'starts<30 or horses<10',
-                          'no_related_sire_pooling': True,'no_score': True,'no_ranking': True},
+                          'no_related_sire_pooling': True,
+                          'all_sire_scopes_preserve_target_surface': True,
+                          'sire_scopes_narrow_to_broad': [label for label, _, _ in scope_queries],
+                          'no_imputation_or_automatic_selection': True,
+                          'no_score': True,'no_ranking': True},
                 'horses':rows,'timing_ms':{'manifest_integrity':round((t_manifest-t0)*1000,1),
                                          'history_scan':round((t_input-t_manifest)*1000,1),
                                          'stat_queries':round((t_query-t_input)*1000,1),
