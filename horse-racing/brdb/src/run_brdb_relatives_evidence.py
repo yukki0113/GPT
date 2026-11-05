@@ -114,6 +114,19 @@ def analyze(paci, race_key, research_root, analysis_root):
                 r for r in candidates if r[1] and re.fullmatch(r'[0-9]{8}', r[1])
                 and r[1] <= target_date
             ]
+            # A full-sibling claim also needs a canonically resolved sire ID.
+            sire_candidates = con.execute('''SELECT horse_id,profile_data_date FROM pedigree
+                WHERE horse_name=? AND substr(birth_date,1,4)=? AND sex_code='1'
+                AND sire_line_code=?''', [
+                    t['sire_name'],
+                    str(t['sire_birth_year']) if t['sire_birth_year'] is not None else '',
+                    t['sire_line_code'],
+                ]).fetchall()
+            sire_candidates = [
+                row for row in sire_candidates if row[1] and re.fullmatch(r'[0-9]{8}', row[1])
+                and row[1] <= target_date
+            ]
+            sire_id = sire_candidates[0][0] if len(sire_candidates) == 1 else None
             relatives, mother_id, granddam_id = [], None, None
             if len(candidates) == 1:
                 mother_id = candidates[0][0]
@@ -129,10 +142,18 @@ def analyze(paci, race_key, research_root, analysis_root):
                         continue
                     if not profile_date or not re.fullmatch(r'[0-9]{8}', profile_date) or profile_date > target_date:
                         continue
+                    sibling_sire = con.execute('''SELECT resolved_parent_horse_id
+                        FROM relations WHERE child_horse_id=? AND role='sire'
+                        AND resolution_status IN ('RESOLVED_EXACT','RESOLVED_ALIAS')''',
+                        [hid]).fetchall()
+                    verified_full = (sire_id is not None and len(sibling_sire) == 1
+                                     and sibling_sire[0][0] == sire_id)
+                    relationship = ('FULL_SIBLING' if verified_full else
+                                    'SAME_DAM_SAME_SIRE_NAME_UNVERIFIED'
+                                    if sire == t['sire_name'] else 'MATERNAL_HALF_SIBLING')
                     relatives.append(dict(
                         horse_id=hid, horse_name=name,
-                        relationship=('FULL_SIBLING' if sire == t['sire_name']
-                                      else 'MATERNAL_HALF_SIBLING'),
+                        relationship=relationship,
                         birth_date=birth, profile_data_date=profile_date,
                     ))
                 grandma = con.execute('''SELECT resolved_parent_horse_id
@@ -188,8 +209,8 @@ def analyze(paci, race_key, research_root, analysis_root):
                     rel['scope_stats']['ALL_VENUES_BAND']['starts'] > 0)
             horse['relative_counts'] = {
                 role: sum(r['relationship'] == role for r in horse['relatives'])
-                for role in ('FULL_SIBLING', 'MATERNAL_HALF_SIBLING',
-                             'MATERNAL_AUNT_UNCLE')
+                for role in ('FULL_SIBLING', 'SAME_DAM_SAME_SIRE_NAME_UNVERIFIED',
+                             'MATERNAL_HALF_SIBLING', 'MATERNAL_AUNT_UNCLE')
             }
             horse['with_relevant_starts'] = sum(
                 r['has_target_surface_band_history'] for r in horse['relatives'])
