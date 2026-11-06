@@ -20,6 +20,26 @@ def _require(condition: bool, reason: str) -> None:
         raise CrosswalkAuditError(reason)
 
 
+def _baseline_path_sets(baseline: dict) -> tuple[set, set]:
+    """Accept the canonical hybrid output and its earlier audit spelling."""
+    paths = baseline.get("paths")
+    pending = baseline.get("pending", baseline.get("still_pending"))
+    _require(isinstance(paths, list) and isinstance(pending, list),
+             "original audit paths are missing")
+    if "pending" in baseline and "still_pending" in baseline:
+        _require(baseline["pending"] == baseline["still_pending"],
+                 "conflicting pending path lists")
+    try:
+        old = {(x["stallion_name"], x["path"]) for x in paths}
+        remaining = {(x["stallion_name"], x["path"]) for x in pending}
+    except (KeyError, TypeError) as exc:
+        raise CrosswalkAuditError("invalid original audit path") from exc
+    _require(len(paths) == len(old) == 26 and
+             len(pending) == len(remaining) == 22 and old.isdisjoint(remaining),
+             "original audit is inconsistent")
+    return old, remaining
+
+
 def audit(registry: dict, bridge: dict, profiles: list[dict],
           top50: dict, baseline: dict) -> dict:
     """Validate five JRDB subject identities and three incremental paths."""
@@ -122,11 +142,7 @@ def audit(registry: dict, bridge: dict, profiles: list[dict],
             _require(len(observed) == 1, "unconfirmed top50 ancestor slot")
             matched.append((identity["name"], role))
     _require(len(matched) == 7, "two original S/D pairs plus three new paths")
-    old = {(x["stallion_name"], x["path"]) for x in baseline["paths"]}
-    pending = {(x["stallion_name"], x["path"])
-               for x in baseline["still_pending"]}
-    _require(len(old) == 26 and len(pending) == 22
-             and old.isdisjoint(pending), "original audit is inconsistent")
+    old, pending = _baseline_path_sets(baseline)
     new = set(matched) - old
     _require(len(new) == 3 and new <= pending and
              len(old | new) == 29, "unapproved path promotion")

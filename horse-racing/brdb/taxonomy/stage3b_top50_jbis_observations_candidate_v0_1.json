@@ -1,0 +1,3961 @@
+{
+  "version": "brdb-stage3b-jbis-observations-v0.1",
+  "collected_on": "2026-11-06",
+  "research_only": true,
+  "historical_asof_status": "AS_OF_UNVERIFIED",
+  "prediction_safe": false,
+  "pedigrees": [
+    {
+      "rank": 1,
+      "name": "ディープインパクト",
+      "jbis_subject_id": "0000742976",
+      "source_url": "https://www.jbis.or.jp/horse/0000742976/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Cosmah(USA)",
+          "year": 1953
+        },
+        "SDS": {
+          "label": "Understanding(USA)",
+          "year": 1963
+        },
+        "SDD": {
+          "label": "Mountain Flower(USA)",
+          "year": 1964
+        },
+        "D": {
+          "label": "ウインドインハーヘア(IRE)",
+          "year": 1991
+        },
+        "DS": {
+          "label": "Alzao(USA)",
+          "year": 1980
+        },
+        "DD": {
+          "label": "Burghclere(GB)",
+          "year": 1977
+        },
+        "DSS": {
+          "label": "Lyphard(USA)",
+          "year": 1969
+        },
+        "DSD": {
+          "label": "Lady Rebecca(GB)",
+          "year": 1971
+        },
+        "DDS": {
+          "label": "Busted(GB)",
+          "year": 1963
+        },
+        "DDD": {
+          "label": "Highclere(GB)",
+          "year": 1971
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 2,
+      "name": "キングカメハメハ",
+      "jbis_subject_id": "0000729458",
+      "source_url": "https://www.jbis.or.jp/horse/0000729458/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Kingmambo(USA)",
+          "year": 1990
+        },
+        "SS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "SD": {
+          "label": "Miesque(USA)",
+          "year": 1984
+        },
+        "SSS": {
+          "label": "Raise a Native(USA)",
+          "year": 1961
+        },
+        "SSD": {
+          "label": "Gold Digger(USA)",
+          "year": 1962
+        },
+        "SDS": {
+          "label": "Nureyev(USA)",
+          "year": 1977
+        },
+        "SDD": {
+          "label": "Pasadoble(USA)",
+          "year": 1979
+        },
+        "D": {
+          "label": "マンファス(IRE)",
+          "year": 1991
+        },
+        "DS": {
+          "label": "ラストタイクーン(IRE)",
+          "year": 1983
+        },
+        "DD": {
+          "label": "Pilot Bird(GB)",
+          "year": 1983
+        },
+        "DSS": {
+          "label": "トライマイベスト(USA)",
+          "year": 1975
+        },
+        "DSD": {
+          "label": "Mill Princess(IRE)",
+          "year": 1977
+        },
+        "DDS": {
+          "label": "Blakeney(GB)",
+          "year": 1966
+        },
+        "DDD": {
+          "label": "The Dancer(FR)",
+          "year": 1977
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 3,
+      "name": "ロードカナロア",
+      "jbis_subject_id": "0001089850",
+      "source_url": "https://www.jbis.or.jp/horse/0001089850/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "キングカメハメハ",
+          "year": 2001
+        },
+        "SS": {
+          "label": "Kingmambo(USA)",
+          "year": 1990
+        },
+        "SD": {
+          "label": "マンファス(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "SSD": {
+          "label": "Miesque(USA)",
+          "year": 1984
+        },
+        "SDS": {
+          "label": "ラストタイクーン(IRE)",
+          "year": 1983
+        },
+        "SDD": {
+          "label": "Pilot Bird(GB)",
+          "year": 1983
+        },
+        "D": {
+          "label": "レディブラッサム",
+          "year": 1996
+        },
+        "DS": {
+          "label": "Storm Cat(USA)",
+          "year": 1983
+        },
+        "DD": {
+          "label": "サラトガデュー(USA)",
+          "year": 1989
+        },
+        "DSS": {
+          "label": "Storm Bird(CAN)",
+          "year": 1978
+        },
+        "DSD": {
+          "label": "Terlingua(USA)",
+          "year": 1976
+        },
+        "DDS": {
+          "label": "Cormorant(USA)",
+          "year": 1974
+        },
+        "DDD": {
+          "label": "Super Luna(USA)",
+          "year": 1982
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 4,
+      "name": "ダイワメジャー",
+      "jbis_subject_id": "0000725485",
+      "source_url": "https://www.jbis.or.jp/horse/0000725485/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Cosmah(USA)",
+          "year": 1953
+        },
+        "SDS": {
+          "label": "Understanding(USA)",
+          "year": 1963
+        },
+        "SDD": {
+          "label": "Mountain Flower(USA)",
+          "year": 1964
+        },
+        "D": {
+          "label": "スカーレットブーケ",
+          "year": 1988
+        },
+        "DS": {
+          "label": "ノーザンテースト(CAN)",
+          "year": 1971
+        },
+        "DD": {
+          "label": "スカーレツトインク(USA)",
+          "year": 1971
+        },
+        "DSS": {
+          "label": "Northern Dancer(CAN)",
+          "year": 1961
+        },
+        "DSD": {
+          "label": "Lady Victoria(CAN)",
+          "year": 1962
+        },
+        "DDS": {
+          "label": "Crimson Satan(USA)",
+          "year": 1959
+        },
+        "DDD": {
+          "label": "Consentida(USA)",
+          "year": 1962
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 5,
+      "name": "ハーツクライ",
+      "jbis_subject_id": "0000722158",
+      "source_url": "https://www.jbis.or.jp/horse/0000722158/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Cosmah(USA)",
+          "year": 1953
+        },
+        "SDS": {
+          "label": "Understanding(USA)",
+          "year": 1963
+        },
+        "SDD": {
+          "label": "Mountain Flower(USA)",
+          "year": 1964
+        },
+        "D": {
+          "label": "アイリッシュダンス",
+          "year": 1990
+        },
+        "DS": {
+          "label": "トニービン(IRE)",
+          "year": 1983
+        },
+        "DD": {
+          "label": "ビユーパーダンス(USA)",
+          "year": 1983
+        },
+        "DSS": {
+          "label": "カンパラ(GB)",
+          "year": 1976
+        },
+        "DSD": {
+          "label": "Severn Bridge(GB)",
+          "year": 1965
+        },
+        "DDS": {
+          "label": "Lyphard(USA)",
+          "year": 1969
+        },
+        "DDD": {
+          "label": "My Bupers(USA)",
+          "year": 1967
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 6,
+      "name": "エピファネイア",
+      "jbis_subject_id": "0001124297",
+      "source_url": "https://www.jbis.or.jp/horse/0001124297/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "シンボリクリスエス(USA)",
+          "year": 1999
+        },
+        "SS": {
+          "label": "Kris S.(USA)",
+          "year": 1977
+        },
+        "SD": {
+          "label": "Tee Kay(USA)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Roberto(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Sharp Queen(USA)",
+          "year": 1965
+        },
+        "SDS": {
+          "label": "Gold Meridian(USA)",
+          "year": 1982
+        },
+        "SDD": {
+          "label": "Tri Argo(USA)",
+          "year": 1982
+        },
+        "D": {
+          "label": "シーザリオ",
+          "year": 2002
+        },
+        "DS": {
+          "label": "スペシャルウィーク",
+          "year": 1995
+        },
+        "DD": {
+          "label": "キロフプリミエール(GB)",
+          "year": 1990
+        },
+        "DSS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "DSD": {
+          "label": "キャンペンガール",
+          "year": 1987
+        },
+        "DDS": {
+          "label": "Sadler's Wells(USA)",
+          "year": 1981
+        },
+        "DDD": {
+          "label": "Querida(IRE)",
+          "year": 1975
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 7,
+      "name": "クロフネ",
+      "jbis_subject_id": "0000615577",
+      "source_url": "https://www.jbis.or.jp/horse/0000615577/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "フレンチデピュティ(USA)",
+          "year": 1992
+        },
+        "SS": {
+          "label": "Deputy Minister(CAN)",
+          "year": 1979
+        },
+        "SD": {
+          "label": "Mitterand(USA)",
+          "year": 1981
+        },
+        "SSS": {
+          "label": "Vice Regent(CAN)",
+          "year": 1967
+        },
+        "SSD": {
+          "label": "Mint Copy(CAN)",
+          "year": 1970
+        },
+        "SDS": {
+          "label": "Hold Your Peace(USA)",
+          "year": 1969
+        },
+        "SDD": {
+          "label": "Laredo Lass(USA)",
+          "year": 1971
+        },
+        "D": {
+          "label": "ブルーアヴェニュー(USA)",
+          "year": 1990
+        },
+        "DS": {
+          "label": "Classic Go Go(USA)",
+          "year": 1978
+        },
+        "DD": {
+          "label": "Eliza Blue(USA)",
+          "year": 1983
+        },
+        "DSS": {
+          "label": "Pago Pago(AUS)",
+          "year": 1960
+        },
+        "DSD": {
+          "label": "Classic Perfection(USA)",
+          "year": 1972
+        },
+        "DDS": {
+          "label": "Icecapade(USA)",
+          "year": 1969
+        },
+        "DDD": {
+          "label": "コレラ(USA)",
+          "year": 1978
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 8,
+      "name": "ルーラーシップ",
+      "jbis_subject_id": "0001042049",
+      "source_url": "https://www.jbis.or.jp/horse/0001042049/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "キングカメハメハ",
+          "year": 2001
+        },
+        "SS": {
+          "label": "Kingmambo(USA)",
+          "year": 1990
+        },
+        "SD": {
+          "label": "マンファス(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "SSD": {
+          "label": "Miesque(USA)",
+          "year": 1984
+        },
+        "SDS": {
+          "label": "ラストタイクーン(IRE)",
+          "year": 1983
+        },
+        "SDD": {
+          "label": "Pilot Bird(GB)",
+          "year": 1983
+        },
+        "D": {
+          "label": "エアグルーヴ",
+          "year": 1993
+        },
+        "DS": {
+          "label": "トニービン(IRE)",
+          "year": 1983
+        },
+        "DD": {
+          "label": "ダイナカール",
+          "year": 1980
+        },
+        "DSS": {
+          "label": "カンパラ(GB)",
+          "year": 1976
+        },
+        "DSD": {
+          "label": "Severn Bridge(GB)",
+          "year": 1965
+        },
+        "DDS": {
+          "label": "ノーザンテースト(CAN)",
+          "year": 1971
+        },
+        "DDD": {
+          "label": "シヤダイフエザー",
+          "year": 1973
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 9,
+      "name": "キズナ",
+      "jbis_subject_id": "0001120570",
+      "source_url": "https://www.jbis.or.jp/horse/0001120570/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ディープインパクト",
+          "year": 2002
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ウインドインハーヘア(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Alzao(USA)",
+          "year": 1980
+        },
+        "SDD": {
+          "label": "Burghclere(GB)",
+          "year": 1977
+        },
+        "D": {
+          "label": "キャットクイル(CAN)",
+          "year": 1990
+        },
+        "DS": {
+          "label": "Storm Cat(USA)",
+          "year": 1983
+        },
+        "DD": {
+          "label": "Pacific Princess(USA)",
+          "year": 1973
+        },
+        "DSS": {
+          "label": "Storm Bird(CAN)",
+          "year": 1978
+        },
+        "DSD": {
+          "label": "Terlingua(USA)",
+          "year": 1976
+        },
+        "DDS": {
+          "label": "Damascus(USA)",
+          "year": 1964
+        },
+        "DDD": {
+          "label": "Fiji(GB)",
+          "year": 1960
+        }
+      },
+      "search_method": "search"
+    },
+    {
+      "rank": 10,
+      "name": "ハービンジャー",
+      "jbis_subject_id": "0001115148",
+      "source_url": "https://www.jbis.or.jp/horse/0001115148/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Dansili(GB)",
+          "year": 1996
+        },
+        "SS": {
+          "label": "デインヒル(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "Hasili(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Danzig(USA)",
+          "year": 1977
+        },
+        "SSD": {
+          "label": "Razyana(USA)",
+          "year": 1981
+        },
+        "SDS": {
+          "label": "Kahyasi(IRE)",
+          "year": 1985
+        },
+        "SDD": {
+          "label": "Kerali(GB)",
+          "year": 1984
+        },
+        "D": {
+          "label": "Penang Pearl(FR)",
+          "year": 1996
+        },
+        "DS": {
+          "label": "Bering(GB)",
+          "year": 1983
+        },
+        "DD": {
+          "label": "Guapa(GB)",
+          "year": 1988
+        },
+        "DSS": {
+          "label": "Arctic Tern(USA)",
+          "year": 1973
+        },
+        "DSD": {
+          "label": "Beaune(FR)",
+          "year": 1974
+        },
+        "DDS": {
+          "label": "Shareef Dancer(USA)",
+          "year": 1980
+        },
+        "DDD": {
+          "label": "Sauceboat(GB)",
+          "year": 1972
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 11,
+      "name": "サートゥルナーリア",
+      "jbis_subject_id": "0001215724",
+      "source_url": "https://www.jbis.or.jp/horse/0001215724/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ロードカナロア",
+          "year": 2008
+        },
+        "SS": {
+          "label": "キングカメハメハ",
+          "year": 2001
+        },
+        "SD": {
+          "label": "レディブラッサム",
+          "year": 1996
+        },
+        "SSS": {
+          "label": "Kingmambo(USA)",
+          "year": 1990
+        },
+        "SSD": {
+          "label": "マンファス(IRE)",
+          "year": 1991
+        },
+        "SDS": {
+          "label": "Storm Cat(USA)",
+          "year": 1983
+        },
+        "SDD": {
+          "label": "サラトガデュー(USA)",
+          "year": 1989
+        },
+        "D": {
+          "label": "シーザリオ",
+          "year": 2002
+        },
+        "DS": {
+          "label": "スペシャルウィーク",
+          "year": 1995
+        },
+        "DD": {
+          "label": "キロフプリミエール(GB)",
+          "year": 1990
+        },
+        "DSS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "DSD": {
+          "label": "キャンペンガール",
+          "year": 1987
+        },
+        "DDS": {
+          "label": "Sadler's Wells(USA)",
+          "year": 1981
+        },
+        "DDD": {
+          "label": "Querida(IRE)",
+          "year": 1975
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 12,
+      "name": "オルフェーヴル",
+      "jbis_subject_id": "0001090360",
+      "source_url": "https://www.jbis.or.jp/horse/0001090360/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ステイゴールド",
+          "year": 1994
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ゴールデンサッシュ",
+          "year": 1988
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "デイクタス(FR)",
+          "year": 1967
+        },
+        "SDD": {
+          "label": "ダイナサツシユ",
+          "year": 1979
+        },
+        "D": {
+          "label": "オリエンタルアート",
+          "year": 1997
+        },
+        "DS": {
+          "label": "メジロマックイーン",
+          "year": 1987
+        },
+        "DD": {
+          "label": "エレクトロアート",
+          "year": 1986
+        },
+        "DSS": {
+          "label": "メジロテイターン",
+          "year": 1978
+        },
+        "DSD": {
+          "label": "メジロオーロラ",
+          "year": 1978
+        },
+        "DDS": {
+          "label": "ノーザンテースト(CAN)",
+          "year": 1971
+        },
+        "DDD": {
+          "label": "グランマステイーヴンス(USA)",
+          "year": 1977
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 13,
+      "name": "モーリス",
+      "jbis_subject_id": "0001138240",
+      "source_url": "https://www.jbis.or.jp/horse/0001138240/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "スクリーンヒーロー",
+          "year": 2004
+        },
+        "SS": {
+          "label": "グラスワンダー(USA)",
+          "year": 1995
+        },
+        "SD": {
+          "label": "ランニングヒロイン",
+          "year": 1993
+        },
+        "SSS": {
+          "label": "Silver Hawk(USA)",
+          "year": 1979
+        },
+        "SSD": {
+          "label": "Ameriflora(USA)",
+          "year": 1989
+        },
+        "SDS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SDD": {
+          "label": "ダイナアクトレス",
+          "year": 1983
+        },
+        "D": {
+          "label": "メジロフランシス",
+          "year": 2001
+        },
+        "DS": {
+          "label": "カーネギー(IRE)",
+          "year": 1991
+        },
+        "DD": {
+          "label": "メジロモントレー",
+          "year": 1986
+        },
+        "DSS": {
+          "label": "Sadler's Wells(USA)",
+          "year": 1981
+        },
+        "DSD": {
+          "label": "Detroit(FR)",
+          "year": 1977
+        },
+        "DDS": {
+          "label": "モガミ(FR)",
+          "year": 1976
+        },
+        "DDD": {
+          "label": "メジロクインシー",
+          "year": 1981
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 14,
+      "name": "レイデオロ",
+      "jbis_subject_id": "0001189721",
+      "source_url": "https://www.jbis.or.jp/horse/0001189721/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "キングカメハメハ",
+          "year": 2001
+        },
+        "SS": {
+          "label": "Kingmambo(USA)",
+          "year": 1990
+        },
+        "SD": {
+          "label": "マンファス(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "SSD": {
+          "label": "Miesque(USA)",
+          "year": 1984
+        },
+        "SDS": {
+          "label": "ラストタイクーン(IRE)",
+          "year": 1983
+        },
+        "SDD": {
+          "label": "Pilot Bird(GB)",
+          "year": 1983
+        },
+        "D": {
+          "label": "ラドラーダ",
+          "year": 2006
+        },
+        "DS": {
+          "label": "シンボリクリスエス(USA)",
+          "year": 1999
+        },
+        "DD": {
+          "label": "レディブロンド(USA)",
+          "year": 1998
+        },
+        "DSS": {
+          "label": "Kris S.(USA)",
+          "year": 1977
+        },
+        "DSD": {
+          "label": "Tee Kay(USA)",
+          "year": 1991
+        },
+        "DDS": {
+          "label": "Seeking the Gold(USA)",
+          "year": 1985
+        },
+        "DDD": {
+          "label": "ウインドインハーヘア(IRE)",
+          "year": 1991
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 15,
+      "name": "ルヴァンスレーヴ",
+      "jbis_subject_id": "0001205475",
+      "source_url": "https://www.jbis.or.jp/horse/0001205475/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "シンボリクリスエス(USA)",
+          "year": 1999
+        },
+        "SS": {
+          "label": "Kris S.(USA)",
+          "year": 1977
+        },
+        "SD": {
+          "label": "Tee Kay(USA)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Roberto(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Sharp Queen(USA)",
+          "year": 1965
+        },
+        "SDS": {
+          "label": "Gold Meridian(USA)",
+          "year": 1982
+        },
+        "SDD": {
+          "label": "Tri Argo(USA)",
+          "year": 1982
+        },
+        "D": {
+          "label": "マエストラーレ",
+          "year": 2006
+        },
+        "DS": {
+          "label": "ネオユニヴァース",
+          "year": 2000
+        },
+        "DD": {
+          "label": "オータムブリーズ",
+          "year": 1998
+        },
+        "DSS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "DSD": {
+          "label": "ポインテッドパス(GB)",
+          "year": 1984
+        },
+        "DDS": {
+          "label": "ティンバーカントリー(USA)",
+          "year": 1992
+        },
+        "DDD": {
+          "label": "セプテンバーソング",
+          "year": 1991
+        }
+      },
+      "search_method": "search"
+    },
+    {
+      "rank": 16,
+      "name": "キタサンブラック",
+      "jbis_subject_id": "0001155349",
+      "source_url": "https://www.jbis.or.jp/horse/0001155349/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ブラックタイド",
+          "year": 2001
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ウインドインハーヘア(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Alzao(USA)",
+          "year": 1980
+        },
+        "SDD": {
+          "label": "Burghclere(GB)",
+          "year": 1977
+        },
+        "D": {
+          "label": "シュガーハート",
+          "year": 2005
+        },
+        "DS": {
+          "label": "サクラバクシンオー",
+          "year": 1989
+        },
+        "DD": {
+          "label": "オトメゴコロ",
+          "year": 1990
+        },
+        "DSS": {
+          "label": "サクラユタカオー",
+          "year": 1982
+        },
+        "DSD": {
+          "label": "サクラハゴロモ",
+          "year": 1984
+        },
+        "DDS": {
+          "label": "ジヤツジアンジエルーチ(USA)",
+          "year": 1983
+        },
+        "DDD": {
+          "label": "テイズリー(USA)",
+          "year": 1981
+        }
+      },
+      "search_method": "search"
+    },
+    {
+      "rank": 17,
+      "name": "シルバーステート",
+      "jbis_subject_id": "0001171845",
+      "source_url": "https://www.jbis.or.jp/horse/0001171845/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ディープインパクト",
+          "year": 2002
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ウインドインハーヘア(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Alzao(USA)",
+          "year": 1980
+        },
+        "SDD": {
+          "label": "Burghclere(GB)",
+          "year": 1977
+        },
+        "D": {
+          "label": "シルヴァースカヤ(USA)",
+          "year": 2001
+        },
+        "DS": {
+          "label": "Silver Hawk(USA)",
+          "year": 1979
+        },
+        "DD": {
+          "label": "Boubskaia(GB)",
+          "year": 1987
+        },
+        "DSS": {
+          "label": "Roberto(USA)",
+          "year": 1969
+        },
+        "DSD": {
+          "label": "Gris Vitesse(USA)",
+          "year": 1966
+        },
+        "DDS": {
+          "label": "Niniski(USA)",
+          "year": 1976
+        },
+        "DDD": {
+          "label": "Frenetique(FR)",
+          "year": 1973
+        }
+      },
+      "search_method": "search"
+    },
+    {
+      "rank": 18,
+      "name": "ブリックスアンドモルタル",
+      "jbis_subject_id": "0001293348",
+      "source_url": "https://www.jbis.or.jp/horse/0001293348/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Giant's Causeway(USA)",
+          "year": 1997
+        },
+        "SS": {
+          "label": "Storm Cat(USA)",
+          "year": 1983
+        },
+        "SD": {
+          "label": "Mariah's Storm(USA)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Storm Bird(CAN)",
+          "year": 1978
+        },
+        "SSD": {
+          "label": "Terlingua(USA)",
+          "year": 1976
+        },
+        "SDS": {
+          "label": "Rahy(USA)",
+          "year": 1985
+        },
+        "SDD": {
+          "label": "イメンス(USA)",
+          "year": 1979
+        },
+        "D": {
+          "label": "Beyond the Waves(USA)",
+          "year": 1997
+        },
+        "DS": {
+          "label": "Ocean Crest(USA)",
+          "year": 1991
+        },
+        "DD": {
+          "label": "Excedent(USA)",
+          "year": 1985
+        },
+        "DSS": {
+          "label": "Storm Bird(CAN)",
+          "year": 1978
+        },
+        "DSD": {
+          "label": "S.S.Aroma(USA)",
+          "year": 1981
+        },
+        "DDS": {
+          "label": "Exceller(USA)",
+          "year": 1973
+        },
+        "DDD": {
+          "label": "Broadway Lullaby(USA)",
+          "year": 1970
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 19,
+      "name": "ドレフォン",
+      "jbis_subject_id": "0001240055",
+      "source_url": "https://www.jbis.or.jp/horse/0001240055/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Gio Ponti(USA)",
+          "year": 2005
+        },
+        "SS": {
+          "label": "Tale of the Cat(USA)",
+          "year": 1994
+        },
+        "SD": {
+          "label": "Chipeta Springs(USA)",
+          "year": 1989
+        },
+        "SSS": {
+          "label": "Storm Cat(USA)",
+          "year": 1983
+        },
+        "SSD": {
+          "label": "Yarn(USA)",
+          "year": 1987
+        },
+        "SDS": {
+          "label": "Alydar(USA)",
+          "year": 1975
+        },
+        "SDD": {
+          "label": "Salt Spring(ARG)",
+          "year": 1979
+        },
+        "D": {
+          "label": "Eltimaas(USA)",
+          "year": 2007
+        },
+        "DS": {
+          "label": "Ghostzapper(USA)",
+          "year": 2000
+        },
+        "DD": {
+          "label": "Najecam(USA)",
+          "year": 1993
+        },
+        "DSS": {
+          "label": "Awesome Again(CAN)",
+          "year": 1994
+        },
+        "DSD": {
+          "label": "Baby Zip(USA)",
+          "year": 1991
+        },
+        "DDS": {
+          "label": "Trempolino(USA)",
+          "year": 1984
+        },
+        "DDD": {
+          "label": "Sue Warner(USA)",
+          "year": 1988
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 20,
+      "name": "リアルスティール",
+      "jbis_subject_id": "0001157711",
+      "source_url": "https://www.jbis.or.jp/horse/0001157711/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ディープインパクト",
+          "year": 2002
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ウインドインハーヘア(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Alzao(USA)",
+          "year": 1980
+        },
+        "SDD": {
+          "label": "Burghclere(GB)",
+          "year": 1977
+        },
+        "D": {
+          "label": "ラヴズオンリーミー(USA)",
+          "year": 2006
+        },
+        "DS": {
+          "label": "Storm Cat(USA)",
+          "year": 1983
+        },
+        "DD": {
+          "label": "Monevassia(USA)",
+          "year": 1994
+        },
+        "DSS": {
+          "label": "Storm Bird(CAN)",
+          "year": 1978
+        },
+        "DSD": {
+          "label": "Terlingua(USA)",
+          "year": 1976
+        },
+        "DDS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "DDD": {
+          "label": "Miesque(USA)",
+          "year": 1984
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 21,
+      "name": "シンボリクリスエス",
+      "jbis_subject_id": "0000700008",
+      "source_url": "https://www.jbis.or.jp/horse/0000700008/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Kris S.(USA)",
+          "year": 1977
+        },
+        "SS": {
+          "label": "Roberto(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Sharp Queen(USA)",
+          "year": 1965
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Bramalea(USA)",
+          "year": 1959
+        },
+        "SDS": {
+          "label": "Princequillo(IRE)",
+          "year": 1940
+        },
+        "SDD": {
+          "label": "Bridgework(USA)",
+          "year": 1955
+        },
+        "D": {
+          "label": "Tee Kay(USA)",
+          "year": 1991
+        },
+        "DS": {
+          "label": "Gold Meridian(USA)",
+          "year": 1982
+        },
+        "DD": {
+          "label": "Tri Argo(USA)",
+          "year": 1982
+        },
+        "DSS": {
+          "label": "Seattle Slew(USA)",
+          "year": 1974
+        },
+        "DSD": {
+          "label": "Queen Louie(CAN)",
+          "year": 1968
+        },
+        "DDS": {
+          "label": "Tri Jet(USA)",
+          "year": 1969
+        },
+        "DDD": {
+          "label": "Hail Proudly(USA)",
+          "year": 1969
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 22,
+      "name": "マンハッタンカフェ",
+      "jbis_subject_id": "0000324971",
+      "source_url": "https://www.jbis.or.jp/horse/0000324971/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Cosmah(USA)",
+          "year": 1953
+        },
+        "SDS": {
+          "label": "Understanding(USA)",
+          "year": 1963
+        },
+        "SDD": {
+          "label": "Mountain Flower(USA)",
+          "year": 1964
+        },
+        "D": {
+          "label": "サトルチェンジ(IRE)",
+          "year": 1988
+        },
+        "DS": {
+          "label": "Law Society(USA)",
+          "year": 1982
+        },
+        "DD": {
+          "label": "Santa Luciana(GER)",
+          "year": 1973
+        },
+        "DSS": {
+          "label": "Alleged(USA)",
+          "year": 1974
+        },
+        "DSD": {
+          "label": "Bold Bikini(USA)",
+          "year": 1969
+        },
+        "DDS": {
+          "label": "Luciano(GB)",
+          "year": 1964
+        },
+        "DDD": {
+          "label": "Suleika(GER)",
+          "year": 1954
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 23,
+      "name": "ゴールドアリュール",
+      "jbis_subject_id": "0000619768",
+      "source_url": "https://www.jbis.or.jp/horse/0000619768/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Cosmah(USA)",
+          "year": 1953
+        },
+        "SDS": {
+          "label": "Understanding(USA)",
+          "year": 1963
+        },
+        "SDD": {
+          "label": "Mountain Flower(USA)",
+          "year": 1964
+        },
+        "D": {
+          "label": "ニキーヤ(USA)",
+          "year": 1993
+        },
+        "DS": {
+          "label": "Nureyev(USA)",
+          "year": 1977
+        },
+        "DD": {
+          "label": "Reluctant Guest(USA)",
+          "year": 1986
+        },
+        "DSS": {
+          "label": "Northern Dancer(CAN)",
+          "year": 1961
+        },
+        "DSD": {
+          "label": "Special(USA)",
+          "year": 1969
+        },
+        "DDS": {
+          "label": "Hostage(USA)",
+          "year": 1979
+        },
+        "DDD": {
+          "label": "Vaguely Royal(USA)",
+          "year": 1974
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 24,
+      "name": "エンパイアメーカー",
+      "jbis_subject_id": "0000749845",
+      "source_url": "https://www.jbis.or.jp/horse/0000749845/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Unbridled(USA)",
+          "year": 1987
+        },
+        "SS": {
+          "label": "Fappiano(USA)",
+          "year": 1977
+        },
+        "SD": {
+          "label": "Gana Facil(USA)",
+          "year": 1981
+        },
+        "SSS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "SSD": {
+          "label": "Killaloe(USA)",
+          "year": 1970
+        },
+        "SDS": {
+          "label": "Le Fabuleux(FR)",
+          "year": 1961
+        },
+        "SDD": {
+          "label": "Charedi(USA)",
+          "year": 1976
+        },
+        "D": {
+          "label": "Toussaud(USA)",
+          "year": 1989
+        },
+        "DS": {
+          "label": "El Gran Senor(USA)",
+          "year": 1981
+        },
+        "DD": {
+          "label": "Image of Reality(USA)",
+          "year": 1976
+        },
+        "DSS": {
+          "label": "Northern Dancer(CAN)",
+          "year": 1961
+        },
+        "DSD": {
+          "label": "Sex Appeal(USA)",
+          "year": 1970
+        },
+        "DDS": {
+          "label": "In Reality(USA)",
+          "year": 1964
+        },
+        "DDD": {
+          "label": "Edee's Image(USA)",
+          "year": 1969
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 25,
+      "name": "リオンディーズ",
+      "jbis_subject_id": "0001170063",
+      "source_url": "https://www.jbis.or.jp/horse/0001170063/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "キングカメハメハ",
+          "year": 2001
+        },
+        "SS": {
+          "label": "Kingmambo(USA)",
+          "year": 1990
+        },
+        "SD": {
+          "label": "マンファス(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "SSD": {
+          "label": "Miesque(USA)",
+          "year": 1984
+        },
+        "SDS": {
+          "label": "ラストタイクーン(IRE)",
+          "year": 1983
+        },
+        "SDD": {
+          "label": "Pilot Bird(GB)",
+          "year": 1983
+        },
+        "D": {
+          "label": "シーザリオ 青毛",
+          "year": 2002
+        },
+        "DS": {
+          "label": "スペシャルウィーク",
+          "year": 1995
+        },
+        "DD": {
+          "label": "キロフプリミエール(GB)",
+          "year": 1990
+        },
+        "DSS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "DSD": {
+          "label": "キャンペンガール",
+          "year": 1987
+        },
+        "DDS": {
+          "label": "Sadler's Wells(USA)",
+          "year": 1981
+        },
+        "DDD": {
+          "label": "Querida(IRE)",
+          "year": 1975
+        }
+      },
+      "search_method": "search"
+    },
+    {
+      "rank": 26,
+      "name": "ステイゴールド",
+      "jbis_subject_id": "0000286968",
+      "source_url": "https://www.jbis.or.jp/horse/0000286968/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Cosmah(USA)",
+          "year": 1953
+        },
+        "SDS": {
+          "label": "Understanding(USA)",
+          "year": 1963
+        },
+        "SDD": {
+          "label": "Mountain Flower(USA)",
+          "year": 1964
+        },
+        "D": {
+          "label": "ゴールデンサッシュ",
+          "year": 1988
+        },
+        "DS": {
+          "label": "デイクタス(FR)",
+          "year": 1967
+        },
+        "DD": {
+          "label": "ダイナサツシユ",
+          "year": 1979
+        },
+        "DSS": {
+          "label": "Sanctus(FR)",
+          "year": 1960
+        },
+        "DSD": {
+          "label": "Doronic(FR)",
+          "year": 1960
+        },
+        "DDS": {
+          "label": "ノーザンテースト(CAN)",
+          "year": 1971
+        },
+        "DDD": {
+          "label": "ロイヤルサツシユ(GB)",
+          "year": 1966
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 27,
+      "name": "ヘニーヒューズ",
+      "jbis_subject_id": "0001028940",
+      "source_url": "https://www.jbis.or.jp/horse/0001028940/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ヘネシー(USA)",
+          "year": 1993
+        },
+        "SS": {
+          "label": "Storm Cat(USA)",
+          "year": 1983
+        },
+        "SD": {
+          "label": "Island Kitty(USA)",
+          "year": 1976
+        },
+        "SSS": {
+          "label": "Storm Bird(CAN)",
+          "year": 1978
+        },
+        "SSD": {
+          "label": "Terlingua(USA)",
+          "year": 1976
+        },
+        "SDS": {
+          "label": "Hawaii(SAF)",
+          "year": 1964
+        },
+        "SDD": {
+          "label": "T.C. Kitten(USA)",
+          "year": 1969
+        },
+        "D": {
+          "label": "Meadow Flyer(USA)",
+          "year": 1989
+        },
+        "DS": {
+          "label": "Meadowlake(USA)",
+          "year": 1983
+        },
+        "DD": {
+          "label": "Shortley(USA)",
+          "year": 1980
+        },
+        "DSS": {
+          "label": "Hold Your Peace(USA)",
+          "year": 1969
+        },
+        "DSD": {
+          "label": "Suspicious Native(USA)",
+          "year": 1972
+        },
+        "DDS": {
+          "label": "Hagley(USA)",
+          "year": 1967
+        },
+        "DDD": {
+          "label": "Short Winded(USA)",
+          "year": 1965
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 28,
+      "name": "サトノダイヤモンド",
+      "jbis_subject_id": "0001175221",
+      "source_url": "https://www.jbis.or.jp/horse/0001175221/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ディープインパクト",
+          "year": 2002
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ウインドインハーヘア(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Alzao(USA)",
+          "year": 1980
+        },
+        "SDD": {
+          "label": "Burghclere(GB)",
+          "year": 1977
+        },
+        "D": {
+          "label": "マルペンサ(ARG)",
+          "year": 2006
+        },
+        "DS": {
+          "label": "Orpen(USA)",
+          "year": 1996
+        },
+        "DD": {
+          "label": "Marsella(ARG)",
+          "year": 1997
+        },
+        "DSS": {
+          "label": "Lure(USA)",
+          "year": 1989
+        },
+        "DSD": {
+          "label": "Bonita Francita(CAN)",
+          "year": 1987
+        },
+        "DDS": {
+          "label": "サザンヘイロー(USA)",
+          "year": 1983
+        },
+        "DDD": {
+          "label": "Riviere(ARG)",
+          "year": 1978
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 29,
+      "name": "イスラボニータ",
+      "jbis_subject_id": "0001142398",
+      "source_url": "https://www.jbis.or.jp/horse/0001142398/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "フジキセキ",
+          "year": 1992
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ミルレーサー(USA)",
+          "year": 1983
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Le Fabuleux(FR)",
+          "year": 1961
+        },
+        "SDD": {
+          "label": "Marston's Mill(USA)",
+          "year": 1975
+        },
+        "D": {
+          "label": "イスラコジーン(USA)",
+          "year": 2002
+        },
+        "DS": {
+          "label": "Cozzene(USA)",
+          "year": 1980
+        },
+        "DD": {
+          "label": "Isla Mujeres(USA)",
+          "year": 1995
+        },
+        "DSS": {
+          "label": "Caro(IRE)",
+          "year": 1967
+        },
+        "DSD": {
+          "label": "Ride the Trails(USA)",
+          "year": 1971
+        },
+        "DDS": {
+          "label": "Crafty Prospector(USA)",
+          "year": 1979
+        },
+        "DDD": {
+          "label": "Lido Isle(USA)",
+          "year": 1980
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 30,
+      "name": "コントレイル",
+      "jbis_subject_id": "0001237042",
+      "source_url": "https://www.jbis.or.jp/horse/0001237042/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ディープインパクト",
+          "year": 2002
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ウインドインハーヘア(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Alzao(USA)",
+          "year": 1980
+        },
+        "SDD": {
+          "label": "Burghclere(GB)",
+          "year": 1977
+        },
+        "D": {
+          "label": "ロードクロサイト(USA)",
+          "year": 2010
+        },
+        "DS": {
+          "label": "Unbridled's Song(USA)",
+          "year": 1993
+        },
+        "DD": {
+          "label": "Folklore(USA)",
+          "year": 2003
+        },
+        "DSS": {
+          "label": "Unbridled(USA)",
+          "year": 1987
+        },
+        "DSD": {
+          "label": "Trolley Song(USA)",
+          "year": 1983
+        },
+        "DDS": {
+          "label": "Tiznow(USA)",
+          "year": 1997
+        },
+        "DDD": {
+          "label": "Contrive(USA)",
+          "year": 1998
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 31,
+      "name": "モズアスコット",
+      "jbis_subject_id": "0001213491",
+      "source_url": "https://www.jbis.or.jp/horse/0001213491/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Frankel(GB)",
+          "year": 2008
+        },
+        "SS": {
+          "label": "Galileo(IRE)",
+          "year": 1998
+        },
+        "SD": {
+          "label": "Kind(IRE)",
+          "year": 2001
+        },
+        "SSS": {
+          "label": "Sadler's Wells(USA)",
+          "year": 1981
+        },
+        "SSD": {
+          "label": "Urban Sea(USA)",
+          "year": 1989
+        },
+        "SDS": {
+          "label": "デインヒル(USA)",
+          "year": 1986
+        },
+        "SDD": {
+          "label": "Rainbow Lake(GB)",
+          "year": 1990
+        },
+        "D": {
+          "label": "India(USA)",
+          "year": 2003
+        },
+        "DS": {
+          "label": "ヘネシー(USA)",
+          "year": 1993
+        },
+        "DD": {
+          "label": "Misty Hour(USA)",
+          "year": 1995
+        },
+        "DSS": {
+          "label": "Storm Cat(USA)",
+          "year": 1983
+        },
+        "DSD": {
+          "label": "Island Kitty(USA)",
+          "year": 1976
+        },
+        "DDS": {
+          "label": "Miswaki(USA)",
+          "year": 1978
+        },
+        "DDD": {
+          "label": "Our Tina Marie(USA)",
+          "year": 1978
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 32,
+      "name": "ゼンノロブロイ",
+      "jbis_subject_id": "0000701668",
+      "source_url": "https://www.jbis.or.jp/horse/0000701668/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Cosmah(USA)",
+          "year": 1953
+        },
+        "SDS": {
+          "label": "Understanding(USA)",
+          "year": 1963
+        },
+        "SDD": {
+          "label": "Mountain Flower(USA)",
+          "year": 1964
+        },
+        "D": {
+          "label": "ローミンレイチェル(USA)",
+          "year": 1990
+        },
+        "DS": {
+          "label": "マイニング(USA)",
+          "year": 1984
+        },
+        "DD": {
+          "label": "One Smart Lady(USA)",
+          "year": 1984
+        },
+        "DSS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "DSD": {
+          "label": "I Pass(USA)",
+          "year": 1978
+        },
+        "DDS": {
+          "label": "Clever Trick(USA)",
+          "year": 1976
+        },
+        "DDD": {
+          "label": "Pia's Lady(USA)",
+          "year": 1971
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 33,
+      "name": "タワーオブロンドン",
+      "jbis_subject_id": "0001209439",
+      "source_url": "https://www.jbis.or.jp/horse/0001209439/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Raven's Pass(USA)",
+          "year": 2005
+        },
+        "SS": {
+          "label": "Elusive Quality(USA)",
+          "year": 1993
+        },
+        "SD": {
+          "label": "Ascutney(USA)",
+          "year": 1994
+        },
+        "SSS": {
+          "label": "Gone West(USA)",
+          "year": 1984
+        },
+        "SSD": {
+          "label": "Touch of Greatness(USA)",
+          "year": 1986
+        },
+        "SDS": {
+          "label": "Lord At War(ARG)",
+          "year": 1980
+        },
+        "SDD": {
+          "label": "Right Word(USA)",
+          "year": 1982
+        },
+        "D": {
+          "label": "スノーパイン(GB)",
+          "year": 2010
+        },
+        "DS": {
+          "label": "Dalakhani(IRE)",
+          "year": 2000
+        },
+        "DD": {
+          "label": "シンコウエルメス(IRE)",
+          "year": 1993
+        },
+        "DSS": {
+          "label": "Darshaan(GB)",
+          "year": 1981
+        },
+        "DSD": {
+          "label": "Daltawa(IRE)",
+          "year": 1989
+        },
+        "DDS": {
+          "label": "Sadler's Wells(USA)",
+          "year": 1981
+        },
+        "DDD": {
+          "label": "Doff the Derby(USA)",
+          "year": 1981
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 34,
+      "name": "パイロ",
+      "jbis_subject_id": "0001085636",
+      "source_url": "https://www.jbis.or.jp/horse/0001085636/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Pulpit(USA)",
+          "year": 1994
+        },
+        "SS": {
+          "label": "A.P. Indy(USA)",
+          "year": 1989
+        },
+        "SD": {
+          "label": "Preach(USA)",
+          "year": 1989
+        },
+        "SSS": {
+          "label": "Seattle Slew(USA)",
+          "year": 1974
+        },
+        "SSD": {
+          "label": "Weekend Surprise(USA)",
+          "year": 1980
+        },
+        "SDS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "SDD": {
+          "label": "Narrate(USA)",
+          "year": 1980
+        },
+        "D": {
+          "label": "Wild Vision(USA)",
+          "year": 1998
+        },
+        "DS": {
+          "label": "Wild Again(USA)",
+          "year": 1980
+        },
+        "DD": {
+          "label": "Carol's Wonder(USA)",
+          "year": 1984
+        },
+        "DSS": {
+          "label": "Icecapade(USA)",
+          "year": 1969
+        },
+        "DSD": {
+          "label": "Bushel-n-Peck(USA)",
+          "year": 1958
+        },
+        "DDS": {
+          "label": "Pass the Tab(USA)",
+          "year": 1978
+        },
+        "DDD": {
+          "label": "Carols Christmas(USA)",
+          "year": 1977
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 35,
+      "name": "ミッキーアイル",
+      "jbis_subject_id": "0001141719",
+      "source_url": "https://www.jbis.or.jp/horse/0001141719/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ディープインパクト",
+          "year": 2002
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ウインドインハーヘア(IRE)",
+          "year": 1991
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Alzao(USA)",
+          "year": 1980
+        },
+        "SDD": {
+          "label": "Burghclere(GB)",
+          "year": 1977
+        },
+        "D": {
+          "label": "スターアイル(IRE)",
+          "year": 2004
+        },
+        "DS": {
+          "label": "ロックオブジブラルタル(IRE)",
+          "year": 1999
+        },
+        "DD": {
+          "label": "アイルドフランス(USA)",
+          "year": 1995
+        },
+        "DSS": {
+          "label": "デインヒル(USA)",
+          "year": 1986
+        },
+        "DSD": {
+          "label": "Offshore Boom(IRE)",
+          "year": 1985
+        },
+        "DDS": {
+          "label": "Nureyev(USA)",
+          "year": 1977
+        },
+        "DDD": {
+          "label": "ステラマドリッド(USA)",
+          "year": 1987
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 36,
+      "name": "ゴールドシップ",
+      "jbis_subject_id": "0001104811",
+      "source_url": "https://www.jbis.or.jp/horse/0001104811/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ステイゴールド",
+          "year": 1994
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ゴールデンサッシュ",
+          "year": 1988
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "デイクタス(FR)",
+          "year": 1967
+        },
+        "SDD": {
+          "label": "ダイナサツシユ",
+          "year": 1979
+        },
+        "D": {
+          "label": "ポイントフラッグ",
+          "year": 1998
+        },
+        "DS": {
+          "label": "メジロマックイーン",
+          "year": 1987
+        },
+        "DD": {
+          "label": "パストラリズム",
+          "year": 1987
+        },
+        "DSS": {
+          "label": "メジロテイターン",
+          "year": 1978
+        },
+        "DSD": {
+          "label": "メジロオーロラ",
+          "year": 1978
+        },
+        "DDS": {
+          "label": "プルラリズム(USA)",
+          "year": 1980
+        },
+        "DDD": {
+          "label": "トクノエイテイー",
+          "year": 1978
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 37,
+      "name": "ナダル",
+      "jbis_subject_id": "0001328857",
+      "source_url": "https://www.jbis.or.jp/horse/0001328857/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Blame(USA)",
+          "year": 2006
+        },
+        "SS": {
+          "label": "Arch(USA)",
+          "year": 1995
+        },
+        "SD": {
+          "label": "Liable(USA)",
+          "year": 1995
+        },
+        "SSS": {
+          "label": "Kris S.(USA)",
+          "year": 1977
+        },
+        "SSD": {
+          "label": "Aurora(USA)",
+          "year": 1988
+        },
+        "SDS": {
+          "label": "Seeking the Gold(USA)",
+          "year": 1985
+        },
+        "SDD": {
+          "label": "Bound(USA)",
+          "year": 1984
+        },
+        "D": {
+          "label": "Ascending Angel(USA)",
+          "year": 2011
+        },
+        "DS": {
+          "label": "Pulpit(USA)",
+          "year": 1994
+        },
+        "DD": {
+          "label": "Solar Colony(USA)",
+          "year": 1995
+        },
+        "DSS": {
+          "label": "A.P. Indy(USA)",
+          "year": 1989
+        },
+        "DSD": {
+          "label": "Preach(USA)",
+          "year": 1989
+        },
+        "DDS": {
+          "label": "Pleasant Colony(USA)",
+          "year": 1978
+        },
+        "DDD": {
+          "label": "Meteor Stage(USA)",
+          "year": 1982
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 38,
+      "name": "ネオユニヴァース",
+      "jbis_subject_id": "0000701577",
+      "source_url": "https://www.jbis.or.jp/horse/0000701577/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Cosmah(USA)",
+          "year": 1953
+        },
+        "SDS": {
+          "label": "Understanding(USA)",
+          "year": 1963
+        },
+        "SDD": {
+          "label": "Mountain Flower(USA)",
+          "year": 1964
+        },
+        "D": {
+          "label": "ポインテッドパス(GB)",
+          "year": 1984
+        },
+        "DS": {
+          "label": "Kris(GB)",
+          "year": 1976
+        },
+        "DD": {
+          "label": "Silken Way(FR)",
+          "year": 1973
+        },
+        "DSS": {
+          "label": "Sharpen Up(GB)",
+          "year": 1969
+        },
+        "DSD": {
+          "label": "Doubly Sure(GB)",
+          "year": 1971
+        },
+        "DDS": {
+          "label": "Shantung(FR)",
+          "year": 1956
+        },
+        "DDD": {
+          "label": "Boulevard(IRE)",
+          "year": 1968
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 39,
+      "name": "デクラレーションオブウォー",
+      "jbis_subject_id": "0001181460",
+      "source_url": "https://www.jbis.or.jp/horse/0001181460/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "War Front(USA)",
+          "year": 2002
+        },
+        "SS": {
+          "label": "Danzig(USA)",
+          "year": 1977
+        },
+        "SD": {
+          "label": "Starry Dreamer(USA)",
+          "year": 1994
+        },
+        "SSS": {
+          "label": "Northern Dancer(CAN)",
+          "year": 1961
+        },
+        "SSD": {
+          "label": "Pas de Nom(USA)",
+          "year": 1968
+        },
+        "SDS": {
+          "label": "Rubiano(USA)",
+          "year": 1987
+        },
+        "SDD": {
+          "label": "Lara's Star(USA)",
+          "year": 1981
+        },
+        "D": {
+          "label": "Tempo West(USA)",
+          "year": 1999
+        },
+        "DS": {
+          "label": "Rahy(USA)",
+          "year": 1985
+        },
+        "DD": {
+          "label": "Tempo(USA)",
+          "year": 1992
+        },
+        "DSS": {
+          "label": "Blushing Groom(FR)",
+          "year": 1974
+        },
+        "DSD": {
+          "label": "Glorious Song(CAN)",
+          "year": 1976
+        },
+        "DDS": {
+          "label": "Gone West(USA)",
+          "year": 1984
+        },
+        "DDD": {
+          "label": "Terpsichorist(USA)",
+          "year": 1975
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 40,
+      "name": "アドマイヤマーズ",
+      "jbis_subject_id": "0001221956",
+      "source_url": "https://www.jbis.or.jp/horse/0001221956/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ダイワメジャー",
+          "year": 2001
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "スカーレットブーケ",
+          "year": 1988
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "ノーザンテースト(CAN)",
+          "year": 1971
+        },
+        "SDD": {
+          "label": "スカーレツトインク(USA)",
+          "year": 1971
+        },
+        "D": {
+          "label": "ヴィアメディチ(IRE)",
+          "year": 2007
+        },
+        "DS": {
+          "label": "Medicean(GB)",
+          "year": 1997
+        },
+        "DD": {
+          "label": "Via Milano(FR)",
+          "year": 2001
+        },
+        "DSS": {
+          "label": "Machiavellian(USA)",
+          "year": 1987
+        },
+        "DSD": {
+          "label": "Mystic Goddess(USA)",
+          "year": 1990
+        },
+        "DDS": {
+          "label": "Singspiel(IRE)",
+          "year": 1992
+        },
+        "DDD": {
+          "label": "Salvinaxia(FR)",
+          "year": 1993
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 41,
+      "name": "ヴィクトワールピサ",
+      "jbis_subject_id": "0001046333",
+      "source_url": "https://www.jbis.or.jp/horse/0001046333/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ネオユニヴァース",
+          "year": 2000
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ポインテッドパス(GB)",
+          "year": 1984
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Kris(GB)",
+          "year": 1976
+        },
+        "SDD": {
+          "label": "Silken Way(FR)",
+          "year": 1973
+        },
+        "D": {
+          "label": "ホワイトウォーターアフェア(GB)",
+          "year": 1993
+        },
+        "DS": {
+          "label": "Machiavellian(USA)",
+          "year": 1987
+        },
+        "DD": {
+          "label": "Much Too Risky(GB)",
+          "year": 1982
+        },
+        "DSS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "DSD": {
+          "label": "Coup de Folie(USA)",
+          "year": 1982
+        },
+        "DDS": {
+          "label": "Bustino(GB)",
+          "year": 1971
+        },
+        "DDD": {
+          "label": "Short Rations(GB)",
+          "year": 1975
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 42,
+      "name": "シニスターミニスター",
+      "jbis_subject_id": "0001025279",
+      "source_url": "https://www.jbis.or.jp/horse/0001025279/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Old Trieste(USA)",
+          "year": 1995
+        },
+        "SS": {
+          "label": "A.P. Indy(USA)",
+          "year": 1989
+        },
+        "SD": {
+          "label": "Lovlier Linda(USA)",
+          "year": 1980
+        },
+        "SSS": {
+          "label": "Seattle Slew(USA)",
+          "year": 1974
+        },
+        "SSD": {
+          "label": "Weekend Surprise(USA)",
+          "year": 1980
+        },
+        "SDS": {
+          "label": "Vigors(USA)",
+          "year": 1973
+        },
+        "SDD": {
+          "label": "Linda Summers(USA)",
+          "year": 1967
+        },
+        "D": {
+          "label": "Sweet Minister(USA)",
+          "year": 1997
+        },
+        "DS": {
+          "label": "The Prime Minister(USA)",
+          "year": 1987
+        },
+        "DD": {
+          "label": "Sweet Blue(USA)",
+          "year": 1985
+        },
+        "DSS": {
+          "label": "Deputy Minister(CAN)",
+          "year": 1979
+        },
+        "DSD": {
+          "label": "Stick to Beauty(USA)",
+          "year": 1973
+        },
+        "DDS": {
+          "label": "Hurry up Blue(USA)",
+          "year": 1977
+        },
+        "DDD": {
+          "label": "Sugar Gold(USA)",
+          "year": 1980
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 43,
+      "name": "アグネスタキオン",
+      "jbis_subject_id": "0000324933",
+      "source_url": "https://www.jbis.or.jp/horse/0000324933/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SSS": {
+          "label": "Hail to Reason(USA)",
+          "year": 1958
+        },
+        "SSD": {
+          "label": "Cosmah(USA)",
+          "year": 1953
+        },
+        "SDS": {
+          "label": "Understanding(USA)",
+          "year": 1963
+        },
+        "SDD": {
+          "label": "Mountain Flower(USA)",
+          "year": 1964
+        },
+        "D": {
+          "label": "アグネスフローラ",
+          "year": 1987
+        },
+        "DS": {
+          "label": "ロイヤルスキー(USA)",
+          "year": 1974
+        },
+        "DD": {
+          "label": "アグネスレデイー",
+          "year": 1976
+        },
+        "DSS": {
+          "label": "Raja Baba(USA)",
+          "year": 1968
+        },
+        "DSD": {
+          "label": "Coz o'Nijinsky(USA)",
+          "year": 1969
+        },
+        "DDS": {
+          "label": "リマンド(GB)",
+          "year": 1965
+        },
+        "DDD": {
+          "label": "イコマエイカン",
+          "year": 1967
+        }
+      },
+      "search_method": "search"
+    },
+    {
+      "rank": 44,
+      "name": "マインドユアビスケッツ",
+      "jbis_subject_id": "0001302899",
+      "source_url": "https://www.jbis.or.jp/horse/0001302899/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Posse(USA)",
+          "year": 2000
+        },
+        "SS": {
+          "label": "Silver Deputy(CAN)",
+          "year": 1985
+        },
+        "SD": {
+          "label": "Raska(CAN)",
+          "year": 1992
+        },
+        "SSS": {
+          "label": "Deputy Minister(CAN)",
+          "year": 1979
+        },
+        "SSD": {
+          "label": "Silver Valley(USA)",
+          "year": 1979
+        },
+        "SDS": {
+          "label": "Rahy(USA)",
+          "year": 1985
+        },
+        "SDD": {
+          "label": "Borishka(CAN)",
+          "year": 1987
+        },
+        "D": {
+          "label": "Jazzmane(USA)",
+          "year": 2006
+        },
+        "DS": {
+          "label": "Toccet(USA)",
+          "year": 2000
+        },
+        "DD": {
+          "label": "Alljazz(CAN)",
+          "year": 1992
+        },
+        "DSS": {
+          "label": "Awesome Again(CAN)",
+          "year": 1994
+        },
+        "DSD": {
+          "label": "Cozzene's Angel(USA)",
+          "year": 1994
+        },
+        "DDS": {
+          "label": "Stop the Music(USA)",
+          "year": 1970
+        },
+        "DDD": {
+          "label": "Bounteous(USA)",
+          "year": 1979
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 45,
+      "name": "ジャスタウェイ",
+      "jbis_subject_id": "0001106251",
+      "source_url": "https://www.jbis.or.jp/horse/0001106251/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ハーツクライ",
+          "year": 2001
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "アイリッシュダンス",
+          "year": 1990
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "トニービン(IRE)",
+          "year": 1983
+        },
+        "SDD": {
+          "label": "ビユーパーダンス(USA)",
+          "year": 1983
+        },
+        "D": {
+          "label": "シビル",
+          "year": 1999
+        },
+        "DS": {
+          "label": "Wild Again(USA)",
+          "year": 1980
+        },
+        "DD": {
+          "label": "シャロン(USA)",
+          "year": 1987
+        },
+        "DSS": {
+          "label": "Icecapade(USA)",
+          "year": 1969
+        },
+        "DSD": {
+          "label": "Bushel-n-Peck(USA)",
+          "year": 1958
+        },
+        "DDS": {
+          "label": "Mo Exception(USA)",
+          "year": 1981
+        },
+        "DDD": {
+          "label": "Double Wiggle(USA)",
+          "year": 1978
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 46,
+      "name": "スワーヴリチャード",
+      "jbis_subject_id": "0001190059",
+      "source_url": "https://www.jbis.or.jp/horse/0001190059/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ハーツクライ",
+          "year": 2001
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "アイリッシュダンス",
+          "year": 1990
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "トニービン(IRE)",
+          "year": 1983
+        },
+        "SDD": {
+          "label": "ビユーパーダンス(USA)",
+          "year": 1983
+        },
+        "D": {
+          "label": "ピラミマ(USA)",
+          "year": 2005
+        },
+        "DS": {
+          "label": "Unbridled's Song(USA)",
+          "year": 1993
+        },
+        "DD": {
+          "label": "キャリアコレクション(USA)",
+          "year": 1995
+        },
+        "DSS": {
+          "label": "Unbridled(USA)",
+          "year": 1987
+        },
+        "DSD": {
+          "label": "Trolley Song(USA)",
+          "year": 1983
+        },
+        "DDS": {
+          "label": "General Meeting(USA)",
+          "year": 1988
+        },
+        "DDD": {
+          "label": "River of Stars(USA)",
+          "year": 1983
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 47,
+      "name": "カルフォルニアクローム",
+      "jbis_subject_id": "0001211258",
+      "source_url": "https://www.jbis.or.jp/horse/0001211258/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": false,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Lucky Pulpit(USA)",
+          "year": 2001
+        },
+        "SS": {
+          "label": "Pulpit(USA)",
+          "year": 1994
+        },
+        "SD": {
+          "label": "Lucky Soph(USA)",
+          "year": 1992
+        },
+        "SSS": {
+          "label": "A.P. Indy(USA)",
+          "year": 1989
+        },
+        "SSD": {
+          "label": "Preach(USA)",
+          "year": 1989
+        },
+        "SDS": {
+          "label": "Cozzene(USA)",
+          "year": 1980
+        },
+        "SDD": {
+          "label": "Lucky Spell(USA)",
+          "year": 1971
+        },
+        "D": {
+          "label": "Love the Chase(USA)",
+          "year": 2006
+        },
+        "DS": {
+          "label": "Not For Love(USA)",
+          "year": 1990
+        },
+        "DD": {
+          "label": "Chase It Down(USA)",
+          "year": 1997
+        },
+        "DSS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "DSD": {
+          "label": "Dance Number(USA)",
+          "year": 1979
+        },
+        "DDS": {
+          "label": "Polish Numbers(USA)",
+          "year": 1987
+        },
+        "DDD": {
+          "label": "Chase the Dream(USA)",
+          "year": 1984
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 48,
+      "name": "ニューイヤーズデイ",
+      "jbis_subject_id": "0001298815",
+      "source_url": "https://www.jbis.or.jp/horse/0001298815/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Street Cry(IRE)",
+          "year": 1998
+        },
+        "SS": {
+          "label": "Machiavellian(USA)",
+          "year": 1987
+        },
+        "SD": {
+          "label": "Helen Street(GB)",
+          "year": 1982
+        },
+        "SSS": {
+          "label": "Mr. Prospector(USA)",
+          "year": 1970
+        },
+        "SSD": {
+          "label": "Coup de Folie(USA)",
+          "year": 1982
+        },
+        "SDS": {
+          "label": "Troy(GB)",
+          "year": 1976
+        },
+        "SDD": {
+          "label": "Waterway(FR)",
+          "year": 1976
+        },
+        "D": {
+          "label": "Justwhistledixie(USA)",
+          "year": 2006
+        },
+        "DS": {
+          "label": "Dixie Union(USA)",
+          "year": 1997
+        },
+        "DD": {
+          "label": "General Jeanne(USA)",
+          "year": 1999
+        },
+        "DSS": {
+          "label": "Dixieland Band(USA)",
+          "year": 1980
+        },
+        "DSD": {
+          "label": "She's Tops(USA)",
+          "year": 1989
+        },
+        "DDS": {
+          "label": "Honour and Glory(USA)",
+          "year": 1993
+        },
+        "DDD": {
+          "label": "Ahpo Hel(USA)",
+          "year": 1982
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 49,
+      "name": "ゴールドドリーム",
+      "jbis_subject_id": "0001170750",
+      "source_url": "https://www.jbis.or.jp/horse/0001170750/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "ゴールドアリュール",
+          "year": 1999
+        },
+        "SS": {
+          "label": "サンデーサイレンス(USA)",
+          "year": 1986
+        },
+        "SD": {
+          "label": "ニキーヤ(USA)",
+          "year": 1993
+        },
+        "SSS": {
+          "label": "Halo(USA)",
+          "year": 1969
+        },
+        "SSD": {
+          "label": "Wishing Well(USA)",
+          "year": 1975
+        },
+        "SDS": {
+          "label": "Nureyev(USA)",
+          "year": 1977
+        },
+        "SDD": {
+          "label": "Reluctant Guest(USA)",
+          "year": 1986
+        },
+        "D": {
+          "label": "モンヴェール",
+          "year": 2003
+        },
+        "DS": {
+          "label": "フレンチデピュティ(USA)",
+          "year": 1992
+        },
+        "DD": {
+          "label": "スペシャルジェイド(USA)",
+          "year": 1993
+        },
+        "DSS": {
+          "label": "Deputy Minister(CAN)",
+          "year": 1979
+        },
+        "DSD": {
+          "label": "Mitterand(USA)",
+          "year": 1981
+        },
+        "DDS": {
+          "label": "Cox's Ridge(USA)",
+          "year": 1974
+        },
+        "DDD": {
+          "label": "Statistic(USA)",
+          "year": 1988
+        }
+      },
+      "search_method": "open"
+    },
+    {
+      "rank": 50,
+      "name": "サンダースノー",
+      "jbis_subject_id": "0001226963",
+      "source_url": "https://www.jbis.or.jp/horse/0001226963/pedigree/",
+      "evidence_kind": "source_name_and_year_observation",
+      "root_label_match": true,
+      "jrdb_crosswalk": "UNVERIFIED_UNLESS_SEPARATELY_APPROVED",
+      "paths": {
+        "S": {
+          "label": "Helmet(AUS)",
+          "year": 2008
+        },
+        "SS": {
+          "label": "Exceed And Excel(AUS)",
+          "year": 2000
+        },
+        "SD": {
+          "label": "Accessories(GB)",
+          "year": 2003
+        },
+        "SSS": {
+          "label": "デインヒル(USA)",
+          "year": 1986
+        },
+        "SSD": {
+          "label": "Patrona(USA)",
+          "year": 1994
+        },
+        "SDS": {
+          "label": "Singspiel(IRE)",
+          "year": 1992
+        },
+        "SDD": {
+          "label": "Anna Matrushka(GB)",
+          "year": 1984
+        },
+        "D": {
+          "label": "Eastern Joy(GB)",
+          "year": 2006
+        },
+        "DS": {
+          "label": "Dubai Destination(USA)",
+          "year": 1999
+        },
+        "DD": {
+          "label": "Red Slippers(USA)",
+          "year": 1989
+        },
+        "DSS": {
+          "label": "Kingmambo(USA)",
+          "year": 1990
+        },
+        "DSD": {
+          "label": "Mysterial(USA)",
+          "year": 1994
+        },
+        "DDS": {
+          "label": "Nureyev(USA)",
+          "year": 1977
+        },
+        "DDD": {
+          "label": "Morning Devotion(USA)",
+          "year": 1982
+        }
+      },
+      "search_method": "open"
+    }
+  ],
+  "profiles": [
+    {
+      "rank": 1,
+      "name": "ディープインパクト",
+      "jbis_id": "0000742976",
+      "jbis_date": "20020325",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000742976/",
+      "source_ancestor_sire": "サンデーサイレンス(USA)",
+      "source_ancestor_dam": "ウインドインハーヘア(IRE)"
+    },
+    {
+      "rank": 2,
+      "name": "キングカメハメハ",
+      "jbis_id": "0000729458",
+      "jbis_date": "20010320",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000729458/",
+      "source_ancestor_sire": "Kingmambo(USA)",
+      "source_ancestor_dam": "マンファス(IRE)"
+    },
+    {
+      "rank": 3,
+      "name": "ロードカナロア",
+      "jbis_id": "0001089850",
+      "jbis_date": "20080311",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001089850/",
+      "source_ancestor_sire": "キングカメハメハ",
+      "source_ancestor_dam": "レディブラッサム"
+    },
+    {
+      "rank": 4,
+      "name": "ダイワメジャー",
+      "jbis_id": "0000725485",
+      "jbis_date": "20010408",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000725485/",
+      "source_ancestor_sire": "サンデーサイレンス(USA)",
+      "source_ancestor_dam": "スカーレットブーケ"
+    },
+    {
+      "rank": 5,
+      "name": "ハーツクライ",
+      "jbis_id": "0000722158",
+      "jbis_date": "20010415",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000722158/",
+      "source_ancestor_sire": "サンデーサイレンス(USA)",
+      "source_ancestor_dam": "アイリッシュダンス"
+    },
+    {
+      "rank": 6,
+      "name": "エピファネイア",
+      "jbis_id": "0001124297",
+      "jbis_date": "20100211",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001124297/",
+      "source_ancestor_sire": "シンボリクリスエス(USA)",
+      "source_ancestor_dam": "シーザリオ"
+    },
+    {
+      "rank": 7,
+      "name": "クロフネ",
+      "jbis_id": "0000615577",
+      "jbis_date": "19980331",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000615577/",
+      "source_ancestor_sire": "フレンチデピュティ(USA)",
+      "source_ancestor_dam": "ブルーアヴェニュー(USA)"
+    },
+    {
+      "rank": 8,
+      "name": "ルーラーシップ",
+      "jbis_id": "0001042049",
+      "jbis_date": "20070515",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001042049/",
+      "source_ancestor_sire": "キングカメハメハ",
+      "source_ancestor_dam": "エアグルーヴ"
+    },
+    {
+      "rank": 9,
+      "name": "キズナ",
+      "jbis_id": "0001120570",
+      "jbis_date": "20100305",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001120570/",
+      "source_ancestor_sire": "ディープインパクト",
+      "source_ancestor_dam": "キャットクイル(CAN)"
+    },
+    {
+      "rank": 10,
+      "name": "ハービンジャー",
+      "jbis_id": "0001115148",
+      "jbis_date": "20060312",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001115148/",
+      "source_ancestor_sire": "Dansili(GB)",
+      "source_ancestor_dam": "Penang Pearl(FR)"
+    },
+    {
+      "rank": 11,
+      "name": "サートゥルナーリア",
+      "jbis_id": "0001215724",
+      "jbis_date": "20160321",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001215724/",
+      "source_ancestor_sire": "ロードカナロア",
+      "source_ancestor_dam": "シーザリオ"
+    },
+    {
+      "rank": 12,
+      "name": "オルフェーヴル",
+      "jbis_id": "0001090360",
+      "jbis_date": "20080514",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001090360/",
+      "source_ancestor_sire": "ステイゴールド",
+      "source_ancestor_dam": "オリエンタルアート"
+    },
+    {
+      "rank": 13,
+      "name": "モーリス",
+      "jbis_id": "0001138240",
+      "jbis_date": "20110302",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001138240/",
+      "source_ancestor_sire": "スクリーンヒーロー",
+      "source_ancestor_dam": "メジロフランシス"
+    },
+    {
+      "rank": 14,
+      "name": "レイデオロ",
+      "jbis_id": "0001189721",
+      "jbis_date": "20140205",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001189721/",
+      "source_ancestor_sire": "キングカメハメハ",
+      "source_ancestor_dam": "ラドラーダ"
+    },
+    {
+      "rank": 15,
+      "name": "ルヴァンスレーヴ",
+      "jbis_id": "0001205475",
+      "jbis_date": "20150126",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001205475/",
+      "source_ancestor_sire": "シンボリクリスエス(USA)",
+      "source_ancestor_dam": "マエストラーレ"
+    },
+    {
+      "rank": 16,
+      "name": "キタサンブラック",
+      "jbis_id": "0001155349",
+      "jbis_date": "20120310",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001155349/",
+      "source_ancestor_sire": "ブラックタイド",
+      "source_ancestor_dam": "シュガーハート"
+    },
+    {
+      "rank": 17,
+      "name": "シルバーステート",
+      "jbis_id": "0001171845",
+      "jbis_date": "20130502",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001171845/",
+      "source_ancestor_sire": "ディープインパクト",
+      "source_ancestor_dam": "シルヴァースカヤ(USA)"
+    },
+    {
+      "rank": 18,
+      "name": "ブリックスアンドモルタル",
+      "jbis_id": "0001293348",
+      "jbis_date": "20140302",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001293348/",
+      "source_ancestor_sire": "Giant's Causeway(USA)",
+      "source_ancestor_dam": "Beyond the Waves(USA)"
+    },
+    {
+      "rank": 19,
+      "name": "ドレフォン",
+      "jbis_id": "0001240055",
+      "jbis_date": "20130219",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001240055/",
+      "source_ancestor_sire": "Gio Ponti(USA)",
+      "source_ancestor_dam": "Eltimaas(USA)"
+    },
+    {
+      "rank": 20,
+      "name": "リアルスティール",
+      "jbis_id": "0001157711",
+      "jbis_date": null,
+      "jbis_sex": null,
+      "profile_available": false,
+      "profile_url": "https://www.jbis.or.jp/horse/0001157711/",
+      "source_ancestor_sire": null,
+      "source_ancestor_dam": null
+    },
+    {
+      "rank": 21,
+      "name": "シンボリクリスエス",
+      "jbis_id": "0000700008",
+      "jbis_date": "19990121",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000700008/",
+      "source_ancestor_sire": "Kris S.(USA)",
+      "source_ancestor_dam": "Tee Kay(USA)"
+    },
+    {
+      "rank": 22,
+      "name": "マンハッタンカフェ",
+      "jbis_id": "0000324971",
+      "jbis_date": "19980305",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000324971/",
+      "source_ancestor_sire": "サンデーサイレンス(USA)",
+      "source_ancestor_dam": "サトルチェンジ(IRE)"
+    },
+    {
+      "rank": 23,
+      "name": "ゴールドアリュール",
+      "jbis_id": "0000619768",
+      "jbis_date": "19990303",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000619768/",
+      "source_ancestor_sire": "サンデーサイレンス(USA)",
+      "source_ancestor_dam": "ニキーヤ(USA)"
+    },
+    {
+      "rank": 24,
+      "name": "エンパイアメーカー",
+      "jbis_id": "0000749845",
+      "jbis_date": "20000427",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000749845/",
+      "source_ancestor_sire": "Unbridled(USA)",
+      "source_ancestor_dam": "Toussaud(USA)"
+    },
+    {
+      "rank": 25,
+      "name": "リオンディーズ",
+      "jbis_id": "0001170063",
+      "jbis_date": "20130129",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001170063/",
+      "source_ancestor_sire": "キングカメハメハ",
+      "source_ancestor_dam": "シーザリオ"
+    },
+    {
+      "rank": 26,
+      "name": "ステイゴールド",
+      "jbis_id": "0000286968",
+      "jbis_date": "19940324",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000286968/",
+      "source_ancestor_sire": "サンデーサイレンス(USA)",
+      "source_ancestor_dam": "ゴールデンサッシュ"
+    },
+    {
+      "rank": 27,
+      "name": "ヘニーヒューズ",
+      "jbis_id": "0001028940",
+      "jbis_date": "20030405",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001028940/",
+      "source_ancestor_sire": "ヘネシー(USA)",
+      "source_ancestor_dam": "Meadow Flyer(USA)"
+    },
+    {
+      "rank": 28,
+      "name": "サトノダイヤモンド",
+      "jbis_id": "0001175221",
+      "jbis_date": "20130130",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001175221/",
+      "source_ancestor_sire": "ディープインパクト",
+      "source_ancestor_dam": "マルペンサ(ARG)"
+    },
+    {
+      "rank": 29,
+      "name": "イスラボニータ",
+      "jbis_id": "0001142398",
+      "jbis_date": "20110521",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001142398/",
+      "source_ancestor_sire": "フジキセキ",
+      "source_ancestor_dam": "イスラコジーン(USA)"
+    },
+    {
+      "rank": 30,
+      "name": "コントレイル",
+      "jbis_id": "0001237042",
+      "jbis_date": "20170401",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001237042/",
+      "source_ancestor_sire": "ディープインパクト",
+      "source_ancestor_dam": "ロードクロサイト(USA)"
+    },
+    {
+      "rank": 31,
+      "name": "モズアスコット",
+      "jbis_id": "0001213491",
+      "jbis_date": "20140331",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001213491/",
+      "source_ancestor_sire": "Frankel(GB)",
+      "source_ancestor_dam": "India(USA)"
+    },
+    {
+      "rank": 32,
+      "name": "ゼンノロブロイ",
+      "jbis_id": "0000701668",
+      "jbis_date": "20000327",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000701668/",
+      "source_ancestor_sire": "サンデーサイレンス(USA)",
+      "source_ancestor_dam": "ローミンレイチェル(USA)"
+    },
+    {
+      "rank": 33,
+      "name": "タワーオブロンドン",
+      "jbis_id": "0001209439",
+      "jbis_date": "20150209",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001209439/",
+      "source_ancestor_sire": "Raven's Pass(USA)",
+      "source_ancestor_dam": "スノーパイン(GB)"
+    },
+    {
+      "rank": 34,
+      "name": "パイロ",
+      "jbis_id": "0001085636",
+      "jbis_date": "20050219",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001085636/",
+      "source_ancestor_sire": "Pulpit(USA)",
+      "source_ancestor_dam": "Wild Vision(USA)"
+    },
+    {
+      "rank": 35,
+      "name": "ミッキーアイル",
+      "jbis_id": "0001141719",
+      "jbis_date": "20110312",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001141719/",
+      "source_ancestor_sire": "ディープインパクト",
+      "source_ancestor_dam": "スターアイル(IRE)"
+    },
+    {
+      "rank": 36,
+      "name": "ゴールドシップ",
+      "jbis_id": "0001104811",
+      "jbis_date": "20090306",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001104811/",
+      "source_ancestor_sire": "ステイゴールド",
+      "source_ancestor_dam": "ポイントフラッグ"
+    },
+    {
+      "rank": 37,
+      "name": "ナダル",
+      "jbis_id": "0001328857",
+      "jbis_date": "20170427",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001328857/",
+      "source_ancestor_sire": "Blame(USA)",
+      "source_ancestor_dam": "Ascending Angel(USA)"
+    },
+    {
+      "rank": 38,
+      "name": "ネオユニヴァース",
+      "jbis_id": "0000701577",
+      "jbis_date": "20000521",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000701577/",
+      "source_ancestor_sire": "サンデーサイレンス(USA)",
+      "source_ancestor_dam": "ポインテッドパス(GB)"
+    },
+    {
+      "rank": 39,
+      "name": "デクラレーションオブウォー",
+      "jbis_id": "0001181460",
+      "jbis_date": "20090429",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001181460/",
+      "source_ancestor_sire": "War Front(USA)",
+      "source_ancestor_dam": "Tempo West(USA)"
+    },
+    {
+      "rank": 40,
+      "name": "アドマイヤマーズ",
+      "jbis_id": "0001221956",
+      "jbis_date": "20160316",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001221956/",
+      "source_ancestor_sire": "ダイワメジャー",
+      "source_ancestor_dam": "ヴィアメディチ(IRE)"
+    },
+    {
+      "rank": 41,
+      "name": "ヴィクトワールピサ",
+      "jbis_id": "0001046333",
+      "jbis_date": "20070331",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001046333/",
+      "source_ancestor_sire": "ネオユニヴァース",
+      "source_ancestor_dam": "ホワイトウォーターアフェア(GB)"
+    },
+    {
+      "rank": 42,
+      "name": "シニスターミニスター",
+      "jbis_id": "0001025279",
+      "jbis_date": "20030329",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001025279/",
+      "source_ancestor_sire": "Old Trieste(USA)",
+      "source_ancestor_dam": "Sweet Minister(USA)"
+    },
+    {
+      "rank": 43,
+      "name": "アグネスタキオン",
+      "jbis_id": "0000324933",
+      "jbis_date": "19980413",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0000324933/",
+      "source_ancestor_sire": "サンデーサイレンス(USA)",
+      "source_ancestor_dam": "アグネスフローラ"
+    },
+    {
+      "rank": 44,
+      "name": "マインドユアビスケッツ",
+      "jbis_id": "0001302899",
+      "jbis_date": "20130315",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001302899/",
+      "source_ancestor_sire": "Posse(USA)",
+      "source_ancestor_dam": "Jazzmane(USA)"
+    },
+    {
+      "rank": 45,
+      "name": "ジャスタウェイ",
+      "jbis_id": "0001106251",
+      "jbis_date": "20090308",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001106251/",
+      "source_ancestor_sire": "ハーツクライ",
+      "source_ancestor_dam": "シビル"
+    },
+    {
+      "rank": 46,
+      "name": "スワーヴリチャード",
+      "jbis_id": "0001190059",
+      "jbis_date": "20140310",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001190059/",
+      "source_ancestor_sire": "ハーツクライ",
+      "source_ancestor_dam": "ピラミマ(USA)"
+    },
+    {
+      "rank": 47,
+      "name": "カルフォルニアクローム",
+      "jbis_id": "0001211258",
+      "jbis_date": "20110218",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001211258/",
+      "source_ancestor_sire": "Lucky Pulpit(USA)",
+      "source_ancestor_dam": "Love the Chase(USA)"
+    },
+    {
+      "rank": 48,
+      "name": "ニューイヤーズデイ",
+      "jbis_id": "0001298815",
+      "jbis_date": "20110422",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001298815/",
+      "source_ancestor_sire": "Street Cry(IRE)",
+      "source_ancestor_dam": "Justwhistledixie(USA)"
+    },
+    {
+      "rank": 49,
+      "name": "ゴールドドリーム",
+      "jbis_id": "0001170750",
+      "jbis_date": "20130419",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001170750/",
+      "source_ancestor_sire": "ゴールドアリュール",
+      "source_ancestor_dam": "モンヴェール"
+    },
+    {
+      "rank": 50,
+      "name": "サンダースノー",
+      "jbis_id": "0001226963",
+      "jbis_date": "20140324",
+      "jbis_sex": "牡",
+      "profile_available": true,
+      "profile_url": "https://www.jbis.or.jp/horse/0001226963/",
+      "source_ancestor_sire": "Helmet(AUS)",
+      "source_ancestor_dam": "Eastern Joy(GB)"
+    }
+  ]
+}
