@@ -296,3 +296,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - ③-B研究用上位50頭のうち31頭に登場する優先4祖先（Sunday Silence、Wind in Her Hair、Kingmambo、Manfath）の**名前経路48/48にJBIS個別馬血統資料を紐付け**。旧12件＋新36件（うち最終5件は5代血統表で直接確認）。
 - これは**出典付き名前経路の資料確認率**。JRDB⇔JBIS本人crosswalk承認0件・JRDB canonical祖先ID追加0件であり、ID系統グラフの到達率は不変（1代36/100、2代10/200、3代0/400）。
 - ローカルの独立スロット監査で48枠の既存位置・馬名との整合を確認。コミット済みvalidatorのPython unittest/E2Eは未実行のためPASS表記しない。予想時点のas-ofも未証明、⑤の適性採点/BRDB CURRENT/RaceNote/PWAには接続なし。
+
+## 2026-11-06 — ③-B 個体同定クロスウォークと26経路ハイブリッド伝播
+
+- [研究用の多項目同定・共有経路の監査レポート](docs/BRDB_STAGE3B_JRDB_JBIS_CROSSWALK_AND_HYBRID_PATH_AUDIT_20261106.md) / [JRDB↔JBIS identity crosswalk 2件](taxonomy/stage3b_jrdb_jbis_crosswalk_research_v0_1.json) / [照合ガード](src/brdb_stage3b_identity_crosswalk.py) / [DuckDB read-only audit runner](src/run_brdb_stage3b_crosswalk_audit.py) / [ハイブリッド祖先経路伝播](src/brdb_stage3b_hybrid_propagation.py)。
+- 研究世代の実Parquetから、ディープインパクト（JRDB `02100816` ↔ JBIS `0000742976`）、キングカメハメハ（JRDB `01103460` ↔ JBIS `0000729458`）について、完全な生年月日・性別・父母名と父母生年等を複数ガードで照合し、JRAも外部確認出典として記録。
+- 子孫本人2件の外部同定により、上位50研究マスタの**直接4経路＋JRDB解決済み中間個体を介した22経路＝26/48経路**を source-qualified hybrid path としてローカル検証。13種牡馬に伝播。残り22/48は中間個体同定が不足。**正式JRDB祖先IDは増えていない**（0）、JRDB canonical 1～3代経路充足率も変わらない。
+- [クロスウォーク回帰テスト11件](tests/test_brdb_stage3b_identity_crosswalk.py)、[ハイブリッド経路回帰テスト6件](tests/test_brdb_stage3b_hybrid_propagation.py)を登録。実Parquet SHA・2プロフィール8項目・既存50マスタの26経路は独立ローカル実証済みだが、コミット済みPython回帰テストとrunnerの実行は未実施。
+- 本人同定を他の29種牡馬に自動拡大しない。外部IDは`JBIS:`のまま保持し、過去時点AS_OF未検証、`prediction_safe=false`。BRDB CURRENT/Review/RaceNote/PWA/新聞には接続しない。
