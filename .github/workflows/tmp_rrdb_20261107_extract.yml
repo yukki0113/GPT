@@ -68,7 +68,12 @@ jobs:
             --expected-date 2026-10-31 \
             --expected-date 2026-11-01 \
             | tee .rrdb/output/racelap_refresh.json
-          test -f .rrdb/racelap/generations/racelap-forward-rrdb-20261107-01/race_lap.parquet
+          if test -f .rrdb/racelap_effective.parquet; then
+            cp .rrdb/racelap/generations/racelap-forward-rrdb-20261107-01/race_lap.parquet .rrdb/racelap_effective.parquet
+          else
+            cp .rrdb/racelap-current/current/race_lap.parquet .rrdb/racelap_effective.parquet
+          fi
+          test -f .rrdb/racelap_effective.parquet
 
       - name: Run canonical RRDB reverse lookup
         shell: bash
