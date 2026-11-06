@@ -1,7 +1,7 @@
 # BRDB ③-C — 個体IDで検証された直接親子グラフ（研究用）
 
 Date: 2026-11-06  
-Status: **IMPLEMENTED / TEST AND REAL-PARQUET AUDIT PENDING**  
+Status: **IMPLEMENTED / STAGE3 REGRESSION PASS / INDEPENDENT REAL-PARQUET AUDIT DONE / CANONICAL RUNNER E2E PENDING**  
 Target: immutable generation `5279af0bd8226cde`, source cohort 2022–2024 birth, top 50 sire/BMS subjects.
 
 ## ③-Bとの契約上の違い
@@ -48,3 +48,39 @@ python horse-racing/brdb/src/run_brdb_stage3c_direct_parent_graph.py \
 5. 本番`CURRENT`、RaceNote、Review、PWAを変更しない。
 
 本工程の第1段階は「検証済みの直接親子グラフのモデルと生成器」であり、海外の旧祖先すべての個体IDの確定ではない。実データ実行が可能になるまでは工程を**完了**としない。今後の第2段階で未確定5頭、2代10枠・3代40枠、36件の表記差の確認および追加本人crosswalkを一括研究する。
+
+## 初回監査結果（2026-11-06 16時台 JST）
+
+### 正本Parquet実バイトSHA
+
+- `pedigree_fact.parquet`: `1e7574f78703d79d8d83797f9e350a8927b728fc68c659cf5d340ee0f79b3536` — **一致**。
+- `parent_relation.parquet`: `c90482851f91b8f2d99ec88407f4246471d10b38f18163464f88760cb197ff85` — **一致**。
+- ③-B上位50JSON: `89d01e2c05af27a929c8398ef9e94660f5f1e442362d458383db6e6a9bd7bdc0` — **一致**。
+
+### 実データの独立検算
+
+同じ元ParquetをDuckDB 1.1.3で読み、③-Cが採用する`RESOLVED_EXACT/RESOLVED_ALIAS`親子辺を、50頭のうちJRDB人物37頭を起点として最大3エッジ辿った。
+
+| 指標 | 独立実測 |
+|---|---:|
+| JRDB入口個体 | 37 |
+| JRDBの一意な直接親子辺 | **42** |
+| 既存③-B検証済み（2人4役割）のJBIS直接親子辺 | **4** |
+| JRDB/BIS直接親子の同一role衝突 | **0** |
+| 合計直接親子辺 | **46** |
+| source-native ID別個体ノード | **59** |
+| 2つ以上の入口から到達する祖先候補 | **13** |
+
+この検算の正確な位置づけ：**GitHub登録済みの`brdb_stage3c_direct_parent_graph.py`を実行した結果ではない**。別実装の読み取り専用検算であり、③-C本番モジュールのE2E受入条件はまだ未達成。
+
+監査結果ファイルは`stage3c_independent_real_parent_audit.json`としてChatGPT実行環境に保存し、個体同定の追加と推定は行っていない。JBIS直接4辺の前提は既存③-Bの2頭4本監査であり、新たにJBISを閲覧し直したという意味ではない。
+
+### コード回帰実行
+
+PR branch HEAD `abf24ed48879722d571f259f076baddf639ccdd8` に対するstage3回帰テストをGitHub Actionsの正規Data Storage fallbackで実行し、**PASS**。
+
+- [GitHub Actions #42182614944](https://github.com/yukki0113/GPT/actions/runs/42182614944)
+- [Issue #2433 実行結果](https://github.com/yukki0113/GPT/issues/2433#issuecomment-6676123239)
+- ソースは同一SHAでcheckout、DuckDB 1.1.3、PyArrow 25.0.1。ジョブ結論`success`と成果物登録を確認。
+
+**次に必要**：実Parquetで③-C正本runnerを実行し、上記42+4=46辺／59ノードと一致すること、同じ固定入力で2回出力がバイト一致することを確認。ここまで通過してからPRの取り込み判断を行う。
