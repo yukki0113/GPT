@@ -247,8 +247,14 @@ jobs:
           then
             python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py               --day-dir /tmp/base-day               --output-dir /tmp/merged-day               --keibailuka-json /tmp/skeleton-request/keibailuka.json               --revision "$REQUEST_REVISION"               > /tmp/skeleton-request/external-merge-result.json
           else
-            cp -a /tmp/base-day /tmp/merged-day
-            printf '%s\n' '{"status":"SKIPPED","keibailuka":null}' > /tmp/skeleton-request/external-merge-result.json
+            # Even with no Iluka input, create the requested next immutable
+            # revision. Copying the base day would retain its old revision and
+            # fail the Current monotonicity check for same-day addon updates.
+            PYTHONPATH=horse-racing/jrdb/src python horse-racing/jrdb/src/jrdb_newspaper_merge_external.py \
+              --day-dir /tmp/base-day \
+              --output-dir /tmp/merged-day \
+              --revision "$REQUEST_REVISION" \
+              > /tmp/skeleton-request/external-merge-result.json
           fi
 
       - name: Build personal current
