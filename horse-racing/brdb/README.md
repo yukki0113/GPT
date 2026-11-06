@@ -282,3 +282,10 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - 先に解くべき共通祖先はSunday Silence、ウインドインハーヘア、Kingmambo等（出現枠数を基準とした**上限影響度**で順位付け）。名前観測≠祖先の本人ID/クロス確定。
 - GitHub上の再現モジュールは登録済み。ローカルの分析スクリプトで実Parquetに対する再実行・SHA一致を検証。ただしコミット済みモジュールそのもののCI/E2E実行は未実施。
 - ③-Bの**初回登録バッチは作成**したが、3代の完全接続は残作業。地域型と競走条件適性の自動付与なし。BRDB CURRENT、RaceNote、PWA、本番処理は未変更。
+
+## 2026-11-06 — ③-B継続：4共通祖先の外部個体・子孫経路照合
+
+- [4祖先・12経路の個別照合監査](docs/BRDB_STAGE3B_PRIORITY_ANCESTOR_BRIDGE_AUDIT_20261106.md) / [出典別レジストリ v0.2](taxonomy/stage3b_priority4_bridge_candidate_v0_2.json) / [研究用経路照合モジュール](src/brdb_stage3b_priority_bridge.py) / [合成安全テスト](tests/test_brdb_stage3b_priority_bridge.py)。
+- 優先4祖先（サンデーサイレンス、ウインドインハーヘア、キングマンボ、マンファス）の名前観測は上位50頭中31種牡馬・48経路。**7種牡馬のJBIS個体血統ページと4祖先のJBIS個体ページを突合した12経路**は出典裏付けを追加、残り36経路は個別監査待ち。
+- JBIS source-native 10桁IDはJRDB 8桁IDではない。**正式JRDB個体祖先IDの追加確定0、JRDB⇔JBIS本人crosswalkの承認0**。父・母父マスタの正式ID解決率は今回不変で、外部出典の確証度を増やす作業。
+- `AS_OF_UNVERIFIED`、`prediction_safe=false`、⑥⑦の適性・地域型の自動採点なし。BRDB CURRENT/Review v0.1/RaceNote/PWA等の本番未変更。
