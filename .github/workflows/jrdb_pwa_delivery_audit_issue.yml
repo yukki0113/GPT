@@ -1,0 +1,97 @@
+name: JRDB PWA delivery audit via Issue
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: read
+  actions: read
+  issues: write
+jobs:
+  audit:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_PWA_DELIVERY_AUDIT]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Audit release revisions, Pages runs, and delivered manifests
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import urllib.error
+          import urllib.request
+
+          repository = os.environ["GITHUB_REPOSITORY"]
+          output = ["JRDB_PWA_DELIVERY_AUDIT_RESULT", ""]
+          def run_command(args):
+              result = subprocess.run(args, capture_output=True, text=True, timeout=60)
+              if result.returncode != 0:
+                  return None, (result.stderr or result.stdout).strip()[:350]
+              return result.stdout, None
+
+          raw, error = run_command(["gh", "api", f"repos/{repository}/actions/workflows/jrdb_pwa_pages.yml/runs?per_page=12"])
+          if error:
+              output.append("PAGES_RUN_QUERY_ERROR: " + error)
+          else:
+              data = json.loads(raw)
+              output.append("PAGES_RUNS:")
+              for item in data.get("workflow_runs", []):
+                  output.append(f"- id={item['id']} event={item['event']} status={item['status']} conclusion={item.get('conclusion')} sha={item.get('head_sha','')[:10]} url={item['html_url']}")
+              if not data.get("workflow_runs"):
+                  output.append("- NO_RUNS")
+
+          for label, tag, asset in [
+              ("personal", "jrdb-newspaper-current", "jrdb_newspaper_current_release.json"),
+              ("momotaro", "jrdb-momotaro-newspaper-current", "jrdb_momotaro_newspaper_current_release.json"),
+          ]:
+              raw, error = run_command(["gh", "release", "download", tag, "--repo", repository, "--pattern", asset, "--dir", "/tmp"])
+              if error:
+                  output.append(f"RELEASE_{label}: ERROR {error}")
+                  continue
+              try:
+                  with open("/tmp/" + asset, encoding="utf-8") as handle:
+                      meta = json.load(handle)
+                  output.append(f"RELEASE_{label}: date={meta.get('date')} revision={meta.get('revision')} races={meta.get('race_count')} sha={meta.get('manifest_sha256')}")
+              except Exception as exc:
+                  output.append(f"RELEASE_{label}: ERROR {exc}")
+
+          raw, error = run_command(["gh", "api", f"repos/{repository}/pages"])
+          if error:
+              output.append("PAGES_INFO_ERROR: " + error)
+              base = "https://yukki0113.github.io/GPT/"
+          else:
+              info = json.loads(raw)
+              base = info.get("html_url") or "https://yukki0113.github.io/GPT/"
+              output.append(f"PAGES_INFO: url={base} status={info.get('status')}")
+          if not base.endswith("/"):
+              base += "/"
+          for label, part in [
+              ("personal", "data/newspaper/current/manifest.json"),
+              ("momotaro", "momotaro/data/newspaper/current/manifest.json"),
+          ]:
+              url = base + part + "?audit=" + os.environ["GITHUB_RUN_ID"]
+              try:
+                  request = urllib.request.Request(url, headers={"Cache-Control": "no-cache", "User-Agent": "jrdb-pages-audit"})
+                  with urllib.request.urlopen(request, timeout=25) as response:
+                      manifest = json.loads(response.read())
+                      output.append(f"DELIVERED_{label}: http={response.status} date={manifest.get('date')} revision={manifest.get('revision')} races={len(manifest.get('races') or [])}")
+                      entries = manifest.get("races") or []
+                      if entries:
+                          first_url = base + ("momotaro/" if label == "momotaro" else "") + "data/newspaper/current/" + entries[0]["path"]
+                          with urllib.request.urlopen(first_url+"?audit="+os.environ["GITHUB_RUN_ID"], timeout=25) as source:
+                              race = json.loads(source.read())
+                          addons = [h.get("addons") or {} for h in race.get("horses") or []]
+                          counts = {key: sum(isinstance(a.get(key), dict) for a in addons) for key in ("momotaro", "keibailuka", "racenote_prediction", "rrdb_recommendation")}
+                          output.append(f"DELIVERED_{label}_FIRST_RACE: key={race.get('race',{}).get('race_key')} addons={counts}")
+              except Exception as exc:
+                  output.append(f"DELIVERED_{label}: ERROR {type(exc).__name__}: {str(exc)[:350]}")
+          with open("/tmp/pages-audit-comment.txt","w",encoding="utf-8") as handle:
+              handle.write("\n".join(output)+"\n")
+          print("\n".join(output))
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/pages-audit-comment.txt
