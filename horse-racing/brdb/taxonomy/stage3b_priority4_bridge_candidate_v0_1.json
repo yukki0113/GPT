@@ -1,0 +1,166 @@
+{
+  "schema_version": "brdb-stage3b-priority4-bridge-candidate-v0.1",
+  "status": "EXTERNAL_PEDIGREE_CORROBORATION_NOT_JRDB_IDENTITY_CROSSWALK",
+  "source_generation": "5279af0bd8226cde",
+  "cohort": "2022-2024 birth cohort",
+  "as_of_status": "AS_OF_UNVERIFIED",
+  "prediction_safe": false,
+  "source_basis": "JRDB research pedigree_fact+parent_relation corroborated with individual JBIS pedigree and person profile pages",
+  "anchors": [
+    {
+      "jrdb_horse_id": "02100816",
+      "observed_jrdb_name": "ディープインパクト",
+      "observed_birth_year": 2002,
+      "observed_jrdb_lineage_code": "1206",
+      "jrdb_name_guard_status": "PROFILE_OBSERVED",
+      "external_jbis_subject_key": "JBIS:0000742976",
+      "external_source_url": "https://www.jbis.jp/horse/0000742976/",
+      "person_crosswalk_status": "CANDIDATE_CORROBORATED_NOT_APPROVED",
+      "observed_sire_name": "サンデーサイレンス",
+      "observed_dam_name": "ウインドインハーヘア"
+    },
+    {
+      "jrdb_horse_id": "01103460",
+      "observed_jrdb_name": "キングカメハメハ",
+      "observed_birth_year": 2001,
+      "observed_jrdb_lineage_code": "1503",
+      "jrdb_name_guard_status": "PROFILE_OBSERVED",
+      "external_jbis_subject_key": "JBIS:0000729458",
+      "external_source_url": "https://www.jbis.jp/horse/0000729458/",
+      "person_crosswalk_status": "CANDIDATE_CORROBORATED_NOT_APPROVED",
+      "observed_sire_name": "キングマンボ",
+      "observed_dam_name": "マンファス"
+    }
+  ],
+  "external_ancestor_subjects": [
+    {
+      "id": "SUNDAY_SILENCE",
+      "label_jp": "サンデーサイレンス",
+      "name_en": "Sunday Silence(USA)",
+      "birth_year": 1986,
+      "sex": "M",
+      "jbis_id": "0000333862",
+      "source_url": "https://www.jbis.jp/horse/0000333862/",
+      "existing_stage2_registry": true,
+      "external_subject_key": "JBIS:0000333862",
+      "jrdb_horse_id": null,
+      "jrdb_crosswalk_status": "UNRESOLVED"
+    },
+    {
+      "id": "WIND_IN_HER_HAIR",
+      "label_jp": "ウインドインハーヘア",
+      "name_en": "Wind in Her Hair(IRE)",
+      "birth_year": 1991,
+      "sex": "F",
+      "jbis_id": "0000430846",
+      "source_url": "https://www.jbis.jp/horse/0000430846/",
+      "existing_stage2_registry": false,
+      "external_subject_key": "JBIS:0000430846",
+      "jrdb_horse_id": null,
+      "jrdb_crosswalk_status": "UNRESOLVED"
+    },
+    {
+      "id": "KINGMAMBO",
+      "label_jp": "キングマンボ",
+      "name_en": "Kingmambo(USA)",
+      "birth_year": 1990,
+      "sex": "M",
+      "jbis_id": "0000347989",
+      "source_url": "https://www.jbis.jp/horse/0000347989/",
+      "existing_stage2_registry": true,
+      "external_subject_key": "JBIS:0000347989",
+      "jrdb_horse_id": null,
+      "jrdb_crosswalk_status": "UNRESOLVED"
+    },
+    {
+      "id": "MANFATH",
+      "label_jp": "マンファス",
+      "name_en": "Manfath(IRE)",
+      "birth_year": 1991,
+      "sex": "F",
+      "jbis_id": "0000440324",
+      "source_url": "https://www.jbis.jp/horse/0000440324/",
+      "existing_stage2_registry": false,
+      "external_subject_key": "JBIS:0000440324",
+      "jrdb_horse_id": null,
+      "jrdb_crosswalk_status": "UNRESOLVED"
+    }
+  ],
+  "external_parent_edges": [
+    {
+      "jrdb_child_horse_id": "02100816",
+      "child_observed_label": "ディープインパクト",
+      "child_external_key": "JBIS:0000742976",
+      "path": "S",
+      "external_ancestor_key": "JBIS:0000333862",
+      "ancestor_id": "SUNDAY_SILENCE",
+      "ancestor_display_name_in_child_profile": "Sunday Silence(USA)",
+      "ancestor_birth_year_from_profile": 1986,
+      "child_pedigree_source_url": "https://www.jbis.jp/horse/0000742976/",
+      "ancestor_profile_source_url": "https://www.jbis.jp/horse/0000333862/",
+      "source_identity_guard": "EXTERNAL_CHILD_AND_PARENT_PROFILES_CORROBORATE",
+      "jrdb_person_edge_status": "NOT_APPROVED_EXTERNAL_TO_JRDB",
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_child_horse_id": "02100816",
+      "child_observed_label": "ディープインパクト",
+      "child_external_key": "JBIS:0000742976",
+      "path": "D",
+      "external_ancestor_key": "JBIS:0000430846",
+      "ancestor_id": "WIND_IN_HER_HAIR",
+      "ancestor_display_name_in_child_profile": "Wind in Her Hair(IRE)",
+      "ancestor_birth_year_from_profile": 1991,
+      "child_pedigree_source_url": "https://www.jbis.jp/horse/0000742976/",
+      "ancestor_profile_source_url": "https://www.jbis.jp/horse/0000430846/",
+      "source_identity_guard": "EXTERNAL_CHILD_AND_PARENT_PROFILES_CORROBORATE",
+      "jrdb_person_edge_status": "NOT_APPROVED_EXTERNAL_TO_JRDB",
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_child_horse_id": "01103460",
+      "child_observed_label": "キングカメハメハ",
+      "child_external_key": "JBIS:0000729458",
+      "path": "S",
+      "external_ancestor_key": "JBIS:0000347989",
+      "ancestor_id": "KINGMAMBO",
+      "ancestor_display_name_in_child_profile": "Kingmambo(USA)",
+      "ancestor_birth_year_from_profile": 1990,
+      "child_pedigree_source_url": "https://www.jbis.jp/horse/0000729458/",
+      "ancestor_profile_source_url": "https://www.jbis.jp/horse/0000347989/",
+      "source_identity_guard": "EXTERNAL_CHILD_AND_PARENT_PROFILES_CORROBORATE",
+      "jrdb_person_edge_status": "NOT_APPROVED_EXTERNAL_TO_JRDB",
+      "as_of_status": "AS_OF_UNVERIFIED"
+    },
+    {
+      "jrdb_child_horse_id": "01103460",
+      "child_observed_label": "キングカメハメハ",
+      "child_external_key": "JBIS:0000729458",
+      "path": "D",
+      "external_ancestor_key": "JBIS:0000440324",
+      "ancestor_id": "MANFATH",
+      "ancestor_display_name_in_child_profile": "Manfath(IRE)",
+      "ancestor_birth_year_from_profile": 1991,
+      "child_pedigree_source_url": "https://www.jbis.jp/horse/0000729458/",
+      "ancestor_profile_source_url": "https://www.jbis.jp/horse/0000440324/",
+      "source_identity_guard": "EXTERNAL_CHILD_AND_PARENT_PROFILES_CORROBORATE",
+      "jrdb_person_edge_status": "NOT_APPROVED_EXTERNAL_TO_JRDB",
+      "as_of_status": "AS_OF_UNVERIFIED"
+    }
+  ],
+  "link_policy": {
+    "require_parent_display_match": true,
+    "require_child_jrdb_name_year_lineage_guard": true,
+    "require_independent_ancestor_profile": true,
+    "forbid_unverified_name_only_auto_join": true,
+    "approved_jrdb_person_edges": 0,
+    "approved_crosswalks": 0,
+    "can_affect_review": false,
+    "can_assert_cross": false
+  },
+  "notes": [
+    "4 corroborated source-parent edges cover two JRDB-observed stallion subjects only.",
+    "Other 46 top50 source-observed name slots belonging to these priority four require per-child corroboration.",
+    "No inheritance-based aptitude; region tags remain unapproved."
+  ]
+}
