@@ -249,19 +249,29 @@ jobs:
           if isinstance(data,list):
               supplement_index={}
               supplement_path=os.environ.get("RACENOTE_CONFIDENCE_PATH")
+              expected_races=len(json.loads(
+                  Path("/tmp/current-day/manifest.json").read_text(encoding="utf-8")
+              ).get("races") or [])
+              if not expected_races or len(data)!=expected_races:
+                  raise SystemExit(f"frozen RaceNote must match current {expected_races} races, got {len(data)}")
               if supplement_path:
                   supplement=json.loads(Path(supplement_path).read_text(encoding="utf-8"))
-                  if supplement.get("schema_version")!="racenote-race-confidence-supplement-0.1" or supplement.get("date")!=os.environ["REQUEST_DATE"]:
-                      raise SystemExit("invalid RaceNote confidence supplement metadata")
-                  if len(supplement.get("entries") or [])!=24:
-                      raise SystemExit("RaceNote confidence supplement requires 24 races")
-                  for entry in supplement["entries"]:
+                  if isinstance(supplement,list):
+                      # Native RaceNote v0.5.6 confidence_frozen/records.json.
+                      entries=supplement
+                  elif isinstance(supplement,dict):
+                      if supplement.get("schema_version")!="racenote-race-confidence-supplement-0.1" or supplement.get("date")!=os.environ["REQUEST_DATE"]:
+                          raise SystemExit("invalid RaceNote confidence supplement metadata")
+                      entries=supplement.get("entries") or []
+                  else:
+                      raise SystemExit("invalid RaceNote confidence source")
+                  if len(entries)!=expected_races:
+                      raise SystemExit(f"RaceNote confidence requires {expected_races} races, got {len(entries)}")
+                  for entry in entries:
                       key=(str(entry["venue"]),int(entry["race_no"]))
                       if key in supplement_index or entry.get("confidence") not in ("A","B","C","Z"):
                           raise SystemExit(f"invalid RaceNote confidence entry: {key}")
                       supplement_index[key]=entry
-              if len(data)!=24:
-                  raise SystemExit(f"frozen RaceNote must contain 24 records, got {len(data)}")
               converted=[]
               seen=set()
               for record in data:
@@ -274,8 +284,15 @@ jobs:
                   seen.add(identity)
                   marks=core["marks"]
                   extra=supplement_index.get(identity)
-                  if supplement_index and (extra is None or extra.get("marks")!=marks or extra.get("source_semantic_sha256")!=record["source_semantic_sha256"]):
-                      raise SystemExit(f"RaceNote confidence does not match frozen marks: {identity}")
+                  if supplement_index:
+                      if extra is None:
+                          raise SystemExit(f"RaceNote confidence missing: {identity}")
+                      if "marks" in extra and extra["marks"]!=marks:
+                          raise SystemExit(f"RaceNote confidence marks mismatch: {identity}")
+                      if "source_semantic_sha256" in extra and extra["source_semantic_sha256"]!=record["source_semantic_sha256"]:
+                          raise SystemExit(f"RaceNote confidence semantic identity mismatch: {identity}")
+                      if "honmei" in extra and int(extra["honmei"])!=int(marks[0]):
+                          raise SystemExit(f"RaceNote confidence honmei mismatch: {identity}")
                   reason=str(
                       core.get("reader_facing_reason")
                       or core.get("prediction_audit_comment")
