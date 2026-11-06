@@ -80,7 +80,7 @@ python horse-racing/brdb/src/run_brdb_stage3c_direct_parent_graph.py \
 PR branch HEAD `abf24ed48879722d571f259f076baddf639ccdd8` に対するstage3回帰テストをGitHub Actionsの正規Data Storage fallbackで実行し、**PASS**。
 
 - [GitHub Actions #42182614944](https://github.com/yukki0113/GPT/actions/runs/42182614944)
-- [Issue #2433 実行結果](https://github.com/yukki0113/GPT/issues/2433#issuecomment-6676123239)
+- [Issue #2433 実行結果](https://github.com/yukki0113/GPT/issues/2433#issuecomment-6679880856)
 - ソースは同一SHAでcheckout、DuckDB 1.1.3、PyArrow 25.0.1。ジョブ結論`success`と成果物登録を確認。
 
 **次に必要**：実Parquetで③-C正本runnerを実行し、上記42+4=46辺／59ノードと一致すること、同じ固定入力で2回出力がバイト一致することを確認。ここまで通過してからPRの取り込み判断を行う。
