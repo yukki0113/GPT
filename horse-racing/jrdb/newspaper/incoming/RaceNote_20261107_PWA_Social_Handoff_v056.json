@@ -1,0 +1,667 @@
+{
+  "schema_version": "racenote-pwa-social-handoff-v0.1",
+  "status": "PASS",
+  "date": "2026-11-07",
+  "selection_id": "DAILY-20261107",
+  "logic_version": "RaceNote-Human-Context-Reader-0.5.6-candidate",
+  "contract_revision": "v056-prediction-confidence-audit-newspaper-v1",
+  "source": {
+    "prediction_status": "PREDICTION_FROZEN_CLEAN_BLIND",
+    "confidence_status": "CONFIDENCE_FROZEN_CLEAN_BLIND",
+    "prediction_records_sha256": "bd23fd7a1df933563160b24872fdfb808ebb66405cfebd2b3f772587965d84d5",
+    "confidence_records_sha256": "c539823ad1c0e631596ebc99e9ce92185c8bc1134e82d226c647a33345221bf0",
+    "paci_filename": "PACI261107.zip",
+    "paci_sha256": null,
+    "horse_name_provenance": "PACI-derived sealed v056 Reader, exact race and horse number",
+    "result_opened": false,
+    "target_market_opened": false
+  },
+  "display_contract": {
+    "pwa": "marks + confidence + short_comment",
+    "social_image": "◎ only includes horse_name; ○▲△ use horse number",
+    "mark_order": [
+      "◎",
+      "○",
+      "▲",
+      "△1",
+      "△2"
+    ],
+    "confidence_Z": "OUT_OF_SCOPE_NOT_LOW_CONFIDENCE"
+  },
+  "race_count": 36,
+  "confidence_counts": {
+    "A": 3,
+    "B": 9,
+    "C": 18,
+    "Z": 6
+  },
+  "venues": [
+    {
+      "venue": "東京",
+      "races": [
+        {
+          "race_no": 1,
+          "honmei": {
+            "horse_no": 10,
+            "horse_name": "レヴフィリア"
+          },
+          "marks": {
+            "◎": 10,
+            "○": 5,
+            "▲": 9,
+            "△1": 8,
+            "△2": 7
+          },
+          "confidence": "B",
+          "short_comment": "10の東京1600新馬2着を支持するが、5の中山1800新馬2着や9の東京1600新馬4着の上積みで逆転可能なB。",
+          "social_line": "◎10 レヴフィリア / ○5 ▲9 △8 △7"
+        },
+        {
+          "race_no": 2,
+          "honmei": {
+            "horse_no": 1,
+            "horse_name": "エコロヴォルグ"
+          },
+          "marks": {
+            "◎": 1,
+            "○": 5,
+            "▲": 9,
+            "△1": 13,
+            "△2": 12
+          },
+          "confidence": "A",
+          "short_comment": "東京1400新馬2着IDM38と調教71状態70が他の印馬より高い直接実走・調整の優位を示すためA。",
+          "social_line": "◎1 エコロヴォルグ / ○5 ▲9 △13 △12"
+        },
+        {
+          "race_no": 3,
+          "honmei": {
+            "horse_no": 12,
+            "horse_name": "ハマナスノサクコロ"
+          },
+          "marks": {
+            "◎": 12,
+            "○": 3,
+            "▲": 5,
+            "△1": 14,
+            "△2": 9
+          },
+          "confidence": "B",
+          "short_comment": "12を高IDMで最有力Bとするが3と5の1400連対が逆転可能。",
+          "social_line": "◎12 ハマナスノサクコロ / ○3 ▲5 △14 △9"
+        },
+        {
+          "race_no": 4,
+          "honmei": {
+            "horse_no": 6,
+            "horse_name": "スワーヴバシレウス"
+          },
+          "marks": {
+            "◎": 6,
+            "○": 4,
+            "▲": 8,
+            "△1": 7,
+            "△2": 5
+          },
+          "confidence": "C",
+          "short_comment": "2000連対の6と1800連対の4・8を勝ち切りで明確に順位付けできずC。",
+          "social_line": "◎6 スワーヴバシレウス / ○4 ▲8 △7 △5"
+        },
+        {
+          "race_no": 5,
+          "honmei": {
+            "horse_no": 7,
+            "horse_name": "ディペンダブル"
+          },
+          "marks": {
+            "◎": 7,
+            "○": 9,
+            "▲": 13,
+            "△1": 1,
+            "△2": 2
+          },
+          "confidence": "C",
+          "short_comment": "7の3着反復を評価しても1・2の同舞台2着と9の近走2着を凌げずC。",
+          "social_line": "◎7 ディペンダブル / ○9 ▲13 △1 △2"
+        },
+        {
+          "race_no": 6,
+          "honmei": {
+            "horse_no": 4,
+            "horse_name": "サトノヘラクレス"
+          },
+          "marks": {
+            "◎": 4,
+            "○": 12,
+            "▲": 11,
+            "△1": 1,
+            "△2": 10
+          },
+          "confidence": "Z",
+          "short_comment": "東京6Rは2歳新馬で全出走馬に実走履歴がなく、三段階の勝ち切り審査を適用しない。",
+          "social_line": "◎4 サトノヘラクレス / ○12 ▲11 △1 △10"
+        },
+        {
+          "race_no": 7,
+          "honmei": {
+            "horse_no": 11,
+            "horse_name": "ディアナノヴァ"
+          },
+          "marks": {
+            "◎": 11,
+            "○": 16,
+            "▲": 3,
+            "△1": 4,
+            "△2": 12
+          },
+          "confidence": "Z",
+          "short_comment": "東京7Rは2歳新馬戦で既走の出走馬がなく、通常の勝ち切りConfidenceは判定しない。",
+          "social_line": "◎11 ディアナノヴァ / ○16 ▲3 △4 △12"
+        },
+        {
+          "race_no": 8,
+          "honmei": {
+            "horse_no": 7,
+            "horse_name": "アクロフェイズ"
+          },
+          "marks": {
+            "◎": 7,
+            "○": 5,
+            "▲": 3,
+            "△1": 10,
+            "△2": 2
+          },
+          "confidence": "C",
+          "short_comment": "7の上級能力と5の東京2000現級2着を勝ち馬として明確に分けられずC。",
+          "social_line": "◎7 アクロフェイズ / ○5 ▲3 △10 △2"
+        },
+        {
+          "race_no": 9,
+          "honmei": {
+            "horse_no": 6,
+            "horse_name": "ボクマダネムイヨ"
+          },
+          "marks": {
+            "◎": 6,
+            "○": 5,
+            "▲": 14,
+            "△1": 15,
+            "△2": 2
+          },
+          "confidence": "C",
+          "short_comment": "6の差し勝ち筋を選ぶ一方で5の同場2着と先行力があり勝ち馬序列はC。",
+          "social_line": "◎6 ボクマダネムイヨ / ○5 ▲14 △15 △2"
+        },
+        {
+          "race_no": 10,
+          "honmei": {
+            "horse_no": 10,
+            "horse_name": "ボウウィンドウ"
+          },
+          "marks": {
+            "◎": 10,
+            "○": 9,
+            "▲": 1,
+            "△1": 5,
+            "△2": 8
+          },
+          "confidence": "C",
+          "short_comment": "10の距離適性と9の上級2000実績を勝ち馬として順位付けできずC。",
+          "social_line": "◎10 ボウウィンドウ / ○9 ▲1 △5 △8"
+        },
+        {
+          "race_no": 11,
+          "honmei": {
+            "horse_no": 10,
+            "horse_name": "ロンドンガーズ"
+          },
+          "marks": {
+            "◎": 10,
+            "○": 9,
+            "▲": 8,
+            "△1": 4,
+            "△2": 2
+          },
+          "confidence": "C",
+          "short_comment": "1400オープン勝ちの10と他距離オープン勝ちの9・8に決定差がなくC。",
+          "social_line": "◎10 ロンドンガーズ / ○9 ▲8 △4 △2"
+        },
+        {
+          "race_no": 12,
+          "honmei": {
+            "horse_no": 13,
+            "horse_name": "ヴァイスクレー"
+          },
+          "marks": {
+            "◎": 13,
+            "○": 12,
+            "▲": 16,
+            "△1": 1,
+            "△2": 15
+          },
+          "confidence": "C",
+          "short_comment": "13と12はいずれも芝1600現級2着で勝ち馬の比較優位は小さくC。",
+          "social_line": "◎13 ヴァイスクレー / ○12 ▲16 △1 △15"
+        }
+      ]
+    },
+    {
+      "venue": "京都",
+      "races": [
+        {
+          "race_no": 1,
+          "honmei": {
+            "horse_no": 1,
+            "horse_name": "ジョイザモーメント"
+          },
+          "marks": {
+            "◎": 1,
+            "○": 5,
+            "▲": 6,
+            "△1": 9,
+            "△2": 3
+          },
+          "confidence": "B",
+          "short_comment": "京都1800未勝利3着の同コース実績を最有力視するが、キミチャンの同舞台4着と上積みの可能性が残るためB。",
+          "social_line": "◎1 ジョイザモーメント / ○5 ▲6 △9 △3"
+        },
+        {
+          "race_no": 2,
+          "honmei": {
+            "horse_no": 11,
+            "horse_name": "プリンキピッサ"
+          },
+          "marks": {
+            "◎": 11,
+            "○": 14,
+            "▲": 3,
+            "△1": 5,
+            "△2": 13
+          },
+          "confidence": "C",
+          "short_comment": "11の未勝利1400連対と14・3の京都1400新馬連対との勝ち馬比較が定まらないためC。",
+          "social_line": "◎11 プリンキピッサ / ○14 ▲3 △5 △13"
+        },
+        {
+          "race_no": 3,
+          "honmei": {
+            "horse_no": 7,
+            "horse_name": "オリオンベリル"
+          },
+          "marks": {
+            "◎": 7,
+            "○": 1,
+            "▲": 10,
+            "△1": 5,
+            "△2": 13
+          },
+          "confidence": "A",
+          "short_comment": "京都1800新馬2着・IDM44と調教63状態63の両面が印内で明確な優位を示すためA。",
+          "social_line": "◎7 オリオンベリル / ○1 ▲10 △5 △13"
+        },
+        {
+          "race_no": 4,
+          "honmei": {
+            "horse_no": 11,
+            "horse_name": "ドラゴンドール"
+          },
+          "marks": {
+            "◎": 11,
+            "○": 2,
+            "▲": 6,
+            "△1": 14,
+            "△2": 10
+          },
+          "confidence": "C",
+          "short_comment": "1600未勝利2着の11と、京都1600新馬3着の2・中京1600新馬3着の6の上積み比較が非決定的なためC。",
+          "social_line": "◎11 ドラゴンドール / ○2 ▲6 △14 △10"
+        },
+        {
+          "race_no": 5,
+          "honmei": {
+            "horse_no": 1,
+            "horse_name": "ロードラムセス"
+          },
+          "marks": {
+            "◎": 1,
+            "○": 8,
+            "▲": 2,
+            "△1": 3,
+            "△2": 7
+          },
+          "confidence": "Z",
+          "short_comment": "京都5Rは芝1800の新馬戦で8頭全馬が初出走。事前能力・調教・状態のみで通常Confidenceは適用せずZ。",
+          "social_line": "◎1 ロードラムセス / ○8 ▲2 △3 △7"
+        },
+        {
+          "race_no": 6,
+          "honmei": {
+            "horse_no": 11,
+            "horse_name": "ヨコハマブルース"
+          },
+          "marks": {
+            "◎": 11,
+            "○": 4,
+            "▲": 8,
+            "△1": 3,
+            "△2": 2
+          },
+          "confidence": "Z",
+          "short_comment": "京都6Rはダ1800新馬で11頭全馬が初出走。砂への適性とゲートを実走で確認できないためConfidence Z。",
+          "social_line": "◎11 ヨコハマブルース / ○4 ▲8 △3 △2"
+        },
+        {
+          "race_no": 7,
+          "honmei": {
+            "horse_no": 6,
+            "horse_name": "マイティマイティー"
+          },
+          "marks": {
+            "◎": 6,
+            "○": 9,
+            "▲": 7,
+            "△1": 8,
+            "△2": 2
+          },
+          "confidence": "B",
+          "short_comment": "京都・阪神1400現級2着反復を評価するが、9の下級勝ちと7の東京現級4着にも勝ち筋があるためB。",
+          "social_line": "◎6 マイティマイティー / ○9 ▲7 △8 △2"
+        },
+        {
+          "race_no": 8,
+          "honmei": {
+            "horse_no": 7,
+            "horse_name": "コンテナワールド"
+          },
+          "marks": {
+            "◎": 7,
+            "○": 6,
+            "▲": 9,
+            "△1": 4,
+            "△2": 1
+          },
+          "confidence": "Z",
+          "short_comment": "京都8Rは障害コース3170mの競走につき、通常A/B/Cの審査対象外でありZ。",
+          "social_line": "◎7 コンテナワールド / ○6 ▲9 △4 △1"
+        },
+        {
+          "race_no": 9,
+          "honmei": {
+            "horse_no": 4,
+            "horse_name": "リカントロポ"
+          },
+          "marks": {
+            "◎": 4,
+            "○": 8,
+            "▲": 5,
+            "△1": 9,
+            "△2": 7
+          },
+          "confidence": "B",
+          "short_comment": "京都1600現級前走2着・IDM59の比較優位はあるが8番と9番に逆転可能性があるためB。",
+          "social_line": "◎4 リカントロポ / ○8 ▲5 △9 △7"
+        },
+        {
+          "race_no": 10,
+          "honmei": {
+            "horse_no": 6,
+            "horse_name": "ウルスクローム"
+          },
+          "marks": {
+            "◎": 6,
+            "○": 5,
+            "▲": 1,
+            "△1": 10,
+            "△2": 12
+          },
+          "confidence": "C",
+          "short_comment": "6と5の同級連対反復に決定差がなく、1の高IDM昇級も考慮してC。",
+          "social_line": "◎6 ウルスクローム / ○5 ▲1 △10 △12"
+        },
+        {
+          "race_no": 11,
+          "honmei": {
+            "horse_no": 9,
+            "horse_name": "ゼットエール"
+          },
+          "marks": {
+            "◎": 9,
+            "○": 14,
+            "▲": 8,
+            "△1": 4,
+            "△2": 11
+          },
+          "confidence": "B",
+          "short_comment": "9の同条件オープン勝ちを支持してB。ただし14・8・4・11にも勝ち筋がある。",
+          "social_line": "◎9 ゼットエール / ○14 ▲8 △4 △11"
+        },
+        {
+          "race_no": 12,
+          "honmei": {
+            "horse_no": 9,
+            "horse_name": "アグレイビューティ"
+          },
+          "marks": {
+            "◎": 9,
+            "○": 13,
+            "▲": 16,
+            "△1": 7,
+            "△2": 10
+          },
+          "confidence": "C",
+          "short_comment": "9の芝2000現級2着と13の近走1800現級2着、16の昇級上積みを決定的に順位づけできずC。",
+          "social_line": "◎9 アグレイビューティ / ○13 ▲16 △7 △10"
+        }
+      ]
+    },
+    {
+      "venue": "福島",
+      "races": [
+        {
+          "race_no": 1,
+          "honmei": {
+            "horse_no": 7,
+            "horse_name": "フィールザウィル"
+          },
+          "marks": {
+            "◎": 7,
+            "○": 2,
+            "▲": 15,
+            "△1": 3,
+            "△2": 11
+          },
+          "confidence": "A",
+          "short_comment": "ダ1600未勝利2着と1700新馬2着の双方を持つ7が連対実績で優位なためA。",
+          "social_line": "◎7 フィールザウィル / ○2 ▲15 △3 △11"
+        },
+        {
+          "race_no": 2,
+          "honmei": {
+            "horse_no": 7,
+            "horse_name": "サーギュスターヴ"
+          },
+          "marks": {
+            "◎": 7,
+            "○": 2,
+            "▲": 5,
+            "△1": 16,
+            "△2": 9
+          },
+          "confidence": "C",
+          "short_comment": "7の同距離2着と2の同距離3着反復の勝利差が小さくC。",
+          "social_line": "◎7 サーギュスターヴ / ○2 ▲5 △16 △9"
+        },
+        {
+          "race_no": 3,
+          "honmei": {
+            "horse_no": 8,
+            "horse_name": "ソリドゥス"
+          },
+          "marks": {
+            "◎": 8,
+            "○": 15,
+            "▲": 1,
+            "△1": 4,
+            "△2": 12
+          },
+          "confidence": "B",
+          "short_comment": "8を現距離近接の未勝利2着で最有力Bとするが15の1700適性は脅威。",
+          "social_line": "◎8 ソリドゥス / ○15 ▲1 △4 △12"
+        },
+        {
+          "race_no": 4,
+          "honmei": {
+            "horse_no": 2,
+            "horse_name": "ダイシンレアレア"
+          },
+          "marks": {
+            "◎": 2,
+            "○": 9,
+            "▲": 10,
+            "△1": 13,
+            "△2": 1
+          },
+          "confidence": "C",
+          "short_comment": "2と9の同級長距離連対を決定的に順位付けできずC。",
+          "social_line": "◎2 ダイシンレアレア / ○9 ▲10 △13 △1"
+        },
+        {
+          "race_no": 5,
+          "honmei": {
+            "horse_no": 7,
+            "horse_name": "メイチャトラー"
+          },
+          "marks": {
+            "◎": 7,
+            "○": 1,
+            "▲": 9,
+            "△1": 4,
+            "△2": 15
+          },
+          "confidence": "Z",
+          "short_comment": "福島5Rは芝1200mの2歳新馬戦で16頭全馬に実走がないため通常のConfidence対象外。",
+          "social_line": "◎7 メイチャトラー / ○1 ▲9 △4 △15"
+        },
+        {
+          "race_no": 6,
+          "honmei": {
+            "horse_no": 13,
+            "horse_name": "ドリームプレミア"
+          },
+          "marks": {
+            "◎": 13,
+            "○": 16,
+            "▲": 14,
+            "△1": 11,
+            "△2": 7
+          },
+          "confidence": "C",
+          "short_comment": "福島2600現級3着の13と同条件現級2着の16を勝ち馬として明確に順位付けできずC。",
+          "social_line": "◎13 ドリームプレミア / ○16 ▲14 △11 △7"
+        },
+        {
+          "race_no": 7,
+          "honmei": {
+            "horse_no": 9,
+            "horse_name": "フロムレイブン"
+          },
+          "marks": {
+            "◎": 9,
+            "○": 3,
+            "▲": 10,
+            "△1": 4,
+            "△2": 1
+          },
+          "confidence": "C",
+          "short_comment": "9と3の1200現級連対反復に優劣をつけられず10も連対候補のためC。",
+          "social_line": "◎9 フロムレイブン / ○3 ▲10 △4 △1"
+        },
+        {
+          "race_no": 8,
+          "honmei": {
+            "horse_no": 5,
+            "horse_name": "マジェステラ"
+          },
+          "marks": {
+            "◎": 5,
+            "○": 4,
+            "▲": 9,
+            "△1": 12,
+            "△2": 11
+          },
+          "confidence": "C",
+          "short_comment": "5・4の1200現級2着が比較上ほぼ互角で9の福島1150勝ちもありC。",
+          "social_line": "◎5 マジェステラ / ○4 ▲9 △12 △11"
+        },
+        {
+          "race_no": 9,
+          "honmei": {
+            "horse_no": 12,
+            "horse_name": "ディアアズール"
+          },
+          "marks": {
+            "◎": 12,
+            "○": 13,
+            "▲": 4,
+            "△1": 7,
+            "△2": 10
+          },
+          "confidence": "C",
+          "short_comment": "12の現級2200連対と13の現級福島2000好走を一意に比較できずC。",
+          "social_line": "◎12 ディアアズール / ○13 ▲4 △7 △10"
+        },
+        {
+          "race_no": 10,
+          "honmei": {
+            "horse_no": 16,
+            "horse_name": "アイルドリアン"
+          },
+          "marks": {
+            "◎": 16,
+            "○": 5,
+            "▲": 15,
+            "△1": 11,
+            "△2": 8
+          },
+          "confidence": "C",
+          "short_comment": "16と5の現級連対が距離1400対福島1200で強み異なり、勝ち切り序列はC。",
+          "social_line": "◎16 アイルドリアン / ○5 ▲15 △11 △8"
+        },
+        {
+          "race_no": 11,
+          "honmei": {
+            "horse_no": 6,
+            "horse_name": "カーヌスティ"
+          },
+          "marks": {
+            "◎": 6,
+            "○": 10,
+            "▲": 2,
+            "△1": 5,
+            "△2": 15
+          },
+          "confidence": "B",
+          "short_comment": "6の福島勝ちと現級1200連対を一歩上と見るBだが、10・2・15が脅威。",
+          "social_line": "◎6 カーヌスティ / ○10 ▲2 △5 △15"
+        },
+        {
+          "race_no": 12,
+          "honmei": {
+            "horse_no": 4,
+            "horse_name": "グレイスフルマーチ"
+          },
+          "marks": {
+            "◎": 4,
+            "○": 9,
+            "▲": 6,
+            "△1": 5,
+            "△2": 7
+          },
+          "confidence": "B",
+          "short_comment": "4の1700現級連対反復を最有力Bとするが9の逃げと6の1800現級連対に逆転経路。",
+          "social_line": "◎4 グレイスフルマーチ / ○9 ▲6 △5 △7"
+        }
+      ]
+    }
+  ]
+}
