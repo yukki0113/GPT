@@ -1,0 +1,42 @@
+[
+  {
+    "venue": "阪神",
+    "race_no": 7,
+    "honmei": 15,
+    "confidence": "C",
+    "reason": "◎と○の現級ダ1200連対は近く、5頭間の勝ち馬序列が定まらずC。",
+    "confidence_review": {
+      "winning_case": "◎15は京都・中京ダ1200の現級で2着。異なるコースで末脚を維持して勝ち切る。",
+      "primary_rival": "○6は京都1200現級2・3着、▲2も京都1200現級2着で先行型の逆転余地。",
+      "relative_advantage": "◎は2会場で1200現級2着だが、○6も同距離で2・3着を反復している。",
+      "main_defeat_scenario": "6番が先手を取って押し切り、◎15は阪神の直線で外差しが間に合わない。",
+      "risk_assessment": "9番は調教74・状態74で距離短縮、8番は1200未勝利勝ちから休養明け。",
+      "final_grade_reason": "◎と○の現級ダ1200連対は近く、5頭間の勝ち馬序列が定まらずC。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 8,
+    "honmei": 7,
+    "confidence": "Z",
+    "reason": "阪神8Rは障害3140mのオープン競走。飛越を伴う特殊対象のため通常のConfidence A/B/Cの適用除外としZ。",
+    "confidence_review": {
+      "not_applicable_reason": "阪神8Rは障害3140mのオープン競走。飛越を伴う特殊対象のため通常のConfidence A/B/Cの適用除外としZ。"
+    }
+  },
+  {
+    "venue": "阪神",
+    "race_no": 9,
+    "honmei": 10,
+    "confidence": "C",
+    "reason": "◎の1600逃げ勝ちと2・7番の1800差し切り勝ちの優劣が難しくC。",
+    "confidence_review": {
+      "winning_case": "◎10は阪神1600未勝利を逃げ切り、1800延長でも先行して粘る勝ち筋を想定。",
+      "primary_rival": "○2は阪神1800未勝利を大外差しで勝ち、▲7も京都1800新馬を後方差し切り。",
+      "relative_advantage": "◎は調教70・状態67で完成度があるが、○2と7番は1800勝利の直接実績を持つ。",
+      "main_defeat_scenario": "2番の阪神1800勝ち時の末脚が決まり、◎10は1800延長で最後に甘くなる。",
+      "risk_assessment": "1番は京都1800オープン4着、13番は小倉1800未勝利勝ち。差し馬が厚い。",
+      "final_grade_reason": "◎の1600逃げ勝ちと2・7番の1800差し切り勝ちの優劣が難しくC。"
+    }
+  }
+]
