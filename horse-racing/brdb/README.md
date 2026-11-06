@@ -304,3 +304,10 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - 子孫本人2件の外部同定により、上位50研究マスタの**直接4経路＋JRDB解決済み中間個体を介した22経路＝26/48経路**を source-qualified hybrid path としてローカル検証。13種牡馬に伝播。残り22/48は中間個体同定が不足。**正式JRDB祖先IDは増えていない**（0）、JRDB canonical 1～3代経路充足率も変わらない。
 - [クロスウォーク回帰テスト11件](tests/test_brdb_stage3b_identity_crosswalk.py)、[ハイブリッド経路回帰テスト6件](tests/test_brdb_stage3b_hybrid_propagation.py)を登録。実Parquet SHA・2プロフィール8項目・既存50マスタの26経路は独立ローカル実証済みだが、コミット済みPython回帰テストとrunnerの実行は未実施。
 - 本人同定を他の29種牡馬に自動拡大しない。外部IDは`JBIS:`のまま保持し、過去時点AS_OF未検証、`prediction_safe=false`。BRDB CURRENT/Review/RaceNote/PWA/新聞には接続しない。
+
+## 2026-11-06 — ③-B 第2回：JRDB⇔JBISの5個体対応と29/48経路
+
+- [③-B第2回個体対応監査](docs/BRDB_STAGE3B_IDENTITY_CROSSWALK_BATCH2_20261106.md) / [研究用5個体crosswalk v0.2](taxonomy/stage3b_jrdb_jbis_crosswalk_research_v0_2.json) / [5個体・既存48経路の照合モジュール](src/brdb_stage3b_crosswalk_batch2_audit.py) / [DuckDB実Parquet再実行入口](src/run_brdb_stage3b_batch2_from_parquet.py)。
+- 既存のDeep Impact、King Kamehamehaに加え、**ダイワメジャー、ハーツクライ、エピファネイア**のJRDB個体IDとJBIS個体IDを、実Parquet氏名・完全生年月日・性別・父母・公式系統コードと公開一次資料を照合して研究用に登録（2→5件）。
+- 優先4祖先の既存48名前経路のうち、**前26＋今回3＝29経路（60.42%）**について混合JRDB/JBIS出典チェーンを確保。残り19経路は人物接続待ち。JRDB正式旧祖先IDは0追加。JRDB source generation`5279af0bd8226cde`・top50研究JSONのSHAを固定。
+- ローカル独立auditの実Parquet確認とローカル回帰テスト7件はPASS。**コミット済みGitHub Pythonモジュールそのものは未実行**。歴史的as-of未認証、`prediction_safe=false`、CURRENT/Review/RaceNote/PWAへは接続なし。
