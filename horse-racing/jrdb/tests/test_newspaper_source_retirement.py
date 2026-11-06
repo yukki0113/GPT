@@ -73,6 +73,14 @@ class SourceRetirementTest(unittest.TestCase):
             merge_day(base, merged, revision=2)
             self.assertEqual(json.loads((merged / 'manifest.json').read_text())['revision'], 2)
 
+    def test_kensho_merge_accepts_full_day_frozen_confidence(self):
+        workflow = (ROOT / '.github/workflows/jrdb_newspaper_kensho_merge_issue.yml').read_text(encoding='utf-8')
+        self.assertIn('expected_races=len(json.loads(', workflow)
+        self.assertIn('if len(entries)!=expected_races:', workflow)
+        self.assertIn('if "honmei" in extra and int(extra["honmei"])!=int(marks[0]):', workflow)
+        self.assertNotIn('if len(data)!=24:', workflow)
+        self.assertIn('racenote_confidence_repo_path', workflow)
+
     def test_production_edge_entrypoints_disabled_and_pages_independent(self):
         for name in ['jrdb_newspaper_edge_republish_issue.yml','jrdb_newspaper_edge_v05_republish_issue.yml']:
             self.assertFalse((ROOT/'.github/workflows'/name).exists())
