@@ -382,7 +382,7 @@ jobs:
                           count+=1
                           marked+=1
           race_count=len(data.get("races") or [])
-          expected_race_count=int(data.get("_expected_race_count") or 24)
+          expected_race_count=int(data.get("_expected_race_count") or len(current))
           if race_count != expected_race_count or count <= 0:
               raise SystemExit(
                   f"RaceNote completeness mismatch races={race_count} "
