@@ -1,0 +1,84 @@
+name: JRDB PWA single redeploy via Issue
+on:
+  issues:
+    types: [opened]
+permissions:
+  actions: write
+  contents: read
+  issues: write
+jobs:
+  republish:
+    if: >-
+      github.event.issue.user.login == 'yukki0113' &&
+      startsWith(github.event.issue.title, '[JRDB_PWA_REDEPLOY]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - name: Dispatch one Pages rebuild and report run/result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          import time
+          import urllib.request
+
+          repo = os.environ["GITHUB_REPOSITORY"]
+          issue = os.environ["ISSUE_NUMBER"]
+          endpoint = f"repos/{repo}/actions/workflows/jrdb_pwa_pages.yml/runs?event=workflow_dispatch&per_page=20"
+          def command(*args):
+              done = subprocess.run(args, text=True, capture_output=True, timeout=50)
+              if done.returncode:
+                  raise RuntimeError(" ".join(args[:3]) + ": " + (done.stderr or done.stdout)[:500])
+              return done.stdout
+          def comment(message):
+              command("gh", "issue", "comment", issue, "--repo", repo, "--body", message)
+          def page_revisions():
+              result=[]
+              base="https://yukki0113.github.io/GPT/"
+              for name, path in [
+                  ("personal","data/newspaper/current/manifest.json"),
+                  ("momotaro","momotaro/data/newspaper/current/manifest.json"),
+              ]:
+                  try:
+                      request=urllib.request.Request(base+path+"?check="+str(time.time_ns()), headers={"Cache-Control":"no-cache"})
+                      with urllib.request.urlopen(request, timeout=30) as response:
+                          data=json.loads(response.read())
+                      result.append(f"{name}: date={data.get('date')} revision={data.get('revision')} races={len(data.get('races') or [])}")
+                  except Exception as error:
+                      result.append(f"{name}: ERROR {type(error).__name__}: {str(error)[:120]}")
+              return "; ".join(result)
+          previous=json.loads(command("gh","api",endpoint))
+          known={int(run["id"]) for run in previous.get("workflow_runs",[])}
+          command("gh","api","-X","POST",f"repos/{repo}/actions/workflows/jrdb_pwa_pages.yml/dispatches","-f","ref=main")
+          run=None
+          for attempt in range(18):
+              time.sleep(5)
+              rows=json.loads(command("gh","api",endpoint)).get("workflow_runs",[])
+              fresh=[item for item in rows if int(item["id"]) not in known]
+              if fresh:
+                  run=max(fresh,key=lambda value:int(value["id"]))
+                  break
+          if run is None:
+              comment("PWA_REDEPLOY_RESULT: Dispatch accepted but the new Pages run could not be located. " + page_revisions())
+              raise SystemExit(1)
+          run_id=int(run["id"])
+          run_url=run["html_url"]
+          comment(f"PWA_REDEPLOY_STARTED: {run_url}\nBefore/after site check pending. This is one dispatch only.")
+          for attempt in range(50):
+              time.sleep(12)
+              run=json.loads(command("gh","api",f"repos/{repo}/actions/runs/{run_id}"))
+              if run.get("status")=="completed":
+                  break
+          status=run.get("status")
+          conclusion=run.get("conclusion")
+          live=page_revisions()
+          outcome=f"PWA_REDEPLOY_RESULT: run={run_url} status={status} conclusion={conclusion}\nDELIVERED: {live}"
+          comment(outcome)
+          print(outcome)
+          if status!="completed" or conclusion!="success" or "revision=5" not in live or live.count("revision=5")<2:
+              raise SystemExit(1)
+          PY
