@@ -850,7 +850,11 @@ def merge_day(
                             f"RRDB recommendation horse-name mismatch for {rrdb_key}: "
                             f"{rrdb_row['horse_name']!r} != {horse_name!r}"
                         )
-                    if rrdb_row["race_key"] != race_key:
+                    # RRDB's 7-digit numeric race_key and Newspaper's 8-digit
+                    # zero-prefixed identity refer to the same canonical race.
+                    # Only normalize leading padding; all substantive digits,
+                    # date, venue, race, horse number, and name stay exact.
+                    if rrdb_row["race_key"].zfill(8) != race_key.zfill(8):
                         raise ValueError(
                             f"RRDB recommendation race identity mismatch for {rrdb_key}: source={rrdb_row.get('race_key')!r} current={race_key!r}"
                         )
