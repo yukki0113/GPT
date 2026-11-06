@@ -11,7 +11,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 from brdb_stage3b_priority_bridge import BridgeError, validate_and_measure
 
-BRIDGE = ROOT / "taxonomy" / "stage3b_priority4_bridge_candidate_v0_2.json"
+BRIDGE = ROOT / "taxonomy" / "stage3b_priority4_bridge_candidate_v0_3.json"
 
 
 class BridgeTests(unittest.TestCase):
@@ -54,20 +54,20 @@ class BridgeTests(unittest.TestCase):
             self.bridge if bridge is None else bridge,
         )
 
-    def test_twelve_source_corrob_paths_without_jrdb_promotion(self):
+    def test_fortythree_source_corrob_paths_without_jrdb_promotion(self):
         result = self.validate()
-        self.assertEqual(result["externally_corroborated_paths"], 12)
-        self.assertEqual(result["priority_ancestor_name_slots"], 12)
+        self.assertEqual(result["externally_corroborated_paths"], 43)
+        self.assertEqual(result["priority_ancestor_name_slots"], 43)
         self.assertEqual(result["additional_jrdb_canonical_ancestor_paths"], 0)
         self.assertFalse(result["prediction_safe"])
 
     def test_unverified_third_stallion_stays_pending(self):
         altered = copy.deepcopy(self.top50)
-        altered["subjects"][7]["paths"] = [
+        altered["subjects"][49]["paths"] = [
             {"path": "SS", "name": "サンデーサイレンス", "id": None},
         ]
         result = self.validate(top50=altered)
-        self.assertEqual(result["priority_ancestor_name_slots"], 13)
+        self.assertEqual(result["priority_ancestor_name_slots"], 44)
         self.assertEqual(result["still_pending_person_path_audit"], 1)
 
     def test_source_person_id_must_not_claim_jrdb_id(self):
