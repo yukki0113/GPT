@@ -178,10 +178,10 @@ def pick_days(state, n, seed=None, include_ineligible=False,
     }
     if any(
         r.get("source_mode") == "historical_warehouse"
-        or int(r.get("selection_cycle") or 1) > 1
+        or "selection_cycle" in r
         for r in selected
     ):
-        # Include explicit cycle provenance for PACI second-pass draws as well.
+        # Include explicit cycle provenance for both PACI first and later draws.
         rec["sources"] = [{"target_date": r["date"],
                            "source_mode": r.get("source_mode", "paci"),
                            "source_reference": r.get("source_reference"),
