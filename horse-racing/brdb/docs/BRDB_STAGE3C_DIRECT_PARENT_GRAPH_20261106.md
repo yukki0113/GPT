@@ -1,7 +1,7 @@
 # BRDB ③-C — 個体IDで検証された直接親子グラフ（研究用）
 
 Date: 2026-11-06  
-Status: **IMPLEMENTED / STAGE3 REGRESSION PASS / INDEPENDENT REAL-PARQUET AUDIT DONE / CANONICAL RUNNER E2E PENDING**  
+Status: **IMPLEMENTED / STAGE3 REGRESSION PASS (LATEST HEAD) / INDEPENDENT REAL-PARQUET AUDIT DONE / CANONICAL RUNNER E2E PENDING**  
 Target: immutable generation `5279af0bd8226cde`, source cohort 2022–2024 birth, top 50 sire/BMS subjects.
 
 ## ③-Bとの契約上の違い
@@ -84,3 +84,12 @@ PR branch HEAD `abf24ed48879722d571f259f076baddf639ccdd8` に対するstage3回�
 - ソースは同一SHAでcheckout、DuckDB 1.1.3、PyArrow 25.0.1。ジョブ結論`success`と成果物登録を確認。
 
 **次に必要**：実Parquetで③-C正本runnerを実行し、上記42+4=46辺／59ノードと一致すること、同じ固定入力で2回出力がバイト一致することを確認。ここまで通過してからPRの取り込み判断を行う。
+
+### 追加ゲート（最新PR HEAD）
+
+上記の独立検算を固定した`src/verify_brdb_stage3c_direct_parent_graph.py`を追加し、**46直接辺／59ノード／13共有祖先候補**、source SHA、型付きchild/parent、名称ベースの昇格0を受け入れ条件にした。受け入れ条件の異常系を7件の新規テストで検証。
+
+最新HEAD `5a6bb8fdacbbe61c88318b2c72c9aa8279cb35a1` に対して正規fallback回帰を再実行し、**PASS**。
+[Actions #42183373418](https://github.com/yukki0113/GPT/actions/runs/42183373418) / [Issue #2434](https://github.com/yukki0113/GPT/issues/2434#issuecomment-6679991191)。
+
+**変更後のグラフ生成器と受け入れゲートを実Parquetで連続実行した証跡は依然未作成**。この最後のE2Eを完了し、run artifactのsource SHAと生成件数を照合してからready/mergeする。
