@@ -120,7 +120,7 @@ def build_graph(
 
     # Walk only explicit resolved aliases or exact JRDB person relationships.
     known_edges = {}
-    reached = {}
+    parallel_unmerged = []
     for root in roots:
         queue = [(root, "", frozenset({root}))]
         while queue:
@@ -153,7 +153,6 @@ def build_graph(
                     require(known_edges[edge_key] == evidence,
                             "contradictory JRDB parent edge")
                 known_edges[edge_key] = evidence
-                reached.setdefault(child_key, set()).add(prefix)
                 queue.append((parent_key, prefix + letter,
                               lineage | {parent_key}))
 
@@ -193,8 +192,15 @@ def build_graph(
                     re.fullmatch(r"JBIS:[0-9]{10}", ancestor) is not None,
                     "unsafe JBIS parent identity")
             edge_key = (child_key, role)
-            require(edge_key not in known_edges,
-                    "JRDB and JBIS competing parent claims require review")
+            if edge_key in known_edges:
+                parallel_unmerged.append({
+                    "child_person_key": child_key,
+                    "role": role,
+                    "jbis_parent_person_key": ancestor,
+                    "jrdb_parent_person_key": known_edges[edge_key]["parent_person_key"],
+                    "status": "PARALLEL_SOURCE_PARENT_IDENTITIES_NOT_MERGED",
+                })
+                continue
             known_edges[edge_key] = {
                 "child_person_key": child_key,
                 "parent_person_key": ancestor,
@@ -223,6 +229,10 @@ def build_graph(
         "source_generation": top50["source_generation"],
         "source_id_policy": "JRDB and JBIS never coalesced without reviewed individual identity",
         "verified_root_count": len(roots),
+        "root_person_keys": sorted(roots),
+        "parallel_unmerged_parent_claims": sorted(
+            parallel_unmerged,
+            key=lambda item: (item["child_person_key"], item["role"])),
         "nodes": [{"person_key": node} for node in nodes],
         "edges": edges,
         "stats": {
@@ -233,6 +243,7 @@ def build_graph(
                 for e in edges),
             "unverified_name_only_edges_added": 0,
             "unverified_identity_merges": 0,
+            "parallel_unmerged_claims": len(parallel_unmerged),
         },
     }
 
@@ -250,8 +261,7 @@ def inspect_shared_ancestor_candidates(graph: Mapping) -> list[dict]:
     for edge in graph.get("edges", []):
         by_child.setdefault(edge["child_person_key"], []).append(
             edge["parent_person_key"])
-    root_set = {node["person_key"] for node in graph["nodes"]}
-    root_set = {node for node in root_set if node.startswith("JRDB:")}
+    root_set = set(graph.get("root_person_keys", []))
     ancestry = {}
     for root in sorted(root_set):
         visited = set()
