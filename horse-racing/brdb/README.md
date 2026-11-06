@@ -289,3 +289,10 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - 優先4祖先（サンデーサイレンス、ウインドインハーヘア、キングマンボ、マンファス）の名前観測は上位50頭中31種牡馬・48経路。**7種牡馬のJBIS個体血統ページと4祖先のJBIS個体ページを突合した12経路**は出典裏付けを追加、残り36経路は個別監査待ち。
 - JBIS source-native 10桁IDはJRDB 8桁IDではない。**正式JRDB個体祖先IDの追加確定0、JRDB⇔JBIS本人crosswalkの承認0**。父・母父マスタの正式ID解決率は今回不変で、外部出典の確証度を増やす作業。
 - `AS_OF_UNVERIFIED`、`prediction_safe=false`、⑥⑦の適性・地域型の自動採点なし。BRDB CURRENT/Review v0.1/RaceNote/PWA等の本番未変更。
+
+## 2026-11-06 — ③-B 続報：優先4祖先・48経路の外部血統出典照合
+
+- [48/48の外部資料照合監査](docs/BRDB_STAGE3B_PRIORITY4_SOURCE_COVERAGE_COMPLETE_20261106.md) / [外部血統位置マスタ候補 v0.4](taxonomy/stage3b_priority4_bridge_candidate_v0_4.json) / [検証モジュール](src/brdb_stage3b_priority_bridge.py) / [合成回帰テスト10件](tests/test_brdb_stage3b_priority_bridge.py)。
+- ③-B研究用上位50頭のうち31頭に登場する優先4祖先（Sunday Silence、Wind in Her Hair、Kingmambo、Manfath）の**名前経路48/48にJBIS個別馬血統資料を紐付け**。旧12件＋新36件（うち最終5件は5代血統表で直接確認）。
+- これは**出典付き名前経路の資料確認率**。JRDB⇔JBIS本人crosswalk承認0件・JRDB canonical祖先ID追加0件であり、ID系統グラフの到達率は不変（1代36/100、2代10/200、3代0/400）。
+- ローカルの独立スロット監査で48枠の既存位置・馬名との整合を確認。コミット済みvalidatorのPython unittest/E2Eは未実行のためPASS表記しない。予想時点のas-ofも未証明、⑤の適性採点/BRDB CURRENT/RaceNote/PWAには接続なし。
