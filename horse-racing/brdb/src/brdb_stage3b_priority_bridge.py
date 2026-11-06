@@ -29,11 +29,11 @@ def validate_and_measure(
     """Compare the four externally corroborated paths against fifty seed horses.
 
     A candidate path may be recorded even when no source page corroborates it.
-    Only the four explicitly approved *external source observations* have a
-    corroborated flag; JRDB person-ID and source-time assurance stay false.
+    Only the twelve independently corroborated *external source observations*
+    have a corroborated flag; JRDB person-ID and source-time assurance stay false.
     """
     _require(bridge.get("schema_version") ==
-             "brdb-stage3b-priority4-bridge-candidate-v0.1", "wrong bridge version")
+             "brdb-stage3b-priority4-bridge-candidate-v0.2", "wrong bridge version")
     _require(bridge.get("prediction_safe") is False and
              bridge.get("as_of_status") == "AS_OF_UNVERIFIED", "unsafe as-of claim")
     _require(top50.get("research_only") is True and
@@ -77,8 +77,8 @@ def validate_and_measure(
         ancestor_by_key[key] = ancestor
 
     anchors = bridge.get("anchors")
-    _require(isinstance(anchors, list) and len(anchors) == 2,
-             "expected two independently corroborated child profiles")
+    _require(isinstance(anchors, list) and len(anchors) == 7,
+             "expected seven independently corroborated child profiles")
     anchor_by_child = {}
     for anchor in anchors:
         horse_id = anchor["jrdb_horse_id"]
@@ -97,8 +97,8 @@ def validate_and_measure(
 
     certified_paths = set()
     edges = bridge.get("external_parent_edges")
-    _require(isinstance(edges, list) and len(edges) == 4,
-             "expected four externally corroborated child pedigree paths")
+    _require(isinstance(edges, list) and len(edges) == 12,
+             "expected twelve externally corroborated child pedigree paths")
     for edge in edges:
         child_id = edge["jrdb_child_horse_id"]
         path = edge["path"]
@@ -106,7 +106,7 @@ def validate_and_measure(
         anchor = anchor_by_child.get(child_id)
         ancestor = ancestor_by_key.get(edge["external_ancestor_key"])
         _require(anchor is not None and ancestor is not None and
-                 path in ("S", "D") and key not in certified_paths,
+                 path in ("S", "D", "SS", "SD") and key not in certified_paths,
                  "unknown/duplicate source-person path")
         _require(edge["child_external_key"] ==
                  anchor["external_jbis_subject_key"] and
@@ -125,8 +125,7 @@ def validate_and_measure(
             edge["ancestor_display_name_in_child_profile"] ==
             ancestor["name_en"],
             "child source profile disagrees with external person")
-        expected = (anchor["observed_sire_name"]
-                    if path == "S" else anchor["observed_dam_name"])
+        expected = anchor["observed_path_labels"].get(path)
         _require(expected == ancestor["label_jp"],
                  "JRDB source parent name differs from external profile")
         child = subject_by_jrdb[child_id]
