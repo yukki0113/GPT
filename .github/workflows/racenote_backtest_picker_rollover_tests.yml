@@ -1,0 +1,79 @@
+name: RaceNote BTDAY pool rollover regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/src/racenote_backtest_day_picker.py'
+      - 'horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json'
+      - 'horse-racing/jrdb/tests/test_racenote_backtest_day_picker.py'
+      - 'horse-racing/jrdb/tests/test_racenote_historical_picker.py'
+      - 'horse-racing/jrdb/tests/test_racenote_pool_cycle_rollover.py'
+      - '.github/workflows/racenote_backtest_picker_rollover_tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-pool-rollover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run picker and cycle regression tests
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python -m unittest discover -s horse-racing/jrdb/tests -p 'test_racenote_backtest_day_picker.py' -v
+          python -m unittest discover -s horse-racing/jrdb/tests -p 'test_racenote_historical_picker.py' -v
+          python -m unittest discover -s horse-racing/jrdb/tests -p 'test_racenote_pool_cycle_rollover.py' -v
+      - name: Validate canonical active pool without modifying it
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import copy
+          import json
+          from pathlib import Path
+
+          from racenote_backtest_day_picker import pick_days, summary
+
+          path = Path("horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json")
+          state = json.loads(path.read_text(encoding="utf-8"))
+          report = summary(state)
+          assert report["total_days"] == 202, report
+          assert report["used_days"] == 0, report
+          assert report["eligible_unused_days"] == 194, report
+          assert report["last_date"] == "2026-11-01", report
+          assert report["selection_count"] == 181, report
+
+          rows = state["days"]
+          assert len({row["date"] for row in rows}) == len(rows)
+          assert all(not row["used"] for row in rows)
+          assert all(row["used_at"] is None for row in rows)
+          assert all(row["selection_id"] is None for row in rows)
+          assert sum(row["selection_cycle"] == 1 for row in rows) == 20
+          assert sum(row["selection_cycle"] == 2 for row in rows) == 182
+          assert sum(not row["eligible"] for row in rows) == 8
+
+          # Exercise each cycle through the real picker in memory only.
+          for source_mode, cycle in (
+              ("historical_warehouse", 2),
+              ("paci", 2),
+              ("paci", 1),
+          ):
+              isolated = copy.deepcopy(state)
+              picked = pick_days(
+                  isolated,
+                  1,
+                  seed=f"rollover-ci-{source_mode}-{cycle}",
+                  source_mode=source_mode,
+                  selection_cycle=cycle,
+              )
+              assert picked["sources"][0]["selection_cycle"] == cycle, picked
+              assert picked["sources"][0]["source_mode"] == source_mode, picked
+              assert picked["dates"][0] in {row["date"] for row in rows}
+          print("POOL_ROLLOVER_REAL_PICKER_VALIDATION=PASS")
+          PY
