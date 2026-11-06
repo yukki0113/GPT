@@ -1,0 +1,37 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "honmei": 11,
+    "confidence": "C",
+    "reason": "1600未勝利2着の11と、京都1600新馬3着の2・中京1600新馬3着の6の上積み比較が非決定的なためC。",
+    "confidence_review": {
+      "winning_case": "11ドラゴンドールは新潟1600未勝利2着IDM33、先手から粘り切る競馬を京都で再現する。",
+      "primary_rival": "2ハニーベルは京都1600新馬3着IDM34、6は中京1600新馬3着IDM33と同距離で上位。",
+      "relative_advantage": "11は新馬ではなく未勝利で2着を持つ一方、京都コースの直接好走経験は2番が上。",
+      "main_defeat_scenario": "2番が京都1600新馬3着から上積みし、11が逃げ同型と争い最後に差される。",
+      "risk_assessment": "10アイデアは京都1600新馬4着で出遅れの不利、14も1400未勝利3着で強みを持つ。",
+      "final_grade_reason": "11の未勝利2着と2・6の1600新馬3着の勝ち切り能力差が小さいためC。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "honmei": 1,
+    "confidence": "Z",
+    "reason": "京都5Rは芝1800の新馬戦で8頭全馬が初出走。事前能力・調教・状態のみで通常Confidenceは適用せずZ。",
+    "confidence_review": {
+      "not_applicable_reason": "芝1800新馬で既走の比較ができず、全馬初出走による実走未観測があるため通常のA/B/Cは適用しない。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "honmei": 11,
+    "confidence": "Z",
+    "reason": "京都6Rはダ1800新馬で11頭全馬が初出走。砂への適性とゲートを実走で確認できないためConfidence Z。",
+    "confidence_review": {
+      "not_applicable_reason": "ダ1800新馬で先行・砂被り・距離耐性が全馬未観測であり、通常の勝ち切りConfidenceを適用できない。"
+    }
+  }
+]
