@@ -54,6 +54,9 @@ def normalize_inventory_rows(rows: Iterable[dict[str, Any]]):
                 raise ValueError("Historical Warehouse source_reference is required")
             item.update(source_mode=source_mode, source_reference=reference,
                         selection_cycle=cycle)
+        elif "selection_cycle" in row or "source_mode" in row:
+            # Legacy PACI rows omit these fields; keep explicit cycles on rollover.
+            item.update(source_mode="paci", selection_cycle=cycle)
         out.append(item)
     return sorted(out, key=lambda r: (r["date"], r.get("source_mode", "paci"), r.get("selection_cycle", 1)))
 
@@ -108,15 +111,43 @@ def pick_days(state, n, seed=None, include_ineligible=False,
     if n <= 0:
         raise ValueError("n must be >= 1")
     def prior_cycles_used(row):
-        cycle = row.get("selection_cycle", 1)
+        """Require evidence for every earlier historical selection cycle."""
+        cycle = int(row.get("selection_cycle") or 1)
         if row.get("source_mode") != "historical_warehouse" or cycle == 1:
             return True
-        earlier = [x for x in state.get("days", [])
-                   if x["date"] == row["date"]
-                   and x.get("source_mode") == "historical_warehouse"
-                   and x.get("selection_cycle", 1) < cycle]
-        return (len(earlier) == cycle - 1
-                and all(x.get("used") for x in earlier))
+
+        completed_cycles = set()
+
+        # Retain compatibility with inventories that keep prior used rows.
+        for earlier in state.get("days", []):
+            if earlier.get("date") != row["date"]:
+                continue
+            if earlier.get("source_mode") != "historical_warehouse":
+                continue
+            if not earlier.get("used"):
+                continue
+            earlier_cycle = int(earlier.get("selection_cycle") or 1)
+            if earlier_cycle < cycle:
+                completed_cycles.add(earlier_cycle)
+
+        # After a full-pool rollover, active rows are reset. The immutable
+        # selection log remains proof of prior draws; released draws do not count.
+        for record in state.get("selections", []):
+            if record.get("released_at"):
+                continue
+            for source in record.get("sources", []):
+                if source.get("target_date") != row["date"]:
+                    continue
+                if source.get("source_mode") != "historical_warehouse":
+                    continue
+                earlier_cycle = int(source.get("selection_cycle") or 1)
+                if earlier_cycle < cycle:
+                    completed_cycles.add(earlier_cycle)
+
+        for required_cycle in range(1, cycle):
+            if required_cycle not in completed_cycles:
+                return False
+        return True
     available = [
         r for r in state.get("days", [])
         if not r.get("used") and (include_ineligible or r.get("eligible", True))
@@ -145,7 +176,12 @@ def pick_days(state, n, seed=None, include_ineligible=False,
         "n": n,
         "dates": [r["date"] for r in selected],
     }
-    if any(r.get("source_mode") == "historical_warehouse" for r in selected):
+    if any(
+        r.get("source_mode") == "historical_warehouse"
+        or int(r.get("selection_cycle") or 1) > 1
+        for r in selected
+    ):
+        # Include explicit cycle provenance for PACI second-pass draws as well.
         rec["sources"] = [{"target_date": r["date"],
                            "source_mode": r.get("source_mode", "paci"),
                            "source_reference": r.get("source_reference"),
