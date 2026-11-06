@@ -20,6 +20,7 @@ import duckdb
 VERSION = "brdb-stage3b-top50-builder-v0.1"
 EXPECTED_PEDIGREE_SHA = "1e7574f78703d79d8d83797f9e350a8927b728fc68c659cf5d340ee0f79b3536"
 EXPECTED_RELATION_SHA = "c90482851f91b8f2d99ec88407f4246471d10b38f18163464f88760cb197ff85"
+EXPECTED_RANKING_SHA = "e982e7b5a1467af5bb18e74f583acd9315263a74516472ca439c88b0f2eaf362"
 
 
 def sha256(path: Path) -> str:
@@ -38,6 +39,8 @@ def build(pedigree_file: Path, relation_file: Path, rank_file: Path,
         raise ValueError("unexpected pedigree generation SHA")
     if sha256(relation_file) != EXPECTED_RELATION_SHA:
         raise ValueError("unexpected parent-relation generation SHA")
+    if sha256(rank_file) != EXPECTED_RANKING_SHA:
+        raise ValueError("unexpected top-fifty ranking SHA")
     with rank_file.open(encoding="utf-8-sig", newline="") as stream:
         candidates = list(csv.DictReader(stream))[:50]
     if len(candidates) != 50:
