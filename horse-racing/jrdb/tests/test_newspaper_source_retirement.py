@@ -62,6 +62,17 @@ class SourceRetirementTest(unittest.TestCase):
                     self.assertEqual(result.returncode,0,result.stderr)
                     self.assertFalse(any(k.startswith('analysis_') for k in json.loads(path.read_text())))
 
+    def test_skeleton_no_iluka_path_advances_requested_revision(self):
+        workflow_text = (ROOT / '.github/workflows/jrdb_newspaper_skeleton_publish_issue.yml').read_text()
+        self.assertNotIn('cp -a /tmp/base-day /tmp/merged-day', workflow_text)
+        self.assertIn('--revision "$REQUEST_REVISION"', workflow_text)
+        self.assertIn('> /tmp/skeleton-request/external-merge-result.json', workflow_text)
+        with tempfile.TemporaryDirectory() as tmp:
+            base = _write_day(Path(tmp))
+            merged = Path(tmp) / 'r2'
+            merge_day(base, merged, revision=2)
+            self.assertEqual(json.loads((merged / 'manifest.json').read_text())['revision'], 2)
+
     def test_production_edge_entrypoints_disabled_and_pages_independent(self):
         for name in ['jrdb_newspaper_edge_republish_issue.yml','jrdb_newspaper_edge_v05_republish_issue.yml']:
             self.assertFalse((ROOT/'.github/workflows'/name).exists())
