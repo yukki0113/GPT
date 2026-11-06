@@ -852,7 +852,7 @@ def merge_day(
                         )
                     if rrdb_row["race_key"] != race_key:
                         raise ValueError(
-                            f"RRDB recommendation race identity mismatch for {rrdb_key}"
+                            f"RRDB recommendation race identity mismatch for {rrdb_key}: source={rrdb_row[\'race_key\']!r} current={race_key!r}"
                         )
                     horse["addons"]["rrdb_recommendation"] = {
                         "comment": rrdb_row["recommendation_comment"],
