@@ -69,7 +69,9 @@ def run(top50,ranking,pedigree,source,seed,registry,baseline,batch,out):
     canonical='JRDB:'+jrdb_id if jrdb_id else ext
     status='JRDB_CANONICAL' if jrdb_id else 'JBIS_SOURCE_QUALIFIED' if ext else 'NAME_OBSERVED' if observed_name or a.get('name') else 'UNRESOLVED'
     counts[f'depth{depth}_{status}']+=1;counts[f'depth{depth}_named']+=bool(observed_name or a.get('name'));counts[f'depth{depth}_source_name']+=observed
-    row={'rank':rank,'subject':s['name'],'path':path,'depth':depth,'jrdb_name':a.get('name'),'jbis_name':observed_name,'jbis_year':src['year'] if observed else None,'ancestor_id':canonical,'status':status,'root_identity':root_reason,'source_url':e['source_url'] if observed else None}
+    prior_name=a.get('name');name_agreement=('EXACT' if normalize(prior_name)==normalize(observed_name) else 'DIFFERENT_UNREVIEWED') if prior_name and observed_name else 'SINGLE_SOURCE_OR_UNKNOWN'
+    if name_agreement=='DIFFERENT_UNREVIEWED':counts[f'depth{depth}_name_difference_unreviewed']+=1
+    row={'rank':rank,'subject':s['name'],'path':path,'depth':depth,'jrdb_name':prior_name,'jbis_name':observed_name,'name_agreement':name_agreement,'jbis_year':src['year'] if observed else None,'ancestor_id':canonical,'status':status,'root_identity':root_reason,'source_url':e['source_url'] if observed else None}
     rows.append(row)
     if canonical:
      nodes.setdefault(canonical,{'id':canonical,'kind':'ANCESTOR','names':[]})['names'].append(a.get('name') or observed_name)
