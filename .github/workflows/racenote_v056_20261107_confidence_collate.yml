@@ -1,0 +1,135 @@
+name: RaceNote v056 20261107 confidence collation and freeze
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/racenote_v056_20261107_confidence_collate.yml'
+permissions:
+  contents: write
+concurrency:
+  group: racenote-v056-freeze
+  cancel-in-progress: false
+jobs:
+  collate-and-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Collate individually reviewed confidence into canonical input
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path('horse-racing/jrdb/daily/20261107/v056_day/v056')
+          draft_dir = root / 'incoming' / 'drafts'
+          parts = [
+              'confidence_京都_01.json',
+              'confidence_京都_02_03.json',
+              'confidence_京都_04_06.json',
+              'confidence_京都_07.json',
+              'cfg_kyoto_jump.json',
+              'confidence_京都_09.json',
+              'confidence_京都_10_11.json',
+              'confidence_京都_12.json',
+              'confidence_東京_01_02.json',
+              'confidence_東京_03_05.json',
+              'tokyo_debut_special_grade.json',
+              'confidence_東京_08_10.json',
+              'confidence_東京_11_12.json',
+              'fukushima_first_review.json',
+              'fukushima_review_part2.json',
+              'fukushima_debut_sixth.json',
+              'fukushima_7_9_reviews.json',
+              'fukushima_10_12_reviews.json',
+          ]
+          records = []
+          for name in parts:
+              piece = json.loads((draft_dir / name).read_text(encoding='utf-8'))
+              if not isinstance(piece, list):
+                  raise SystemExit(f'Invalid draft {name}')
+              records.extend(piece)
+
+          frozen = json.loads((root / 'frozen' / 'records.json').read_text(encoding='utf-8'))
+          expected = {
+              (record['venue'], record['race_no']): record['decision_core']['marks'][0]
+              for record in frozen
+          }
+          expected_z = {
+              ('京都', 5), ('京都', 6), ('京都', 8),
+              ('東京', 6), ('東京', 7), ('福島', 5),
+          }
+          seen = set()
+          grade_counts = {'A': 0, 'B': 0, 'C': 0, 'Z': 0}
+          review_fields = {
+              'winning_case', 'primary_rival', 'relative_advantage',
+              'main_defeat_scenario', 'risk_assessment', 'final_grade_reason',
+          }
+          for record in records:
+              key = (record['venue'], record['race_no'])
+              if key in seen or key not in expected:
+                  raise SystemExit(f'Duplicate or unknown race {key}')
+              seen.add(key)
+              if record['honmei'] != expected[key]:
+                  raise SystemExit(f'Frozen honmei mismatch: {key}')
+              grade = record['confidence']
+              if grade not in grade_counts or (grade == 'Z') != (key in expected_z):
+                  raise SystemExit(f'Grade scope mismatch: {key}')
+              grade_counts[grade] += 1
+              if not isinstance(record['reason'], str) or len(record['reason']) < 24:
+                  raise SystemExit(f'Invalid reason: {key}')
+              review = record['confidence_review']
+              fields = {'not_applicable_reason'} if grade == 'Z' else review_fields
+              if set(review) != fields or any(
+                  not isinstance(review[k], str) or len(review[k]) < 24
+                  for k in fields
+              ):
+                  raise SystemExit(f'Invalid confidence review fields: {key}')
+
+          if len(records) != 36 or seen != set(expected):
+              raise SystemExit(f'Incomplete day: {len(records)} records / {len(seen)} unique')
+          records.sort(key=lambda x: (['京都','東京','福島'].index(x['venue']), x['race_no']))
+          output = root / 'incoming' / 'llm_confidence.json'
+          if output.exists():
+              raise SystemExit('Existing canonical confidence input; refuse overwrite')
+          output.write_text(
+              json.dumps(records, ensure_ascii=False, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          print('COLLATION_PASS', grade_counts)
+          PY
+      - name: Canonical two-phase Confidence Freeze and verification
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+        run: |
+          set -euo pipefail
+          root=horse-racing/jrdb/daily/20261107/v056_day/v056
+          python horse-racing/jrdb/src/racenote_v056_turn2_two_phase.py --phase confidence --root "$root" --draft "$root/incoming/llm_confidence.json"
+          python - <<'PY'
+          from pathlib import Path
+          from racenote_v056_single_day import verify_confidence_freeze
+          root=Path('horse-racing/jrdb/daily/20261107/v056_day/v056')
+          result=verify_confidence_freeze(root)
+          assert result['status']=='CONFIDENCE_FROZEN_CLEAN_BLIND', result
+          print('CONFIDENCE_FREEZE_PASS')
+          PY
+      - name: Persist verified confidence freeze to main
+        run: |
+          set -euo pipefail
+          root=horse-racing/jrdb/daily/20261107/v056_day/v056
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A "$root"
+          git diff --cached --quiet && { echo 'No freeze artifacts to commit'; exit 1; }
+          git commit -m "RaceNote: confidence freeze $root"
+          git pull --rebase origin main
+          git push origin HEAD:main
