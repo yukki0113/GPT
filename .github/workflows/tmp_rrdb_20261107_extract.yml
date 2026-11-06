@@ -68,7 +68,7 @@ jobs:
             --expected-date 2026-10-31 \
             --expected-date 2026-11-01 \
             | tee .rrdb/output/racelap_refresh.json
-          if test -f .rrdb/racelap_effective.parquet; then
+          if test -f .rrdb/racelap/generations/racelap-forward-rrdb-20261107-01/race_lap.parquet; then
             cp .rrdb/racelap/generations/racelap-forward-rrdb-20261107-01/race_lap.parquet .rrdb/racelap_effective.parquet
           else
             cp .rrdb/racelap-current/current/race_lap.parquet .rrdb/racelap_effective.parquet
@@ -84,7 +84,7 @@ jobs:
             --paci-zip .rrdb/input/PACI261107.zip \
             --current-zip .rrdb/input/RaceReviewDB_CURRENT.zip \
             --course-fit-root .rrdb/course-fit \
-            --race-lap-parquet .rrdb/racelap/generations/racelap-forward-rrdb-20261107-01/race_lap.parquet \
+            --race-lap-parquet .rrdb/racelap_effective.parquet \
             --work-root .rrdb/work \
             --output-json .rrdb/output/20261107_RRDB_v0_5_reverse.json
 
