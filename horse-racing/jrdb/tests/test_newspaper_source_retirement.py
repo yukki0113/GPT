@@ -81,6 +81,15 @@ class SourceRetirementTest(unittest.TestCase):
         self.assertNotIn('if len(data)!=24:', workflow)
         self.assertIn('racenote_confidence_repo_path', workflow)
 
+    def test_rrdb_canonical_race_key_padding_contract(self):
+        # JRDB's source race key may omit the Newspaper's leading zero.
+        source = "3263104"
+        newspaper = "03263104"
+        self.assertEqual(source.zfill(8), newspaper.zfill(8))
+        self.assertNotEqual("3263105".zfill(8), newspaper.zfill(8))
+        merge_source = (ROOT / 'horse-racing/jrdb/src/jrdb_newspaper_merge_external.py').read_text(encoding='utf-8')
+        self.assertIn('rrdb_row["race_key"].zfill(8) != race_key.zfill(8)', merge_source)
+
     def test_production_edge_entrypoints_disabled_and_pages_independent(self):
         for name in ['jrdb_newspaper_edge_republish_issue.yml','jrdb_newspaper_edge_v05_republish_issue.yml']:
             self.assertFalse((ROOT/'.github/workflows'/name).exists())
