@@ -1,0 +1,117 @@
+{
+  "schema_version": "brdb-stage3b-person-identity-crosswalk-candidate-v0.1",
+  "review_status": "TWO_MULTI_GUARD_RESEARCH_VERIFIED_AND_29_NOT_APPROVED",
+  "source_generation": "5279af0bd8226cde",
+  "cohort": "2022-2024 birth-year research master",
+  "source_read_date": "2026-11-06",
+  "historical_asof_status": "AS_OF_UNVERIFIED",
+  "prediction_safe": false,
+  "identity_scope": "JRDB recorded horse_id to independently verified JBIS source-native individual; not a JRDB ID for external ancestors",
+  "source_field_policy": {
+    "jrdb_source": "generation/pedigree_fact.parquet; immutable research generation 5279af0bd8226cde",
+    "jrdb_pedigree_sha256": "1e7574f78703d79d8d83797f9e350a8927b728fc68c659cf5d340ee0f79b3536",
+    "external_primary": "JBIS Japanese horse profile",
+    "external_secondary": "JRA hall of fame horse profiles",
+    "join_guard_fields": [
+      "horse_name",
+      "full_birth_date",
+      "sex_code",
+      "sire_name",
+      "sire_birth_year",
+      "dam_name",
+      "dam_birth_year",
+      "sire_line_code"
+    ],
+    "source_name_language_note": "JBIS Japanese-language names are normalized only through explicitly inspected page text; no fuzzy matching",
+    "false_positive_guards": [
+      "each JRDB horse_id unique in pedigree source",
+      "full date of birth exactly equal",
+      "sex and both parent names match",
+      "parent birth years match from external page",
+      "no conflicting person key",
+      "external source URL exact 10-digit JBIS ID"
+    ]
+  },
+  "approved_research_crosswalks": [
+    {
+      "jrdb_horse_id": "02100816",
+      "jbis_horse_id": "0000742976",
+      "name": "ディープインパクト",
+      "birth_date": "2002-03-25",
+      "sex_code": "1",
+      "jrdb_sire_name": "サンデーサイレンス",
+      "jrdb_dam_name": "ウインドインハーヘア",
+      "jrdb_sire_birth_year": 1986,
+      "jrdb_dam_birth_year": 1991,
+      "jrdb_sire_line_code": "1206",
+      "jbis_source_url": "https://www.jbis.or.jp/horse/0000742976/",
+      "additional_independent_source_url": "https://www.jra.go.jp/gallery/dendo/horse30/",
+      "parent_links": [
+        {
+          "path": "S",
+          "parent_name_jp": "サンデーサイレンス",
+          "external_ancestor_key": "JBIS:0000333862"
+        },
+        {
+          "path": "D",
+          "parent_name_jp": "ウインドインハーヘア",
+          "external_ancestor_key": "JBIS:0000430846"
+        }
+      ],
+      "stage3b_priority_rank": 1,
+      "cohort_bms_count": 727,
+      "external_subject_key": "JBIS:0000742976",
+      "person_resolution_status": "RESEARCH_MULTI_GUARD_VERIFIED",
+      "jrdb_source_identity_status": "UNIQUE_PROFILE_ID",
+      "external_source_identity_status": "EXACT_JBIS_PROFILE_ID",
+      "source_snapshot_date": "2026-11-06",
+      "review_use_allowed": false,
+      "source_time_asof_verified": false
+    },
+    {
+      "jrdb_horse_id": "01103460",
+      "jbis_horse_id": "0000729458",
+      "name": "キングカメハメハ",
+      "birth_date": "2001-03-20",
+      "sex_code": "1",
+      "jrdb_sire_name": "キングマンボ",
+      "jrdb_dam_name": "マンファス",
+      "jrdb_sire_birth_year": 1990,
+      "jrdb_dam_birth_year": 1991,
+      "jrdb_sire_line_code": "1503",
+      "jbis_source_url": "https://www.jbis.or.jp/horse/0000729458/",
+      "additional_independent_source_url": "https://www.jra.go.jp/gallery/dendo/horse36/",
+      "parent_links": [
+        {
+          "path": "S",
+          "parent_name_jp": "キングマンボ",
+          "external_ancestor_key": "JBIS:0000347989"
+        },
+        {
+          "path": "D",
+          "parent_name_jp": "マンファス",
+          "external_ancestor_key": "JBIS:0000440324"
+        }
+      ],
+      "stage3b_priority_rank": 2,
+      "cohort_bms_count": 478,
+      "external_subject_key": "JBIS:0000729458",
+      "person_resolution_status": "RESEARCH_MULTI_GUARD_VERIFIED",
+      "jrdb_source_identity_status": "UNIQUE_PROFILE_ID",
+      "external_source_identity_status": "EXACT_JBIS_PROFILE_ID",
+      "source_snapshot_date": "2026-11-06",
+      "review_use_allowed": false,
+      "source_time_asof_verified": false
+    }
+  ],
+  "still_pending_anchor_count": 29,
+  "still_pending_reason": "Other v0.4 anchor records require corroboration of full date of birth, sex, and both parent names in matched JRDB and JBIS source profiles. They are not approved by name-year alone.",
+  "forbidden": {
+    "infer_ancestor_jrdb_horse_id": true,
+    "treat_lineage_code_as_person_id": true,
+    "inherit_approved_child_id_to_other_31_anchors": true,
+    "auto_promote_48_paths_to_canonical_jrdb_ids": true,
+    "produce_blood_aptitude": true,
+    "write_production_current": true
+  }
+}
