@@ -1,0 +1,25 @@
+{
+  "approval_reference": "RaceReviewDB_Operation_v0_1.md stable CURRENT contract",
+  "artifact_id": "rrdb_current",
+  "canonical_folder_id": "13m2MGibjEHOvBY6LmENQat4PuTZGcdwc",
+  "destination": "rrdb.zip",
+  "file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
+  "file_name": "RaceReviewDB_CURRENT.zip",
+  "generation_id": "jrdb_race_review_v0_1_incremental_20261101_01",
+  "manifest_sha256": "d5dd0be782b46a072d1c9e2c1ad3dced49225d33d3da82e8721acad288fbe900",
+  "period_to": "2026-11-01",
+  "schema_version": 1,
+  "sha256": "cb348cb825aaa5765e58211321cec77de6ba7c92b157778bd1bb1c6f0910ea41",
+  "size": 46987840,
+  "source_contract_sha256": "6dc14340853798ff30c72e7215426d63799dfe3b700c26987f764eb0dad62420",
+  "source_revision": 1,
+  "transport": "public_google_drive_current_verified_at_download",
+  "validation": [
+    "ZIP_CRC",
+    "SAFE_ARCHIVE_MEMBERS",
+    "CURRENT_JSON_OBJECT",
+    "MANIFEST_PASS",
+    "GENERATION_MATCH"
+  ],
+  "verified": true
+}
