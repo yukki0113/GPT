@@ -1,0 +1,507 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "honmei": 2,
+    "confidence": "B",
+    "reason": "2は1200mで3着・2着と堅実。13や12も短距離ダートの前進経路がある。",
+    "confidence_review": {
+      "winning_case": "2は同距離の複数好走があり、好位から最後まで脚を使う形が明瞭。",
+      "primary_rival": "13は1400m未勝利3着の先行馬、12は1200m新馬3着。",
+      "relative_advantage": "2の1200mでの連対実績は13の距離短縮より直接的。",
+      "main_defeat_scenario": "13が楽に前を取って粘り、2が詰めを欠く。",
+      "risk_assessment": "2は勝ち切り目前だが近走で勝ち切れていない。",
+      "final_grade_reason": "2は1200mで3着・2着と堅実。13や12も短距離ダートの前進経路がある。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "honmei": 1,
+    "confidence": "B",
+    "reason": "1の京都1400m2着は強いが4や7が別条件から前進する余地を残す。",
+    "confidence_review": {
+      "winning_case": "1は同舞台で先手を取って惜敗しており、再度先行して押し切る。",
+      "primary_rival": "4は1200m新馬3着、7は芝短距離で好走圏に近い。",
+      "relative_advantage": "ダートの距離近似と連対経験の量では1が先行する。",
+      "main_defeat_scenario": "4に先手を争われ1の末脚が鈍る。",
+      "risk_assessment": "1の勝ち筋は比較的明確だが2着止まりのリスクが残る。",
+      "final_grade_reason": "1の京都1400m2着は強いが4や7が別条件から前進する余地を残す。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "honmei": 4,
+    "confidence": "C",
+    "reason": "4の京都2000m2着と1の阪神2000m2着は脚質が異なり優劣がつけにくい。",
+    "confidence_review": {
+      "winning_case": "4は同舞台新馬2着で、少頭数を先導して押し切る。",
+      "primary_rival": "1は2000m新馬で出遅れから長く脚を使って2着。6も1800mで3着。",
+      "relative_advantage": "4はコース経験で上回るが、1は差し脚の上限を示す。",
+      "main_defeat_scenario": "1が早めに追い上げて4の逃げを捕える。",
+      "risk_assessment": "6にも上積みがあり4を単勝の明確な軸とはしにくい。",
+      "final_grade_reason": "4の京都2000m2着と1の阪神2000m2着は脚質が異なり優劣がつけにくい。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "honmei": 9,
+    "confidence": "B",
+    "reason": "9は京都1800m現級3着を反復するが6と10にも勝ち切りの可能性。",
+    "confidence_review": {
+      "winning_case": "9は同場同級で繰り返し上位に入り、好位で運べば勝ち切る。",
+      "primary_rival": "6は新潟1800m現級2着、10も京都1800m4着。",
+      "relative_advantage": "9の同コース3着反復は6の他場2着より条件面で確実。",
+      "main_defeat_scenario": "6がスムーズに先に抜け、9が差を詰めるだけに終わる。",
+      "risk_assessment": "堅実さは買えるが勝ち切る決定的な上限差はない。",
+      "final_grade_reason": "9は京都1800m現級3着を反復するが6と10にも勝ち切りの可能性。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "honmei": 3,
+    "confidence": "Z",
+    "reason": "芝2000m新馬戦で既走データがなく通常判定の対象外。",
+    "confidence_review": {
+      "not_applicable_reason": "芝2000m新馬戦で既走データがなく通常判定の対象外。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "honmei": 18,
+    "confidence": "Z",
+    "reason": "芝1400m新馬戦で18頭全馬の実走内容が未確認。",
+    "confidence_review": {
+      "not_applicable_reason": "芝1400m新馬戦で18頭全馬の実走内容が未確認。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "honmei": 13,
+    "confidence": "B",
+    "reason": "13の同場同級2着は最も明確だが9・4・10にも勝利への経路。",
+    "confidence_review": {
+      "winning_case": "13は京都1800m2勝クラス2着の番手粘りを再現する。",
+      "primary_rival": "9は同舞台4着、4は1800m1勝勝ち、10は1700mで連勝。",
+      "relative_advantage": "昇級初戦の4・10より、現級京都2着の13が有利。",
+      "main_defeat_scenario": "9の末脚が届く流れや4の先行押し切りに敗れる。",
+      "risk_assessment": "現級直接連対を支持する一方で勝利候補の多さからAではない。",
+      "final_grade_reason": "13の同場同級2着は最も明確だが9・4・10にも勝利への経路。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "honmei": 1,
+    "confidence": "B",
+    "reason": "1の2400m現級3着を買うが8・7にも距離適性と上積み。",
+    "confidence_review": {
+      "winning_case": "1は阪神2400m2勝クラスで進路不利がありながら3着。",
+      "primary_rival": "8は阪神2400m1勝勝ち、7は京都2200m現級4着。",
+      "relative_advantage": "1は同距離の同級3着があり8の昇級成績より確実。",
+      "main_defeat_scenario": "8が先に抜け出して1が届かない。",
+      "risk_assessment": "京都への転戦で運びが変わる余地はある。",
+      "final_grade_reason": "1の2400m現級3着を買うが8・7にも距離適性と上積み。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "honmei": 10,
+    "confidence": "C",
+    "reason": "10の同場未勝利勝ちに対し11や2の持続力も強く勝ち馬の優劣が難しい。",
+    "confidence_review": {
+      "winning_case": "10は京都1800mで長い脚を使って勝っており、ペースが流れれば差し切る。",
+      "primary_rival": "11は1700m未勝利勝ちで調教良好、2も1700m勝ち。",
+      "relative_advantage": "10はコースの直接性で上だが昇級の壁は未知。",
+      "main_defeat_scenario": "11・2の先行組が前で楽に運び10が届かない。",
+      "risk_assessment": "多くが1戦1勝直後で強敵との直接対戦比較が不足。",
+      "final_grade_reason": "10の同場未勝利勝ちに対し11や2の持続力も強く勝ち馬の優劣が難しい。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "honmei": 6,
+    "confidence": "B",
+    "reason": "6は京都1600m現級2着と先行実績があるが1にも同舞台で差し届く力。",
+    "confidence_review": {
+      "winning_case": "6は京都1600m3勝クラスで早め先頭から2着、再現性が高い。",
+      "primary_rival": "1は同場現級3着、8は昇級だが1800m勝ちから伸びる。",
+      "relative_advantage": "同条件2着の6は昇級初戦8より現級適応で優れる。",
+      "main_defeat_scenario": "1が6の後ろで脚をためて差し切る。",
+      "risk_assessment": "6は最後に捕まる競馬もあるためAの単勝確信までは届かない。",
+      "final_grade_reason": "6は京都1600m現級2着と先行実績があるが1にも同舞台で差し届く力。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "honmei": 8,
+    "confidence": "C",
+    "reason": "8は京都1800mオープン勝ち、10は阪神1800mオープン逃げ切りで比較が拮抗。",
+    "confidence_review": {
+      "winning_case": "8は京都1800mの同級勝ちで好位から競り勝った勝ち筋。",
+      "primary_rival": "10の阪神1800m逃げ勝ち、5の2000mオープン勝ち、15の圧勝昇級が強敵。",
+      "relative_advantage": "8は京都で直接勝っているが10の先行持続力に明確な差はない。",
+      "main_defeat_scenario": "10が主導権を握り8が追走で脚を使う。",
+      "risk_assessment": "4にも連勝があり最終5頭の勝ち切り力に決定差がない。",
+      "final_grade_reason": "8は京都1800mオープン勝ち、10は阪神1800mオープン逃げ切りで比較が拮抗。"
+    }
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "honmei": 5,
+    "confidence": "B",
+    "reason": "5は京都1400m現級2着だが18の同舞台4着には鋭い追い込みの上限。",
+    "confidence_review": {
+      "winning_case": "5は京都1400m現級2着と阪神1600m2着があり位置取りにも融通。",
+      "primary_rival": "18は京都1400mで最後方から4着まで急追、16は1400m3着。",
+      "relative_advantage": "5は同条件の連対経験があり18の4着より一歩優位。",
+      "main_defeat_scenario": "ハイペースで18が大外から差し切る。",
+      "risk_assessment": "5は勝ちきれない競馬が続いており他馬との差は限定的。",
+      "final_grade_reason": "5は京都1400m現級2着だが18の同舞台4着には鋭い追い込みの上限。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "honmei": 4,
+    "confidence": "C",
+    "reason": "4の京都1800m2着と9の東京1600m3着は距離・コースで優劣が入れ替わる。",
+    "confidence_review": {
+      "winning_case": "4はダート1800m未勝利で2着まで差を詰めた末脚が武器。",
+      "primary_rival": "9は東京1600m新馬3着で現舞台への裏付けが強い。",
+      "relative_advantage": "4の未勝利2着は9の新馬3着よりクラス経験がある。",
+      "main_defeat_scenario": "東京1600mで9が前を確保し4が追走に手間取る。",
+      "risk_assessment": "7の先行力、1の同条件4着もあり勝利候補が複数。",
+      "final_grade_reason": "4の京都1800m2着と9の東京1600m3着は距離・コースで優劣が入れ替わる。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "honmei": 6,
+    "confidence": "C",
+    "reason": "6の東京1400m新馬3着と9の東京1600m新馬3着は互角に近い。",
+    "confidence_review": {
+      "winning_case": "6は東京1400m新馬で接触を受けても直線に脚を残した。",
+      "primary_rival": "9は東京1600m新馬3着、2は芝1600mオープン4着。",
+      "relative_advantage": "6は能力の上限が高い一方、9の方が距離直接性は高い。",
+      "main_defeat_scenario": "9が現距離の経験で上回り6は延長に対応しきれない。",
+      "risk_assessment": "3は東京1600m未勝利2着で現級の確実性がありCが妥当。",
+      "final_grade_reason": "6の東京1400m新馬3着と9の東京1600m新馬3着は互角に近い。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "honmei": 5,
+    "confidence": "C",
+    "reason": "5の芝2000m3着と14の1800m3着はどちらも実績があり先着序列が難しい。",
+    "confidence_review": {
+      "winning_case": "5は芝2000m未勝利で前から運び3着。流れを支配する。",
+      "primary_rival": "14は1800m新馬3着、7は東京2000m未勝利4着。",
+      "relative_advantage": "5は2000mで3着の直接性がある。",
+      "main_defeat_scenario": "14の差し脚と7の出遅れ改善が重なると5が残れない。",
+      "risk_assessment": "5は未勝利で勝ち切る最後の一押しをまだ示していない。",
+      "final_grade_reason": "5の芝2000m3着と14の1800m3着はどちらも実績があり先着序列が難しい。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "honmei": 7,
+    "confidence": "Z",
+    "reason": "東京ダート1600m新馬で全馬の実走実績がなく通常判定の対象外。",
+    "confidence_review": {
+      "not_applicable_reason": "東京ダート1600m新馬で全馬の実走実績がなく通常判定の対象外。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "honmei": 1,
+    "confidence": "Z",
+    "reason": "東京芝2000m新馬で出走馬の当該条件実走がなく通常判定の対象外。",
+    "confidence_review": {
+      "not_applicable_reason": "東京芝2000m新馬で出走馬の当該条件実走がなく通常判定の対象外。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "honmei": 9,
+    "confidence": "C",
+    "reason": "9の短距離同級2着と13の東京1300m同級2着に明確な勝利優劣がない。",
+    "confidence_review": {
+      "winning_case": "9は1200m1勝クラス2着で好位から脚を使い、1300mでも持続可能。",
+      "primary_rival": "13は東京1300m現級2着、12と15も東京1400m現級2着。",
+      "relative_advantage": "9は近走能力が高いが13の東京1300m直接実績では劣る。",
+      "main_defeat_scenario": "13が先行して粘り9が差を詰めるだけに終わる。",
+      "risk_assessment": "12や15まで勝利候補として残るためC。",
+      "final_grade_reason": "9の短距離同級2着と13の東京1300m同級2着に明確な勝利優劣がない。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "honmei": 14,
+    "confidence": "C",
+    "reason": "14の東京1600m未勝利2着より7・11の東京1600m現級上位の方が格上の裏付け。",
+    "confidence_review": {
+      "winning_case": "14は東京1600mで先行2着、地方1600m勝ちで勝つ形を知る。",
+      "primary_rival": "7は同場現級3着反復、11は同条件現級2着。",
+      "relative_advantage": "14は勝つ運びが明確だが現級の比較証拠では7・11が上。",
+      "main_defeat_scenario": "7が馬群を捌き抜け、14は昇級の速い流れで甘くなる。",
+      "risk_assessment": "上位3頭の勝ち筋が拮抗しC。",
+      "final_grade_reason": "14の東京1600m未勝利2着より7・11の東京1600m現級上位の方が格上の裏付け。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "honmei": 2,
+    "confidence": "C",
+    "reason": "2の短距離昇級馬と14の1400m現級3着は強弱が明瞭でない。",
+    "confidence_review": {
+      "winning_case": "2は1200m1勝勝ちで好位から抜け出す、自在性を持つ。",
+      "primary_rival": "14は1400m現級3着、7は東京1300m現級4着。",
+      "relative_advantage": "2は近走の勝ち内容が良いが同級直接成績は14・7が上。",
+      "main_defeat_scenario": "14が差し切り、2が昇級で伸び負ける。",
+      "risk_assessment": "5も1200m勝ちで急成長余地があり順位が割れる。",
+      "final_grade_reason": "2の短距離昇級馬と14の1400m現級3着は強弱が明瞭でない。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "honmei": 6,
+    "confidence": "C",
+    "reason": "6の2000m新馬勝ちと2の東京1800mオープン3着は能力の比較が難しい。",
+    "confidence_review": {
+      "winning_case": "6は2000m新馬を後方から差し切り直線で強く伸びた。",
+      "primary_rival": "2は東京1800mオープン3着、9は2000m現級4着。",
+      "relative_advantage": "6は2000m勝ちがあるが2は格上相手の3着がある。",
+      "main_defeat_scenario": "2が持続脚で先に抜け、6の脚が届かない。",
+      "risk_assessment": "7・3も2000m勝ちで勝利圏に入り得る。",
+      "final_grade_reason": "6の2000m新馬勝ちと2の東京1800mオープン3着は能力の比較が難しい。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "honmei": 5,
+    "confidence": "C",
+    "reason": "5は東京1600m現級4着だが1の現級2着歴や10の1700m現級3着と大差ない。",
+    "confidence_review": {
+      "winning_case": "5は東京1600m現級4着で終いに脚を使いペースが合えば勝ち切れる。",
+      "primary_rival": "1は東京1600m現級2着、10は札幌1700m現級3着。",
+      "relative_advantage": "5は現況の差し脚で上位候補だが1の最高着順は上。",
+      "main_defeat_scenario": "1が単騎で先手を取って粘り5が届かない。",
+      "risk_assessment": "上位の直近着順にばらつきがあり勝利序列の確信は低い。",
+      "final_grade_reason": "5は東京1600m現級4着だが1の現級2着歴や10の1700m現級3着と大差ない。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "honmei": 7,
+    "confidence": "A",
+    "reason": "7は東京2500mオープン勝ちの明確な直接実績を持ち、最も強く勝利を支持。",
+    "confidence_review": {
+      "winning_case": "7は東京2500mオープンを好位で脚をため直線抜け出して勝利。",
+      "primary_rival": "4は東京2500m4着・2600m勝ち、3は京都2400mオープン2着。",
+      "relative_advantage": "7は同場同距離の勝利実績で4の4着・3の他場2着より直接優位。",
+      "main_defeat_scenario": "4が早めに進出し7が馬群に閉じ込められると敗れる。",
+      "risk_assessment": "7にも位置取りリスクはあるが、同条件での勝ち切り裏付けが他候補より明確。",
+      "final_grade_reason": "7は東京2500mオープン勝ちの明確な直接実績を持ち、最も強く勝利を支持。"
+    }
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "honmei": 5,
+    "confidence": "B",
+    "reason": "5の東京1400m勝ちと短距離現級2着は支持できるが3の同級同場3着を警戒。",
+    "confidence_review": {
+      "winning_case": "5は東京1400mを先行して楽に勝ち、直近も現級1200m2着。",
+      "primary_rival": "3は東京1400m現級3着で直線に進路不利があった。",
+      "relative_advantage": "5には当該コース勝ちと現級連対が併存する。",
+      "main_defeat_scenario": "3がスムーズに捌くと末脚で差される。",
+      "risk_assessment": "4も短距離現級4着がありAとするほど抜けていない。",
+      "final_grade_reason": "5の東京1400m勝ちと短距離現級2着は支持できるが3の同級同場3着を警戒。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 1,
+    "honmei": 3,
+    "confidence": "B",
+    "reason": "3は1200m・1000mで連対を重ねるが5にも1200m2・3着がある。",
+    "confidence_review": {
+      "winning_case": "3はダート短距離で連続して上位へ入り、1150mでも好位追走可能。",
+      "primary_rival": "5は1200m未勝利2着と3着、4は1300m新馬2着。",
+      "relative_advantage": "3は1000mと1200mの両方で連対しており距離適応が広い。",
+      "main_defeat_scenario": "5が先行力を発揮し直線で3を振り切る。",
+      "risk_assessment": "他の短距離連対馬と能力が接近するためB。",
+      "final_grade_reason": "3は1200m・1000mで連対を重ねるが5にも1200m2・3着がある。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 2,
+    "honmei": 7,
+    "confidence": "C",
+    "reason": "7の1200m3着と6・5の1200m2着を比較すると勝利候補間の差が小さい。",
+    "confidence_review": {
+      "winning_case": "7は芝1200m未勝利3着で、調整が充実し前進を期待。",
+      "primary_rival": "6は1200m未勝利2着、5も1200m新馬2着。",
+      "relative_advantage": "7はオープンへの挑戦経験と状態で買えるが現距離の着順は6・5が上。",
+      "main_defeat_scenario": "6が後方から内を突いて差し切り、7は届かない。",
+      "risk_assessment": "3も1400mで3着と上位候補が多い。",
+      "final_grade_reason": "7の1200m3着と6・5の1200m2着を比較すると勝利候補間の差が小さい。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 3,
+    "honmei": 15,
+    "confidence": "C",
+    "reason": "15と14の1800m現級2着、2の1700m現級2着はいずれも強い。",
+    "confidence_review": {
+      "winning_case": "15は1800m現級で逃げて2着、速い流れでも粘った。",
+      "primary_rival": "14は1800m2着、2は1700m2着で条件の直接性がある。",
+      "relative_advantage": "15には前に行く勝ち筋があるが2は距離適性で優れる。",
+      "main_defeat_scenario": "2が先手を取り15が外で脚を使って最後に差される。",
+      "risk_assessment": "14と10にも現級3着以内の裏付けがあり決定差がない。",
+      "final_grade_reason": "15と14の1800m現級2着、2の1700m現級2着はいずれも強い。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 4,
+    "honmei": 6,
+    "confidence": "Z",
+    "reason": "福島2750mの障害未勝利戦で特殊対象。",
+    "confidence_review": {
+      "not_applicable_reason": "福島2750mの障害未勝利戦で特殊対象。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 5,
+    "honmei": 6,
+    "confidence": "Z",
+    "reason": "福島2750mの障害未勝利戦で特殊対象。",
+    "confidence_review": {
+      "not_applicable_reason": "福島2750mの障害未勝利戦で特殊対象。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 6,
+    "honmei": 6,
+    "confidence": "Z",
+    "reason": "福島ダ1700m新馬で実走経験がなく通常のConfidence判定対象外。",
+    "confidence_review": {
+      "not_applicable_reason": "福島ダ1700m新馬で実走経験がなく通常のConfidence判定対象外。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 7,
+    "honmei": 9,
+    "confidence": "C",
+    "reason": "9は1200m同級2着、10は1200m未勝利勝ち、7は直線競馬で好走し序列が難しい。",
+    "confidence_review": {
+      "winning_case": "9は1200m現級2着から好位で勝ち切る展開を作れる。",
+      "primary_rival": "10は1200m未勝利勝ち、2も短距離未勝利勝ちを持つ。",
+      "relative_advantage": "9には現級上位経験があるが10の距離戻りで一変する余地。",
+      "main_defeat_scenario": "10が適距離で先行し9を封じる。",
+      "risk_assessment": "7と12も末脚・先行力があり5頭間で勝利優劣が明瞭でない。",
+      "final_grade_reason": "9は1200m同級2着、10は1200m未勝利勝ち、7は直線競馬で好走し序列が難しい。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 8,
+    "honmei": 14,
+    "confidence": "B",
+    "reason": "14は京都1200m現級3着の短距離先行力を買うが15の連対反復が強敵。",
+    "confidence_review": {
+      "winning_case": "14は1200m現級3着で好位から粘り、1150mでも通用する。",
+      "primary_rival": "15は1200m現級2着・3着と安定、6は4・5着。",
+      "relative_advantage": "14は直近の同級3着で好調だが15の2着実績と差は小さい。",
+      "main_defeat_scenario": "15が流れに乗り直線で14を差す。",
+      "risk_assessment": "14が最有力でも絶対的な比較優位には至らない。",
+      "final_grade_reason": "14は京都1200m現級3着の短距離先行力を買うが15の連対反復が強敵。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 9,
+    "honmei": 5,
+    "confidence": "C",
+    "reason": "5の福島1800m勝ちと8の1800m現級3着は異なる強みで、3・6も同級好走。",
+    "confidence_review": {
+      "winning_case": "5は福島1800m未勝利を好位から勝って舞台を熟知。",
+      "primary_rival": "8は札幌1800m1勝クラス3着、3は福島2000m現級2着。",
+      "relative_advantage": "5は福島1800mで勝ったが、8は現級で3着と格上の裏付け。",
+      "main_defeat_scenario": "8が中団から伸びて5の先行を捕える。",
+      "risk_assessment": "6も1800m現級3着反復で候補が密集。",
+      "final_grade_reason": "5の福島1800m勝ちと8の1800m現級3着は異なる強みで、3・6も同級好走。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 10,
+    "honmei": 1,
+    "confidence": "C",
+    "reason": "1の1700m現級2着と15の福島1700m現級2着は対等に近い。",
+    "confidence_review": {
+      "winning_case": "1は1700m現級2着から中団差しで勝ちに迫れる。",
+      "primary_rival": "15は福島1700m現級2着で先行、14は1800m現級3着。",
+      "relative_advantage": "1は同距離連続善戦だが15には福島への直接適性がある。",
+      "main_defeat_scenario": "15の単騎先行が嵌まり1が差し損ねる。",
+      "risk_assessment": "14や9にも現級で勝ち負けに近い内容がありC。",
+      "final_grade_reason": "1の1700m現級2着と15の福島1700m現級2着は対等に近い。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 11,
+    "honmei": 9,
+    "confidence": "C",
+    "reason": "9の短距離オープン3・4着は安定するが2の連勝と5のオープン3着が脅威。",
+    "confidence_review": {
+      "winning_case": "9は芝1200mオープンで連続善戦し、流れに合わせた好位差しで勝つ。",
+      "primary_rival": "2は1200mを連勝し昇級、5は札幌1200mオープン3着。",
+      "relative_advantage": "9は現級の確実性で2に上回るが勢いと上積みは2が上かもしれない。",
+      "main_defeat_scenario": "2が昇級初戦から能力を発揮し9が差し届かない。",
+      "risk_assessment": "4・14も別条件で末脚を見せており勝利候補が拮抗。",
+      "final_grade_reason": "9の短距離オープン3・4着は安定するが2の連勝と5のオープン3着が脅威。"
+    }
+  },
+  {
+    "venue": "福島",
+    "race_no": 12,
+    "honmei": 4,
+    "confidence": "C",
+    "reason": "4の1200m未勝利勝ち、6の1400m現級3着、11の福島1200m現級3着で序列不透明。",
+    "confidence_review": {
+      "winning_case": "4は1200m未勝利を好位で勝ち、昇級でも同じ形が通用すれば。",
+      "primary_rival": "6は1400m現級3着、11は福島1200m現級3着。",
+      "relative_advantage": "4は勝ち切った脚を支持する一方、現級の裏付けは6・11に劣る。",
+      "main_defeat_scenario": "11が福島で差し切り、6が短縮で先手を取る。",
+      "risk_assessment": "12も1400m未勝利勝ちから短縮し上位候補が複数。",
+      "final_grade_reason": "4の1200m未勝利勝ち、6の1400m現級3着、11の福島1200m現級3着で序列不透明。"
+    }
+  }
+]
