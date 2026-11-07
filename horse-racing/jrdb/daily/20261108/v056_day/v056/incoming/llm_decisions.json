@@ -1,0 +1,1190 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "marks": [
+      2,
+      13,
+      12,
+      8,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        13,
+        12,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2は同距離で二度の連対、13は1400mで前進。11は一度短距離で失速しており現条件の再現性は12や8に劣る。"
+    },
+    "honmei_win": {
+      "evidence": "2テリオスベラは京都1200mの3着と阪神1200mの2着があり、距離・ダート両面の裏付けが最も強い。",
+      "main_risk": "13ツーハーツの先行力が短縮で生きると差し切れない。2自身も最後の詰めが課題。"
+    },
+    "shot_case": {
+      "case": "12レグルスロウは同距離新馬3着。発馬が決まり先行勢が残る形なら巻き返す。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2の1200m連続好走と13の1400m先行3着を比較。8は同コース5着から差を縮める余地、7は1400m先行3着から短縮対応が鍵。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "marks": [
+      1,
+      4,
+      7,
+      6,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        4,
+        7,
+        6,
+        11
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は調教に前進があるが芝1600mの新馬9着だけで、ダ1400mの好走実績を持つ1を逆転する根拠は薄い。"
+    },
+    "honmei_win": {
+      "evidence": "1サルトヴェローチェは京都1400mで逃げて2着、札幌1700mでも2着とダートで先行力を繰り返し示した。調整面も良好。",
+      "main_risk": "初速の速い4カムトゥルーが先手争いに加わると、1が終い甘くなる可能性。"
+    },
+    "shot_case": {
+      "case": "7エルダークローネは芝で詰めを欠いているものの追走力と好調教から初ダートが嵌れば前進。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1の1400m直接2着を軸に、4の1200m3着、11の京都1400m6着と比較。6はダート新馬7着から調教上積みを評価。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "marks": [
+      4,
+      1,
+      6,
+      2,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        1,
+        6,
+        2,
+        3
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は東京2000m新馬8着で見せ場が乏しく、6の芝1800m3着や2の芝1800m6着を上回る証拠がない。"
+    },
+    "honmei_win": {
+      "evidence": "4メールデトワールは同じ京都芝2000mの新馬で逃げて2着。舞台を知り、少頭数で主導権を握れる点を評価。",
+      "main_risk": "1トップオブドリームは阪神2000m新馬2着で後方から長く脚を使った。4の逃げが早く捕まると逆転。"
+    },
+    "shot_case": {
+      "case": "6ゴールデンプロミスは芝1800m新馬3着。距離延長で先行して一脚使えば上位に迫れる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "4の同場同距離2着と1の同距離差し2着が接近。6は1800mからの延長、2は同場1800mの6着で相対比較した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "marks": [
+      9,
+      6,
+      10,
+      8,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        6,
+        10,
+        8,
+        1
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5アルビオンは京都1800mで以前の能力水準は高いが、直近12着と9着で終いに不安。1の直近同舞台3着を重視。"
+    },
+    "honmei_win": {
+      "evidence": "9クリュギストは京都1800mの1勝クラスで3着を続け、クラスへの適応を示す。先行馬を見ながら脚を使える。",
+      "main_risk": "6サトノグロリアは新潟1800m2着から勢いがあり、同馬が先に抜けると差し届かない。"
+    },
+    "shot_case": {
+      "case": "8トラッドロアは中京1800m未勝利勝ちで番手から粘った。昇級でも流れを掴めば粘り込み。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9の同条件連続3着、6の新潟1800m2着、10の京都1800m4着を比較。1も同場3着があり差は小さい。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "marks": [
+      3,
+      4,
+      6,
+      8,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        4,
+        6,
+        8,
+        11
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は新馬の事前準備で上位5頭ほどの総合材料が揃わず、6や8の状態面と比べ入替え材料が弱い。"
+    },
+    "honmei_win": {
+      "evidence": "3オネスティは初出走馬の中でも事前の能力評価が目立ち、基礎的な走力を第一に支持する。",
+      "main_risk": "4トレヴァンクールは調教と状態が良く、未知の実戦で3を上回る可能性。"
+    },
+    "shot_case": {
+      "case": "6ダノンデスティニーは準備のバランスが良い。上位が折り合いを欠けば食い込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬で実走比較は不可能。3の能力面、4の状態面、6と8の調整、11の中位の材料を区別して検討した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "marks": [
+      18,
+      15,
+      17,
+      6,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        18,
+        15,
+        17,
+        6,
+        14
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は事前の能力面で18・15・17ほど強くなく、14の調教と比較しても最終5頭への採用根拠は弱い。"
+    },
+    "honmei_win": {
+      "evidence": "18マテンロウヒルズは新馬の中でも事前評価が高く、調教・状態も整う。1400mでスムーズに先行できれば。",
+      "main_risk": "17テーオーレコードと15アートップにも基礎能力があり、発馬や位置取りの未知数が大きい。"
+    },
+    "shot_case": {
+      "case": "6メイショウチハルは仕上がり面に強みがあり、18が追走で苦戦すれば逆転を狙える。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全18頭の初出走でレース経験はない。18の総合的な事前材料を軸に15・17の潜在能力、6・14の調整を比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "marks": [
+      13,
+      9,
+      4,
+      10,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        9,
+        4,
+        10,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は同じ京都1800mで5着と堅実だが、13の同舞台2着や9の同舞台4着ほど先着根拠が強くない。"
+    },
+    "honmei_win": {
+      "evidence": "13エアニゲラは京都1800mの2勝クラスで番手から2着。昇級後も先行して粘れる直接実績を最重視。",
+      "main_risk": "9ロイスターは同条件4着から上昇する余地が大きく、前が厳しい流れなら差される。"
+    },
+    "shot_case": {
+      "case": "4リアンドゥクールは1勝クラスを好位から押し切り、昇級でも前で運べれば一角を崩す。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "13の2勝クラス同条件2着、9の同4着、4の1800m1勝勝ちを比較。10の連勝は評価するが昇級と脚質の不確実性を残す。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "marks": [
+      1,
+      8,
+      7,
+      5,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        8,
+        7,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9は東京2400mの2勝クラス4着があるが直近2200m11着。1の阪神2400m3着の再現性に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "1メディテラニアンは阪神2400mで2勝クラス3着。直線の進路が遅れても脚を使えた内容が京都の少頭数で生きる。",
+      "main_risk": "8アロマフェリスは阪神2400mで先行抜け出し勝ち。昇級でも先に動かれると差し切れない。"
+    },
+    "shot_case": {
+      "case": "7アットアブラストは京都2200m2勝クラス4着。勝負所の反応が改善すれば巻き返す。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1の2400m同級3着と8の同距離1勝勝ちを主軸に、7と5の京都2200m同級実績を比較した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "marks": [
+      10,
+      11,
+      2,
+      1,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        11,
+        2,
+        1,
+        7
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14は中山1800m新馬勝ちで力はあるが、10の京都1800m未勝利勝ちと2の札幌1700m勝ちの実戦比較を優先。"
+    },
+    "honmei_win": {
+      "evidence": "10マーズエクレールは京都1800m未勝利を3角から長く脚を使って勝った。昇級でも同舞台で差し脚を生かせる。",
+      "main_risk": "11トゥザファイナルは先行して1700m勝ち、2ロジアコースも持続力があり、前で楽に運ぶと差し損ねる。"
+    },
+    "shot_case": {
+      "case": "2ロジアコースは1700mを向正面から動いて勝利。京都1800mで展開が締まれば持続力で浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "各馬1勝直後の難解な組み合わせ。10は京都1800m勝ち、11は1700m勝ちと好調整、1は同場新馬勝ちを比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "marks": [
+      6,
+      1,
+      8,
+      3,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        1,
+        8,
+        3,
+        5
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2は1400mの3勝クラスで連続2着と堅実だが、1600mへの延長の裏付けが6・1ほど明確ではない。"
+    },
+    "honmei_win": {
+      "evidence": "6アヴィオンは京都1600m3勝クラス2着で早め先頭から粘り、阪神1600m勝ちもある。コース条件と先行持続力で中心。",
+      "main_risk": "1フェアリーライクは同じ京都1600m3勝クラス3着で差す形。前の6が競り合えば差し切られる。"
+    },
+    "shot_case": {
+      "case": "8ブルーマエストロは京都1600m2勝クラス2着と中山1800m勝ち。昇級でも脚を使える。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6と1は京都1600m同級2・3着で直接比較できる。8は昇級、3は連勝中、5は同級2着歴を評価。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "marks": [
+      8,
+      10,
+      15,
+      5,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        10,
+        15,
+        5,
+        4
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は中京1800mオープン勝ちの堅実さがあるが、8の京都1800mオープン勝ちと10の先行力を優先。"
+    },
+    "honmei_win": {
+      "evidence": "8テスティモーネは京都ダ1800mオープンを好位から競り勝ち、高い実戦水準を示した。近走の地方2000m4着も大崩れではない。",
+      "main_risk": "10ムルソーは阪神1800mオープンを逃げ切り、盛岡2000mでも2着。逃げ切られる展開が最大の脅威。"
+    },
+    "shot_case": {
+      "case": "15ショウナンバンライは阪神1800mの3勝クラスを外先行から圧勝。昇級でも先手を取れれば一発。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "8の京都1800mオープン勝ち、10の阪神1800m勝ち、5の2000mオープン勝ちを比較。15の昇級初戦と4の連勝に警戒。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "marks": [
+      5,
+      18,
+      16,
+      7,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        18,
+        16,
+        7,
+        2
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4は京都1600m5着と札幌1500m勝ちがあるが、同じ京都1400mで2着の5や4着の18に直接性で劣る。"
+    },
+    "honmei_win": {
+      "evidence": "5キシャールは京都1400m1勝クラス2着、阪神1600mでも2着と近走の安定度が高い。舞台適性と好位差しを支持。",
+      "main_risk": "18フロンティエールは同じ京都1400mで最後方から4着に急追。ペースが速くなると5を捕まえ得る。"
+    },
+    "shot_case": {
+      "case": "16メイクワンズデイは1400mで先行3着歴があり、調教も良い。楽に好位を確保できれば。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5の同場同距離2着と18の同4着を中心に、16の中京1400m3着、7の京都1400m5着を比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      4,
+      9,
+      7,
+      1,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        9,
+        7,
+        1,
+        2
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は東京1400m新馬8着で終いの伸びも限定的。2の芝好走による初ダート未知数と比べても入替え根拠が薄い。"
+    },
+    "honmei_win": {
+      "evidence": "4ルボワは京都ダ1800m未勝利2着、後方から渋太く伸びた。東京1600mへの短縮で流れに乗れれば勝ち切れる。",
+      "main_risk": "9ナックドリームは東京ダ1600m新馬3着で舞台適性が明白。4が追走に苦労すれば逆転。"
+    },
+    "shot_case": {
+      "case": "7ブルーサンタはダ1800mで先手を取れる。距離短縮で粘りが増す可能性。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "4のダート未勝利2着と9の東京1600m新馬3着を比較。1も同舞台4着、2は芝好走からの初ダートを留保。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      6,
+      9,
+      2,
+      3,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        9,
+        2,
+        3,
+        10
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7は東京1600m未勝利3着と条件実績があるが、9の同場新馬3着や2のオープン4着との比較でわずかに下。"
+    },
+    "honmei_win": {
+      "evidence": "6クリスタルシュガーは東京1400m新馬3着で、序盤接触がありながら馬群を捌いて脚を使った。1600mへの延長でも前進可能。",
+      "main_risk": "9ポートマンロードは東京1600m新馬3着で直線伸びた。6の距離延長に対して同条件経験で優位。"
+    },
+    "shot_case": {
+      "case": "2スイートアリッサムはオープン4着の実績。直線の進路が開けば差し込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6の1400m3着と9の1600m新馬3着を比較。2のオープン4着、3の東京1600m2着、10の1800m新馬2着も勝利候補。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      5,
+      14,
+      11,
+      7,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        14,
+        11,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9は東京2000m新馬4着だが前との差を詰めきれず、5の同距離未勝利3着より勝ち筋が薄い。"
+    },
+    "honmei_win": {
+      "evidence": "5マハロハは新潟2000m未勝利で先手を取って3着。東京でも主導権を握れる脚質と距離実績を支持する。",
+      "main_risk": "14シェーンリヒトは1800m新馬3着で差す形。東京の長い直線で5の逃げを捕える可能性。"
+    },
+    "shot_case": {
+      "case": "11ソヴリンゲートは1800m新馬5着でも好位の形を作れた。距離延長で粘りが増せば。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5の2000m未勝利3着、14の1800m新馬3着、7の東京2000m4着を比較。7は出遅れ改善が条件。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      7,
+      14,
+      8,
+      6,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        14,
+        8,
+        6,
+        10
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は準備面に一定の材料があるが、7・14・8の事前能力の厚さや10の好状態と比較して採用しない。"
+    },
+    "honmei_win": {
+      "evidence": "7スペルチェックは初出走勢で能力の事前評価が最上位。1600mをこなして好位を取れれば中心。",
+      "main_risk": "14ロスコンデレジェスと8ムーンレガリアは事前能力が接近。発馬や砂への対応は実走未確認。"
+    },
+    "shot_case": {
+      "case": "8ムーンレガリアは調教の仕上がりが良く、先行できれば押し切る余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全16頭が初出走で実戦比較はできない。7・14・8の能力面、6の中位評価、10の調教・状態を分けて判断。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      1,
+      4,
+      13,
+      8,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        4,
+        13,
+        8,
+        3
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7は事前能力が3と近いが、4の調教状態や13の準備の厚みを覆すほどではない。"
+    },
+    "honmei_win": {
+      "evidence": "1エウゲニオスは新馬の事前能力が高く、調教面でも十分に整う。東京2000mでスムーズなら。",
+      "main_risk": "4ウェザリングは調教と状態で最も目立ち、初走で1を上回る可能性がある。"
+    },
+    "shot_case": {
+      "case": "13ダルマッコは能力と調教の両面が揃い、先行力があれば穴候補。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬で実走裏付けなし。1の能力、4の仕上がり、13と8の潜在力、3の総合評価を比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      9,
+      13,
+      12,
+      7,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        13,
+        12,
+        7,
+        15
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2は1200m未勝利勝ちがあるが、13の東京1300m2着、9の1勝クラス1200m2着より昇級実績の厚みが薄い。"
+    },
+    "honmei_win": {
+      "evidence": "9アンバサダネージュは新潟1200m1勝クラス2着で好位から競り合った。1300mでも先行持続力を評価。",
+      "main_risk": "13アヴァランチは東京1300m1勝クラス2着とコース距離の直接実績が強い。先手を取ると逆転。"
+    },
+    "shot_case": {
+      "case": "12マーガレットクレアは東京1400m1勝クラス2着で直線よく伸びた。短縮で展開が向けば。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9の短距離同級2着と13の東京1300m2着を比較。12と15の東京1400m2着、7の同3着も僅差。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "marks": [
+      14,
+      7,
+      11,
+      4,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        7,
+        11,
+        4,
+        3
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5の芝2400m近走は一定の能力を示すが、ダート1600mの直接実績がなく、3のダート1800m勝ちより裏付けが弱い。"
+    },
+    "honmei_win": {
+      "evidence": "14ダノンマスタングは東京1600m未勝利2着で先行して競り合い、地方1600mでも勝利。条件の直接性を支持する。",
+      "main_risk": "7ハクシンブライアンは東京1600m1勝クラスで3着を反復しており、昇級組の14に対してクラス実績で上。"
+    },
+    "shot_case": {
+      "case": "11ブレスドナイルは同条件2着で後方から伸びる。前が競ると差し切りまで。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "14の同場未勝利2着、7の同場1勝3着連続、11の同2着を比較。4は1800m未勝利2着で距離短縮への対応が鍵。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "marks": [
+      2,
+      14,
+      5,
+      7,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        14,
+        5,
+        7,
+        12
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は新潟1200m1勝勝ちで先行力があるが、2・14の短距離での同級水準の走りを優先。"
+    },
+    "honmei_win": {
+      "evidence": "2サトノエスケープは新潟1200mを好位から抜けて勝利。昇級でも自在性があり、東京1300mをこなせる。",
+      "main_risk": "14ホウショウマリスは京都1400m2勝クラス3着と上級実績で勝る。短縮しても差しが届くと逆転。"
+    },
+    "shot_case": {
+      "case": "5エアサロメは中山1200m1勝勝ちで中団から伸びた。昇級の壁を越えれば一発。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2の短距離連対反復、14の1400m同級3着、7の東京1300m同級4着を比較。12の新潟1200m4着も圏内。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "marks": [
+      6,
+      2,
+      9,
+      7,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        2,
+        9,
+        7,
+        3
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は京都2000m未勝利をスロー逃げで勝ったが、6の札幌2000m新馬差し勝ちや2のオープン3着の比較では形の融通が課題。"
+    },
+    "honmei_win": {
+      "evidence": "6ヴァンドレストは札幌2000m新馬を後方から鋭く差し切り、距離の勝利経験と直線の脚を評価。",
+      "main_risk": "2コスモイェーガーは東京1800mオープン3着で対戦水準が高い。2000mをこなせば6を上回る。"
+    },
+    "shot_case": {
+      "case": "9ニシノフランケンは京都2000m1勝クラス4着。クラス経験があり前崩れで浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6の2000m新馬勝ち、2の東京1800mオープン3着、9の京都2000m1勝4着を比較。7・3も同距離勝ち。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "marks": [
+      5,
+      10,
+      9,
+      1,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        10,
+        9,
+        1,
+        3
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6は東京1600m3勝クラス7着と一定の実績があるが、5の同場4着や1の同場2着の上限を評価。"
+    },
+    "honmei_win": {
+      "evidence": "5キョウエイフロイデは東京ダ1600m3勝クラス4着があり、後方から脚を使える。同条件に戻り前進を期待。",
+      "main_risk": "10セボンサデッセは札幌1700m3勝クラス3着。先行して流れに乗れば5の末脚を封じる。"
+    },
+    "shot_case": {
+      "case": "9グレイテストソングは1800mで後方から渋太い脚を使い、東京1600mで流れが向けば。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5の東京1600m同級4着、1の同級2着歴、10の札幌1700m同級3着を比較。3は1400m5着からの延長。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "marks": [
+      7,
+      4,
+      3,
+      5,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        4,
+        3,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12は中山2200mオープン勝ちの逃げ脚があるが、東京2500mでの自在性と継続実績では7と4を重視する。"
+    },
+    "honmei_win": {
+      "evidence": "7ファイアンクランツは東京2500mオープンを好位から差し切り、3400mでも2着。舞台への適性と上位の持続力が明確。",
+      "main_risk": "4ミラージュナイトは札幌2600mオープン勝ちと東京2500m4着。距離適性を持ち7に迫る。"
+    },
+    "shot_case": {
+      "case": "3マイネルエンペラーは京都2400mオープン2着、調教も良好。東京で持続力を生かせば。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "7の東京2500m勝ちと4の同4着・2600m勝ちを比較。3の2400m2着、5のオープン善戦、9の東京2400m3勝勝ちも検討。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "marks": [
+      5,
+      3,
+      4,
+      9,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        3,
+        4,
+        9,
+        6
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は1200m1勝勝ちがあるが、5の東京1400m1勝勝ち、3の同距離2勝クラス3着より今回の裏付けが弱い。"
+    },
+    "honmei_win": {
+      "evidence": "5インプロペリアは東京1400m1勝クラスを先手から快勝し、直近も中山1200m2勝クラス2着。現級とコースを両立。",
+      "main_risk": "3スペルーチェは東京1400m2勝クラス3着で進路が遅れても伸びた。速い流れなら差し切り。"
+    },
+    "shot_case": {
+      "case": "4デンプシーは中山1200m2勝クラス4着、差し脚があり展開待ちで浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5の同場1400m勝ちと同級1200m2着、3の同場1400m同級3着を比較。9・6も短距離1勝勝ちから善戦。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 1,
+    "marks": [
+      3,
+      5,
+      4,
+      15,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        5,
+        4,
+        15,
+        2
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9は中山1200m未勝利4着だが、5の同条件2・3着、4の東京1300m新馬2着に勝る実績がない。"
+    },
+    "honmei_win": {
+      "evidence": "3イリスロッソは新潟1200m未勝利2着、札幌1000mでも2着。短距離ダートでの好走再現性を最上位に。",
+      "main_risk": "5ドナビッグベンも1200m未勝利2・3着を重ねており、先行粘りで3を逆転し得る。"
+    },
+    "shot_case": {
+      "case": "4サノノソルジャーは東京1300m新馬2着で先手争いに参加した。1150mの流れに対応すれば。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "3と5はダート短距離で連対実績があり最も信頼できる。4は1300m新馬2着、15は1200m3着、2は1200m新馬5着。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 2,
+    "marks": [
+      7,
+      6,
+      5,
+      3,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        6,
+        5,
+        3,
+        14
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は1400m未勝利5着で先行・差しとも決め手を欠く。14の1200m新馬3着の直接性を優先。"
+    },
+    "honmei_win": {
+      "evidence": "7バクソウシャチョウは芝1200m未勝利3着、1400mオープンにも挑んだ。調整面の仕上がりが際立ち、短距離の実戦力で中心。",
+      "main_risk": "6ゴールドショーマンは1200m未勝利2着で後方から内を突いて伸びた。差し脚が届く流れなら。"
+    },
+    "shot_case": {
+      "case": "5メジェグレイスは1200m新馬2着で先手から粘った。福島の小回りで先行を生かせる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "7の短距離重賞級への挑戦歴と1200m3着、6の1200m2着、5の1200m2着を比較。3の1400m3着も距離短縮候補。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 3,
+    "marks": [
+      15,
+      14,
+      2,
+      10,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        14,
+        2,
+        10,
+        5
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4は1700m未勝利勝ちで先手を取れるが、15の同級1800m2着、14の同級1800m2着と比較してクラス経験を優先。"
+    },
+    "honmei_win": {
+      "evidence": "15プレイメイカーは1800m1勝クラスで逃げて2着、速い流れでも4着に踏みとどまった。福島1700mでも積極策が通用。",
+      "main_risk": "14アンリーベイビーは京都1800m1勝クラス2着で差し脚を示す。先行争いが厳しければ差される。"
+    },
+    "shot_case": {
+      "case": "2ルージュボニートは札幌1700m1勝クラス2着と未勝利勝ち。先手を取れるなら頭まで。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "15の同級1800m2着、14の同級2着、2の同距離同級2着を比較。10の同級1800m3着も上位圏内。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 4,
+    "marks": [
+      6,
+      1,
+      10,
+      4,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        1,
+        10,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は障害未勝利12着で飛越も不安定。2は福島2750m6着のコース経験があるため最終候補に残す。"
+    },
+    "honmei_win": {
+      "evidence": "6サマーアゲインは中京障害3000m3着、福島2750m4着で障害実走と今回舞台の経験が揃う。",
+      "main_risk": "1ナヴァラトゥナは中京3000m3着で直近上向き。飛越が安定すると勝ち切る可能性。"
+    },
+    "shot_case": {
+      "case": "10ニシノブレイゼストは京都障害2910m5着。慎重な飛越から前進できれば。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "障害戦の特殊対象。6の福島2750m4着・中京3000m3着を中心に、1の近走3着、10の障害5着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 5,
+    "marks": [
+      6,
+      9,
+      4,
+      5,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        9,
+        4,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は平地で速力はあるが障害実戦がなく、2や5の実走での飛越経験を優先。"
+    },
+    "honmei_win": {
+      "evidence": "6セイウンビッグバンは障害3000m3着、2880m2着と障害転向後の好走を反復。走りの確かさを重視する。",
+      "main_risk": "9ゴールデンルーキーは障害2860m2着と2880m4着で経験豊富。6の進出が遅ければ逆転。"
+    },
+    "shot_case": {
+      "case": "4グロッシェンは障害4・5着と安定し、飛越のリズムが整えば。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "障害戦の特殊対象。6の障害連対・3着歴、9の2着・4着、4の4着・5着を比較。落馬歴のある1は評価を下げた。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 6,
+    "marks": [
+      6,
+      8,
+      4,
+      1,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        8,
+        4,
+        1,
+        7
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10の事前能力・状態は一定水準だが、6・8の基礎材料や4の調教充実を上回らない。"
+    },
+    "honmei_win": {
+      "evidence": "6タイセイブリオンはダ1700m新馬で事前の能力評価が高く、調教も強い。初戦でも好位を取れるなら。",
+      "main_risk": "8ガニメデサルーンも事前能力が高く、発馬・砂被りの未知数によっては6と逆転。"
+    },
+    "shot_case": {
+      "case": "4シングインザレインは調教が整い、6・8が外を回る展開なら粘り込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全15頭が新馬で実走は未観測。6と8の能力面、4と1の準備、7の中位材料を比較した。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 7,
+    "marks": [
+      9,
+      10,
+      7,
+      2,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        10,
+        7,
+        2,
+        12
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は芝1200m1勝クラス5着で前に行けるが、2と9の同距離での上位実績に比べ勝ち切りの裏付けが薄い。"
+    },
+    "honmei_win": {
+      "evidence": "9ベルファストは小倉芝1200m1勝クラス2着、阪神1200mでも4着。短距離の好位からの脚を信頼。",
+      "main_risk": "10ベルセクレトは芝1200m未勝利勝ちで直近1400m不振。距離を戻して本来の脚を使うと逆転。"
+    },
+    "shot_case": {
+      "case": "7ミエノブラボーは新潟1000mで3・5着。福島1200mでも差し脚が届けば。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9の1200m同級2・4着、10の1200m勝ち、2の同級6着と未勝利勝ちを比較。12は同級3着歴がある。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 8,
+    "marks": [
+      14,
+      15,
+      6,
+      4,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        15,
+        6,
+        4,
+        9
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は札幌1000m未勝利勝ちがあるが、1勝クラス8着で、14の京都1200m同級3着より能力の再現性が弱い。"
+    },
+    "honmei_win": {
+      "evidence": "14トゥインクルアップは京都1200m1勝クラス3着、好位から最後まで粘った。1150mへの短縮でも先行力が生きる。",
+      "main_risk": "15アメリカンビヨンドは1200m1勝クラスで2・3着と安定。勝ち切る展開なら逆転可能。"
+    },
+    "shot_case": {
+      "case": "6オプティモは1200m同級4・5着で終いに脚を使う。前が競ると浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "14の京都1200m同級3着と15の同級2・3着を比較。6の同級4・5着、4の1200m未勝利勝ちも対象。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 9,
+    "marks": [
+      5,
+      8,
+      7,
+      6,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        8,
+        7,
+        6,
+        3
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9は1600m未勝利勝ちと1800m未勝利2着があるが、5の福島1800m勝ちと8の1800m同級3着の直接性で一歩譲る。"
+    },
+    "honmei_win": {
+      "evidence": "5アッパーウォーターは福島1800m未勝利を好位から勝ち切った。今回の小回りと同距離の再現性を支持。",
+      "main_risk": "8カージオイドは札幌1800m1勝クラス3着、2000m2着でクラス実績が高い。先行勢を見る位置なら差し切る。"
+    },
+    "shot_case": {
+      "case": "7ホウオウギンガは中山1600m勝ちからの延長。折り合えば末脚で逆転候補。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5の福島1800m勝ち、8の1800m同級3着、3の福島2000m同級2着を比較。6の1800m同級3着反復も評価。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 10,
+    "marks": [
+      1,
+      15,
+      14,
+      9,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        15,
+        14,
+        9,
+        3
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は福島1700m同級2着があるが直近1800m12着で失速。3の同級1700m3着の近況を優先。"
+    },
+    "honmei_win": {
+      "evidence": "1アラナコアは札幌1700m2勝クラス2・4着。距離で再現性があり、中団から長く脚を使える。",
+      "main_risk": "15オーケーマヒナは福島1700m2勝クラス2着で先手から粘った。楽に逃げると1を封じる。"
+    },
+    "shot_case": {
+      "case": "14ロードソルスティスは1800m同級3・5着で安定。1700mへの対応で浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1の1700m同級2着、15の福島1700m同級2着、14の1800m同級3着を比較。9は1600m同級4着で差し脚。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 11,
+    "marks": [
+      9,
+      2,
+      5,
+      4,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        2,
+        5,
+        4,
+        14
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7は新潟1200m3勝クラス勝ちで先行力が高いが、9のオープン連続3・4着より同級裏付けが薄い。"
+    },
+    "honmei_win": {
+      "evidence": "9ウインモナークは中山1200mオープン3着、阪神1200m4着で、短距離オープンでの安定した競争力を評価。",
+      "main_risk": "2インブロリオは芝1200mで連勝中。昇級でも先行差しの柔軟性で一気に突破する可能性。"
+    },
+    "shot_case": {
+      "case": "5アスティスプマンテは札幌1200mオープン3着。好位からロスなく進めば勝ち負け。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9の1200mオープン3・4着、2の1200m連勝、5のオープン3着を比較。4の直線競馬3着と14の1200m3勝勝ちも検討。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 12,
+    "marks": [
+      4,
+      6,
+      11,
+      12,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        6,
+        11,
+        12,
+        3
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9は1200m未勝利勝ちで上昇余地はあるが、4の同距離未勝利勝ちの勝ち内容と6の1400m同級3着に比べると経験差。"
+    },
+    "honmei_win": {
+      "evidence": "4チュウワメロディーは中京1200m未勝利を好位から競り勝ち、同距離3着もある。昇級でも短距離に向く運びを支持。",
+      "main_risk": "6ディオデルマーレは東京1400m1勝クラス3着で先行し粘った。1200mへの短縮で勝ち切る可能性。"
+    },
+    "shot_case": {
+      "case": "11ロンドンアームズは福島1200m1勝クラス3着の直接実績。得意舞台で巻き返せる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "4の1200m未勝利勝ちと6の1400m同級3着、11の福島1200m同級3着を比較。12は1400m未勝利勝ちからの短縮。"
+  }
+]
