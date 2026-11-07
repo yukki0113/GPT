@@ -1,0 +1,143 @@
+name: RRDB 20261108 extraction temporary
+
+on:
+  push:
+    branches:
+      - tmp/rrdb-1108-extract-20261108
+
+permissions:
+  contents: read
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: horse-racing/jrdb/src
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -r tools/data-storage/requirements.txt
+          python -m pip install gdown
+
+      - name: Download canonical inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .rrdb/input .rrdb/work .rrdb/output .rrdb/course-fit .rrdb/racelap-current
+
+          python -m gdown 1XRAlt_3x4p0OYyEa1BBpht-0UPf5ojSY -O .rrdb/input/PACI261108.zip
+          python -m gdown 1UwNfrupMTHRPhkzULPvClGre4MWz2TFg -O .rrdb/input/RaceReviewDB_CURRENT.zip
+          python -m gdown 1ljLg_jxVdZtpJ_Aqku0L93y8nwnfXUTQ -O .rrdb/input/course_fit_part1.zip
+          python -m gdown 1yxP0EtPRmcTnrAgmgBMlAAj257r3pgYE -O .rrdb/input/course_fit_part2.zip
+          python -m gdown 1RdmS-8q0NsA8opCvNioaqVotk2wiEZz- -O .rrdb/input/RaceLap_CURRENT.zip
+
+          unzip -qo .rrdb/input/course_fit_part1.zip -d .rrdb/course-fit
+          unzip -qo .rrdb/input/course_fit_part2.zip -d .rrdb/course-fit
+          unzip -qo .rrdb/input/RaceLap_CURRENT.zip -d .rrdb/racelap-current
+
+          test -f .rrdb/racelap-current/current/race_lap.parquet
+          test -f .rrdb/course-fit/fit/research/candidate_fit_view.parquet
+
+      - name: Run canonical RRDB reverse lookup
+        shell: bash
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/jrdb_recommendation_reverse.py \
+            --race-date 2026-11-08 \
+            --paci-zip .rrdb/input/PACI261108.zip \
+            --current-zip .rrdb/input/RaceReviewDB_CURRENT.zip \
+            --course-fit-root .rrdb/course-fit \
+            --race-lap-parquet .rrdb/racelap-current/current/race_lap.parquet \
+            --work-root .rrdb/work \
+            --output-json .rrdb/output/20261108_RRDB_v0_5_reverse.json
+
+      - name: Build recommendation and audit CSVs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+
+          src=Path(".rrdb/output/20261108_RRDB_v0_5_reverse.json")
+          obj=json.loads(src.read_text(encoding="utf-8"))
+
+          cols=["date","venue_code","race_no","race_key","horse_no","horse_name",
+                "matched_signal_count","matched_signal_ids","matched_signal_labels",
+                "human_summary","recommendation_comment","recommendation_version",
+                "source_race_date","source_race_key"]
+
+          labels={s["signal_id"]:s["label"] for r in obj["recommendations"] for s in r.get("signals",[])}
+
+          def row_of(r, ids):
+              sr=r.get("source_run") or {}
+              return {
+                  "date":obj["race_date"],
+                  "venue_code":str(r.get("venue_code") or "").zfill(2),
+                  "race_no":r.get("race_no"),
+                  "race_key":r.get("target_race_key"),
+                  "horse_no":r.get("horse_no"),
+                  "horse_name":r.get("horse_name_paci"),
+                  "matched_signal_count":len(ids),
+                  "matched_signal_ids":"|".join(ids),
+                  "matched_signal_labels":"|".join(labels.get(x,x) for x in ids),
+                  "human_summary":r.get("human_summary"),
+                  "recommendation_comment":r.get("newspaper_comment"),
+                  "recommendation_version":obj.get("recommendation_contract_version"),
+                  "source_race_date":sr.get("race_date"),
+                  "source_race_key":sr.get("race_key"),
+              }
+
+          audit_rows=[]
+          recommendation_rows=[]
+          for r in obj["recommendations"]:
+              ids=list(r.get("matched_signal_ids") or [])
+              audit_rows.append(row_of(r, ids))
+
+              active=[x for x in ids if x!="COURSE_PROFILE_FIT"]
+              if active:
+                  recommendation_rows.append(row_of(r, active))
+
+          for path,rows in [
+              (Path(".rrdb/output/20261108_RRDB_v0_5_recommendations.csv"),recommendation_rows),
+              (Path(".rrdb/output/20261108_RRDB_v0_5_matches_audit.csv"),audit_rows),
+          ]:
+              with path.open("w",encoding="utf-8-sig",newline="") as f:
+                  w=csv.DictWriter(f,fieldnames=cols)
+                  w.writeheader()
+                  w.writerows(rows)
+
+          summary={
+              "status":obj["status"],
+              "race_date":obj["race_date"],
+              "source_generation_id":obj["source_generation_id"],
+              "entrant_count":obj["entrant_count"],
+              "raw_match_count":obj["recommendation_count"],
+              "recommendation_count_after_course_suppression":len(recommendation_rows),
+              "no_match_count":obj["no_match_count"],
+              "no_history_count":obj["no_history_count"],
+              "course_only_suppressed_count":sum(
+                  1 for r in obj["recommendations"]
+                  if (r.get("matched_signal_ids") or [])==["COURSE_PROFILE_FIT"]
+              ),
+          }
+          Path(".rrdb/output/summary.json").write_text(
+              json.dumps(summary,ensure_ascii=False,indent=2)+"\n",
+              encoding="utf-8"
+          )
+          print(json.dumps(summary,ensure_ascii=False))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rrdb-20261108-extraction-${{ github.run_id }}
+          path: .rrdb/output/
+          retention-days: 30
+          compression-level: 0
+          if-no-files-found: error
