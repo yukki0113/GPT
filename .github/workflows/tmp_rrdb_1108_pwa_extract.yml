@@ -1,0 +1,134 @@
+name: TMP RRDB 2026-11-08 canonical PWA handoff
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/tmp_rrdb_1108_pwa_extract.yml'
+permissions:
+  contents: read
+  actions: read
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET_DATE: '2026-11-08'
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install existing RRDB dependencies
+        run: |
+          python -m pip install -r tools/data-storage/requirements.txt gdown
+      - name: Fetch and verify canonical PACI source
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rrdb1108/input /tmp/rrdb1108/output
+          python horse-racing/jrdb/src/racenote_v056_forward_drive_paci.py \
+            --date '2026-11-08' \
+            --drive-file-id '1XRAlt_3x4p0OYyEa1BBpht-0UPf5ojSY' \
+            --expected-sha256 '492be42ce115521a843231f17b125987bafb34b0de6301454e1a2eb2e87d7a7a' \
+            --output /tmp/rrdb1108/input/PACI261108.zip \
+            --receipt /tmp/rrdb1108/input/paci_receipt.json
+      - name: Fetch accepted Course Fit and RaceLap artifacts
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/rrdb1108/fit /tmp/rrdb1108/lap
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/11799761734/zip" > /tmp/rrdb1108/input/course_fit.zip
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/13495008812/zip" > /tmp/rrdb1108/input/race_lap.zip
+          unzip -tq /tmp/rrdb1108/input/course_fit.zip
+          unzip -tq /tmp/rrdb1108/input/race_lap.zip
+          unzip -q /tmp/rrdb1108/input/course_fit.zip -d /tmp/rrdb1108/fit
+          unzip -q /tmp/rrdb1108/input/race_lap.zip -d /tmp/rrdb1108/lap
+          test -s /tmp/rrdb1108/fit/fit/research/candidate_fit_view.parquet
+          test -s /tmp/rrdb1108/lap/race_lap.parquet
+          python - <<'PY'
+          """Pin immutable RaceLap evidence to the accepted v056 forward T1 receipt."""
+          import hashlib
+          from pathlib import Path
+
+          source = Path('/tmp/rrdb1108/lap/race_lap.parquet')
+          actual_sha256 = hashlib.sha256(source.read_bytes()).hexdigest()
+          expected_sha256 = 'd078950d172c2500ff033157f446e95f9700eabcc3e147df2b37431a5c8aded4'
+          if actual_sha256 != expected_sha256:
+              raise SystemExit('RaceLap accepted T1 SHA256 mismatch')
+          print('RaceLap accepted SHA256 verified:', actual_sha256)
+          PY
+      - name: Fetch accepted RRDB CURRENT
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_fetch_rrdb_current.py \
+            --output /tmp/rrdb1108/input/RaceReviewDB_CURRENT.zip \
+            --receipt /tmp/rrdb1108/input/rrdb_receipt.json \
+            --expected-file-id '1UwNfrupMTHRPhkzULPvClGre4MWz2TFg'
+          unzip -tq /tmp/rrdb1108/input/RaceReviewDB_CURRENT.zip
+          python - <<'PY'
+          """Require the same accepted CURRENT generation as the pre-race T1."""
+          import hashlib
+          from pathlib import Path
+
+          source = Path('/tmp/rrdb1108/input/RaceReviewDB_CURRENT.zip')
+          actual_sha256 = hashlib.sha256(source.read_bytes()).hexdigest()
+          expected_sha256 = 'cb348cb825aaa5765e58211321cec77de6ba7c92b157778bd1bb1c6f0910ea41'
+          if actual_sha256 != expected_sha256:
+              raise SystemExit('RRDB CURRENT accepted T1 SHA256 mismatch')
+          print('RRDB CURRENT accepted SHA256 verified:', actual_sha256)
+          PY
+      - name: Run canonical RRDB v0.5 reverse
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/jrdb_recommendation_reverse.py \
+            --race-date '2026-11-08' \
+            --paci-zip /tmp/rrdb1108/input/PACI261108.zip \
+            --current-zip /tmp/rrdb1108/input/RaceReviewDB_CURRENT.zip \
+            --course-fit-root /tmp/rrdb1108/fit \
+            --race-lap-parquet /tmp/rrdb1108/lap/race_lap.parquet \
+            --work-root /tmp/rrdb1108/work \
+            --output-json /tmp/rrdb1108/output/RRDB_v0_5_reverse_20261108.json
+      - name: Build and validate canonical PWA handoff CSV
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/build_rrdb_newspaper_handoff.py \
+            --reverse-json /tmp/rrdb1108/output/RRDB_v0_5_reverse_20261108.json \
+            --output-csv /tmp/rrdb1108/output/RRDB_v0_5_PWA_handoff_20261108.csv
+          python - <<'PY'
+          """Validate canonical output and print a single parseable handoff record."""
+          import csv
+          import io
+          import json
+          from pathlib import Path
+
+          root = Path('/tmp/rrdb1108/output')
+          reverse = json.loads((root / 'RRDB_v0_5_reverse_20261108.json').read_text(encoding='utf-8'))
+          if reverse.get('status') != 'PASS':
+              raise SystemExit('RRDB v0.5 reverse audit not PASS')
+          if reverse.get('race_date') != '2026-11-08':
+              raise SystemExit('RRDB v0.5 target date mismatch')
+          if reverse.get('recommendation_contract_version') != 'rrdb-recommendation-signals-v0.5':
+              raise SystemExit('RRDB v0.5 signal version mismatch')
+          if int(reverse.get('entrant_count') or 0) != 497:
+              raise SystemExit('RRDB v0.5 entrant count mismatch')
+          text = (root / 'RRDB_v0_5_PWA_handoff_20261108.csv').read_text(encoding='utf-8-sig')
+          rows = list(csv.DictReader(io.StringIO(text)))
+          if len(rows) != len(reverse.get('recommendations') or []):
+              raise SystemExit('RRDB v0.5 PWA handoff count mismatch')
+          if any(row.get('date') != '2026-11-08' for row in rows):
+              raise SystemExit('RRDB v0.5 PWA row date mismatch')
+          print('RRDB_HANDOFF_JSON:', json.dumps({
+              'status':'PASS',
+              'race_date':'2026-11-08',
+              'entrant_count':497,
+              'matched_count':len(rows),
+              'csv':text
+          },ensure_ascii=False,separators=(',',':')))
+          PY
+      - name: Upload immutable RRDB handoff
+        uses: actions/upload-artifact@v4
+        with:
+          name: rrdb-v0-5-pwa-handoff-20261108
+          path: /tmp/rrdb1108/output/
