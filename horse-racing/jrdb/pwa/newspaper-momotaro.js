@@ -9,6 +9,17 @@ const PERSONAL_MOMOTARO_CONTRIBUTORS = [
 
 const PERSONAL_MOMOTARO_KENSHOW_JRDB_MARKS = new Set(["◎", "○", "▲"]);
 
+// The 2026-11-08 handoff uses this shared disclaimer on 20 races without a
+// race-specific explanation. Preserve the source data, but do not label it a short review.
+const PERSONAL_RYOTA_NON_ANALYTICAL_COMMENT = "印は添付予想の前日基準版。実オッズ・当日馬場は未反映。";
+
+/** Return the authored race-specific Ryota comment, never the shared disclaimer. */
+function personalMomotaroRyotaRaceComment(value) {
+  const comment = text(value, "").trim();
+  if (comment === PERSONAL_RYOTA_NON_ANALYTICAL_COMMENT) return "";
+  return comment;
+}
+
 function personalMomotaroPrediction(horse, key) {
   const addons = horse && horse.addons ? horse.addons : {};
   const momotaro = addons.momotaro || {};
@@ -30,6 +41,11 @@ function personalMomotaroKenshowDisplay(horse) {
 function personalMomotaroDisplayMark(horse, contributor) {
   const value = personalMomotaroPrediction(horse, contributor.key);
   if (contributor.key === "kenshow") return personalMomotaroKenshowDisplay(horse);
+  // Oji's reviewed horses carry no authored betting marks. Display the
+  // established review-horse symbol, without changing the original judgement.
+  if (contributor.key === "oji" && value.review_horse === true) {
+    return text(value.mark, "") || "○";
+  }
   return text(value.mark, "");
 }
 
@@ -154,7 +170,7 @@ function personalMomotaroAppendNotes() {
       '</section>';
   }
 
-  const ryota = text(comments.ryota, "");
+  const ryota = personalMomotaroRyotaRaceComment(comments.ryota);
   const kenshow = text(comments.kenshow, "");
   target.insertAdjacentHTML("beforeend",
     '<section class="newspaper-v5-note-section personal-momotaro-race-notes">' +

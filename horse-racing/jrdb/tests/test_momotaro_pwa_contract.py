@@ -53,6 +53,29 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertNotIn("renderMomotaroFriends", script)
         self.assertNotIn('id="momotaro-friends-card"', html)
 
+    def test_oji_review_mark_and_ryota_source_disclaimer(self) -> None:
+        personal = (PWA_ROOT / "newspaper-momotaro.js").read_text(encoding="utf-8")
+        momotaro = (MOMOTARO_ROOT / "momotaro.js").read_text(encoding="utf-8")
+        predictions = (MOMOTARO_ROOT / "predictions.js").read_text(encoding="utf-8")
+        disclaimer = "印は添付予想の前日基準版。実オッズ・当日馬場は未反映。"
+
+        # Oji is a retrospective review source: a reviewed horse is ○
+        # even when the raw imported row had no explicit mark.
+        self.assertIn('contributor.key === "oji" && value.review_horse === true', personal)
+        self.assertIn('return text(value.mark, "") || "○";', personal)
+        self.assertIn('contributorKey === "oji" && value.review_horse === true', momotaro)
+        self.assertIn('return mark || "○";', momotaro)
+        self.assertIn('mark: predictionText(oji.mark, "") || "○",', predictions)
+
+        # Source boilerplate is retained in published data for provenance,
+        # but it is not a race-specific short review in either PWA.
+        self.assertIn(disclaimer, personal)
+        self.assertIn(disclaimer, momotaro)
+        self.assertIn('if (comment === PERSONAL_RYOTA_NON_ANALYTICAL_COMMENT) return "";', personal)
+        self.assertIn('if (comment === MOMOTARO_RYOTA_NON_ANALYTICAL_COMMENT) return "";', momotaro)
+        self.assertIn('const ryota = personalMomotaroRyotaRaceComment(comments.ryota);', personal)
+        self.assertIn('const ryota = momotaroRyotaRaceComment(comments.ryota);', momotaro)
+
     def test_operational_controls_are_hidden(self) -> None:
         html = (MOMOTARO_ROOT / "newspaper.html").read_text(encoding="utf-8")
 
@@ -83,7 +106,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('<title>桃太郎新聞 / 注目馬一覧</title>', html)
         self.assertIn('<h2>今日の注目馬一覧</h2>', html)
         self.assertNotIn('>予想一覧</a>', html)
-        self.assertIn('./predictions.js?v=11', html)
+        self.assertIn('./predictions.js?v=12', html)
         self.assertIn('PREDICTION_RUNTIME_CONFIG.predictionCurrentBase', script)
         self.assertIn('<div class="button-row" hidden>', html)
 
@@ -121,9 +144,9 @@ class MomotaroPwaContractTest(unittest.TestCase):
 
         self.assertIn("const hasDetail = Boolean(comment.trim());", script)
         self.assertNotIn("Boolean(comment || confidence || tag || value.review_horse === true)", script)
-        self.assertIn("newspaper-momotaro.js?v=6", html)
-        self.assertIn("newspaper-momotaro.js?v=6", worker)
-        self.assertIn('jrdb-pwa-shell-v81', worker)
+        self.assertIn("newspaper-momotaro.js?v=7", html)
+        self.assertIn("newspaper-momotaro.js?v=7", worker)
+        self.assertIn('jrdb-pwa-shell-v82', worker)
 
     def test_prediction_column_widths_are_compact(self) -> None:
         css = (MOMOTARO_ROOT / "momotaro.css").read_text(encoding="utf-8")
@@ -148,7 +171,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('newspaperCurrentBase: "./data/newspaper/current/"', newspaper)
         self.assertIn('../newspaper-v4.css?v=12', newspaper)
         self.assertIn('../newspaper-v4.js?v=9', newspaper)
-        self.assertIn('./momotaro.js?v=22', newspaper)
+        self.assertIn('./momotaro.js?v=23', newspaper)
         self.assertIn('factOpfsDir: "momotaro-fact-lite"', fact_lite)
         self.assertIn('"name": "桃太郎新聞"', manifest)
         self.assertIn('../fact-lite.js?v=24', fact_lite)
@@ -157,7 +180,7 @@ class MomotaroPwaContractTest(unittest.TestCase):
         self.assertIn('function factDownloadUrl(manifest)', fact_script)
         self.assertIn('rawPath.replace(/^\\.\\//, "")', fact_script)
         self.assertIn('../fact-lite.js?v=24', service_worker)
-        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v35"', service_worker)
+        self.assertIn('const CACHE_NAME = "momotaro-newspaper-shell-v36"', service_worker)
 
 
 if __name__ == "__main__":
