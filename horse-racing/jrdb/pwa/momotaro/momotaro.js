@@ -6,6 +6,25 @@ const MOMOTARO_CONTRIBUTORS = [
   { key: "kenshow", label: "けんしょー" }
 ];
 
+// A disclaimer shared across 20 races in the 11/08 source is not a unique review.
+const MOMOTARO_RYOTA_NON_ANALYTICAL_COMMENT = "印は添付予想の前日基準版。実オッズ・当日馬場は未反映。";
+
+/** Select the visible review mark without changing the stored prediction. */
+function momotaroMemberDisplayMark(value, contributorKey) {
+  const mark = text(value.mark, "");
+  if (contributorKey === "oji" && value.review_horse === true) {
+    return mark || "○";
+  }
+  return mark;
+}
+
+/** Return only a substantive, race-specific Ryota short comment. */
+function momotaroRyotaRaceComment(value) {
+  const comment = text(value, "").trim();
+  if (comment === MOMOTARO_RYOTA_NON_ANALYTICAL_COMMENT) return "";
+  return comment;
+}
+
 /**
  * 桃太郎専用予想addonを返す。
  * upstream未提供時は空objectを返し、既存新聞の意味論は変更しない。
@@ -34,7 +53,7 @@ function momotaroHasPrediction(value) {
 function showMomotaroContributorDetail(horse, contributor) {
   const value = momotaroPrediction(horse, contributor.key);
   const horseName = text(horse && horse.basic && horse.basic.horse_name, "");
-  const mark = text(value.mark, "");
+  const mark = momotaroMemberDisplayMark(value, contributor.key);
   const confidence = text(value.confidence, "");
   const tag = text(value.tag, "");
   const comment = text(value.comment, "");
@@ -85,7 +104,7 @@ function momotaroContributorCell(horse, horseIndex, contributor) {
   }
 
   const value = momotaroPrediction(horse, contributor.key);
-  const mark = text(value.mark, "");
+  const mark = momotaroMemberDisplayMark(value, contributor.key);
   const confidence = text(value.confidence, "");
   const comment = text(value.comment, "");
   const display = mark || "";
@@ -254,7 +273,7 @@ function applyMomotaroRaceNotesLayout() {
       '</section>';
   }
 
-  const ryota = text(comments.ryota, "");
+  const ryota = momotaroRyotaRaceComment(comments.ryota);
   const kenshow = text(comments.kenshow, "");
   target.innerHTML = '<div class="momotaro-race-notes-grid">' +
     section("りょーた", ryota ? '<p>' + escapeHtml(ryota) + '</p>' : "") +
