@@ -1,0 +1,140 @@
+{
+  "status": "success",
+  "source_file": "20261108_Eval_PACI付与済み完成CSV.csv",
+  "source_rows": 497,
+  "output_rows": 497,
+  "source_column_count": 44,
+  "output_column_count": 50,
+  "analysis_columns": [
+    "eval_analysis_status",
+    "eval_analysis_codes",
+    "eval_analysis_title",
+    "eval_analysis_comment",
+    "eval_analysis_version",
+    "eval_analysis_asof"
+  ],
+  "analysis_asof": "2026-11-08T00:40:20+09:00",
+  "analysis_version": "phase2-comment-v0.1",
+  "highlighted_rows": 2,
+  "status_counts": {
+    "NONE": 495,
+    "WATCH": 2
+  },
+  "code_counts": {
+    "H1_PRE": 2
+  },
+  "source_ties": [
+    {
+      "race_key": [
+        "2026-11-08",
+        "05",
+        1
+      ],
+      "type": "second_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "05",
+        3
+      ],
+      "type": "top_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "05",
+        4
+      ],
+      "type": "top_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "05",
+        10
+      ],
+      "type": "second_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "05",
+        11
+      ],
+      "type": "top_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "08",
+        6
+      ],
+      "type": "second_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "08",
+        7
+      ],
+      "type": "second_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "03",
+        3
+      ],
+      "type": "top_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "03",
+        4
+      ],
+      "type": "top_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "03",
+        5
+      ],
+      "type": "top_tie",
+      "horses": 2
+    },
+    {
+      "race_key": [
+        "2026-11-08",
+        "03",
+        6
+      ],
+      "type": "top_tie",
+      "horses": 2
+    }
+  ],
+  "source_ocr_image_validation": "not_provided",
+  "paci_joins": {
+    "joined_horses": 497,
+    "unmatched_horses": 0,
+    "duplicate_keys": 0,
+    "race_headcount_mismatches": 0
+  },
+  "paci_issue": "https://github.com/yukki0113/GPT/issues/2489",
+  "paci_run_id": 42387199405,
+  "exact_source_value_immutability": true,
+  "canonical_key_duplicates": 0,
+  "rows_and_keys_equal": true,
+  "utf8_bom": true
+}
