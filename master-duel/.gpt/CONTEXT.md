@@ -1,5 +1,8 @@
 # Project Context — master-duel
 
+> **2026-11-09 追加要件**: 収録パックDBの主要用途は「デッキ→有利なパック→解放するために生成するSR/UR」の逆引き。Game8個別パックのレア一覧はピックアップ**候補**であり、ゲーム内全件照合済みではない。P0-Cの固定30件の画面照合は完了（30/30）。残る入手先/ライセンス/販売時点は独立ゲート、P1-A1 NO-GO。正本：[PACK_UNLOCK_NAVIGATION_P0_20261109.md](../docs/PACK_UNLOCK_NAVIGATION_P0_20261109.md)。以下は履歴。
+
+
 > **現行状態・Drive原本（2026-11-09）**: P0は実測監査済み部分があるが**未完了**。MD候補JSON（13,948件）、OCG JSON（14,416件）、禁止制限（215件）の3ファイルはDrive `source` フォルダ（ID `1fbPDT55sI-DCHadxoTJRx-C82dxzBMsh`）でファイル名/サイズを確認済み。 **[docs/DRIVE_SOURCE_RESOLUTION.md](../docs/DRIVE_SOURCE_RESOLUTION.md) が探索手順の正本**。**個別File IDは更新で変わるため、フォルダから毎回再解決**。フォルダ・親フォルダの現在の共有設定はユーザー承認済みで、制限付き変更の再提案・反復警告は不要。P1未着手。下記「実データ未着手」は初回作成時の履歴とみなす。
 
 
