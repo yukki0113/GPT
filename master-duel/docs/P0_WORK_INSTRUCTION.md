@@ -1,5 +1,8 @@
 # Work実行指示 — Master Duel P0 データソース監査
 
+> **2026-11-09運用追補（優先）**: P0監査に用いた元JSON3件のDrive保存先と、探索漏れ防止の手順は [DRIVE_SOURCE_RESOLUTION.md](DRIVE_SOURCE_RESOLUTION.md) が正本。既存の36件/全件取得不可との記述は指示書策定当時の状態。作業開始前にDrive `source` フォルダをIDから一覧確認し、既存資産を再利用すること。**名前検索だけで「ない」と断言しない**。P1未着手。
+
+
 - Document: `master-duel/docs/P0_WORK_INSTRUCTION.md`
 - Version: v1.0
 - 作成日: 2026-11-09

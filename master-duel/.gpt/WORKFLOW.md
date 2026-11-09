@@ -1,5 +1,8 @@
 # Workflow — master-duel
 
+> **現行Drive探索正本（2026-11-09）**: 元JSON 3件はGoogle Drive `source` フォルダ `1fbPDT55sI-DCHadxoTJRx-C82dxzBMsh` に存在することをコネクタで確認済み。ファイルの探索・取得・誤った「不存在」判定の防止は必ず [docs/DRIVE_SOURCE_RESOLUTION.md](../docs/DRIVE_SOURCE_RESOLUTION.md) を先に参照。**フォルダID→一覧→File ID→サイズ/SHA**の順で検証し、検索0件を不存在と断定しない。P0実測は進行中でP1未着手。下記「基本設計まで」の表現は初期状態の履歴。
+
+
 ## 現在地
 基本設計 v0.1 まで。次回着手点は**P0: ソース監査**。このファイルは実装を起動するものではない。
 

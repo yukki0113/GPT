@@ -1,5 +1,8 @@
 # Master Duel Deck Advisor
 
+> **2026-11-09運用状況**: P0監査は実測進行中（P1未着手）。元JSON3件はDrive [sourceフォルダ](https://drive.google.com/drive/folders/1fbPDT55sI-DCHadxoTJRx-C82dxzBMsh) に保存。**[元データ探索・復元手順](docs/DRIVE_SOURCE_RESOLUTION.md)** を先に読み、既存データを探さず再取得しない。下記「設計のみ・データ取得未着手」は初期文書の記載。
+
+
 マスターデュエル（以下 MD）収録カードの日本語台帳を基盤に、自然言語検索・低コストデッキ発掘・所持カード活用・出張パーツ提案を行う個人利用向け構築支援プロジェクト。
 
 **状態**: 基本設計 v0.1（2026-11-09）。実装・データ収集は未着手。

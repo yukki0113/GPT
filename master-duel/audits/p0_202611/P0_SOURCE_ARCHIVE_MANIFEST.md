@@ -1,5 +1,8 @@
 # P0原データ保管マニフェスト（2026-11-09）
 
+> **Drive保管先確定（2026-11-09）**: 原JSON3ファイルはGoogle Drive [sourceフォルダ](https://drive.google.com/drive/folders/1fbPDT55sI-DCHadxoTJRx-C82dxzBMsh) に保存済みであることを、Driveネイティブコネクタのメタデータ/直下一覧で確認。各ファイル名・File ID・サイズは [探索運用正本](../../docs/DRIVE_SOURCE_RESOLUTION.md) を参照。**Drive上のバイト列をダウンロードしてSHA照合したわけではない**。既存の「非公開リモート未保存」は**GitHubについての状態**であり、現在はDrive上に元ファイルが存在する。フォルダの共有権限は `anyone: reader`、制限付き設定を推奨。
+
+
 > **最新状態（2026-11-09 / 3ファイル版追加）**: `master-duel-raw.json` / `cards.json` に加えて、2026-11-05施行の `current.vector.json`（3,395 bytes / SHA-256 `2651601cb3bf9b66dde522eff92207968c9b9f63f4b82632910ccacdf5210781`）をローカルGitに記録。**新しい保管用Git bundle**: `master_duel_P0_source_snapshot_20261109_3files.bundle` / 31,995,530 bytes / SHA-256 `4f7bc96bdfe2ed7968d1dfab7d8841404dc0e1d6792cba5bd3ebd2a239826679` / 内部commit `d627a0a258e2bc611b3e77284989dafd50c2fb67`。復元検証: `git bundle verify` PASS、3JSONのgit object復元SHA-256一致。**公開GitHubに元JSONは置いていない。非公開リモートにも未アップロード**。古い2ファイルbundleの情報は履歴として以下に保存。 [禁止制限監査](P0_LIMIT_REGULATION_AUDIT_20261109.md)。
 
 

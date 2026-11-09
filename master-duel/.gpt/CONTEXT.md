@@ -1,5 +1,8 @@
 # Project Context — master-duel
 
+> **現行状態・Drive原本（2026-11-09）**: P0は実測監査済み部分があるが**未完了**。MD候補JSON（13,948件）、OCG JSON（14,416件）、禁止制限（215件）の3ファイルはDrive `source` フォルダ（ID `1fbPDT55sI-DCHadxoTJRx-C82dxzBMsh`）でファイル名/サイズを確認済み。 **[docs/DRIVE_SOURCE_RESOLUTION.md](../docs/DRIVE_SOURCE_RESOLUTION.md) が探索手順の正本**。P1未着手。下記「実データ未着手」は初回作成時の履歴とみなす。
+
+
 ## 正本・状態
 - Repository: `yukki0113/GPT` / `main`
 - Project root: `master-duel/`
