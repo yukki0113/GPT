@@ -1,5 +1,8 @@
 # Workflow — master-duel
 
+> **P2 SQLite ZIP**: 一時領域・モックによる検証付き新規スナップショットを実装。[運用仕様](../zip_store/README.md)。Drive 接続・正本昇格は未実装、単一ライターが必要。P1-A1 NO-GO 維持。以下は履歴。
+
+
 > **2026-11-09 P2 ZIP Drive実地往復**: ユーザー保存の空DBからコピーで架空カード追加・所持更新/取り消し→ZIP再圧縮→Driveに別テストファイル作成→バックアップ→同一テストIDで内容更新→再ダウンロード・ZIP SHA/SQLite integrity/foreign keys確認 **PASS**。元のユーザーDBは未変更。**Drive connectorに条件付きupdate/CASがなく同時書込は未保証、P2全体は部分PASS**。[詳細](../audits/p2_202611/P2_DRIVE_ZIP_ROUNDTRIP_20261109.md)。P1-A1 NO-GO。以下は履歴。
 
 

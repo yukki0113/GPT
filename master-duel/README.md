@@ -1,5 +1,8 @@
 # Master Duel Deck Advisor
 
+> **P2 SQLite ZIP**: 一時領域・モックによる検証付き新規スナップショットを実装。[運用仕様](zip_store/README.md)。Drive 接続・正本昇格は未実装、単一ライターが必要。P1-A1 NO-GO 維持。以下は履歴。
+
+
 > **2026-11-09 P2 ZIP Drive実地検証**: 架空SQLiteをDriveで別ファイル作成・バックアップ・更新・読み戻し、SHA一致/整合性PASS。元のユーザーDBは未変更。**条件付き上書きがなく同時書込対策は未完了**。[P2監査](audits/p2_202611/P2_DRIVE_ZIP_ROUNDTRIP_20261109.md)。P1-A1 NO-GO。以下は履歴。
 
 
