@@ -1,5 +1,8 @@
 # Master Duel Deck Advisor
 
+> **2026-11-10 正本配置確定／P3移行**: Drive `GPT/MasterDuel/DB/` に本番/合成テストのZIP・HEAD/manifestを統合。非公開・計10件・元ID維持を確認。**本番は `MD_CURRENT_HEAD.json`（空DB）、合成テストは `P2B_TEST_CURRENT_HEAD.json`（架空カード2件）で厳密分離**。単一ライター/CASなし運用、P1-A1 NO-GO。[正本と次工程](docs/DRIVE_DB_CANONICAL_AND_P3_20261110.md)。以下履歴。
+
+
 > **P2 SQLite ZIP**: 一時領域・モックによる検証付き新規スナップショットを実装。[運用仕様](zip_store/README.md)。Drive 接続・正本昇格は未実装、単一ライターが必要。P1-A1 NO-GO 維持。以下は履歴。
 
 
