@@ -1,5 +1,8 @@
 # Workflow — master-duel
 
+> **2026-11-10 本番DB世代1へ切替完了**：非公開Driveで基本カード13,948件、日本語効果文13,948件。HEAD・ZIP読み戻しPASS、旧世代保存。所持0件。正式回帰93件PASS。個人利用限定・出典未検証扱い。単一ライター。[監査](../audits/p1_202611/PROD_FULL_JA_EFFECTS_PROMOTION_20261110.md)。以下は履歴。
+
+
 > **2026-11-10 P3正式統合テスト完了**：GitHub正本コード24ファイルのSHA一致、P1-A0/P1/P2/P3/カードマスター投入器の**90/90 PASS（skip 0）**。実JSON13,948件から正式モジュールでSQLite生成、既存Drive検証DBとSQLite SHA一致。非公開**検証・読取限定GO**、本番HEAD切替は既存P1-A1ゲートによりNO-GO。単一ライター制約継続。[監査](../audits/p1_202611/P3_FORMAL_FULL_REGRESSION_20261110.md)。以下履歴。
 
 
