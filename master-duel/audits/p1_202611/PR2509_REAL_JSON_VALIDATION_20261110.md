@@ -47,3 +47,15 @@ Drive `GPT/MasterDuel/source` の2026-11-09固定原本2件をコネクタ経由
 `card_master_import/importer.py` に実形式の種別、数値変換、未知攻守、race抽出対応。新たに架空fixtureの実形式回帰テストを追加。2026-11-10の独立実測とPRコード通し実行は別物であり、後者は未実施。独立実行の結果をもってPR改訂コードに無条件GOは出さない。
 
 次の受入条件：**このPRの現在の`read_inputs`→`dry_run`→`convert`を、同じ固定SHAの実JSON2本で再実行し、出力整合性・再現性・冪等性を確認する**。公開GitHubに原JSON・実DB本体・カード本文は保存しない。P1-A1ゲートは別。
+
+## 追補：PR改訂 importer.py 自体の実JSON実行（2026-11-10）
+
+PRブランチの `card_master_import/importer.py` に一致する**Git blob SHA `ae3fc705550a647699dfc20cf711654d2a29eb90`** のコードを実行。ローカルファイルの `git hash-object` を使ってGitHub blobと完全一致確認。P1 `Store` とP2 `archive` の**必要APIに互換アダプターを使用**したため、正式なP1/P2依存コードを使った結合試験とは区別する。
+
+- `read_inputs`: Drive実JSON 2本のSHA固定照合 PASS
+- `dry_run`: `ok=true`, `joined=13948`, `exact=13931`, `normalized=13`, `exceptions=4`, `unresolved=0`, `duplicate_konami_id=0`, `missing_ja=0`, `missing_rarity=0`, `invalid=0`, `craftable_unknown=13931`.
+- `convert`: schema v1の実SQLite元ZIPコピーを入力に13,948件投入 PASS。ZIP再展開後の `PRAGMA integrity_check=ok`, 外部キー違反0件、inventory0件を確認。
+- `convert` 同一入力版の再実行: PASS、カード13,948件、二重登録なし。
+- 出力ZIP 1,107,471 bytes、SHA-256 `2edb458bdbbb05fcc89f969859fd8bbbe20465399d6dc8420d83897fccbeca61`。独立スクリプトのZIP SHAが異なるのはZIP作成・圧縮・SQLiteページ配置の差によるため、**再現性は内容と件数で判定**。バイト完全一致が要件なら別途決定性試験が必要。
+
+**次の最終確認**：同一PR内容を公式の `sqlite_store.Store` / `zip_store.archive` を使うリポジトリチェックアウトで86件以上（以前84件＋新規2件）の全テストに通す。これが未確認の間は本番HEADを更新しない。個人データ・原JSON・実SQLiteバイナリは公開Gitへ格納しない。
