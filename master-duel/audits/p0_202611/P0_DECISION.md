@@ -1,5 +1,8 @@
 # P0 判定
 
+> **2026-11-09 / P1-A0 第2段**: 合成データ検索と形式・日付別banlist snapshot選択を追加。**合成31テストPASS**。新しい未検証snapshotを古い確認済みsnapshotにフォールバックさせず、ID欠番も「3枚」にしない。P0-Cゲーム内実見**0/30**、P1-A1実データ台帳・全文索引は引き続き**NO-GO**。
+
+
 > **2026-11-09 / P1-A0合成契約試作**: `master-duel/p1_a0/catalog_contract.py` と `tests/test_catalog_contract.py` を追加。架空データに限り、同名別ID/複数パスコード/MD出典限定レアリティ/未検証banlist/生成・入手UNKNOWN/未所持URを防御的に扱う。**P0-C MDゲーム内30件の検証0/30、P1-A1実データ台帳・全文検索は依然NO-GO**。これはP0監査完了ではない。
 
 

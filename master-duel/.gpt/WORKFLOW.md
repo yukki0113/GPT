@@ -1,5 +1,8 @@
 # Workflow — master-duel
 
+> **2026-11-09 P1-A0 第2段**: 合成データ用`catalog_search.py`を追加。日本語名の正規化検索、MDレアリティ/生成可否/検証状態ANDフィルタ、デッキ形式別の禁止制限スナップショット選択を試作。**31テストPASS**。実カード入出力・MD内実照合30件・P1-A1は未実施。初期P0段階の旧本文は履歴。
+
+
 **2026-11-09 P1-A0限定実装**: `master-duel/p1_a0/` に架空データのみのID/レアリティ/UNKNOWN/banlistの契約検証器とunittestを追加。実JSON取込・検索台帳の生成・公式ゲーム内30件検証は未実施。P1-A1はNO-GO。詳細は [P1_A_LIMITED_GATE_DESIGN.md](../docs/P1_A_LIMITED_GATE_DESIGN.md)。下記「P1未着手」は旧時点の履歴。
 
 
