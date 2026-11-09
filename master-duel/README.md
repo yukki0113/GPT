@@ -1,5 +1,8 @@
 # Master Duel Deck Advisor
 
+> **JSON → SQLite 検証用変換器**: 架空データでの dry-run と変換を実装。[操作・制約](card_master_import/README.md)。実 JSON の全件検証は未実施、P1-A1 NO-GO・本番 HEAD 未更新。以下は履歴。
+
+
 > **2026-11-10 基本カードマスター投入設計**: 既存MD JSON 13,948件＋cards JSONからKONAMI ID・日本語名・基本属性・MDレアリティをschema v1にETLする方針。P0で全件名称対応済み。まずdry-runと私的検証DB、カード全文・禁止制限・パック・優先所持リストは別工程。実データ本番投入はP1-A1ゲート維持。[設計](docs/CARD_MASTER_JSON_TO_SQLITE_DESIGN_20261110.md)。以下履歴。
 
 
