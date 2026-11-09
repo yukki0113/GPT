@@ -1,5 +1,8 @@
 # Workflow — master-duel
 
+> **2026-11-09 P2 ZIP Drive実地往復**: ユーザー保存の空DBからコピーで架空カード追加・所持更新/取り消し→ZIP再圧縮→Driveに別テストファイル作成→バックアップ→同一テストIDで内容更新→再ダウンロード・ZIP SHA/SQLite integrity/foreign keys確認 **PASS**。元のユーザーDBは未変更。**Drive connectorに条件付きupdate/CASがなく同時書込は未保証、P2全体は部分PASS**。[詳細](../audits/p2_202611/P2_DRIVE_ZIP_ROUNDTRIP_20261109.md)。P1-A1 NO-GO。以下は履歴。
+
+
 > **2026-11-09 P1 SQLite**: 架空データでカード検索・所持更新・履歴・取り消しを実装。Drive ZIP は P2、実データ利用は引き続き **P1-A1 NO-GO**。[操作・入出力契約](../sqlite_store/README.md)。P0監査を継続し、P2 では競合・整合性・復旧を設計する。以下の旧状態は履歴。
 
 
