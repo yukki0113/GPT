@@ -1,0 +1,58 @@
+{
+  "audit_date": "2026-11-09",
+  "phase": "P0-B",
+  "sample_count": 50,
+  "selection": "40 stratified kind x rarity with fixed random seed 20261109 + 10 purposive important cards",
+  "official_source": "KONAMI OCG card database",
+  "official_ocg_names": {
+    "opened": 50,
+    "exact": 39,
+    "normalized": 11,
+    "unresolved": 0
+  },
+  "kinds": {
+    "normal": 6,
+    "effect": 10,
+    "ritual": 4,
+    "fusion": 4,
+    "synchro": 4,
+    "xyz": 4,
+    "link": 4,
+    "pendulum": 4,
+    "spell": 6,
+    "trap": 4
+  },
+  "ocg_text_manual": {
+    "checked": 5,
+    "normalized_similar": 3,
+    "material_differences": 2,
+    "differing_cids": [
+      12047,
+      17445
+    ],
+    "sameish_cids": [
+      15022,
+      20196,
+      12906
+    ]
+  },
+  "md_official_independent": {
+    "names": 0,
+    "rarity": 0,
+    "effects": 0,
+    "banlist": 0,
+    "pack_craft": 0
+  },
+  "license": {
+    "konami_terms_url": "https://legal.konami.com/games/yugioh_masterduel/terms/tou/mb_japan/ja/",
+    "yaml_yugi_readme": "https://github.com/DawnbrandBots/yaml-yugi",
+    "rights_to_bulk_index_card_text": "NOT_VERIFIED"
+  },
+  "decision": {
+    "p0_ocg_name_subset": "PASS",
+    "p0_md_official_subset": "NOT_DONE",
+    "p1_a_full": "NO-GO",
+    "p1_a_limited": "DESIGN_ONLY_CONDITIONAL",
+    "p1_started": false
+  }
+}
