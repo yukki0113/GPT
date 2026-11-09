@@ -2,6 +2,7 @@
 import json
 import sqlite3
 import sys
+from urllib.parse import quote
 from pathlib import Path
 
 # Reuse the P1-A0 lookup contract, without changing its standalone imports.
@@ -12,25 +13,57 @@ SCHEMA = Path(__file__).with_name('schema.sql')
 VERSION = 1
 
 class Store:
-    def __init__(self, path):
-        self.db = sqlite3.connect(path, isolation_level=None)
+    def __init__(self, path, *, _create=False):
+        uri = 'file:' + quote(str(Path(path).absolute()), safe='/') + ('?mode=rwc' if _create else '?mode=rw')
+        self.db = sqlite3.connect(uri, uri=True, isolation_level=None)
         self.db.row_factory = sqlite3.Row
-        self.db.execute('PRAGMA foreign_keys=ON')
-        if self.db.execute('PRAGMA foreign_keys').fetchone()[0] != 1:
-            raise RuntimeError('foreign keys unavailable')
+        try:
+            self.db.execute('PRAGMA foreign_keys=ON')
+            if self.db.execute('PRAGMA foreign_keys').fetchone()[0] != 1:
+                raise RuntimeError('foreign keys unavailable')
+            if _create:
+                self.initialize()
+            else:
+                self._validate_schema()
+        except Exception:
+            self.db.close()
+            raise
+
+    @classmethod
+    def create(cls, path):
+        """Explicitly create/initialize an empty DB or open a valid v1 DB."""
+        return cls(path, _create=True)
 
     def close(self):
         self.db.close()
 
+    def _validate_schema(self):
+        try:
+            versions = [row[0] for row in self.db.execute('SELECT version FROM schema_migrations ORDER BY version')]
+            if versions != [VERSION]:
+                raise ValueError('unsupported schema version')
+            # Compare all required table definitions against the canonical migration.
+            reference = sqlite3.connect(':memory:')
+            try:
+                reference.executescript(SCHEMA.read_text(encoding='utf-8'))
+                expected = dict(reference.execute("SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"))
+            finally:
+                reference.close()
+            actual = dict(self.db.execute("SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"))
+            if any(actual.get(name) != sql for name, sql in expected.items()):
+                raise ValueError('incomplete or incompatible schema')
+        except sqlite3.DatabaseError as exc:
+            raise ValueError('uninitialized or invalid schema') from exc
+
     def initialize(self):
+        """Initialize a completely empty database, or validate an existing one."""
         self.db.execute('BEGIN IMMEDIATE')
         try:
-            exists = self.db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='schema_migrations'").fetchone()
-            if not exists:
-                # execute statements individually: executescript commits implicitly.
+            objects = self.db.execute("SELECT name FROM sqlite_master WHERE name NOT LIKE 'sqlite_%'").fetchall()
+            if not objects:
                 for statement in SCHEMA.read_text(encoding='utf-8').split(';'):
                     if statement.strip(): self.db.execute(statement)
-            if self.version() != VERSION: raise ValueError('unsupported schema version')
+            self._validate_schema()
             self.db.commit()
         except Exception:
             self.db.rollback()
@@ -57,6 +90,40 @@ class Store:
         cursor = self.db.execute('UPDATE cards SET '+sql+' WHERE card_id=?', (*fields.values(),card_id))
         if not cursor.rowcount: raise ValueError('unknown card')
         return self.get_card(card_id)
+
+    def _set_details(self, table, card_id, fields, allowed):
+        if not fields or not fields.keys() <= allowed:
+            raise ValueError('invalid fields')
+        if not self.get_card(card_id):
+            raise ValueError('unknown card')
+        if 'verification' in fields and fields['verification'] not in ('UNVERIFIED_SOURCE', 'GAME_VERIFIED'):
+            raise ValueError('invalid verification')
+        columns = list(fields)
+        values = [fields[k] for k in columns]
+        if self._get_details(table, card_id) is None:
+            sql = 'INSERT INTO ' + table + ' (card_id,' + ','.join(columns) + ') VALUES (' + ','.join('?' for _ in range(len(columns)+1)) + ')'
+            self.db.execute(sql, [card_id] + values)
+        else:
+            sql = 'UPDATE ' + table + ' SET ' + ','.join(k+'=?' for k in columns) + ' WHERE card_id=?'
+            self.db.execute(sql, values + [card_id])
+        return self._get_details(table, card_id)
+
+    def _get_details(self, table, card_id):
+        if not self.get_card(card_id): raise ValueError('unknown card')
+        row = self.db.execute('SELECT * FROM '+table+' WHERE card_id=?', (card_id,)).fetchone()
+        return dict(row) if row else None
+
+    def set_attributes(self, card_id, **fields):
+        return self._set_details('card_attributes', card_id, fields, {'kind','attribute','race','level','rank','link','atk','def','source','acquired_at','verification'})
+
+    def get_attributes(self, card_id):
+        return self._get_details('card_attributes', card_id)
+
+    def set_md_catalog(self, card_id, **fields):
+        return self._set_details('md_catalog', card_id, fields, {'rarity','rarity_source','craftable','source','acquired_at','verification'})
+
+    def get_md_catalog(self, card_id):
+        return self._get_details('md_catalog', card_id)
 
     def search_cards(self, query=None, kind=None, rarity=None, craftable=None, verification=None):
         sql = 'SELECT c.* FROM cards c LEFT JOIN card_attributes a ON a.card_id=c.card_id LEFT JOIN md_catalog m ON m.card_id=c.card_id WHERE 1=1'
@@ -135,6 +202,7 @@ class Store:
                 if any(self.get_inventory(x['card_id'])['last_batch_id'] != batch_id for x in changes): raise ValueError('subsequent update prevents undo')
                 updates = [{'card_id':x['card_id'],'owned_count':x['before_count']} for x in changes]
                 payload = json.dumps(updates, ensure_ascii=False, sort_keys=True, separators=(',',':'))
+                if self.db.execute('SELECT 1 FROM inventory_batches WHERE batch_id=?',(undo_id,)).fetchone(): raise ValueError('batch ID conflict')
                 self.db.execute('INSERT INTO inventory_batches(batch_id,payload,undo_of) VALUES (?,?,?)',(undo_id,payload,batch_id))
                 self._apply(undo_id,updates)
                 result = self.batch_diff(undo_id)
