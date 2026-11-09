@@ -1,5 +1,8 @@
 # Workflow — master-duel
 
+> **P3 音声ステージング**: 架空入力の保存・再照合・差分プレビューと P2 候補作成を追加。[運用仕様](../voice_staging/README.md)。Drive HEAD は更新しない。P1-A1 NO-GO を維持。以下は履歴。
+
+
 > **2026-11-10 正本配置確定／P3移行**: Drive `GPT/MasterDuel/DB/` に本番/合成テストのZIP・HEAD/manifestを統合。非公開・計10件・元ID維持を確認。**本番は `MD_CURRENT_HEAD.json`（空DB）、合成テストは `P2B_TEST_CURRENT_HEAD.json`（架空カード2件）で厳密分離**。単一ライター/CASなし運用、P1-A1 NO-GO。[正本と次工程](../docs/DRIVE_DB_CANONICAL_AND_P3_20261110.md)。以下履歴。
 
 
