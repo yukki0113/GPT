@@ -1,5 +1,8 @@
 # Workflow — master-duel
 
+> **2026-11-10 P3正式統合テスト完了**：GitHub正本コード24ファイルのSHA一致、P1-A0/P1/P2/P3/カードマスター投入器の**90/90 PASS（skip 0）**。実JSON13,948件から正式モジュールでSQLite生成、既存Drive検証DBとSQLite SHA一致。非公開**検証・読取限定GO**、本番HEAD切替は既存P1-A1ゲートによりNO-GO。単一ライター制約継続。[監査](../audits/p1_202611/P3_FORMAL_FULL_REGRESSION_20261110.md)。以下履歴。
+
+
 > **JSON → SQLite 検証用変換器**: 架空データでの dry-run と変換を実装。[操作・制約](../card_master_import/README.md)。実 JSON の全件検証は未実施、P1-A1 NO-GO・本番 HEAD 未更新。以下は履歴。
 
 

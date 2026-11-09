@@ -1,7 +1,7 @@
 # P3実カードマスター連携 — 2026-11-10
 
 ## 判定
-**実カードZIPに対する独立読み取りスモークはPASS。P3 preview() 本体の正式な実行、既存全86件の統合回帰は未実施。** したがって本番HEADの切替はNO-GO。基本マスターの参照用途に限定する。
+**2026-11-10追補：正式P3と全テストは実行済み、90/90 PASS（skip 0）。** [正式統合・本番採用ゲート判定](P3_FORMAL_FULL_REGRESSION_20261110.md)。以下は追補前の独立スモーク履歴。
 
 ## 現物と独立検証
 Drive `GPT/MasterDuel/DB/MD_CARD_MASTER_13948_PR2509_VALIDATION_ONLY_20261110.sqlite.zip` のローカル読み取り用コピーを解析した。ZIP SHA-256 `e81920a247631c66f1fdc04b500c27644c273dcc6b3741e07450755f652c29d5`、カード13,948件、日本語表示名重複1組、`inventory` 0件、integrity_check=ok、FK違反なし。
