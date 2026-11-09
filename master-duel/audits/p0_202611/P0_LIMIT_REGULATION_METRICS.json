@@ -1,0 +1,118 @@
+{
+  "audit_date_jst": "2026-11-09",
+  "phase": "P0_only",
+  "effective_date": "2026-11-05",
+  "inputs": {
+    "regulation": {
+      "filename": "current.vector.json",
+      "bytes": 3395,
+      "sha256": "2651601cb3bf9b66dde522eff92207968c9b9f63f4b82632910ccacdf5210781",
+      "github_blob_sha": "6cb1fb1461df5de6a2762dbee6aacc19a417a2d4",
+      "github_path": "DawnbrandBots/yaml-yugi-limit-regulation/data/master-duel/2026-11-05.vector.json",
+      "upstream_byte_identical": true
+    },
+    "md": {
+      "rows": 13948,
+      "sha256": "b7bf8e365d293cfa6bc309dbbc5cbefae3a7d1b498d34cdf7c54fc26e5bd152b"
+    },
+    "cards": {
+      "rows": 14416,
+      "sha256": "5f71287c55c610c2753e1c6ecade4bdf9f1c7981555a127d03ccd82a493c97b7"
+    }
+  },
+  "regulation_count": 215,
+  "counts_by_max_copies": {
+    "0": 114,
+    "1": 77,
+    "2": 24
+  },
+  "crosswalk": {
+    "matched_cards_by_konami_id": 215,
+    "matched_md_candidates_by_en_name": 215,
+    "unmatched_cards": 0,
+    "unmatched_md_candidates": 0,
+    "ambiguous": 0,
+    "denominator": 215
+  },
+  "spot_checks_20261105": [
+    {
+      "ja": "マジック・キャンセラー",
+      "id": 5594,
+      "max": 0
+    },
+    {
+      "ja": "星辰響手プリクル",
+      "id": 21789,
+      "max": 0
+    },
+    {
+      "ja": "ＧＯ－ＤＤＤ神零王ゼロゴッド・レイジ",
+      "id": 14708,
+      "max": 0
+    },
+    {
+      "ja": "神殿を守る者",
+      "id": 6027,
+      "max": 0
+    },
+    {
+      "ja": "キラーチューン・レコ",
+      "id": 21955,
+      "max": 1
+    },
+    {
+      "ja": "早すぎた埋葬",
+      "id": 4966,
+      "max": 1
+    },
+    {
+      "ja": "キラーチューン・ミクス",
+      "id": 21953,
+      "max": 1
+    },
+    {
+      "ja": "耀聖の波詩ディーナ",
+      "id": 22117,
+      "max": 1
+    },
+    {
+      "ja": "燿ける聖詩の獄神精",
+      "id": 22119,
+      "max": 1
+    }
+  ],
+  "known_examples": {
+    "maxx_c": {
+      "id": 9455,
+      "max": 1
+    },
+    "called_by_the_grave": {
+      "id": 13619,
+      "max": 0
+    },
+    "ash_blossom": {
+      "id": 12950,
+      "listed": false
+    },
+    "ghost_mourner": {
+      "id": 15022,
+      "listed": false
+    }
+  },
+  "limitations": [
+    "same-origin MD and cards inputs not independently verified with official MD all cards",
+    "the 9 changed-card statuses are checked against secondary guide sites, not the in-game entire official regulation list",
+    "Game8 forbidden count heading 113 versus vector banned entries 114: unresolved",
+    "unlisted does not prove unrestricted playability",
+    "pack/craftability and ownership not covered",
+    "source-data long-term reuse terms need further review"
+  ],
+  "archive_bundle": {
+    "name": "master_duel_P0_source_snapshot_20261109_3files.bundle",
+    "bytes": 31995530,
+    "sha256": "4f7bc96bdfe2ed7968d1dfab7d8841404dc0e1d6792cba5bd3ebd2a239826679",
+    "local_git_commit": "d627a0a258e2bc611b3e77284989dafd50c2fb67",
+    "validated_all_input_hashes": true,
+    "uploaded_to_private_remote": false
+  }
+}

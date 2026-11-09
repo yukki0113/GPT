@@ -1,5 +1,8 @@
 # P0原データ保管マニフェスト（2026-11-09）
 
+> **最新状態（2026-11-09 / 3ファイル版追加）**: `master-duel-raw.json` / `cards.json` に加えて、2026-11-05施行の `current.vector.json`（3,395 bytes / SHA-256 `2651601cb3bf9b66dde522eff92207968c9b9f63f4b82632910ccacdf5210781`）をローカルGitに記録。**新しい保管用Git bundle**: `master_duel_P0_source_snapshot_20261109_3files.bundle` / 31,995,530 bytes / SHA-256 `4f7bc96bdfe2ed7968d1dfab7d8841404dc0e1d6792cba5bd3ebd2a239826679` / 内部commit `d627a0a258e2bc611b3e77284989dafd50c2fb67`。復元検証: `git bundle verify` PASS、3JSONのgit object復元SHA-256一致。**公開GitHubに元JSONは置いていない。非公開リモートにも未アップロード**。古い2ファイルbundleの情報は履歴として以下に保存。 [禁止制限監査](P0_LIMIT_REGULATION_AUDIT_20261109.md)。
+
+
 ## 目的
 P0監査に用いたユーザー提供JSON **2ファイルの固定ハッシュ**と保管状態を記録する。
 
