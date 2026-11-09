@@ -1,0 +1,56 @@
+{
+  "audit_date_jst": "2026-11-09",
+  "evidence": "user uploaded images",
+  "screenshots": [
+    {
+      "file": "IMG_9763.jpeg",
+      "sha256": "9ea7d8fb9069053b8325c97e93b596203e9c3d6a3014bff709f2a6925e5df4a7",
+      "konami_id_candidate": 9455,
+      "fields": {
+        "md_rarity": "UR",
+        "banlist_display": "LIMITED_1",
+        "craft_button": "VISIBLE_UR_30",
+        "effect_compare": "NOT_COMPARED",
+        "banlist_effective_date": "UNKNOWN"
+      }
+    },
+    {
+      "file": "IMG_9764.jpeg",
+      "sha256": "2294cf39224637964a3909f4987d9292cf17b3928d5cb17496fbda74559bac95",
+      "konami_id_candidate": 12047,
+      "acquisition": {
+        "pack_name_ja": "高速のホビーマシン",
+        "unlock_status": "CURRENTLY_LOCKED_FOR_USER",
+        "other_routes": [
+          "CARD_CRAFT",
+          "MASTER_PACK"
+        ],
+        "currently_purchasable": "UNKNOWN"
+      }
+    },
+    {
+      "file": "IMG_9766.jpeg",
+      "sha256": "187cbdeadf64ad5dad6ca81411d0ad9360f04909c33c051907fb44f0c7d52aaf",
+      "konami_id_candidate": 17445,
+      "acquisition": {
+        "pack_name_ja": "悲哀を響かせる歌姫",
+        "unlock_status": "CURRENTLY_LOCKED_FOR_USER",
+        "other_routes": [
+          "CARD_CRAFT",
+          "MASTER_PACK"
+        ],
+        "currently_purchasable": "UNKNOWN"
+      }
+    }
+  ],
+  "p0c_over_30": {
+    "md_card_name_and_rarity": 3,
+    "md_raw_effect_compared": 2,
+    "craft_button_visible": 3,
+    "banlist_screen_value": 1,
+    "acquisition_methods_screen": 2,
+    "shop_purchasable_verified": 0,
+    "regulation_effective_date_verified": 0
+  },
+  "p1_a1": "NO_GO"
+}
