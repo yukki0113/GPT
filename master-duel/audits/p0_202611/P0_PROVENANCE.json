@@ -1,0 +1,35 @@
+{
+  "audit_time_utc": "2026-11-09T06:00:12.484Z",
+  "audit_time_jst": "2026-11-09 14:55–14:59 JST",
+  "base_commit": "42de561068ca695244cd1c554c18e781235e1a57",
+  "method": "36 manually selected YAML individual files via GitHub fetch; source blob SHA per CSV; 5 OCG name references; parse public regulation vector via web retrieval",
+  "raw_storage": "none; transient tool output only; no private repository or Drive configured",
+  "raw_response_sha256": null,
+  "raw_sha_reason": "No raw HTTP snapshot or byte response provided by retrieval tools; no local raw file retained",
+  "headers_and_status": "not exposed by retrieval tools; full snapshot returned not accessible, no origin HTTP status asserted",
+  "source_list": [
+    {
+      "url": "https://github.com/DawnbrandBots/yaml-yugi",
+      "version": "individual file blob SHAs in CSV; branch master; commit not pinned"
+    },
+    {
+      "url": "https://dawnbrandbots.github.io/yaml-yugi-limit-regulation/master-duel/current.vector.json",
+      "version": "date 2026-11-05; web text extraction, no raw SHA"
+    },
+    {
+      "url": "https://ygoprodeck.com/api-guide/",
+      "version": "v7; guide read 2026-11-09"
+    },
+    {
+      "url": "https://github.com/iconmaster5326/YGOJSON/blob/main/schema/v1/card.json",
+      "version": "main schema; no dataset snapshot"
+    },
+    {
+      "url": "https://www.db.yugioh-card.com/yugiohdb/",
+      "version": "individual OCG pages; source refs in CSV"
+    }
+  ],
+  "sample_count": 36,
+  "independent_ocg_names_checked": 5,
+  "limitation": "All-catalog comparisons and 30 independent checks not completed; no fabricated denominators."
+}
