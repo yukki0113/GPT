@@ -1,0 +1,80 @@
+{
+  "audit_date_jst": "2026-11-09",
+  "kind": "p0_two_file_crosswalk_audit_only",
+  "source": {
+    "origin_project": "DawnbrandBots/yaml-yugi",
+    "is_independent_source_comparison": false,
+    "bytes_and_sha_from_user_uploads": true
+  },
+  "inputs": {
+    "master-duel-raw.json": {
+      "count": 13948,
+      "bytes": 83388036,
+      "sha256": "b7bf8e365d293cfa6bc309dbbc5cbefae3a7d1b498d34cdf7c54fc26e5bd152b"
+    },
+    "cards.json": {
+      "count": 14416,
+      "bytes": 110258836,
+      "sha256": "5f71287c55c610c2753e1c6ecade4bdf9f1c7981555a127d03ccd82a493c97b7"
+    }
+  },
+  "crosswalk": {
+    "exact_english_unique": 13931,
+    "normalized_english_unique": 13,
+    "ambiguous_rows_resolved": 4,
+    "unresolved_rows": 0,
+    "japanese_name_nonempty": 13948,
+    "unique_linked_konami_ids": 13948,
+    "ambiguous_details": [
+      "Black Luster Soldier ritual vs normal: two MD rows resolved by type",
+      "Dark Magician: multiple passcodes, same Konami ID and ja name",
+      "Polymerization: multiple passcodes, same Konami ID and ja name"
+    ]
+  },
+  "name": {
+    "japanese_nonempty": 13948,
+    "contains_ruby": 8843
+  },
+  "texts": {
+    "md_ja_nonempty": 13948,
+    "cards_ja_nonempty": 13945,
+    "cards_ja_missing_names": [
+      "Thundercrash Snarecrow",
+      "Mixousia the Confounder",
+      "Shamanite Shamanknight"
+    ],
+    "exact_equal": 1678,
+    "nfkc_whitespace_normalized_equal": 5896,
+    "nfkc_whitespace_normalized_different": 8049,
+    "compared_both_nonempty": 13945
+  },
+  "rarity": {
+    "values_equal": 13947,
+    "ocg_missing_md_rarity_while_md_has_value": 1,
+    "ocg_missing_case": "Black Luster Soldier (Normal), MD=UR",
+    "different_nonmissing_values": 0,
+    "ocg_nonempty_md_rarity_record_count": 13949
+  },
+  "properties": {
+    "attribute_equal": 9113,
+    "attribute_missing_one_side": 1,
+    "atk_equal": 9113,
+    "atk_missing_one_side": 1,
+    "def_equal": 8660,
+    "def_missing_one_side": 1,
+    "level_equal": 8072,
+    "level_missing_one_side": 1,
+    "rank_equal": 588,
+    "pendulum_scale_equal": 385,
+    "missing_in_ocg_name": "Rai-Mei"
+  },
+  "password_missing_after_join": 6,
+  "unofficial_translation_flag_on_joined_rows": 2,
+  "limitations": [
+    "not official MD independent audit",
+    "both inputs originate from same source",
+    "card copyright and continued storage not verified",
+    "source dates HTTP validators not verified",
+    "banlist pack purchase and craftability not independently verified"
+  ]
+}
