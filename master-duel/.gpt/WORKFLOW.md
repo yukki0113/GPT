@@ -1,5 +1,8 @@
 # Workflow — master-duel
 
+> **2026-11-10 基本カードマスター投入設計**: 既存MD JSON 13,948件＋cards JSONからKONAMI ID・日本語名・基本属性・MDレアリティをschema v1にETLする方針。P0で全件名称対応済み。まずdry-runと私的検証DB、カード全文・禁止制限・パック・優先所持リストは別工程。実データ本番投入はP1-A1ゲート維持。[設計](../docs/CARD_MASTER_JSON_TO_SQLITE_DESIGN_20261110.md)。以下履歴。
+
+
 > **P3 音声ステージング**: 架空入力の保存・再照合・差分プレビューと P2 候補作成を追加。[運用仕様](../voice_staging/README.md)。Drive HEAD は更新しない。P1-A1 NO-GO を維持。以下は履歴。
 
 
