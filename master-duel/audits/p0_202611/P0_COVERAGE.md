@@ -1,5 +1,8 @@
 # P0 取得率・照合結果
 
+> **2026-11-09 / 入手パック・生成可否追加実測**: MD JSON 13,948件中、`releases` 4,217/13,948（30.234%）、未記載9,731件。`craftable` は17/13,948（0.122%）で全17件がNo、未記載13,931件は**UNKNOWN**。Master/Legacy以外の個別Secret/Selectionパック・現在販売状態は網羅できない。YGOJSONの販売期間・生成可否スキーマを確認したが全件実値取得不可、かつ配布メタ2025年で鮮度不足。[詳細](P0_PACK_CRAFT_AUDIT_20261109.md) / [metrics](P0_PACK_CRAFT_METRICS.json)。以下の「測定不能」は初回Work監査時点の記録。
+
+
 > **2026-11-09 / 禁止制限実測追補**: `current.vector.json`（3,395 bytes / SHA-256 `2651601cb3bf9b66dde522eff92207968c9b9f63f4b82632910ccacdf5210781`）の215件は `cards.json.konami_id` と **215/215一致**、MD候補とも **215/215対応**。値0:114件、1:77件、2:24件。配布元日付固定JSONとBlob SHA一致、改訂対象9件の区分は攻略サイトと一致。**全215件の公式MD照合ではない**。 [監査](P0_LIMIT_REGULATION_AUDIT_20261109.md)。以下は先行各時点の記録。
 
 

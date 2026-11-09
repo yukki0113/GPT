@@ -1,0 +1,60 @@
+{
+  "audit_date_jst": "2026-11-09",
+  "scope": "P0-only packet provenance and crafting source audit",
+  "input_md": {
+    "name": "master-duel-raw.json",
+    "size_bytes": 83388036,
+    "sha256": "b7bf8e365d293cfa6bc309dbbc5cbefae3a7d1b498d34cdf7c54fc26e5bd152b",
+    "records": 13948
+  },
+  "md_releases": {
+    "nonempty": 4217,
+    "missing": 9731,
+    "nonempty_pct": 30.2337,
+    "unique_raw_strings": 67,
+    "starts_legacy_pack": 3325,
+    "starts_master_pack": 875,
+    "other_start": 17,
+    "contains_semicolon": 241,
+    "multiline": 15,
+    "has_verified_secret_pack_membership_count": null,
+    "has_verified_current_sale_status_count": null
+  },
+  "md_craftable": {
+    "explicit_records": 17,
+    "explicit_no": 17,
+    "explicit_yes": 0,
+    "missing": 13931,
+    "presence_pct": 0.1219,
+    "missing_semantics": "UNKNOWN"
+  },
+  "ygojson": {
+    "repo": "iconmaster5326/YGOJSON",
+    "individual_set_uuid_count": 3306,
+    "individual_card_uuid_count": 14616,
+    "meta": {
+      "increment": 1559,
+      "lastYamlyugiRead": "2025-05-13T01:53:50.828316",
+      "lastYugipediaRead": "2025-10-25T01:45:37.418418",
+      "lastYGOProDeckRead": "2025-10-25T01:45:35.506172"
+    },
+    "aggregate_zip_download_status": "failed_environment",
+    "md_set_count": null,
+    "md_craftable_coverage": null,
+    "availability_coverage": null,
+    "source_independence": "partially derived from YAML Yugi"
+  },
+  "master_duel_meta": {
+    "manual_card_pages_checked": 2,
+    "observed_speedroid_terrortop_pack_names": 5,
+    "observed_ash_blossom_pack_names": 5,
+    "current_availability_verified": false,
+    "bulk_reuse_terms_verified": false
+  },
+  "assessment": {
+    "pack_all_card_coverage": "UNVERIFIED",
+    "craftable_all_card_coverage": "UNVERIFIED",
+    "p1_full": "NO-GO",
+    "p0_source_candidate_analysis": "PARTIAL_DONE"
+  }
+}
