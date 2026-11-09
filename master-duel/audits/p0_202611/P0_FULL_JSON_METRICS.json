@@ -1,0 +1,69 @@
+{
+  "audit_date_jst": "2026-11-09",
+  "status": "p0_followup_only",
+  "input": {
+    "filename": "master-duel-raw.json",
+    "source": "user-uploaded-file",
+    "candidate_distribution_url": "https://dawnbrandbots.github.io/yaml-yugi/master-duel-raw.json",
+    "origin_snapshot_verified": false,
+    "bytes": 83388036,
+    "sha256": "b7bf8e365d293cfa6bc309dbbc5cbefae3a7d1b498d34cdf7c54fc26e5bd152b",
+    "parsed_as": "JSON list"
+  },
+  "records": 13948,
+  "fields": {
+    "title_nonempty": 13948,
+    "en_name_nonempty": 13948,
+    "ja_text_nonempty": 13948,
+    "ja_name_nonempty": 24,
+    "rarity_valid": 13948,
+    "yugipedia_page_id_nonempty": 13948,
+    "yugipedia_page_id_unique": 13948,
+    "releases_present": 4217,
+    "craftable_present": 17,
+    "craftable_no": 17,
+    "banlist_present": 0,
+    "password_present": 0,
+    "konami_id_present": 0
+  },
+  "rarity": {
+    "N": 5318,
+    "R": 4038,
+    "SR": 2954,
+    "UR": 1638
+  },
+  "kinds": {
+    "monster": 9114,
+    "spell": 2801,
+    "trap": 2033
+  },
+  "monster_fields": {
+    "attribute": 9114,
+    "atk": 9114,
+    "def": 8661,
+    "level": 8073,
+    "rank": 588,
+    "link_arrows": 453,
+    "pendulum_scale": 385,
+    "pendulum_effect": 369,
+    "ja_pendulum_effect": 369,
+    "normal_type_including_normal_pendulum": 711
+  },
+  "duplicates": {
+    "en_name_distinct": 13947,
+    "en_name_duplicated_values": [
+      "Black Luster Soldier"
+    ],
+    "yugipedia_page_id_duplicate_count": 0
+  },
+  "limitations": [
+    "all-card Japanese names absent as dedicated field except 24",
+    "ja_text nonempty does not verify MD official text accuracy",
+    "rarity self-reported by dataset; independent MD verification pending",
+    "releases does not establish current obtainable packs",
+    "craftable missing does not imply craftable",
+    "banlist and cross-source joins require separate verified sources",
+    "copyright/continued-storage permissions unverified",
+    "not an official complete MD card list"
+  ]
+}
