@@ -52,17 +52,38 @@ def tokens(record):
     return ' '.join(values).casefold()
 
 def kind(record):
-    t=tokens(record)
-    if 'monster' in t: return 'MONSTER'
-    if 'spell' in t: return 'SPELL'
-    if 'trap' in t: return 'TRAP'
+    # In the pinned MD JSON, monsters have a "types" string such as
+    # "Spellcaster / Effect", but no card_type. A substring check for
+    # "spell" would incorrectly classify Spellcaster as a Spell.
+    explicit = record.get('card_type')
+    if explicit in ('Monster', 'Spell', 'Trap'):
+        return explicit.upper()
+    if explicit is not None:
+        return None
+    if isinstance(record.get('types'), str) and record['types'].strip():
+        return 'MONSTER'
     return None
+
+def numeric(value):
+    # MD numeric fields are decimal strings, cards.json uses integers.
+    # A question-mark ATK/DEF denotes an unknown value, not zero.
+    if value is None or value == '?':
+        return None
+    if type(value) is int:
+        return value
+    if isinstance(value, str) and value.isascii() and value.isdecimal():
+        return int(value)
+    raise ValueError('unrecognized numeric value')
 
 def compatible(md,card):
     mk,ck=kind(md),kind(card)
     if not mk or not ck or mk != ck: return False
     for key in ('attribute','atk','def','level','rank'):
-        if md.get(key) is not None and card.get(key) is not None and md[key] != card[key]: return False
+        left, right = md.get(key), card.get(key)
+        if key in ('atk','def','level','rank'):
+            try: left, right = numeric(left), numeric(right)
+            except ValueError: return False
+        if left is not None and right is not None and left != right: return False
     return True
 
 def dry_run(md,cards,metadata):
@@ -103,9 +124,13 @@ def dry_run(md,cards,metadata):
         card_kind=kind(item)
         if not card_kind or rarity not in ('N','R','SR','UR') or not all(compatible(item,c) for c in candidates): audit['invalid']+=1; continue
         if any(c.get('master_duel_rarity') not in (None,rarity) for c in candidates): audit['invalid']+=1; continue
-        vals={key:item.get(key) for key in ('level','rank','atk','def')}
-        if any(v is not None and type(v) is not int for v in vals.values()): audit['invalid']+=1; continue
-        rows.append({'card_id':f'konami:{k}','konami_id':k,'name':next(iter(names)),'kind':card_kind,'attribute':item.get('attribute'),'race':item.get('race'),'level':vals['level'],'rank':vals['rank'],'atk':vals['atk'],'def':vals['def'],'rarity':rarity,'craftable':'NO' if craft=='No' else 'UNKNOWN'})
+        try: vals={key:numeric(item.get(key)) for key in ('level','rank','atk','def')}
+        except ValueError: audit['invalid']+=1; continue
+        # The MD "types" string starts with the monster race (e.g.
+        # "Dragon / Effect"); it has no separate "race" property.
+        type_line=item.get('types')
+        race=type_line.split(' / ',1)[0].strip() if card_kind=='MONSTER' and isinstance(type_line,str) else None
+        rows.append({'card_id':f'konami:{k}','konami_id':k,'name':next(iter(names)),'kind':card_kind,'attribute':item.get('attribute'),'race':race,'level':vals['level'],'rank':vals['rank'],'atk':vals['atk'],'def':vals['def'],'rarity':rarity,'craftable':'NO' if craft=='No' else 'UNKNOWN'})
         audit['joined']+=1; audit[method]+=1
     audit['ok']=audit['joined']==len(md) and not any(audit[k] for k in ('unresolved','duplicate_konami_id','missing_ja','missing_rarity','invalid'))
     return audit,rows

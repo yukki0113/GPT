@@ -42,6 +42,43 @@ class Tests(unittest.TestCase):
         m,c=pair(); m['craftable']='No'; a,r=dry_run([m],[c],META); self.assertEqual(r[0]['craftable'],'NO')
         c['master_duel_rarity']='UR'; a,_=dry_run([m],[c],META); self.assertFalse(a['ok'])
         self.assertEqual(display_name('<ruby>空<rp>(</rp><rt>そら</rt><rp>)</rp></ruby>竜'),'空竜')
+    def test_real_json_field_shapes(self):
+        # Actual MD JSON: monsters have types but no card_type, and
+        # numeric fields are strings. cards.json stores integer stats.
+        md={'en_name':'Fiction Dragon','types':'Dragon / Effect',
+            'rarity':'SR','attribute':'LIGHT','level':'8','atk':'1000','def':'2000'}
+        card={'name':{'en':'Fiction Dragon','ja':'架空竜'},
+              'konami_id':123,'card_type':'Monster','monster_type_line':'Dragon / Effect',
+              'attribute':'LIGHT','level':8,'atk':1000,'def':2000,'master_duel_rarity':'SR'}
+        audit, rows=dry_run([md],[card],META)
+        self.assertTrue(audit['ok'],audit)
+        self.assertEqual(rows[0]['kind'],'MONSTER')
+        self.assertEqual(rows[0]['race'],'Dragon')
+        self.assertEqual((rows[0]['level'],rows[0]['atk']), (8,1000))
+        out,_=convert(self.base,rows,audit,acquired_at='2026-11-10')
+        path=self.root/'actual-shape'; unpack(out,path)
+        store=Store(path)
+        try:
+            attrs=store.get_attributes('konami:123')
+            self.assertEqual(attrs['race'],'Dragon')
+            self.assertEqual(attrs['atk'],1000)
+        finally: store.close()
+
+    def test_unknown_atk_def_does_not_become_zero(self):
+        md={'en_name':'Fiction Unknown','types':'Spellcaster / Effect',
+            'rarity':'UR','level':'3','atk':'?','def':'?'}
+        card={'name':{'en':'Fiction Unknown','ja':'架空の不明値'},
+              'konami_id':789,'card_type':'Monster','monster_type_line':'Spellcaster / Effect',
+              'level':3,'atk':'?','def':'?','master_duel_rarity':'UR'}
+        audit, rows=dry_run([md],[card],META)
+        self.assertTrue(audit['ok'],audit)
+        self.assertEqual(rows[0]['kind'],'MONSTER')
+        self.assertIsNone(rows[0]['atk'])
+        self.assertIsNone(rows[0]['def'])
+        md['atk']='not-a-number'
+        bad,_=dry_run([md],[card],META)
+        self.assertFalse(bad['ok'])
+
     def test_input_hash_and_bad_json(self):
         p=self.root/'m'; q=self.root/'c'; p.write_text('{}'); q.write_text('[]'); h=lambda x:hashlib.sha256(x.read_bytes()).hexdigest()
         with self.assertRaises(ValueError): read_inputs(p,q,expected_md='0'*64,expected_cards=h(q))
