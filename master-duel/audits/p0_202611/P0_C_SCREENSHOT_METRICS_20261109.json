@@ -1,0 +1,46 @@
+{
+  "date_received_jst": "2026-11-09",
+  "evidence_type": "user-provided Master Duel in-game screenshots",
+  "count": 2,
+  "denominator": 30,
+  "source_md_sha256": "b7bf8e365d293cfa6bc309dbbc5cbefae3a7d1b498d34cdf7c54fc26e5bd152b",
+  "records": [
+    {
+      "konami_id": 12047,
+      "card": "Speedroid Terrortop",
+      "image_file": "IMG_9761.jpeg",
+      "image_sha256": "cdf8df7343d9f9578a5abd7f19cafa1019ed9497d16ddbf21c53c5c998a6512c",
+      "name": "MATCH_NORMALIZED",
+      "md_rarity": "MATCH_SR",
+      "stats": "MATCH",
+      "visible_effect": "MATCH",
+      "craft_button": "ENABLED_DISPLAY_SR_30",
+      "banlist": "NOT_CHECKED",
+      "acquisition": "NOT_CHECKED"
+    },
+    {
+      "konami_id": 17445,
+      "card": "Tearlaments Kaleido-Heart",
+      "image_file": "IMG_9762.jpeg",
+      "image_sha256": "e5a85a2a5d3711b3eed1172d4fe4d305c9c5b520e2aed35131c4e33cd55f09ef",
+      "name": "MATCH",
+      "md_rarity": "MATCH_UR",
+      "stats": "MATCH",
+      "visible_effect": "MATCH",
+      "craft_button": "ENABLED_DISPLAY_UR_30",
+      "banlist": "NOT_CHECKED",
+      "acquisition": "NOT_CHECKED"
+    }
+  ],
+  "status": {
+    "md_name_verified": 2,
+    "md_rarity_verified": 2,
+    "md_effect_verified": 2,
+    "craft_button_visible": 2,
+    "banlist_verified": 0,
+    "acquisition_verified": 0
+  },
+  "game_capture_time": "UNKNOWN",
+  "game_effective_regulation_date": "UNKNOWN",
+  "p1_a1": "NO_GO"
+}
