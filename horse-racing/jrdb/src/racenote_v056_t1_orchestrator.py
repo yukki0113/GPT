@@ -10,14 +10,33 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from datetime import date, datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from racenote_backtest_day_picker import load_json, pick_days, save_json
+from racenote_v056_btday_source_router import (
+    draw_v2, resolve_inventory, verify_readiness_receipt,
+)
 
 POOL=Path("horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json")
 BASE=Path("horse-racing/jrdb/backtests")
 CONTRACT="v056-prediction-confidence-audit-newspaper-v1"
 SID=re.compile(r"BTDAY-\d{4}\Z")
+
+
+def preview_mixed(inventory_path, operational_date=None, seed=None):
+    """Resolve a proposed v2 draw without reserving or enabling production NEXT."""
+    payload = load_json(inventory_path)
+    rows = payload.get("source_inventory") if isinstance(payload, dict) else None
+    if not isinstance(rows, list):
+        raise ValueError("source_inventory must be a list")
+    day = operational_date or datetime.now(ZoneInfo("Asia/Tokyo")).date()
+    pool = load_json(POOL)
+    resolved = resolve_inventory(rows, day, lambda row: verify_readiness_receipt(row, Path.cwd()))
+    proposal = draw_v2(resolved, pool.get("selections", []), BASE, day, seed)
+    return {"mode": "SHADOW", "action": "PREVIEW_ONLY", "start_t1": False,
+            "created_selection": False, "proposal": proposal}
 
 def selection_path(sid):
     if not SID.fullmatch(sid):
@@ -101,7 +120,11 @@ def choose_next():
     save_json(selection_path(sid),new)
     return new,True
 
-def run(command,sid=None):
+def run(command,sid=None,inventory=None,operational_date=None,seed=None):
+    if command=="SHADOW":
+        if inventory is None:
+            raise ValueError("SHADOW requires --inventory")
+        return preview_mixed(inventory, operational_date, seed)
     if command=="T2_ONLY":
         return {"mode":"T2_ONLY","action":"SKIPPED","start_t1":False}
     if command=="NEXT":
@@ -149,11 +172,14 @@ def run(command,sid=None):
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument("mode",choices=("NEXT","EXISTING","STATUS","T2_ONLY"))
+    p.add_argument("mode",choices=("NEXT","EXISTING","STATUS","T2_ONLY","SHADOW"))
     p.add_argument("--selection-id")
     p.add_argument("--output",type=Path)
+    p.add_argument("--inventory",type=Path)
+    p.add_argument("--operational-date",type=date.fromisoformat)
+    p.add_argument("--seed")
     args=p.parse_args()
-    result=run(args.mode,args.selection_id)
+    result=run(args.mode,args.selection_id,args.inventory,args.operational_date,args.seed)
     raw=json.dumps(result,ensure_ascii=False,sort_keys=True)+"\n"
     if args.output:
         if args.output.exists():
