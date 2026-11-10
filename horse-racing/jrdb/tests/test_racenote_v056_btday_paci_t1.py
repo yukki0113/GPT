@@ -3,6 +3,7 @@ import os
 import sys
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -12,6 +13,24 @@ import racenote_v056_btday_paci_t1 as adapter
 
 
 class BtdayPaciAdapterTest(unittest.TestCase):
+    def test_extracted_rrdb_must_match_verified_archive(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "rrdb"
+            root.mkdir()
+            (root / "current.json").write_text(json.dumps({"manifest": "manifest.json"}))
+            (root / "manifest.json").write_text(json.dumps({"relations": {"review": {
+                "partitions": [{"relative_path": "objects/part.parquet"}]}}}))
+            (root / "objects").mkdir()
+            obj = root / "objects/part.parquet"
+            obj.write_bytes(b"original")
+            archive = Path(tmp) / "rrdb.zip"
+            with zipfile.ZipFile(archive, "w") as z:
+                z.writestr("postrace_review/v0_1/objects/part.parquet", b"original")
+            adapter.verify_rrdb_objects(root, archive)
+            obj.write_bytes(b"tampered")
+            with self.assertRaisesRegex(ValueError, "differs"):
+                adapter.verify_rrdb_objects(root, archive)
+
     def test_accepted_selection_routes_to_shared_materializer(self):
         with tempfile.TemporaryDirectory() as tmp:
             previous = Path.cwd()
