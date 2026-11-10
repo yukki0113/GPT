@@ -7,7 +7,7 @@ import json
 import re
 import random
 import secrets
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Callable
 
@@ -92,6 +92,7 @@ def draw_v2(resolved: dict[str, dict], selections: list[dict],
     return {
         "selection_schema_version": "btday-source-selection-v2",
         "selection_id": sid, "target_date": target, "dates": [target], "n": 1,
+        "selected_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "draw_seed": actual_seed, "seed": actual_seed,
         "candidate_set_sha256": candidate_digest(resolved),
         "calendar_bucket": bucket, "draw_occurrence": occurrence,
@@ -100,7 +101,10 @@ def draw_v2(resolved: dict[str, dict], selections: list[dict],
         "source_generation_id": source["source_generation_id"],
         "source_reference": source["source_reference"],
         "source_receipt_sha256": source["receipt_sha256"],
+        "selection_cycle_legacy": source.get("selection_cycle"),
         "sources": [{"target_date": target, "source_mode": source["source_mode"],
                      "source_reference": source["source_reference"],
+                     "source_generation_id": source["source_generation_id"],
+                     "source_receipt_sha256": source["receipt_sha256"],
                      "selection_cycle": source.get("selection_cycle", 1)}],
     }
