@@ -11,6 +11,7 @@ from .snapshots import validate_snapshot
 from datetime import date
 
 _SOURCE = re.compile(r"^(.*) \[sha256:([0-9a-f]{64})\]$", re.DOTALL)
+_LEGACY_SOURCE = re.compile(r"^(.*) #SHA256=([0-9a-f]{64})$", re.DOTALL)
 
 
 def load_snapshots(db_path, *, format_id="MD_STANDARD", as_of=None):
@@ -27,7 +28,8 @@ def load_snapshots(db_path, *, format_id="MD_STANDARD", as_of=None):
         for row in rows:
             if as_of is not None and row["effective_on"] > as_of:
                 continue
-            match = _SOURCE.fullmatch(row["source"] or "")
+            match = (_SOURCE.fullmatch(row["source"] or "") or
+                     _LEGACY_SOURCE.fullmatch(row["source"] or ""))
             if not match:
                 raise ValueError("banlist source SHA provenance unavailable")
             rules = {

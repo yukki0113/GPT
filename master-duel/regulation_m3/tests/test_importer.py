@@ -101,6 +101,24 @@ class CandidateImportTests(unittest.TestCase):
         self.assertEqual(promoted["generation"],2)
         self.assertEqual(promoted["last_operation_type"],"ADD_REGULATION_CANDIDATE")
 
+    def test_loader_handles_previous_private_provenance_serialization(self):
+        item=synthetic()
+        pre=preview_candidate(self.data,item)
+        prepared=prepare_candidate(self.data,"parent","child",item,pre["preview_sha256"])
+        path=self.root/"legacy_source.sqlite"
+        unpack(prepared["zip"],path)
+        store=Store(path)
+        try:
+            store.db.execute("UPDATE banlist_snapshots SET source=? WHERE snapshot_id=?",
+                             ("SYNTHETIC_TEST #SHA256="+"f"*64,item["snapshot_id"]))
+            store.db.commit()
+        finally:
+            store.close()
+        loaded=load_snapshots(path,as_of="2026-11-10")
+        self.assertEqual(len(loaded),1)
+        self.assertEqual(loaded[0]["source_sha256"],"f"*64)
+        self.assertEqual(loaded[0]["verification"],"UNVERIFIED_SOURCE")
+
     def test_mismatched_preview_and_changed_rule_rejected(self):
         item=synthetic()
         preview=preview_candidate(self.data,item)
