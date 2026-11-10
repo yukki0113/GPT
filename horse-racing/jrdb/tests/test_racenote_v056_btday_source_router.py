@@ -1,6 +1,8 @@
 import unittest
 from datetime import date
-from racenote_v056_btday_source_router import resolve_inventory, candidate_digest
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from racenote_v056_btday_source_router import resolve_inventory, candidate_digest, draw_v2
 
 
 def row(day, mode):
@@ -8,6 +10,7 @@ def row(day, mode):
             "exclusion_reason": None, "readiness_status": "READY",
             "source_reference": mode, "source_generation_id": mode,
             "readiness_receipt_path": "receipt.json", "input_sha256": "a" * 64,
+            "receipt_sha256": "b" * 64,
             "drive_file_id": "drive-id"}
 
 
@@ -16,8 +19,8 @@ class SourceRouterTest(unittest.TestCase):
         paci = row("2026-11-08", "paci")
         warehouse = row("2026-11-08", "historical_warehouse")
         now = date(2027, 1, 3)
-        self.assertEqual(resolve_inventory([paci], now)[paci["target_date"]]["source_mode"], "paci")
-        out = resolve_inventory([paci, warehouse], now)
+        self.assertEqual(resolve_inventory([paci], now, lambda _: True)[paci["target_date"]]["source_mode"], "paci")
+        out = resolve_inventory([paci, warehouse], now, lambda _: True)
         self.assertEqual(len(out), 1)
         self.assertEqual(out[paci["target_date"]]["source_mode"], "historical_warehouse")
         self.assertEqual(candidate_digest(out), candidate_digest(dict(reversed(list(out.items())))))
@@ -34,6 +37,23 @@ class SourceRouterTest(unittest.TestCase):
         a["input_sha256"] = "bad"
         with self.assertRaises(ValueError):
             resolve_inventory([a], date(2026, 1, 1))
+
+    def test_unverified_receipt_never_ready(self):
+        self.assertEqual(resolve_inventory([row("2025-05-25", "paci")], date(2026, 1, 1)), {})
+
+    def test_repeat_draw_keeps_history_and_checks_paths(self):
+        source = row("2025-05-25", "historical_warehouse")
+        source.update(used=True, selection_cycle=2)
+        pool = resolve_inventory([source], date(2026, 1, 1), lambda _: True)
+        old = [{"selection_id": "BTDAY-0181", "dates": ["2025-05-25"]}]
+        with TemporaryDirectory() as tmp:
+            first = draw_v2(pool, old, Path(tmp), date(2026, 1, 1), "seed")
+            self.assertEqual(first["selection_id"], "BTDAY-0182")
+            self.assertEqual(first["draw_occurrence"], 2)
+            self.assertEqual(old, [{"selection_id": "BTDAY-0181", "dates": ["2025-05-25"]}])
+            (Path(tmp) / "BTDAY-0182").mkdir()
+            with self.assertRaisesRegex(ValueError, "collision"):
+                draw_v2(pool, old, Path(tmp), date(2026, 1, 1), "seed")
 
 
 if __name__ == "__main__":
