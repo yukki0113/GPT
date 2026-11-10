@@ -26,7 +26,54 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  route:
+    runs-on: ubuntu-latest
+    outputs:
+      source_mode: ${{ steps.route.outputs.source_mode }}
+      selection_id: ${{ steps.route.outputs.selection_id }}
+      is_v2: ${{ steps.route.outputs.is_v2 }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.base_sha || 'main' }}
+          fetch-depth: 2
+      - name: Resolve and validate immutable source
+        id: route
+        env:
+          PYTHONPATH: horse-racing/jrdb/src
+          REQUESTED_SELECTION: ${{ inputs.selection_id }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import os, re, subprocess
+          from pathlib import Path
+          from racenote_v056_t1_orchestrator import read_selection, mixed_source_enabled
+          from racenote_v056_btday_source_router import verify_readiness_receipt
+          sid=os.environ.get('REQUESTED_SELECTION','')
+          if not sid:
+              changes=subprocess.check_output(['git','diff','--name-only',os.environ['BEFORE'],os.environ['AFTER']],text=True).splitlines()
+              ids=[m.group(1) for x in changes if (m:=re.fullmatch(r'horse-racing/jrdb/backtests/requests/(BTDAY-\d{4})\.v056-turn1',x))]
+              if len(ids)!=1: raise SystemExit('expected exactly one T1 request')
+              sid=ids[0]
+          if not re.fullmatch(r'BTDAY-\d{4}',sid): raise SystemExit('invalid selection ID')
+          if int(sid.split('-')[1]) <= 137:
+              with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+                  f.write(f'selection_id={sid}\nsource_mode=historical_warehouse\nis_v2=false\n')
+              raise SystemExit(0)
+          selection=read_selection(sid)
+          v2=selection.get('selection_schema_version')=='btday-source-selection-v2'
+          mode=selection.get('source_mode') if v2 else 'historical_warehouse'
+          if v2:
+              if not mixed_source_enabled(): raise SystemExit('mixed-source gate is closed')
+              verify_readiness_receipt(selection['source_row'],Path.cwd())
+          if mode not in ('paci','historical_warehouse'): raise SystemExit('unsupported source')
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write(f'selection_id={sid}\nsource_mode={mode}\nis_v2={str(v2).lower()}\n')
+          PY
   prepare:
+    needs: route
+    if: needs.route.outputs.source_mode == 'historical_warehouse'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
@@ -79,6 +126,7 @@ jobs:
               raise SystemExit(0)
           path=Path('horse-racing/jrdb/backtests')/sid/'selection.json'
           selection=json.loads(path.read_text(encoding='utf-8'))
+          v2=selection.get('selection_schema_version')=='btday-source-selection-v2'
           if selection.get('selection_id')!=sid or selection.get('n')!=1 or len(selection.get('dates',[]))!=1:
               raise SystemExit('Invalid canonical single-day selection')
           if len(selection.get('sources',[]))!=1 or selection['sources'][0].get('source_mode')!='historical_warehouse':
@@ -94,16 +142,18 @@ jobs:
               raise SystemExit('Invalid target date')
           # The current historical golden materialization provides BAC/KYI 2025.
           # Never silently reuse the 2025 raw archives for another target year.
-          if not date.startswith('2025-'):
+          if not v2 and not date.startswith('2025-'):
               raise SystemExit(f'Historical raw archive year not supported: {date}')
           target=Path('horse-racing/jrdb/backtests')/sid/date.replace('-','')
-          if target.exists():
+          if target.exists() or target.is_symlink():
               raise SystemExit(f'Immutable T1 already exists: {target}')
           with open(os.environ['GITHUB_ENV'],'a') as f:
               f.write(f'BTDAY_ID={sid}\n')
               f.write(f'RACELAP_INPUT_MODE={mode}\n')
               f.write(f'BTDAY_TARGET_DATE={date}\n')
               f.write(f'BTDAY_DATE_RAW={date.replace("-","")}\n')
+              f.write(f'BTDAY_YEAR={date[:4]}\n')
+              f.write(f'SOURCE_V2={str(v2).lower()}\n')
               f.write(f'TARGET={target}\n')
           print(f'BTDAY_REQUEST_ACCEPTED {sid} {date}')
           PY
@@ -115,9 +165,50 @@ jobs:
           python -m pip install gdown jsonschema pandas numpy
       - name: Confirm immutable target is new
         if: env.SKIP_T1 != 'true'
-        run: test ! -e "$TARGET"
+        run: test ! -e "$TARGET" && test ! -L "$TARGET"
+      - name: Stage and verify accepted historical v2 inputs
+        if: env.SKIP_T1 != 'true' && env.SOURCE_V2 == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re
+          from pathlib import Path
+          s=json.loads((Path('horse-racing/jrdb/backtests')/os.environ['BTDAY_ID']/'selection.json').read_text())
+          row=s['source_row']; aid=str(row['staging_artifact_id']); sha=row['staging_sha256']
+          if not re.fullmatch(r'[1-9][0-9]*',aid) or not re.fullmatch(r'[0-9a-f]{64}',sha): raise SystemExit('invalid staged artifact identity')
+          with open(os.environ['GITHUB_ENV'],'a') as f: f.write(f'STAGE_ARTIFACT_ID={aid}\nSTAGE_SHA={sha}\n')
+          PY
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$STAGE_ARTIFACT_ID/zip" > /tmp/v056-staged.zip
+          python horse-racing/jrdb/src/racenote_v056_btday_staged_input.py \
+            --archive /tmp/v056-staged.zip --sha256 "$STAGE_SHA" --output /tmp/v056-staged
+          root=/tmp/v056-staged/inputs
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          s=json.loads((Path('horse-racing/jrdb/backtests')/os.environ['BTDAY_ID']/'selection.json').read_text())
+          receipt=json.loads(Path(s['source_row']['readiness_receipt_path']).read_text())
+          print(receipt['as_of_evidence']['race_lap']['coverage_through'],file=open('/tmp/v056-lap-cutoff','w'))
+          PY
+          python horse-racing/jrdb/src/racenote_v056_btday_historical_preflight.py \
+            --date "$BTDAY_TARGET_DATE" --selection-id "$BTDAY_ID" \
+            --selection "horse-racing/jrdb/backtests/$BTDAY_ID/selection.json" --repository-root "$GITHUB_WORKSPACE" \
+            --warehouse-root "$root/warehouse" --raw-root "$root/raw" --analysis-root "$root/analysis" \
+            --course-fit-root "$root/course_fit" --racereview-root "$root/rrdb" \
+            --rrdb-zip "$root/rrdb.zip" --rrdb-receipt "$root/rrdb_receipt.json" \
+            --race-lap-current-bundle "$root/racelap" --race-lap-expected-period-to "$(cat /tmp/v056-lap-cutoff)" \
+            --output /tmp/v056-historical-preflight.json
+          {
+            echo "WAREHOUSE_ROOT=$root/warehouse"
+            echo "RAW_ROOT=$root/raw"
+            echo "ANALYSIS_ROOT=$root/analysis"
+            echo "COURSE_FIT_ROOT=$root/course_fit"
+            echo "RRDB_ROOT=$root/rrdb"
+            echo "RACELAP_ROOT=$root/racelap"
+          } >> "$GITHUB_ENV"
       - name: Materialize accepted Historical Warehouse inputs
-        if: env.SKIP_T1 != 'true'
+        if: env.SKIP_T1 != 'true' && env.SOURCE_V2 != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -148,8 +239,16 @@ jobs:
           PY
           mkdir -p /tmp/historical/analysis
           tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
+          {
+            echo 'WAREHOUSE_ROOT=/tmp/historical/warehouse'
+            echo 'RAW_ROOT=/tmp/historical/raw'
+            echo 'ANALYSIS_ROOT=/tmp/historical/analysis'
+            echo 'COURSE_FIT_ROOT=/tmp/course-fit'
+            echo 'RRDB_ROOT=/tmp/rrdb/postrace_review/v0_1'
+            echo 'RACELAP_ROOT=/tmp/racelap'
+          } >> "$GITHUB_ENV"
       - name: Materialize verified RRDB CURRENT (per-run digest)
-        if: env.SKIP_T1 != 'true'
+        if: env.SKIP_T1 != 'true' && env.SOURCE_V2 != 'true'
         run: |
           set -euo pipefail
           ok=false
@@ -170,7 +269,7 @@ jobs:
           test -f /tmp/rrdb/postrace_review/v0_1/current.json
 
       - name: Materialize approved Course Fit v0.1 from immutable Drive baseline
-        if: env.SKIP_T1 != 'true'
+        if: env.SKIP_T1 != 'true' && env.SOURCE_V2 != 'true'
         run: |
           set -euo pipefail
           baseline_root=/tmp/a03-accepted-baselines
@@ -183,7 +282,7 @@ jobs:
           test -f /tmp/course-fit/fit/research/candidate_fit_view.parquet
 
       - name: Materialize RaceLap by explicitly selected BTDAY source contract
-        if: env.SKIP_T1 != 'true'
+        if: env.SKIP_T1 != 'true' && env.SOURCE_V2 != 'true'
         run: |
           set -euo pipefail
           python horse-racing/jrdb/src/racenote_btday_racelap_source.py \
@@ -211,12 +310,13 @@ jobs:
 
           target=Path(os.environ['TARGET']); target.mkdir(parents=True)
           target_date=os.environ['BTDAY_TARGET_DATE']; day=date.fromisoformat(target_date)
-          current=Path('/tmp/historical/warehouse/current.json')
-          validate_gate(Path('horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json'),current)
+          current=Path(os.environ['WAREHOUSE_ROOT'])/'current.json'
+          if os.environ.get('SOURCE_V2')!='true':
+              validate_gate(Path('horse-racing/jrdb/docs/racenote/RACENOTE_HISTORICAL_WAREHOUSE_V052_EQUIVALENCE_20251228.json'),current)
           request=RaceNoteRequest(day,None,None,date.today())
           base_work=Path('/tmp/btday-shared-base'); base_work.mkdir(parents=True,exist_ok=True)
           base_dir, warehouse_report=build_historical_warehouse_base(
-              request,current,[f"{family}=/tmp/historical/warehouse" for family in ('BAC','KYI','CHA','CYB','ZED','ZKB')],base_work)
+              request,current,[f"{family}={os.environ['WAREHOUSE_ROOT']}" for family in ('BAC','KYI','CHA','CYB','ZED','ZKB')],base_work)
           warehouse={}
           for path in sorted(base_dir.glob('race_bundle_*.json')):
               bundle=json.loads(path.read_text(encoding='utf-8'))
@@ -229,7 +329,7 @@ jobs:
                   for run in horse.get('recent_runs') or []:
                       rd=(run.get('race') or {}).get('date')
                       if isinstance(rd,str): assert rd < target_date
-          analysis=open_analysis_backend(analysis_root=Path('/tmp/historical/analysis'),backend='parquet')
+          analysis=open_analysis_backend(analysis_root=Path(os.environ['ANALYSIS_ROOT']),backend='parquet')
           try:
               history_bundles, history_report=enrich_history_bundles(bases,analysis)
           finally:
@@ -237,10 +337,10 @@ jobs:
           with tempfile.TemporaryDirectory(prefix='btday-shared-rrdb-') as tmp:
               enriched, rrdb_report=enrich_rrdb_bundles(
                   history_bundles,
-                  paci_path=Path('/tmp/historical/raw/BAC/BAC_2025.zip'),
-                  course_fit_root=Path('/tmp/course-fit'),
-                  race_lap_parquet=Path('/tmp/racelap/race_lap.parquet'),
-                  racereview_root=Path('/tmp/rrdb/postrace_review/v0_1'),
+                  paci_path=Path(os.environ['RAW_ROOT'])/'BAC'/('BAC_'+os.environ['BTDAY_YEAR']+'.zip'),
+                  course_fit_root=Path(os.environ['COURSE_FIT_ROOT']),
+                  race_lap_parquet=Path(os.environ['RACELAP_ROOT'])/'race_lap.parquet',
+                  racereview_root=Path(os.environ['RRDB_ROOT']),
                   racereview_current_cache=None,next_watch_rules=None,work_root=Path(tmp))
           views, reader_report=build_reader_views(enriched)
           report={'base':{'target_date':target_date,'date_raw':os.environ['BTDAY_DATE_RAW'],'race_count':len(bases),'target_result_contamination':0,'record_counts':warehouse_report['record_counts'],'warnings':[]},'history':history_report,'rrdb':rrdb_report,'reader':reader_report}
@@ -261,12 +361,25 @@ jobs:
         if: env.SKIP_T1 != 'true'
         run: |
           mkdir -p "$TARGET/v054_inputs" "$TARGET/source_audit"
-          python horse-racing/jrdb/src/racenote_v054_kyi_bundle.py             --prep-root "$TARGET/forecast_prep"             --kyi-archive /tmp/historical/raw/KYI/KYI_2025.zip             --output "$TARGET/v054_inputs/kyi_bundle.json"
-          python horse-racing/jrdb/src/racenote_v056_single_day.py init             --prep-root "$TARGET/forecast_prep"             --root "$TARGET/v056"             --base-main-sha "$(git rev-parse HEAD)"             --evidence-bundle "$TARGET/v054_inputs/kyi_bundle.json"             --race-lap-parquet /tmp/racelap/race_lap.parquet
+          python horse-racing/jrdb/src/racenote_v054_kyi_bundle.py             --prep-root "$TARGET/forecast_prep"             --kyi-archive "$RAW_ROOT/KYI/KYI_$BTDAY_YEAR.zip"             --output "$TARGET/v054_inputs/kyi_bundle.json"
+          python horse-racing/jrdb/src/racenote_v056_single_day.py init             --prep-root "$TARGET/forecast_prep"             --root "$TARGET/v056"             --base-main-sha "$(git rev-parse HEAD)"             --evidence-bundle "$TARGET/v054_inputs/kyi_bundle.json"             --race-lap-parquet "$RACELAP_ROOT/race_lap.parquet"
           python horse-racing/jrdb/src/racenote_v056_authoring_bundle.py             --root "$TARGET/v056"
-          cp /tmp/current-rrdb/receipt.json "$TARGET/source_audit/rrdb_current_receipt.json"
-          cp /tmp/racelap/race_lap.audit.json "$TARGET/source_audit/race_lap.audit.json"
-          cp /tmp/racelap/race_lap.input_receipt.json "$TARGET/source_audit/race_lap_input_receipt.json"
+          if [[ "$SOURCE_V2" == 'true' ]]; then
+            cp /tmp/v056-historical-preflight.json "$TARGET/source_audit/historical_preflight.json"
+            cp /tmp/v056-staged/inputs/rrdb_receipt.json "$TARGET/source_audit/rrdb_current_receipt.json"
+            python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          selection=json.loads((Path('horse-racing/jrdb/backtests')/os.environ['BTDAY_ID']/'selection.json').read_text())
+          row=selection['source_row']; raw=Path(row['readiness_receipt_path']).read_bytes()
+          if hashlib.sha256(raw).hexdigest()!=row['receipt_sha256']: raise SystemExit('source receipt changed after preflight')
+          (Path(os.environ['TARGET'])/'source_audit/selection_source_receipt.json').write_bytes(raw)
+          PY
+          else
+            cp /tmp/current-rrdb/receipt.json "$TARGET/source_audit/rrdb_current_receipt.json"
+            cp /tmp/racelap/race_lap.audit.json "$TARGET/source_audit/race_lap.audit.json"
+            cp /tmp/racelap/race_lap.input_receipt.json "$TARGET/source_audit/race_lap_input_receipt.json"
+          fi
       - name: Validate current TURN 1 final state
         if: env.SKIP_T1 != 'true'
         run: |
@@ -309,6 +422,9 @@ jobs:
               'mean_reduction_pct':round(sum(e['model_reader_reduction_pct'] for e in m['entries'])/len(m['entries']),1)
             }
           }
+          if os.environ.get('SOURCE_V2')=='true':
+              proof=json.loads(Path('/tmp/v056-historical-preflight.json').read_text())
+              op.update({k:proof[k] for k in ('source_mode','source_generation_id','source_sha256','source_receipt_sha256','as_of_exclusive')})
           (root/'operation_handoff.json').write_text(json.dumps(op,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps(op,ensure_ascii=False))
           PY
@@ -319,5 +435,96 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add "$TARGET"
           git commit -m "RaceNote: stage ${BTDAY_ID} v0.5.6 current TURN 1"
-          git pull --rebase origin main
+          # A stale main is a conflict; never rebase immutable T1 over it.
+          git push origin HEAD:main
+  prepare_paci:
+    needs: route
+    if: needs.route.outputs.source_mode == 'paci' && needs.route.outputs.is_v2 == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONPATH: horse-racing/jrdb/src
+      BTDAY_ID: ${{ needs.route.outputs.selection_id }}
+      REQUESTED_BASE_SHA: ${{ inputs.base_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.base_sha || 'main' }}
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install canonical T1 dependencies
+        run: |
+          python -m pip install -r tools/data-storage/requirements.txt
+          python -m pip install jsonschema pandas numpy
+      - name: Resolve pinned source and stage approved artifact
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os,re,subprocess
+          from pathlib import Path
+          from racenote_v056_t1_orchestrator import mixed_source_enabled,read_selection
+          from racenote_v056_btday_source_router import verify_readiness_receipt
+          if not mixed_source_enabled(): raise SystemExit('mixed-source gate is closed')
+          sid=os.environ['BTDAY_ID']; s=read_selection(sid); row=s['source_row']
+          if row['source_mode']!='paci': raise SystemExit('PACI source required')
+          verify_readiness_receipt(row,Path.cwd())
+          actual=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+          pin=os.environ.get('REQUESTED_BASE_SHA','')
+          if pin and (not re.fullmatch(r'[0-9a-f]{40}',pin) or actual!=pin): raise SystemExit('pinned base mismatch')
+          day=s['target_date']; aid=str(row['staging_artifact_id']); sha=row['staging_sha256']
+          if not re.fullmatch(r'[1-9][0-9]*',aid) or not re.fullmatch(r'[0-9a-f]{64}',sha): raise SystemExit('invalid staged artifact identity')
+          target=Path('horse-racing/jrdb/backtests')/sid/day.replace('-','')
+          if target.exists() or target.is_symlink(): raise SystemExit('immutable target exists')
+          receipt=json.loads(Path(row['readiness_receipt_path']).read_text())
+          with open(os.environ['GITHUB_ENV'],'a') as f:
+              f.write(f'BTDAY_TARGET_DATE={day}\nSTAGE_ARTIFACT_ID={aid}\nSTAGE_SHA={sha}\nPINNED_SHA={actual}\n')
+              f.write('RACELAP_CUTOFF='+receipt['as_of_evidence']['race_lap']['coverage_through']+'\n')
+          PY
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$STAGE_ARTIFACT_ID/zip" > /tmp/v056-paci-staged.zip
+          python horse-racing/jrdb/src/racenote_v056_btday_staged_input.py \
+            --archive /tmp/v056-paci-staged.zip --sha256 "$STAGE_SHA" --output /tmp/v056-paci-stage
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          repo=Path(os.environ['GITHUB_WORKSPACE']); stage=Path('/tmp/v056-paci-stage')
+          sid=os.environ['BTDAY_ID']; rel=Path('horse-racing/jrdb/backtests')/sid/'selection.json'
+          raw=(repo/rel).read_bytes(); row=json.loads(raw)['source_row']
+          receipt=Path(row['readiness_receipt_path'])
+          for path,data in ((rel,raw),(receipt,(repo/receipt).read_bytes())):
+              out=stage/path; out.parent.mkdir(parents=True,exist_ok=True)
+              with out.open('xb') as f: f.write(data)
+          with (stage/'inputs/source_row.json').open('x',encoding='utf-8') as f:
+              json.dump(row,f,ensure_ascii=False)
+          PY
+      - name: Build and validate PACI BTDAY T1 in isolated staging
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PYTHONPATH="$GITHUB_WORKSPACE/horse-racing/jrdb/src"
+          cd /tmp/v056-paci-stage
+          compact="${BTDAY_TARGET_DATE//-/}"
+          target="horse-racing/jrdb/backtests/$BTDAY_ID/$compact"
+          python "$GITHUB_WORKSPACE/horse-racing/jrdb/src/racenote_v056_btday_paci_t1.py" \
+            --date "$BTDAY_TARGET_DATE" --selection-id "$BTDAY_ID" --main-sha "$PINNED_SHA" \
+            --paci "inputs/PACI${compact:2}.zip" --paci-source-receipt inputs/paci_receipt.json \
+            --source-row inputs/source_row.json --analysis-root inputs/analysis --course-fit-root inputs/course_fit \
+            --racereview-root inputs/rrdb --race-lap-current-bundle inputs/racelap \
+            --race-lap-expected-period-to "$RACELAP_CUTOFF" --rrdb-zip inputs/rrdb.zip \
+            --rrdb-receipt inputs/rrdb_receipt.json --output-root "$target"
+          python "$GITHUB_WORKSPACE/horse-racing/jrdb/src/racenote_v056_racezip_delivery.py" \
+            --selection-id "$BTDAY_ID" --output /tmp/v056-paci-proof.zip
+          test ! -e "$GITHUB_WORKSPACE/$target"
+          test ! -L "$GITHUB_WORKSPACE/$target"
+          cp -a "$target" "$GITHUB_WORKSPACE/$target"
+          echo "TARGET=$target" >> "$GITHUB_ENV"
+      - name: Publish immutable T1 without overwriting concurrent main
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET"
+          git commit -m "RaceNote: stage $BTDAY_ID v0.5.6 PACI TURN 1"
           git push origin HEAD:main
