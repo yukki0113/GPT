@@ -1,3 +1,11 @@
+## 2026-11-10 追記: SQLite候補取り込み (M3-2)
+
+`persistence.prepare_candidate_import` を追加。前世代ZIPの完全性を検査し、検証状態が `UNVERIFIED_SOURCE` の規制候補だけを既存SQLite v1の `banlist_snapshots` / `banlist_entries` に**追加専用**で投入。候補の自動 `GAME_VERIFIED` 化・既存ID上書き・存在しないカードID・所持履歴変化を拒否する。カード本文を含む保護9テーブルの全行ダイジェスト一致、SQLite integrity と foreign key 検査、新ZIP再展開を実施する。処理はローカル候補ZIPを返すだけでDrive HEADは変えない。
+
+**更新後の本番状態:** 先行M2で非公開Drive HEADは世代2（所持5種類・9枚）になっている。以下の当初「世代1」「所持0件」は初期設計時点の履歴。今後のM3候補投入では、必ず最新世代2を親とする。旧世代ZIPを使用した巻戻しは禁止。
+
+2026-11-05改訂差分の9カードについて、公開の改訂リストと非公開vectorのID/値を照合して9/9一致。これにより215件すべてのゲーム内確認が済んだとは**決して扱わない**。<https://mdm.app.duellinksmeta.com/articles/news/october-26-2026/master-duel-forbidden-list-update> と <https://game8.jp/yugioh-masterduel/423063> を参照。OCGサイトはMDの正本に流用しない。
+
 # M3 — 日付付きMD禁止制限と生成CPの安全評価
 
 基準: 2026-11-10。ユーザーの所持申告を待たずにM2と並行開発する。M3は非公開Driveの禁止制限候補を、ゲーム内で確認済みの規制として誤採用しないことを最優先とする。OCG/TCGのリミットレギュレーションをMDへ流用しない。
