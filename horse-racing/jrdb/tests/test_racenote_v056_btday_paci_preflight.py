@@ -31,6 +31,12 @@ class PaciPreflightTest(unittest.TestCase):
                        "jrdb_direct_fetch": False}
             receipt.write_text(json.dumps(payload))
             self.assertEqual(validate_paci("2026-10-31", archive, receipt)["horse_count"], 1)
+            with zipfile.ZipFile(archive, "a") as z:
+                z.writestr("SED261031.txt", b"target result")
+            payload["sha256"] = hashlib.sha256(archive.read_bytes()).hexdigest()
+            receipt.write_text(json.dumps(payload))
+            with self.assertRaisesRegex(ValueError, "target-date result member"):
+                validate_paci("2026-10-31", archive, receipt)
             payload["sha256"] = "0" * 64
             receipt.write_text(json.dumps(payload))
             with self.assertRaisesRegex(ValueError, "receipt mismatch"):
