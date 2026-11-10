@@ -85,7 +85,7 @@ class SourceRouterTest(unittest.TestCase):
                    "runner": {"profile": "historical-staged-v1", "staging_artifact_id": "1234567", "staging_sha256": "c" * 64},
                    "as_of_evidence": {k: {"status": "ACCEPTED", "as_of_exclusive": a["target_date"],
                                           "transport": "staged_artifact"}
-                                      for k in ("analysis", "rrdb", "race_lap")},
+                                      for k in ("analysis", "rrdb", "race_lap", "course_fit")},
                    "warehouse": {"manifest_verified": True, "coverage_from": "2025-01-01", "coverage_to": "2025-12-31"}}
         with TemporaryDirectory() as tmp:
             path = Path(tmp) / "receipt.json"
