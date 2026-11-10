@@ -8,21 +8,46 @@ No prediction, market, results, or Freeze access.
 from __future__ import annotations
 
 import argparse
+import fcntl
+import hashlib
 import json
+import os
 import re
+import tempfile
 from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from racenote_backtest_day_picker import load_json, pick_days, save_json
 from racenote_v056_btday_source_router import (
-    draw_v2, resolve_inventory, verify_readiness_receipt,
+    draw_v2, plan_reservation, resolve_inventory, verify_readiness_receipt,
 )
 
 POOL=Path("horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json")
 BASE=Path("horse-racing/jrdb/backtests")
+INVENTORY=Path("horse-racing/jrdb/config/racenote_btday_source_inventory_v2.json")
+GATE=Path("horse-racing/jrdb/config/racenote_v056_mixed_source_gate.json")
 CONTRACT="v056-prediction-confidence-audit-newspaper-v1"
 SID=re.compile(r"BTDAY-\d{4}\Z")
+
+
+def mixed_source_enabled():
+    """A reviewed gate stays closed until both source E2E acceptances exist."""
+    if not GATE.exists():
+        return False
+    gate = load_json(GATE)
+    if gate.get("schema_version") != "racenote-v056-mixed-source-gate-v1":
+        raise ValueError("invalid mixed-source gate schema")
+    if gate.get("status") == "DISABLED":
+        return False
+    if gate.get("status") != "ACCEPTED":
+        raise ValueError("invalid mixed-source gate status")
+    for key in ("historical_warehouse", "paci"):
+        proof = (gate.get("acceptance") or {}).get(key) or {}
+        if (proof.get("status") != "PASS" or not re.fullmatch(r"[1-9]\d+", str(proof.get("run_id", "")))
+                or not re.fullmatch(r"[0-9a-f]{64}", str(proof.get("receipt_sha256", "")))):
+            raise ValueError(f"mixed-source gate lacks {key} acceptance")
+    return True
 
 
 def preview_mixed(inventory_path, operational_date=None, seed=None):
@@ -49,6 +74,19 @@ def read_selection(sid):
         raise ValueError("selection not found: "+sid)
     selection=load_json(path)
     sources=selection.get("sources",[])
+    if selection.get("selection_schema_version") == "btday-source-selection-v2":
+        row = selection.get("source_row") or {}
+        if (selection.get("selection_id") != sid or selection.get("n") != 1
+                or selection.get("dates") != [selection.get("target_date")]
+                or len(sources) != 1 or row.get("target_date") != selection.get("target_date")
+                or row.get("source_mode") not in ("paci", "historical_warehouse")
+                or row.get("source_mode") != selection.get("source_mode")
+                or row.get("source_generation_id") != selection.get("source_generation_id")
+                or row.get("source_reference") != selection.get("source_reference")
+                or row.get("receipt_sha256") != selection.get("source_receipt_sha256")):
+            raise ValueError("v2 selection source identity mismatch")
+        date.fromisoformat(selection["target_date"])
+        return selection
     if (selection.get("selection_id")!=sid or selection.get("n")!=1
         or len(selection.get("dates",[]))!=1
         or len(sources)!=1
@@ -72,6 +110,14 @@ def t1_state(selection):
             or data.get("target_market_opened") is not False
             or not (base/"v056/authoring_bundle/manifest.json").is_file()):
             raise ValueError("T1 handoff corrupted or generation mismatch: "+sid)
+        if selection.get("selection_schema_version") == "btday-source-selection-v2":
+            row = selection["source_row"]
+            mode = data.get("source_mode", data.get("source_backend"))
+            if (mode != row["source_mode"] or data.get("source_generation_id") != row["source_generation_id"]
+                    or data.get("source_receipt_sha256") != row["receipt_sha256"]
+                    or data.get("source_sha256") != row["input_sha256"]
+                    or data.get("as_of_exclusive") != selection["target_date"]):
+                raise ValueError("v2 T1 source binding mismatch: " + sid)
         return "T1_READY"
     if base.exists():
         raise ValueError("partial canonical T1; do not overwrite: "+sid)
@@ -120,6 +166,55 @@ def choose_next():
     save_json(selection_path(sid),new)
     return new,True
 
+
+def choose_next_v2(operational_date=None, seed=None):
+    """Prepare pool+Selection together; remote publication is one Git commit."""
+    day = operational_date or datetime.now(ZoneInfo("Asia/Tokyo")).date()
+    lock_id = hashlib.sha256(str(POOL.resolve()).encode()).hexdigest()[:20]
+    lock_path = Path(tempfile.gettempdir()) / f"racenote-v056-{lock_id}.lock"
+    with lock_path.open("a+") as lock:
+        fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        pool = load_json(POOL)
+        if pool.get("selections"):
+            last = pool["selections"][-1]
+            if last.get("selection_schema_version") == "btday-source-selection-v2" and not last.get("released_at"):
+                selected = read_selection(last["selection_id"])
+                if selected != last:
+                    raise ValueError("reserved Selection differs from pool")
+                if t1_state(selected) == "T1_NOT_CREATED":
+                    return selected, False
+            elif not last.get("released_at") and SID.fullmatch(str(last.get("selection_id") or "")):
+                sid = last["selection_id"]
+                if selection_path(sid).is_file():
+                    selected = read_selection(sid)
+                    op = BASE / sid / selected["dates"][0].replace("-", "") / "operation_handoff.json"
+                    if not op.exists() and t1_state(selected) == "T1_NOT_CREATED":
+                        return selected, False
+        payload = load_json(INVENTORY)
+        rows = payload.get("source_inventory") if isinstance(payload, dict) else None
+        if not isinstance(rows, list):
+            raise ValueError("source_inventory must be a list")
+        resolved = resolve_inventory(rows, day, lambda row: verify_readiness_receipt(row, Path.cwd()))
+        updated, selected = plan_reservation(pool, resolved, BASE, day, seed)
+        # Verify the selected receipt immediately before reservation.
+        verify_readiness_receipt(selected["source_row"], Path.cwd())
+        path = selection_path(selected["selection_id"])
+        path.parent.mkdir(parents=True, exist_ok=True)
+        created_file = False
+        try:
+            with path.open("x", encoding="utf-8") as f:
+                created_file = True
+                json.dump(selected, f, ensure_ascii=False, indent=2)
+                f.write("\n")
+                f.flush()
+                os.fsync(f.fileno())
+            save_json(POOL, updated)
+        except BaseException:
+            if created_file:
+                path.unlink(missing_ok=True)
+            raise
+        return selected, True
+
 def run(command,sid=None,inventory=None,operational_date=None,seed=None):
     if command=="SHADOW":
         if inventory is None:
@@ -128,7 +223,7 @@ def run(command,sid=None,inventory=None,operational_date=None,seed=None):
     if command=="T2_ONLY":
         return {"mode":"T2_ONLY","action":"SKIPPED","start_t1":False}
     if command=="NEXT":
-        selection,created=choose_next()
+        selection,created=(choose_next_v2(operational_date,seed) if mixed_source_enabled() else choose_next())
     elif command in ("EXISTING","STATUS"):
         if not sid:
             if command=="STATUS":
@@ -150,6 +245,9 @@ def run(command,sid=None,inventory=None,operational_date=None,seed=None):
     elif state=="T1_READY":
         action="REUSE_READY"
         start=False
+    elif selection.get("selection_schema_version") == "btday-source-selection-v2" and not mixed_source_enabled():
+        action="SOURCE_GATE_CLOSED"
+        start=False
     elif request.exists():
         action="ALREADY_REQUESTED"
         start=False
@@ -160,6 +258,7 @@ def run(command,sid=None,inventory=None,operational_date=None,seed=None):
         "mode":command,
         "selection_id":selection["selection_id"],
         "target_date":selection["dates"][0],
+        "source_mode": (selection.get("source_mode") or selection["sources"][0].get("source_mode")),
         "contract_revision":CONTRACT,
         "state":state,
         "action":action,
