@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import copy
 import json
 import re
 import random
@@ -163,3 +164,19 @@ def draw_v2(resolved: dict[str, dict], selections: list[dict],
                      "source_receipt_sha256": source["receipt_sha256"],
                      "selection_cycle": source.get("selection_cycle", 1)}],
     }
+
+
+def plan_reservation(pool: dict, resolved: dict[str, dict], backtest_root: Path,
+                     operational_date: date, seed: str | None = None) -> tuple[dict, dict]:
+    """Prepare pool and immutable Selection for a single atomic Git commit.
+
+    The caller must re-read main, revalidate receipt bytes, and commit both
+    outputs together with concurrency control. This function performs no I/O
+    mutation and cannot itself reserve an ID across competing processes.
+    """
+    if not isinstance(pool.get("selections"), list) or not isinstance(pool.get("days"), list):
+        raise ValueError("legacy pool days and selections required")
+    proposal = draw_v2(resolved, pool["selections"], backtest_root, operational_date, seed)
+    updated = copy.deepcopy(pool)
+    updated["selections"].append(copy.deepcopy(proposal))
+    return updated, proposal
