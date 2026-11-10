@@ -1,0 +1,9 @@
+{
+  "schema_version": "racenote-v056-mixed-source-gate-v1",
+  "status": "DISABLED",
+  "acceptance": {
+    "historical_warehouse": null,
+    "paci": null
+  },
+  "reason": "Both source T1/Artifact and blind E2E acceptance evidence are required before enabling mixed-source NEXT."
+}
