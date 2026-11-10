@@ -15,11 +15,10 @@ class StagedInputTest(unittest.TestCase):
             root = Path(tmp)
             archive = root / "staged.zip"
             with zipfile.ZipFile(archive, "w") as z:
-                z.writestr("inputs/source_row.json", "{}")
-                z.writestr("horse-racing/jrdb/backtests/BTDAY-9999/selection.json", "{}")
+                z.writestr("inputs/example.json", "{}")
             sha = hashlib.sha256(archive.read_bytes()).hexdigest()
             extract(archive, root / "out", sha)
-            self.assertEqual((root / "out/inputs/source_row.json").read_text(), "{}")
+            self.assertEqual((root / "out/inputs/example.json").read_text(), "{}")
             with self.assertRaises(ValueError):
                 extract(archive, root / "out", sha)
 
