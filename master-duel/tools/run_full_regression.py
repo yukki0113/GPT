@@ -12,7 +12,7 @@ import re
 import subprocess
 import sys
 
-SUITES = ('p1_a0', 'sqlite_store', 'zip_store', 'voice_staging', 'card_master_import')
+SUITES = ('p1_a0', 'sqlite_store', 'zip_store', 'voice_staging', 'card_master_import', 'deck_assistant')
 ROOT = Path(__file__).resolve().parents[1]
 
 
