@@ -60,6 +60,31 @@ jobs:
           gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$STAGE_ID/zip" > /tmp/btday-staged.zip
           python horse-racing/jrdb/src/racenote_v056_btday_staged_input.py \
             --archive /tmp/btday-staged.zip --sha256 "$STAGE_SHA" --output /tmp/btday-shadow
+          export PYTHONPATH="$GITHUB_WORKSPACE/horse-racing/jrdb/src"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from racenote_v056_btday_source_router import verify_readiness_receipt
+          repo = Path(os.environ['GITHUB_WORKSPACE'])
+          stage = Path('/tmp/btday-shadow')
+          sid = os.environ['SELECTION_ID']
+          rel_selection = Path('horse-racing/jrdb/backtests') / sid / 'selection.json'
+          raw = (repo / rel_selection).read_bytes()
+          selection = json.loads(raw)
+          row = selection['source_row']
+          if (selection.get('selection_id') != sid or selection.get('target_date') != os.environ['TARGET_DATE']
+                  or row.get('source_mode') != 'paci' or str(row.get('staging_artifact_id')) != os.environ['STAGE_ID']
+                  or row.get('staging_sha256') != os.environ['STAGE_SHA']):
+              raise SystemExit('staged artifact differs from immutable Selection')
+          verify_readiness_receipt(row, repo)
+          rel_receipt = Path(row['readiness_receipt_path'])
+          for rel, data in ((rel_selection, raw), (rel_receipt, (repo / rel_receipt).read_bytes())):
+              dst = stage / rel
+              dst.parent.mkdir(parents=True, exist_ok=True)
+              with dst.open('xb') as f: f.write(data)
+          with (stage / 'inputs/source_row.json').open('x', encoding='utf-8') as f:
+              json.dump(row, f, ensure_ascii=False)
+          PY
       - name: Run isolated BTDAY candidate and package clean Reader artifact
         shell: bash
         run: |
