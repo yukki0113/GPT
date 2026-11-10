@@ -43,7 +43,8 @@ def verify_readiness_receipt(row: dict, repository_root: Path) -> bool:
     for name in ("analysis", "rrdb", "race_lap"):
         item = (receipt.get("as_of_evidence") or {}).get(name) or {}
         if (item.get("status") != "ACCEPTED"
-                or item.get("as_of_exclusive") != row["target_date"]):
+                or item.get("as_of_exclusive") != row["target_date"]
+                or item.get("transport") not in ("approved_public_pinned_helper", "staged_artifact")):
             raise ValueError(f"{name} as-of evidence missing")
     mode = row["source_mode"]
     if mode == "paci":
