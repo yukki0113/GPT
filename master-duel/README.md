@@ -1,3 +1,5 @@
+> **2026-11-10 M2安全ゲート初期実装**：既存P1/P2/P3の所持プレビュー・候補ZIP生成に、HEAD/ZIP/SHA結合、バックアップ・候補の独立読み戻し検証、HEAD昇格提案/最終読み戻し確認をつなぐ inventory_m2 を追加。公開CIは **110件・失敗0・スキップ1（非公開DBが必要なテスト）**、M2新規10件PASS。**本人の所持申告とDrive本番HEAD切替はまだ実施していない**。[M2手順](inventory_m2/README.md) / [監査](audits/p1_202611/M2_INVENTORY_HEAD_SAFETY_GATE_20261110.md)。以下は履歴。
+
 # Master Duel Deck Advisor
 
 > **2026-11-10 初期要望の残工程をM1〜M8に整理・初回機能実装**：非公開本番SQLiteを読取専用で検索する `deck_assistant` を追加。日本語効果の語句AND検索と原文/出典返却、レア・種類・属性・名称絞込、入力済みレシピに対するUR/所持/CPの保守的判定を実装（**効果の意味理解・デッキ自動生成ではない**）。追加7件を含め全100件PASS。現行MD禁止制限・出張パーツ・所持入力/パック解放ナビは残工程。[ロードマップ](docs/INITIAL_GOAL_REMAINING_ROADMAP_20261110.md) / [検索と費用判定](deck_assistant/README.md)。以下履歴。

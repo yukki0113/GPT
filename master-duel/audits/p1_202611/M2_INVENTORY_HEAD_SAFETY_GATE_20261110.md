@@ -15,3 +15,10 @@ GitHub main 44b001eef5f66732ab5e63bbb3cf3a11e9358de0 を親として作成。非
 
 ## 受入判定
 M2の安全なHEAD昇格に向けたローカル検証基盤と合成テストは実装。M2本番運用（ユーザー申告の記録とDrive完全往復）は**保留**。本番HEAD変更なし。
+
+## GitHub反映・CI確認
+
+- 初回実装コミット: 07d7d436cde3d9be3cca614b8a0666d709ecc1e1（GitHub mainで読み戻し確認）。
+- GitHub Actions: https://github.com/yukki0113/GPT/actions/runs/42747557730 — **success**。
+- 全回帰: 110件、失敗0、スキップ1。内訳 P1-A0 47、SQLite 13、ZIP 9、voice_staging 12（非公開本番ZIPがGitHub CIにないため1件スキップ）、card_master_import 12、deck_assistant 7、inventory_m2 10。M2新規10件は全件PASS。
+- CIの本番DB読取検証は未実施。GitHub Actionsに個人の非公開DBを渡さないことを優先し、既存実DB読取監査と分離。

@@ -1,3 +1,5 @@
+> **2026-11-10 現行実装**：非公開本番DBはDrive世代1・13,948件・inventory0件。M1初期検索/費用評価済み。M2の正本HEAD結合・候補ZIP検証・独立読み戻し・HEAD昇格提案のコードを追加し、合成回帰110件（スキップ1）PASS。M2実所持登録は本人申告待ちで、実本番HEADは変更していない。出張/禁止制限はM5/M3で整備。[M2手順](../inventory_m2/README.md) / [全体残工程](../docs/INITIAL_GOAL_REMAINING_ROADMAP_20261110.md)。以下は履歴。
+
 # Project Context — master-duel
 
 > **2026-11-09 追加要件**: 収録パックDBの主要用途は「デッキ→有利なパック→解放するために生成するSR/UR」の逆引き。Game8個別パックのレア一覧はピックアップ**候補**であり、ゲーム内全件照合済みではない。P0-Cの固定30件の画面照合は完了（30/30）。残る入手先/ライセンス/販売時点は独立ゲート、P1-A1 NO-GO。正本：[PACK_UNLOCK_NAVIGATION_P0_20261109.md](../docs/PACK_UNLOCK_NAVIGATION_P0_20261109.md)。以下は履歴。
