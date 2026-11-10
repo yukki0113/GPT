@@ -132,14 +132,12 @@ def prepare(args) -> int:
         raise ValueError("materialized PACI differs from reserved source")
     freshness = validate_as_of(args, row, accepted)
     paci_receipt = _read(args.paci_source_receipt)
-    result = build_common(args, paci_receipt, freshness, args.selection_id, execution_mode="BTDAY")
-    handoff_path = args.output_root / "operation_handoff.json"
-    handoff = _read(handoff_path)
-    handoff.update({"source_mode": "paci", "source_generation_id": row["source_generation_id"],
-                    "source_sha256": paci["sha256"], "source_receipt_sha256": row["receipt_sha256"],
-                    "as_of_exclusive": args.date})
-    handoff_path.write_text(json.dumps(handoff, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    return result
+    return build_common(
+        args, paci_receipt, freshness, args.selection_id, execution_mode="BTDAY",
+        handoff_extra={"source_mode": "paci", "source_generation_id": row["source_generation_id"],
+                       "source_sha256": paci["sha256"], "source_receipt_sha256": row["receipt_sha256"],
+                       "as_of_exclusive": args.date},
+    )
 
 
 def main() -> int:
