@@ -32,5 +32,10 @@
 - SQLite本番HEAD世代3、所持5種類/計9枚、禁止制限215件はいずれも不変更。新たな例外登録があった場合は、単一ライター・版付け・読み戻しを前提にこの私的例外JSONへ記録する。
 - 実装コミット `1fa2f5aaec433575d01533b24e0ab8db55202d36` のGitHub Actions [run 42761905701](https://github.com/yukki0113/GPT/actions/runs/42761905701) は**成功**：全174件、M3=64件、失敗0・スキップ1。追加の `test_craftability.py` 10件は全PASS。
 - 非公開Drive初期台帳を別取得で読み戻し、147 bytes / SHA256 `5fe8dbc037d4a4449d94fa264610cbd39aa0f4d5da48864c950d8934e51e9ac2` と一致。
-- 追加受入: `test_bridge.py` に「報告されたNOがSHA付きレジストリ経由でデッキ評価をHOLDへ変える」「SHA不一致・片方だけ指定を拒否」を追加。後続コミットのCIが成功するまで未確定。
+- 追加受入 `test_bridge.py` の「NO例外をSHAピン付きで読んで不足時にHOLD」「SHA不一致・片方指定の拒否」も **GitHub Actions [run 42762127981](https://github.com/yukki0113/GPT/actions/runs/42762127981) で成功**。全176件、M3=66件、失敗0・スキップ1。コミット `2196ce6107abc5d7f830b3830c1c76944afe59f0`。
 
+
+## 最終読み取り監査
+
+- 非公開Driveの世代3本番ZIPをローカルの読取専用SQLiteとして展開し、HEAD記載ZIP SHAと一致。cards=13,948、card_texts=13,948、inventory=5、inventory_history=5、banlist_snapshots=1、banlist_entries=215、MD craftable UNKNOWN=13,931/NO=17。SQLite integrity=ok、FK違反0。
+- この工程で本番HEAD・本番ZIP・所持データは変更していない。禁止制限215件のGAME_VERIFIED昇格もしていない。
