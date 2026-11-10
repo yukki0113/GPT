@@ -12,6 +12,60 @@ from pathlib import Path
 from typing import Callable
 
 
+def verify_readiness_receipt(row: dict, repository_root: Path) -> bool:
+    """Verify a pinned, explicitly accepted date-specific source receipt.
+
+    A receipt is evidence only; transport and T1 still verify materialized bytes.
+    No source becomes accepted merely because it appears in the legacy pool.
+    """
+    root = repository_root.resolve()
+    relative = Path(str(row.get("readiness_receipt_path") or ""))
+    if relative.is_absolute() or not relative.parts or ".." in relative.parts:
+        raise ValueError("invalid readiness receipt path")
+    path = root / relative
+    if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root):
+        raise ValueError("readiness receipt unavailable")
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != row.get("receipt_sha256"):
+        raise ValueError("readiness receipt digest mismatch")
+    receipt = json.loads(raw)
+    if (not isinstance(receipt, dict)
+            or receipt.get("schema_version") != "racenote-btday-source-acceptance-v1"
+            or receipt.get("status") != "ACCEPTED"
+            or receipt.get("target_date") != row.get("target_date")
+            or receipt.get("source_mode") != row.get("source_mode")
+            or receipt.get("source_generation_id") != row.get("source_generation_id")
+            or receipt.get("source_reference") != row.get("source_reference")
+            or receipt.get("input_sha256") != row.get("input_sha256")
+            or receipt.get("jra_meeting_verified") is not True
+            or receipt.get("as_of_exclusive") != row.get("target_date")):
+        raise ValueError("readiness receipt identity mismatch")
+    for name in ("analysis", "rrdb", "race_lap"):
+        item = (receipt.get("as_of_evidence") or {}).get(name) or {}
+        if (item.get("status") != "ACCEPTED"
+                or item.get("as_of_exclusive") != row["target_date"]):
+            raise ValueError(f"{name} as-of evidence missing")
+    mode = row["source_mode"]
+    if mode == "paci":
+        paci = receipt.get("paci") or {}
+        if (paci.get("drive_file_id") != row.get("drive_file_id")
+                or paci.get("canonical_parent_verified") is not True
+                or paci.get("zip_crc_verified") is not True
+                or paci.get("target_kyi_verified") is not True
+                or paci.get("transport") not in ("approved_public_pinned_helper", "staged_artifact")):
+            raise ValueError("PACI source evidence missing")
+    elif mode == "historical_warehouse":
+        warehouse = receipt.get("warehouse") or {}
+        target = row["target_date"]
+        if (warehouse.get("manifest_verified") is not True
+                or not warehouse.get("coverage_from") or not warehouse.get("coverage_to")
+                or not warehouse["coverage_from"] <= target <= warehouse["coverage_to"]):
+            raise ValueError("Warehouse coverage evidence missing")
+    else:
+        raise ValueError("unknown source mode")
+    return True
+
+
 def resolve_inventory(rows: list[dict], operational_date: date,
                       verify_receipt: Callable[[dict], bool] | None = None) -> dict[str, dict]:
     """Return one accepted source per date; preserve any explicit exclusion.
