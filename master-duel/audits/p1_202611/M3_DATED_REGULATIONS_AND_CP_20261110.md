@@ -24,4 +24,8 @@ regulation_m3/tests/test_m3.py: 検証済みと候補の切り分け、施行日
 
 ## GitHub/CIの検証
 
-初回実装後に、main反映コミットとGitHub Actionsの回帰件数・skip・成否を追記する。
+- 実装コミット: c305415dd0efe1df339ab15b7ec20b98a0273520。mainへのfast-forwardとソースの読み戻しを確認。
+- GitHub Actions: https://github.com/yukki0113/GPT/actions/runs/42749910295 — success。
+- 既存110件＋M3新規13件＝123件。**失敗0・スキップ1**。スキップは非公開本番ZIPを公開CIへ送らない従来の実データ読取ケース。M3新規13件は全PASS。
+- 実vector候補215件の内訳: 最大0枚 114件、1枚 77件、2枚 24件、3枚 0件（**全件未検証候補の集計**）。未掲載カードの許容枚数はUNKNOWN。
+- GitHub Actionsで実非公開DBを読み込んだという意味ではない。実データ監査は別のローカル読取環境で実施。
