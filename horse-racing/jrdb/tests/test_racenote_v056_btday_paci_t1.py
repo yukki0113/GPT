@@ -56,10 +56,10 @@ class BtdayPaciAdapterTest(unittest.TestCase):
             args = SimpleNamespace(date="2026-10-31", selection_id=sid, main_sha="a" * 40,
                 output_root=target, source_row=Path("row.json"), paci=Path("PACI261031.zip"),
                 paci_source_receipt=Path("paci-receipt.json"))
-            def build(_args, _receipt, _freshness, selection_id, *, execution_mode):
+            def build(_args, _receipt, _freshness, selection_id, *, execution_mode, handoff_extra):
                 self.assertEqual((selection_id, execution_mode), (sid, "BTDAY"))
                 target.mkdir(parents=True)
-                (target / "operation_handoff.json").write_text("{}")
+                (target / "operation_handoff.json").write_text(json.dumps(handoff_extra))
                 return 0
             with patch.object(adapter, "verify_readiness_receipt", return_value=True), \
                  patch.object(adapter, "validate_paci", return_value={"sha256": "a" * 64, "drive_file_id": "file-id"}), \
