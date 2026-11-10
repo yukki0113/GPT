@@ -6,7 +6,7 @@ from datetime import date
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from tempfile import TemporaryDirectory
-from racenote_v056_btday_source_router import resolve_inventory, candidate_digest, draw_v2, verify_readiness_receipt
+from racenote_v056_btday_source_router import resolve_inventory, candidate_digest, draw_v2, verify_readiness_receipt, plan_reservation
 
 
 def row(day, mode):
@@ -44,6 +44,21 @@ class SourceRouterTest(unittest.TestCase):
 
     def test_unverified_receipt_never_ready(self):
         self.assertEqual(resolve_inventory([row("2025-05-25", "paci")], date(2026, 1, 1)), {})
+
+    def test_reservation_plan_retains_all_legacy_state(self):
+        source = row("2025-05-25", "historical_warehouse")
+        resolved = resolve_inventory([source], date(2026, 1, 1), lambda _: True)
+        history = [{"selection_id": f"BTDAY-{n:04d}", "dates": ["2025-05-25"]} for n in range(1, 182)]
+        pool = {"days": [{"date": "2025-05-25", "used": True, "selection_cycle": 2}],
+                "selections": history}
+        before = json.dumps(pool, sort_keys=True)
+        with TemporaryDirectory() as tmp:
+            updated, selection = plan_reservation(pool, resolved, Path(tmp), date(2026, 1, 1), "seed")
+        self.assertEqual(json.dumps(pool, sort_keys=True), before)
+        self.assertEqual(updated["days"], pool["days"])
+        self.assertEqual(updated["selections"][:-1], history)
+        self.assertEqual(selection["selection_id"], "BTDAY-0182")
+        self.assertEqual(selection["draw_occurrence"], 182)
 
     def test_repeat_draw_keeps_history_and_checks_paths(self):
         source = row("2025-05-25", "historical_warehouse")
