@@ -1,3 +1,5 @@
+> **2026-11-10 M5-Aパイロット**：`engine_m5/`にテーマ名前一致/日本語引用の別関係、汎用札役割、PACKAGE/SINGLETON、MAIN/EX、代替部品、制約・EX枠評価を実装。PRIVATE seed SHA `f0498fddf6e2d2ac488a52aae44f5db05068720b137406e4ef76812338853188`、M5派生SQLite SHA `d70238c99ddc1c319ea7a02fdf3798ba3877981a66bf5abec1e9838efb1d5486`。実13,948枚、3テーマ/3バリアント、候補150、汎用役割7、制約5。Drive保存・SHA読戻し済み。**Source/所持/banlist/M4 indexを変更しない**。すべて候補、M6で採用合法性/所持/CP確認が必要。[監査](../engine_m5/M5_AUDIT_20261110.md)。
+
 > **2026-11-10 M4開始**：効果のLexical Semantics v1を `effect_semantics_m4/` に追加。日本語効果13,948枚の根拠付き候補75,913行を、非公開Driveの独立SQLite ZIPへ保存（index SHA256 `9312109612b1ad38ec318a7c5d6745c9b82c97dc872613a2994a98d19c738451`）。抽出結果は`UNVERIFIED_INTERPRETATION`、原文オフセット/テキストSHA/版本保持、自己処理・条件・引用/参照・コスト等を別ロール。旧本番HEAD世代3・規制215・所持5種類は不変。**M4候補分類の基盤実装であり、人手による精度検証・テーマ関連確定は残る**。[監査](../effect_semantics_m4/M4_AUDIT_20261110.md)。
 
 > **2026-11-10 MD規制の出典調査**：非公開vectorはDawnbrandBots/yaml-yugi-limit-regulationの2026-11-05版と完全同一。SQLite収録215/215一致、前回10/06からの9差分は公式告知と独立記事で整合。YAML Yugiの再掲載で215件独立検証済みとは言わない。ゲーム内で未確認の206継承行を含むためUNVERIFIED_SOURCEを維持。全215行はprivate Driveにのみ。[監査](../audits/p1_202611/M3_BANLIST_SOURCE_RECONCILIATION_20261110.md)。
