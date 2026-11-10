@@ -2,3 +2,5 @@
 from .snapshots import (validate_snapshot, legacy_vector_to_candidate,
                         resolve_limit, audit_catalog_ids)
 from .evaluation import (validate_cp_policy, available_owned_copies, assess_deck_with_m3)
+
+from .catalog_store import stage_candidate_snapshot, read_candidate_snapshot

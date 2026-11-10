@@ -38,3 +38,12 @@ validate_cp_policy(policy) はeffective_on、checked_at、source、verification�
 4. M2所持申告完了後、同じ現行snapshotを使って採用枚数・CPの確定判定を行う。M4/M5/M6へ結果と不確実性を渡す。
 
 本フェーズはコードの受入と非公開候補監査が中心。実施済みと未検証を混同しない。実カード一覧・全文・所持情報はGitHubへ公開しない。
+
+
+## M3候補スナップショットをSQLiteへ保存（第2段階）
+
+\`stage_candidate_snapshot(db_path, snapshot)\` は**隔離された作業コピー**のSQLiteだけを受け付け、MD_STANDARD・UNVERIFIED_SOURCEの候補を \`banlist_snapshots\` / \`banlist_entries\` へトランザクションで保存する。候補をGAME_VERIFIEDへ昇格しない。KONAMI ID完全一致、施行日の重複、別内容の同一snapshot ID、不明カード、途中失敗時のROLLBACKを検査する。同一内容の再送はALREADY_PRESENTとなる。 \`read_candidate_snapshot\` は件数と0/1/2/3の分布を読み戻す。
+
+適用の安全手順：最新Drive HEAD・参照ZIPのSHA/DBを独立確認→ZIPをプライベート作業コピーへ展開→legacy_vector_to_candidateを通した未検証候補をstage_candidate_snapshotで保存→更新済みSQLiteのintegrity/foreign_key・所持/効果件数不変・215件の読み戻し→新しい不変ZIP作成→Driveで旧ZIPとHEADを別ファイルにバックアップ→新ZIPとmanifestを別ファイルで保存し独立に読み戻し→単一ライターを維持してHEAD最終照合・昇格→再読み戻し。確認不能時はHEAD切替禁止。コードはDriveを書き換えない。
+
+本番に保存しても候補215件は未検証のまま。M3のゲーム内規制確定は別途、正式な公式データと差分を検証して実施する。M2の所持5件/9枚は変更禁止。
