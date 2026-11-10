@@ -109,7 +109,8 @@ def main() -> int:
     return build_common(args, paci_receipt, freshness, selection_id, execution_mode="FORWARD")
 
 
-def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode):
+def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode,
+                 handoff_extra=None):
     """Shared PACI materialization after caller-specific safety preflight."""
     if execution_mode not in ("FORWARD", "BTDAY"):
         raise ValueError("invalid PACI T1 execution mode")
@@ -217,6 +218,15 @@ def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode)
         "result_opened": False,
         "target_market_opened": False,
     })
+    if handoff_extra:
+        if execution_mode != "BTDAY":
+            raise ValueError("extra source provenance is restricted to BTDAY")
+        if set(handoff_extra) != {"source_mode", "source_generation_id", "source_sha256",
+                                  "source_receipt_sha256", "as_of_exclusive"}:
+            raise ValueError("unexpected BTDAY provenance fields")
+        if handoff_extra["source_mode"] != "paci" or handoff_extra["as_of_exclusive"] != args.date:
+            raise ValueError("BTDAY source provenance mismatch")
+        base_handoff.update(handoff_extra)
     if base_handoff.get("paci", {}).get("sha256") != paci_receipt["sha256"]:
         raise ValueError("Day prep PACI SHA is inconsistent with Drive receipt")
     if base_handoff.get("selection_id") != selection_id or base_handoff.get("target_date") != args.date:
