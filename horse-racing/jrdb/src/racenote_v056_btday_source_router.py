@@ -5,14 +5,19 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import random
+import secrets
 from datetime import date
+from pathlib import Path
+from typing import Callable
 
 
-def resolve_inventory(rows: list[dict], operational_date: date) -> dict[str, dict]:
+def resolve_inventory(rows: list[dict], operational_date: date,
+                      verify_receipt: Callable[[dict], bool] | None = None) -> dict[str, dict]:
     """Return one accepted source per date; preserve any explicit exclusion.
 
-    Readiness receipts are supplied by the caller's independently validated
-    inventory. This pure resolver is not a transport or T1 acceptance gate.
+    READY labels alone are insufficient: the caller must verify each receipt.
+    This resolver does not access transport or create a T1.
     """
     grouped: dict[str, list[dict]] = {}
     for row in rows:
@@ -37,8 +42,12 @@ def resolve_inventory(rows: list[dict], operational_date: date) -> dict[str, dic
                 raise ValueError("ready source lacks provenance")
             if not re.fullmatch(r"[0-9a-f]{64}", str(row.get("input_sha256", ""))):
                 raise ValueError("ready source lacks valid input sha256")
+            if not re.fullmatch(r"[0-9a-f]{64}", str(row.get("receipt_sha256", ""))):
+                raise ValueError("ready source lacks valid receipt sha256")
             if row["source_mode"] == "paci" and not row.get("drive_file_id"):
                 raise ValueError("ready PACI lacks Drive file ID")
+            if verify_receipt is None or verify_receipt(row) is not True:
+                continue
             accepted.append(row)
         if not accepted:
             continue
@@ -57,3 +66,41 @@ def candidate_digest(resolved: dict[str, dict]) -> str:
     data = json.dumps(resolved, sort_keys=True, ensure_ascii=False,
                       separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(data).hexdigest()
+
+
+def draw_v2(resolved: dict[str, dict], selections: list[dict],
+            backtest_root: Path, operational_date: date, seed: str | None = None) -> dict:
+    """Create an uncommitted proposal; caller owns atomic reservation and recheck."""
+    dates = sorted(resolved)
+    if not dates:
+        raise ValueError("no accepted dates")
+    ids = {str(x.get("selection_id", "")) for x in selections}
+    numbers = [int(m.group(1)) for sid in ids
+               if (m := re.fullmatch(r"BTDAY-(\d{4})", sid))]
+    number = max(numbers, default=0) + 1
+    if number > 9999:
+        raise ValueError("BTDAY four-digit ID space exhausted")
+    sid = f"BTDAY-{number:04d}"
+    if sid in ids or (backtest_root / sid).exists():
+        raise ValueError("selection ID collision")
+    actual_seed = seed if seed is not None else secrets.token_hex(32)
+    target = random.Random(actual_seed).choice(dates)
+    source = resolved[target]
+    occurrence = 1 + sum(1 for record in selections
+                         if not record.get("released_at") and target in record.get("dates", []))
+    bucket = "CURRENT_YEAR" if date.fromisoformat(target).year == operational_date.year else "PAST_YEAR"
+    return {
+        "selection_schema_version": "btday-source-selection-v2",
+        "selection_id": sid, "target_date": target, "dates": [target], "n": 1,
+        "draw_seed": actual_seed, "seed": actual_seed,
+        "candidate_set_sha256": candidate_digest(resolved),
+        "calendar_bucket": bucket, "draw_occurrence": occurrence,
+        "source_policy_version": "btday-source-policy-v2",
+        "source_mode": source["source_mode"],
+        "source_generation_id": source["source_generation_id"],
+        "source_reference": source["source_reference"],
+        "source_receipt_sha256": source["receipt_sha256"],
+        "sources": [{"target_date": target, "source_mode": source["source_mode"],
+                     "source_reference": source["source_reference"],
+                     "selection_cycle": source.get("selection_cycle", 1)}],
+    }
