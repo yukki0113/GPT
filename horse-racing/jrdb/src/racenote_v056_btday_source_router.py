@@ -48,6 +48,14 @@ def verify_readiness_receipt(row: dict, repository_root: Path) -> bool:
                 or item.get("transport") not in ("approved_public_pinned_helper", "staged_artifact")):
             raise ValueError(f"{name} as-of evidence missing")
     mode = row["source_mode"]
+    runner = receipt.get("runner") or {}
+    expected_profile = {"paci": "paci-staged-v1", "historical_warehouse": "historical-staged-v1"}.get(mode)
+    if (runner.get("profile") != expected_profile or row.get("workflow_profile") != expected_profile
+            or not re.fullmatch(r"[1-9][0-9]*", str(row.get("staging_artifact_id", "")))
+            or not re.fullmatch(r"[0-9a-f]{64}", str(row.get("staging_sha256", "")))
+            or str(runner.get("staging_artifact_id", "")) != str(row["staging_artifact_id"])
+            or runner.get("staging_sha256") != row["staging_sha256"]):
+        raise ValueError("approved staged runner input missing")
     if mode == "paci":
         paci = receipt.get("paci") or {}
         if (paci.get("drive_file_id") != row.get("drive_file_id")
@@ -142,6 +150,10 @@ def draw_v2(resolved: dict[str, dict], selections: list[dict],
     actual_seed = seed if seed is not None else secrets.token_hex(32)
     target = random.Random(actual_seed).choice(dates)
     source = resolved[target]
+    source_keys = ("target_date", "source_mode", "source_reference", "source_generation_id",
+                   "input_sha256", "receipt_sha256", "readiness_receipt_path", "readiness_status",
+                   "eligible", "exclusion_reason", "drive_file_id", "staging_artifact_id",
+                   "staging_sha256", "workflow_profile")
     occurrence = 1 + sum(1 for record in selections
                          if not record.get("released_at") and target in record.get("dates", []))
     bucket = "CURRENT_YEAR" if date.fromisoformat(target).year == operational_date.year else "PAST_YEAR"
@@ -157,6 +169,7 @@ def draw_v2(resolved: dict[str, dict], selections: list[dict],
         "source_generation_id": source["source_generation_id"],
         "source_reference": source["source_reference"],
         "source_receipt_sha256": source["receipt_sha256"],
+        "source_row": {key: source[key] for key in source_keys if key in source},
         "selection_cycle_legacy": source.get("selection_cycle"),
         "sources": [{"target_date": target, "source_mode": source["source_mode"],
                      "source_reference": source["source_reference"],
