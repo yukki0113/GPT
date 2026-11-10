@@ -72,3 +72,12 @@ regulation_m3/tests/test_m3.py: 検証済みと候補の切り分け、施行日
 - 既存候補ZIPは規制sourceを `#SHA256=` 表記で保持していたため、DB読み出しローダーに両方式を受け付ける修正を加えた。GitHub `7e94a16debf392e130a17e8afac3db6dceab9faf` のActions https://github.com/yukki0113/GPT/actions/runs/42757147045 は149件、失敗0、スキップ1、M3領域39件PASS。
 - マニフェストの独立読取で `status=HEAD_PROMOTED_READBACK_VERIFIED`、`production_head_updated=true`、`head_generation=3` を確認。候補dataの `verification=UNVERIFIED_SOURCE` は維持。
 - **M3残件**: MDゲーム内または正規の最新全件ソースによる215値の公式確認、CP生成可否・必要CPのゲーム内検証、未掲載カードを合法3枚と推定しないままレシピ合法性へ接続。
+
+## 2026-11-10 M3本番HEAD世代3・最終確認
+
+- 別の単一ライター処理によって、Drive本番 `MD_CURRENT_HEAD.json` が **generation 2 → 3** へ昇格した。最終HEADは `md-prod-003-md-banlist-candidate-20261110` を参照。前節の「HEAD世代2」は昇格前時点の監査記録で、現在値ではない。
+- HEADの参照先を独立に再取得。ZIP SHA-256 `a42dac509a2ed137eb578fefd15812d2cddb8b8be9bf2374b5298b04da9e8935`、SQLite SHA-256 `42fa57c5a41e9d41ae7ae064450485d1b18109f45a616528abff9025cd43b654` がHEADと一致。SQLite integrity `ok`、外部キー違反0。
+- 本番ZIP: cards/card_texts 13,948件ずつ、inventory 5件（合計9枚）、禁止制限候補215件、banlist_snapshots 1件。候補の verification は `UNVERIFIED_SOURCE`。個別ルールは元vector215件とキー/値が完全一致。
+- Driveの最終マニフェストは `status=HEAD_PROMOTED_READBACK_VERIFIED`、`head_readback_status=HEAD_AND_REFERENCED_ZIP_VERIFIED`、`production_head_updated=true`、`head_generation=3` で独立読戻しを確認。
+- GitHub CI https://github.com/yukki0113/GPT/actions/runs/42757198521 で **149件・失敗0・スキップ1・success**（M3 39件PASS）。
+- **要注意**：ここで完了したのは「候補データの本番SQLite格納と安全な切替」。**MDゲーム内での215件個別確認とCP生成単価・生成可否の実データ検証は未完了**。デッキ合法性は候補だけを根拠に確定させない。
