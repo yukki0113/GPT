@@ -12,3 +12,5 @@ from .cp_policy import load_cp_policy_file, resolve_cp_policy
 
 from .craftability import (validate_exception_registry, record_exception,
                            load_exception_registry, assess_craftability_gate)
+
+from .reconcile import reconcile_vectors

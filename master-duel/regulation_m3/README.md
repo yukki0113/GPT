@@ -1,3 +1,5 @@
+> **2026-11-10 禁止制限の出典確定・全件内部照合**：private Drive `current.vector.json` 3395 bytesはDawnbrandBots/YAML Yugiの2026-11-05版とバイト完全一致（215件）。10/06版→11/05版の差分は9件で公式改訂予告・外部解説と一致。SQLite収録の215件ID/規制値も215/215一致。ただしYAML Yugiやその再掲載サイトは公式一次ソースではなく、継承206件のゲーム内全件照合は未完。`UNVERIFIED_SOURCE`を維持。private Driveに全215件の行別監査JSON/CSVを保存。再現ツールは`reconcile_vectors`。[監査](../audits/p1_202611/M3_BANLIST_SOURCE_RECONCILIATION_20261110.md)。
+
 > **2026-11-10 運用決定：生成可否UNKNOWNは候補生成を止めない**。M3の `assess_deck_with_m3` / `assess_from_private_sources` は `craftability_policy=PROVISIONAL_GO` をデフォルトにし、`craftability_gate` / `candidate_recommendation` に暫定GOまたは既知NOによるHOLDを返す。厳密な `status` は変更せず、禁止制限・所持・CPはそれぞれ未確定を伝播する。運用で確認した生成不可だけをKONAMI ID・時刻・出典・理由つきで別レジストリへ記録し、必要枚数不足時に拒否。`UNKNOWN` を一斉に `YES` にしない。[運用監査](../audits/p1_202611/M3_CRAFTABILITY_PROVISIONAL_GO_20261110.md)。
 
 > **2026-11-10 CPユーザー確認済み導入**：同じレアのCPを1枚あたり30、別レアへの流用不可。ユーザー確認は `USER_CONFIRMED` として保持し、禁止制限の `GAME_VERIFIED` とは区別する。非公開Driveの `MD_CP_POLICY_USER_CONFIRMED_20261110.json` に版付けし、SHA固定 `load_cp_policy_file` で読込。 `resolve_cp_policy` は指定日付以前の最新の版を選択し、日付競合/未来のみを保留とする。

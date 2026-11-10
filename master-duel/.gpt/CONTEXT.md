@@ -1,3 +1,5 @@
+> **2026-11-10 MD規制の出典調査**：非公開vectorはDawnbrandBots/yaml-yugi-limit-regulationの2026-11-05版と完全同一。SQLite収録215/215一致、前回10/06からの9差分は公式告知と独立記事で整合。YAML Yugiの再掲載で215件独立検証済みとは言わない。ゲーム内で未確認の206継承行を含むためUNVERIFIED_SOURCEを維持。全215行はprivate Driveにのみ。[監査](../audits/p1_202611/M3_BANLIST_SOURCE_RECONCILIATION_20261110.md)。
+
 > **2026-11-10 ユーザー運用決定**：生成可否 UNKNOWN=13,931 はM3/M6推薦のBlockerにしない。`PROVISIONAL_GO` として候補を許可し、カタログ状態はUNKNOWNを維持。カタログNO=17および以後の個別生成不可報告は必要枚数不足時にHOLD。出典付き私的例外レジストリを使用。MD禁止制限の一次データはKONAMIゲーム内一覧・お知らせ、現在の215件source/vectorはUNVERIFIED_SOURCE。[監査](../audits/p1_202611/M3_CRAFTABILITY_PROVISIONAL_GO_20261110.md)。
 
 > **2026-11-10 M3 CP導入**：ユーザー確認済みのN/R/SR/UR別30CPを非公開Driveに独立JSON保存。USER_CONFIRMEDとGAME_VERIFIEDを分離し、SHA固定・日付選択。現本番世代3の規制215件はUNVERIFIED_SOURCEを維持。生成可否UNKNOWNをYESにせず、レアごとのCP残高も未申告につきUNKNOWN。[CP監査](../audits/p1_202611/M3_CP_USER_CONFIRMED_20261110.md)。以下過去履歴。

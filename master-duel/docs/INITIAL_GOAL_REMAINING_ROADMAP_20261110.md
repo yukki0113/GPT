@@ -1,3 +1,5 @@
+> **2026-11-10 M3禁止制限照合**：YAML Yugi原本・Private Drive・本番SQLiteの215件全値一致、旧版との差分9件が公式11/05改訂の予告と一致。継承206件のゲーム内全件照合はまだ残るが推薦試行のBlockerではない。確定の合法性判定に格上げすることは禁止。生成可否UNKNOWN暫定GOは従前の決定どおり維持。[監査](../audits/p1_202611/M3_BANLIST_SOURCE_RECONCILIATION_20261110.md)。
+
 > **2026-11-10 M3から次工程へGO**：生成可否 UNKNOWN の全件調査はM4/M5/M6の着手条件から外す。候補推薦はPROVISIONAL_GOとし、明示NO＋新規不足のみブロック。実運用で発覚したNOをID/出典/日時/理由で私的に蓄積する。禁止制限の正式一次情報はMDゲーム内一覧・お知らせ、215候補は検証継続。デッキの正式合法性・CP支出確定は別状態に分離。[運用監査](../audits/p1_202611/M3_CRAFTABILITY_PROVISIONAL_GO_20261110.md)。
 
 > **2026-11-10 M3 CP更新**：ユーザーが標準生成コスト1枚=同レア30CP（N/R/SR/UR）を確認。版付き `USER_CONFIRMED` CPポリシーを非公開Driveに保存、SHAピン読み込みと実ZIP/HEAD＋banlist+CPのread-only評価を接続。これはカード生成可否の一律YES化や、未検証規制215件の正式確定ではない。CP残高は未登録。 [CP監査](../audits/p1_202611/M3_CP_USER_CONFIRMED_20261110.md)。以下履歴。

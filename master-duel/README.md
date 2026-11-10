@@ -1,3 +1,5 @@
+> **2026-11-10 M3禁止制限監査**：非公開sourceは公開YAML Yugi 11/05版と全215件・バイト一致。DB規制215行も全件一致。10/06版との差分9件は公式予告と照合、残り206件はゲーム内全件検証とは言えないためUNVERIFIED_SOURCE。全件の行別private監査JSON/CSV作成。[監査](audits/p1_202611/M3_BANLIST_SOURCE_RECONCILIATION_20261110.md)。
+
 > **2026-11-10 M3運用GO**：生成可否UNKNOWN（13,931件）は候補生成のBlockerから外す。生成可否自体はUNKNOWNのまま暫定GO、確定NOまたは実際に報告されたNO＋不足の場合は除外。私的生成不可例外レジストリ（初期0件、SHA管理）を用意。禁止制限の一次ソースはKONAMIのMDゲーム内一覧/告知、現在のvectorは出典未検証の候補。[運用監査](audits/p1_202611/M3_CRAFTABILITY_PROVISIONAL_GO_20261110.md)。
 
 > **2026-11-10 M3 CP単価確認**：ユーザーがN/R/SR/URの1枚30同レアCPを確認。個別のCPポリシーを非公開Driveへ保存（USER_CONFIRMED）し、SHA固定読み込み・日付選択・レア別予算判定とHEAD ZIP→規制→CPの安全な読み込みを実装。禁止制限215件は未検証候補であり確定扱いしない。 [M3 CP監査](audits/p1_202611/M3_CP_USER_CONFIRMED_20261110.md)。以下過去履歴。

@@ -1,3 +1,5 @@
+> **2026-11-10 M3禁止制限監査方針**：KONAMI公式MDゲーム内一覧と告知が一次ソース。YAML Yugiは二次ソースでありYAML Yugiを転記したサイトでの一致は独立な2件の証拠に数えない。変更点は既存版と日付付き差分を算出し告知と照合。個々の完全一致まではUNVERIFIED_SOURCEを維持。再現可能な`reconcile_vectors`でKONAMI ID・上限のDB全件一致を検証。個票は非公開Driveに保存し、公開Gitには集計・証拠・合成テストだけ。[監査](../audits/p1_202611/M3_BANLIST_SOURCE_RECONCILIATION_20261110.md)。
+
 > **2026-11-10 M3の非Blocker方針**：生成可否のUNKNOWNを一括YESにせず候補生成はGO。`craftability_gate` と厳密デッキ`status`は別判定。明示NOカードに対する確定不足と、正式禁止/枚数/0URなどの明確な違反は引き続き除外。未知NOに遭遇した場合は `record_exception` で観測者・日時・理由付きの私的JSON版を作成し、SHA/読み戻しを確認する。禁止制限はKONAMI MDゲーム内リスト→お知らせ→公式Xを一次根拠とし、外部vectorは未検証候補。[監査](../audits/p1_202611/M3_CRAFTABILITY_PROVISIONAL_GO_20261110.md)。
 
 > **2026-11-10 M3 CP接続**：所持データとHEAD/ZIPを変更しない。CP価格はユーザー明示確認の各レア30（USER_CONFIRMED）、同レアのCPでのみ生成、CPポリシーは非公開Driveに版付きJSON、必ずバイトSHAで検証。レシピ評価は`assess_from_private_sources`でHEAD ZIP、施行日付きbanlist、CPを照合。未報告CP残高・所持UNKNOWN・生成可否UNKNOWNを推定しない。[M3 CP監査](../audits/p1_202611/M3_CP_USER_CONFIRMED_20261110.md)。以下過去履歴。
