@@ -1,3 +1,5 @@
+> **2026-11-10 M5-C設計のみ**：テーマ別記事調査→構築構成/採用理由/展開グラフ（選択・ランダム・相手応答の分岐）→MDカード本文照合→非公開知識キャッシュ→M6 Bundleの工程を正式な追加設計として採用。出典依存/取得条件/改訂日時を維持し、必要時だけ再調査。設計書`docs/M5C_THEME_BUILD_AND_COMBO_KNOWLEDGE_DESIGN_20261110.md`。実データ収集・コード実装・本番HEAD変更なし。
+
 > **2026-11-10 M5-B**：M5の3テーマパイロットに続き全13,948枚から名称グループ580/関連候補合計7,785（引用）/属性・種族の効果候補2,288を非公開Driveの別派生SQLiteで索引化。`engine_m5/support.py` を正本とし、源DB SHA/M4 SHAでピン留め、原文証拠位置とハッシュ保存。全候補はUNVERIFIED、ルール判定を行わず、属性・種族のANDは同一M4原文区間。Drive Index ID 1Nhe6bvfmKe3oLR1iBik7MpqTDE9QmiuI、Manifest ID 1DfySkeey96qCPrzFxQTPnOCH65_bWVpb。本番HEAD・M4・M5-Aの私的索引は不変。[M5-B監査](../engine_m5/M5B_SUPPORT_AUDIT_20261110.md)。
 
 > **2026-11-10 M5-Aパイロット**：`engine_m5/`にテーマ名前一致/日本語引用の別関係、汎用札役割、PACKAGE/SINGLETON、MAIN/EX、代替部品、制約・EX枠評価を実装。PRIVATE seed SHA `f0498fddf6e2d2ac488a52aae44f5db05068720b137406e4ef76812338853188`、M5派生SQLite SHA `d70238c99ddc1c319ea7a02fdf3798ba3877981a66bf5abec1e9838efb1d5486`。実13,948枚、3テーマ/3バリアント、候補150、汎用役割7、制約5。Drive保存・SHA読戻し済み。**Source/所持/banlist/M4 indexを変更しない**。すべて候補、M6で採用合法性/所持/CP確認が必要。[監査](../engine_m5/M5_AUDIT_20261110.md)。
