@@ -110,7 +110,7 @@ def main() -> int:
 
 
 def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode,
-                 handoff_extra=None):
+                 handoff_extra=None, source_receipt_bytes=None):
     """Shared PACI materialization after caller-specific safety preflight."""
     if execution_mode not in ("FORWARD", "BTDAY"):
         raise ValueError("invalid PACI T1 execution mode")
@@ -226,7 +226,12 @@ def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode,
             raise ValueError("unexpected BTDAY provenance fields")
         if handoff_extra["source_mode"] != "paci" or handoff_extra["as_of_exclusive"] != args.date:
             raise ValueError("BTDAY source provenance mismatch")
+        if (not isinstance(source_receipt_bytes, bytes)
+                or hashlib.sha256(source_receipt_bytes).hexdigest() != handoff_extra["source_receipt_sha256"]):
+            raise ValueError("BTDAY source receipt digest mismatch")
         base_handoff.update(handoff_extra)
+    elif execution_mode == "BTDAY":
+        raise ValueError("BTDAY source provenance required")
     if base_handoff.get("paci", {}).get("sha256") != paci_receipt["sha256"]:
         raise ValueError("Day prep PACI SHA is inconsistent with Drive receipt")
     if base_handoff.get("selection_id") != selection_id or base_handoff.get("target_date") != args.date:
@@ -235,6 +240,8 @@ def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode,
         raise ValueError("Reader/authoring roster mismatch")
     audit_root = args.output_root / "source_audit"
     audit_root.mkdir(exist_ok=True)
+    if execution_mode == "BTDAY":
+        (audit_root / "selection_source_receipt.json").write_bytes(source_receipt_bytes)
     write_json(audit_root / ("forward_analysis_rrdb_freshness.json" if execution_mode == "FORWARD" else "btday_as_of_evidence.json"), freshness)
     write_json(args.output_root / "operation_handoff.json", base_handoff)
     print(json.dumps({
