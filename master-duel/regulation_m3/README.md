@@ -1,3 +1,5 @@
+> **2026-11-10 運用決定：生成可否UNKNOWNは候補生成を止めない**。M3の `assess_deck_with_m3` / `assess_from_private_sources` は `craftability_policy=PROVISIONAL_GO` をデフォルトにし、`craftability_gate` / `candidate_recommendation` に暫定GOまたは既知NOによるHOLDを返す。厳密な `status` は変更せず、禁止制限・所持・CPはそれぞれ未確定を伝播する。運用で確認した生成不可だけをKONAMI ID・時刻・出典・理由つきで別レジストリへ記録し、必要枚数不足時に拒否。`UNKNOWN` を一斉に `YES` にしない。[運用監査](../audits/p1_202611/M3_CRAFTABILITY_PROVISIONAL_GO_20261110.md)。
+
 > **2026-11-10 CPユーザー確認済み導入**：同じレアのCPを1枚あたり30、別レアへの流用不可。ユーザー確認は `USER_CONFIRMED` として保持し、禁止制限の `GAME_VERIFIED` とは区別する。非公開Driveの `MD_CP_POLICY_USER_CONFIRMED_20261110.json` に版付けし、SHA固定 `load_cp_policy_file` で読込。 `resolve_cp_policy` は指定日付以前の最新の版を選択し、日付競合/未来のみを保留とする。
 > `assess_from_private_sources(head,zip,policy_path,policy_sha,recipe,...)` でHEAD世代3・規制候補215件と確定CP価格を同時に参照できる。所持不明と生成可否不明はそれぞれUNKNOWNを維持し、CP残高未指定なら無限と扱わない。**本番ZIP/HEADは変更不要**、政策JSONを外付け正本として利用する。詳しくは[CP監査](../audits/p1_202611/M3_CP_USER_CONFIRMED_20261110.md)。以下の旧来記述は過去履歴。
 

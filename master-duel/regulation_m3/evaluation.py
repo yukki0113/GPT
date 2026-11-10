@@ -10,6 +10,7 @@ from datetime import date, datetime
 
 from deck_assistant.cost import MODES, RARITIES, assess_deck
 from .snapshots import _date, resolve_limit, validate_snapshot
+from .craftability import assess_craftability_gate
 
 
 def validate_cp_policy(policy):
@@ -61,7 +62,9 @@ def available_owned_copies(owned_count, resolved_limit):
 
 def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STANDARD",
                         mode="LOW_RARITY_CORE", max_new_ur=None,
-                        cp_policy=None, cp_budget_by_rarity=None):
+                        cp_policy=None, cp_budget_by_rarity=None,
+                        craftability_policy="PROVISIONAL_GO",
+                        craftability_exceptions=None):
     """Assess a supplied recipe conservatively, including source/version evidence.
 
     CP-N/R/SR/UR are separate noninterchangeable currencies.
@@ -121,6 +124,14 @@ def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STAN
     }
     unknowns = set(result["unknowns"])
     errors = set(result["errors"])
+    gate = assess_craftability_gate(result["cards"], policy=craftability_policy,
+                                   registry=craftability_exceptions)
+    result["craftability_gate"] = gate
+    # Explicit reports of NO override an UNKNOWN catalog, never overwrite
+    # confirmed ownership or the database itself.
+    for cid in gate["confirmed_no_shortages"]:
+        errors.add("UNCRAFTABLE_SHORTAGE:" + cid)
+        unknowns.discard("UNKNOWN_CRAFTABILITY:" + cid)
     needs_any = sum(result["new_needed_by_rarity"].values()) > 0
     might_need = sum(result["potentially_missing_if_unowned"].values()) > 0
     # Candidate CP rules must not silently be accepted as current verified
@@ -148,4 +159,17 @@ def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STAN
     result["errors"] = sorted(errors)
     result["unknowns"] = sorted(unknowns)
     result["status"] = "FAIL" if errors else ("INDETERMINATE" if unknowns else "PASS")
+    # Candidate generation is a *different* gate from guaranteed legality.
+    # UNKNOWN craftability does not block exploratory recommendations; the
+    # strict status and source uncertainties are retained independently.
+    result["candidate_recommendation"] = {
+        "status": ("HOLD" if errors or not gate["can_generate_candidate"]
+                   else "GO_PROVISIONAL" if unknowns or
+                       gate["status"] == "GO_PROVISIONAL" else "GO_CONFIRMED"),
+        "legal_and_affordable_confirmed": result["status"] == "PASS",
+        "requires_regulation_check": any(v["status"] != "VERIFIED"
+                                         for v in resolutions.values()),
+        "unknowns": result["unknowns"],
+        "hard_errors": result["errors"],
+    }
     return result

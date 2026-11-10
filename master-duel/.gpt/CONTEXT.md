@@ -1,3 +1,5 @@
+> **2026-11-10 ユーザー運用決定**：生成可否 UNKNOWN=13,931 はM3/M6推薦のBlockerにしない。`PROVISIONAL_GO` として候補を許可し、カタログ状態はUNKNOWNを維持。カタログNO=17および以後の個別生成不可報告は必要枚数不足時にHOLD。出典付き私的例外レジストリを使用。MD禁止制限の一次データはKONAMIゲーム内一覧・お知らせ、現在の215件source/vectorはUNVERIFIED_SOURCE。[監査](../audits/p1_202611/M3_CRAFTABILITY_PROVISIONAL_GO_20261110.md)。
+
 > **2026-11-10 M3 CP導入**：ユーザー確認済みのN/R/SR/UR別30CPを非公開Driveに独立JSON保存。USER_CONFIRMEDとGAME_VERIFIEDを分離し、SHA固定・日付選択。現本番世代3の規制215件はUNVERIFIED_SOURCEを維持。生成可否UNKNOWNをYESにせず、レアごとのCP残高も未申告につきUNKNOWN。[CP監査](../audits/p1_202611/M3_CP_USER_CONFIRMED_20261110.md)。以下過去履歴。
 
 > **M3続編 2026-11-10**：Drive本番はHEAD世代2、所持5種類/計9枚。規制215件は非公開source/current.vector.jsonに候補として存在し、DB規制表はまだ空。候補をSQLiteへ `UNVERIFIED_SOURCE` としてインポートする検証・ローダーを追加。第三者との集計数一致をゲーム内全件確認に格上げしない。所持と合法採用枚数を分離する。[M3](../regulation_m3/README.md)。以下履歴。

@@ -13,13 +13,17 @@ from zip_store.archive import NAME, digest, unpack
 from .cp_policy import load_cp_policy_file, resolve_cp_policy
 from .database import load_snapshots
 from .evaluation import assess_deck_with_m3
+from .craftability import load_exception_registry
 from .snapshots import _date
 
 
 def assess_from_private_sources(head, source_zip, cp_policy_path, cp_policy_sha256,
                                 recipe, *, as_of, format_id="MD_STANDARD",
                                 mode="LOW_RARITY_CORE", max_new_ur=None,
-                                cp_budget_by_rarity=None, scope="PRODUCTION"):
+                                cp_budget_by_rarity=None, scope="PRODUCTION",
+                                craftability_policy="PROVISIONAL_GO",
+                                craftability_registry_path=None,
+                                craftability_registry_sha256=None):
     """Evaluate user-supplied recipe without mutation and without invented rules.
 
     Missing or future CP policies fail closed instead of using a default price.
@@ -31,6 +35,11 @@ def assess_from_private_sources(head, source_zip, cp_policy_path, cp_policy_sha2
     if not isinstance(source_zip, bytes) or digest(source_zip) != active["zip_sha256"]:
         raise ValueError("HEAD reference ZIP SHA-256 mismatch")
     pinned_policy = load_cp_policy_file(cp_policy_path, expected_sha256=cp_policy_sha256)
+    if (craftability_registry_path is None) != (craftability_registry_sha256 is None):
+        raise ValueError("craftability registry path and SHA-256 required together")
+    craftability_exceptions = (load_exception_registry(
+        craftability_registry_path, expected_sha256=craftability_registry_sha256)
+        if craftability_registry_path is not None else None)
     resolution = resolve_cp_policy([pinned_policy], as_of=as_of)
     with tempfile.TemporaryDirectory() as work:
         db_path = Path(work) / NAME
@@ -44,6 +53,8 @@ def assess_from_private_sources(head, source_zip, cp_policy_path, cp_policy_sha2
             format_id=format_id, mode=mode, max_new_ur=max_new_ur,
             cp_policy=resolution["policy"],
             cp_budget_by_rarity=cp_budget_by_rarity,
+            craftability_policy=craftability_policy,
+            craftability_exceptions=craftability_exceptions,
         )
     result["source_context"] = {
         "head_generation": validated_head["generation"],
@@ -51,6 +62,8 @@ def assess_from_private_sources(head, source_zip, cp_policy_path, cp_policy_sha2
         "zip_sha256": active["zip_sha256"],
         "db_sha256": active["db_sha256"],
         "cp_policy_sha256": cp_policy_sha256,
+        "craftability_registry_sha256": craftability_registry_sha256,
+        "craftability_policy": craftability_policy,
         "cp_policy_status": resolution["status"],
         "cp_policy_id": (resolution["policy"]["policy_id"]
                          if resolution["policy"] else None),

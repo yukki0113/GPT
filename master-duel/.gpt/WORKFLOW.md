@@ -1,3 +1,5 @@
+> **2026-11-10 M3の非Blocker方針**：生成可否のUNKNOWNを一括YESにせず候補生成はGO。`craftability_gate` と厳密デッキ`status`は別判定。明示NOカードに対する確定不足と、正式禁止/枚数/0URなどの明確な違反は引き続き除外。未知NOに遭遇した場合は `record_exception` で観測者・日時・理由付きの私的JSON版を作成し、SHA/読み戻しを確認する。禁止制限はKONAMI MDゲーム内リスト→お知らせ→公式Xを一次根拠とし、外部vectorは未検証候補。[監査](../audits/p1_202611/M3_CRAFTABILITY_PROVISIONAL_GO_20261110.md)。
+
 > **2026-11-10 M3 CP接続**：所持データとHEAD/ZIPを変更しない。CP価格はユーザー明示確認の各レア30（USER_CONFIRMED）、同レアのCPでのみ生成、CPポリシーは非公開Driveに版付きJSON、必ずバイトSHAで検証。レシピ評価は`assess_from_private_sources`でHEAD ZIP、施行日付きbanlist、CPを照合。未報告CP残高・所持UNKNOWN・生成可否UNKNOWNを推定しない。[M3 CP監査](../audits/p1_202611/M3_CP_USER_CONFIRMED_20261110.md)。以下過去履歴。
 
 > **M3続編 2026-11-10**：M2完了した所持5種類9枚を変更せず、規制215件の候補データをSQLiteに安全投入するコードを追加。インポーターは確定承認後のみ準備ZIPを生成、GAME_VERIFIED自動付与禁止。Drive本番への昇格には旧ZIP・旧HEADバックアップと独立読み戻しを要する。[M3](../regulation_m3/README.md)。以下履歴。
