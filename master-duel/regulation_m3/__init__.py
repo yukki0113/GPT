@@ -7,3 +7,5 @@ from .importer import preview_candidate, prepare_candidate
 from .database import load_snapshots
 
 from .bridge import assess_from_private_sources
+
+from .cp_policy import load_cp_policy_file, resolve_cp_policy
