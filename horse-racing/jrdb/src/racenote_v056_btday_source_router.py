@@ -19,6 +19,8 @@ def verify_readiness_receipt(row: dict, repository_root: Path) -> bool:
     A receipt is evidence only; transport and T1 still verify materialized bytes.
     No source becomes accepted merely because it appears in the legacy pool.
     """
+    if row.get("readiness_status") != "READY" or row.get("eligible") is not True or row.get("exclusion_reason"):
+        raise ValueError("source is not eligible and ready")
     root = repository_root.resolve()
     relative = Path(str(row.get("readiness_receipt_path") or ""))
     if relative.is_absolute() or not relative.parts or ".." in relative.parts:
@@ -41,7 +43,7 @@ def verify_readiness_receipt(row: dict, repository_root: Path) -> bool:
             or receipt.get("jra_meeting_verified") is not True
             or receipt.get("as_of_exclusive") != row.get("target_date")):
         raise ValueError("readiness receipt identity mismatch")
-    for name in ("analysis", "rrdb", "race_lap"):
+    for name in ("analysis", "rrdb", "race_lap", "course_fit"):
         item = (receipt.get("as_of_evidence") or {}).get(name) or {}
         if (item.get("status") != "ACCEPTED"
                 or item.get("as_of_exclusive") != row["target_date"]
@@ -71,6 +73,9 @@ def verify_readiness_receipt(row: dict, repository_root: Path) -> bool:
                 or not warehouse.get("coverage_from") or not warehouse.get("coverage_to")
                 or not warehouse["coverage_from"] <= target <= warehouse["coverage_to"]):
             raise ValueError("Warehouse coverage evidence missing")
+        if (date.fromisoformat(warehouse["coverage_from"]).isoformat() != warehouse["coverage_from"]
+                or date.fromisoformat(warehouse["coverage_to"]).isoformat() != warehouse["coverage_to"]):
+            raise ValueError("Warehouse coverage dates invalid")
     else:
         raise ValueError("unknown source mode")
     return True
@@ -145,7 +150,7 @@ def draw_v2(resolved: dict[str, dict], selections: list[dict],
     if number > 9999:
         raise ValueError("BTDAY four-digit ID space exhausted")
     sid = f"BTDAY-{number:04d}"
-    if sid in ids or (backtest_root / sid).exists():
+    if sid in ids or (backtest_root / sid).exists() or (backtest_root / sid).is_symlink():
         raise ValueError("selection ID collision")
     actual_seed = seed if seed is not None else secrets.token_hex(32)
     target = random.Random(actual_seed).choice(dates)
