@@ -47,6 +47,20 @@ def mixed_source_enabled():
         if (proof.get("status") != "PASS" or not re.fullmatch(r"[1-9]\d+", str(proof.get("run_id", "")))
                 or not re.fullmatch(r"[0-9a-f]{64}", str(proof.get("receipt_sha256", "")))):
             raise ValueError(f"mixed-source gate lacks {key} acceptance")
+        root = Path.cwd().resolve()
+        rel = Path(str(proof.get("receipt_path") or ""))
+        path = root / rel
+        if (rel.is_absolute() or not rel.parts or ".." in rel.parts or path.is_symlink()
+                or not path.is_file() or not path.resolve().is_relative_to(root)
+                or hashlib.sha256(path.read_bytes()).hexdigest() != proof["receipt_sha256"]):
+            raise ValueError(f"mixed-source gate {key} acceptance receipt invalid")
+        receipt = load_json(path)
+        if (receipt.get("schema_version") != "racenote-v056-btday-e2e-acceptance-v1"
+                or receipt.get("status") != "PASS" or receipt.get("source_mode") != key
+                or str(receipt.get("run_id")) != str(proof["run_id"])
+                or any(receipt.get(field) is not True for field in
+                       ("t1_verified", "artifact_verified", "main_readback_verified", "blind_verified", "two_phase_freeze_verified"))):
+            raise ValueError(f"mixed-source gate {key} E2E acceptance incomplete")
     return True
 
 
@@ -85,7 +99,8 @@ def read_selection(sid):
                 or row.get("source_reference") != selection.get("source_reference")
                 or row.get("receipt_sha256") != selection.get("source_receipt_sha256")):
             raise ValueError("v2 selection source identity mismatch")
-        date.fromisoformat(selection["target_date"])
+        if date.fromisoformat(selection["target_date"]).isoformat() != selection["target_date"]:
+            raise ValueError("v2 selection date is not canonical")
         return selection
     if (selection.get("selection_id")!=sid or selection.get("n")!=1
         or len(selection.get("dates",[]))!=1
@@ -118,6 +133,16 @@ def t1_state(selection):
                     or data.get("source_sha256") != row["input_sha256"]
                     or data.get("as_of_exclusive") != selection["target_date"]):
                 raise ValueError("v2 T1 source binding mismatch: " + sid)
+            from racenote_v056_single_day import load_session
+            session, _, readers = load_session(base / "v056")
+            authoring = load_json(base / "v056/authoring_bundle/manifest.json")
+            if (session.get("selection_id") != sid or session.get("target_date") != selection["target_date"]
+                    or session.get("session_id") != data.get("session_id")
+                    or session.get("market_blind") is not True or session.get("result_opened") is not False
+                    or session.get("target_market_opened") is not False
+                    or authoring.get("session_id") != session.get("session_id")
+                    or authoring.get("race_count") != len(readers)):
+                raise ValueError("v2 T1 Reader or authoring identity mismatch: " + sid)
         return "T1_READY"
     if base.exists():
         raise ValueError("partial canonical T1; do not overwrite: "+sid)
