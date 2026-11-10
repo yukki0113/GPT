@@ -1,3 +1,5 @@
+> **2026-11-10 優先順位の一時変更**：M2実所持登録は本人が見比べられる状況で実施する。M3の規制・CPデータモデルと評価ロジックを先行。私的vectorの215件は元ファイル自体に確認状態がなく、実ID対応215/215 PASSでも「現行MD公式確認済み」とは言えない。ゲーム内確認が整うまでCANDIDATE_ONLY。Drive本番HEAD世代1・inventory0件を維持。[M3](../regulation_m3/README.md)。以下履歴。
+
 > **2026-11-10 現行実装**：非公開本番DBはDrive世代1・13,948件・inventory0件。M1初期検索/費用評価済み。M2の正本HEAD結合・候補ZIP検証・独立読み戻し・HEAD昇格提案のコードを追加し、合成回帰110件（スキップ1）PASS。M2実所持登録は本人申告待ちで、実本番HEADは変更していない。出張/禁止制限はM5/M3で整備。[M2手順](../inventory_m2/README.md) / [全体残工程](../docs/INITIAL_GOAL_REMAINING_ROADMAP_20261110.md)。以下は履歴。
 
 # Project Context — master-duel
