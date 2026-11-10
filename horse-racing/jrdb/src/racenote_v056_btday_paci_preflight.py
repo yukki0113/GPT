@@ -38,6 +38,9 @@ def validate_paci(target_date: str, archive: Path, source_receipt: Path) -> dict
             raise ValueError("PACI ZIP CRC failed")
         if any(Path(n).is_absolute() or ".." in Path(n).parts for n in names):
             raise ValueError("unsafe PACI ZIP member")
+        forbidden = {f"{kind}{day:%y%m%d}.TXT" for kind in ("SED", "HJC")}
+        if any(Path(n).name.upper() in forbidden for n in names):
+            raise ValueError("target-date result member in PACI")
         records = {}
         for kind in ("BAC", "KYI"):
             expected = f"{kind}{day:%y%m%d}.TXT"
