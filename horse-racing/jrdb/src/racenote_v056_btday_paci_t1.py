@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import re
+import zipfile
 from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -31,6 +32,40 @@ def _sha(path: Path) -> str:
     return h.hexdigest()
 
 
+def verify_rrdb_objects(root: Path, archive: Path) -> None:
+    """Bind every extracted RRDB relation object to the verified archive."""
+    pointer = _read(root / "current.json")
+    manifest_ref = Path(str(pointer.get("manifest") or ""))
+    if manifest_ref.is_absolute() or ".." in manifest_ref.parts:
+        raise ValueError("unsafe RRDB manifest path")
+    manifest = _read(root / manifest_ref)
+    partitions = [part for relation in (manifest.get("relations") or {}).values()
+                  for part in relation.get("partitions", [])]
+    if not partitions:
+        raise ValueError("RRDB has no relation objects")
+    with zipfile.ZipFile(archive) as z:
+        names = z.namelist()
+        if len(names) != len(set(names)):
+            raise ValueError("duplicate RRDB archive member")
+        for part in partitions:
+            rel = Path(str(part.get("relative_path") or ""))
+            if rel.is_absolute() or not rel.parts or ".." in rel.parts:
+                raise ValueError("unsafe RRDB relation path")
+            path = root / rel
+            if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root.resolve()):
+                raise ValueError("RRDB extracted object unavailable")
+            suffix = "/" + rel.as_posix()
+            matches = [name for name in names if name == rel.as_posix() or name.endswith(suffix)]
+            if len(matches) != 1:
+                raise ValueError("RRDB archive object missing or ambiguous")
+            digest = hashlib.sha256()
+            with z.open(matches[0]) as member:
+                for block in iter(lambda: member.read(1024 * 1024), b""):
+                    digest.update(block)
+            if digest.hexdigest() != _sha(path):
+                raise ValueError("RRDB extracted object differs from verified archive")
+
+
 def validate_as_of(args, row: dict, receipt: dict) -> dict:
     target = date.fromisoformat(args.date)
     evidence = receipt["as_of_evidence"]
@@ -47,6 +82,7 @@ def validate_as_of(args, row: dict, receipt: dict) -> dict:
     if (measured["rrdb"]["zip_sha256"] != rrdb.get("zip_sha256")
             or measured["rrdb"]["file_id"] != rrdb.get("file_id")):
         raise ValueError("RRDB transport differs from accepted as-of evidence")
+    verify_rrdb_objects(args.racereview_root, args.rrdb_zip)
     lap = evidence["race_lap"]
     lap_manifest_path = args.race_lap_current_bundle / "manifest.json"
     lap_manifest = _read(lap_manifest_path)
