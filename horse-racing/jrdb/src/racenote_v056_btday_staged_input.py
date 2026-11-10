@@ -34,8 +34,7 @@ def extract(archive: Path, output: Path, expected_sha256: str) -> None:
             if (not parts or name.startswith("/") or ".." in parts or "\\" in name
                     or stat.S_ISLNK(info.external_attr >> 16)):
                 raise ValueError("unsafe staged artifact path")
-            allowed = (parts[0] == "inputs" or
-                       bool(re.fullmatch(r"horse-racing/jrdb/backtests/BTDAY-\d{4}/selection\.json", name)))
+            allowed = parts[0] == "inputs" and name != "inputs/source_row.json"
             if not allowed and not info.is_dir():
                 raise ValueError("staged artifact member outside allowed paths")
         output.mkdir(parents=True)
