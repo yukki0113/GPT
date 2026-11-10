@@ -1,10 +1,12 @@
 import unittest
 import sys
+import json
+import hashlib
 from datetime import date
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from tempfile import TemporaryDirectory
-from racenote_v056_btday_source_router import resolve_inventory, candidate_digest, draw_v2
+from racenote_v056_btday_source_router import resolve_inventory, candidate_digest, draw_v2, verify_readiness_receipt
 
 
 def row(day, mode):
@@ -56,6 +58,26 @@ class SourceRouterTest(unittest.TestCase):
             (Path(tmp) / "BTDAY-0182").mkdir()
             with self.assertRaisesRegex(ValueError, "collision"):
                 draw_v2(pool, old, Path(tmp), date(2026, 1, 1), "seed")
+
+    def test_receipt_identity_and_as_of_fail_closed(self):
+        a = row("2025-05-25", "historical_warehouse")
+        receipt = {"schema_version": "racenote-btday-source-acceptance-v1", "status": "ACCEPTED",
+                   "target_date": a["target_date"], "source_mode": a["source_mode"],
+                   "source_reference": a["source_reference"], "source_generation_id": a["source_generation_id"],
+                   "input_sha256": a["input_sha256"], "as_of_exclusive": a["target_date"],
+                   "jra_meeting_verified": True,
+                   "as_of_evidence": {k: {"status": "ACCEPTED", "as_of_exclusive": a["target_date"]}
+                                      for k in ("analysis", "rrdb", "race_lap")},
+                   "warehouse": {"manifest_verified": True, "coverage_from": "2025-01-01", "coverage_to": "2025-12-31"}}
+        with TemporaryDirectory() as tmp:
+            path = Path(tmp) / "receipt.json"
+            raw = json.dumps(receipt).encode()
+            path.write_bytes(raw)
+            a["receipt_sha256"] = hashlib.sha256(raw).hexdigest()
+            self.assertTrue(verify_readiness_receipt(a, Path(tmp)))
+            path.write_bytes(raw + b" ")
+            with self.assertRaisesRegex(ValueError, "digest mismatch"):
+                verify_readiness_receipt(a, Path(tmp))
 
 
 if __name__ == "__main__":
