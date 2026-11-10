@@ -62,3 +62,13 @@ regulation_m3/tests/test_m3.py: 検証済みと候補の切り分け、施行日
 - 世代2ソースと世代3候補の9保護テーブル（カードマスター・属性・MDレアリティ・日本語効果・所持/履歴/バッチ・デッキ）を全行比較し、差分0。規制の215件は元vectorとキーおよび枚数を全件照合し、215/215一致。
 - **この監査時点の正本HEADは世代2のまま**。候補の存在は正本昇格を意味しない。別スレッドからの並行した候補/バックアップ操作が検出されたため、単一ライターの原則によりこのスレッドではHEADを切り替えない。
 - 実際のMD禁止制限として「合法」「禁止確定」を一括断定するには、規制の確定出典の確認が引き続き必要。
+
+## 2026-11-10 M3-3 最終観測: 本番HEAD世代3と候補規制215件
+
+- 前節M3-2の「HEAD世代2」はその検証時点の歴史的事実。**後続のDrive独立読取では現行HEADが世代3**（`md-prod-003-md-banlist-candidate-20261110`）に切り替わっていた。別経路でのHEAD変更を観測したため、当検証経路から重複HEAD書込みは行っていない。
+- HEAD参照先Drive ZIP: `1nS3JeEFLp2qCTz13I3fosr0Duj_ZTj2p`、ZIP SHA256 `a42dac509a2ed137eb578fefd15812d2cddb8b8be9bf2374b5298b04da9e8935`、SQLite SHA256 `42fa57c5a41e9d41ae7ae064450485d1b18109f45a616528abff9025cd43b654`。HEADと実ZIPを比較し一致。
+- SQLite integrity=ok、foreign_key_check=0、cards/card_texts各13,948、inventory=5、inventory_history=5、banlist_snapshots=1、banlist_entries=215。215行すべてのKONAMI IDと0/1/2上限を元vectorに突合し一致。規制行verification=`UNVERIFIED_SOURCE`であり、公式ゲーム内確認済みとは異なる。
+- 既存世代2のZIPとHEADの別ファイルバックアップもDriveに保持されている。所持5種類・計9枚の所持数は維持し、禁止規制候補と所持枚数は別管理。
+- 既存候補ZIPは規制sourceを `#SHA256=` 表記で保持していたため、DB読み出しローダーに両方式を受け付ける修正を加えた。GitHub `7e94a16debf392e130a17e8afac3db6dceab9faf` のActions https://github.com/yukki0113/GPT/actions/runs/42757147045 は149件、失敗0、スキップ1、M3領域39件PASS。
+- マニフェストの独立読取で `status=HEAD_PROMOTED_READBACK_VERIFIED`、`production_head_updated=true`、`head_generation=3` を確認。候補dataの `verification=UNVERIFIED_SOURCE` は維持。
+- **M3残件**: MDゲーム内または正規の最新全件ソースによる215値の公式確認、CP生成可否・必要CPのゲーム内検証、未掲載カードを合法3枚と推定しないままレシピ合法性へ接続。
