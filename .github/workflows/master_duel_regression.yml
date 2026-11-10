@@ -1,0 +1,27 @@
+name: Master Duel Python regression
+
+on:
+  push:
+    paths:
+      - 'master-duel/**'
+      - '.github/workflows/master_duel_regression.yml'
+  pull_request:
+    paths:
+      - 'master-duel/**'
+      - '.github/workflows/master_duel_regression.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run synthetic Master Duel regression
+        run: python master-duel/tools/run_full_regression.py

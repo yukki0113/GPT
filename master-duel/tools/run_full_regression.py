@@ -1,4 +1,4 @@
-"""Run the Master Duel P1-A0/P1/P2/P3/card-master regression suites.
+"""Run the Master Duel regression suites.
 
 Optional private read-only integration: supply both MD_PRIVATE_REAL_CATALOG_ZIP
 and MD_PRIVATE_REAL_CATALOG_ZIP_SHA256. No private data is printed or uploaded.
@@ -12,7 +12,8 @@ import re
 import subprocess
 import sys
 
-SUITES = ('p1_a0', 'sqlite_store', 'zip_store', 'voice_staging', 'card_master_import', 'deck_assistant')
+SUITES = ('p1_a0', 'sqlite_store', 'zip_store', 'voice_staging',
+          'card_master_import', 'deck_assistant', 'inventory_m2')
 ROOT = Path(__file__).resolve().parents[1]
 
 
