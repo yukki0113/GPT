@@ -111,6 +111,11 @@ def main() -> int:
 
 def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode):
     """Shared PACI materialization after caller-specific safety preflight."""
+    if execution_mode not in ("FORWARD", "BTDAY"):
+        raise ValueError("invalid PACI T1 execution mode")
+    mode_fields = ({"execution_mode": "FORWARD", "forward_t1_checked": True}
+                   if execution_mode == "FORWARD" else
+                   {"execution_mode": "BTDAY", "forward_t1_checked": False})
     src = Path(__file__).resolve().parent
     prep_cmd = [
         sys.executable, str(src / "racenote_v053_from_paci.py"),
@@ -171,7 +176,7 @@ def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode)
     base_handoff.update({
         "paci_source": paci_receipt,
         "schema_version": ("racenote-v056-forward-turn1-handoff-0.1" if execution_mode == "FORWARD" else "racenote-v056-btday-paci-turn1-handoff-0.1"),
-        "execution_mode": execution_mode,
+        "execution_mode": mode_fields["execution_mode"],
         "reader_manifest_sha256": session["reader_manifest_sha256"],
         "status": "READY_FOR_V056_AUTHORING",
         "logic_version": session["logic_version"],
@@ -190,21 +195,21 @@ def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode)
         },
         "analysis_freshness": {
             "owner": "DEDICATED_ANALYSIS_OPERATION",
-            "forward_t1_checked": execution_mode == "FORWARD",
+            "forward_t1_checked": mode_fields["forward_t1_checked"],
             "status": freshness["status"],
             "required_completed_through": freshness["required_completed_through"],
             **freshness["analysis"],
         },
         "rrdb_freshness": {
             "owner": "DEDICATED_RRDB_OPERATION",
-            "forward_t1_checked": execution_mode == "FORWARD",
+            "forward_t1_checked": mode_fields["forward_t1_checked"],
             "status": freshness["status"],
             "required_completed_through": freshness["required_completed_through"],
             **freshness["rrdb"],
         },
         "race_lap_freshness": {
             "owner": "FORWARD_T1" if execution_mode == "FORWARD" else "BTDAY_T1",
-            "forward_t1_checked": execution_mode == "FORWARD",
+            "forward_t1_checked": mode_fields["forward_t1_checked"],
             "expected_period_to": args.race_lap_expected_period_to,
         },
         "market_blind": True,
