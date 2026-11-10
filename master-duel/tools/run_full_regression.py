@@ -13,7 +13,7 @@ import subprocess
 import sys
 
 SUITES = ('p1_a0', 'sqlite_store', 'zip_store', 'voice_staging',
-          'card_master_import', 'deck_assistant', 'inventory_m2', 'regulation_m3')
+          'card_master_import', 'deck_assistant', 'inventory_m2', 'regulation_m3', 'effect_semantics_m4')
 ROOT = Path(__file__).resolve().parents[1]
 
 

@@ -1,0 +1,15 @@
+# M4 — Japanese effect semantics candidates with anchored evidence
+
+`extract_effect_facets` uses **deterministic, conservative patterns**, not a general Yu-Gi-Oh! rules engine. `role=ACTION` is a lexical **candidate** for a card's own action; `CONDITION` is trigger context; `REFERENCED` is an action mentioned (for example, the kinds of effects that 灰流うらら negates); `RESTRICTION` expresses locks or once-per-turn constraints; `METADATA` covers conditions/costs/named/attribute/race/level references. All results are `UNVERIFIED_INTERPRETATION`, with exact `[start,end)` offsets into the original JA effect text, full anchored clause, input text SHA256, version and source. A missing facet means *not found*, never *not possible*. No rules for damage step, detailed target resolution or guaranteed combos are inferred.
+
+**Do not classify a quoted effect the card negates as its own search/draw action.** In particular, 灰流うらら's ● alternative list is `REFERENCED`, while its negation is an `ACTION`. 増殖するＧ's draw is `ACTION`, whereas the opposing summon is a `CONDITION`. Multiple effects or conditions in one sentence are not exhaustively separated; ambiguous candidates require human review. Avoid automatically promoting pattern confidence to `GAME_VERIFIED`.
+
+`build_private_index(source_db, private_index_path, expected_source_sha256=<full db sha>)` reads source SQLite **read-only**, selects the most recent Japanese text row deterministically, indexes extracted evidence into **a separate private SQLite** with provenance metadata, and atomically publishes the finished index file. It does *not* modify `MD_CURRENT_HEAD`, the source ZIP, the source SQLite schema or user inventory. Callers must back up/inspect any existing derived index and explicitly pass `replace=True` to rebuild. Its index contains copyrighted card text clauses; never publish the index in GitHub, Actions artifacts or logs.
+
+`search_private_index(path, facets=['DRAW'], roles=['ACTION'], expected_source_sha256=...)` queries the derived index with optional rarity/card-kind filters, returns evidence, roles and provenance. Supports exact action tags `DRAW`, `SEARCH_FROM_DECK`, `RECOVER_FROM_GRAVE`, `SPECIAL_SUMMON`, `NEGATE`, `DESTROY`, `BANISH`, `SEND_TO_GRAVE`, `RETURN_TO_HAND`, `TRIBUTE`, `DISCARD`, `SUMMON_LOCK`, `ONCE_PER_TURN`, `ACTIVATION_CONDITION`, `COST`, `NAMED_TARGET`, `ATTRIBUTE_TARGET`, `RACE_TARGET`, `LEVEL_TARGET`. No semantic similarity or inferred theme compatibility yet.
+
+## Acceptance and boundary
+
+- Synthetic fixtures cover direct draw vs search vs grave recovery, opposing action as trigger, quoted references, once-per-turn, costs/locks, target references, evidence offsets and UTF-8 SHA, index pinning, result search, corruption/invalid input, source immutability.
+- Private full-data read-only smoke is separately run against the Drive production generation-3 ZIP (13,948 cards and effects). Aggregate counts/hashes may be reported; actual effect text and per-card facets **remain in private Drive**.
+- M5 engine/synergy logic and M6 recipe generation remain separate milestones. M4 labels are *candidates*, not certified playability/legality.

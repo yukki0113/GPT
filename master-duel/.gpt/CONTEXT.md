@@ -1,3 +1,5 @@
+> **2026-11-10 M4開始**：効果のLexical Semantics v1を `effect_semantics_m4/` に追加。日本語効果13,948枚の根拠付き候補75,913行を、非公開Driveの独立SQLite ZIPへ保存（index SHA256 `9312109612b1ad38ec318a7c5d6745c9b82c97dc872613a2994a98d19c738451`）。抽出結果は`UNVERIFIED_INTERPRETATION`、原文オフセット/テキストSHA/版本保持、自己処理・条件・引用/参照・コスト等を別ロール。旧本番HEAD世代3・規制215・所持5種類は不変。**M4候補分類の基盤実装であり、人手による精度検証・テーマ関連確定は残る**。[監査](../effect_semantics_m4/M4_AUDIT_20261110.md)。
+
 > **2026-11-10 MD規制の出典調査**：非公開vectorはDawnbrandBots/yaml-yugi-limit-regulationの2026-11-05版と完全同一。SQLite収録215/215一致、前回10/06からの9差分は公式告知と独立記事で整合。YAML Yugiの再掲載で215件独立検証済みとは言わない。ゲーム内で未確認の206継承行を含むためUNVERIFIED_SOURCEを維持。全215行はprivate Driveにのみ。[監査](../audits/p1_202611/M3_BANLIST_SOURCE_RECONCILIATION_20261110.md)。
 
 > **2026-11-10 ユーザー運用決定**：生成可否 UNKNOWN=13,931 はM3/M6推薦のBlockerにしない。`PROVISIONAL_GO` として候補を許可し、カタログ状態はUNKNOWNを維持。カタログNO=17および以後の個別生成不可報告は必要枚数不足時にHOLD。出典付き私的例外レジストリを使用。MD禁止制限の一次データはKONAMIゲーム内一覧・お知らせ、現在の215件source/vectorはUNVERIFIED_SOURCE。[監査](../audits/p1_202611/M3_CRAFTABILITY_PROVISIONAL_GO_20261110.md)。
