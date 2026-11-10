@@ -12,20 +12,20 @@ from engine_m5.support import (build_private_support_index,extract_property_supp
                                 search_property_support,search_name_groups)
 
 ROWS=(
- ('konami:1001','æ¶ç©ºæ¦å£ã»ç²','MONSTER','LIGHT','Warrior',
-  'ããã­ããåå±æ§ã»æ¦å£«æã¢ã³ã¹ã¿ã¼ï¼ä½ãææ­ã«å ããã'),
- ('konami:1002','æ¶ç©ºæ¦å£ã»ä¹','MONSTER','LIGHT','Warrior',
-  'å¢å°ãããæ¶ç©ºæ¦å£ãã¢ã³ã¹ã¿ã¼ï¼ä½ãææ­ã«å ããã'),
- ('konami:1003','æ¶ç©ºæ¦å£ã»ä¸','MONSTER','EARTH','Warrior',
-  'ããã­ãããæ¶ç©ºæ¦å£ãã«ã¼ãï¼æãææ­ã«å ããã'),
- ('konami:1004','æ¶ç©ºæ¯æ´è','MONSTER','WIND','Machine',
-  'ããã­ããé¢¨å±æ§ã»æ©æ¢°æã¢ã³ã¹ã¿ã¼ï¼ä½ãç¹æ®å¬åããã'),
- ('konami:1005','æ¶ç©ºä¸æç«','MONSTER','DARK','Fiend',
-  'ç¸æãéå±æ§ã»æªé­æã¢ã³ã¹ã¿ã¼ãç¹æ®å¬åããå ´åãèªåã¯ï¼æãã­ã¼ããã'),
- ('konami:1006','æ¶ç©ºã¡ã¿','TRAP',None,None,
-  'âããã­ããåå±æ§ã»æ¦å£«æã¢ã³ã¹ã¿ã¼ï¼ä½ãææ­ã«å ããå¹æ'),
- ('konami:1007','æ¶ç©ºè¿½å ','SPELL',None,None,
-  'èªåã¯ææ­ãããæ¶ç©ºæ¦å£ãã¢ã³ã¹ã¿ã¼ï¼ä½ãç¹æ®å¬åããã'),
+ ('konami:1001','架空戦団・甲','MONSTER','LIGHT','Warrior',
+  'デッキから光属性・戦士族モンスター１体を手札に加える。'),
+ ('konami:1002','架空戦団・乙','MONSTER','LIGHT','Warrior',
+  '墓地から「架空戦団」モンスター１体を手札に加える。'),
+ ('konami:1003','架空戦団・丙','MONSTER','EARTH','Warrior',
+  'デッキから「架空戦団」カード１枚を手札に加える。'),
+ ('konami:1004','架空支援者','MONSTER','WIND','Machine',
+  'デッキから風属性・機械族モンスター１体を特殊召喚する。'),
+ ('konami:1005','架空不成立','MONSTER','DARK','Fiend',
+  '相手が闇属性・悪魔族モンスターを特殊召喚した場合、自分は１枚ドローする。'),
+ ('konami:1006','架空メタ','TRAP',None,None,
+  '●デッキから光属性・戦士族モンスター１体を手札に加える効果'),
+ ('konami:1007','架空追加','SPELL',None,None,
+  '自分は手札から「架空戦団」モンスター１体を特殊召喚する。'),
 )
 
 
@@ -65,7 +65,7 @@ class SupportTests(unittest.TestCase):
             expected_source_sha256=self.sha,expected_m4_sha256=self.m4sha,**kwargs)
 
     def test_property_extract_pairs_with_role_guard(self):
-        e='ããã­ããåå±æ§ã»æ¦å£«æã¢ã³ã¹ã¿ã¼ï¼ä½ãææ­ã«å ããã'
+        e='デッキから光属性・戦士族モンスター１体を手札に加える。'
         self.assertEqual(extract_property_support(e,action='SEARCH_FROM_DECK',role='ACTION'),
                          [('ATTRIBUTE','LIGHT'),('RACE','Warrior')])
         self.assertEqual(extract_property_support(e,action='SEARCH_FROM_DECK',role='CONDITION'),[])
@@ -117,8 +117,8 @@ class SupportTests(unittest.TestCase):
     def test_dynamic_name_groups_not_formal_membership(self):
         data=self.build()
         self.assertGreaterEqual(data['metrics']['name_groups'],1)
-        results=search_name_groups(self.dest,query='æ¶ç©ºæ¦å£')['results']
-        group=next(x for x in results if x['group_key']=='æ¶ç©ºæ¦å£')
+        results=search_name_groups(self.dest,query='架空戦団')['results']
+        group=next(x for x in results if x['group_key']=='架空戦団')
         self.assertEqual(group['member_count'],3)
         self.assertGreaterEqual(group['reference_count'],2)
 
@@ -175,17 +175,17 @@ class SupportTests(unittest.TestCase):
     def test_external_named_support_discovery(self):
         from engine_m5.support import search_name_group_support
         self.build()
-        rows=search_name_group_support(self.dest,'æ¶ç©ºæ¦å£')['results']
+        rows=search_name_group_support(self.dest,'架空戦団')['results']
         self.assertIn('konami:1007',{r['source_card_id'] for r in rows})
         self.assertFalse(any(r['same_group_name'] for r in rows))
         self.assertEqual(search_name_group_support(
-             self.dest,'æ¶ç©ºæ¦å£')['verification'],
+             self.dest,'架空戦団')['verification'],
              'QUOTED_REFERENCE_CANDIDATE_NOT_VERIFIED_SUPPORT')
 
     def test_invalid_named_group(self):
         from engine_m5.support import search_name_group_support
         self.build()
         with self.assertRaisesRegex(ValueError,'unknown candidate'):
-            search_name_group_support(self.dest,'å­å¨ããªãåç§°')
+            search_name_group_support(self.dest,'存在しない名称')
 
 if __name__=='__main__':unittest.main()

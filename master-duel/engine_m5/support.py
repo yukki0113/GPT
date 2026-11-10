@@ -16,21 +16,21 @@ import re
 import sqlite3
 import tempfile
 
-ATTRIBUTES = {'å':'LIGHT','é':'DARK','å°':'EARTH','æ°´':'WATER',
-              'ç':'FIRE','é¢¨':'WIND','ç¥':'DIVINE'}
+ATTRIBUTES = {'光':'LIGHT','闇':'DARK','地':'EARTH','水':'WATER',
+              '炎':'FIRE','風':'WIND','神':'DIVINE'}
 RACES = {
-'æ¦å£«':'Warrior','é­æ³ä½¿ã':'Spellcaster','ãã©ã´ã³':'Dragon',
-'æªé­':'Fiend','æ©æ¢°':'Machine','å¤©ä½¿':'Fairy','ç£æ¦å£«':'Beast-Warrior',
-'é³¥ç£':'Winged Beast','ç£':'Beast','ã¢ã³ããã':'Zombie','ãµã¤ãã¼ã¹':'Cyberse',
-'æ°´':'Aqua','æµ·ç«':'Sea Serpent','é­':'Fish','é·':'Thunder','ç':'Pyro',
-'å²©ç³':'Rock','æè«':'Insect','æ¤ç©':'Plant','ãµã¤ã­ãã¯':'Psychic',
-'æç«':'Dinosaur','ç¬è«é¡':'Reptile','å¹»ç«':'Wyrm','å¹»ç¥ç£':'Divine-Beast',
-'å¹»æ³é­':'Illusion',
+'戦士':'Warrior','魔法使い':'Spellcaster','ドラゴン':'Dragon',
+'悪魔':'Fiend','機械':'Machine','天使':'Fairy','獣戦士':'Beast-Warrior',
+'鳥獣':'Winged Beast','獣':'Beast','アンデット':'Zombie','サイバース':'Cyberse',
+'水':'Aqua','海竜':'Sea Serpent','魚':'Fish','雷':'Thunder','炎':'Pyro',
+'岩石':'Rock','昆虫':'Insect','植物':'Plant','サイキック':'Psychic',
+'恐竜':'Dinosaur','爬虫類':'Reptile','幻竜':'Wyrm','幻神獣':'Divine-Beast',
+'幻想魔':'Illusion',
 }
 # All lexical observations are candidates; never rewrite official card metadata.
-ATTR_RE = re.compile(r'('+'|'.join(map(re.escape,ATTRIBUTES))+r')å±æ§')
-RACE_RE = re.compile('('+'|'.join(map(re.escape,sorted(RACES,key=len,reverse=True)))+r')æ')
-QUOTED = re.compile('ã([^ã\n]{2,30})ã')
+ATTR_RE = re.compile(r'('+'|'.join(map(re.escape,ATTRIBUTES))+r')属性')
+RACE_RE = re.compile('('+'|'.join(map(re.escape,sorted(RACES,key=len,reverse=True)))+r')族')
+QUOTED = re.compile('「([^」\n]{2,30})」')
 ACTION_FACETS = ('SEARCH_FROM_DECK','RECOVER_FROM_GRAVE','SPECIAL_SUMMON',
                  'RETURN_TO_HAND','NEGATE','DESTROY','BANISH')
 SCHEMA = '''
@@ -91,7 +91,7 @@ def extract_property_support(evidence,*,action,role):
     """
     if action not in ACTION_FACETS or role!='ACTION' or not isinstance(evidence,str):
         return []
-    if re.search(r'ã§ããªã|ã§ãã|ç¡å¹ã«ããã|çºåãç¡å¹',evidence):
+    if re.search(r'できない|できず|無効にされる|発動を無効',evidence):
         return []
     found={('ATTRIBUTE',ATTRIBUTES[m.group(1)]) for m in ATTR_RE.finditer(evidence)}
     found.update(('RACE',RACES[m.group(1)]) for m in RACE_RE.finditer(evidence))
@@ -160,7 +160,7 @@ def build_private_support_index(source_db,m4_db,dest,*,expected_source_sha256,
                     refs=list(m4.execute('''SELECT card_id,evidence,start,end,text_sha256,
                                              text_version,role FROM facets
                               WHERE facet='NAMED_TARGET' AND evidence LIKE ?''',
-                              ('%ã'+token+'ã%',)))
+                              ('%「'+token+'」%',)))
                     refs=[r for r in refs if token in QUOTED.findall(r['evidence'])]
                     if not refs:continue
                     out.execute('INSERT INTO name_groups VALUES(?,?,?)',
