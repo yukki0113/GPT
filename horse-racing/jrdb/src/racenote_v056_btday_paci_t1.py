@@ -32,6 +32,21 @@ def _sha(path: Path) -> str:
     return h.hexdigest()
 
 
+def course_fit_tree_sha256(root: Path) -> str:
+    """Bind every file of an accepted Course Fit snapshot, including names."""
+    if root.is_symlink() or not root.is_dir():
+        raise ValueError("Course Fit root missing")
+    entries = []
+    for path in sorted(root.rglob("*")):
+        if path.is_symlink():
+            raise ValueError("Course Fit symlink forbidden")
+        if path.is_file():
+            entries.append((path.relative_to(root).as_posix(), _sha(path)))
+    if not entries:
+        raise ValueError("Course Fit snapshot empty")
+    return hashlib.sha256(json.dumps(entries, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+
+
 def verify_rrdb_objects(root: Path, archive: Path) -> None:
     """Bind every extracted RRDB relation object to the verified archive."""
     pointer = _read(root / "current.json")
@@ -94,6 +109,10 @@ def validate_as_of(args, row: dict, receipt: dict) -> dict:
             or _sha(lap_manifest_path) != lap.get("manifest_sha256")
             or _sha(args.race_lap_current_bundle / "race_lap.parquet") != lap.get("parquet_sha256")):
         raise ValueError("RaceLap as-of evidence mismatch")
+    fit = evidence["course_fit"]
+    if (date.fromisoformat(fit["coverage_through"]) >= target
+            or course_fit_tree_sha256(args.course_fit_root) != fit.get("tree_sha256")):
+        raise ValueError("Course Fit as-of evidence mismatch")
     return {"status": "PASS", "target_date": args.date,
             "required_completed_through": args.race_lap_expected_period_to,
             "analysis": measured["analysis"], "rrdb": measured["rrdb"]}
@@ -137,6 +156,7 @@ def prepare(args) -> int:
         handoff_extra={"source_mode": "paci", "source_generation_id": row["source_generation_id"],
                        "source_sha256": paci["sha256"], "source_receipt_sha256": row["receipt_sha256"],
                        "as_of_exclusive": args.date},
+        source_receipt_bytes=Path(row["readiness_receipt_path"]).read_bytes(),
     )
 
 
