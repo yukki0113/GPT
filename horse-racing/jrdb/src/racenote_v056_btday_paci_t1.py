@@ -6,8 +6,9 @@ import argparse
 import hashlib
 import json
 import re
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from racenote_v056_btday_paci_preflight import validate_paci
 from racenote_v056_btday_source_router import verify_readiness_receipt
@@ -68,6 +69,8 @@ def prepare(args) -> int:
     day = date.fromisoformat(args.date)
     if day.isoformat() != args.date:
         raise ValueError("invalid target date")
+    if day > datetime.now(ZoneInfo("Asia/Tokyo")).date():
+        raise ValueError("BTDAY target cannot be future")
     expected = Path("horse-racing/jrdb/backtests") / args.selection_id / day.strftime("%Y%m%d")
     if args.output_root != expected or args.output_root.exists() or args.output_root.is_symlink():
         raise ValueError("BTDAY output root must be canonical and new")
