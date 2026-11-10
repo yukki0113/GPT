@@ -98,5 +98,42 @@ class M3PrivateBridgeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"SQLite integrity/version mismatch"):
             self.assess(head=bad)
 
+    def _recorded_no_registry(self):
+        from regulation_m3 import record_exception
+        base={"schema_version":1,"registry_id":"synthetic-test-v1",
+              "updated_at":"2026-11-10T14:16:00+09:00","entries":[]}
+        result=record_exception(base,card_id="konami:1000",
+                 observed_at="2026-11-10T14:16:00+09:00",
+                 source="USER_REPORT",reason="Craft button unavailable")
+        path=self.root/"exceptions.json"
+        path.write_text(json.dumps(result,sort_keys=True),encoding="utf-8")
+        return path,sha256(path.read_bytes()).hexdigest()
+
+    def test_private_exception_registry_blocks_reported_no_shortage(self):
+        path,digest=self._recorded_no_registry()
+        r=assess_from_private_sources(
+            self.head,self.source,self.path,self.policy_sha,self.recipe,
+            as_of="2026-11-10",mode="CP_BUDGET",
+            cp_budget_by_rarity={"SR":30},scope="SYNTHETIC_TEST",
+            craftability_registry_path=path,
+            craftability_registry_sha256=digest)
+        self.assertEqual(r["candidate_recommendation"]["status"],"HOLD")
+        self.assertEqual(r["craftability_gate"]["status"],"HOLD_CONFIRMED_NO")
+        self.assertIn("UNCRAFTABLE_SHORTAGE:konami:1000",r["errors"])
+        self.assertEqual(r["source_context"]["craftability_registry_sha256"],digest)
+
+    def test_exception_registry_requires_exact_verified_sha(self):
+        path,_=self._recorded_no_registry()
+        with self.assertRaisesRegex(ValueError,"SHA-256 mismatch"):
+            assess_from_private_sources(self.head,self.source,self.path,
+                self.policy_sha,self.recipe,as_of="2026-11-10",
+                scope="SYNTHETIC_TEST",
+                craftability_registry_path=path,
+                craftability_registry_sha256="a"*64)
+        with self.assertRaisesRegex(ValueError,"required together"):
+            assess_from_private_sources(self.head,self.source,self.path,
+                self.policy_sha,self.recipe,as_of="2026-11-10",
+                scope="SYNTHETIC_TEST",craftability_registry_path=path)
+
 if __name__=="__main__":
     unittest.main()

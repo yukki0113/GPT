@@ -30,4 +30,7 @@
 - 例外の正本（初期空集合）: Drive `GPT/MasterDuel/DB/MD_CRAFTABILITY_EXCEPTIONS_20261110.json`。Drive ID `1lM2V0_hKGjQ4WVmDtCRUIteYox21xG3t`、SHA256 `5fe8dbc037d4a4449d94fa264610cbd39aa0f4d5da48864c950d8934e51e9ac2`、147 bytes。別取得SHA照合済み。ユーザーからの個別例外報告はまだ0件。
 - 本番DBの `craftable` 集計は2026-11-10時点で `UNKNOWN=13,931 / NO=17 / YES=0`。既存NOは暫定ポリシーの対象外、UNKNOWNだけを候補生成で許容。
 - SQLite本番HEAD世代3、所持5種類/計9枚、禁止制限215件はいずれも不変更。新たな例外登録があった場合は、単一ライター・版付け・読み戻しを前提にこの私的例外JSONへ記録する。
-- CI結果とコミットは実際の実行・読み戻し後に追記する。未実行の試験を成功扱いしない。
+- 実装コミット `1fa2f5aaec433575d01533b24e0ab8db55202d36` のGitHub Actions [run 42761905701](https://github.com/yukki0113/GPT/actions/runs/42761905701) は**成功**：全174件、M3=64件、失敗0・スキップ1。追加の `test_craftability.py` 10件は全PASS。
+- 非公開Drive初期台帳を別取得で読み戻し、147 bytes / SHA256 `5fe8dbc037d4a4449d94fa264610cbd39aa0f4d5da48864c950d8934e51e9ac2` と一致。
+- 追加受入: `test_bridge.py` に「報告されたNOがSHA付きレジストリ経由でデッキ評価をHOLDへ変える」「SHA不一致・片方だけ指定を拒否」を追加。後続コミットのCIが成功するまで未確定。
+
