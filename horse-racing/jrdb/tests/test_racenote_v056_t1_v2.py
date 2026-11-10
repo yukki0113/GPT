@@ -1,4 +1,5 @@
 import json
+import hashlib
 import multiprocessing
 import sys
 import tempfile
@@ -29,11 +30,20 @@ class MixedReservationTest(unittest.TestCase):
             "receipt_sha256": "b" * 64, "readiness_receipt_path": "receipt.json",
             "readiness_status": "READY", "eligible": True, "drive_file_id": "drive-id",
         }]}))
+        proofs = {}
+        for mode in ("historical_warehouse", "paci"):
+            proof = {"schema_version": "racenote-v056-btday-e2e-acceptance-v1", "status": "PASS",
+                     "source_mode": mode, "run_id": "1234", "t1_verified": True, "artifact_verified": True,
+                     "main_readback_verified": True, "blind_verified": True, "two_phase_freeze_verified": True}
+            path = self.root / f"{mode}.json"
+            path.write_text(json.dumps(proof))
+            proofs[mode] = {"status": "PASS", "run_id": "1234", "receipt_path": path.name,
+                            "receipt_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
         self.gate.write_text(json.dumps({"schema_version": "racenote-v056-mixed-source-gate-v1", "status": "ACCEPTED",
-            "acceptance": {x: {"status": "PASS", "run_id": "1234", "receipt_sha256": "c" * 64}
-                           for x in ("historical_warehouse", "paci")}}))
+                                        "acceptance": proofs}))
         self.patches = [patch.object(t1, "POOL", self.pool), patch.object(t1, "BASE", self.base),
                         patch.object(t1, "INVENTORY", self.inventory), patch.object(t1, "GATE", self.gate),
+                        patch.object(Path, "cwd", return_value=self.root),
                         patch.object(t1, "verify_readiness_receipt", return_value=True)]
         for p in self.patches:
             p.start()
@@ -62,6 +72,11 @@ class MixedReservationTest(unittest.TestCase):
             t1.choose_next_v2(date(2026, 11, 10), "fixed")
         self.assertEqual(path.read_text(), "unchanged")
         self.assertEqual(json.loads(self.pool.read_text()), self.original)
+
+    def test_gate_rejects_tampered_acceptance(self):
+        (self.root / "paci.json").write_text("{}")
+        with self.assertRaisesRegex(ValueError, "acceptance receipt invalid"):
+            t1.mixed_source_enabled()
 
     def test_pool_write_failure_preserves_pool_and_cleans_own_selection(self):
         with patch.object(t1, "save_json", side_effect=OSError("disk error")):
