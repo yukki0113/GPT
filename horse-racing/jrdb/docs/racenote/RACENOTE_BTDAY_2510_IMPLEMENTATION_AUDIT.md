@@ -16,6 +16,20 @@ Status: **DRAFT / NOT ACCEPTED FOR PRODUCTION NEXT**
   the shared PACI T1 materialization. It checks Selection and source identity,
   actual Analysis/RRDB/RaceLap as-of evidence, and extracted RRDB bytes.
   FORWARD retains its own canonical root, ID and preflight.
+- `.github/workflows/racenote_v056_btday_paci_shadow.yml` is a manual,
+  isolated staged-artifact test. It reads a GitHub Artifact by ID, checks its
+  pinned archive SHA, builds in `/tmp`, and produces a clean Reader ZIP; it
+  cannot reserve a selection, modify main, or run Prediction/Confidence.
+
+The staged ZIP must include `inputs/source_row.json`, a pinned accepted
+receipt at the relative path declared in that row, `inputs/PACIyyMMdd.zip`,
+`inputs/paci_receipt.json`, `inputs/analysis/`, `inputs/course_fit/`,
+`inputs/rrdb/`, `inputs/rrdb.zip`, `inputs/rrdb_receipt.json`,
+`inputs/racelap/`, and
+`horse-racing/jrdb/backtests/BTDAY-NNNN/selection.json`. The Selection must
+be a v2 shadow selection whose date, source generation and receipt SHA match
+the row. All paths are extracted into a fresh runner sandbox. The artifact SHA
+and ID are explicit workflow inputs; no authenticated Drive access is used.
 
 ## Evidence available
 
@@ -37,7 +51,7 @@ Status: **DRAFT / NOT ACCEPTED FOR PRODUCTION NEXT**
 
 - Validate real readiness receipts and atomic reservation/retry behavior;
   integrate v2 draws with NEXT/EXISTING/STATUS/T2_ONLY and shared T1 workflow.
-- Run the candidate PACI BTDAY adapter with accepted, pinned, date-specific
+- Run the candidate PACI BTDAY shadow workflow with accepted, pinned, date-specific
   Analysis/RRDB/RaceLap and Course Fit artifacts; verify T1 Artifact, main
   readback and the existing Prediction/Confidence Freeze boundaries.
 - The 2026-11-07 PACI and the 2026-11-01 RRDB snapshot are private Drive
