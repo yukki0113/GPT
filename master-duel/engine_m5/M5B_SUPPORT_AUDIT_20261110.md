@@ -19,4 +19,11 @@
 - module `engine_m5/support.py`、public合成テスト `engine_m5/tests/test_support.py`。入力ハッシュ固定、破損検査、別SQLiteへの原子的保存、上書き拒否、効果原文オフセットとSHA維持、属性・種族フィルタ、対象カード逆引き、AND検索、名称グループ候補一覧と外部からの名指し候補を実装。
 - 自動で具体的な実際のデッキを組めるか、公式のテーマ所属、特殊な裁定、出張エンジン相性、生成CP/禁止制限には**直結させない**。M6の候補選抜時にM4原文→M3規制→所持→UR条件を再検証する。
 - **M6前の残りの品質ゲート**：低コストテーマを最低数種類、異なる属性・種族から抽出して人手で根拠と構成をレビューする。580名称候補を580のデッキ案とみなさない。false-positive分析を対象カード群から実施する。
-- GitHub CI、private Drive sidecarの保存・独立読戻しの結果を後続追記する。
+- **非公開Drive保存＋独立読戻し**：private support ZIP [MD_M5B_SUPPORT_INDEX_20261110.sqlite.zip](https://drive.google.com/file/d/1Nhe6bvfmKe3oLR1iBik7MpqTDE9QmiuI/view)（1,525,101 bytes、SHA256 `436499ab5265101ea71cffd14db87f3a2c80d4d2fa7a315d09cae9c017e53ea6`）、[manifest](https://drive.google.com/file/d/1DfySkeey96qCPrzFxQTPnOCH65_bWVpb/view)（915 bytes、SHA256 `0dc569da03eaef3f4684639ed3770fbd443923cd4c9e8782aa000bd070683011`）。両ファイルをアップロード後に再取得し、SHA一致。ZIP内SQLiteのSHA256 `e1c1b53254c18c8c2530320accf4fba0b0fda97738fc92a9a228fe769b8277f0`、integrity=ok、foreign key violation=0。元DBとM4のSHAは不変。
+- **GitHub初回CIの失敗と修正**：初回コミット `b0e847b6bea4c461d1b17187520fed9222d3d417` の[Actions run 42773445248](https://github.com/yukki0113/GPT/actions/runs/42773445248) はM5-B抽出テストで7 failures/1 error。原因はGitHubへのコード転送時にUTF-8日本語文字をLatin-1相当として解釈し文字化けさせたこと。UTF-8安全なJSON転送に差し替え、Git blob SHAと日本語文字の読戻しを確認した。
+- **修正版最終CI**：[コミット 42ada12](https://github.com/yukki0113/GPT/commit/42ada12aa3fe251230e6cc52c8ed960f34c0a3c5) の[Actions run 42773871613](https://github.com/yukki0113/GPT/actions/runs/42773871613) **成功**：全245テスト、M5=47件（旧31＋新16）全PASS、失敗0・スキップ1（private real ZIP依存既存テスト）。公開CIに実カード全文や所持台帳を含めない。
+
+## 最終到達点と残工程
+
+- M5-Bで幅広い対象候補の探索基盤ができた。ただし580件の名称グループは公式テーマの網羅検証ではなく、2,288件の属性・種族効果文共起はサポート成立の確証ではない。
+- M6への本格展開に際し、異なるテーマ・属性・種族から採用候補を抽出し、テーマ最低構成／候補サポートの対象・コスト・制約／新規UR0枚の見込みを個別検証する。初期3パッケージの転用だけで「幅広い自動推薦完成」とはしない。
