@@ -1,3 +1,5 @@
+> **2026-11-10 M3 CP接続**：所持データとHEAD/ZIPを変更しない。CP価格はユーザー明示確認の各レア30（USER_CONFIRMED）、同レアのCPでのみ生成、CPポリシーは非公開Driveに版付きJSON、必ずバイトSHAで検証。レシピ評価は`assess_from_private_sources`でHEAD ZIP、施行日付きbanlist、CPを照合。未報告CP残高・所持UNKNOWN・生成可否UNKNOWNを推定しない。[M3 CP監査](../audits/p1_202611/M3_CP_USER_CONFIRMED_20261110.md)。以下過去履歴。
+
 > **M3続編 2026-11-10**：M2完了した所持5種類9枚を変更せず、規制215件の候補データをSQLiteに安全投入するコードを追加。インポーターは確定承認後のみ準備ZIPを生成、GAME_VERIFIED自動付与禁止。Drive本番への昇格には旧ZIP・旧HEADバックアップと独立読み戻しを要する。[M3](../regulation_m3/README.md)。以下履歴。
 
 > **2026-11-10 M3-2進捗**：Drive本番HEADはM2完了後の世代2。M3規制候補215件は検証未完のため `UNVERIFIED_SOURCE`。M3-2の候補SQLite追加専用処理を実装、更新前後で所持5件・マスター13,948件・日本語本文13,948件を不変確認する。候補ZIPの本番昇格では、世代2のHEAD/ZIP一致、バックアップ、候補の独立読み戻し、単一ライターを必須とする。[M3](../regulation_m3/README.md)。以下は履歴。

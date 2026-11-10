@@ -28,8 +28,11 @@ def validate_cp_policy(policy):
         raise ValueError("invalid CP policy checked_at") from exc
     if not isinstance(policy["source"], str) or not policy["source"].strip():
         raise ValueError("CP source required")
-    if policy["verification"] not in ("UNVERIFIED_SOURCE", "GAME_VERIFIED"):
+    if policy["verification"] not in ("UNVERIFIED_SOURCE", "USER_CONFIRMED", "GAME_VERIFIED"):
         raise ValueError("invalid CP verification")
+    if (policy["verification"] == "USER_CONFIRMED" and
+            not policy["source"].startswith("USER_CONFIRMATION:")):
+        raise ValueError("USER_CONFIRMED requires explicit user provenance")
     amounts = policy["cp_per_card"]
     if not isinstance(amounts, dict) or set(amounts) != set(RARITIES):
         raise ValueError("all four CP currencies required")
@@ -105,12 +108,15 @@ def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STAN
         "snapshot_ids": sorted({v["snapshot_id"] for v in resolutions.values()
                                 if v["snapshot_id"] is not None}),
     }
+    price_rule_confirmed = (policy is not None and
+                            policy["verification"] in ("USER_CONFIRMED", "GAME_VERIFIED"))
     result["crafting_context"] = {
         "policy_id": policy["policy_id"] if policy is not None else None,
         "verification": policy["verification"] if policy is not None else "UNKNOWN",
         "as_of": as_of,
         "cp_per_card": deepcopy(prices),
         "cp_budget_by_rarity": deepcopy(cp_budget_by_rarity),
+        "price_rule_confirmed": price_rule_confirmed,
         "estimate_is_confirmed": False,
     }
     unknowns = set(result["unknowns"])
@@ -119,11 +125,12 @@ def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STAN
     might_need = sum(result["potentially_missing_if_unowned"].values()) > 0
     # Candidate CP rules must not silently be accepted as current verified
     # when a new card could need crafting.
-    if (needs_any or might_need) and (policy is None or policy["verification"] != "GAME_VERIFIED"):
+    if (needs_any or might_need) and not price_rule_confirmed:
         unknowns.add("CP_POLICY_UNVERIFIED")
-    confirmed = (policy is not None and policy["verification"] == "GAME_VERIFIED"
-                 and result["cp_estimate"] is not None
-                 and not might_need)
+    confirmed = (price_rule_confirmed and result["cp_estimate"] is not None
+                 and not might_need and
+                 not any(x.startswith("UNKNOWN_CRAFTABILITY:") for x in unknowns) and
+                 not any(x.startswith("UNCRAFTABLE_SHORTAGE:") for x in errors))
     result["crafting_context"]["estimate_is_confirmed"] = confirmed
     if cp_budget_by_rarity is not None:
         if mode == "CP_BUDGET":
@@ -134,6 +141,10 @@ def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STAN
             for rarity, budget in cp_budget_by_rarity.items():
                 if result["cp_estimate"][rarity] > budget:
                     errors.add("CP_"+rarity+"_BUDGET_EXCEEDED")
+            for rarity in RARITIES:
+                if (result["new_needed_by_rarity"][rarity] > 0 and
+                        rarity not in cp_budget_by_rarity):
+                    unknowns.add("CP_BALANCE_UNKNOWN:"+rarity)
     result["errors"] = sorted(errors)
     result["unknowns"] = sorted(unknowns)
     result["status"] = "FAIL" if errors else ("INDETERMINATE" if unknowns else "PASS")

@@ -5,3 +5,5 @@ from .evaluation import (validate_cp_policy, available_owned_copies, assess_deck
 
 from .importer import preview_candidate, prepare_candidate
 from .database import load_snapshots
+
+from .bridge import assess_from_private_sources

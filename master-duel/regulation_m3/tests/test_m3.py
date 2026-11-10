@@ -176,4 +176,68 @@ class M3Tests(unittest.TestCase):
         self.assertEqual(r["crafting_context"]["verification"],"GAME_VERIFIED")
         self.assertEqual(r["status"],"INDETERMINATE")  # 36 unlisted rules fail closed.
 
+
+    def _confirmed_cp(self):
+        p=cp_policy(True)
+        p["verification"]="USER_CONFIRMED"
+        p["source"]="USER_CONFIRMATION: synthetic test"
+        return p
+
+    def _complete_verified_regulation(self):
+        rules={item["card_id"]:3 for item in self.recipe}
+        rules["konami:1001"]=1
+        return fixture_snapshot(verified=True,rules=rules)
+
+    def test_user_confirmed_cp_can_pass_with_complete_evidence(self):
+        r=assess_deck_with_m3(self.db,self.recipe,
+            snapshots=[self._complete_verified_regulation()],
+            as_of="2026-11-10", mode="CP_BUDGET",
+            cp_policy=self._confirmed_cp(),
+            cp_budget_by_rarity={"SR":90})
+        self.assertEqual(r["status"],"PASS")
+        self.assertEqual(r["cp_estimate"]["SR"],90)
+        self.assertTrue(r["crafting_context"]["price_rule_confirmed"])
+        self.assertTrue(r["crafting_context"]["estimate_is_confirmed"])
+        self.assertEqual(r["crafting_context"]["verification"],"USER_CONFIRMED")
+        self.assertNotIn("CP_POLICY_UNVERIFIED",r["unknowns"])
+
+    def test_user_confirmed_cp_cannot_spend_another_rarity(self):
+        r=assess_deck_with_m3(self.db,self.recipe,
+            snapshots=[self._complete_verified_regulation()],
+            as_of="2026-11-10", mode="CP_BUDGET",
+            cp_policy=self._confirmed_cp(),
+            cp_budget_by_rarity={"SR":60,"N":9999})
+        self.assertEqual(r["status"],"FAIL")
+        self.assertIn("CP_SR_BUDGET_EXCEEDED",r["errors"])
+
+    def test_missing_currency_balance_is_not_silent_infinity(self):
+        r=assess_deck_with_m3(self.db,self.recipe,
+            snapshots=[self._complete_verified_regulation()],
+            as_of="2026-11-10", mode="CP_BUDGET",
+            cp_policy=self._confirmed_cp(),
+            cp_budget_by_rarity={"N":9999})
+        self.assertEqual(r["status"],"INDETERMINATE")
+        self.assertIn("CP_BALANCE_UNKNOWN:SR",r["unknowns"])
+
+    def test_user_confirmation_needs_attributable_source(self):
+        p=self._confirmed_cp()
+        p["source"]="SYNTHETIC_FIXTURE"
+        with self.assertRaisesRegex(ValueError,"provenance"):
+            validate_cp_policy(p)
+
+    def test_craftability_unknown_blocks_confirmed_spend(self):
+        import sqlite3
+        with sqlite3.connect(self.db) as con:
+            con.execute("UPDATE md_catalog SET craftable='UNKNOWN' WHERE card_id='konami:1002'")
+        r=assess_deck_with_m3(self.db,self.recipe,
+            snapshots=[self._complete_verified_regulation()],
+            as_of="2026-11-10", mode="CP_BUDGET",
+            cp_policy=self._confirmed_cp(),
+            cp_budget_by_rarity={"SR":90})
+        self.assertEqual(r["status"],"INDETERMINATE")
+        self.assertTrue(r["crafting_context"]["price_rule_confirmed"])
+        self.assertFalse(r["crafting_context"]["estimate_is_confirmed"])
+        self.assertIn("UNKNOWN_CRAFTABILITY:konami:1002",r["unknowns"])
+        self.assertIn("CP_RARITY_BUDGET_UNVERIFIABLE",r["unknowns"])
+
 if __name__ == "__main__": unittest.main()
