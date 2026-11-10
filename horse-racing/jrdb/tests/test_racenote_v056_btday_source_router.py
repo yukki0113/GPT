@@ -76,11 +76,13 @@ class SourceRouterTest(unittest.TestCase):
 
     def test_receipt_identity_and_as_of_fail_closed(self):
         a = row("2025-05-25", "historical_warehouse")
+        a.update(workflow_profile="historical-staged-v1", staging_artifact_id="1234567", staging_sha256="c" * 64)
         receipt = {"schema_version": "racenote-btday-source-acceptance-v1", "status": "ACCEPTED",
                    "target_date": a["target_date"], "source_mode": a["source_mode"],
                    "source_reference": a["source_reference"], "source_generation_id": a["source_generation_id"],
                    "input_sha256": a["input_sha256"], "as_of_exclusive": a["target_date"],
                    "jra_meeting_verified": True,
+                   "runner": {"profile": "historical-staged-v1", "staging_artifact_id": "1234567", "staging_sha256": "c" * 64},
                    "as_of_evidence": {k: {"status": "ACCEPTED", "as_of_exclusive": a["target_date"],
                                           "transport": "staged_artifact"}
                                       for k in ("analysis", "rrdb", "race_lap")},
