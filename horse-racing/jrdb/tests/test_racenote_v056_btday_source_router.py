@@ -1,6 +1,8 @@
 import unittest
+import sys
 from datetime import date
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from tempfile import TemporaryDirectory
 from racenote_v056_btday_source_router import resolve_inventory, candidate_digest, draw_v2
 
