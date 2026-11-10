@@ -1,3 +1,9 @@
+> **2026-11-10 M3継続**: `regulation_m3.importer.preview_candidate` / `prepare_candidate` を追加。Drive `current.vector.json` は215件（禁止114/制限77/準制限24）。独立した集計サイトと件数が一致しても、個々の値は全件ゲーム内確認済みとはしない。
+> 追加インポーターは `UNVERIFIED_SOURCE` のみ登録可能、所持5件と更新履歴を保持し、候補ZIPを作成する。`load_snapshots()` はprivate SQLiteの banlist_snapshots / banlist_entries を読み出し、既存の resolve_limit() と評価器に渡す。
+> **墓穴の指名者**: 2026-09-03に禁止と報じられ、11/5候補でも禁止。所持1枚は保持し、採用可否はゲーム内での確定までは「候補0枚／未確定」とする。
+> **本番昇格に必要**: 単一ライター、旧HEAD/ZIPバックアップ、元SHAと候補SHA照合、Drive独立読み戻し、HEAD切替後の再取得。候補データを `GAME_VERIFIED` に自動昇格しない。
+> 公開照合資料: https://yugiohcardlist.com/banlist/master-duel/2026-11-05 / https://masterduel.online/en/banlist / https://yugioh-starlight.com/archives/60027278.html 。CPのレア別30は https://appmedia.jp/master_duel/27458091 に説明あり（現ゲーム内未独立検証）。
+
 ## 2026-11-10 追記: SQLite候補取り込み (M3-2)
 
 `persistence.prepare_candidate_import` を追加。前世代ZIPの完全性を検査し、検証状態が `UNVERIFIED_SOURCE` の規制候補だけを既存SQLite v1の `banlist_snapshots` / `banlist_entries` に**追加専用**で投入。候補の自動 `GAME_VERIFIED` 化・既存ID上書き・存在しないカードID・所持履歴変化を拒否する。カード本文を含む保護9テーブルの全行ダイジェスト一致、SQLite integrity と foreign key 検査、新ZIP再展開を実施する。処理はローカル候補ZIPを返すだけでDrive HEADは変えない。

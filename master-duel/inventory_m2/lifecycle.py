@@ -62,7 +62,7 @@ def build_verified_head(parent_head, observed_parent_head, source_zip, prepared,
     if not isinstance(prepared,dict) or not isinstance(prepared.get("manifest"),dict) or not isinstance(prepared.get("zip"),bytes):
         raise ValueError("missing candidate")
     m=prepared["manifest"]
-    if m.get("verification_status")!="LOCAL_VERIFIED" or m.get("operation_type") not in ("SET_INVENTORY","UNDO_INVENTORY"):
+    if m.get("verification_status")!="LOCAL_VERIFIED" or m.get("operation_type") not in ("SET_INVENTORY","UNDO_INVENTORY","ADD_REGULATION_CANDIDATE"):
         raise ValueError("unverified operation")
     if m.get("parent_snapshot_id")!=old["snapshot_id"] or m.get("source_zip_sha256")!=old["zip_sha256"] or m.get("source_db_sha256")!=old["db_sha256"]:
         raise ValueError("prepared source mismatch")
