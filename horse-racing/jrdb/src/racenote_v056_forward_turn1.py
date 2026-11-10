@@ -106,6 +106,11 @@ def main() -> int:
     )
     selection_id = args.selection_id or f"DAILY-{args.date.replace('-', '')}"
 
+    return build_common(args, paci_receipt, freshness, selection_id, execution_mode="FORWARD")
+
+
+def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode):
+    """Shared PACI materialization after caller-specific safety preflight."""
     src = Path(__file__).resolve().parent
     prep_cmd = [
         sys.executable, str(src / "racenote_v053_from_paci.py"),
@@ -165,8 +170,8 @@ def main() -> int:
     base_handoff = json.loads((args.output_root / "operation_handoff.json").read_text(encoding="utf-8"))
     base_handoff.update({
         "paci_source": paci_receipt,
-        "schema_version": "racenote-v056-forward-turn1-handoff-0.1",
-        "execution_mode": "FORWARD",
+        "schema_version": ("racenote-v056-forward-turn1-handoff-0.1" if execution_mode == "FORWARD" else "racenote-v056-btday-paci-turn1-handoff-0.1"),
+        "execution_mode": execution_mode,
         "reader_manifest_sha256": session["reader_manifest_sha256"],
         "status": "READY_FOR_V056_AUTHORING",
         "logic_version": session["logic_version"],
@@ -185,21 +190,21 @@ def main() -> int:
         },
         "analysis_freshness": {
             "owner": "DEDICATED_ANALYSIS_OPERATION",
-            "forward_t1_checked": True,
+            "forward_t1_checked": execution_mode == "FORWARD",
             "status": freshness["status"],
             "required_completed_through": freshness["required_completed_through"],
             **freshness["analysis"],
         },
         "rrdb_freshness": {
             "owner": "DEDICATED_RRDB_OPERATION",
-            "forward_t1_checked": True,
+            "forward_t1_checked": execution_mode == "FORWARD",
             "status": freshness["status"],
             "required_completed_through": freshness["required_completed_through"],
             **freshness["rrdb"],
         },
         "race_lap_freshness": {
-            "owner": "FORWARD_T1",
-            "forward_t1_checked": True,
+            "owner": "FORWARD_T1" if execution_mode == "FORWARD" else "BTDAY_T1",
+            "forward_t1_checked": execution_mode == "FORWARD",
             "expected_period_to": args.race_lap_expected_period_to,
         },
         "market_blind": True,
@@ -215,7 +220,7 @@ def main() -> int:
         raise ValueError("Reader/authoring roster mismatch")
     audit_root = args.output_root / "source_audit"
     audit_root.mkdir(exist_ok=True)
-    write_json(audit_root / "forward_analysis_rrdb_freshness.json", freshness)
+    write_json(audit_root / ("forward_analysis_rrdb_freshness.json" if execution_mode == "FORWARD" else "btday_as_of_evidence.json"), freshness)
     write_json(args.output_root / "operation_handoff.json", base_handoff)
     print(json.dumps({
         "status": base_handoff["status"],
