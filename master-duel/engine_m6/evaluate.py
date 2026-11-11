@@ -155,7 +155,7 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
             _check(state in _STATES, "unknown inventory state")
             owned=row["owned_count"] if state!="UNKNOWN" else None
             if owned is not None:
-                _check(type(owned) is int and 0<=owned<=3, "bad owned count")
+                _check(type(owned) is int and owned>=0, "bad owned count")
                 _check((state=="KNOWN_ZERO")==(owned==0),
                        "inconsistent known ownership")
                 missing=max(0,qty-owned)
