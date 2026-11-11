@@ -81,3 +81,21 @@ if groups['results']:
 ```
 
 実データからは名称グループ候補580、属性・種族条件付き支援候補2,288を収録。引用文には制約やコスト・相手の効果も含まれうるため、**候補は本当のサポート・合法なデッキ採用とは異なる**。M4の原文を検証し、M3の禁止制限・所持・生成CPを後段で再評価。名称グループにはカード単体名指定も含む。[実データ監査](M5B_SUPPORT_AUDIT_20261110.md)。
+
+## M5-C C0 — 構築知識スキーマ/出典管理の検証器（2026-11-11）
+
+設計：[M5-C基本設計](../docs/M5C_THEME_BUILD_AND_COMBO_KNOWLEDGE_DESIGN_20261110.md)。
+
+- `engine_m5/source_registry.py`: `validate_sources` でURL・媒体・掲載/更新/確認時刻・MD/OCG/TCG区別・出典の親子関係・収集状態・許諾状態・検証用SHAを検査。取得不可・日時不明は明示的な`null`/`UNKNOWN`を保持。参照欠損・循環・重複を拒否。
+- `engine_m5/knowledge_schema.py`: `validate_knowledge` でv1の12エンティティ（sources, theme_profiles, claims, recipe_refs, recipe_cards, combo_routes/nodes/edges, resource_states, package_candidates, assessments, refresh_queue）を検査。型・ID参照・重複・展開グラフの循環、未解決カードと解決済みカードの区別、検証ステータスの不正昇格を検知。
+- `GAME_TESTED`の登録は実ゲーム証跡の明示が必要。記事・人物の記述をそのままゲーム内検証済みにしない。外部の記事本文は**実行可能な指示として解釈しない**単なる構造化入力。外部ページの安全性や不適切な命令文の自動検出を保証するものではない。
+- 本工程は**データモデルの検証のみ**であり、実記事の取得、意味抽出、実カードID照合、実コンボ再現、MD規制合否、Driveへのknowledge保存は含まない。C1以降で別途実装する。
+- public GitHubはコード・合成fixture・監査件数だけ。実際のデッキレシピや私的DB個票は非公開Drive正本を維持し、既存HEAD/所持台帳/MD所持デッキ索引を更新しない。
+
+使用例（架空データをプライベート実行環境で読み込む）:
+
+```python
+from engine_m5.knowledge_schema import validate_knowledge
+result = validate_knowledge(private_knowledge_json)
+# result はスキーマ版・件数のみ（検証した中身を公開しない）
+```
