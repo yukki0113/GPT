@@ -1,3 +1,5 @@
+> **2026-11-11 M5-C C5統合完了**：`private_bundle.py`で決定的private ZIP+manifestを構築・SHA照合し、`theme_knowledge_bundle`で5テーマをM6の保守的入力へ変換。M6での再評価前に推薦可/所持あり/現行合法とはしない。合成テストとprivate Drive独立読戻しによりC0–C5まで完了。[C5監査](../docs/M5C_C5_PRIVATE_BUNDLE_M6_AUDIT_20261111.md)。次工程はM6。
+
 > **2026-11-11 M5-C C4**：`refresh.py`の`build_index` / `deterministic_cache_key` / `plan_refresh` / `make_staleness_overlay`を追加。同一ピン版再利用、記事・カード本文・規制の限定差分、UNKNOWNの保守的REVIEW、バッチ上限と延期タスク保持を合成試験で確認。C3 private知識に対する仮想5ケースをDriveで監査。自動サイト監視やM6への公開接続は未実装。[C4監査](../docs/M5C_C4_INCREMENTAL_REFRESH_AUDIT_20261111.md)。
 
 > **2026-11-11 M5-C C3**：`low_cost_variant.py`で、SHAピン済み元DBに対する掲載レシピのUR数、明示理由付きの代替/除外、MAIN/EX枠、候補中核UR0と新規UR生成0の別判定、失われるEX/経路UNKNOWNを検査。軍貫UR0候補MAIN40/EX7をprivate Driveに保存し独立SHA読み戻し。C4/C5未実装、現行規制/所有/CP/ゲーム内展開は未検証。[C3監査](../docs/M5C_C3_LOW_COST_VARIANTS_AUDIT_20261111.md)。
