@@ -64,6 +64,14 @@ class TestOwnedDecks(unittest.TestCase):
         with self.assertRaises(ValueError):
             check(data)
 
+    def test_over_three_copies_remain_staged(self):
+        data = sample()
+        data["entries"][0]["quantity"] = 4
+        self.assertIn("CARD_COPIES_OVER_3", check(data)["warnings"])
+        data["state"] = "CONFIRMED"
+        with self.assertRaises(ValueError):
+            check(data)
+
     def test_integrity_tamper(self):
         report = put(self.tmp.name, sample(), self.db)
         path = Path(self.tmp.name) / (report["sha256"] + ".json")
