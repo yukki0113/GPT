@@ -1,3 +1,5 @@
+> **2026-11-11 C5実装・private統合受入完了（最新進捗）**：`engine_m5/private_bundle.py`でC4知識・C3低レア候補・空overlayを決定的ZIP+SHA manifestへ統合し、private Driveへ3成果物を保存・独立バイト/SHA読み戻し。5テーマ分のM6 `ThemeKnowledgeBundle`を試作し、掲載レシピ欠損・source-only claim・規制未確認を引き継ぎ、全件を`recommendation_eligible=false`に維持。M6のレシピ生成・所有・M3・CP評価は別工程。[C5受入監査](M5C_C5_PRIVATE_BUNDLE_M6_AUDIT_20261111.md)。以下の旧進捗は履歴として保持する。
+
 > **2026-11-11 C4実装・差分受入完了（最新進捗）**：`engine_m5/refresh.py`で決定的キャッシュキー・出典とカードの依存索引・更新影響範囲・分割作業キュー・元SHA照合付きappend-only STALE overlayを実装。C3のprivate知識で5つの仮想差分ケースを照合し、C4新版とmanifestをprivate Driveで保存・独立読み戻しSHA一致。これは実際の記事/公式禁止制限改訂を観測したものではない。C5のM6用Bundle API・ZIP sidecar統合は未着手。[C4監査](M5C_C4_INCREMENTAL_REFRESH_AUDIT_20261111.md)。以下の設計当時の旧進捗は履歴として保持。
 
 > **2026-11-11 C3実データ受入完了（最新進捗）**：軍貫の掲載MAIN40/EX15（UR20枚）を、privateマスターのMDレア・効果本文と照合。UR0の試作MAIN40/EX7を別の`REVIEW_REQUIRED`バリアントとして作成し、保持33・除去22・追加14枚と失われるEX/妨害・未検証ルートを記録。C3 JSON/manifest 3ファイルをprivate Driveへ新規保存・独立再取得SHA一致。現行MD禁止制限、実所持、生成CP、ゲーム実演は未確認のまま明示。[C3監査](M5C_C3_LOW_COST_VARIANTS_AUDIT_20261111.md)。C4/C5は未着手。以下の古い設計版・進捗は履歴として維持する。
