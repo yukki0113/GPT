@@ -4,6 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from urllib.parse import urlsplit
 import re
+import ipaddress
 
 SHA = re.compile(r"^[0-9a-f]{64}$")
 SCOPES = {"MD", "OCG", "TCG", "UNKNOWN"}
@@ -53,6 +54,9 @@ def validate_sources(records):
     for src in records:
         if not isinstance(src, dict):
             raise ValueError("source must be object")
+        # Web text is untrusted data, never an instruction channel.
+        if {"instructions", "system_prompt", "developer_instruction", "tool_call", "execute"} & src.keys():
+            raise ValueError("source instructions are not permitted")
         key = require_text(src.get("source_id"), "source_id")
         if key in by_id:
             raise ValueError("duplicate source_id")
@@ -61,8 +65,15 @@ def validate_sources(records):
         parts = urlsplit(url)
         if parts.scheme != "https" or not parts.hostname or parts.username or parts.password:
             raise ValueError("canonical_url must be public https URL without credentials")
-        if parts.hostname.lower() in {"localhost", "127.0.0.1", "::1"} or parts.hostname.endswith(".local"):
+        if parts.hostname.lower() == "localhost" or parts.hostname.endswith(".local"):
             raise ValueError("local URL forbidden")
+        try:
+            addr = ipaddress.ip_address(parts.hostname)
+        except ValueError:
+            pass
+        else:
+            if not addr.is_global:
+                raise ValueError("non-public IP URL forbidden")
         for label in ("platform", "title"):
             require_text(src.get(label), label)
         for label in ("published_at", "updated_at"):
