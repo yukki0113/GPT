@@ -1,0 +1,1190 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 1,
+    "marks": [
+      13,
+      4,
+      11,
+      12,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        4,
+        11,
+        12,
+        5
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9は平地能力はあるが障害で近走7着。13の新潟障害2890二着反復、4の東京障害3000二着、11の障害三着反復を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎13フェーングロッテンは新潟障害2890で二着を連続。飛越と先行持続力の再現性を最重視する。",
+      "main_risk": "○4ヘヴンリーハンドは東京障害3000二着。◎が序盤から脚を使えば長丁場で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲11ナムラドーギーは新潟2890・中山2880で三着を反復し安定感がある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "13の障害二着反復を軸に、4の3000二着、11・12の障害三着級実績を比較。障害戦として展開変動は大きい。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 2,
+    "marks": [
+      7,
+      14,
+      1,
+      2,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        14,
+        1,
+        2,
+        9
+      ],
+      "external_challenger_horse_no": 16,
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "16は京都1800三着歴があるが近走芝1800四着。7の1800二着反復と14の阪神1800三着を上位に置く。"
+    },
+    "honmei_win": {
+      "evidence": "◎7ラテライトは阪神1800二着を二度、京都1800三着IDM40。中距離ダートの再現性が最上位。",
+      "main_risk": "○14タマモマサユメは阪神1800三着IDM39。先行して◎より前で運べれば逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲1オリビアサンライズは小倉1700二着IDM35。小回り適性を生かして上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "7の連対反復を中心に14・1・2・9を比較。2も京都1800二着歴があり相手は強い。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 3,
+    "marks": [
+      3,
+      6,
+      1,
+      4,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        6,
+        1,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は小倉1800六着IDM3で、3の1200・1400二着や6の阪神1600三着ほど勝ち切り材料がない。"
+    },
+    "honmei_win": {
+      "evidence": "◎3トライアンフパスは小倉1200二着、阪神1400二着を連続。距離適性と連対再現性を評価。",
+      "main_risk": "○6バースデイフライトは阪神1600三着IDM29。距離短縮なら追走しやすく逆転余地。"
+    },
+    "shot_case": {
+      "case": "▲1フォーゲルは小倉1800四着。短縮で反応が上がれば一角崩し可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "3の二着反復が明確。6の1600三着と1の1800四着、4・2の仕上がりを次位評価。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 4,
+    "marks": [
+      8,
+      2,
+      10,
+      7,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        2,
+        10,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は調教64・状態60でも能力17。8の45.7、2の34.4、10の33.1を大きく下回る。"
+    },
+    "honmei_win": {
+      "evidence": "◎8マイケルバローズは新馬能力45.7で一頭抜ける。初戦でスムーズなら素質で押し切る。",
+      "main_risk": "○2アイルトンは能力34.4、調教57。◎が初戦で戸惑えば完成度で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲10レディーゴールは能力33.1。好位で流れに乗れれば上位争い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬初出走。8の能力45.7を軸に2・10・7・4の能力と仕上がりを比較した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 5,
+    "marks": [
+      2,
+      13,
+      10,
+      5,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        13,
+        10,
+        5,
+        4
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は中京1400三着歴があるがIDM31。2の1200二・三着、13の京都1400五着IDM36、10の短距離安定を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎2メイショウアキカゼは京都1200二着・三着を反復。先行力と短距離ダートの再現性から勝ち切り支持。",
+      "main_risk": "○13タンテドヴィーヴルは京都1400五着IDM36。距離が噛み合えば能力上限で逆転。"
+    },
+    "shot_case": {
+      "case": "▲10テイエムダイタカは新潟1200四着IDM32。差しが届く展開なら上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2の短距離連対を軸に13・10・5・4を比較。4には阪神1400二着歴があり軽視できない。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 6,
+    "marks": [
+      11,
+      14,
+      10,
+      6,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        14,
+        10,
+        6,
+        16
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は東京1300勝ちIDM53を持つが、11の中京1400勝ちIDM64と14の阪神1400一・二着ほど今回条件の強さがない。"
+    },
+    "honmei_win": {
+      "evidence": "◎11アルシオーネは中京1400勝ちIDM64。能力60.7で先行力もあり、同条件の再現を強く支持。",
+      "main_risk": "○14ヴェロクオーレは阪神1400一着・二着。◎が先行争いで消耗すると逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲10タイガースパークは阪神1400二着IDM53。差し脚が噛み合えば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "11の中京1400高IDM勝ちを最上位。14・10・6・16も1400で50台の実績があり相手は揃う。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 7,
+    "marks": [
+      8,
+      3,
+      7,
+      10,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        3,
+        7,
+        10,
+        5
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2は中山2000二着IDM59があるが近2走大敗。8の1800三連続好走、3の2400三・四着反復を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎8グランヴィノスは阪神1800一着・二着、京都1800勝ちでIDM57-60。中距離での連勝力を最重視。",
+      "main_risk": "○3タガノデュードは2400三着、2200四着、2400四着を高IDMで反復。距離が延びるほど逆転余地。"
+    },
+    "shot_case": {
+      "case": "▲7ミッキーツインクルは中京2000勝ちIDM59。コース適性で巻き返し可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "8の1800連続好走と3の長距離安定、7・10の中京2000勝ちを比較。能力上位が多いレース。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 8,
+    "marks": [
+      1,
+      6,
+      3,
+      4,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        6,
+        3,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は阪神1800勝ちIDM45で魅力はあるが、1の阪神1800二着反復IDM53-54や6の1400二着IDM54を上位に評価。"
+    },
+    "honmei_win": {
+      "evidence": "◎1パルクリチュードは阪神1800二着を二度。中距離ダートの連対再現性から勝ち切り支持。",
+      "main_risk": "○6フラーハは東京1400二着IDM54。距離延長に対応できればスピードで逆転。"
+    },
+    "shot_case": {
+      "case": "▲3クリノスワローは阪神・京都1800を連勝。昇級でも先行力を生かせる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1の1800二着反復を軸に6の高IDM、3の連勝、4・7の中距離実績を比較。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 9,
+    "marks": [
+      2,
+      5,
+      7,
+      1,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        5,
+        7,
+        1,
+        6
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4は小倉2860勝ちがあるが近走京都3930九着・阪神3140七着。2の中京3300二着と5の3380三着を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎2マイネルエールは中京障3300二着、福島2770勝ち。長距離障害での実績を最上位評価。",
+      "main_risk": "○5タイキフロリゼルは福島3380三着、阪神3140四着。長距離適性で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲7クラウンセトは小倉2860勝ち、3390五着。展開が噛み合えば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2の中京3300二着を中心に5・7・1・6の障害実績を比較。飛越の不確実性は大きい。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 10,
+    "marks": [
+      8,
+      7,
+      6,
+      4,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        7,
+        6,
+        4,
+        10
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は阪神1800勝ち歴があるが直近小倉1700十三着。8の京都1800二着反復、7の新潟1800二・三着を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎8テーオーマルコーニは京都1800二着を連続しIDM49-52。差し脚の再現性を最重視。",
+      "main_risk": "○7カレンワッツアップは新潟1800二着・三着。調教63で先行押し切りも可能。"
+    },
+    "shot_case": {
+      "case": "▲6シドニーホバートは阪神1800勝ちIDM51、東京2100三着。能力上限は高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "8・7・6の中距離ダート連対を中心に4の京都1800勝ち、10の中京1800勝ちを比較。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 11,
+    "marks": [
+      10,
+      9,
+      2,
+      11,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        9,
+        2,
+        11,
+        1
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3はダート1800で二・三着があるが芝中距離の直接実績がない。10の2000三着反復と9の2000四着を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎10レッドサジェスは小倉2000三着、中京2000三着。芝2000での安定度から勝ち切り支持。",
+      "main_risk": "○9オーバースタンドは小倉2000四着IDM38。◎との差は小さく展開一つで逆転。"
+    },
+    "shot_case": {
+      "case": "▲2タイセイルシエルは2000でIDM36、2200で38。近走着順は悪いが地力で食い込む余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10の2000三着反復を軸に9・2・11・1を比較。全体に決め手不足で混戦度は高い。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 12,
+    "marks": [
+      10,
+      5,
+      9,
+      8,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        5,
+        9,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は京都1800七着・1600四着で堅実だが、10の阪神1600三着IDM58、5の阪神1800勝ちと調教70を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎10ミニトランザットは阪神1600三着IDM58。マイル能力が高く、距離条件が合えば差し切る。",
+      "main_risk": "○5レッドフェルメールは阪神1800勝ち、京都1800二着。調教70で状態面から逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲9ノクナレアは阪神1600二着IDM45。距離の直接性を生かして上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10の高IDMマイル実績を中心に5・9・8・7を比較。8は京都1600勝ちでコース適性もある。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "marks": [
+      3,
+      4,
+      1,
+      8,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        4,
+        1,
+        8,
+        6
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は阪神1400十一着IDM10で、3の福島1150二着IDM30や4の芝1200三着に比べ勝ち切り材料が乏しい。"
+    },
+    "honmei_win": {
+      "evidence": "◎3ライヴレッドアイは福島ダ1150二着IDM30。短距離ダートの直接実績から先行押し切りを支持。",
+      "main_risk": "○4セイウンアインスは福島芝1200三着。ダート対応が叶えばスピードで逆転。"
+    },
+    "shot_case": {
+      "case": "▲1ラインカシウスは函館1200経験を重ね、調教66。条件替わりで前進余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "3のダート短距離二着が一歩上。4・1・8・6は芝実績や仕上がりを含めて比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "marks": [
+      4,
+      10,
+      7,
+      12,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        10,
+        7,
+        12,
+        5
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は能力34.9で悪くないが、4の48.6、10の38.1、7の37.8を下回る。"
+    },
+    "honmei_win": {
+      "evidence": "◎4モンラッシェは新馬能力48.6で明確に最上位。初戦でスムーズなら素質で押し切る。",
+      "main_risk": "○10ドナルンバは能力38.1。◎の状態47に対し初戦の立ち回り次第で逆転。"
+    },
+    "shot_case": {
+      "case": "▲7ラプランセスは能力37.8、調教57。完成度を生かして上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬。4の能力48.6が抜け、10・7・12・5が次位。実走不確実性を前提にした。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "marks": [
+      6,
+      9,
+      3,
+      8,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        9,
+        3,
+        8,
+        10
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は能力32.8・状態32で、6・9・3・8の40前後より初戦評価が低い。"
+    },
+    "honmei_win": {
+      "evidence": "◎6エコロアルバは新馬能力40.8、調教66・状態59。能力と仕上がりのバランスから勝ち切り支持。",
+      "main_risk": "○9デンプシーは能力40.2、状態62。◎との差は小さく逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲3アパレイユは能力39.2、調教59。好位で運べれば一角崩し。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬。6・9・3・8が40前後で接近し、仕上がり面で6をわずかに上に取る。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "marks": [
+      1,
+      8,
+      6,
+      3,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        8,
+        6,
+        3,
+        11
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2は京都1800四着歴があるが直近阪神1800十着。1の東京1600三着・中山1800二着や8の福島1700四着を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎1フォンデネージュは東京1600三着、中山1800二着・三着。ダート中距離で連続好走し勝ち切り最有力。",
+      "main_risk": "○8ホウオウヌーヴォーは福島1700四着IDM40。調教61・状態62で逆転余地。"
+    },
+    "shot_case": {
+      "case": "▲6アルマリカシバは東京1600六着。調教66・状態67で上積みを評価。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1の連続好走を軸に8・6・3・11を比較。1の中距離ダート再現性が最も高い。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "marks": [
+      9,
+      10,
+      8,
+      6,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        10,
+        8,
+        6,
+        3
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7は東京2000で9着・13着。9の東京1800三着、10の東京2000二・三着、8の新潟1800二着を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎9ボウウィンドウは東京1800三着IDM43。能力43.1で差し脚の再現を支持。",
+      "main_risk": "○10ミエノフェアリーは東京2000二着・三着IDM40-43。距離適性の安定度で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲8ライネリーベは新潟1800二着IDM39。コース適性を生かして上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9・10・8・6はいずれも1800～2000で連対級。9の能力と近走をわずかに上位評価。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "marks": [
+      12,
+      15,
+      4,
+      9,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        15,
+        4,
+        9,
+        1
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は阪神1800二着IDM55があるが、12の東京2100二着・中山1800二着IDM60、15の福島1700二着IDM59を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎12ライジンマルは中山1800二着IDM60、東京2100二着IDM56。状態77も良く中距離ダートで最有力。",
+      "main_risk": "○15クラウンシエンタは福島1700二着IDM59、中山1800二着IDM55。◎と能力差は小さい。"
+    },
+    "shot_case": {
+      "case": "▲4チザルピーノは東京1600一着・二着をIDM55で反復。距離延長でも能力上限で浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "12と15の高IDM連対を中心に4・9・1を比較。相手も強く一強とはしない。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "marks": [
+      6,
+      4,
+      8,
+      7,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        4,
+        8,
+        7,
+        3
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は京都1400四着IDM61で有力だが、6の中京1600二着・京都1600勝ちIDM60-61ほどマイルの直接性がない。"
+    },
+    "honmei_win": {
+      "evidence": "◎6ワールズエンドは中京1600二着を二度、京都1600勝ち。マイルでの再現性から勝ち切り支持。",
+      "main_risk": "○4ペリファーニアは東京1400勝ちIDM58、状態66。距離延長でも切れ味で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲8ユキマルは東京1400三着IDM58。調教64で上昇余地がある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6のマイル高IDM実績を中心に4・8・7・3を比較。7は東京1400・1600連勝歴があり警戒。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "marks": [
+      10,
+      12,
+      9,
+      4,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        12,
+        9,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13は新潟1000五着IDM42があるが、10の同舞台五着IDM49、12の新潟1000二着を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎10シュラフは新潟芝1000五着IDM49。直線競馬の能力指標で一歩上。",
+      "main_risk": "○12レジーナローズは新潟1000二着IDM45。コース直接実績では◎以上で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲9ハッピーデービーは新潟1000四着IDM44。調教55で上積みがあれば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10・12・9・4は新潟1000で4～7着級。直線適性の直接性を重視して序列化した。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "marks": [
+      6,
+      13,
+      2,
+      4,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        13,
+        2,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は芝1400八着でダート短距離の直接実績がない。6の新潟1200二着反復、13の中山1200三・四着を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎6ハニーローリエは新潟ダ1200二着を二度。今回条件での連対再現性が明確で勝ち切り支持。",
+      "main_risk": "○13レイオーバーは中山1200三着・四着を反復。差し脚が新潟で噛み合えば逆転。"
+    },
+    "shot_case": {
+      "case": "▲2ヒルビリーエレジーは東京1300三着IDM36。距離短縮でも上位争い可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6の同舞台二着反復を軸に13・2・4・7を比較。6のコース適性が一段上。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "marks": [
+      2,
+      3,
+      14,
+      5,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        3,
+        14,
+        5,
+        10
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は東京1400勝ちIDM48があるが、2の1200一・二着、3の新潟1200三着反復ほど今回距離の直接性がない。"
+    },
+    "honmei_win": {
+      "evidence": "◎2シークザドリームは京都1200勝ち、阪神1200二着IDM50。短距離ダートの連対力を最上位評価。",
+      "main_risk": "○3ゲキザルは新潟1200三着を二度。コース適性で◎を逆転できる。"
+    },
+    "shot_case": {
+      "case": "▲14チャロは中山1200勝ちIDM47。先行力を生かせば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2の1200一・二着、3の新潟1200三着反復、14・5・10の短距離実績を比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "marks": [
+      8,
+      11,
+      14,
+      12,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        11,
+        14,
+        12,
+        5
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13は新潟1800三着歴があるが、8の福島2000勝ち、11の福島1800二着、14の中京2200三着に近況で及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "◎8ウアーシュプルングは福島2000勝ちIDM48、小倉2000二着。中距離の安定から勝ち切り支持。",
+      "main_risk": "○11ベストシーンは福島1800二着IDM43、調教64・状態64。距離短縮なら逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲14ピースヒロフェイスは中京2200三着IDM48。持続力が生きれば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "8の2000勝ち・二着を中心に11・14・12・5を比較。決め手差が小さく混戦。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "marks": [
+      13,
+      10,
+      16,
+      1,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        10,
+        16,
+        1,
+        4
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3はダート1400中心で、13の東京1400二・三着、10の福島1200二着ほど芝短距離の直接材料がない。"
+    },
+    "honmei_win": {
+      "evidence": "◎13ダンケルドは東京1400二着・三着を反復しIDM43。調教69・状態63で勝ち切り支持。",
+      "main_risk": "○10タイヨウノキセツは福島1200二着IDM43。距離短縮の直接性で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲16オカゲサンは新潟1400三着を二度。状態65でコース適性を生かす。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "13の1400連対を軸に10の1200二着、16の新潟1400三着反復、1・4の仕上がりを比較。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 1,
+    "marks": [
+      2,
+      4,
+      3,
+      11,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        4,
+        3,
+        11,
+        5
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6は函館1200六着IDM23で、2の三着IDM34、4の1000二着IDM35、3の1200三・四着を下回る。"
+    },
+    "honmei_win": {
+      "evidence": "◎2ハルヒメは函館1200三着IDM34、能力36.2。調教61で初勝利に最も近い。",
+      "main_risk": "○4ファニーバニーは函館1000二着IDM35。距離延長でもスピードで逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲3ショウナンカリスは函館1200三・四着。距離適性の安定で上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2・4・3の函館短距離連対級を中心に11・5を比較。能力差は小さい。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 2,
+    "marks": [
+      9,
+      7,
+      12,
+      5,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        7,
+        12,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は1200でIDM35前後だが1000の直接実績が弱い。9・7の函館1000二着反復、12・2の1000三着を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎9エンジェルラダーは函館1000二着を連続IDM39-40。逃げて自分の形なら勝ち切る。",
+      "main_risk": "○7コッコラーレは函館1000二着を三度。連対再現性では◎と互角。"
+    },
+    "shot_case": {
+      "case": "▲12ラピルスイメルは函館1000三着IDM35。差しが届けば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9と7の函館1000二着反復が中心。12・5・2も1000～1150で上位歴がある。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 3,
+    "marks": [
+      5,
+      12,
+      2,
+      14,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        12,
+        2,
+        14,
+        9
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13は函館1700四着IDM29で、5の1700三着IDM38、2の同距離三・五着反復を下回る。"
+    },
+    "honmei_win": {
+      "evidence": "◎5オオタチは函館1700三着IDM38、東京1600三着IDM40。中距離ダートの安定から勝ち切り支持。",
+      "main_risk": "○12ディアウスは1400で二・三着を高IDMで反復。1700延長に対応できれば能力上位。"
+    },
+    "shot_case": {
+      "case": "▲2ジーティートゥルーは函館1700三着・五着反復。調教不安でも距離適性で上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5の1700三着を軸に12の高能力、2・14・9の1700実績を比較。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 4,
+    "marks": [
+      9,
+      14,
+      8,
+      4,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        14,
+        8,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12は芝1400十一着などで、9の函館1200二着IDM43、14の函館1200三着、8の函館1200五着IDM37に劣る。"
+    },
+    "honmei_win": {
+      "evidence": "◎9リリーオブザハートは函館1200二着IDM43、京都1400四着IDM44。短距離の能力を最上位評価。",
+      "main_risk": "○14ワタシマツワは函館1200三着・四着。状態65で逆転余地がある。"
+    },
+    "shot_case": {
+      "case": "▲8シンヒダカゴールドは函館1200五着IDM37。先行できれば粘り込み可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9・14・8の函館1200実績を中心に4・2の芝中距離実績を比較。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 5,
+    "marks": [
+      5,
+      10,
+      7,
+      4,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        10,
+        7,
+        4,
+        8
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13は能力22で、5の38、10の27.8、7の27.2に比べ初戦能力が低い。"
+    },
+    "honmei_win": {
+      "evidence": "◎5ミヤエスケープは新馬能力38で最上位。初戦でスムーズなら素質で押し切る。",
+      "main_risk": "○10チャーリーは能力27.8、状態62。仕上がりの良さで逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲7ハグレジョーは能力27.2、調教63。完成度で上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬。5が能力38で抜け、10・7・4・8が次位。実戦不確実性を残す。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 6,
+    "marks": [
+      3,
+      5,
+      2,
+      11,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        5,
+        2,
+        11,
+        9
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10は東京1600二着歴があるが近走十五着。3の函館1800三着、5の小倉1800三着、2の函館1800三着を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎3コスモマガラニカは函館1800三着IDM42、東京1800四着IDM41。距離実績から勝ち切り支持。",
+      "main_risk": "○5ドゥラエテルノは小倉1800三着IDM42、新潟2000三着。持続力で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲2ラウニウは函館1800三着IDM43。今回条件の直接性では最上位級。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "3・5・2が1800三着級で接近。11の東京・函館1800三着、9の函館1800三着も加わる混戦。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 7,
+    "marks": [
+      1,
+      3,
+      5,
+      7,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        3,
+        5,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は芝1200十四着で、1の函館1200二着、3の函館1200三着、5の新潟1200二着に劣る。"
+    },
+    "honmei_win": {
+      "evidence": "◎1ラセーヌシュメールは函館1200二着IDM47、五着IDM46。短距離で能力が一段上。",
+      "main_risk": "○3カルミネイションは函館1200三着IDM41。差し脚で◎を捕える余地。"
+    },
+    "shot_case": {
+      "case": "▲5ハイファイスピードは新潟1200二着IDM40。展開が噛み合えば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1の函館1200二着を軸に3・5・7・4を比較。1の近走IDMが最も高い。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 8,
+    "marks": [
+      5,
+      3,
+      1,
+      4,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        3,
+        1,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6は出走馬に存在しないため候補外。5の高IDM、3の函館2000勝ち、1の函館2000四着を中心に5頭を選定した。"
+    },
+    "honmei_win": {
+      "evidence": "◎5キングスコールは中山2000でIDM58、調教73。能力上限と仕上がりから勝ち切り支持。",
+      "main_risk": "○3デルマジュテームは函館2000勝ちIDM47。コース・距離の直接性で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲1マイバラードは函館2000四着IDM48。安定した差しで上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5の能力58を最上位とし、3の函館2000勝ち、1の同舞台四着、4の1800勝ち、2の中山2000実績を比較。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 9,
+    "marks": [
+      11,
+      12,
+      9,
+      6,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        12,
+        9,
+        6,
+        8
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10は函館1700五着IDM39で、11の東京1600四着・1400三着IDM49、12の東京1600三着IDM50、9の函館1700勝ちに劣る。"
+    },
+    "honmei_win": {
+      "evidence": "◎11ショウナンヤッホーは東京1400三着IDM49、1600四着IDM46。調教70・状態71で勝ち切り支持。",
+      "main_risk": "○12レッドベルダンスは東京1600三着IDM50。距離延長でも末脚を維持できれば逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲9コスモシェルベットは函館1700勝ちIDM49。コース実績で上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "11・12の高IDMに9の函館1700勝ち、6の福島1700二着、8の函館1700五着を比較。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 10,
+    "marks": [
+      2,
+      8,
+      7,
+      6,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        8,
+        7,
+        6,
+        12
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9は2000二・三着で堅実だが、2の2600二着・2400三着、8の2600勝ち、7の2600三着ほど長距離直接実績がない。"
+    },
+    "honmei_win": {
+      "evidence": "◎2バレンタインガールは函館2600二着、東京2400三着、中山2500二着。長距離で連対を反復し最有力。",
+      "main_risk": "○8ヴァイザーバルコは福島2600勝ちIDM57。距離適性と能力上限で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲7ハイラントは函館2600三着IDM53。コース近似条件で安定。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2の長距離連対反復を軸に8・7・6・12を比較。12は東京2400勝ちと状態74で警戒。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 11,
+    "marks": [
+      3,
+      11,
+      12,
+      7,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        11,
+        12,
+        7,
+        10
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6は函館1200勝ちIDM54で有力だが、3の函館1200連勝IDM60、11の函館1200三着IDM58と仕上がり81を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎3カルプスペルシュは函館1200を連勝、前走IDM60。逃げて自分の形なら三連勝を狙える。",
+      "main_risk": "○11ソノママソノママは函館1200三着IDM58、調教81・状態81。仕上がり差で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲12モズナナスターは函館1200勝ちIDM58。差し脚が噛み合えば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "3の連勝を中心に11・12・7・10の高IDM1200実績を比較。上位は能力差が小さい。"
+  },
+  {
+    "venue": "札幌",
+    "race_no": 12,
+    "marks": [
+      10,
+      11,
+      6,
+      3,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        11,
+        6,
+        3,
+        1
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2は京都1800七着IDM52で悪くないが、10の1800一・二着IDM58-59、11の1800二着IDM54を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎10ワイドブリザードは阪神1800勝ちIDM58、京都1800二着IDM59。能力58で先行押し切りを強く支持。",
+      "main_risk": "○11ラオラシオンは新潟1800二着IDM54、中京1800三着IDM53。調教70で逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲6アセレラシオンは小倉1700二着IDM57。1700に戻れば能力上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10の高IDM連対を軸に11・6・3・1を比較。1は函館1700勝ちでコース実績がある。"
+  }
+]
