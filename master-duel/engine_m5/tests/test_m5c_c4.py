@@ -205,7 +205,7 @@ class RefreshTests(unittest.TestCase):
         p=self.run_plan([{"kind":"BANLIST","old_effective_on":"2026-11-01",
                           "new_effective_on":"2026-11-12",
                           "changed_card_ids":["konami:101"]}])
-        overlay=make_staleness_overlay(self.b,p,source_knowledge_sha256="a"*64)
+        overlay=make_staleness_overlay(self.b,p,source_knowledge_sha256=sha256(json.dumps(self.b,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()).hexdigest())
         self.assertEqual({"REVIEW_REQUIRED"},{x["status"] for x in overlay["statuses"]})
 
     def test_staleness_overlay_sha_mismatch_rejected(self):
