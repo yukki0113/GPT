@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import copy
+import argparse
 import json
 import re
 import random
@@ -11,6 +12,31 @@ import secrets
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Callable
+
+
+def derive_pending_inventory(legacy_days: list[dict]) -> list[dict]:
+    """Deduplicate legacy date/source rows without promoting or editing history."""
+    grouped: dict[tuple[str, str], list[dict]] = {}
+    for row in legacy_days:
+        target = date.fromisoformat(str(row["date"])).isoformat()
+        mode = str(row.get("source_mode") or "paci")
+        if mode not in ("paci", "historical_warehouse"):
+            raise ValueError("unknown legacy source mode")
+        grouped.setdefault((target, mode), []).append(row)
+    result = []
+    for (target, mode), rows in sorted(grouped.items()):
+        references = {str(x.get("source_reference") or "") for x in rows if x.get("source_reference")}
+        ids = {str(x.get("drive_file_id") or "") for x in rows if x.get("drive_file_id")}
+        if len(references) > 1 or len(ids) > 1:
+            raise ValueError(f"conflicting legacy source identity: {target} {mode}")
+        excluded = [x for x in rows if x.get("eligible") is False or x.get("exclusion_reason")]
+        reasons = sorted({str(x.get("exclusion_reason") or "legacy_explicit_exclusion") for x in excluded})
+        result.append({"target_date": target, "source_mode": mode,
+                       "source_reference": next(iter(references), ""),
+                       "drive_file_id": next(iter(ids), ""),
+                       "readiness_status": "PENDING", "eligible": not excluded,
+                       "exclusion_reason": "; ".join(reasons) if reasons else None})
+    return result
 
 
 def verify_readiness_receipt(row: dict, repository_root: Path) -> bool:
@@ -198,3 +224,23 @@ def plan_reservation(pool: dict, resolved: dict[str, dict], backtest_root: Path,
     updated = copy.deepcopy(pool)
     updated["selections"].append(copy.deepcopy(proposal))
     return updated, proposal
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--import-legacy", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    args = parser.parse_args()
+    pool = json.loads(args.import_legacy.read_text(encoding="utf-8"))
+    rows = derive_pending_inventory(pool["days"])
+    payload = {"schema_version": "racenote-btday-source-inventory-v2", "source_inventory": rows}
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with args.output.open("x", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    print(json.dumps({"status": "PENDING_ONLY", "dates_and_sources": len(rows)}))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
