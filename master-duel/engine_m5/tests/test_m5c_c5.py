@@ -3,7 +3,7 @@ import copy
 from hashlib import sha256
 import unittest
 from test_m5c_c0 import fixture
-from engine_m5.private_bundle import (make_sidecar,open_sidecar,theme_knowledge_bundle,
+from engine_m5.private_bundle import (make_sidecar,open_sidecar as _open_sidecar,theme_knowledge_bundle,
                                      canonical,digest)
 
 
@@ -33,6 +33,12 @@ def packed(k=None,variants=None,overlay=None):
             upstream_knowledge_sha256='c'*64,master_db_sha256='b'*64)
 
 
+def open_sidecar(z,m,**kwargs):
+    return _open_sidecar(z,m, expected_zip_sha256=kwargs.pop("expected_zip_sha256",digest(z)),
+                         expected_manifest_sha256=kwargs.pop("expected_manifest_sha256",digest(m)),
+                         expected_master_db_sha256=kwargs.pop("expected_master_db_sha256","b"*64),**kwargs)
+
+
 class PrivateBundleTests(unittest.TestCase):
     def test_roundtrip_and_m6_unknown_gates(self):
         z,m=packed()
@@ -40,7 +46,7 @@ class PrivateBundleTests(unittest.TestCase):
           expected_manifest_sha256=digest(m),expected_master_db_sha256='b'*64)
         b=theme_knowledge_bundle(data,'p1')
         self.assertEqual('md-m5c-theme-knowledge-bundle-v1',b['schema'])
-        self.assertEqual(40,len(b['recipe_cards'])-0 if False else sum(x['quantity'] for x in b['recipe_cards']))
+        self.assertEqual(40,sum(x['quantity'] for x in b['recipe_cards']))
         self.assertFalse(b['recommendation_eligible'])
         self.assertFalse(b['ownership_verified'])
         self.assertFalse(b['regulation_verified'])
@@ -121,6 +127,10 @@ class PrivateBundleTests(unittest.TestCase):
     def test_malformed_variant_with_duplicate_id_rejected(self):
         k,v=sample();v=v+[copy.deepcopy(v[0])]
         with self.assertRaises(ValueError):packed(k,v)
+
+    def test_unpinned_open_is_rejected(self):
+        z,m=packed()
+        with self.assertRaises(TypeError):_open_sidecar(z,m)
 
     def test_noncanonical_manifest_rejected(self):
         z,m=packed()
