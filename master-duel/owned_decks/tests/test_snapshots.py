@@ -58,7 +58,7 @@ class TestOwnedDecks(unittest.TestCase):
 
     def test_excess_extra_remains_staged(self):
         data = sample()
-        data["entries"][1]["quantity"] = 16
+        data["entries"].extend([{"section": "EXTRA", "spoken_name": f"架空{i}", "card_id": f"synthetic:{i}", "quantity": 3} for i in range(5)])
         self.assertIn("EXTRA_OVER_15", check(data)["warnings"])
         data["state"] = "CONFIRMED"
         with self.assertRaises(ValueError):
