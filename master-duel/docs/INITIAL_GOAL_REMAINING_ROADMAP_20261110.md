@@ -1,3 +1,5 @@
+> **2026-11-11 M5-C C3完了**：軍貫の掲載レシピとUR0候補を比較し、MAIN40/EX7・UR0、失われる汎用UR/EX・未確認ルートを分離してprivate Driveに版付き保存。全て`REVIEW_REQUIRED`（現行規制/実所持/CP未監査）。次はC4再利用・更新失効。[C3監査](M5C_C3_LOW_COST_VARIANTS_AUDIT_20261111.md)。
+
 > **2026-11-11 M5-C C2 完了**：3タイプの実カード展開グラフ（一本道・ランダム分岐・任意制約）を構造化し、現行privateカード本文SHA・M4効果索引6件のオフセットを照合。private Drive知識/manifest/追加M4証跡を独立読み戻し、CI合成回帰PASS。次はC3低コスト代替構築。[C2監査](M5C_C2_COMBO_GRAPH_AUDIT_20261111.md)。
 
 > **2026-11-11 M5-C C1完了**：4テーマ8ソースの構築知識試作。private Driveにsource-era知識JSON・manifest保存、記事レシピ1件のMAIN40/EX15全枚数・29種類ID照合、異常な記事枚数は保留。[C1監査](M5C_C1_FOUR_THEMES_AUDIT_20261111.md)。次はC2展開・分岐グラフ。

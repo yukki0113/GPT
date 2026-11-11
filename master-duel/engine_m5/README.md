@@ -1,3 +1,5 @@
+> **2026-11-11 M5-C C3**：`low_cost_variant.py`で、SHAピン済み元DBに対する掲載レシピのUR数、明示理由付きの代替/除外、MAIN/EX枠、候補中核UR0と新規UR生成0の別判定、失われるEX/経路UNKNOWNを検査。軍貫UR0候補MAIN40/EX7をprivate Driveに保存し独立SHA読み戻し。C4/C5未実装、現行規制/所有/CP/ゲーム内展開は未検証。[C3監査](../docs/M5C_C3_LOW_COST_VARIANTS_AUDIT_20261111.md)。
+
 > **M5-C C2（2026-11-11）**：`combo_graph.py`に、効果原文SHA＋効果番号アンカー、資源移動差分、通常召喚権・ターン1・属性/種族ロック、枝分かれ終端を検証するDAG検査器を追加。3種のprivate実例で検証し、既存M4索引の3カード6ファセットも本文オフセットと独立照合。ゲーム内再現/現行禁止制限/CP計算ではない。[C2監査](../docs/M5C_C2_COMBO_GRAPH_AUDIT_20261111.md)。
 
 > **2026-11-11 M5-C C1**：4テーマのsource-era試作知識をprivate Driveに保存・SHA読み戻し。記事のMAIN/EX合計が一致しない場合は推測で修復せず`REVIEW_REQUIRED`。全構築のゲーム内成立/MD合法性は未保証。[C1監査](../docs/M5C_C1_FOUR_THEMES_AUDIT_20261111.md)。
