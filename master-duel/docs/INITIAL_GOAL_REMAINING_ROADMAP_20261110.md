@@ -1,3 +1,5 @@
+> **2026-11-11 M5-C C2 完了**：3タイプの実カード展開グラフ（一本道・ランダム分岐・任意制約）を構造化し、現行privateカード本文SHA・M4効果索引6件のオフセットを照合。private Drive知識/manifest/追加M4証跡を独立読み戻し、CI合成回帰PASS。次はC3低コスト代替構築。[C2監査](M5C_C2_COMBO_GRAPH_AUDIT_20261111.md)。
+
 > **2026-11-11 M5-C C1完了**：4テーマ8ソースの構築知識試作。private Driveにsource-era知識JSON・manifest保存、記事レシピ1件のMAIN40/EX15全枚数・29種類ID照合、異常な記事枚数は保留。[C1監査](M5C_C1_FOUR_THEMES_AUDIT_20261111.md)。次はC2展開・分岐グラフ。
 
 > **2026-11-11 M5-C C0完了**：テーマ構築知識のschema/出典バリデータと合成試験を追加。M5-Cの外部構築知識収集・展開分岐・低コスト代替・private Drive統合（C1〜C5）はまだ未実装。[C0監査](M5C_C0_SCHEMA_SOURCE_AUDIT_20261111.md)。本番HEAD/所持デッキは変更なし。
