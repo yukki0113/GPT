@@ -1,3 +1,5 @@
+> **2026-11-11 M6-4受入**：`evaluate.py`で原本SHAを照合したread-only SQLiteの構造候補評価を実装。M2所持UNKNOWNの必要枚数上下限、4通貨別CP、三つのUR0ゲート、M3の未検証禁止制限候補と正式規制の分離、EX未使用枠を返す。private軍貫2案の**独立ソース監査**を保存し、UR0案はUR追加0、ただしEX7/15・SR以下と中核/現行規制/CP残高は未確定。新コードのprivate一気通貫テストはM6-6。[M6-4監査](../docs/M6_4_COST_REGULATION_EVALUATION_AUDIT_20261111.md)。次はM6-5比較・EX補強調査・不採用理由監査。
+
 > **2026-11-11 M6-3受入**：`assemble.py`でM5-CレシピとUR0低コスト仮案をMAIN40〜60/EX0〜15の根拠付き構造候補へ変換。記事40宣言/可視39を拒否し、明示編集は別`ASSEMBLED`版と理由で記録。探索上限、同一候補重複、除外/要求カード、未検証出張の自動採用禁止を合成回帰。private C5を別プログラムで独立監査：軍貫MAIN40/EX15とUR0仮案MAIN40/EX7の2件構造PASS、イビルツイン39/40はBLOCKED。現行MD規制/所有/CP/必須コアはM6-4以降。[監査](../docs/M6_3_ASSEMBLY_AUDIT_20261111.md)。
 
 > **2026-11-11 M6-2候補プール受入**：`candidate_pool.py`でM5-C掲載カード/UR0代替候補/C2展開経路をSHA参照付きで収集、`dependency.py`で出張依存・競合・共有カード・代替・EX下界・任意ロックを検査。`m5_inputs.py`でM5-A/Bのprivate旧索引をread-only・SHA付き受入。両索引は古いGen3由来なので`STALE_SOURCE_GENERATION`、現行Gen5の確定サポートではない。C5 5テーマのprivate集計を別監査し、未確認中核はUNKNOWNに維持。**完成レシピ・規制/所有/CP判定は未着手**。[M6-2監査](../docs/M6_2_CANDIDATE_POOL_AUDIT_20261111.md)。次はM6-3。

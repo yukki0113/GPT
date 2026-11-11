@@ -1,3 +1,5 @@
+> **2026-11-11 M6-4完了（現時点の最新進捗）**：`engine_m6/evaluate.py`で源泉SQLite/CP SHAをピンし、所有UNKNOWNの生成枚数・CP下限/上限、CORE_UR_ZERO/NEW_UR_CRAFT_ZERO/STRICT_NO_UR、M3候補と正式MD規制を分離。軍貫の掲載MAIN40/EX15・UR20例と低レアMAIN40/EX7・UR0案を独立privateソース再評価。EX7は未使用8枠・最適性未検証として残し、M6-5で補強候補を比較する。M6-5〜M6-7は未着手。[M6-4監査](M6_4_COST_REGULATION_EVALUATION_AUDIT_20261111.md)。以下の設計本文は当初の履歴として保持。
+
 > **2026-11-11 M6-3進捗**：`engine_m6/assemble.py`を実装し、出典付き記事レシピとC3低レア仮説の2系統から構造候補を生成。個別カードの採用理由/出典、MAIN/EX/3枚制約、欠損元記事、明示編集と元記事の区別、STALE、探索上限を検証。private独立ソース照合では軍貫2案構造PASS、イビルツインの記事39/40をBLOCKED。実コードのprivateデータ統合受入はM6-6で実施。禁止制限・所持・CP・必須コア確定はM6-4以降。[監査](M6_3_ASSEMBLY_AUDIT_20261111.md)。下記初期計画の記録は履歴。
 
 > **2026-11-11 M6-2受入（最新）**：候補プール、出張依存・代替/ロック・M5-A/B旧索引取込を実装し合成試験。C5実データの5テーマをprivate別監査。旧M5-A/B索引はGen3ソースのため現行Gen5と異なり`STALE_SOURCE_GENERATION`、最新MDのサポート成立/規制適合とはしない。C5の確定COREパッケージは現状0件。M6-3〜M6-7は未着手。[M6-2監査](M6_2_CANDIDATE_POOL_AUDIT_20261111.md)。後述の当初設計時点の「未着手」は歴史記録。
