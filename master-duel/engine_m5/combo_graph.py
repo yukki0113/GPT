@@ -5,6 +5,7 @@ master. Text anchors establish only text correspondence, never GAME_TESTED.
 """
 from collections import Counter, defaultdict, deque
 from hashlib import sha256
+import json
 
 from .knowledge_schema import validate_knowledge
 
@@ -190,8 +191,19 @@ def validate_combo_routes(bundle, card_texts, card_properties=None):
                 labels = [e.get("branch_predicate") for e in branches]
                 if any(not isinstance(x, str) or not x for x in labels) or len(set(labels)) != len(labels):
                     raise ValueError("branch alternatives need distinct evidence labels")
-                if kinds == {"RANDOM_OUTCOME"} and len(branches) < 2:
-                    raise ValueError("random outcome needs alternatives")
+                if kinds == {"RANDOM_OUTCOME"}:
+                    if len(branches) < 2 or any(by_id[e["to_node"]]["action_type"] != "RANDOM_RESOLUTION" for e in branches):
+                        raise ValueError("random outcome needs explicit alternative resolutions")
+                    signatures = []
+                    for edge in branches:
+                        terminal = states[by_id[edge["to_node"]]["after_state_ref"]]
+                        signatures.append(json.dumps(
+                            {"locations": terminal["locations_json"],
+                             "resources": terminal["resources_json"],
+                             "locks": terminal["locks_json"]},
+                            ensure_ascii=False, sort_keys=True))
+                    if len(set(signatures)) != len(signatures):
+                        raise ValueError("random outcomes cannot be identical states")
             elif branches and branches[0]["branch_kind"] == "RANDOM_OUTCOME":
                 raise ValueError("single random outcome is falsely deterministic")
         leaf_states = {n["after_state_ref"] for n in nodes if not outgoing[n["node_id"]]}
