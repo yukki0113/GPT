@@ -72,7 +72,6 @@ def load_m5a_packages(manifest_raw, zip_raw, *, expected_manifest_sha256,
         db_sha=expected_db_sha256,filename="m5_engine_index.sqlite",
         manifest_zip_field="m5_index_zip_sha256",
         manifest_db_field="m5_index_sha256")
-    _check(b"anchor",sha256(b"anchor").hexdigest(),"internal sanity")
     _check_sha(current_production_sqlite_sha256)
     old=manifest.get("source_sqlite_sha256")
     _check_sha(old)
