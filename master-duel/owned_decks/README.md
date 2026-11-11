@@ -73,3 +73,24 @@ python -m owned_decks.catalog resolve --input /private/MD_OWNED_DECK_CATALOG.jso
 ```
 
 Driveへの認証付き保存・取得はChatGPT/WorkのGoogle Drive接続を使用し、GitHub Actionsや公開Issueでprivateデータを取り扱わない。
+
+## M2-D2：Drive公開経路（2026-11-11）
+
+`owned_decks/publish.py` は**Drive接続を内包しない確定的な安全ゲート**。`verify_uploaded_snapshot` → `prepare_catalog_update` → `verify_base_before_activation` → **認証済みDrive接続で既存catalog更新** → `verify_activated_catalog` の順に使用する。個人データにGitHub Actionsや公開Issueを使わない。
+
+### 保存手順（PRODUCTION / 合成テスト双方で遵守）
+
+1. Google Drive `GPT/MasterDuel/DB/` の対象カタログを**フォルダ列挙で1件だけ確認**し、現在のカタログを別要求でダウンロードしてSHA/スキーマ検証する。複数候補は競合として停止。実カードの場合は`MD_CURRENT_HEAD.json`が指す最新カードマスターSQLiteをSHA検証済みの読取専用で使用する。
+2. 音声整形したsnapshotを`check_snapshot`で検証。本人に内容とMAIN/EX集計を提示し、**保存承認**を得る。STAGEDは途中保存、CONFIRMEDは承認済み・カードID照合済みとし、最新MD禁止制限の検証済みという意味ではない。
+3. `<snapshot-sha256>.json`をprivate Driveへ**新規アップロード**（同じ名前を上書きしない）。別API要求で実ファイルをダウンロードし、`verify_uploaded_snapshot`で期待バイト列・SHA・カードマスターID照合が一致することを確認。ダウンロード不一致時はカタログを更新しない。
+4. 取得した実DriveファイルIDを使い、`prepare_catalog_update`で候補Generation+1を生成。既存`deck_id`なら直前snapshot SHAを`supersedes`に保持し、版番号を連続させる。新しいvariantは別`deck_id`で登録。同じデッキの名称や別名変更は無断上書きせず別の明示移行とする。
+5. 更新前のcatalogファイルをprivate Drive上で**別名バックアップ**。そのバックアップを独立取得・SHA照合し、内容一致を確認する。更新直前に現行catalogを**再取得**し、`verify_base_before_activation`で初回の内容と一致することを確認。単一ライター維持。
+6. 認証済みDrive接続でcatalogの**既存ファイルIDへ候補JSONバイトを置換**。`files.update`はatomic CASを提供しないため読取・書込間の同時更新を完全防止できない。通信失敗や対象競合では成功とみなさず、既存バックアップを保持する。
+7. 別要求で現行catalogを独立取得し`verify_activated_catalog`。候補と一致し、各snapshot参照が正しいことを確認した時点だけ`COMMITTED`。不一致は`FAILED/HOLD`で停止し、バックアップと新規アップロード済み未参照snapshotを保全。無断自動再試行・上書き・削除をしない。
+
+### D2 private Drive合成往復実績
+
+- **隔離フォルダ**：`GPT/MasterDuel/DB/MD_D2_SYNTHETIC_TEST_20261111/`。本番索引 `MD_OWNED_DECK_CATALOG.json` と `MD_CURRENT_HEAD.json` は不変。実レシピではなく架空カードIDのみ。
+- synthetic snapshot v1 `STAGED`：SHA `fc4b2da0ff1f0760b29c7d687771f0d09c57c648dcc43c94ebf2aef6171d236f`。v2 `CONFIRMED`：SHA `204427e503d70370a7818c2043f202f9c5c908de4bd32c50c9110aa447fa2b15`。後者はMAIN40/EX1（全て架空カード）。両者をprivate Driveに新規保存・別要求で独立取得し、期待JSONバイト列・SHA一致。
+- synthetic catalog Generation 1→2（v1 STAGED）→3（v2 CONFIRMED）、独立読戻しSHA `727baecffa11fee36544d3822a1a058d45a71a549fe4bb429f180a60b680fa18`。
+- Generation 1/2のバックアップも別名Driveファイルに保持・独立取得して各SHAを照合。旧snapshot未変更、索引は同一Drive IDのまま版追加。これは合成データ実地往復試験であり、**実デッキ1件目の登録完了やD3横断検索の完了を意味しない**。
