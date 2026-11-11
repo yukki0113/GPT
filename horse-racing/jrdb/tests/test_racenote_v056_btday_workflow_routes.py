@@ -19,11 +19,11 @@ class WorkflowRoutingTest(unittest.TestCase):
         self.assertNotIn("git pull --rebase", text)
         self.assertNotIn("git push --force", text)
 
-    def test_mixed_source_starts_disabled_with_empty_inventory(self):
+    def test_mixed_source_starts_disabled_without_ready_inventory(self):
         gate = json.loads((JRDB / "config/racenote_v056_mixed_source_gate.json").read_text())
         inventory = json.loads((JRDB / "config/racenote_btday_source_inventory_v2.json").read_text())
         self.assertEqual(gate["status"], "DISABLED")
-        self.assertEqual(inventory["source_inventory"], [])
+        self.assertTrue(all(x["readiness_status"] == "PENDING" for x in inventory["source_inventory"]))
 
     def test_reservation_commits_both_paths_without_rebase(self):
         text = (ROOT / ".github/workflows/racenote_v056_t1_orchestrator.yml").read_text()
