@@ -40,7 +40,7 @@ def _delta(before, after):
     return {key: v for key, v in result.items() if v}
 
 
-def _validate_node(node, states, card_texts):
+def _validate_node(node, states, card_texts, card_properties):
     before = states[node["before_state_ref"]]
     after = states[node["after_state_ref"]]
     if node.get("action_type") not in ACTION_TYPES:
@@ -62,6 +62,24 @@ def _validate_node(node, states, card_texts):
     expected = {key: val for key, val in expected.items() if val}
     if _delta(before, after) != expected:
         raise ValueError("unexplained state difference; no silent resource creation")
+    # Conditional locks apply to future summons; check the known destination
+    # properties against both pre-existing and newly established restrictions.
+    active_locks = {**before["locks_json"], **after["locks_json"]}
+    for transfer in transitions:
+        if transfer["to"] != "FIELD" or transfer["from"] == "FIELD":
+            continue
+        cid = transfer["card_id"]
+        properties = card_properties.get(cid)
+        if node["action_type"] != "NORMAL_SUMMON":
+            attr = active_locks.get("SPECIAL_SUMMON_ONLY")
+            if attr:
+                if not properties or properties.get("attribute") != attr:
+                    raise ValueError("special summon attribute restriction violated or unknown")
+        if transfer["from"] == "EXTRA":
+            race = active_locks.get("EXTRA_SUMMON_ONLY")
+            if race:
+                if not properties or properties.get("race") != race:
+                    raise ValueError("EX summon race restriction violated or unknown")
     old_locks = before["locks_json"]
     new_locks = after["locks_json"]
     if not isinstance(old_locks, dict) or not isinstance(new_locks, dict):
@@ -102,7 +120,7 @@ def _validate_node(node, states, card_texts):
     return bool(node["action_type"] == "EFFECT")
 
 
-def validate_combo_routes(bundle, card_texts):
+def validate_combo_routes(bundle, card_texts, card_properties=None):
     """Check typed DAG, snapshots, trace continuity, branch evidence and locks.
 
     Returns an audit summary. Text-checked does NOT imply simulator legality.
@@ -110,6 +128,10 @@ def validate_combo_routes(bundle, card_texts):
     validate_knowledge(bundle)
     if not isinstance(card_texts, dict):
         raise ValueError("card_texts must be pinned card id to raw text map")
+    if card_properties is None:
+        card_properties = {}
+    if not isinstance(card_properties, dict):
+        raise ValueError("card_properties must be pinned read-only map")
     states = {x["state_id"]: x for x in bundle["resource_states"]}
     by_route = defaultdict(list)
     for n in bundle["combo_nodes"]:
@@ -146,7 +168,7 @@ def validate_combo_routes(bundle, card_texts):
         if len(visited) != len(nodes):
             raise ValueError("unreachable route nodes")
         for node in nodes:
-            _validate_node(node, states, card_texts)
+            _validate_node(node, states, card_texts, card_properties)
         for parent, branches in outgoing.items():
             if len(branches) > 1:
                 kinds = {e["branch_kind"] for e in branches}
