@@ -174,6 +174,10 @@ def plan_refresh(bundle, events, *, variants=(), batch_limit=20,
                 _require_id(old, "old_revision")
             if new is not None:
                 _require_id(new, "new_revision")
+            if old == "UNKNOWN":
+                old = None
+            if new == "UNKNOWN":
+                new = None
             if old is not None and old == new:
                 skipped.append({"kind":kind, "source_id":sid, "reason":"SAME_PINNED_REVISION"})
                 continue
@@ -299,6 +303,10 @@ def make_staleness_overlay(bundle, plan, *, source_knowledge_sha256):
     """
     validate_knowledge(bundle)
     _sha(source_knowledge_sha256,"source_knowledge_sha256")
+    actual = sha256(json.dumps(bundle, sort_keys=True, separators=(",",":"),
+                               ensure_ascii=False, allow_nan=False).encode("utf-8")).hexdigest()
+    if actual != source_knowledge_sha256:
+        raise ValueError("source knowledge SHA pin mismatch")
     if plan.get("schema") != "md-m5c-c4-refresh-plan-v1":
         raise ValueError("unexpected refresh plan")
     if plan["source_knowledge_version"] != bundle["knowledge_version"]:
