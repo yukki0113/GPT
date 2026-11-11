@@ -98,6 +98,7 @@ def build_candidate_pool(bundle, *, expected_knowledge_sha256,
                         "M5C:VARIANT:"+variant["variant_id"],row["quantity"],
                         "LOW_COST_REFERENCE","REVIEW_REQUIRED")
     routes=[]
+    route_only_cards=set()
     stale={(x["object_type"],x["object_id"])
            for x in bundle.get("stale_dependencies",[])}
     for route in bundle["combo_routes"]:
@@ -109,6 +110,7 @@ def build_candidate_pool(bundle, *, expected_knowledge_sha256,
                 cards.add(n["actor_card_id"])
             for t in n.get("transfers",[]):
                 cards.add(t["card_id"])
+        route_only_cards.update(cards)
         routes.append({"route_id":rid,"dependencies":sorted(cards),
                        "verification":route["verification"],
                        "status":"STALE" if ("ROUTE",rid) in stale else "REVIEW_REQUIRED"})
@@ -171,13 +173,18 @@ def build_candidate_pool(bundle, *, expected_knowledge_sha256,
         # two sources' 2-copy recommendations into a 4-copy demand.
         if len({e["observed_quantity"] for e in entry["observations"]})>1:
             entry["quantity_conflict"]=True
+    route_only_cards.difference_update(cid for (_,cid) in links)
+    if route_only_cards:
+        issues.append({"type":"ROUTE_CARD_SECTION_UNRESOLVED",
+                       "count":len(route_only_cards)})
     package_preview=inspect_packages(packages,[],extra_budget=15)
     return {"schema":"md-m6-2-candidate-pool-v1","profile_id":profile,
             "knowledge_sha256":expected_knowledge_sha256,
             "master_db_sha256":expected_master_db_sha256,
             "cards":sorted(links.values(),key=lambda x:(x["section"],x["card_id"])),
             "packages":packages,"unselected_package_preview":package_preview,
-            "routes":routes,"issues":issues,
+            "routes":routes,"route_only_card_ids":sorted(route_only_cards),
+            "issues":issues,
             "registered_owned_rows_seen":len(owned),
             "core_verification":"UNKNOWN",
             "confirmed_main_count":None,"confirmed_extra_count":None,
