@@ -22,7 +22,7 @@
 | D1 | DONE | privateデッキカタログ `MD_OWNED_DECK_CATALOG.json` のschema / validator / 初期作成 | 0件索引をDriveに実保存・独立取得・内容/SHA一致。同名複数variant、aliases、deck_id、版、ステージングと確定の区別を定義 |
 | D2 | DONE | privateデッキJSONアップロードと索引更新の運用経路 | 架空デッキのSTAGED→本人確認→CONFIRMEDを模擬、保存結果ID取得、独立読み戻し、SHA一致、カタログ更新→再読込、バックアップ/旧版保持。失敗時に既存版・索引を壊さない |
 | D3 | DONE | 構築室・検索室の自然言語名前検索ルーティング | 新規会話で「自分のイビルツイン」を指定→現行Drive索引取得→候補選択→最新CONFIRMED版取得→SHA・card_id・MAIN/EX照合。未登録・曖昧・STAGEDのみを区別し、会話メモリや旧File IDを正本扱いしない |
-| D4 | DONE (テキスト登録と別会話読出し) | 受入・運用引継ぎ | 合成回帰＋Drive往復＋ユーザー承認済み最初の実デッキを音声登録→別スレッドから読み出し成功。レポートに取得した版、snapshot SHA、MAIN/EX枚数、索引IDと状態を残す |
+| D4 | DONE (テキスト登録と別会話読出し) | 受入・運用引継ぎ | 合成回帰＋Drive往復＋ユーザー提供の文字起こしレシピ登録→別スレッドで読出し成功。版、snapshot SHA、MAIN/EX枚数、索引世代を確認。実機音声入力試験は対象外として残す |
 
 ## 3. データモデル（最小契約）
 
