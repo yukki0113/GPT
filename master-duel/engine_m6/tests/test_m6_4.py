@@ -215,6 +215,13 @@ class M64EvaluationTests(unittest.TestCase):
         self.assertIn("CRAFTABILITY_UNVERIFIED",out["warnings"])
         self.assertEqual(90,out["required_cp_lower_by_rarity"]["SR"])
 
+    def test_owned_more_than_three_does_not_break_inventory_evaluation(self):
+        # You may own more than three cards; only deck copies are capped at three.
+        out=self.evaluate(inventory={"konami:100":4})
+        selected=next(x for x in out["cards"] if x["card_id"]=="konami:100")
+        self.assertEqual(4,selected["owned_count"])
+        self.assertEqual(0,selected["new_needed"])
+
     def test_extra_seven_is_not_complete_fifteen(self):
         out=self.evaluate()
         self.assertEqual({"used":7,"unused":8,"suitability":"NOT_ASSESSED"},out["extra_deck"])
