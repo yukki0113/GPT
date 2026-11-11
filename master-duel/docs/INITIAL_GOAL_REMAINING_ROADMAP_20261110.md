@@ -1,3 +1,5 @@
+> **2026-11-11 M6-3構造候補生成完了**：source-era掲載レシピ/C3代替仮説をM6-0 DeckCandidate構造へ変換する探索上限付き`assemble.py`を追加。軍貫2案(MAIN40/EX15・MAIN40/EX7)はprivate独立ソース監査で構造一致。イビルツインMAIN39の欠損は補完せずBLOCKED。個別所持・現行規制・CP・実戦成立は未検証、M6-4以降の課題。[M6-3監査](M6_3_ASSEMBLY_AUDIT_20261111.md)。
+
 > **2026-11-11 M6-2候補・依存プール完了**：M5-Cのカード/変種/ルート、M5-A出張3候補、M5-B属性・種族支援候補のSHA検証済み読取アダプタを追加。ただし旧M5-A/B索引の生成元Gen3≠現行DB Gen5なので現行効果/規制の再確認必須。候補同一IDの数量合算禁止、EX枠と競合・未選択代替・召喚ロックの保留。完成レシピ生成と採用全件評価はM6-3以降。[M6-2監査](M6_2_CANDIDATE_POOL_AUDIT_20261111.md)。
 
 > **2026-11-11 M6-1 read-only Preflight実装**：private最新HEAD Generation5とZIP・SQLiteのSHA一致、所持135登録の全件列挙、M3規制候補215とCP方針、C5 sidecarのSHA整合を独立照合。M3候補禁止0の所持カード10種類を保留。所持全件の採否はテーマ未指定につきPARTIAL（全135 REVIEW_REQUIRED）、次はM6-2で個別理由を付けた候補プール作成。[M6-1監査](M6_1_READONLY_PREFLIGHT_AUDIT_20261111.md)。

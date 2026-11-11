@@ -1,3 +1,5 @@
+> **2026-11-11 M6-3進捗**：`engine_m6/assemble.py`を実装し、出典付き記事レシピとC3低レア仮説の2系統から構造候補を生成。個別カードの採用理由/出典、MAIN/EX/3枚制約、欠損元記事、明示編集と元記事の区別、STALE、探索上限を検証。private独立ソース照合では軍貫2案構造PASS、イビルツインの記事39/40をBLOCKED。実コードのprivateデータ統合受入はM6-6で実施。禁止制限・所持・CP・必須コア確定はM6-4以降。[監査](M6_3_ASSEMBLY_AUDIT_20261111.md)。下記初期計画の記録は履歴。
+
 > **2026-11-11 M6-2受入（最新）**：候補プール、出張依存・代替/ロック・M5-A/B旧索引取込を実装し合成試験。C5実データの5テーマをprivate別監査。旧M5-A/B索引はGen3ソースのため現行Gen5と異なり`STALE_SOURCE_GENERATION`、最新MDのサポート成立/規制適合とはしない。C5の確定COREパッケージは現状0件。M6-3〜M6-7は未着手。[M6-2監査](M6_2_CANDIDATE_POOL_AUDIT_20261111.md)。後述の当初設計時点の「未着手」は歴史記録。
 
 > **2026-11-11 M6-1実装（最新進捗）**：`engine_m6/preflight.py`にSHAピンのHEAD二度読み・ZIP/SQLiteの整合・所持登録135件の全行チェック・M3/CP/C5 sidecar入力ゲートを追加。private現行Generation5ではSHA/整合一致、登録135（KNOWN_POSITIVE66/KNOWN_ZERO69）、規制候補215をread-only監査。**全件取得PASSだが、デッキ別採否135件はREVIEW_REQUIREDでPARTIAL**。M3候補禁止0は採用保留、現行合法性は未検証。M4/M5-A/B追加索引のraw SHA・候補生成はM6-2以降。[M6-1監査](M6_1_READONLY_PREFLIGHT_AUDIT_20261111.md)。以下の初期基本設計は履歴として保持する。
