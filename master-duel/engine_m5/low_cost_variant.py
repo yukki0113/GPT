@@ -7,6 +7,7 @@ Neither user ownership nor craftability nor current MD regulations are inferred.
 from __future__ import annotations
 
 from collections import Counter
+import re
 from .knowledge_schema import validate_knowledge
 from .recipe_reconcile import audit_recipe
 
@@ -55,6 +56,9 @@ def assess_low_cost_variant(bundle, recipe_id, master_rows, *,
     if counts are independently confirmed; UNKNOWN inventory never passes.
     All outcomes remain REVIEW_REQUIRED until M3/M6 and game testing.
     """
+    if not isinstance(source_db_sha256, str) or not re.fullmatch(r"[0-9a-f]{64}", source_db_sha256):
+        raise VariantError("a pinned private master SQLite SHA256 is required")
+    master_rows = list(master_rows)
     validate_knowledge(bundle)
     if policy not in {"STRICT_NO_UR", "NEW_UR_CRAFT_ZERO"}:
         raise VariantError("unknown cost policy")
