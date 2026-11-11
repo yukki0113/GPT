@@ -65,7 +65,7 @@ jobs:
           v2=selection.get('selection_schema_version')=='btday-source-selection-v2'
           mode=selection.get('source_mode') if v2 else 'historical_warehouse'
           if v2:
-              if not mixed_source_enabled(): raise SystemExit('mixed-source gate is closed')
+              if not mixed_source_enabled(mode): raise SystemExit('BTDAY source mode has no accepted T1 proof')
               verify_readiness_receipt(selection['source_row'],Path.cwd())
           if mode not in ('paci','historical_warehouse'): raise SystemExit('unsupported source')
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:
