@@ -182,6 +182,8 @@ def validate_source_pins(v, *, registered_deck=False):
         return {"status":"BLOCKED","reasons":["MISSING_ESSENTIAL_PINS"]}
     if registered_deck and v["owned_deck_catalog_sha"] is None:
         return {"status":"BLOCKED","reasons":["MISSING_OWNED_DECK_CATALOG"]}
+    if any(v[name] is None for name in ("head_zip_generation","inventory_generation","m3_generation")):
+        return {"status":"PARTIAL","reasons":["GENERATION_COMPONENT_UNOBSERVED"]}
     if any(v[name] is None for name in ("m5_c_zip_sha","m5_c_manifest_sha")):
         return {"status":"PARTIAL","reasons":["M5_C_MISSING"]}
     if any(v[name] is None for name in REQUIRED_PINS):
@@ -301,6 +303,8 @@ def validate_candidate(v):
         for cid,why in mapping.items():
             card(cid,name)
             text(why,name)
+    if not set(v["required_core_ids"]) <= set(sections):
+        fail("mandatory core card missing from candidate")
     if set(v["reasons_by_card"])!=set(sections):
         fail("every candidate ID requires a reason")
     return {"status":"STRUCTURAL_CANDIDATE","main_count":main,
