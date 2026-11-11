@@ -11,7 +11,9 @@ class WorkflowRoutingTest(unittest.TestCase):
     def test_source_dispatch_is_gated_and_publish_does_not_rebase(self):
         path = ROOT / ".github/workflows/racenote_v056_btday_turn1_shared.yml"
         text = path.read_text(encoding="utf-8")
-        self.assertIn("mixed_source_enabled()", text)
+        self.assertIn("mixed_source_enabled(mode)", text)
+        self.assertIn("mixed_source_enabled('paci')", text)
+        self.assertNotIn("if not mixed_source_enabled(): raise SystemExit", text)
         self.assertIn("historical_warehouse", text)
         self.assertIn("prepare_paci:", text)
         self.assertIn("racenote_v056_btday_historical_preflight.py", text)
