@@ -1040,10 +1040,10 @@
         4,
         2
       ],
-      "external_challenger_horse_no": 6,
-      "excluded_horse_no": 6,
-      "decision": "KEEP_ORDINARY_FIVE",
-      "boundary_reason": "6は出走馬に存在しないため候補外。5の高IDM、3の函館2000勝ち、1の函館2000四着を中心に5頭を選定した。"
+      "external_challenger_horse_no": null,
+      "excluded_horse_no": null,
+      "decision": "NO_EXTERNAL_CHALLENGER",
+      "boundary_reason": "5頭立てのため外部候補は存在せず、Reader全頭をそのまま候補5頭として保持する。"
     },
     "honmei_win": {
       "evidence": "◎5キングスコールは中山2000でIDM58、調教73。能力上限と仕上がりから勝ち切り支持。",
