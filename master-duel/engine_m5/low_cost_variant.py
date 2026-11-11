@@ -45,7 +45,7 @@ def _summarize(counts, rarity):
 
 
 def assess_low_cost_variant(bundle, recipe_id, master_rows, *,
-                            policy="STRICT_NO_UR", additions=(),
+                            policy="STRICT_NO_UR", additions=(), exclusions=(),
                             mandatory_core_ids=(), owned_counts=None,
                             source_db_sha256=None):
     """Create an auditable *candidate*, never mutate the C1/C2 bundle.
@@ -79,6 +79,29 @@ def assess_low_cost_variant(bundle, recipe_id, master_rows, *,
         candidate = Counter({key: count for key, count in original.items() if rarity[key[1]] != "UR"})
     else:
         candidate = Counter(original)
+    excluded_annotations = []
+    exclusions = list(exclusions)
+    excluded_seen = set()
+    for item in exclusions:
+        if not isinstance(item, dict) or set(item) != {
+                "section", "card_id", "rationale", "verification", "source_ids"}:
+            raise VariantError("exclusion requires exact evidence-bearing fields")
+        key = (item["section"], item["card_id"])
+        if key in excluded_seen or key not in candidate:
+            raise VariantError("duplicate or non-existent exclusion")
+        excluded_seen.add(key)
+        if rarity[key[1]] == "UR" and policy == "STRICT_NO_UR":
+            raise VariantError("UR already removed by strict policy")
+        if not isinstance(item["rationale"], str) or not item["rationale"].strip():
+            raise VariantError("missing exclusion reason")
+        if item["verification"] not in {"HYPOTHESIS", "TEXT_CHECKED", "REVIEWED"}:
+            raise VariantError("unsupported exclusion verification")
+        if not isinstance(item["source_ids"], list) or any(
+                source not in {s["source_id"] for s in bundle["sources"]}
+                for source in item["source_ids"]):
+            raise VariantError("invalid exclusion provenance")
+        del candidate[key]
+        excluded_annotations.append(dict(item))
     additions = list(additions)
     additions_seen = set()
     annotations = []
@@ -157,6 +180,7 @@ def assess_low_cost_variant(bundle, recipe_id, master_rows, *,
         "candidate": {"sizes": sizes, "ur_copies": candidate_ur, "cards": rows(candidate)},
         "change": {"retained": rows(preserved), "removed": rows(removed),
                    "added": rows(added), "addition_evidence": annotations,
+                   "exclusion_evidence": excluded_annotations,
                    "removed_ex_ur": rows(Counter({key: n for key, n in removed.items()
                                                  if key[0] == "EXTRA" and rarity[key[1]] == "UR"}))},
         "paths": {"retained_candidate_ids": preserved_route_candidates,
