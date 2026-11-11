@@ -48,6 +48,24 @@ class LowCostVariantTests(unittest.TestCase):
         self.assertEqual("PASS_BY_NO_UR_IN_DECK",result["cost"]["new_ur_craft_zero"])
         self.assertEqual("PASS_FOR_SUPPLIED_CORE",result["cost"]["required_core_ur_zero"])
 
+    def test_optional_non_ur_exclusion_with_reason(self):
+        b,m=sample()
+        # EX lower-rarity card excluded only by an explicit evidence note.
+        result=assess_low_cost_variant(b,"r1",m,additions=[addition()],
+            exclusions=[{"section":"EXTRA","card_id":"konami:202",
+                         "rationale":"架空の依存先URが除去された","verification":"HYPOTHESIS",
+                         "source_ids":[]}])
+        self.assertEqual(0,result["candidate"]["sizes"]["EXTRA"])
+        self.assertEqual(1,len(result["change"]["exclusion_evidence"]))
+
+    def test_unknown_exclusion_rejected(self):
+        b,m=sample()
+        with self.assertRaises(VariantError):
+            assess_low_cost_variant(b,"r1",m,additions=[addition()],
+                exclusions=[{"section":"EXTRA","card_id":"konami:9999",
+                             "rationale":"未確認","verification":"HYPOTHESIS",
+                             "source_ids":[]}])
+
     def test_no_explicit_main_replacement_rejected(self):
         b,m=sample()
         with self.assertRaises(VariantError):
