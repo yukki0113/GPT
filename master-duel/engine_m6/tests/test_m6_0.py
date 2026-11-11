@@ -198,6 +198,16 @@ class M6ContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_inventory_audit(audit([d]))
 
+    def test_missing_component_generation_partial(self):
+        self.assertEqual("PARTIAL",
+                         validate_source_pins(pins(m3_generation=None))["status"])
+
+    def test_missing_core_cannot_pass_structural_candidate(self):
+        c=candidate()
+        c["required_core_ids"]=["konami:999"]
+        with self.assertRaises(ValueError):
+            validate_candidate(c)
+
     def test_candidate_40_main(self):
         self.assertEqual(40,validate_candidate(candidate())["main_count"])
 
