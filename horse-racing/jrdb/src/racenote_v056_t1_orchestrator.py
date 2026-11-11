@@ -56,7 +56,7 @@ def mixed_source_enabled(source_mode=None):
         if proof is None:
             continue
         if (not isinstance(proof, dict) or proof.get("status") != "PASS"
-                or not re.fullmatch(r"[1-9]\\d*", str(proof.get("run_id", "")))
+                or not re.fullmatch(r"[1-9]\d*", str(proof.get("run_id", "")))
                 or not re.fullmatch(r"[0-9a-f]{64}", str(proof.get("receipt_sha256", "")))):
             raise ValueError(f"mixed-source gate lacks {key} acceptance")
         rel = Path(str(proof.get("receipt_path") or ""))
