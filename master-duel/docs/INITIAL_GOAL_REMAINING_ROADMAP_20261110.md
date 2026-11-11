@@ -1,3 +1,5 @@
+> **2026-11-11 M5-C C4完了**：出典・本文・規制の依存索引と差分再検証計画を実装。既知同一記事版のSKIP、依存ルートだけのSTALE、変更規制カードだけの再査定、UNKNOWN範囲の保留を検証。5つの仮想変更をprivate C3知識へ適用した差分リプレイをprivate Driveに保存・独立SHA照合。次はC5 private ZIP/manifest/M6 Bundle接続。[C4監査](M5C_C4_INCREMENTAL_REFRESH_AUDIT_20261111.md)。
+
 > **2026-11-11 M5-C C3完了**：軍貫の掲載レシピとUR0候補を比較し、MAIN40/EX7・UR0、失われる汎用UR/EX・未確認ルートを分離してprivate Driveに版付き保存。全て`REVIEW_REQUIRED`（現行規制/実所持/CP未監査）。次はC4再利用・更新失効。[C3監査](M5C_C3_LOW_COST_VARIANTS_AUDIT_20261111.md)。
 
 > **2026-11-11 M5-C C2 完了**：3タイプの実カード展開グラフ（一本道・ランダム分岐・任意制約）を構造化し、現行privateカード本文SHA・M4効果索引6件のオフセットを照合。private Drive知識/manifest/追加M4証跡を独立読み戻し、CI合成回帰PASS。次はC3低コスト代替構築。[C2監査](M5C_C2_COMBO_GRAPH_AUDIT_20261111.md)。
