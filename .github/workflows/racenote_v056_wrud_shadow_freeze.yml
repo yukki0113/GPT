@@ -1,0 +1,69 @@
+name: RaceNote v0.5.6 W/R/U/D Shadow Freeze (research only)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/BTDAY-*/**/v056/research/wrud/incoming/review.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: racenote-v056-freeze
+  cancel-in-progress: false
+
+jobs:
+  freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Resolve exactly one changed shadow request
+        id: target
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, re, subprocess
+          changed = subprocess.check_output(
+              ["git", "diff", "--name-only", os.environ["BEFORE"], os.environ["AFTER"]],
+              text=True).splitlines()
+          pattern = re.compile(
+              r"(horse-racing/jrdb/backtests/BTDAY-\d{4}/\d{8}/v056)/research/wrud/incoming/review\.json")
+          roots = [m.group(1) for path in changed if (m := pattern.fullmatch(path))]
+          if len(roots) != 1:
+              raise SystemExit(f"expected exactly one shadow review request, got {roots}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write(f"root={roots[0]}\n")
+          PY
+      - name: Validate original two-phase Freeze and independent human-authored shadow
+        env:
+          ROOT: ${{ steps.target.outputs.root }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v056_wrud_shadow.py --mode self-test
+          python horse-racing/jrdb/src/racenote_v056_wrud_shadow.py \
+            --mode freeze \
+            --root "$ROOT" \
+            --draft "$ROOT/research/wrud/incoming/review.json"
+      - name: Persist independent shadow seal without changing official Freeze
+        env:
+          ROOT: ${{ steps.target.outputs.root }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$ROOT/research/wrud/frozen"
+          git diff --cached --quiet && { echo "No new shadow seal"; exit 1; }
+          git commit -m "RaceNote: W/R/U/D research shadow freeze $ROOT"
+          git pull --rebase origin main
+          git push origin HEAD:main
