@@ -27,3 +27,12 @@ assert request["mode"] == "LOW_RARITY_CORE"
 - 既存M2本番HEAD、所持デッキcatalog、M5-C private sidecarは**すべて未変更**。public GitHubにprivate個票を置かない。
 
 次工程：**M6-1**。private Drive最新HEADと実ZIPの外部SHA照合、read-only SQLiteによる全件所持preflight、M3/CP/M5-Cの実読出し、同一世代ゲートを接続する。
+
+## M6-1（2026-11-11）：read-only private preflight
+
+`preflight.py`に**SHAピン付きHEAD二度読み→ZIP/SQLite→登録済み所持全件→M3・CP→M5-C sidecar**のオフライン検証器を追加。GitHubには架空SQLiteでの19合成テストのみ。private Driveの実DBではカード13,948・所持登録135（KNOWN_POSITIVE66/KNOWN_ZERO69）とM3候補215を別途読取監査し、C5 sidecar/CP/HEAD SHA一致。実カード個票をpublicへ公開しない。
+
+- 現時点のテーマ固有採否は135件とも`REVIEW_REQUIRED`。**全件列挙PASSと採否判定PASSは異なる**。所持0と未登録UNKNOWNも区別。
+- M3の候補禁止0をゲーム内確定としない。候補禁止0の所持カード採用をfail-closedにする。CPは外部SHAピン付き`USER_CONFIRMED`。
+- M5-Cは`engine_m5.private_bundle.open_sidecar`を再利用。M4/M5-A/Bは別途raw SHAが必要なのでpin状態はPARTIAL。Drive転送・最新HEAD発見は呼出側が実施する。
+- [M6-1監査書](../docs/M6_1_READONLY_PREFLIGHT_AUDIT_20261111.md)。次は**M6-2（候補プール・テーマ中核・出張）**。
