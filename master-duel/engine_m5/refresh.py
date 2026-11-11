@@ -168,6 +168,7 @@ def plan_refresh(bundle, events, *, variants=(), batch_limit=20,
         kind = event["kind"]
         if kind == "SOURCE_REVISION":
             sid = _require_id(event.get("source_id"), "source_id")
+            source_descendants(sid)  # validate source even on cache hit
             old, new = event.get("old_revision"), event.get("new_revision")
             if old is not None:
                 _require_id(old, "old_revision")
@@ -252,6 +253,7 @@ def plan_refresh(bundle, events, *, variants=(), batch_limit=20,
                     for task,items in actions.items() for item in items),
                    key=lambda x:(x["task"],x["object_type"],x["object_id"]))
     processed = queue[:batch_limit]
+    pending = queue[batch_limit:]
     output = {"schema":"md-m5c-c4-refresh-plan-v1",
               "source_knowledge_version":bundle["knowledge_version"],
               "source_knowledge_as_of":bundle["as_of"],
@@ -259,7 +261,7 @@ def plan_refresh(bundle, events, *, variants=(), batch_limit=20,
               "event_count":len(events),
               "observations":observations,
               "skipped":skipped,"unknown_events":unknown,
-              "queue":processed,"deferred_count":len(queue)-len(processed),
+              "queue":processed,"pending_queue":pending,"deferred_count":len(pending),
               "total_affected_tasks":len(queue),
               "mutated_source":False, "game_legality_verified":False,
               "evaluation":"REVIEW_REQUIRED" if unknown else "PLAN_ONLY"}
@@ -286,3 +288,40 @@ def deterministic_cache_key(profile_id, source_revision, card_text_shas,
             "extractor":extractor_version}
     return sha256(json.dumps(record,sort_keys=True,separators=(",",":"),
                              ensure_ascii=False).encode("utf-8")).hexdigest()
+
+
+def make_staleness_overlay(bundle, plan, *, source_knowledge_sha256):
+    """Append-only status overlay; preserving original immutable knowledge.
+
+    Consumers MUST inspect this overlay and fail closed on STALE/
+    REVIEW_REQUIRED. This is not a mutation of knowledge or a claim that a
+    game has been tested. Handles queued and deferred work alike.
+    """
+    validate_knowledge(bundle)
+    _sha(source_knowledge_sha256,"source_knowledge_sha256")
+    if plan.get("schema") != "md-m5c-c4-refresh-plan-v1":
+        raise ValueError("unexpected refresh plan")
+    if plan["source_knowledge_version"] != bundle["knowledge_version"]:
+        raise ValueError("plan is pinned to another knowledge version")
+    records = {}
+    stale_tasks = {"REEXTRACT_SOURCE", "RECHECK_EFFECT",
+                   "REPROCESS_EXTRACTOR", "REVIEW_RECIPE_CARD_TEXT"}
+    for item in plan["queue"] + plan["pending_queue"]:
+        key = (item["object_type"],item["object_id"])
+        status = "STALE" if item["task"] in stale_tasks else "REVIEW_REQUIRED"
+        existing = records.get(key)
+        if existing is None or (status == "STALE" and existing["status"] != "STALE"):
+            records[key] = {"object_type":key[0],"object_id":key[1],
+                            "status":status,"reasons":[item["task"]]}
+        else:
+            existing["reasons"].append(item["task"])
+    output = {
+        "schema":"md-m5c-c4-staleness-overlay-v1",
+        "source_knowledge_sha256":source_knowledge_sha256,
+        "source_knowledge_version":bundle["knowledge_version"],
+        "statuses":sorted(records.values(),key=lambda x:(x["object_type"],x["object_id"])),
+        "unchanged_source_data":True,
+        "game_tested":False,
+        "blocking_statuses":["STALE","REVIEW_REQUIRED"],
+    }
+    return output
