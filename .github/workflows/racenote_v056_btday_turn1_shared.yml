@@ -467,7 +467,7 @@ jobs:
           from pathlib import Path
           from racenote_v056_t1_orchestrator import mixed_source_enabled,read_selection
           from racenote_v056_btday_source_router import verify_readiness_receipt
-          if not mixed_source_enabled(): raise SystemExit('mixed-source gate is closed')
+          if not mixed_source_enabled('paci'): raise SystemExit('PACI source gate is closed')
           sid=os.environ['BTDAY_ID']; s=read_selection(sid); row=s['source_row']
           if row['source_mode']!='paci': raise SystemExit('PACI source required')
           verify_readiness_receipt(row,Path.cwd())
