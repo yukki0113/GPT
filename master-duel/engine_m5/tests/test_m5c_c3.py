@@ -2,7 +2,11 @@
 import unittest
 
 from test_m5c_c0 import fixture
-from engine_m5.low_cost_variant import assess_low_cost_variant, VariantError
+from engine_m5.low_cost_variant import assess_low_cost_variant as _assess, VariantError
+
+
+def assess_low_cost_variant(bundle, recipe_id, master, **kwargs):
+    return _assess(bundle, recipe_id, master, source_db_sha256="a" * 64, **kwargs)
 
 
 def sample():
@@ -127,6 +131,11 @@ class LowCostVariantTests(unittest.TestCase):
         result=assess_low_cost_variant(b,"r1",m,additions=[addition()],
             mandatory_core_ids=["konami:9999"])
         self.assertEqual("UNKNOWN",result["cost"]["required_core_ur_zero"])
+
+    def test_unpinned_master_rejected(self):
+        b,m=sample()
+        with self.assertRaises(VariantError):
+            _assess(b,"r1",m,additions=[addition()])
 
     def test_cannot_claim_game_tested_from_article(self):
         b,m=sample()
