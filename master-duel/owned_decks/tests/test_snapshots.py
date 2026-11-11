@@ -12,7 +12,7 @@ def sample(state="STAGED"):
             "name": "架空イビルツイン", "aliases": ["イビルツイン"],
             "version": 1, "supersedes": None, "state": state,
             "entries": [
-                {"section": "MAIN", "spoken_name": "架空A", "card_id": "synthetic:a", "quantity": 40},
+                *[{"section": "MAIN", "spoken_name": f"架空{i}", "card_id": f"synthetic:{i}", "quantity": 3 if i < 13 else 1} for i in range(14)],
                 {"section": "EXTRA", "spoken_name": "架空B", "card_id": "synthetic:b", "quantity": 1}]}
 
 
@@ -24,7 +24,8 @@ class TestOwnedDecks(unittest.TestCase):
         with sqlite3.connect(self.db) as con:
             con.execute("CREATE TABLE cards(card_id TEXT PRIMARY KEY, name TEXT)")
             con.executemany("INSERT INTO cards VALUES (?, ?)", [
-                ("synthetic:a", "架空A"), ("synthetic:b", "架空B")])
+                *[(f"synthetic:{i}", f"架空{i}") for i in range(14)],
+                ("synthetic:b", "架空B")])
 
     def test_confirm_save_find_roundtrip(self):
         data = sample("CONFIRMED")
