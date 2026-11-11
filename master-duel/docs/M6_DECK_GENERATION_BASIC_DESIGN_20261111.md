@@ -1,3 +1,5 @@
+> **2026-11-11 M6-1実装（最新進捗）**：`engine_m6/preflight.py`にSHAピンのHEAD二度読み・ZIP/SQLiteの整合・所持登録135件の全行チェック・M3/CP/C5 sidecar入力ゲートを追加。private現行Generation5ではSHA/整合一致、登録135（KNOWN_POSITIVE66/KNOWN_ZERO69）、規制候補215をread-only監査。**全件取得PASSだが、デッキ別採否135件はREVIEW_REQUIREDでPARTIAL**。M3候補禁止0は採用保留、現行合法性は未検証。M4/M5-A/B追加索引のraw SHA・候補生成はM6-2以降。[M6-1監査](M6_1_READONLY_PREFLIGHT_AUDIT_20261111.md)。以下の初期基本設計は履歴として保持する。
+
 > **2026-11-11 M6-0完了（進捗追補）**：`engine_m6/schema.py`・`inputs.py`の構築依頼/正本pins/登録済み所持全件監査/候補/評価契約を実装。合成テストを全体回帰に追加し、UNKNOWNと0、異世代、未検証推薦、採用理由漏れを拒否。実private HEAD読出し・レシピ生成（M6-1以降）は未着手。[M6-0監査](M6_0_CONTRACT_AUDIT_20261111.md)。下記「実装未着手」は当初設計時点の履歴です。
 
 # M6 基本設計 — 所持・規制・CPを考慮した低レアデッキ候補生成（2026-11-11）
