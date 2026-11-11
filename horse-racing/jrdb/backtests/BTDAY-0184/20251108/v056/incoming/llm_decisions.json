@@ -1,0 +1,1190 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "marks": [
+      5,
+      10,
+      4,
+      11,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        10,
+        4,
+        11,
+        2
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は京都1800八着で、5の同舞台三着や10の中山1800二着ほど勝ち切りの直接材料がない。"
+    },
+    "honmei_win": {
+      "evidence": "◎5は前走京都ダ1800三着IDM33で、この組では同舞台の着順と内容が最も明確。差し脚を再現して前を捕える。",
+      "main_risk": "○10は中山1800二着があり、◎の調教状態が低調なぶん逆転余地が大きい。"
+    },
+    "shot_case": {
+      "case": "▲4は京都1800六着IDM30。前走から一段前進できれば上位に届く。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5の京都1800三着を最重視。10は中山1800二着、4は京都1800六着、11は新潟1800三着、2は1400五着から延長。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "marks": [
+      2,
+      5,
+      10,
+      6,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        5,
+        10,
+        6,
+        11
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13は中京1400二着歴があるが直近八着。2の京都1400二着、5の1400三着と1600二着を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "◎2は京都芝1400二着IDM38、阪神1200二着もあり短距離で連対を反復。先行力から押し切る。",
+      "main_risk": "○5は中京1400三着、1600二着、1200二着と安定。◎が早めに動けば差し返す。"
+    },
+    "shot_case": {
+      "case": "▲10は京都1600二着IDM36。1400短縮で追走が楽なら勝ち負けまで。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2と5の連対反復を上位評価。10、6、11も1400から1600で三着以内があり混戦。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "marks": [
+      6,
+      5,
+      10,
+      8,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        5,
+        10,
+        8,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は阪神1600三着だが1800未経験。6の1800二着・四着、5の京都1800三着の直接性を上に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎6は中山1800二着、東京1800四着IDM37。距離実績と先行力があり、好位から押し切る。",
+      "main_risk": "○5は京都1800三着IDM34でコース適性が直接。◎が前を捕まえに行くと差し切る。"
+    },
+    "shot_case": {
+      "case": "▲10は札幌1800二着IDM33。阪神2000四着もあり持続力で浮上する。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6の1800二着を軸に、5の京都1800三着、10の札幌1800二着、8の2000三着、3の京都1800五着を比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "marks": [
+      1,
+      12,
+      11,
+      6,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        12,
+        11,
+        6,
+        8
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4は京都1800十着で、1の前走二着、12の新潟1800二着、11の芝2000二着反復に比べ勝利材料が弱い。"
+    },
+    "honmei_win": {
+      "evidence": "◎1は前走京都ダ1800二着IDM37。コース・距離とも今回と同じで、差し脚の再現性を最上位評価。",
+      "main_risk": "○12は新潟1800二着IDM34、京都1800五着IDM35。◎が展開に左右されれば逆転できる。"
+    },
+    "shot_case": {
+      "case": "▲11は芝2000二着を連続。ダート替わりがこなせれば能力面で上位に入る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1の同条件二着が明確。12はダート1800二着、6は京都1800五着、8は阪神1800五着と比較した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "marks": [
+      4,
+      3,
+      1,
+      5,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        3,
+        1,
+        5,
+        6
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9は初出走で能力指標15、上位候補の4・3・1より初戦の能力評価が低い。"
+    },
+    "honmei_win": {
+      "evidence": "◎4は新馬で実走歴はないが能力40.8が最上位。芝1800で落ち着いて運べれば素質で押し切る。",
+      "main_risk": "○3は能力36、調教55・状態58で準備のバランスが良く、◎が初戦で戸惑えば逆転する。"
+    },
+    "shot_case": {
+      "case": "▲1は能力33.5。状態39は不安でも初戦の上積みで上位へ入る余地がある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬で実走比較なし。4の能力40.8、3の36、1の33.5、5の32、6の28.4を相対評価した。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "marks": [
+      10,
+      8,
+      4,
+      9,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        8,
+        4,
+        9,
+        2
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は調教60で仕上がりは良いが能力16.1。10・8・4の能力評価を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎10は新馬能力40.8、状態55。芝1400で前向きに追走できれば初戦から勝ち切る。",
+      "main_risk": "○8は能力40.7で◎とほぼ互角。仕上がり差や位置取り次第で先着可能。"
+    },
+    "shot_case": {
+      "case": "▲4は能力35.5。調教40・状態39は課題だが能力上限で食い込める。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬。10と8が能力40台、4が35.5、9が32.1、2が30.4で続く。実戦不確実性を前提。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "marks": [
+      1,
+      12,
+      9,
+      7,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        12,
+        9,
+        7,
+        15
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は京都1400八着IDM39で、1の同舞台二着IDM49、12の京都1400三着IDM48に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "◎1は京都ダ1400二着IDM49、阪神1400勝ちIDM45。先行して同条件の再現ができれば勝ち切る。",
+      "main_risk": "○12は京都1400三着IDM48を持ち、1200でも三着反復。◎が逃げ競りになると差し切る。"
+    },
+    "shot_case": {
+      "case": "▲9は京都1200五着IDM43。1400延長で先行力を維持できれば粘り込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1の同舞台二着が最上位。12は京都1400三着、7は阪神1400二着歴、15は阪神1400勝ちと比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "marks": [
+      9,
+      2,
+      7,
+      6,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        2,
+        7,
+        6,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1は障害二連勝後の阪神3140五着。9の京都3170二勝、2の重賞級長距離障害実績を上位に置く。"
+    },
+    "honmei_win": {
+      "evidence": "◎9は京都障3170を連勝しており今回と同距離の再現性が際立つ。飛越と持続力が噛み合えば押し切る。",
+      "main_risk": "○2は京都3930二着、阪神3140勝ち、小倉3390三着と上級障害の実績が厚い。"
+    },
+    "shot_case": {
+      "case": "▲7は京都3170一着・二着、阪神3140三着で同系統条件への適性が高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9の京都3170連勝を中心に、2・7・6・3の長距離障害実績を比較。障害戦のため不確実性は高い。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "marks": [
+      7,
+      9,
+      13,
+      14,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        9,
+        13,
+        14,
+        8
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は芝1400二着IDM59と能力は高いがダート1400の証拠がない。7の阪神1400勝ち、9の京都1400二着を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎7は阪神ダ1400勝ちIDM59。逃げて自分のリズムなら昇級でも能力上限で押し切る。",
+      "main_risk": "○9は京都1400二着IDM55、京都1200三着IDM59。ダート短距離の安定度で◎を脅かす。"
+    },
+    "shot_case": {
+      "case": "▲13は京都1400勝ちIDM53、同舞台三着反復。コース適性を生かして差し込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "7の1400勝ちIDM59、9の京都1400二着、13の同舞台勝ち、14の同舞台二着、8の1400二勝を比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "marks": [
+      4,
+      10,
+      6,
+      11,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        10,
+        6,
+        11,
+        7
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は京都1600勝ち歴があるが直近阪神1800十六着。4の東京1600勝ち、10の1600三着反復を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎4は東京芝1600を前走勝ちIDM60、中京1600勝ちもあり、マイルで先行力を再現して押し切る。",
+      "main_risk": "○10は阪神・新潟1600で三着を連続しIDM59-60。◎が先行争いで消耗すれば差し切る。"
+    },
+    "shot_case": {
+      "case": "▲6は阪神1800三着IDM59。1600短縮で流れに対応できれば能力上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "4のマイル勝ち二つ、10の1600三着反復、6の1800三着、11の阪神1600四着、7の先行力を比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "marks": [
+      1,
+      16,
+      11,
+      4,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        16,
+        11,
+        4,
+        14
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10は京都1200勝ちIDM63があるが直近同条件八着。1の前走京都1200勝ちIDM65と16の連対反復を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎1は前走京都ダ1200勝ちIDM65、阪神1200勝ちもあり、逃げから高水準を再現して連勝を狙う。",
+      "main_risk": "○16は中山1200勝ちIDM63、京都1200二着IDM59。調教74・状態68も良く逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲11は中山1200を前走勝ちIDM60。先行して流れが向けば重賞級にも食い込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1の前走IDM65勝ちを中心に、16の1200一・二着、11の前走勝ち、4の京都1200三着、14の新潟1200三着を比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "marks": [
+      8,
+      13,
+      1,
+      5,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        13,
+        1,
+        5,
+        9
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14は中京2000三着IDM45があるが、8の京都2000二着、13の中京2000二着と京都1800三着より勝利材料が一段弱い。"
+    },
+    "honmei_win": {
+      "evidence": "◎8は前走京都芝2000二着IDM47。東京2000五着IDM50もあり、差し脚の安定で勝ち切る。",
+      "main_risk": "○13は中京2000二着IDM49、京都1800三着IDM48。瞬発力を生かせれば◎を上回る。"
+    },
+    "shot_case": {
+      "case": "▲1は京都2000三着・中京2000三着と安定。京都向きの所見もあり崩れにくい。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "8の京都2000二着、13の2000二着、1の2000三着反復、5の阪神2000勝ち、9の京都2000勝ちを比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      15,
+      4,
+      9,
+      8,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        4,
+        9,
+        8,
+        11
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10は芝1400三着IDM27でダ1300の証拠がない。15の東京1300二着、4のダート中距離三・四着を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "◎15は東京ダ1300二着、中山1200二着を連続。調教69・状態60も整い、逃げて押し切る。",
+      "main_risk": "○4は東京1600四着、中山1800三着でダート能力が高い。1300短縮で追走できれば逆転。"
+    },
+    "shot_case": {
+      "case": "▲9は東京1300四着IDM30。距離の直接実績を生かして上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "15の1300二着を最重視。4のダート好走、9の1300四着、8の京都1400三着、11の札幌1000二着を比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      4,
+      6,
+      13,
+      15,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        6,
+        13,
+        15,
+        1
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は新潟1800七着IDM22で、4の東京1600二着IDM42、6の中山1800三着IDM39より大きく見劣る。"
+    },
+    "honmei_win": {
+      "evidence": "◎4は前走東京ダ1600二着IDM42。今回と同条件で先行でき、勝ち切り最有力。",
+      "main_risk": "○6は中山1800三着IDM39。距離短縮で機動力を出せれば◎を脅かす。"
+    },
+    "shot_case": {
+      "case": "▲13は東京1600六着IDM29。調教19・状態38は不安だが同条件経験で食い込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "4の東京1600二着が抜ける。6は中山1800三着、13は東京1600六着、15は東京1400七着、1は芝から転戦。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      10,
+      8,
+      11,
+      7,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        8,
+        11,
+        7,
+        12
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6は東京1800四着で状態74と魅力だが、10の東京2000三着、8の東京1800三着、11の高能力を上位に置く。"
+    },
+    "honmei_win": {
+      "evidence": "◎10は前走東京芝2000三着IDM36で今回と同条件。差し脚の再現で勝ち切りを狙う。",
+      "main_risk": "○8は東京1800三着IDM36、能力38.3。2000延長でも長く脚を使えれば逆転。"
+    },
+    "shot_case": {
+      "case": "▲11は新潟1600二着IDM35で能力39.1。距離延長がこなせれば能力上限は高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10の同条件三着を中心に8・11・7・12を比較。7は中山2000三着、12は阪神2000三着。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      5,
+      16,
+      8,
+      10,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        16,
+        8,
+        10,
+        12
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14は状態60でも能力14.3。5・16・8の新馬能力評価が大きく上回る。"
+    },
+    "honmei_win": {
+      "evidence": "◎5は新馬能力38.5、調教63。ダ1300の初戦で先行できれば素質で押し切る。",
+      "main_risk": "○16は能力36.5。外枠からスムーズなら◎との差は小さい。"
+    },
+    "shot_case": {
+      "case": "▲8は能力32.9。初戦で追走に戸惑わなければ上位争いへ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬。5の38.5、16の36.5、8の32.9、10の29.1、12の22を相対評価。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      10,
+      8,
+      6,
+      3,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        8,
+        6,
+        3,
+        11
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は調教60・状態61で仕上がるが能力25.9。10・8・6の能力評価を優先する。"
+    },
+    "honmei_win": {
+      "evidence": "◎10は新馬能力49.5、調教59・状態58。芝1800で折り合えば初戦から勝ち切る。",
+      "main_risk": "○8は能力46.6、調教63で準備も良い。◎が位置取りを悪くすると逆転する。"
+    },
+    "shot_case": {
+      "case": "▲6は能力34.5。調教21・状態38は課題だが素質で食い込む余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬。10と8が能力40台後半、6が34.5、3が32.9、11が33で続く。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      1,
+      8,
+      4,
+      3,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        8,
+        4,
+        3,
+        2
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は調教59でも能力25.9。1の48.4、8の42.5、4の37.3より初戦能力が低い。"
+    },
+    "honmei_win": {
+      "evidence": "◎1は新馬能力48.4で最上位。芝1400で末脚を発揮できれば初戦から勝ち切る。",
+      "main_risk": "○8は能力42.5。◎より調教・状態が安定しておりスムーズなら逆転。"
+    },
+    "shot_case": {
+      "case": "▲4は能力37.3、調教60。初戦の完成度で上位二頭に割って入る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬。1、8、4、3、2の能力評価を中心に比較し、実戦不確実性を残す。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "marks": [
+      14,
+      8,
+      9,
+      2,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        8,
+        9,
+        2,
+        6
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15は中山1200二着IDM44で有力だが、14の東京1300三着、8の東京1300勝ち、9の1000勝ちIDM53の直接性を優先。"
+    },
+    "honmei_win": {
+      "evidence": "◎14は前走東京ダ1300三着IDM45、調教65・状態61。差し脚を同条件で再現して勝ち切る。",
+      "main_risk": "○8は東京1300勝ちIDM44、新潟1200二着IDM47。逃げ先行の形なら逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲9は函館1000勝ちIDM53で能力50。距離延長でもスピードを生かせば上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "14の東京1300三着、8の同舞台勝ち、9の短距離高IDM、2の東京1300四着、6の東京1400三着を比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "marks": [
+      6,
+      5,
+      1,
+      7,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        5,
+        1,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は新潟2000五着IDM51で堅実だが、6の1800勝ちIDM61、5の東京2000二着を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎6は新潟1800勝ちIDM61、東京1800三着IDM55。能力60で差し切りを積極評価。",
+      "main_risk": "○5は前走東京2000二着IDM53。コース距離の直接性で◎を逆転できる。"
+    },
+    "shot_case": {
+      "case": "▲1は新潟1800二着IDM56、東京2400四着。左回り適性を生かして上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6の高IDM勝ち、5の東京2000二着、1の新潟1800二着、7の中山2000勝ち、4の中山2000三着を比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "marks": [
+      4,
+      8,
+      12,
+      13,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        8,
+        12,
+        13,
+        2
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5は新潟1800勝ちIDM55で能力は高いが東京2100未経験。4の前走東京2100二着、12の同舞台一・三着反復を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎4は前走東京ダ2100二着IDM54、中山1800勝ちIDM58。逃げて距離をこなせば押し切る。",
+      "main_risk": "○8は東京2100勝ち、新潟1800勝ちIDM54。差しの持続力で◎に迫る。"
+    },
+    "shot_case": {
+      "case": "▲12は東京2100一着・三着・三着とコース適性が非常に高い。展開次第で勝ち切りも。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "4の直近2100二着を中心に、8の東京2100勝ち、12の同舞台反復、13の東京2100三着、2の東京2100勝ちを比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "marks": [
+      7,
+      4,
+      9,
+      3,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        4,
+        9,
+        3,
+        8
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2は東京1600二着歴があるが前走中京1400五着。7の東京1600二着連続IDM65、4の同条件一・三着を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎7は東京ダ1600二着を連続しIDM65・63。現級同舞台で最も安定し、差し切りを支持。",
+      "main_risk": "○4は東京1600勝ちIDM62、前走三着IDM64。◎と能力差は小さく先行から逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲9は前走東京1600勝ちIDM60、調教74・状態79。上昇度で一角崩し。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "7と4の同舞台高IDM連対を最上位、9の前走勝ち、3の東京1600勝ち、8の1700・1800高IDMを比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "marks": [
+      10,
+      16,
+      9,
+      7,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        16,
+        9,
+        7,
+        4
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6は東京1600勝ちだが1400実績がなく、10の京都1400二着IDM49、16の東京1400二着IDM48を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎10は京都芝1400二着IDM49、阪神1400勝ちIDM43。距離適性と先行力で重賞でも勝ち切りを狙う。",
+      "main_risk": "○16は前走東京1400二着IDM48、札幌1500勝ち。コース経験で◎を逆転できる。"
+    },
+    "shot_case": {
+      "case": "▲9は東京1400五着IDM46、新潟1400五着IDM40。成長分があれば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10と16の1400連対実績を中心に、9・7・4の能力と仕上がりを比較。2歳戦で上積み余地が大きい。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "marks": [
+      10,
+      2,
+      4,
+      1,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        2,
+        4,
+        1,
+        3
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11は1800二着IDM45で能力はあるが、10の東京1600二着、2の東京1600一・三着よりマイル直接実績が弱い。"
+    },
+    "honmei_win": {
+      "evidence": "◎10は前走東京芝1600二着IDM49、調教70・状態64。差し脚を同条件で再現して勝ち切る。",
+      "main_risk": "○2は東京1600勝ちと前走同条件三着IDM49。先行して◎より前なら逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲4は東京1600四・五着IDM49。勝ち切れていないが安定した末脚で上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10の同条件二着、2の同条件一・三着、4の四・五着、1の東京1600勝ち、3の新潟1600二着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 1,
+    "marks": [
+      8,
+      2,
+      1,
+      13,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        2,
+        1,
+        13,
+        11
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12は芝1600七着のみでダ1700未経験。8の新潟1800三着、2の東京1600三着、1の札幌1700三着を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎8は前走新潟ダ1800三着IDM32。福島1700への短縮でも差し脚を使えば勝ち切れる。",
+      "main_risk": "○2は東京ダ1600三着IDM31。先行差しでロスなく運べれば◎を逆転。"
+    },
+    "shot_case": {
+      "case": "▲1は札幌1700三着IDM27。距離の直接性を生かして粘り込む。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "8のダ1800三着、2のダ1600三着、1の1700三着、13の東京1300三着、11の芝から転戦を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 2,
+    "marks": [
+      15,
+      16,
+      8,
+      14,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        15,
+        16,
+        8,
+        14,
+        7
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10は札幌1500四着反復で安定するが、15の福島1800二・三着、16の福島2000二着の直接性を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎15は福島芝1800二着・三着を反復しIDM31-33。今回と同舞台で先行差しが再現できれば勝ち切る。",
+      "main_risk": "○16は福島2000二着IDM37、東京1600二着。状態67も良く逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲8は東京1600三着IDM33。1800延長がこなせれば先行力で残る。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "15の福島1800連対を中心に、16の福島2000二着、8の東京1600三着、14の東京2000五着、7の福島2000四着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 3,
+    "marks": [
+      9,
+      11,
+      10,
+      12,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        11,
+        10,
+        12,
+        6
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2は芝1800四着でダ1700未経験。9の京都1800四着、11の札幌1700三着、10の京都1800五着を優先。"
+    },
+    "honmei_win": {
+      "evidence": "◎9は京都ダ1800四着IDM37。先行力と能力がこの組で上位で、福島1700でも押し切りを狙う。",
+      "main_risk": "○11は札幌1700三着IDM35、四着もあり距離の直接性で◎を脅かす。"
+    },
+    "shot_case": {
+      "case": "▲10は京都1800五着IDM27。先行から立ち回れば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9のダ1800四着、11の札幌1700三着、10の1800五着、12の新潟1800四着、6のダ1800五・六着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 4,
+    "marks": [
+      12,
+      14,
+      7,
+      13,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        14,
+        7,
+        13,
+        5
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10は札幌1000三着IDM43で有力だが、12の1200一・二着、14の福島1150一・二着に比べ勝ち切りの再現性で劣る。"
+    },
+    "honmei_win": {
+      "evidence": "◎12は新潟ダ1200勝ちIDM50、前走二着IDM41。逃げて自分の形なら1150短縮でも押し切る。",
+      "main_risk": "○14は福島1150勝ち・二着で今回と同条件の適性が高い。◎が競られると逆転。"
+    },
+    "shot_case": {
+      "case": "▲7は福島1150二着IDM45、中山1200四着。差し脚が展開に噛み合えば上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "12の1200勝ち、14の福島1150一・二着、7の同舞台二着、13の札幌1000勝ち、5の新潟1200五着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 5,
+    "marks": [
+      9,
+      14,
+      7,
+      15,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        14,
+        7,
+        15,
+        3
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は新馬能力34.4で、9の49.7や14の38、7の37に比べ初戦能力評価が一段下。"
+    },
+    "honmei_win": {
+      "evidence": "◎9は新馬能力49.7で突出。芝1200の初戦で先行できれば素質で押し切る。",
+      "main_risk": "○14は能力38。調教49・状態48で大崩れしにくく、◎が初戦で戸惑えば逆転。"
+    },
+    "shot_case": {
+      "case": "▲7は能力37。状態24は不安でもスピード能力で上位に入る余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "全馬新馬。9が能力49.7、14が38、7が37、15が35.8、3が34.9で続く。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 6,
+    "marks": [
+      12,
+      1,
+      11,
+      6,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        1,
+        11,
+        6,
+        14
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8は新潟1800八着IDM43で、12の2000二着反復、1の函館1800二着、11の福島1800勝ちより実績が弱い。"
+    },
+    "honmei_win": {
+      "evidence": "◎12は中山2000二着、福島2000二着でIDM46-47。1800短縮でも持続力を生かして勝ち切る。",
+      "main_risk": "○1は函館1800二着IDM48。距離の直接性では◎以上で差し切り可能。"
+    },
+    "shot_case": {
+      "case": "▲11は福島1800勝ちIDM44。前走大敗でも同舞台に戻って巻き返せる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "12の2000二着反復、1の1800二着、11の福島1800勝ち、6の1800でIDM50前後、14の中山1800六着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 7,
+    "marks": [
+      7,
+      12,
+      6,
+      2,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        12,
+        6,
+        2,
+        16
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13は中京1600三着IDM49と能力は高いが1200の直接実績がない。7の函館1200勝ち、12の福島1200二着反復を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎7は函館芝1200勝ちIDM50、二着IDM45、札幌1200三着。短距離で連対を反復し押し切りを支持。",
+      "main_risk": "○12は福島1200二着を連続IDM45・44。同舞台での再現性は◎に匹敵する。"
+    },
+    "shot_case": {
+      "case": "▲6は京都1400四着IDM48。1200短縮で先行スピードが生きれば上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "7の1200一・二着、12の福島1200二着反復、6の1400四着、2の新潟1000好走、16の新潟1200二着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 8,
+    "marks": [
+      14,
+      10,
+      9,
+      15,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        10,
+        9,
+        15,
+        7
+      ],
+      "external_challenger_horse_no": 16,
+      "excluded_horse_no": 16,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "16は札幌1000二着・勝ち歴で有力だが、14の1200二着反復、10の京都1200二着を上位に取る。"
+    },
+    "honmei_win": {
+      "evidence": "◎14は京都1200二着、阪神1200二着・三着を連続。能力52で短距離ダートの再現性が最も高い。",
+      "main_risk": "○10は前走京都1200二着IDM48、函館1000二着もある。先行して◎より前なら逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲9は新潟1200二着IDM47、状態68。逃げ残りの余地が大きい。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "14の1200連対反復、10の1200二着、9の新潟1200二着、15の札幌1000二着、7の新潟1200三着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 9,
+    "marks": [
+      12,
+      2,
+      9,
+      13,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        2,
+        9,
+        13,
+        16
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10は福島2000勝ち歴があるが前走十一着。12の東京2000二着・福島2000勝ち、2の2000勝ちを上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎12は福島芝2000勝ちIDM51、前走東京2000二着IDM50。距離実績と近況が両立し勝ち切り最有力。",
+      "main_risk": "○2は新潟2000勝ちIDM45、2200三着IDM48。先行力で◎を封じる可能性がある。"
+    },
+    "shot_case": {
+      "case": "▲9は2000で三着を反復。大崩れしにくい持続力で上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "12の福島2000勝ち＋東京二着、2の2000勝ち、9の2000三着反復、13の2200五着、16の中山1800五着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 10,
+    "marks": [
+      4,
+      14,
+      8,
+      10,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        14,
+        8,
+        10,
+        15
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6は福島1200二着IDM54で有力だが、4の函館1200勝ち・連対反復、14の1200二着二回と能力56を優先。"
+    },
+    "honmei_win": {
+      "evidence": "◎4は函館芝1200勝ち、二着・三着を連続し能力58.4。逃げて短距離適性を再現すれば押し切る。",
+      "main_risk": "○14は函館1200二着、中山1200二着IDM55。調教67・状態70で仕上がりも良く逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲8は中山1200二・三着を連続しIDM53-54。先行して安定して上位へ。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "4の函館1200連対、14の1200二着反復、8の中山1200二・三着、10の京都1200三着、15の京都1200勝ちを比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 11,
+    "marks": [
+      13,
+      7,
+      5,
+      10,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        7,
+        5,
+        10,
+        14
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12は札幌1200勝ちIDM56で有力だが、13の1200二・二・三着IDM55-60、7の札幌1200勝ちIDM57を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎13は函館1200二着IDM60、二着・三着を反復し状態77。逃げて高水準を維持すれば勝ち切る。",
+      "main_risk": "○7は札幌1200勝ちIDM57、小倉1200三着IDM55。先行して◎の直後なら逆転可能。"
+    },
+    "shot_case": {
+      "case": "▲5は札幌・函館1200を連勝しIDM57。昇級でもスピード上限が高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "13の高IDM連対反復、7の1200勝ち、5の二連勝、10の新潟1000勝ちIDM59、14の福島1200二着を比較。"
+  },
+  {
+    "venue": "福島",
+    "race_no": 12,
+    "marks": [
+      9,
+      1,
+      11,
+      5,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        1,
+        11,
+        5,
+        14
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3は小倉1700勝ちIDM44で有力だが、9の福島1700勝ちIDM49、1の1700勝ちと1800二着反復を上位。"
+    },
+    "honmei_win": {
+      "evidence": "◎9は福島ダ1700勝ちIDM49、同舞台三着IDM44。コース適性が明確で差し切りを支持。",
+      "main_risk": "○1は札幌1700勝ち、小倉1700二着、阪神1800二着と連対を反復。◎とほぼ互角。"
+    },
+    "shot_case": {
+      "case": "▲11は阪神1800勝ちIDM52。近走は崩れているが能力上限で巻き返す余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9の福島1700一・三着、1の1700一・二着、11の1800勝ち、5の新潟1800二着、14の小倉1700三着を比較。"
+  }
+]
