@@ -118,6 +118,16 @@ class LowCostVariantTests(unittest.TestCase):
         self.assertEqual("PASS_CONDITIONAL",result["cost"]["new_ur_craft_zero"])
         self.assertEqual("REVIEW_REQUIRED",result["outcome"])
 
+    def test_removed_mandatory_sr_core_does_not_pass(self):
+        b,m=sample()
+        result=assess_low_cost_variant(b,"r1",m,additions=[addition()],
+            mandatory_core_ids=["konami:202"],
+            exclusions=[{"section":"EXTRA","card_id":"konami:202",
+                "rationale":"架空依存先なし","verification":"HYPOTHESIS",
+                "source_ids":[]}])
+        self.assertEqual("CORE_REMOVED",result["cost"]["required_core_ur_zero"])
+        self.assertEqual(["konami:202"],result["cost"]["missing_candidate_core_ids"])
+
     def test_mandatory_ur_separate_from_crafting(self):
         b,m=sample()
         result=assess_low_cost_variant(b,"r1",m,policy="NEW_UR_CRAFT_ZERO",
