@@ -1,3 +1,5 @@
+> **2026-11-11 M6-1 read-only Preflight実装**：private最新HEAD Generation5とZIP・SQLiteのSHA一致、所持135登録の全件列挙、M3規制候補215とCP方針、C5 sidecarのSHA整合を独立照合。M3候補禁止0の所持カード10種類を保留。所持全件の採否はテーマ未指定につきPARTIAL（全135 REVIEW_REQUIRED）、次はM6-2で個別理由を付けた候補プール作成。[M6-1監査](M6_1_READONLY_PREFLIGHT_AUDIT_20261111.md)。
+
 > **2026-11-11 M6-0完了（契約検証）**：M6初期入出力スキーマ、意図正規化、HEAD/所持/規制世代・SHA存在、全件所持意思決定、構造候補、評価のfail-closed検証を実装。実DBへの接続・40枚自動構築・M3/CP算定はM6-1以降。全回帰にM6合成スイートを追加。[監査](M6_0_CONTRACT_AUDIT_20261111.md)。
 
 > **2026-11-11 M6基本設計追加（実装前）**：M5-C完了後のM6を[M6基本設計](M6_DECK_GENERATION_BASIC_DESIGN_20261111.md)としてM6-0〜M6-7に分割。最新Drive HEAD/全所持preflight、MD規制候補と確定の分離、UR0の3モード判定、複数構築案生成、通貨別CP、理由/差分/unknownのprivate監査、別デッキ構築スレッドでの受入を設計。**M6コード実装・完成推薦は未着手**。最新の実DB/知識ソースは個別読出し時に再発見・SHA検証する。
