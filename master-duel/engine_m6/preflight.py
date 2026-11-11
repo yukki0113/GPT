@@ -137,7 +137,16 @@ def _read_only_audit(db, sqlite_sha, generation, decision_overrides):
                     disposition, reason, zone, selected = (
                         custom["disposition"], custom["reason"], custom["main_or_extra"],
                         custom["selected_quantity"])
-                limit = restrictions.get(card_id)
+                candidate_limit = restrictions.get(card_id)
+                if candidate_limit == 0 and verification != "GAME_VERIFIED":
+                    if custom is not None and (disposition == "ADOPT" or selected > 0):
+                        raise ValueError("unverified candidate banned card must not be adopted")
+                    disposition, reason, zone, selected = (
+                        "REVIEW_REQUIRED", "M3 candidate limit zero: official MD confirmation required",
+                        "UNKNOWN", 0)
+                if selected > (owned or 0):
+                    raise ValueError("selected owned quantity exceeds confirmed owned copies")
+                limit = candidate_limit
                 # M3 values are candidate facts only; do not install a
                 # provisional banned=0 value as a confirmed restriction.
                 if verification != "GAME_VERIFIED":
@@ -150,7 +159,11 @@ def _read_only_audit(db, sqlite_sha, generation, decision_overrides):
                     "disposition":disposition, "decision_reason":reason,
                     "main_or_extra":zone, "selected_quantity":selected
                 })
-            all_decided = all(x["disposition"] != "REVIEW_REQUIRED" for x in decisions)
+            all_decided = all(
+                x["disposition"] != "REVIEW_REQUIRED"
+                and x["rarity"] != "UNKNOWN"
+                and x["known_state"] != "UNKNOWN"
+                for x in decisions)
             status = "PASS" if all_decided else "PARTIAL"
             audit = {"schema": SCHEMA, "head_generation": generation,
                      "sqlite_sha": sqlite_sha,
@@ -170,6 +183,9 @@ def _read_only_audit(db, sqlite_sha, generation, decision_overrides):
                 "m3_snapshot":sid, "m3_effective_on":effective,
                 "m3_verification":verification,
                 "banlist_candidate_count":len(restrictions),
+                "unverified_zero_candidate_count_in_inventory":sum(
+                    card_id in restrictions and restrictions[card_id] == 0
+                    for card_id, *_ in rows),
                 "unadjudicated_count":sum(x["disposition"]=="REVIEW_REQUIRED" for x in decisions),
             }
         finally:
