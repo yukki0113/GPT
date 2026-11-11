@@ -31,8 +31,15 @@ CONTRACT="v056-prediction-confidence-audit-newspaper-v1"
 SID=re.compile(r"BTDAY-\d{4}\Z")
 
 
-def mixed_source_enabled():
-    """A reviewed gate stays closed until both source E2E acceptances exist."""
+def mixed_source_enabled(source_mode=None):
+    """Allow only source modes with verifiable T1 acceptance; never infer READY.
+
+    This is a *per-source* admission check. Prediction/Confidence Freeze is
+    validated after T1, not demanded before the first BTDAY prediction.
+    Legacy E2E proofs also remain valid as stronger evidence.
+    """
+    if source_mode is not None and source_mode not in ("historical_warehouse", "paci"):
+        raise ValueError("unknown BTDAY source mode")
     if not GATE.exists():
         return False
     gate = load_json(GATE)
@@ -40,14 +47,18 @@ def mixed_source_enabled():
         raise ValueError("invalid mixed-source gate schema")
     if gate.get("status") == "DISABLED":
         return False
-    if gate.get("status") != "ACCEPTED":
+    if gate.get("status") not in ("ACCEPTED", "PARTIAL_ACCEPTED"):
         raise ValueError("invalid mixed-source gate status")
+    approved = set()
+    root = Path.cwd().resolve()
     for key in ("historical_warehouse", "paci"):
-        proof = (gate.get("acceptance") or {}).get(key) or {}
-        if (proof.get("status") != "PASS" or not re.fullmatch(r"[1-9]\d+", str(proof.get("run_id", "")))
+        proof = (gate.get("acceptance") or {}).get(key)
+        if proof is None:
+            continue
+        if (not isinstance(proof, dict) or proof.get("status") != "PASS"
+                or not re.fullmatch(r"[1-9]\\d*", str(proof.get("run_id", "")))
                 or not re.fullmatch(r"[0-9a-f]{64}", str(proof.get("receipt_sha256", "")))):
             raise ValueError(f"mixed-source gate lacks {key} acceptance")
-        root = Path.cwd().resolve()
         rel = Path(str(proof.get("receipt_path") or ""))
         path = root / rel
         if (rel.is_absolute() or not rel.parts or ".." in rel.parts or path.is_symlink()
@@ -55,13 +66,22 @@ def mixed_source_enabled():
                 or hashlib.sha256(path.read_bytes()).hexdigest() != proof["receipt_sha256"]):
             raise ValueError(f"mixed-source gate {key} acceptance receipt invalid")
         receipt = load_json(path)
-        if (receipt.get("schema_version") != "racenote-v056-btday-e2e-acceptance-v1"
-                or receipt.get("status") != "PASS" or receipt.get("source_mode") != key
+        if (receipt.get("schema_version") not in
+                ("racenote-v056-btday-e2e-acceptance-v1",
+                 "racenote-v056-btday-t1-acceptance-v1")
+                or receipt.get("status") != "PASS"
+                or receipt.get("source_mode") != key
                 or str(receipt.get("run_id")) != str(proof["run_id"])
                 or any(receipt.get(field) is not True for field in
-                       ("t1_verified", "artifact_verified", "main_readback_verified", "blind_verified", "two_phase_freeze_verified"))):
-            raise ValueError(f"mixed-source gate {key} E2E acceptance incomplete")
-    return True
+                       ("t1_verified", "artifact_verified", "main_readback_verified",
+                        "blind_verified"))):
+            raise ValueError(f"mixed-source gate {key} T1 acceptance incomplete")
+        approved.add(key)
+    if not approved:
+        raise ValueError("mixed-source gate has no accepted source")
+    if gate["status"] == "ACCEPTED" and len(approved) != 2:
+        raise ValueError("ACCEPTED gate requires both sources; use PARTIAL_ACCEPTED")
+    return bool(approved) if source_mode is None else source_mode in approved
 
 
 def preview_mixed(inventory_path, operational_date=None, seed=None):
@@ -224,6 +244,9 @@ def choose_next_v2(operational_date=None, seed=None):
         if not isinstance(rows, list):
             raise ValueError("source_inventory must be a list")
         resolved = resolve_inventory(rows, day, lambda row: verify_readiness_receipt(row, Path.cwd()))
+        # An accepted source cannot authorize an unaccepted mode's inventory.
+        resolved = {day_key: row for day_key, row in resolved.items()
+                    if mixed_source_enabled(row["source_mode"])}
         updated, selected = plan_reservation(pool, resolved, BASE, day, seed)
         # Verify the selected receipt immediately before reservation.
         verify_readiness_receipt(selected["source_row"], Path.cwd())
@@ -274,7 +297,7 @@ def run(command,sid=None,inventory=None,operational_date=None,seed=None):
     elif state=="T1_READY":
         action="REUSE_READY"
         start=False
-    elif selection.get("selection_schema_version") == "btday-source-selection-v2" and not mixed_source_enabled():
+    elif selection.get("selection_schema_version") == "btday-source-selection-v2" and not mixed_source_enabled(selection["source_mode"]):
         action="SOURCE_GATE_CLOSED"
         start=False
     elif request.exists():
