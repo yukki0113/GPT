@@ -8,7 +8,8 @@
 
 ## 1. 現在地
 - **D0 完了（2026-11-11）**: [owned_decks](../owned_decks/README.md)にprivate snapshot v1のローカル検証・保存・SHA読み戻し・名前検索・合成テストを実装。PR #2512をmainへマージ（commit `c449930b8523dc525c8f524f89a99a36bcfa21cf`）。回帰251テスト、1スキップ、失敗0。
-- **D1 完了（2026-11-11）**: privateカタログのスキーマ/Validator・合成テスト、Drive空索引Generation 1のアップロード/別要求読戻し・SHA一致。空索引には実デッキなし。参照 [owned_decks](../owned_decks/README.md)。\n- **未完**: 実デッキのDrive保存と索引安全更新（D2）、別スレッド検索運用（D3）、実音声デッキ登録（D4）。
+- **D1 完了（2026-11-11）**: privateカタログのスキーマ/Validator・合成テスト、Drive空索引Generation 1のアップロード/別要求読戻し・SHA一致。空索引には実デッキなし。参照 [owned_decks](../owned_decks/README.md)。
+- **未完**: 実デッキのDrive保存と索引安全更新（D2）、別スレッド検索運用（D3）、実音声デッキ登録（D4）。
 - 現行汎用所持台帳HEAD / SQLite / banlist / M4 / M5は本追加工程で勝手に更新しない。
 
 ## 2. マイルストーンとゲート
