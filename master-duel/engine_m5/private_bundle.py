@@ -158,23 +158,22 @@ def make_sidecar(knowledge, *, variants, upstream_knowledge_sha256, master_db_sh
     return zipped, canonical(manifest)
 
 
-def open_sidecar(raw_zip, raw_manifest, *, expected_zip_sha256=None,
-                 expected_manifest_sha256=None, expected_master_db_sha256=None):
+def open_sidecar(raw_zip, raw_manifest, *, expected_zip_sha256,
+                 expected_manifest_sha256, expected_master_db_sha256):
     """Verify *retrieved raw bytes*, no external IO and no mutable HEAD trust."""
     if not isinstance(raw_zip, bytes) or not isinstance(raw_manifest, bytes):
         raise ValueError("raw bytes required")
-    if expected_manifest_sha256 is not None:
-        _assert_sha(expected_manifest_sha256,"expected_manifest_sha256")
-        if digest(raw_manifest) != expected_manifest_sha256:
-            raise ValueError("manifest external pin mismatch")
+    _assert_sha(expected_manifest_sha256,"expected_manifest_sha256")
+    if digest(raw_manifest) != expected_manifest_sha256:
+        raise ValueError("manifest external pin mismatch")
     m=_decode_canonical(raw_manifest)
     if m.get("schema") != MANIFEST_SCHEMA or m.get("package_schema") != ZIP_SCHEMA:
         raise ValueError("unknown manifest schema")
-    if expected_zip_sha256 is not None:
-        _assert_sha(expected_zip_sha256,"expected_zip_sha256")
-        if digest(raw_zip) != expected_zip_sha256:
-            raise ValueError("external ZIP pin mismatch")
-    if expected_master_db_sha256 is not None and m.get("master_db_sha256") != expected_master_db_sha256:
+    _assert_sha(expected_zip_sha256,"expected_zip_sha256")
+    if digest(raw_zip) != expected_zip_sha256:
+        raise ValueError("external ZIP pin mismatch")
+    _assert_sha(expected_master_db_sha256,"expected_master_db_sha256")
+    if m.get("master_db_sha256") != expected_master_db_sha256:
         raise ValueError("master DB pin mismatch")
     if digest(raw_zip) != m.get("zip_sha256") or len(raw_zip) != m.get("zip_bytes"):
         raise ValueError("sidecar ZIP hash or length mismatch")
