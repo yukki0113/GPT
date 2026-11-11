@@ -1,5 +1,7 @@
 """M5-C C4 fully synthetic incremental invalidation and cache tests."""
 import copy
+import json
+from hashlib import sha256
 import unittest
 
 from test_m5c_c0 import fixture, source
@@ -194,7 +196,7 @@ class RefreshTests(unittest.TestCase):
     def test_staleness_overlay_covers_deferred_items(self):
         p=self.run_plan([{"kind":"SOURCE_REVISION","source_id":"s1",
                           "old_revision":"v1","new_revision":"v2"}],batch_limit=1)
-        overlay=make_staleness_overlay(self.b,p,source_knowledge_sha256="a"*64)
+        overlay=make_staleness_overlay(self.b,p,source_knowledge_sha256=sha256(json.dumps(self.b,sort_keys=True,separators=(",",":"),ensure_ascii=False).encode()).hexdigest())
         self.assertEqual(6,len(overlay["statuses"]))
         self.assertTrue(all(r["status"]=="STALE" for r in overlay["statuses"]))
         self.assertTrue(overlay["unchanged_source_data"])
@@ -205,6 +207,17 @@ class RefreshTests(unittest.TestCase):
                           "changed_card_ids":["konami:101"]}])
         overlay=make_staleness_overlay(self.b,p,source_knowledge_sha256="a"*64)
         self.assertEqual({"REVIEW_REQUIRED"},{x["status"] for x in overlay["statuses"]})
+
+    def test_staleness_overlay_sha_mismatch_rejected(self):
+        p=self.run_plan([])
+        with self.assertRaises(ValueError):
+            make_staleness_overlay(self.b,p,source_knowledge_sha256="a"*64)
+
+    def test_unknown_revision_token_not_cache_hit(self):
+        p=self.run_plan([{"kind":"SOURCE_REVISION","source_id":"s1",
+                          "old_revision":"UNKNOWN","new_revision":"UNKNOWN"}])
+        self.assertEqual("REVIEW_REQUIRED",p["evaluation"])
+        self.assertGreater(p["total_affected_tasks"],0)
 
     def test_unknown_source_with_same_revision_still_rejected(self):
         with self.assertRaises(ValueError):
