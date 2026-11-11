@@ -41,13 +41,16 @@ def check(payload, db_path=None):
     keyset = set()
     totals = {"MAIN": 0, "EXTRA": 0}
     pending = []
+    over_limit = False
     known_ids = set()
     for i, row in enumerate(rows):
         if not isinstance(row, dict) or row.get("section") not in SECTIONS:
             raise ValueError(f"invalid section at {i}")
         quantity = row.get("quantity")
-        if type(quantity) is not int or not 1 <= quantity <= 3:
+        if type(quantity) is not int or not 1 <= quantity <= 99:
             raise ValueError(f"invalid quantity at {i}")
+        if quantity > 3:
+            over_limit = True
         if not isinstance(row.get("spoken_name"), str) or not row["spoken_name"].strip():
             raise ValueError(f"spoken_name required at {i}")
         card_id = row.get("card_id")
@@ -74,6 +77,8 @@ def check(payload, db_path=None):
                 if missing:
                     raise ValueError("unknown card_id: " + ", ".join(sorted(missing)))
     warnings = []
+    if over_limit:
+        warnings.append("CARD_COPIES_OVER_3")
     if totals["MAIN"] < 40 or totals["MAIN"] > 60:
         warnings.append("MAIN_OUTSIDE_40_60")
     if totals["EXTRA"] > 15:
