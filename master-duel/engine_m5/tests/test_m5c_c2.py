@@ -50,6 +50,16 @@ class ComboGraphTests(unittest.TestCase):
         self.assertFalse(result["game_rules_verified"])
         self.assertFalse(result["independent_gameplay_tested"])
 
+    def test_effect_number_and_actor_mismatch_rejected(self):
+        x=sample()
+        x["combo_nodes"][0]["effect_id"]="konami:111#2"
+        with self.assertRaises(ValueError):
+            self.audit(x)
+        x=sample()
+        x["combo_nodes"][0]["effect_id"]="konami:222#1"
+        with self.assertRaises(ValueError):
+            self.audit(x)
+
     def test_missing_text_and_wrong_hash_rejected(self):
         x=sample()
         with self.assertRaises(ValueError):
