@@ -99,14 +99,28 @@ class TestM61(unittest.TestCase):
                 "disposition":"ADOPT","reason":"fake","main_or_extra":"MAIN",
                 "selected_quantity":1}})
 
-    def test_all_justified_decisions_are_pass_coverage_only(self):
+    def test_candidate_zero_stays_review_even_if_considered(self):
         r=self.run_gate(decision_overrides={
             "konami:101":{"disposition":"CONSIDER","reason":"candidate generic",
                            "main_or_extra":"NONE","selected_quantity":0},
             "konami:102":{"disposition":"EXCLUDE","reason":"no deck role",
                            "main_or_extra":"NONE","selected_quantity":0}})
-        self.assertEqual("PASS",r["preflight_status"])
+        self.assertEqual("PARTIAL",r["preflight_status"])
+        self.assertTrue(any(x["disposition"] == "REVIEW_REQUIRED" for x in
+                            r["audit"]["owned_inventory_decisions"]))
         self.assertFalse(r["current_md_legality_verified"])
+
+    def test_unverified_candidate_zero_cannot_be_adopted(self):
+        with self.assertRaisesRegex(ValueError,"candidate banned"):
+            self.run_gate(decision_overrides={"konami:101":{
+                "disposition":"ADOPT","reason":"wish to use",
+                "main_or_extra":"MAIN","selected_quantity":1}})
+
+    def test_adopt_cannot_exceed_known_copies(self):
+        with self.assertRaisesRegex(ValueError,"exceeds confirmed"):
+            self.run_gate(decision_overrides={"konami:102":{
+                "disposition":"ADOPT","reason":"wish to use",
+                "main_or_extra":"MAIN","selected_quantity":1}})
 
     def test_head_changed_during_read_rejected(self):
         with self.assertRaisesRegex(ValueError,"HEAD"):
