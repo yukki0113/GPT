@@ -31,7 +31,12 @@ def _pinned_file(path, digest):
     return Path(path)
 
 
-def _cost_policy(policy, source_pins):
+def _cost_policy(policy_bytes, source_pins):
+    _check(isinstance(policy_bytes, bytes), "raw CP policy bytes required")
+    _check(source_pins["cp_policy_sha"] is not None and
+           sha256(policy_bytes).hexdigest() == source_pins["cp_policy_sha"],
+           "CP policy raw byte SHA mismatch")
+    policy = json.loads(policy_bytes.decode("utf-8"))
     _check(isinstance(policy, dict) and set(policy) == {"cp_per_card","verification","effective_on"},
            "CP policy fields")
     _check(policy["verification"] == "USER_CONFIRMED", "CP policy not user-confirmed")
@@ -45,7 +50,7 @@ def _cost_policy(policy, source_pins):
 
 
 def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
-                                  cp_policy, trusted_core_ids=(),
+                                  cp_policy_bytes, trusted_core_ids=(),
                                   core_verification="UNKNOWN", cp_balance=None):
     """Return card-by-card low/high craft needs and independent ternary gates.
 
@@ -62,7 +67,7 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
     _check(candidate["theme"] == request["theme_query"] or
            request["theme_query"] is None,
            "request/candidate theme mismatch")
-    prices = _cost_policy(cp_policy, source_pins)
+    prices = _cost_policy(cp_policy_bytes, source_pins)
     if cp_balance is not None:
         _check(isinstance(cp_balance, dict) and set(cp_balance) == set(RARITIES)
                and all(type(n) is int and n >= 0 for n in cp_balance.values()),
@@ -93,6 +98,7 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
     possible_missing=Counter()
     uncertainty=Counter()
     strict_no_ur = True
+    incomplete_master = False
     known_core_ur = False
     try:
         conn.execute("PRAGMA query_only=ON")
@@ -133,12 +139,14 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
             """,(snapshot["snapshot_id"],cid)).fetchone()
             if row is None:
                 blockers.append("UNKNOWN_MASTER_CARD:"+cid)
+                incomplete_master = True
                 continue
             rarity=row["rarity"]
             craftable=row["craftable"]
             rarity_verified=row["rarity_verification"]
             if rarity not in RARITIES:
                 blockers.append("UNKNOWN_MD_RARITY:"+cid)
+                incomplete_master = True
                 continue
             rarity_counts[rarity]+=qty
             if rarity_verified != "GAME_VERIFIED":
@@ -195,12 +203,13 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
     cp_lower={r:lower[r]*prices[r] for r in RARITIES}
     cp_upper={r:upper[r]*prices[r] for r in RARITIES}
     # The core must first be authenticated, not inferred from theme card names.
-    if core_verification not in {"REVIEWED","GAME_TESTED"}:
+    if incomplete_master or core_verification not in {"REVIEWED","GAME_TESTED"}:
         core_gate="INDETERMINATE"
     else:
         core_gate="FAIL" if known_core_ur else "PASS"
-    ur_zero="PASS" if strict_no_ur else "FAIL"
-    new_ur_zero=("PASS" if upper["UR"]==0 else
+    ur_zero="FAIL" if not strict_no_ur else "INDETERMINATE" if incomplete_master else "PASS"
+    new_ur_zero=("INDETERMINATE" if incomplete_master else
+                 "PASS" if upper["UR"]==0 else
                  "FAIL" if lower["UR"]>0 else "INDETERMINATE")
     status_by_mode={
         "STRICT_NO_UR":ur_zero,
