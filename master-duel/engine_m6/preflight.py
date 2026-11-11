@@ -51,18 +51,22 @@ def _zip_db(raw, expected_zip_sha, expected_sqlite_sha):
     return db
 
 
-def _catalog_optional(raw):
+def _catalog_optional(raw, expected_sha):
     if raw is None:
         return None
+    if _digest(raw) != expected_sha:
+        raise ValueError("owned catalog external SHA pin mismatch")
     obj = _json(raw)
     if not isinstance(obj, dict):
         raise ValueError("owned deck catalog invalid")
     return _digest(raw)
 
 
-def _check_policy(raw):
+def _check_policy(raw, expected_sha):
     if raw is None:
         return None, None, None
+    if _digest(raw) != expected_sha:
+        raise ValueError("CP policy external SHA pin mismatch")
     policy = _json(raw)
     if policy.get("cp_per_card") != {"N": 30, "R": 30, "SR": 30, "UR": 30}:
         raise ValueError("unexpected per-rarity CP policy")
@@ -173,9 +177,10 @@ def _read_only_audit(db, sqlite_sha, generation, decision_overrides):
 
 
 def preflight_from_verified_bytes(*, head_before, head_after, expected_head_sha256,
-                                  snapshot_zip, cp_policy_bytes, m5_zip, m5_manifest,
+                                  snapshot_zip, cp_policy_bytes, expected_cp_policy_sha256, m5_zip, m5_manifest,
                                   expected_m5_zip_sha256, expected_m5_manifest_sha256,
                                   owned_deck_catalog_bytes=None,
+                                  expected_owned_deck_catalog_sha256=None,
                                   decision_overrides=None, retrieved_at=None):
     """Pure read-only input gate, with independently pinned HEAD and M5 bytes.
 
@@ -196,7 +201,7 @@ def preflight_from_verified_bytes(*, head_before, head_after, expected_head_sha2
         raise ValueError("missing production snapshot")
     sqlite_sha = snapshot["db_sha256"]
     db = _zip_db(snapshot_zip,snapshot["zip_sha256"],sqlite_sha)
-    cp_sha, cp_date, cp_verification = _check_policy(cp_policy_bytes)
+    cp_sha, cp_date, cp_verification = _check_policy(cp_policy_bytes, expected_cp_policy_sha256)
     if m5_zip is None or m5_manifest is None:
         raise ValueError("M5-C C5 sidecar required for M6-1 integration")
     m5_verified = open_sidecar(
@@ -219,7 +224,7 @@ def preflight_from_verified_bytes(*, head_before, head_after, expected_head_sha2
         "m4_index_sha":None,"m5_a_sha":None,"m5_b_sha":None,
         "m5_c_zip_sha":expected_m5_zip_sha256,
         "m5_c_manifest_sha":expected_m5_manifest_sha256,
-        "owned_deck_catalog_sha":_catalog_optional(owned_deck_catalog_bytes),
+        "owned_deck_catalog_sha":_catalog_optional(owned_deck_catalog_bytes, expected_owned_deck_catalog_sha256),
         "readback_at":now,
         "head_zip_generation":generation,"inventory_generation":generation,
         "m3_generation":generation,
