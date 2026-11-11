@@ -1,3 +1,5 @@
+> **2026-11-11 所持デッキ受け入れコード（段階導入）**：`owned_decks/`にprivate JSON snapshot v1の検証・カードID照合・SHA不変保存・デッキ名/別名検索と架空テストを追加。入力仕様・保存状態（STAGED/CONFIRMED）・検索手順は[owned_decks/README](../owned_decks/README.md)を参照。**GitHub内のコード追加だけではGoogle Drive catalogの実データ連携完了ではない**。音声スレッドで実デッキの保存承認を受けた際、Driveのprivate snapshotとcatalogを作成・独立読み戻しする。登録されていないデッキについて実レシピを知っていると推定しない。汎用所持台帳/本番HEADは不変。
+
 # MD 音声台帳登録スレッド — 汎用カード所持・所持デッキリスト（2026-11-10）
 
 - 状態: 運用仕様 v1.0。2026-11-10時点の既存 `voice_staging` / `inventory_m2` を活用するためのスレッド仕様。**音声認識ツールの実装・デッキ登録先DB schema・本番デッキ保存の実装が完了したという意味ではない**。
