@@ -111,8 +111,21 @@ def _validate_node(node, states, card_texts, card_properties):
         if not isinstance(anchor, str) or not anchor or anchor not in body:
             raise ValueError("effect anchor not present in master text")
         effect_id = node.get("effect_id")
-        if not isinstance(effect_id, str) or not effect_id:
-            raise ValueError("effect_id missing")
+        if not isinstance(effect_id, str) or not effect_id.startswith(cid + "#"):
+            raise ValueError("effect_id must reference the actor")
+        number = effect_id.removeprefix(cid + "#")
+        markers = {"1": "①", "2": "②", "3": "③", "4": "④"}
+        if number not in markers:
+            raise ValueError("unsupported numbered effect")
+        marker = markers[number] + "："
+        if marker not in body:
+            raise ValueError("numbered effect absent from card text")
+        section = body.split(marker, 1)[1]
+        for later in list(markers.values())[int(number):]:
+            if later + "：" in section:
+                section = section.split(later + "：", 1)[0]
+        if anchor not in section:
+            raise ValueError("effect anchor belongs to another effect number")
         if effect_id in old_used or new_used != old_used | {effect_id}:
             raise ValueError("once-per-turn effect duplicated or not recorded")
     elif new_used != old_used:
