@@ -87,7 +87,7 @@ class ComboGraphTests(unittest.TestCase):
 
     def test_random_branch_two_explicit_outcomes(self):
         x=sample()
-        x["resource_states"].append(state("other_end",field=1,used=("konami:111#1",)))
+        x["resource_states"].append(state("other_end",grave=1,used=("konami:111#1",)))
         x["combo_routes"][0]["alternative_end_state_ids"]=["other_end"]
         x["combo_nodes"].append({"node_id":"n2","route_id":"r1","sequence":2,
           "action_type":"RANDOM_RESOLUTION","actor_card_id":None,
@@ -96,7 +96,8 @@ class ComboGraphTests(unittest.TestCase):
         x["combo_nodes"].append({"node_id":"n3","route_id":"r1","sequence":3,
           "action_type":"RANDOM_RESOLUTION","actor_card_id":None,
           "before_state_ref":"end","after_state_ref":"other_end",
-          "transfers":[],"locks_added":{}})
+          "transfers":[{"card_id":CARD,"from":"FIELD","to":"GRAVE","quantity":1}],
+          "locks_added":{}})
         x["combo_routes"][0]["end_state_id"]="end"
         x["combo_edges"]=[
           {"route_id":"r1","from_node":"n1","to_node":"n2",
