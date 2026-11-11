@@ -4,7 +4,7 @@ import unittest
 
 from test_m5c_c0 import fixture, source
 from engine_m5.refresh import (
-    build_index, deterministic_cache_key, plan_refresh,
+    build_index, deterministic_cache_key, plan_refresh, make_staleness_overlay,
 )
 
 
@@ -190,6 +190,26 @@ class RefreshTests(unittest.TestCase):
                           "new_version":"v2"}])
         self.assertEqual(6,p["total_affected_tasks"])
         self.assertTrue(all(x["task"]=="REPROCESS_EXTRACTOR" for x in p["queue"]))
+
+    def test_staleness_overlay_covers_deferred_items(self):
+        p=self.run_plan([{"kind":"SOURCE_REVISION","source_id":"s1",
+                          "old_revision":"v1","new_revision":"v2"}],batch_limit=1)
+        overlay=make_staleness_overlay(self.b,p,source_knowledge_sha256="a"*64)
+        self.assertEqual(6,len(overlay["statuses"]))
+        self.assertTrue(all(r["status"]=="STALE" for r in overlay["statuses"]))
+        self.assertTrue(overlay["unchanged_source_data"])
+
+    def test_regulation_overlay_requires_review(self):
+        p=self.run_plan([{"kind":"BANLIST","old_effective_on":"2026-11-01",
+                          "new_effective_on":"2026-11-12",
+                          "changed_card_ids":["konami:101"]}])
+        overlay=make_staleness_overlay(self.b,p,source_knowledge_sha256="a"*64)
+        self.assertEqual({"REVIEW_REQUIRED"},{x["status"] for x in overlay["statuses"]})
+
+    def test_unknown_source_with_same_revision_still_rejected(self):
+        with self.assertRaises(ValueError):
+            self.run_plan([{"kind":"SOURCE_REVISION","source_id":"absent",
+                           "old_revision":"v1","new_revision":"v1"}])
 
     def test_missing_source_validation(self):
         with self.assertRaises(ValueError):
