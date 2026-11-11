@@ -93,6 +93,10 @@ def read_selection(sid):
         if (selection.get("selection_id") != sid or selection.get("n") != 1
                 or selection.get("dates") != [selection.get("target_date")]
                 or len(sources) != 1 or row.get("target_date") != selection.get("target_date")
+                or any(sources[0].get(key) != row.get(row_key) for key, row_key in (
+                    ("target_date", "target_date"), ("source_mode", "source_mode"),
+                    ("source_reference", "source_reference"), ("source_generation_id", "source_generation_id"),
+                    ("source_receipt_sha256", "receipt_sha256")))
                 or row.get("source_mode") not in ("paci", "historical_warehouse")
                 or row.get("source_mode") != selection.get("source_mode")
                 or row.get("source_generation_id") != selection.get("source_generation_id")
