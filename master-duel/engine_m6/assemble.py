@@ -263,7 +263,8 @@ def assemble_candidates(request, bundle, pool, *, max_examined=100,
             explanations[cid]=message
         candidate_id = "m6-3:" + fingerprint[:24]
         candidate = {"schema":SCHEMA,"candidate_id":candidate_id,
-                     "theme":bundle["theme_key"],"source_kind":source_kind,
+                     "theme":bundle["theme_key"],"source_kind":
+                     "ASSEMBLED" if modifications else source_kind,
                      "lineage":{"profile_id":bundle["profile_id"],"source_ref":reference,
                                 "recipe_id":recipe_id,"source_knowledge_sha256":bundle["knowledge_sha256"],
                                 "source_master_sha256":bundle["master_db_sha256"],
@@ -278,6 +279,7 @@ def assemble_candidates(request, bundle, pool, *, max_examined=100,
                          "core_proof":"UNKNOWN",
                          "ownership_verified":False,"regulation_verified":False,
                          "craft_cost_verified":False,"gameplay_tested":False,
+                         "requested_mode_evaluation":"PENDING_M6_4",
                          "unresolved_locks":deepcopy(package_preview["active_or_conditional_locks"]),
                          "unresolved_packages":list(selected_packages),
                          "explanation":"Source or explicit-edit only; not a game-legal recommendation."})
