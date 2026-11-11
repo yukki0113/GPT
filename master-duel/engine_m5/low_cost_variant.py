@@ -154,7 +154,10 @@ def assess_low_cost_variant(bundle, recipe_id, master_rows, *,
     core = sorted(set(mandatory_core_ids))
     missing_core = sorted(cid for cid in core if cid not in rarity)
     core_ur = sorted(cid for cid in core if rarity.get(cid) == "UR")
-    core_status = "UNKNOWN" if missing_core else "FAIL" if core_ur else "PASS_FOR_SUPPLIED_CORE"
+    missing_candidate_core = sorted(cid for cid in core if not any(
+        key[1] == cid for key in candidate))
+    core_status = ("UNKNOWN" if missing_core else "FAIL" if core_ur else
+                   "CORE_REMOVED" if missing_candidate_core else "PASS_FOR_SUPPLIED_CORE")
     original_counter = Counter(original)
     removed = original_counter - candidate
     added = candidate - original_counter
@@ -192,7 +195,8 @@ def assess_low_cost_variant(bundle, recipe_id, master_rows, *,
                   "status": "REVIEW_REQUIRED_NOT_GAME_TESTED",
                   "no_preexisting_routes": len(routes) == 0},
         "cost": {"required_core_ur_zero": core_status, "core_ur_ids": core_ur,
-                 "core_definition_verified": False, "new_ur_craft_zero": cost_gate,
+                 "core_definition_verified": False, "missing_candidate_core_ids": missing_candidate_core,
+                 "new_ur_craft_zero": cost_gate,
                  "strict_no_ur": not any(candidate_ur.values()),
                  "insufficient_or_unconfirmed_ur": missing_owned,
                  "sr_r_n_cp_cost": "UNKNOWN", "craftability": "UNKNOWN"},
