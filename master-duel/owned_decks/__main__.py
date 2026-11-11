@@ -46,7 +46,7 @@ def check(payload, db_path=None):
         if not isinstance(row, dict) or row.get("section") not in SECTIONS:
             raise ValueError(f"invalid section at {i}")
         quantity = row.get("quantity")
-        if type(quantity) is not int or not 1 <= quantity <= 99:
+        if type(quantity) is not int or not 1 <= quantity <= 3:
             raise ValueError(f"invalid quantity at {i}")
         if not isinstance(row.get("spoken_name"), str) or not row["spoken_name"].strip():
             raise ValueError(f"spoken_name required at {i}")
