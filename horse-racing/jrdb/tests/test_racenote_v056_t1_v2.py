@@ -73,6 +73,35 @@ class MixedReservationTest(unittest.TestCase):
         self.assertEqual(path.read_text(), "unchanged")
         self.assertEqual(json.loads(self.pool.read_text()), self.original)
 
+    def test_single_source_t1_acceptance_does_not_require_freeze(self):
+        # The first prediction cannot be frozen until a T1 Reader exists.
+        proof = {"schema_version": "racenote-v056-btday-t1-acceptance-v1",
+                 "status": "PASS", "source_mode": "paci", "run_id": "1234",
+                 "t1_verified": True, "artifact_verified": True,
+                 "main_readback_verified": True, "blind_verified": True}
+        receipt = self.root / "paci-t1.json"
+        receipt.write_text(json.dumps(proof))
+        self.gate.write_text(json.dumps({
+            "schema_version": "racenote-v056-mixed-source-gate-v1",
+            "status": "PARTIAL_ACCEPTED",
+            "acceptance": {"historical_warehouse": None,
+                           "paci": {"status": "PASS", "run_id": "1234",
+                                    "receipt_path": receipt.name,
+                                    "receipt_sha256": hashlib.sha256(receipt.read_bytes()).hexdigest()}}
+        }))
+        self.assertTrue(t1.mixed_source_enabled())
+        self.assertTrue(t1.mixed_source_enabled("paci"))
+        self.assertFalse(t1.mixed_source_enabled("historical_warehouse"))
+        selected = t1.run("NEXT", operational_date=date(2026, 11, 10), seed="fixed")
+        self.assertEqual(selected["source_mode"], "paci")
+        self.assertEqual(selected["selection_id"], "BTDAY-0182")
+        # Re-disabling the only accepted source blocks fresh v2 T1 dispatch.
+        self.gate.write_text(json.dumps({
+            "schema_version": "racenote-v056-mixed-source-gate-v1",
+            "status": "DISABLED", "acceptance": {"paci": None}}))
+        existing = t1.run("EXISTING", "BTDAY-0182")
+        self.assertEqual(existing["action"], "SOURCE_GATE_CLOSED")
+
     def test_gate_rejects_tampered_acceptance(self):
         (self.root / "paci.json").write_text("{}")
         with self.assertRaisesRegex(ValueError, "acceptance receipt invalid"):
