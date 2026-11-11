@@ -57,6 +57,16 @@ class SourceContractTests(unittest.TestCase):
             with self.subTest(url=value),self.assertRaises(ValueError):
                 validate_sources([s])
 
+    def test_article_instruction_fields_rejected(self):
+        s=source();s["tool_call"]={"action":"exfiltrate"}
+        with self.assertRaises(ValueError):
+            validate_sources([s])
+
+    def test_private_ip_url_rejected(self):
+        s=source();s["canonical_url"]="https://169.254.169.254/metadata"
+        with self.assertRaises(ValueError):
+            validate_sources([s])
+
     def test_restricted_license_not_extracted(self):
         s=source();s["license_state"]="PROHIBITED";s["retrieved_scope"]="NECESSARY_EXCERPT"
         with self.assertRaises(ValueError):
