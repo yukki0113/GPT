@@ -1,4 +1,1823 @@
 {
   "schema_version": "racenote-btday-source-inventory-v2",
-  "source_inventory": []
+  "source_inventory": [
+    {
+      "target_date": "2025-01-05",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-01-06",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-01-11",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-01-12",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-01-13",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-01-18",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-01-19",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-01-25",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-01-26",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-02-01",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-02-02",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-02-08",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-02-09",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-02-10",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-02-15",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-02-16",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-02-22",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-02-23",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-01",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-02",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-08",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-09",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-15",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-16",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-22",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-23",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-29",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-03-30",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-04-05",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-04-06",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-04-12",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-04-13",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-04-19",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-04-20",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-04-26",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-04-27",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-05-03",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-05-04",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-05-10",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-05-11",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-05-17",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-05-18",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-05-24",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-05-25",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-05-31",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-06-01",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-06-07",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-06-08",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-06-14",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-06-15",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-06-21",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-06-22",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-06-28",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-06-29",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-07-05",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-07-06",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-07-12",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-07-13",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-07-19",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-07-20",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-07-26",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-07-27",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-02",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-03",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-09",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-10",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-16",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-17",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-23",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-24",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-30",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-08-31",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-09-06",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-09-07",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-09-13",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-09-14",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-09-15",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-09-20",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-09-21",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-09-27",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-09-28",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-10-04",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-10-05",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-10-11",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-10-12",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-10-13",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-10-18",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-10-19",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-10-25",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-10-26",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-01",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-02",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-08",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-09",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-15",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-16",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-22",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-23",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-24",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-29",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-11-30",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-12-06",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-12-07",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-12-13",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-12-14",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-12-20",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-12-21",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-12-27",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2025-12-28",
+      "source_mode": "historical_warehouse",
+      "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+      "drive_file_id": "",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-04",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1OYtJki-HN2ObyyX1_LyaoS03ZeK6WypR",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-05",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1fpzUkGnpFiqcKaIe8HeFUrxTgPm7S96V",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-10",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1i7SbHhB9AHMF6hxEoacinf-1eLS0nSEi",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-11",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1PYMEkJKMAgMsNhp498WH2sr4Np4iGBDS",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-12",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1qDPhWZ-JJq_Nsh_eo3GkvyCOPG7W2pYf",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-17",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1GT4E19fLPlUDCCTkalCB-Wb2dvvjc5bS",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-18",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1SRs8prms4BEh-ck9yKcBx1AXXH-l8PqI",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-24",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1x0wM1mze9Z_EZub_lytRVO7si0i06YbZ",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-25",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1NPM8Ei44sSuy30XxUzOeGhb7HYg9TRqs",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-01-31",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1PNzvuUMKxj9bX1S5laeSdMQ8QHoqNbo-",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-02-01",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1BFF9xF92is3FOQnnC9pvJP-102DadRev",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-02-07",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "158Vmwgtiwhja3gMGTN0GMnq85IZ33TWR",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-02-08",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1P0ryqql5V_Q5XWYJ36InOGtpr8txRvcl",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-02-10",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1isbVe1WJ9RdK4Wus0gk4KtlRcJZIBtIU",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-02-14",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1wDSdaRiNmUpq5BL0X6xbQJZdZzz8DdSG",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-02-15",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1KI9USCd9lgkJFGDKcP79C1uv4im58zF7",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-02-21",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1icHG-MI3sR5hEfgIrT8Do3AUfNlIIzNK",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-02-22",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1wtPYlenggLDlN8XWzPR37mGM6DAH4gIE",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-02-28",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1TrC_GDxfEoJh6vd840Cd-qRbtcEkJlcI",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-03-01",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1EUmxWYb_42ayQjkIjV1PK59jgq6KY4so",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-03-07",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1qbv3ckRVS44LQxsItSAzRUoEfEclIfAc",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-03-08",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1ydPYqJr69NFTeooJdDMhY_RHY4co2KqY",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-03-14",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1wlR74Nlxqu-Z_kzjW9ecMZjrdNYC3Lyw",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-03-15",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1WSrJiv0h3LrqGDdgtg_VfrLKpXjw-59h",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-03-21",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1fXMZVGnGRKCQ0PWMiM-90kbWd1DAAQ43",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-03-22",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "10h_nQ-WGYpZzvnGqtVgwQvU3MNLjZZ-v",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-03-28",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1x7EHSCUss6UJEStk0jGNnntF8LxD0umq",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-03-29",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1XzmfFNsUWku-H46WU0vTcH01qG6DEYtI",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-04-04",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1VWtzbHr_IReNnKFjtWtlrgJGzXfawk9g",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-04-05",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1OWip5b2bzOoQlkOgpxiZOVx5ldZ_SD2-",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-04-11",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "10L6Sc7Zn-0-KuYOzzfLJJIrapa0AY87R",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-04-12",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1RkEd_1Esdo4YsDueTIOGbSrLiumGCuCy",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-04-18",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1X8ji2H0bHc5udmSqId79eynjSobwB4W7",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-04-19",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "18V9mmmMIIWZIC-v7smrgnX5G12oBSAe6",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-04-25",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "11zUlBcTMQEsfnwbBP7WojFEyClTqTjji",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-04-26",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1fIZf32j5cKoBhpOgMd3ue055etsifKOX",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-02",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1O6S2VcL-XbC59fPe0xgYLUGn-vSIzMKw",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-03",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1n1r_m169U5FzZQluA_PjJ3q0QfnusQYQ",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-09",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1UcaDWcLGwQMbWJ40wwYAskrNDGqraPjn",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-10",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1qwWppnmLWpSqN-479u5yISRp8yQjq_RX",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-16",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1AMaONXFE-9JUDcb4Lzrmm2RYyO1le3e5",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-17",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "12hBCuRJyXWTcuhrqhUSKNGYwoh3gizYO",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-23",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1vpQ1Bc4JRyXdLDzmhQbp0u5c7BwbjKx7",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-24",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1erzdIYnQCRThKuGxjKOYAjHUTORs1gdO",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-30",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "142FYbNOJ4GJs-TbebZJmhATohRKYs7Ri",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-05-31",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1kg7qxyHFDkriJVEWLdIYK5652WDZw3PM",
+      "readiness_status": "PENDING",
+      "eligible": false,
+      "exclusion_reason": "prior BTDAY-0068 forecast exposure; superseded reservation"
+    },
+    {
+      "target_date": "2026-06-06",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1r8lFGGSBVwd9gMEPmnjRtshB0frG7bVH",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-06-07",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1_PtkQ1k1yGlrPQs_h-MXCgopbtG3t-Uf",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-06-13",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1YN5jmdw2eYawyO_Of8CFNfCPvoU9mFvo",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-06-14",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "13TPezY-QTGcj3f76Rc8EAMPMJRtoQHy_",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-06-20",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1d_nId9qgIT-j7EUgBGLJVmcyYEUwztYd",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-06-21",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1BQvobFc6mv5aD1u-M4pcAI5dS_iitx1x",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-06-27",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1pevJHvSdoRXzddlsUzNKxiZgWDMZ4fgQ",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-06-28",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1apbG67c5SldS-5fKfCzBnl31czMBW3wi",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-07-04",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1sXdAVwfgPiiaZBybvu7EREB2bYvEySys",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-07-05",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1F8ofy42jalxJoVBVvsqqa0YOXRuEiehH",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-07-11",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1jt0HzTZ_gZIHGMvL9RojFlcIZq807BUq",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-07-12",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1H4f_9N2IidouoD0MfXP1JnbK2Xgf-pJd",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-07-18",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1qNgjAhHqdEUVwNRZGRK60rAj28U7jGu9",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-07-19",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "18uopE4WrWTo4aAhlXZtlYJu4IyrWe7Mv",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-07-25",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1BRL1kcQ-4tQyqE_GMfDgs04DUcPcvboM",
+      "readiness_status": "PENDING",
+      "eligible": false,
+      "exclusion_reason": "Prior Gen0.3 day rehearsal result review"
+    },
+    {
+      "target_date": "2026-07-26",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1KH_KVIoDK21zmgQAqKXoAJG78Djzzn7T",
+      "readiness_status": "PENDING",
+      "eligible": false,
+      "exclusion_reason": "Prior Gen0.3 day rehearsal result review"
+    },
+    {
+      "target_date": "2026-08-01",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1kySK0AycsjHSmJn4HVbaGuYkb-2mqYf7",
+      "readiness_status": "PENDING",
+      "eligible": false,
+      "exclusion_reason": "Prior Semantic v0.3 result review"
+    },
+    {
+      "target_date": "2026-08-02",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1mQ1Lwg4X4q-ZElBvQ8CS80bFAwstyLfe",
+      "readiness_status": "PENDING",
+      "eligible": false,
+      "exclusion_reason": "INVALIDATED: target-day market field was exposed in Reader inspection before A/B Freeze; do not use for blind validation."
+    },
+    {
+      "target_date": "2026-08-08",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1TYMIvH1Z_PnsVNuB7dTNt5EH6GbJfLHv",
+      "readiness_status": "PENDING",
+      "eligible": false,
+      "exclusion_reason": "Prior Semantic v0.3 result review"
+    },
+    {
+      "target_date": "2026-08-09",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1nFDh_qBSQHnHiJYcQGS_0skLd7nkh-m6",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-08-15",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1iHMThJdliG1i1FEuVK8fSEc3W2Hxg9bI",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-08-16",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1ilv_oKuaYkIYRKdZI-3e6mP1gc2GapyS",
+      "readiness_status": "PENDING",
+      "eligible": false,
+      "exclusion_reason": "Target-day research included known result exposure"
+    },
+    {
+      "target_date": "2026-08-22",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "13gmBW5B8PDuYD9msVZjtcdWc0YfuuphA",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-08-23",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1QQg-Kh6TsJs7WP6IcTDpJMe4Nell-mEr",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-08-29",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1JsDVyoLZ7gydBQqqujvTJ5u0orpWOk8D",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-08-30",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1sAjg1OHZEPlsLvTvRsjNK2fB_Kr7mE_O",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-09-05",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1nAZsvZT3pFSeCvuIbYyzqo7L230HV9Zv",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-09-06",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1w7Qo4WpH8TcTtCTXEAK-qv3CH5Sa2BNU",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-09-12",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1IM8xl7FNLz02E6jZz0UOAZrxX2gpiZC_",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-09-13",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "110iUUdb3un4BGdbSG5AUOVXjKJ4PVAoJ",
+      "readiness_status": "PENDING",
+      "eligible": false,
+      "exclusion_reason": "Gen0.3 real-data dry run included known result exposure"
+    },
+    {
+      "target_date": "2026-09-19",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1AL3Ua_2WY_NlKfMloSOinbzVZVRmjgNi",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-09-20",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "14HiihawoEMU7kAA6OZ9mzQMwtJ2bckE0",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-09-21",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1dRo6fYQkKaj905FJHjUzhQMNrxXc8KZk",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-09-22",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1VdkTE06TwBIWt2vxi98qGgft6jIfwzIv",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-09-26",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1PSYw6uL2Gx-rbtcJsgsGFZZNGTnMc4od",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-09-27",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1G57s0Ix5Xb6AcKfZ2HrpOvasLC05dYg8",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-03",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1JnPqDp3u8D4Wql3bVNeWScQ9E6hw6nyO",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-04",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1hT2CWIYmdeZqD98G0FryK2sJUaMXO1jL",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-10",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1D-nfZJAMf-9n_gZFhzd4qrU6fO6Hcvf4",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-11",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1Vflq7qybkFBsGbvzS2rkLlFLi25PmKFn",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-12",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1ZSzpJ8QCA4qqXCFYYDTpyXIGvKT16-Ph",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-17",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "1mg0mTJhvouvfjok2FA5WYF7TsMPweTQA",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-18",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "18j6nC45N6Nl2-tWT2Lk5F0qkYe6jHfk3",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-24",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "182wjToz2nyrGRDWCitAxTqjtviY4WLST",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-25",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "10nbJd9wHwu-3iNqbXFfLzjquzfFirDJ_",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-10-31",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "18R5ML-0fBHk8CtKJziG04JvqwQAUONFt",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    },
+    {
+      "target_date": "2026-11-01",
+      "source_mode": "paci",
+      "source_reference": "",
+      "drive_file_id": "12nGKaoJpYBfbOweuuC0aRux4FeJDRY0N",
+      "readiness_status": "PENDING",
+      "eligible": true,
+      "exclusion_reason": null
+    }
+  ]
 }
