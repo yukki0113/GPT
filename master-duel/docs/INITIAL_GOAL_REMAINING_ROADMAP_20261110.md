@@ -1,3 +1,5 @@
+> **2026-11-11 M6基本設計追加（実装前）**：M5-C完了後のM6を[M6基本設計](M6_DECK_GENERATION_BASIC_DESIGN_20261111.md)としてM6-0〜M6-7に分割。最新Drive HEAD/全所持preflight、MD規制候補と確定の分離、UR0の3モード判定、複数構築案生成、通貨別CP、理由/差分/unknownのprivate監査、別デッキ構築スレッドでの受入を設計。**M6コード実装・完成推薦は未着手**。最新の実DB/知識ソースは個別読出し時に再発見・SHA検証する。
+
 > **2026-11-11 M5-C C0–C5完了**：private知識の収集(C1)、展開構造(C2)、UR0代替案(C3)、選択的失効(C4)、SHAピンZIP/manifestとM6バンドル入力(C5)が完了。M6の完成候補生成、現行MD規制、所有数・CP、実ゲーム再現は未着手/未検証。M5-C完了はM6成功を意味しない。[C5監査](M5C_C5_PRIVATE_BUNDLE_M6_AUDIT_20261111.md)。
 
 > **2026-11-11 M5-C C4完了**：出典・本文・規制の依存索引と差分再検証計画を実装。既知同一記事版のSKIP、依存ルートだけのSTALE、変更規制カードだけの再査定、UNKNOWN範囲の保留を検証。5つの仮想変更をprivate C3知識へ適用した差分リプレイをprivate Driveに保存・独立SHA照合。次はC5 private ZIP/manifest/M6 Bundle接続。[C4監査](M5C_C4_INCREMENTAL_REFRESH_AUDIT_20261111.md)。
