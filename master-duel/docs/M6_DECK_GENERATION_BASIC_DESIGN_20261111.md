@@ -1,3 +1,5 @@
+> **2026-11-11 M6-2受入（最新）**：候補プール、出張依存・代替/ロック・M5-A/B旧索引取込を実装し合成試験。C5実データの5テーマをprivate別監査。旧M5-A/B索引はGen3ソースのため現行Gen5と異なり`STALE_SOURCE_GENERATION`、最新MDのサポート成立/規制適合とはしない。C5の確定COREパッケージは現状0件。M6-3〜M6-7は未着手。[M6-2監査](M6_2_CANDIDATE_POOL_AUDIT_20261111.md)。後述の当初設計時点の「未着手」は歴史記録。
+
 > **2026-11-11 M6-1実装（最新進捗）**：`engine_m6/preflight.py`にSHAピンのHEAD二度読み・ZIP/SQLiteの整合・所持登録135件の全行チェック・M3/CP/C5 sidecar入力ゲートを追加。private現行Generation5ではSHA/整合一致、登録135（KNOWN_POSITIVE66/KNOWN_ZERO69）、規制候補215をread-only監査。**全件取得PASSだが、デッキ別採否135件はREVIEW_REQUIREDでPARTIAL**。M3候補禁止0は採用保留、現行合法性は未検証。M4/M5-A/B追加索引のraw SHA・候補生成はM6-2以降。[M6-1監査](M6_1_READONLY_PREFLIGHT_AUDIT_20261111.md)。以下の初期基本設計は履歴として保持する。
 
 > **2026-11-11 M6-0完了（進捗追補）**：`engine_m6/schema.py`・`inputs.py`の構築依頼/正本pins/登録済み所持全件監査/候補/評価契約を実装。合成テストを全体回帰に追加し、UNKNOWNと0、異世代、未検証推薦、採用理由漏れを拒否。実private HEAD読出し・レシピ生成（M6-1以降）は未着手。[M6-0監査](M6_0_CONTRACT_AUDIT_20261111.md)。下記「実装未着手」は当初設計時点の履歴です。

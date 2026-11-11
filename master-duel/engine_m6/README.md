@@ -1,3 +1,5 @@
+> **2026-11-11 M6-2候補プール受入**：`candidate_pool.py`でM5-C掲載カード/UR0代替候補/C2展開経路をSHA参照付きで収集、`dependency.py`で出張依存・競合・共有カード・代替・EX下界・任意ロックを検査。`m5_inputs.py`でM5-A/Bのprivate旧索引をread-only・SHA付き受入。両索引は古いGen3由来なので`STALE_SOURCE_GENERATION`、現行Gen5の確定サポートではない。C5 5テーマのprivate集計を別監査し、未確認中核はUNKNOWNに維持。**完成レシピ・規制/所有/CP判定は未着手**。[M6-2監査](../docs/M6_2_CANDIDATE_POOL_AUDIT_20261111.md)。次はM6-3。
+
 # M6 — 制約付きデッキ候補生成
 
 ## M6-0（2026-11-11）入出力契約・Fail-closed基盤
