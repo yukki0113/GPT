@@ -216,14 +216,18 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
         "LOW_RARITY_CORE":"FAIL" if core_gate=="FAIL" or new_ur_zero=="FAIL" else
                           "PASS" if core_gate=="PASS" and new_ur_zero=="PASS" else "INDETERMINATE",
         "OWNED_UR_ONLY":new_ur_zero,
-        "UR_BUDGET":"FAIL" if lower["UR"]>request["constraints"]["new_ur_max"] else
-                    "PASS" if upper["UR"]<=request["constraints"]["new_ur_max"] else "INDETERMINATE",
-        "CP_BUDGET":None,
     }
+    if request["mode"]=="UR_BUDGET":
+        limit=request["constraints"]["new_ur_max"]
+        status_by_mode["UR_BUDGET"]=(
+            "FAIL" if lower["UR"]>limit else
+            "INDETERMINATE" if incomplete_master else
+            "PASS" if upper["UR"]<=limit else "INDETERMINATE")
     if request["mode"]=="CP_BUDGET":
         budget=request["constraints"]["cp_budget_by_rarity"]
         status_by_mode["CP_BUDGET"]=(
             "FAIL" if any(cp_lower[r]>budget[r] for r in budget) else
+            "INDETERMINATE" if incomplete_master else
             "PASS" if all(cp_upper[r]<=budget[r] for r in budget) else "INDETERMINATE")
     if cp_balance is not None:
         balance_status=("FAIL" if any(cp_lower[r]>cp_balance[r] for r in RARITIES) else
