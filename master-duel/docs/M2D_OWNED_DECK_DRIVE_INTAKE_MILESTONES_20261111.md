@@ -8,7 +8,8 @@
 
 ## 1. 現在地
 - **D0 完了（2026-11-11）**: [owned_decks](../owned_decks/README.md)にprivate snapshot v1のローカル検証・保存・SHA読み戻し・名前検索・合成テストを実装。PR #2512をmainへマージ（commit `c449930b8523dc525c8f524f89a99a36bcfa21cf`）。回帰251テスト、1スキップ、失敗0。
-- **未完**: Drive索引の実体、コネクタ経由の保存/更新手順の実地検証、別スレッドの索引検索運用、実音声デッキの登録。
+- **D1 完了（2026-11-11）**: privateカタログのスキーマ/Validator・合成テスト、Drive空索引Generation 1のアップロード/別要求読戻し・SHA一致。空索引には実デッキなし。参照 [owned_decks](../owned_decks/README.md)。
+- **未完**: 実デッキのDrive保存と索引安全更新（D2）、別スレッド検索運用（D3）、実音声デッキ登録（D4）。
 - 現行汎用所持台帳HEAD / SQLite / banlist / M4 / M5は本追加工程で勝手に更新しない。
 
 ## 2. マイルストーンとゲート
@@ -16,7 +17,7 @@
 | ID | 状態 | 内容 | 最低受入条件 |
 | --- | --- | --- | --- |
 | D0 | DONE | private snapshot v1 validator、card_id照合、SHA命名・ローカル検索、合成試験 | GitHub main反映、CI回帰成功、private実カードがGitHubへ漏洩しない |
-| D1 | TODO | privateデッキカタログ `MD_OWNED_DECK_CATALOG.json` のschema / validator / 初期作成 | 0件索引をDriveに実保存・独立取得・内容/SHA一致。同名複数variant、aliases、deck_id、版、ステージングと確定の区別を定義 |
+| D1 | DONE | privateデッキカタログ `MD_OWNED_DECK_CATALOG.json` のschema / validator / 初期作成 | 0件索引をDriveに実保存・独立取得・内容/SHA一致。同名複数variant、aliases、deck_id、版、ステージングと確定の区別を定義 |
 | D2 | TODO | privateデッキJSONアップロードと索引更新の運用経路 | 架空デッキのSTAGED→本人確認→CONFIRMEDを模擬、保存結果ID取得、独立読み戻し、SHA一致、カタログ更新→再読込、バックアップ/旧版保持。失敗時に既存版・索引を壊さない |
 | D3 | TODO | 構築室・検索室の自然言語名前検索ルーティング | 新規会話で「自分のイビルツイン」を指定→現行Drive索引取得→候補選択→最新CONFIRMED版取得→SHA・card_id・MAIN/EX照合。未登録・曖昧・STAGEDのみを区別し、会話メモリや旧File IDを正本扱いしない |
 | D4 | TODO | 受入・運用引継ぎ | 合成回帰＋Drive往復＋ユーザー承認済み最初の実デッキを音声登録→別スレッドから読み出し成功。レポートに取得した版、snapshot SHA、MAIN/EX枚数、索引IDと状態を残す |

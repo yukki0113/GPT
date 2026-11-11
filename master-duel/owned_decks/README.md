@@ -53,3 +53,23 @@ python -m owned_decks show --private-dir /private/decks --sha256 <64文字の実
 6. 別デッキとの同名・複数variantがあれば候補一覧で区別する。索引をGitHubや会話メモリの固定IDだけで代用しない。
 
 **現状**: v1ローカル検証・検索器を追加。ユーザーの実所持デッキはまだ未登録。private Drive catalog自動同期および本番SQLiteの`decks`/`deck_cards`書込器は未実装。実運用ではDriveコネクタ経由の保存・索引更新を要する。
+
+## M2-D1：private catalog（2026-11-11）
+
+保存済みデッキの発見には、個々のsnapshot ZIP/JSON名ではなく、非公開Driveの `MD_OWNED_DECK_CATALOG.json` を入口として使用する。
+
+- `owned_decks/catalog.py`：catalog v1検証、SHA算出、デッキ名/aliases/IDによる候補検索、最新CONFIRMEDポインタ抽出、取得したsnapshotとのID・版・SHA照合。
+- `schema=md-owned-deck-catalog-v1` / `generation` / UTC `updated_at` / `decks[]`。各デッキに `deck_id`（重複不可）、`name`、`aliases`、`variant`、`versions[]`。各版は連続番号、`STAGED|CONFIRMED`、snapshot SHA256、小文字、Drive file ID、直前版SHAを`supersedes`に保持。
+- 複数バリアントが同じ愛称に一致したら `AMBIGUOUS` を返し、勝手にひとつへ確定しない。登録なしは `NOT_FOUND`、STAGEDのみなら `STAGED_ONLY`。確認済みの旧版があり最新がSTAGEDの場合は、最後のCONFIRMED版を候補にする。
+- **D1で作成した0件索引**：非公開Drive `GPT/MasterDuel/DB/MD_OWNED_DECK_CATALOG.json`、Generation 1。初期SHA256 `dc1b899a157918093c28aeb87b877904eb529e447bdec14ca49df260b7623734`。ID/ハッシュは初期作成時の監査証跡であり、**後続処理は毎回フォルダで現行索引を再発見**する。索引が複数存在した場合、更新順で勝手に選ばず競合として保留。
+- D1は**空カタログの初期化・検証のみ**。snapshot upload→catalog安全更新→読戻しのD2、本会話外からの経路検証D3、実デッキ登録D4は未実施。
+
+ローカル例（GitHubには架空データのみ）：
+
+```sh
+python -m owned_decks.catalog init --timestamp 2026-11-11T00:00:00Z --output /private/MD_OWNED_DECK_CATALOG.json
+python -m owned_decks.catalog validate --input /private/MD_OWNED_DECK_CATALOG.json
+python -m owned_decks.catalog resolve --input /private/MD_OWNED_DECK_CATALOG.json --name イビルツイン
+```
+
+Driveへの認証付き保存・取得はChatGPT/WorkのGoogle Drive接続を使用し、GitHub Actionsや公開Issueでprivateデータを取り扱わない。
