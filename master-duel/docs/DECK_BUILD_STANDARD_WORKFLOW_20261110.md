@@ -1,3 +1,5 @@
+> **M6設計参照（2026-11-11）**：今後の自動構築実装は[M6基本設計：M6-0〜M6-7](M6_DECK_GENERATION_BASIC_DESIGN_20261111.md)に従う。特に全所持カードpreflight、既定LOW_RARITY_CORE、未知所持と禁止制限の保守的判定、private proposal監査を必須とする。**設計書の反映のみでM6の自動構築機能が利用可能になったわけではない**。
+
 > **2026-11-11 M2-D3: 登録済み所持デッキ参照**：依頼に「自分の○○デッキ」「登録済み○○」が含まれる場合、構築・改善提案より先に[所持デッキ横断検索手順](OWNED_DECK_CROSS_THREAD_LOOKUP_WORKFLOW_20261111.md)を実施。現行private Drive索引→最新版CONFIRMED snapshot→SHA/MAIN/EX検証を経て既存構築を取得する。構築に移る際は本書の所持全件preflightを**別途**実施し、デッキ採用枚数を実所持数に変換しない。Drive未接続/未登録なら取得成功を偽らない。
 
 # デッキ構築標準手順 — Preflight必須ゲート（2026-11-10）
