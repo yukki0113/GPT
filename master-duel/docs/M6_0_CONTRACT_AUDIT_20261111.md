@@ -26,4 +26,4 @@ GitHubには架空fixture・コード・合成テスト・集計のみ。本番D
 
 ## CI
 
-最新のGitHub Actionsジョブで最終的な合成件数と全体回帰結果を確定する。スキップは既存private実ZIPのCI非提供によるものか、実ログで確認する。
+[Actions run 42964555821](https://github.com/yukki0113/GPT/actions/runs/42964555821) にて **M6 35件 PASS、全体408件、1スキップ、失敗0**を確認。スキップはCIに未配置のprivate実ZIPに依存する既存試験であり、M6-0契約試験にはスキップなし。最終ドキュメントコミットのCIも別途確認する。
