@@ -52,6 +52,7 @@ def fixture():
                    "verification":"USER_CONFIRMED"}).encode()
     return {"head_before":h,"head_after":h,"expected_head_sha256":digest(h),
             "snapshot_zip":zipped,"cp_policy_bytes":cp,
+            "expected_cp_policy_sha256":digest(cp),
             "m5_zip":b"synthetic-sidecar","m5_manifest":b"synthetic-manifest",
             "expected_m5_zip_sha256":digest(b"synthetic-sidecar"),
             "expected_m5_manifest_sha256":digest(b"synthetic-manifest"),
@@ -141,9 +142,20 @@ class TestM61(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.run_gate(cp_policy_bytes=p)
 
+    def test_cp_external_pin_rejected(self):
+        with self.assertRaisesRegex(ValueError,"CP policy external SHA"):
+            self.run_gate(expected_cp_policy_sha256="a"*64)
+
+    def test_owned_catalog_requires_external_pin(self):
+        raw=b'{"catalog_generation":2}'
+        with self.assertRaisesRegex(ValueError,"owned catalog external SHA"):
+            self.run_gate(owned_deck_catalog_bytes=raw)
+        r=self.run_gate(owned_deck_catalog_bytes=raw,
+                        expected_owned_deck_catalog_sha256=digest(raw))
+        self.assertEqual(digest(raw),r["source_pins"]["owned_deck_catalog_sha"])
+
     def test_m5_external_pins_passed_to_adapter(self):
         self.run_gate()
-        self.assertEqual("a" * 0, "")
         self.assertEqual(digest(b"synthetic-sidecar"),
                          self.mock.call_args.kwargs["expected_zip_sha256"])
 
