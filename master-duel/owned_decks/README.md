@@ -1,3 +1,5 @@
+> **2026-11-11 D3 read-only lookup**：`owned_decks/lookup.py` の `select_deck` / `verify_and_render` と[横断検索ワークフロー](../docs/OWNED_DECK_CROSS_THREAD_LOOKUP_WORKFLOW_20261111.md)を参照。Drive接続は読み出し側会話で行い、現行フォルダ列挙→catalog現行確認→名前選択→CONFIRMED snapshot取得→SHA・枚数検証。所有数/規制は別途preflight。接続不可や未登録は fail-closed。実所持レシピをGitに出さない。
+
 # 所持デッキ音声登録 — private snapshot v1
 
 公開GitHubには**コード・架空テストだけ**置く。実レシピ・発話・カード個票はGoogle Drive `GPT/MasterDuel/DB/` のprivate保存とする。既存本番HEAD (所持DB) は変更しない。
