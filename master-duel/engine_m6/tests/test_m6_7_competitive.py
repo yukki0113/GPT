@@ -106,6 +106,17 @@ class CompetitiveSelectionTests(unittest.TestCase):
         self.assertEqual("REVIEW_REQUIRED",result["policy_coverage_status"])
         self.assertEqual(1,result["truncated_source_searches"])
 
+    def test_discovered_extra_without_assessment_is_not_silent(self):
+        t,r,d,a,s,p=sample()
+        d[0]["results"].append({
+            **deepcopy(d[0]["results"][-1]),
+            "card_id":"konami:99999","name":"未評価の架空EX札"})
+        result=generate(t,r,d,a,s,p,policy(a))
+        self.assertEqual("REVIEW_REQUIRED",result["policy_coverage_status"])
+        self.assertEqual(1,result["unscored_discovery_count"])
+        self.assertIn({"section":"EXTRA","card_id":"konami:99999"},
+                      result["unscored_discovery_sample"])
+
     def test_bad_assessment_scores_fail_closed(self):
         t,r,d,a,s,p=sample()
         pol=policy(a);pol["assessments"][0]["axes"]["meta_fit"]=9
