@@ -197,8 +197,6 @@ class M65C(unittest.TestCase):
 
     def test_unverified_source_annotated_as_owned_no_free_ur(self):
         t,r,d,a,s,p=sample()
-        for row in a:
-            if row["card_id"]=="konami:1300":row["minimum"]=1
         result=run(annotations=a)
         for item in result["solutions"]:
             self.assertNotIn("konami:1300",
