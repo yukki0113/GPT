@@ -116,3 +116,48 @@ def recipe_markdown(review):
         lines.append(f'| {x["name_ja"].replace("|", "／")} | {count} | '
                      f'{x["disposition"]} | {x["reason"].replace("|", "／")} |')
     return "\n".join(lines) + "\n"
+
+def make_private_review_archive(reviews, markdowns):
+    """Immutable sidecar bytes for Drive; caller uploads and independently reads back.
+
+    No write to production HEAD. An archive cannot certify actual gameplay.
+    """
+    from io import BytesIO
+    import json
+    from zipfile import ZipFile, ZipInfo, ZIP_DEFLATED
+    if not reviews or len(reviews) != len(markdowns):
+        raise ValueError("review/markdown cardinality mismatch")
+    pins = {r["source_master_sha256"] for r in reviews}
+    if len(pins) != 1 or any(
+        r.get("schema") != "md-m6-7-private-full-recipe-review-v1"
+        or r.get("review_required") is not True
+        or r.get("gameplay_verified") is not False for r in reviews):
+        raise ValueError("mixed or unverified review source")
+    payloads = {}
+    for index, (review, markdown) in enumerate(zip(reviews, markdowns), 1):
+        if markdown != recipe_markdown(review):
+            raise ValueError("markdown must reflect exact validated rows")
+        payloads[f"review_{index:02d}.json"] = (
+            json.dumps(review,ensure_ascii=False,sort_keys=True,
+                       separators=(",",":"),allow_nan=False)+"\\n").encode("utf-8")
+        payloads[f"review_{index:02d}.md"] = markdown.encode("utf-8")
+    bio = BytesIO()
+    with ZipFile(bio,"w") as z:
+        for name,raw in sorted(payloads.items()):
+            info=ZipInfo(name,date_time=(1980,1,1,0,0,0))
+            info.compress_type=ZIP_DEFLATED
+            info.external_attr=0o600<<16
+            z.writestr(info,raw,compress_type=ZIP_DEFLATED,compresslevel=9)
+    archive=bio.getvalue()
+    manifest={
+        "schema":"md-m6-7-private-review-manifest-v1",
+        "archive_sha256":sha256(archive).hexdigest(),
+        "archive_bytes":len(archive),
+        "source_master_sha256":next(iter(pins)),
+        "members":{name:{"sha256":sha256(raw).hexdigest(),"bytes":len(raw)}
+                   for name,raw in sorted(payloads.items())},
+        "review_count":len(reviews),"immutable":True,
+        "gameplay_verified":False,
+    }
+    return archive, (json.dumps(manifest,ensure_ascii=False,sort_keys=True,
+                                separators=(",",":"),allow_nan=False)+"\\n").encode("utf-8")
