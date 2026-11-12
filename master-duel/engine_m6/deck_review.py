@@ -139,7 +139,7 @@ def make_private_review_archive(reviews, markdowns):
             raise ValueError("markdown must reflect exact validated rows")
         payloads[f"review_{index:02d}.json"] = (
             json.dumps(review,ensure_ascii=False,sort_keys=True,
-                       separators=(",",":"),allow_nan=False)+"\\n").encode("utf-8")
+                       separators=(",",":"),allow_nan=False)+"\n").encode("utf-8")
         payloads[f"review_{index:02d}.md"] = markdown.encode("utf-8")
     bio = BytesIO()
     with ZipFile(bio,"w") as z:
@@ -160,4 +160,4 @@ def make_private_review_archive(reviews, markdowns):
         "gameplay_verified":False,
     }
     return archive, (json.dumps(manifest,ensure_ascii=False,sort_keys=True,
-                                separators=(",",":"),allow_nan=False)+"\\n").encode("utf-8")
+                                separators=(",",":"),allow_nan=False)+"\n").encode("utf-8")
