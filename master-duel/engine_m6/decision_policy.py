@@ -85,7 +85,7 @@ def policy_score(assessment, *, competing_selected=0, role_selected=0):
     value=(axes["baseline"]*4+axes["meta_fit"]*4+
            axes["deck_fit"]*5+axes["tempo"]*3+
            axes["resource_efficiency"]*2+axes["role_need"]*2)
-    return max(0,value-min(40,competing_selected*12)-min(30,role_selected*5))
+    return max(0,value-min(18,competing_selected*3)-min(12,role_selected))
 
 
 def screened_choice(record, policy_map, *, counts, zone):
