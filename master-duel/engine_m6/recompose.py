@@ -291,16 +291,64 @@ def _select_variant(request,teacher,discoveries,records, *,
             ex_count+=1
             selection_trace.append({**chosen[-1],"copy_number":selected["EXTRA",cid"],
                 "material_verification":"POSSIBLE_ON_PAPER_NOT_DUEL_VERIFIED"})
+    # Compare every sourced option, including skipped owned cards and
+    # candidates which a cost/ownership gate makes unavailable.
+    comparisons=[]
+    if policy_map is not None:
+        for (sec,cid),record in sorted(records.items()):
+            ann=record["annotation"]
+            selected_qty=selected[(sec,cid)]
+            rated=policy_map.get((sec,cid))
+            possible=_available(record,request)
+            if selected_qty:
+                verdict="ADOPT"
+                why="SELECTED_AFTER_COMPARATIVE_SCORING"
+            elif possible==0:
+                verdict="EXCLUDE"
+                why="OWNERSHIP_OR_UR_MODE_CONSTRAINT"
+            elif rated is None:
+                verdict="REVIEW_REQUIRED"
+                why="MISSING_COMPETITIVE_ASSESSMENT"
+            elif sec=="EXTRA" and screen_by_card.get(cid,{}).get("screen")!="POSSIBLE_ON_PAPER":
+                verdict="REVIEW_REQUIRED"
+                why="EX_MATERIAL_NOT_DEMONSTRATED"
+            elif sec=="EXTRA" and (rated["lock_review"]=="UNKNOWN" or
+                                  rated["condition_review"]=="UNKNOWN"):
+                verdict="REVIEW_REQUIRED"
+                why="EX_CONDITION_OR_LOCK_UNREVIEWED"
+            elif rated["role"]!=ann["role"]:
+                verdict="REVIEW_REQUIRED"
+                why="ROLE_ASSESSMENT_CONFLICT"
+            elif rated["recommended_max"]==0:
+                verdict="EXCLUDE"
+                why="RECOMMENDED_ZERO_COPIES"
+            else:
+                verdict="EXCLUDE"
+                why="OUTRANKED_OR_UTILITY_THRESHOLD"
+            comparisons.append({
+                "card_id":cid,"section":sec,"disposition":verdict,
+                "selected_quantity":selected_qty,"candidate_max":possible,
+                "rarity":record["source"]["rarity"],
+                "owned_state":record["source"]["owned_state"],
+                "reason_code":why,
+                "assessment_reason":rated["reason"] if rated is not None else None,
+                "assessment_evidence_refs":rated["evidence_refs"] if rated is not None else [],
+                "assessment_status":rated["assessment_status"] if rated is not None else "MISSING",
+            })
     # Every selected row maps to a pinned DB result, regardless of whether
     # the card appeared in the teacher recipe.
     rows=[]
     for (sec,cid),n in sorted(selected.items()):
         if n==0:continue
         r=records[(sec,cid)];a=r["annotation"]
+        assessment=policy_map.get((sec,cid)) if policy_map is not None else None
+        rationale=(a["reason"] if assessment is None else
+                   a["reason"]+" | Competitive review: "+assessment["reason"]+
+                   " | Evidence: "+", ".join(assessment["evidence_refs"]))
         rows.append({"card_id":cid,"section":sec,"quantity":n,
              "origin":ORIGINS[a["category"]],"role":a["role"],
              "essentiality":"CORE" if a["category"]=="THEME_CORE" else "OPTIONAL",
-             "reason":a["reason"],"evidence_ref":a["evidence_ref"]})
+             "reason":rationale,"evidence_ref":a["evidence_ref"]})
     result=rebuild_from_discovery(request,teacher,
                                 discovery_results=discoveries,selected_rows=rows)
     candidate=result["candidate"]
@@ -320,6 +368,7 @@ def _select_variant(request,teacher,discoveries,records, *,
       "extra_rejected":rejected,
       "competitive_decisions":selection_trace,
       "competitive_policy_applied":policy_map is not None,
+      "competitive_candidate_comparisons":comparisons,
       "selected_packages":selected_pkg_ids,
       "package_review":preview,
       "status":"STRUCTURAL_RECOMPOSITION_REVIEW_REQUIRED",
@@ -360,6 +409,15 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
     policy_map=(validate_decision_policy(decision_policy,
         master_sha256=teacher_candidate["lineage"]["source_master_sha256"])
         if decision_policy is not None else None)
+    policy_assessment_gaps=(sorted([
+        {"section":sec,"card_id":cid}
+        for (sec,cid) in records if policy_map is not None
+        and (sec,cid) not in policy_map])
+        if policy_map is not None else [])
+    policy_source_gaps=(sorted([
+        {"section":sec,"card_id":cid}
+        for (sec,cid) in policy_map if (sec,cid) not in records])
+        if policy_map is not None else [])
     if any(record["annotation"]["package_id"] is not None and
            record["annotation"]["package_id"] not in {p["package_id"] for p in engine_packages}
            for record in records.values()):
@@ -393,6 +451,11 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
             "solutions":solutions,"rejected":rejections,
             "competitive_policy_applied":policy_map is not None,
             "policy_mode":"EVIDENCE_SCORED" if policy_map is not None else "LEGACY_HEURISTIC",
+            "policy_assessment_gaps":policy_assessment_gaps,
+            "policy_source_gaps":policy_source_gaps,
+            "policy_coverage_status":("COMPLETE" if not policy_assessment_gaps and not policy_source_gaps
+                                      else "REVIEW_REQUIRED") if policy_map is not None
+                                      else "NOT_ASSESSED",
             "solution_count":len(solutions),
             "status":"STRUCTURAL_OPTIONS_REVIEW_REQUIRED" if solutions else
                      "INSUFFICIENT_EVIDENCE",
