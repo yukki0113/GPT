@@ -91,7 +91,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                 "portfolio":None,"evaluations":[],"comparisons":None,
                 "archive":None,"manifest_raw":None,
                 "full_reviews":[],"review_markdowns":[],
-                "review_archive":None,"review_manifest_raw":None}
+                "review_archive":None,"review_manifest_raw":None,
+                "decision_audits":[]}
     # A new real-data deck must not silently fall back to the old
     # owned-first / priority-only selection when evaluation evidence is absent.
     if decision_policy is None:
@@ -221,6 +222,7 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     review_markdowns=[]
     review_archive=None
     review_manifest_raw=None
+    decision_audits=[]
     if compare_items:
         comparison=compare_candidates(compare_items)
         by_id={item['candidate_id']:item for item in comparison['items']}
@@ -231,8 +233,27 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                 comparison_item=by_id[entry['candidate']['candidate_id']])
             full_reviews.append(review)
             review_markdowns.append(recipe_markdown(review))
+        audit_by_id={option["candidate"]["candidate_id"]:option
+                     for option in portfolio["solutions"]}
+        decision_audits=[]
+        for review in full_reviews:
+            option=audit_by_id[review["candidate_id"]]
+            decision_audits.append({
+                "schema":"md-m6-7-competitive-decisions-v1",
+                "candidate_id":review["candidate_id"],
+                "source_master_sha256":pins["sqlite_sha"],
+                "policy_as_of":decision_policy["as_of"],
+                "policy_coverage_status":portfolio["policy_coverage_status"],
+                "required_name_gaps":portfolio["required_name_gaps"],
+                "policy_assessment_gaps":portfolio["policy_assessment_gaps"],
+                "policy_source_gaps":portfolio["policy_source_gaps"],
+                "truncated_source_searches":portfolio["truncated_source_searches"],
+                "comparisons":option["competitive_candidate_comparisons"],
+                "selected_marginal_scores":option["competitive_decisions"],
+                "gameplay_verified":False,
+            })
         review_archive,review_manifest_raw=make_private_review_archive(
-            full_reviews,review_markdowns)
+            full_reviews,review_markdowns,decision_audits=decision_audits)
         archive,manifest_raw=make_proposal_archive(
             comparison,source_master_sha256=pins["sqlite_sha"])
         verify_proposal_archive(
@@ -245,4 +266,5 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
             "evaluations":evaluated,"comparisons":comparison,
             "archive":archive,"manifest_raw":manifest_raw,
             "full_reviews":full_reviews,"review_markdowns":review_markdowns,
-            "review_archive":review_archive,"review_manifest_raw":review_manifest_raw}
+            "review_archive":review_archive,"review_manifest_raw":review_manifest_raw,
+            "decision_audits":decision_audits}
