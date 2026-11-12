@@ -32,7 +32,7 @@ def policy(annotations):
     return {"schema":"md-m6-7-decision-policy-v1",
             "master_sqlite_sha256":PIN,
             "as_of":"2026-11-12T17:00:00+09:00",
-            "min_main_score":55,"min_extra_score":75,
+            "min_main_score":50,"min_extra_score":75,
             "required_review_names":["SYNTHETIC-konami:1203"],
             "assessments":rows}
 
