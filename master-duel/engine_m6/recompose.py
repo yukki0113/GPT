@@ -122,6 +122,8 @@ def _select_variant(request,teacher,discoveries,records, *,
     rejected=[]
     selected_pkg_ids=[]
     if family=="THEME_WITH_ENGINE":
+        _require(request["constraints"].get("allow_engines",True),
+                 "engine packages disabled by request")
         _require(isinstance(engine_id,str) and engine_id,"engine ID required")
         selected_pkg_ids=[engine_id]
     preview=inspect_packages(list(packages),selected_pkg_ids,
@@ -134,6 +136,7 @@ def _select_variant(request,teacher,discoveries,records, *,
     cap_extra=request["constraints"].get("extra_max",15)
     min_main=request["constraints"].get("main_min",40)
     target_main=max(40,min_main)
+    screen_by_card={r["card_id"]:r for r in extra_screens.get("results",[])}
     # Core N/R/SR is mandatory, engine parts are a *package*, not unrelated
     # individual engine cards chosen to consume the remaining slots.
     base=[r for r in records.values() if r["annotation"]["category"]=="THEME_CORE"
@@ -149,6 +152,11 @@ def _select_variant(request,teacher,discoveries,records, *,
             if record is None or _available(record,request)<part["minimum"]:
                 return None,{"family":family,"engine":engine_id,
                              "reason":"ENGINE_REQUIRED_PART_MISSING",
+                             "missing":part["card_id"]}
+            if part["section"]=="EXTRA" and (
+                   screen_by_card.get(part["card_id"],{}).get("screen")!="POSSIBLE_ON_PAPER"):
+                return None,{"family":family,"engine":engine_id,
+                             "reason":"ENGINE_EXTRA_MATERIAL_UNPROVEN",
                              "missing":part["card_id"]}
             selected[key]=max(selected[key],part["minimum"])
     for r in base:
@@ -217,7 +225,7 @@ def _select_variant(request,teacher,discoveries,records, *,
                      "found":main_count,"needed":target_main}
     # EXTRA: ranked, independently material-screened candidates, not
     # arbitrary remaining-source URs. Missing reviews remain a gap.
-    screens={r["card_id"]:r for r in extra_screens.get("results",[])}
+    screens=screen_by_card
     extras=sorted((r for r in records.values() if r["annotation"]["section"]=="EXTRA"
                    and (r["annotation"]["package_id"] is None or
                         r["annotation"]["package_id"] in selected_pkg_ids)),
@@ -304,8 +312,9 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
         raise ValueError("unknown package annotation")
     families=_selected_families(records,engine_packages)
     options=[("PURE_THEME",None)]
-    options.extend(("THEME_WITH_ENGINE",p["package_id"]) for p in
-                   sorted(engine_packages,key=lambda x:x["package_id"]))
+    if request["constraints"].get("allow_engines",True):
+        options.extend(("THEME_WITH_ENGINE",p["package_id"]) for p in
+                       sorted(engine_packages,key=lambda x:x["package_id"]))
     if "MIXED_REDESIGN" in families:options.append(("MIXED_REDESIGN",None))
     solutions=[];rejections=[];fingerprints=set()
     for family,pid in options:
