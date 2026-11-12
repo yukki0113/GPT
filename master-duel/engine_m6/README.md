@@ -1,3 +1,5 @@
+> **2026-11-12 M6-5C（所持汎用を使ったMAIN/EX再構成）初版**：`recompose.py`はM6-5AのSHA一致DB候補と役割注釈・M6-5B素材レビューを入力に、テーマCOREを先に置き、所持済み汎用札でMAIN40+へ仕上げ、EXを15枠内で再編し、純/出張/混合を別案で生成。所持UR上限、STRICT_NO_UR、必要出張パーツ、素材未証明のEX、自動補完禁止を検査。private現在Gen5では《灰流うらら》3/《無限泡影》3/《トロイメア・フェニックス》1を独立read-only確認。**本段階は構造ヒューリスティックであり、実データでの全工程自動構築・カード効果成立や最新規制はM6-6/7で確認する**。[M6-5C監査](../docs/M6_5C_OWNED_STAPLE_RECOMPOSITION_AUDIT_20261112.md)。
+
 > **2026-11-12 M6-5B初版**：`effect_review.py`はcurrent SQLite raw SHAと日本語効果本文SHAをピンして素材/必要MAIN・EX/出張依存を根拠付き確認。`material_screen.py`はレベル4×2/異名2体LINK等を候補の盤面証拠と照合するが、ゲーム上の召喚成立とロック無矛盾は断定しない。private独立監査では軍貫UR0 EX7の補強候補として所持済みの非教師SR汎用LINKを確認（カード別所持はprivateのみ）。M6-5CでMAIN/EX自動再組立と所持汎用最終調整が必要。[M6-5B監査](../docs/M6_5B_EFFECT_MATERIAL_ENGINE_AUDIT_20261112.md)。
 
 > **M6-5A追加：教師外カードを実際に候補へ組み直す機能**：`engine_m6/rebuild.py`で、SHAピンの`discovery.py`検索結果（教師外のテーマ低レア・汎用・所持出張）から出典付き`ASSEMBLED`候補を組み立てる。所持汎用は所持数超過を拒否、MAIN/EX構造と出典を再検証する。実装済みは明示候補選択に対する構造処理であり、効果・ロック・展開の自動的な相性判断と最適化はM6-5B/Cの範囲。[M6-5A監査](../docs/M6_5A_RECONSTRUCTION_AUDIT_20261112.md)。
