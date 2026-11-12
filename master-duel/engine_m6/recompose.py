@@ -417,6 +417,13 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
     policy_source_gaps=([{"section":sec,"card_id":cid}
         for (sec,cid) in sorted(policy_map) if (sec,cid) not in records]
         if policy_map is not None else [])
+    # Discovery is a superset of explicitly assessed cards. Newly retrieved
+    # alternatives must remain visible for research, never silently discarded.
+    discovered_keys=sorted({(row["section_candidate"],row["card_id"])
+        for d in discovery_results for row in d["results"]})
+    unscored_discovery=([{"section":sec,"card_id":cid}
+        for sec,cid in discovered_keys if (sec,cid) not in policy_map]
+        if policy_map is not None else [])
     required_name_gaps=[]
     if policy_map is not None:
         # The policy must explicitly name staples and competing options it
@@ -469,7 +476,10 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
             "policy_source_gaps":policy_source_gaps,
             "required_name_gaps":required_name_gaps,
             "truncated_source_searches":truncated_source_searches,
+            "unscored_discovery_count":len(unscored_discovery),
+            "unscored_discovery_sample":unscored_discovery[:30],
             "policy_coverage_status":("COMPLETE" if not policy_assessment_gaps and not policy_source_gaps and not required_name_gaps and not truncated_source_searches
+                                      and not unscored_discovery
                                       else "REVIEW_REQUIRED") if policy_map is not None
                                       else "NOT_ASSESSED",
             "solution_count":len(solutions),
