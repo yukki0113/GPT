@@ -117,5 +117,5 @@ def missing_competitive_candidates(discoveries,annotations,policy_map,*,zones=("
     """Expose notable omissions instead of pretending unseen staples were compared."""
     annotated={(a["section"],a["card_id"]) for a in annotations}
     available={(r["section_candidate"],r["card_id"]) for d in discoveries for r in d["results"]}
-    return sorted({"card_id":cid,"section":sec,"reason":"NOT_IN_CURRENT_DISCOVERY"}
-                  for sec,cid in policy_map if sec in zones and (sec,cid) not in available)
+    return [{"card_id":cid,"section":sec,"reason":"NOT_IN_CURRENT_DISCOVERY"}
+            for sec,cid in sorted(policy_map) if sec in zones and (sec,cid) not in available]
