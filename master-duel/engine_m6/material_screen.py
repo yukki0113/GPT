@@ -42,7 +42,7 @@ def screen_extra_materials(effect_bundle, *, extra_card_ids, board_capabilities)
             raise ValueError("distinct names must be bool")
         if not isinstance(capability["evidence_ids"],list) or not capability["evidence_ids"] or not all(isinstance(x,str) and x for x in capability["evidence_ids"]):
             raise ValueError("material pool evidence required")
-        if capability["verification"] not in {"SOURCE_OBSERVED","TEXT_CHECKED","REVIEWED"}:
+        if capability["verification"] not in {"HYPOTHESIS","SOURCE_OBSERVED","TEXT_CHECKED","REVIEWED"}:
             raise ValueError("unknown board verification")
     rows=[]
     for cid in extra_card_ids:

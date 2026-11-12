@@ -37,8 +37,10 @@ def _cost_policy(policy_bytes, source_pins):
            sha256(policy_bytes).hexdigest() == source_pins["cp_policy_sha"],
            "CP policy raw byte SHA mismatch")
     policy = json.loads(policy_bytes.decode("utf-8"))
-    _check(isinstance(policy, dict) and set(policy) == {"cp_per_card","verification","effective_on"},
-           "CP policy fields")
+    mandatory={"cp_per_card","verification","effective_on"}
+    optional={"policy_id","checked_at","source"}
+    _check(isinstance(policy, dict) and mandatory <= set(policy) and
+           set(policy) <= mandatory | optional, "CP policy fields")
     _check(policy["verification"] == "USER_CONFIRMED", "CP policy not user-confirmed")
     prices = policy["cp_per_card"]
     _check(isinstance(prices, dict) and set(prices) == set(RARITIES)
