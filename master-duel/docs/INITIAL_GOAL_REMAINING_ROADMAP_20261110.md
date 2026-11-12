@@ -1,3 +1,5 @@
+> **2026-11-12 M6-7レシピ一覧の初期実装（未受入）**：`engine_m6/deck_review.py`で採用全MAIN/EXのカード名・枚数・レア・所持状態・出典付き理由と、登録済み所持全件の見送り理由をSHAピンSQLiteから出力。JSON/Markdownのprivate不変ZIP/manifestを`integrate_private_deck`の戻り値に追加。架空回帰を追加。**実Gen5再実行・Drive保存/独立読戻し・CIテストは未確認であり、M6-7 PASSではない。** [実装・残受入](M6_7_FULL_RECIPE_REVIEW_IMPLEMENTATION_20261112.md)。
+
 > **2026-11-12 M6-6のprivate統合受入（構造接続）PASS**：実Gen5 HEAD/ZIP/DB/sidecar/CPと所持135種類をSHA確認し、最新M6構築モジュール全経路を実行。軍貫MAIN40/EX14構造案・新規UR生成0上限を生成、実所持の汎用札を採用。CORE必須/最新規制/展開成立/実戦性は未確認、完成推薦に昇格させない。イビルツイン/海晶乙女/ブラック・マジシャン/スピードロイドは資料不足を架空補完せず停止。修正：CP policyの既知メタデータ、LINK値NULLの検索、素材仮説ラベル。次は**M6-7構築スレッドの実利用受入・カード効果/ロックの個別検証**。[M6-6監査](M6_6_PRIVATE_INTEGRATION_AUDIT_20261112.md)。
 
 > **2026-11-12 M6-5C初版完了**：所持確認済みUR汎用の上限、純テーマ/出張/混合の3系統、MAIN戦術中核→汎用仕上げ、EX候補の素材根拠、MAIN40未達の保留を備えた`engine_m6/recompose.py`を追加。役割・優先度は出典付き入力で、AIの自動効果論証は未完成。現在のGen5実所持は《灰流うらら》3/《無限泡影》3/《トロイメア・フェニックス》1を独立照合。**残りM6-6実データ全工程統合→M6-7構築スレッド受入**。[M6-5C監査](M6_5C_OWNED_STAPLE_RECOMPOSITION_AUDIT_20261112.md)。
