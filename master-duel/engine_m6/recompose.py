@@ -10,6 +10,7 @@ from collections import Counter
 from .schema import validate_request, validate_candidate
 from .rebuild import rebuild_from_discovery
 from .dependency import inspect_packages
+from .decision_policy import validate_decision_policy, screened_choice
 
 FAMILIES=("PURE_THEME","THEME_WITH_ENGINE","MIXED_REDESIGN")
 CATEGORIES={"THEME_CORE","THEME_OPTION","CROSS_THEME","OWNED_GENERIC",
@@ -120,9 +121,10 @@ def _selected_families(records,packages):
 
 
 def _select_variant(request,teacher,discoveries,records, *,
-                    family,packages,extra_screens,staple_goal,engine_id):
+                    family,packages,extra_screens,staple_goal,engine_id,policy_map=None,decision_policy=None):
     selected=Counter()
     rejected=[]
+    selection_trace=[]
     selected_pkg_ids=[]
     if family=="THEME_WITH_ENGINE":
         _require(request["constraints"].get("allow_engines",True),
@@ -204,7 +206,7 @@ def _select_variant(request,teacher,discoveries,records, *,
         eligible=[]
         non_generic_count=sum(n for (sec,cid),n in selected.items()
             if sec=="MAIN" and records[(sec,cid)]["annotation"]["category"]!="OWNED_GENERIC")
-        need_more_strategy=non_generic_count<min(28,target_main)
+        need_more_strategy=non_generic_count<min(28,target_main) if policy_map is None else False
         for r in candidates:
             a=r["annotation"];key=("MAIN",a["card_id"])
             if selected[key]>=_available(r,request):continue
@@ -213,14 +215,28 @@ def _select_variant(request,teacher,discoveries,records, *,
             # completes the remaining functional roles in a second pass.
             strategic=a["category"] in {"THEME_CORE","THEME_OPTION",
                                         "CROSS_THEME","OWNED_ENGINE"}
-            phase=0 if strategic==need_more_strategy else 1
-            eligible.append((phase,-int(desire>0),-desire,-a["priority"],
-                             -int(r["source"]["owned_state"]=="KNOWN_POSITIVE"),
-                             a["card_id"],r))
+            if policy_map is not None:
+                score,trace=screened_choice(r,policy_map,counts=selected,zone="MAIN")
+                if score is None:
+                    if trace["reason"]!="RECOMMENDED_MAX_REACHED":
+                        rejected.append(trace)
+                    continue
+                if score<decision_policy["min_main_score"]:
+                    rejected.append({**trace,"reason":"BELOW_MAIN_UTILITY_THRESHOLD"})
+                    continue
+                eligible.append((-score,-int(desire>0),-desire,
+                                 -a["priority"],a["card_id"],r,trace))
+            else:
+                phase=0 if strategic==need_more_strategy else 1
+                eligible.append((phase,-int(desire>0),-desire,-a["priority"],
+                                 -int(r["source"]["owned_state"]=="KNOWN_POSITIVE"),
+                                 a["card_id"],r,None))
         if not eligible:break
-        chosen=min(eligible,key=lambda x:x[:-1])[-1]
-        a=chosen["annotation"]
+        chosen=min(eligible,key=lambda x:x[:-2])
+        a=chosen[-2]["annotation"]
         selected["MAIN",a["card_id"]]+=1
+        if chosen[-1] is not None:
+            selection_trace.append({**chosen[-1],"copy_number":selected["MAIN",a["card_id"]]})
         main_count+=1
     if main_count<target_main:
         return None,{"family":family,"engine":engine_id,
@@ -235,16 +251,46 @@ def _select_variant(request,teacher,discoveries,records, *,
         key=lambda r:(-r["annotation"]["priority"],
                       -int(r["source"]["owned_state"]=="KNOWN_POSITIVE"),
                       r["annotation"]["card_id"]))
-    for r in extras:
-        if ex_count>=cap_extra:break
-        a=r["annotation"];cid=a["card_id"];screen=screens.get(cid)
-        if screen is None or screen["screen"]!="POSSIBLE_ON_PAPER":
-            rejected.append({"card_id":cid,"reason":"EX_MATERIAL_NOT_DEMONSTRATED"})
-            continue
-        count=min(_available(r,request),cap_extra-ex_count)
-        if not count:continue
-        selected["EXTRA",cid]=max(selected["EXTRA",cid],count)
-        ex_count=sum(n for (z,_),n in selected.items() if z=="EXTRA")
+    if policy_map is None:
+        for r in extras:
+            if ex_count>=cap_extra:break
+            a=r["annotation"];cid=a["card_id"];screen=screens.get(cid)
+            if screen is None or screen["screen"]!="POSSIBLE_ON_PAPER":
+                rejected.append({"card_id":cid,"reason":"EX_MATERIAL_NOT_DEMONSTRATED"})
+                continue
+            count=min(_available(r,request),cap_extra-ex_count)
+            if not count:continue
+            selected["EXTRA",cid]=max(selected["EXTRA",cid],count)
+            ex_count=sum(n for (z,_),n in selected.items() if z=="EXTRA")
+    else:
+        # Evaluate the best *marginal use* each time. A second copy of the
+        # same role is discounted, even when material matching looks possible.
+        while ex_count<cap_extra:
+            choices=[]
+            for r in extras:
+                a=r["annotation"];cid=a["card_id"]
+                if selected["EXTRA",cid]>=_available(r,request):continue
+                screen=screens.get(cid)
+                if screen is None or screen["screen"]!="POSSIBLE_ON_PAPER":
+                    rejected.append({"card_id":cid,"section":"EXTRA",
+                                     "reason":"EX_MATERIAL_NOT_DEMONSTRATED"})
+                    continue
+                score,trace=screened_choice(r,policy_map,counts=selected,zone="EXTRA")
+                if score is None:
+                    if trace["reason"]!="RECOMMENDED_MAX_REACHED":
+                        rejected.append(trace)
+                    continue
+                if score<decision_policy["min_extra_score"]:
+                    rejected.append({**trace,"reason":"BELOW_EXTRA_UTILITY_THRESHOLD"})
+                    continue
+                choices.append((-score,-a["priority"],cid,r,trace))
+            if not choices:break
+            chosen=min(choices,key=lambda x:x[:-2])
+            a=chosen[-2]["annotation"];cid=a["card_id"]
+            selected["EXTRA",cid]+=1
+            ex_count+=1
+            selection_trace.append({**chosen[-1],"copy_number":selected["EXTRA",cid"],
+                "material_verification":"POSSIBLE_ON_PAPER_NOT_DUEL_VERIFIED"})
     # Every selected row maps to a pinned DB result, regardless of whether
     # the card appeared in the teacher recipe.
     rows=[]
@@ -272,6 +318,8 @@ def _select_variant(request,teacher,discoveries,records, *,
       "extra_used":ex_count,"extra_unused":cap_extra-ex_count,
       "extra_reviewed_options":len(screens),
       "extra_rejected":rejected,
+      "competitive_decisions":selection_trace,
+      "competitive_policy_applied":policy_map is not None,
       "selected_packages":selected_pkg_ids,
       "package_review":preview,
       "status":"STRUCTURAL_RECOMPOSITION_REVIEW_REQUIRED",
@@ -284,7 +332,7 @@ def _select_variant(request,teacher,discoveries,records, *,
 
 def recompose_portfolio(request,teacher_candidate, *, discovery_results,
                         annotations, material_screen, engine_packages=(),
-                        max_solutions=None):
+                        max_solutions=None,decision_policy=None):
     """Deterministic pure/engine/mixed alternative enumeration.
 
     Requires all card options to originate from *current* SHA-pinned DB
@@ -309,6 +357,9 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
              "bounded solution limit")
     cap=min(max_solutions or request["max_variants"],request["max_variants"])
     records=_validated_catalog(teacher_candidate,discovery_results,annotations)
+    policy_map=(validate_decision_policy(decision_policy,
+        master_sha256=teacher_candidate["lineage"]["source_master_sha256"])
+        if decision_policy is not None else None)
     if any(record["annotation"]["package_id"] is not None and
            record["annotation"]["package_id"] not in {p["package_id"] for p in engine_packages}
            for record in records.values()):
@@ -324,7 +375,8 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
         if len(solutions)>=cap:break
         item,why=_select_variant(request,teacher_candidate,discovery_results,records,
                  family=family,packages=engine_packages,extra_screens=material_screen,
-                 staple_goal=TARGETS,engine_id=pid)
+                 staple_goal=TARGETS,engine_id=pid,
+                 policy_map=policy_map,decision_policy=decision_policy)
         if why:
             rejections.append(why)
             continue
@@ -339,6 +391,8 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
             "request_id":request["request_id"],"mode":request["mode"],
             "master_sqlite_sha256":teacher_candidate["lineage"]["source_master_sha256"],
             "solutions":solutions,"rejected":rejections,
+            "competitive_policy_applied":policy_map is not None,
+            "policy_mode":"EVIDENCE_SCORED" if policy_map is not None else "LEGACY_HEURISTIC",
             "solution_count":len(solutions),
             "status":"STRUCTURAL_OPTIONS_REVIEW_REQUIRED" if solutions else
                      "INSUFFICIENT_EVIDENCE",
