@@ -202,6 +202,31 @@ class M65C(unittest.TestCase):
             self.assertNotIn("konami:1300",
                 {x["card_id"] for x in item["candidate"]["cards"]})
 
+    def test_allow_engines_false_excludes_engine_family(self):
+        t,r,d,a,s,p=sample()
+        r["constraints"]["allow_engines"]=False
+        out=run(request=r)
+        self.assertFalse(any(x["family"]=="THEME_WITH_ENGINE"
+                             for x in out["solutions"]))
+
+    def test_engine_extra_requires_material_screen(self):
+        t,r,d,a,s,p=sample()
+        p[0]["parts"].append({"card_id":"konami:2005",
+                             "section":"EXTRA","minimum":1,
+                             "maximum":1,"role":"engine extra"})
+        for row in a:
+            if row["card_id"]=="konami:2005":
+                row["package_id"]="fake-engine"
+        out=run(annotations=a,packages=p)
+        self.assertTrue(any(x["reason"]=="ENGINE_EXTRA_MATERIAL_UNPROVEN"
+                            for x in out["rejected"]))
+
+    def test_mandatory_core_minimum_must_be_positive(self):
+        t,r,d,a,s,p=sample()
+        a[0]["minimum"]=0
+        with self.assertRaisesRegex(ValueError,"mandatory"):
+            run(annotations=a)
+
     def test_source_input_unchanged(self):
         t,r,d,a,s,p=sample()
         old=deepcopy((t,r,d,a,s,p))
