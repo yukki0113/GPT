@@ -33,6 +33,7 @@ def policy(annotations):
             "master_sqlite_sha256":PIN,
             "as_of":"2026-11-12T17:00:00+09:00",
             "min_main_score":55,"min_extra_score":75,
+            "required_review_names":["SYNTHETIC-konami:1203"],
             "assessments":rows}
 
 
@@ -78,6 +79,25 @@ class CompetitiveSelectionTests(unittest.TestCase):
         self.assertNotIn("konami:2004",ids)
         self.assertIn("konami:2007",ids)
         self.assertLess(pure["extra_used"],15)
+
+    def test_missing_trend_candidate_must_be_reported(self):
+        t,r,d,a,s,p=sample()
+        pol=policy(a)
+        pol["required_review_names"].append("未発見の架空環境カード")
+        result=generate(t,r,d,a,s,p,pol)
+        self.assertEqual("REVIEW_REQUIRED",result["policy_coverage_status"])
+        self.assertEqual([{"name":"未発見の架空環境カード","reason":"NOT_DISCOVERED"}],
+                         result["required_name_gaps"])
+
+    def test_named_candidate_unassessed_is_coverage_gap(self):
+        t,r,d,a,s,p=sample()
+        pol=policy(a)
+        pol["assessments"]=[row for row in pol["assessments"]
+                            if row["card_id"]!="konami:1203"]
+        result=generate(t,r,d,a,s,p,pol)
+        self.assertIn({"name":"SYNTHETIC-konami:1203",
+                       "reason":"NOT_COMPETITIVELY_ASSESSED"},
+                      result["required_name_gaps"])
 
     def test_bad_assessment_scores_fail_closed(self):
         t,r,d,a,s,p=sample()
