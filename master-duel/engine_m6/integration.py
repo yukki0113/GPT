@@ -37,7 +37,7 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                            discovery_queries=(), annotations=(),
                            extra_card_ids=(), board_capabilities=(),
                            engine_packages=(), effect_claims=(), route_claims=(),
-                           max_solutions=None):
+                           max_solutions=None,decision_policy=None):
     """Return private, not-yet-game-certified portfolio and ZIP proposal bytes.
 
     Source bytes supplied by caller must be independently fetched and HEAD
@@ -117,9 +117,12 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     portfolio=recompose_portfolio(
         request,reference,discovery_results=discoveries,
         annotations=annotations,material_screen=materials,
-        engine_packages=engine_packages,max_solutions=max_solutions)
+        engine_packages=engine_packages,max_solutions=max_solutions,
+        decision_policy=decision_policy)
     summary["new_candidate_count"]=portfolio["solution_count"]
     summary["new_status"]=portfolio["status"]
+    summary["competitive_policy_applied"]=portfolio["competitive_policy_applied"]
+    summary["selection_policy"]="EVIDENCE_SCORED" if decision_policy is not None else "LEGACY_HEURISTIC_REVIEW_REQUIRED"
     evaluated=[]
     compare_items=[]
     for option in portfolio["solutions"]:
