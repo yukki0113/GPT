@@ -1,12 +1,15 @@
 """M6-7 synthetic-only full recipe review regressions."""
 from hashlib import sha256
+from io import BytesIO
+from zipfile import ZipFile
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import copy
 import sqlite3
 import unittest
 
-from engine_m6.deck_review import full_recipe_review, recipe_markdown
+from engine_m6.deck_review import full_recipe_review, recipe_markdown, make_private_review_archive
 from engine_m6.report import compare_candidates
 from test_m6_5 import fixture
 
@@ -47,6 +50,41 @@ class FullRecipeTests(unittest.TestCase):
             self.assertIn("架空カード",text)
             self.assertIn("MAIN 40 / EX 7",text)
             self.assertFalse(result["gameplay_verified"])
+
+    def test_private_archive_records_competitor_rejection(self):
+        with TemporaryDirectory() as d:
+            f,path,digest,comparison=self.setup_source(d)
+            review=full_recipe_review(path,expected_master_sha256=digest,
+                candidate=f["candidate"],owned_audit=f["owned_audit"],
+                comparison_item=comparison)
+            audit={"candidate_id":review["candidate_id"],
+                   "source_master_sha256":digest,
+                   "comparisons":[{"card_id":"konami:998",
+                                   "reason_code":"OUTRANKED_OR_UTILITY_THRESHOLD"}]}
+            first=make_private_review_archive([review],[recipe_markdown(review)],
+                                              decision_audits=[audit])
+            self.assertEqual(first,make_private_review_archive(
+                [review],[recipe_markdown(review)],decision_audits=[audit]))
+            with ZipFile(BytesIO(first[0])) as z:
+                self.assertIn("decision_01.json",z.namelist())
+                saved=json.loads(z.read("decision_01.json"))
+                self.assertEqual("OUTRANKED_OR_UTILITY_THRESHOLD",
+                                 saved["comparisons"][0]["reason_code"])
+            manifest=json.loads(first[1])
+            self.assertEqual(sha256(first[0]).hexdigest(),
+                             manifest["archive_sha256"])
+
+    def test_private_archive_rejects_wrong_candidate_evidence(self):
+        with TemporaryDirectory() as d:
+            f,path,digest,comparison=self.setup_source(d)
+            review=full_recipe_review(path,expected_master_sha256=digest,
+                candidate=f["candidate"],owned_audit=f["owned_audit"],
+                comparison_item=comparison)
+            with self.assertRaisesRegex(ValueError,"mismatch"):
+                make_private_review_archive([review],[recipe_markdown(review)],
+                    decision_audits=[{"candidate_id":"wrong",
+                                      "source_master_sha256":digest,
+                                      "comparisons":[]}])
 
     def test_wrong_source_rejected(self):
         with TemporaryDirectory() as d:
