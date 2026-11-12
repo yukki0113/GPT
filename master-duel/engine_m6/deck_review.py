@@ -151,7 +151,7 @@ def make_private_review_archive(reviews, markdowns, *, decision_audits=None):
                 raise ValueError("decision audit candidate/source mismatch")
             payloads[f"decision_{index:02d}.json"] = (
                 json.dumps(audit,ensure_ascii=False,sort_keys=True,
-                           separators=(",",":"),allow_nan=False)+"\\n").encode("utf-8")
+                           separators=(",",":"),allow_nan=False)+"\n").encode("utf-8")
     bio = BytesIO()
     with ZipFile(bio,"w") as z:
         for name,raw in sorted(payloads.items()):
