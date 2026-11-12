@@ -409,14 +409,12 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
     policy_map=(validate_decision_policy(decision_policy,
         master_sha256=teacher_candidate["lineage"]["source_master_sha256"])
         if decision_policy is not None else None)
-    policy_assessment_gaps=(sorted([
-        {"section":sec,"card_id":cid}
-        for (sec,cid) in records if policy_map is not None
-        and (sec,cid) not in policy_map])
+    policy_assessment_gaps=([{"section":sec,"card_id":cid}
+        for (sec,cid) in sorted(records) if policy_map is not None
+        and (sec,cid) not in policy_map]
         if policy_map is not None else [])
-    policy_source_gaps=(sorted([
-        {"section":sec,"card_id":cid}
-        for (sec,cid) in policy_map if (sec,cid) not in records])
+    policy_source_gaps=([{"section":sec,"card_id":cid}
+        for (sec,cid) in sorted(policy_map) if (sec,cid) not in records]
         if policy_map is not None else [])
     if any(record["annotation"]["package_id"] is not None and
            record["annotation"]["package_id"] not in {p["package_id"] for p in engine_packages}
