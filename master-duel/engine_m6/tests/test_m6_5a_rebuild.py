@@ -64,7 +64,7 @@ class SourcedRebuild(unittest.TestCase):
         request=copy.deepcopy(self.request)
         if mode:request["mode"]=mode
         return rebuild_from_discovery(
-            request,self.teacher,discovery_results=self.discovery if discoveries is None else discoveries,
+            request,self.teacher,discovery_results=[self.discovery] if discoveries is None else discoveries,
             selected_rows=self.selected if selected is None else selected)
 
     def test_db_sourced_new_low_rarity_without_teacher_reference(self):
