@@ -20,7 +20,7 @@ _GROUP_RE=re.compile(r"[a-zA-Z0-9_:-]{1,60}\Z")
 
 def validate_decision_policy(policy, *, master_sha256):
     if not isinstance(policy,dict) or set(policy)!={
-        "schema","master_sqlite_sha256","as_of","assessments","min_main_score","min_extra_score"}:
+        "schema","master_sqlite_sha256","as_of","assessments","min_main_score","min_extra_score","required_review_names"}:
         raise ValueError("decision policy shape")
     if policy["schema"]!="md-m6-7-decision-policy-v1" or not _SHA.fullmatch(master_sha256):
         raise ValueError("decision policy schema/source")
@@ -36,6 +36,11 @@ def validate_decision_policy(policy, *, master_sha256):
         val=policy["min_"+zone+"_score"]
         if type(val) is not int or not 0<=val<=100:
             raise ValueError("minimum "+zone+" utility score")
+    names=policy["required_review_names"]
+    if (not isinstance(names,list) or not 1<=len(names)<=32 or
+            any(not isinstance(name,str) or not name.strip() or
+                len(name)>120 for name in names) or len(set(names))!=len(names)):
+        raise ValueError("required named competitive research coverage")
     arr=policy["assessments"]
     if not isinstance(arr,list) or len(arr)>300:
         raise ValueError("bounded assessments required")
