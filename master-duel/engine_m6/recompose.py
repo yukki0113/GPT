@@ -406,6 +406,7 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
              "bounded solution limit")
     cap=min(max_solutions or request["max_variants"],request["max_variants"])
     records=_validated_catalog(teacher_candidate,discovery_results,annotations)
+    truncated_source_searches=sum(bool(d.get("truncated")) for d in discovery_results)
     policy_map=(validate_decision_policy(decision_policy,
         master_sha256=teacher_candidate["lineage"]["source_master_sha256"])
         if decision_policy is not None else None)
@@ -467,7 +468,8 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
             "policy_assessment_gaps":policy_assessment_gaps,
             "policy_source_gaps":policy_source_gaps,
             "required_name_gaps":required_name_gaps,
-            "policy_coverage_status":("COMPLETE" if not policy_assessment_gaps and not policy_source_gaps and not required_name_gaps
+            "truncated_source_searches":truncated_source_searches,
+            "policy_coverage_status":("COMPLETE" if not policy_assessment_gaps and not policy_source_gaps and not required_name_gaps and not truncated_source_searches
                                       else "REVIEW_REQUIRED") if policy_map is not None
                                       else "NOT_ASSESSED",
             "solution_count":len(solutions),
