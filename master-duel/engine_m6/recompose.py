@@ -416,6 +416,21 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
     policy_source_gaps=([{"section":sec,"card_id":cid}
         for (sec,cid) in sorted(policy_map) if (sec,cid) not in records]
         if policy_map is not None else [])
+    required_name_gaps=[]
+    if policy_map is not None:
+        # The policy must explicitly name staples and competing options it
+        # expects. An absent modern staple is a research gap, not a losing vote.
+        discovered_by_name={}
+        for discovery in discovery_results:
+            for row in discovery["results"]:
+                discovered_by_name.setdefault(row["name"],set()).add(
+                    (row["section_candidate"],row["card_id"]))
+        for name in decision_policy["required_review_names"]:
+            found=discovered_by_name.get(name,set())
+            if not found:
+                required_name_gaps.append({"name":name,"reason":"NOT_DISCOVERED"})
+            elif not any(pair in policy_map and pair in records for pair in found):
+                required_name_gaps.append({"name":name,"reason":"NOT_COMPETITIVELY_ASSESSED"})
     if any(record["annotation"]["package_id"] is not None and
            record["annotation"]["package_id"] not in {p["package_id"] for p in engine_packages}
            for record in records.values()):
@@ -451,7 +466,8 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
             "policy_mode":"EVIDENCE_SCORED" if policy_map is not None else "LEGACY_HEURISTIC",
             "policy_assessment_gaps":policy_assessment_gaps,
             "policy_source_gaps":policy_source_gaps,
-            "policy_coverage_status":("COMPLETE" if not policy_assessment_gaps and not policy_source_gaps
+            "required_name_gaps":required_name_gaps,
+            "policy_coverage_status":("COMPLETE" if not policy_assessment_gaps and not policy_source_gaps and not required_name_gaps
                                       else "REVIEW_REQUIRED") if policy_map is not None
                                       else "NOT_ASSESSED",
             "solution_count":len(solutions),
