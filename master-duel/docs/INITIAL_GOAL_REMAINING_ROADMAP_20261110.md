@@ -1,3 +1,5 @@
+> **2026-11-12 M6-7 構築ロジック修正（実データ受入前）**：M6で所持カード・固定優先度だけによる汎用札採用と、素材条件のみでEX枠を埋める問題を是正。`decision_policy.py`にSHA・日時・必須検索カード名・六軸競争評価を追加。M6-5Cに採用役割の限界効用逓減、MAIN/EX最低性能閾値、採用/不採用理由・未検索環境札ギャップを追加。正式private統合はポリシーなしでfail closed、必須環境札とランク4／リンク2を自動検索。架空回帰を追加。**実データの環境評価入力・回帰テスト実行・Generation5再構築/保存は未完了、M6-7受入PASSではない。** [仕様・残受入](M6_7_COMPETITIVE_DECK_SELECTION_LOGIC_20261112.md)。
+
 > **2026-11-12 M6-7レシピ一覧の初期実装（未受入）**：`engine_m6/deck_review.py`で採用全MAIN/EXのカード名・枚数・レア・所持状態・出典付き理由と、登録済み所持全件の見送り理由をSHAピンSQLiteから出力。JSON/Markdownのprivate不変ZIP/manifestを`integrate_private_deck`の戻り値に追加。架空回帰を追加。**実Gen5再実行・Drive保存/独立読戻し・CIテストは未確認であり、M6-7 PASSではない。** [実装・残受入](M6_7_FULL_RECIPE_REVIEW_IMPLEMENTATION_20261112.md)。
 
 > **2026-11-12 M6-6のprivate統合受入（構造接続）PASS**：実Gen5 HEAD/ZIP/DB/sidecar/CPと所持135種類をSHA確認し、最新M6構築モジュール全経路を実行。軍貫MAIN40/EX14構造案・新規UR生成0上限を生成、実所持の汎用札を採用。CORE必須/最新規制/展開成立/実戦性は未確認、完成推薦に昇格させない。イビルツイン/海晶乙女/ブラック・マジシャン/スピードロイドは資料不足を架空補完せず停止。修正：CP policyの既知メタデータ、LINK値NULLの検索、素材仮説ラベル。次は**M6-7構築スレッドの実利用受入・カード効果/ロックの個別検証**。[M6-6監査](M6_6_PRIVATE_INTEGRATION_AUDIT_20261112.md)。
