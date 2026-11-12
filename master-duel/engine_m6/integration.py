@@ -22,6 +22,7 @@ from .recompose import recompose_portfolio
 from .evaluate import evaluate_structural_candidate
 from .reasoning import plan_reconstruction, audit_reconstruction
 from .report import compare_candidates
+from .deck_review import full_recipe_review, recipe_markdown
 from .proposal_store import make_proposal_archive, verify_proposal_archive
 from .schema import validate_request
 
@@ -88,7 +89,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     if not assembled["candidates"]:
         return {"summary":summary,"preflight":pre,"source_assembly":assembled,
                 "portfolio":None,"evaluations":[],"comparisons":None,
-                "archive":None,"manifest_raw":None}
+                "archive":None,"manifest_raw":None,
+                "full_reviews":[],"review_markdowns":[]}
     # A teacher-origin source variant is a structural starting point only.
     reference=next(
         (x["candidate"] for x in assembled["candidates"]
@@ -181,8 +183,18 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     archive=None
     manifest_raw=None
     comparison=None
+    full_reviews=[]
+    review_markdowns=[]
     if compare_items:
         comparison=compare_candidates(compare_items)
+        by_id={item['candidate_id']:item for item in comparison['items']}
+        for entry in compare_items:
+            review=full_recipe_review(
+                master_sqlite_path, expected_master_sha256=pins['sqlite_sha'],
+                candidate=entry['candidate'], owned_audit=entry['owned_audit'],
+                comparison_item=by_id[entry['candidate']['candidate_id']])
+            full_reviews.append(review)
+            review_markdowns.append(recipe_markdown(review))
         archive,manifest_raw=make_proposal_archive(
             comparison,source_master_sha256=pins["sqlite_sha"])
         verify_proposal_archive(
@@ -193,4 +205,5 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     return {"summary":summary,"preflight":pre,
             "source_assembly":assembled,"portfolio":portfolio,
             "evaluations":evaluated,"comparisons":comparison,
-            "archive":archive,"manifest_raw":manifest_raw}
+            "archive":archive,"manifest_raw":manifest_raw,
+            "full_reviews":full_reviews,"review_markdowns":review_markdowns}
