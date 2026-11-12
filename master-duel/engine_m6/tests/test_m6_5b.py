@@ -13,6 +13,7 @@ TEXT={
  "konami:301":"カード名が異なるモンスター２体\n①：手札を１枚捨て、相手フィールドの魔法・罠カード１枚を対象として発動できる。",
  "konami:302":"レベル４モンスター×２\n①：デッキから『倍化の魔法』１枚を手札に加える。その後、別の『希望』Ｘモンスターを特殊召喚できる。",
  "konami:100":"①：このカードは自分フィールドにレベル４モンスターが存在する場合に特殊召喚できる。",
+ "konami:400":"レベル４モンスター×２\\n①：このカードは他の効果を持つ。",
 }
 
 def make_db(path):
@@ -119,7 +120,7 @@ class EffectReviewTests(unittest.TestCase):
         self.assertIn("konami:9663",out["claim_reviews"][0]["missing_cards"])
 
     def test_missing_extra_target_blocks_route(self):
-        out=self.review(routes=[route(extra=["konami:303"])])
+        out=self.review(routes=[route(extra=["konami:401"])])
         self.assertEqual("BLOCKED",out["status"])
         self.assertIn("ROUTE_DEPENDENCY_UNSATISFIED",out["blocking_reasons"])
 
@@ -131,7 +132,7 @@ class EffectReviewTests(unittest.TestCase):
         self.assertFalse(out["route_reviews"][0]["simultaneous_material_production_verified"])
 
     def test_nonselected_card_claim_cannot_activate_route(self):
-        c=claim(self.bundle,"konami:302")
+        c=claim(self.bundle,"konami:400")
         with self.assertRaisesRegex(ValueError,"nonselected"):
             self.review(claims=[c])
 
