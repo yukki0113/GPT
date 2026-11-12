@@ -11,6 +11,7 @@ import re
 import sqlite3
 
 _SHA = re.compile(r"[a-f0-9]{64}\Z")
+_CARD = re.compile(r"konami:[0-9]+\Z")
 _RARITIES = {"N","R","SR","UR"}
 _STATES = {"KNOWN_POSITIVE","KNOWN_ZERO","UNKNOWN"}
 _SECTIONS = {"MAIN","EXTRA"}
@@ -32,7 +33,7 @@ def _strings(items, field, *, max_length=120):
 def search_cards(db_path, *, expected_sqlite_sha256, section,
                  theme_terms=(), levels=(), ranks=(), links=(), races=(),
                  attributes=(), rarities=("N","R","SR","UR"),
-                 owned_only=False, limit=120):
+                 owned_only=False, limit=120, exact_card_ids=()):
     """Search documented name/property intersections in an independently pinned DB.
 
     Multiple query facets are OR within each dimension and AND between
@@ -43,6 +44,8 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
     _require(section in _SECTIONS, "section required")
     _require(type(limit) is int and 1<=limit<=_MAX, "bounded limit required")
     _require(type(owned_only) is bool, "owned_only must be boolean")
+    exact=_strings(exact_card_ids,"exact_card_ids",max_length=32)
+    _require(all(_CARD.fullmatch(x) for x in exact),"invalid exact card id")
     themes=_strings(theme_terms,"theme")
     rcs=_strings(races,"races")
     attrs=_strings(attributes,"attributes")
@@ -62,6 +65,9 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
         return "%"+term.replace("\\","\\\\").replace("%","\\%").replace("_","\\_")+"%"
     where=["m.rarity IN ("+",".join("?" for _ in rar)+")"]
     args=list(rar)
+    if exact:
+        where.append("c.card_id IN ("+",".join("?" for _ in exact)+")")
+        args.extend(exact)
     # A simple name match returns theme-name CANDIDATES, never official archetype.
     if themes:
         where.append("("+" OR ".join("c.name LIKE ? ESCAPE '\\'" for _ in themes)+")")
@@ -76,9 +82,11 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
     # For broad EX discovery, take rank/link only and flag other extra methods
     # as a separate evidence gap.
     if section=="EXTRA":
-        where.append("(a.rank IS NOT NULL OR a.link IS NOT NULL)")
+        where.append("(a.rank IS NOT NULL OR a.link IS NOT NULL OR ("
+                     "a.kind='MONSTER' AND t.body LIKE '%このカードがＬ召喚%'))")
     else:
-        where.append("(a.rank IS NULL AND a.link IS NULL)")
+        where.append("(a.rank IS NULL AND a.link IS NULL AND ("
+                     "t.body IS NULL OR t.body NOT LIKE '%このカードがＬ召喚%'))")
     if owned_only:
         where.append("i.known_state='KNOWN_POSITIVE' AND i.owned_count>0")
     query=("SELECT c.card_id,c.name,a.kind,a.attribute,a.race,a.level,a.rank,a.link,"
@@ -127,7 +135,7 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
                  "levels":list(levels),"ranks":list(ranks),
                  "links":list(links),"races":list(rcs),
                  "attributes":list(attrs),"rarities":list(rar),
-                 "owned_only":owned_only},
+                 "owned_only":owned_only,"exact_card_ids":list(exact)},
         "results":results,"truncated":len(rows)>limit,
         "search_limit":limit,"proof_of_compatibility":False,
         "rarity_game_verified":False,
