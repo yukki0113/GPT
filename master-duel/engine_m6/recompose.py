@@ -191,14 +191,18 @@ def _select_variant(request,teacher,discoveries,records, *,
             a=r["annotation"]
             role_counts[a["role"]]+=selected["MAIN",a["card_id"]]
         eligible=[]
+        non_generic_count=sum(n for (sec,cid),n in selected.items()
+            if sec=="MAIN" and records[(sec,cid)]["annotation"]["category"]!="OWNED_GENERIC")
+        need_more_strategy=non_generic_count<min(28,target_main)
         for r in candidates:
             a=r["annotation"];key=("MAIN",a["card_id"])
             if selected[key]>=_available(r,request):continue
             desire=max(0,TARGETS.get(a["role"],0)-role_counts[a["role"]])
             # The engine/core first establishes the strategy; owned generic
             # completes the remaining functional roles in a second pass.
-            phase=0 if a["category"] in {"THEME_CORE","THEME_OPTION",
-                                        "CROSS_THEME","OWNED_ENGINE"} else 1
+            strategic=a["category"] in {"THEME_CORE","THEME_OPTION",
+                                        "CROSS_THEME","OWNED_ENGINE"}
+            phase=0 if strategic==need_more_strategy else 1
             eligible.append((phase,-int(desire>0),-desire,-a["priority"],
                              -int(r["source"]["owned_state"]=="KNOWN_POSITIVE"),
                              a["card_id"],r))
@@ -327,7 +331,8 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
             "status":"STRUCTURAL_OPTIONS_REVIEW_REQUIRED" if solutions else
                      "INSUFFICIENT_EVIDENCE",
             "teacher_only_completion":False,
-            "all_cards_source_grounded":True,
+            "source_records_have_matching_pins":True,
+            "raw_source_bytes_checked_by_planner":False,
             "owned_ur_not_assumed":True,
             "gameplay_verified":False,
             "recommendation_eligible":False,
