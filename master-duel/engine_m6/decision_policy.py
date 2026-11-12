@@ -20,7 +20,7 @@ _GROUP_RE=re.compile(r"[a-zA-Z0-9_:-]{1,60}\Z")
 
 def validate_decision_policy(policy, *, master_sha256):
     if not isinstance(policy,dict) or set(policy)!={
-        "schema","master_sqlite_sha256","as_of","assessments","min_extra_score"}:
+        "schema","master_sqlite_sha256","as_of","assessments","min_main_score","min_extra_score"}:
         raise ValueError("decision policy shape")
     if policy["schema"]!="md-m6-7-decision-policy-v1" or not _SHA.fullmatch(master_sha256):
         raise ValueError("decision policy schema/source")
@@ -32,8 +32,10 @@ def validate_decision_policy(policy, *, master_sha256):
             raise ValueError()
     except (TypeError,ValueError) as exc:
         raise ValueError("policy as_of must be timezone aware") from exc
-    if type(policy["min_extra_score"]) is not int or not 0<=policy["min_extra_score"]<=100:
-        raise ValueError("minimum EXTRA utility score")
+    for zone in ("main","extra"):
+        val=policy["min_"+zone+"_score"]
+        if type(val) is not int or not 0<=val<=100:
+            raise ValueError("minimum "+zone+" utility score")
     arr=policy["assessments"]
     if not isinstance(arr,list) or len(arr)>300:
         raise ValueError("bounded assessments required")
