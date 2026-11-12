@@ -22,7 +22,7 @@ from .recompose import recompose_portfolio
 from .evaluate import evaluate_structural_candidate
 from .reasoning import plan_reconstruction, audit_reconstruction
 from .report import compare_candidates
-from .deck_review import full_recipe_review, recipe_markdown
+from .deck_review import full_recipe_review, recipe_markdown, make_private_review_archive
 from .proposal_store import make_proposal_archive, verify_proposal_archive
 from .schema import validate_request
 
@@ -90,7 +90,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
         return {"summary":summary,"preflight":pre,"source_assembly":assembled,
                 "portfolio":None,"evaluations":[],"comparisons":None,
                 "archive":None,"manifest_raw":None,
-                "full_reviews":[],"review_markdowns":[]}
+                "full_reviews":[],"review_markdowns":[],
+                "review_archive":None,"review_manifest_raw":None}
     # A teacher-origin source variant is a structural starting point only.
     reference=next(
         (x["candidate"] for x in assembled["candidates"]
@@ -185,6 +186,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     comparison=None
     full_reviews=[]
     review_markdowns=[]
+    review_archive=None
+    review_manifest_raw=None
     if compare_items:
         comparison=compare_candidates(compare_items)
         by_id={item['candidate_id']:item for item in comparison['items']}
@@ -195,6 +198,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                 comparison_item=by_id[entry['candidate']['candidate_id']])
             full_reviews.append(review)
             review_markdowns.append(recipe_markdown(review))
+        review_archive,review_manifest_raw=make_private_review_archive(
+            full_reviews,review_markdowns)
         archive,manifest_raw=make_proposal_archive(
             comparison,source_master_sha256=pins["sqlite_sha"])
         verify_proposal_archive(
@@ -206,4 +211,5 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
             "source_assembly":assembled,"portfolio":portfolio,
             "evaluations":evaluated,"comparisons":comparison,
             "archive":archive,"manifest_raw":manifest_raw,
-            "full_reviews":full_reviews,"review_markdowns":review_markdowns}
+            "full_reviews":full_reviews,"review_markdowns":review_markdowns,
+            "review_archive":review_archive,"review_manifest_raw":review_manifest_raw}
