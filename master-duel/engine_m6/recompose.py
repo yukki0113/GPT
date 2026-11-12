@@ -64,6 +64,9 @@ def _validated_catalog(teacher,discoveries,annotations):
         _require(type(row["minimum"]) is int and type(row["maximum"]) is int and
                  0<=row["minimum"]<=row["maximum"]<=3,
                  "invalid card bounds")
+        _require((row["category"]=="THEME_CORE" and row["minimum"]>=1) or
+                 (row["category"]!="THEME_CORE" and row["minimum"]==0),
+                 "only explicit theme core and package parts may be mandatory")
         _require(type(row["priority"]) is int and 0<=row["priority"]<=100,
                  "priority must be bounded")
         _require(isinstance(row["reason"],str) and row["reason"].strip() and
