@@ -99,6 +99,13 @@ class CompetitiveSelectionTests(unittest.TestCase):
                        "reason":"NOT_COMPETITIVELY_ASSESSED"},
                       result["required_name_gaps"])
 
+    def test_truncated_discovery_does_not_claim_full_coverage(self):
+        t,r,d,a,s,p=sample()
+        d[0]["truncated"]=True
+        result=generate(t,r,d,a,s,p,policy(a))
+        self.assertEqual("REVIEW_REQUIRED",result["policy_coverage_status"])
+        self.assertEqual(1,result["truncated_source_searches"])
+
     def test_bad_assessment_scores_fail_closed(self):
         t,r,d,a,s,p=sample()
         pol=policy(a);pol["assessments"][0]["axes"]["meta_fit"]=9
