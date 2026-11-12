@@ -103,8 +103,31 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
         assembled["candidates"][0]["candidate"])
     if len(discovery_queries)>30:
         raise ValueError("bounded discovery queries required")
+    # Explicit research targets are searched even when no teacher recipe
+    # mentions them. Names are source-name candidates, not guaranteed effects.
+    research_queries=list(discovery_queries)
+    if decision_policy is not None:
+        names=decision_policy.get("required_review_names",[])
+        if names:
+            research_queries.extend([
+                {"section":"MAIN","theme_terms":list(names),"limit":300},
+                {"section":"EXTRA","theme_terms":list(names),"limit":300},
+            ])
+        # A level-4 pair calls for *both* rank-4 and link-2 research.
+        # Null/unknown link-rating cards still require explicit source review.
+        if any(
+            isinstance(board,dict) and board.get("kind")=="LEVEL_MONSTERS"
+            and board.get("level")==4 and board.get("count",0)>=2
+            for board in board_capabilities
+        ):
+            research_queries.extend([
+                {"section":"EXTRA","ranks":[4],"limit":300},
+                {"section":"EXTRA","links":[2],"limit":300},
+            ])
+    if len(research_queries)>40:
+        raise ValueError("bounded competitive research queries required")
     discoveries=[]
-    for query in discovery_queries:
+    for query in research_queries:
         if not isinstance(query,dict):
             raise ValueError("discovery query must be an object")
         discoveries.append(search_cards(
@@ -126,6 +149,9 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     summary["new_candidate_count"]=portfolio["solution_count"]
     summary["new_status"]=portfolio["status"]
     summary["competitive_policy_applied"]=portfolio["competitive_policy_applied"]
+    summary["competitive_policy_coverage"]=portfolio["policy_coverage_status"]
+    summary["required_names_missing"]=len(portfolio["required_name_gaps"])
+    summary["automatic_comparative_searches"]=len(research_queries)-len(discovery_queries)
     summary["selection_policy"]="EVIDENCE_SCORED" if decision_policy is not None else "LEGACY_HEURISTIC_REVIEW_REQUIRED"
     evaluated=[]
     compare_items=[]
@@ -147,14 +173,14 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
         documented={
             "THEME_INTERNAL_LOW_RARITY":any(
                 q.get("theme_terms") or q.get("exact_card_ids") for q in
-                discovery_queries if q.get("section")=="MAIN"),
+                research_queries if q.get("section")=="MAIN"),
             "EXTRA_FROM_AVAILABLE_MATERIALS":bool(extra_card_ids),
             "MAIN_EXTRA_ITERATION":bool(
                 extra_card_ids and
-                any(q.get("section")=="MAIN" for q in discovery_queries)),
+                any(q.get("section")=="MAIN" for q in research_queries)),
             "OWNED_GENERIC_FINISH":any(
                 q.get("section")=="MAIN" and q.get("owned_only")
-                for q in discovery_queries),
+                for q in research_queries),
             "FINAL_COST_AND_LEGALITY_REVIEW":True,
         }
         for task in trace["tasks"]:
