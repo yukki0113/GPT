@@ -117,7 +117,7 @@ def recipe_markdown(review):
                      f'{x["disposition"]} | {x["reason"].replace("|", "／")} |')
     return "\n".join(lines) + "\n"
 
-def make_private_review_archive(reviews, markdowns):
+def make_private_review_archive(reviews, markdowns, *, decision_audits=None):
     """Immutable sidecar bytes for Drive; caller uploads and independently reads back.
 
     No write to production HEAD. An archive cannot certify actual gameplay.
@@ -133,6 +133,8 @@ def make_private_review_archive(reviews, markdowns):
         or r.get("review_required") is not True
         or r.get("gameplay_verified") is not False for r in reviews):
         raise ValueError("mixed or unverified review source")
+    if decision_audits is not None and len(decision_audits) != len(reviews):
+        raise ValueError("decision audit/review count mismatch")
     payloads = {}
     for index, (review, markdown) in enumerate(zip(reviews, markdowns), 1):
         if markdown != recipe_markdown(review):
@@ -141,6 +143,15 @@ def make_private_review_archive(reviews, markdowns):
             json.dumps(review,ensure_ascii=False,sort_keys=True,
                        separators=(",",":"),allow_nan=False)+"\n").encode("utf-8")
         payloads[f"review_{index:02d}.md"] = markdown.encode("utf-8")
+        if decision_audits is not None:
+            audit=decision_audits[index-1]
+            if (audit.get("candidate_id")!=review["candidate_id"] or
+                    audit.get("source_master_sha256")!=review["source_master_sha256"] or
+                    not isinstance(audit.get("comparisons"),list)):
+                raise ValueError("decision audit candidate/source mismatch")
+            payloads[f"decision_{index:02d}.json"] = (
+                json.dumps(audit,ensure_ascii=False,sort_keys=True,
+                           separators=(",",":"),allow_nan=False)+"\\n").encode("utf-8")
     bio = BytesIO()
     with ZipFile(bio,"w") as z:
         for name,raw in sorted(payloads.items()):
