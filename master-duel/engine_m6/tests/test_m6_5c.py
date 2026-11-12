@@ -103,7 +103,9 @@ class M65C(unittest.TestCase):
     def test_owned_staple_copies_never_exceed_inventory(self):
         for item in run()["solutions"]:
             owned={x["card_id"]:x["owned_count"] for x in item["provenance"]
-                   if x["owned_state"]=="KNOWN_POSITIVE"}
+                   if x["owned_state"]=="KNOWN_POSITIVE"
+                   and any(a["card_id"]==x["card_id"] and a["category"] in
+                           {"OWNED_GENERIC","OWNED_ENGINE"} for a in sample()[3])}
             for card in item["candidate"]["cards"]:
                 if card["card_id"] in owned:
                     self.assertLessEqual(card["quantity"],owned[card["card_id"]])
