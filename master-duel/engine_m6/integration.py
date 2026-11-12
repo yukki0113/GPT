@@ -152,6 +152,7 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     summary["competitive_policy_applied"]=portfolio["competitive_policy_applied"]
     summary["competitive_policy_coverage"]=portfolio["policy_coverage_status"]
     summary["required_names_missing"]=len(portfolio["required_name_gaps"])
+    summary["unscored_research_candidates"]=portfolio["unscored_discovery_count"]
     summary["automatic_comparative_searches"]=len(research_queries)-len(discovery_queries)
     summary["selection_policy"]="EVIDENCE_SCORED" if decision_policy is not None else "LEGACY_HEURISTIC_REVIEW_REQUIRED"
     evaluated=[]
@@ -248,6 +249,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                 "policy_assessment_gaps":portfolio["policy_assessment_gaps"],
                 "policy_source_gaps":portfolio["policy_source_gaps"],
                 "truncated_source_searches":portfolio["truncated_source_searches"],
+                "unscored_discovery_count":portfolio["unscored_discovery_count"],
+                "unscored_discovery_sample":portfolio["unscored_discovery_sample"],
                 "comparisons":option["competitive_candidate_comparisons"],
                 "selected_marginal_scores":option["competitive_decisions"],
                 "gameplay_verified":False,
