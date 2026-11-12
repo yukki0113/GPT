@@ -92,6 +92,10 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                 "archive":None,"manifest_raw":None,
                 "full_reviews":[],"review_markdowns":[],
                 "review_archive":None,"review_manifest_raw":None}
+    # A new real-data deck must not silently fall back to the old
+    # owned-first / priority-only selection when evaluation evidence is absent.
+    if decision_policy is None:
+        raise ValueError("COMPETITIVE_POLICY_REQUIRED_FOR_NEW_DECK_REVIEW")
     # A teacher-origin source variant is a structural starting point only.
     reference=next(
         (x["candidate"] for x in assembled["candidates"]
