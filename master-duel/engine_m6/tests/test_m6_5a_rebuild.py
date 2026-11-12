@@ -77,7 +77,7 @@ class SourcedRebuild(unittest.TestCase):
     def test_no_unsourced_card(self):
         s=copy.deepcopy(self.selected)
         s[-1]["card_id"]="konami:999"
-        with self.assertRaisesRegex(ValueError,"lacks source"):
+        with self.assertRaisesRegex(ValueError,"inconsistent with evidence"):
             self.run_build(s)
 
     def test_source_sha_cross_generation_rejected(self):
