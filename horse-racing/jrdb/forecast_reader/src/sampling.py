@@ -11,6 +11,17 @@ import unicodedata
 CORE = ("venue", "surface", "distance", "race_class", "course")
 DETAIL = ("eligibility", "weight_rule")
 
+# JRDB encodes ordinary open special races and listed open races separately.
+# Treat only these open-class identities as equivalent for sampling. Retain
+# the original codes in input, output and audit; graded races are not merged.
+OPEN_CLASS_IDENTITIES = frozenset({"OP:5", "OP:6", "OP:L"})
+
+
+def comparable_value(field: str, value):
+    if field == "race_class" and value in OPEN_CLASS_IDENTITIES:
+        return "OP:OPEN"
+    return value
+
 
 def normalize_name(value: str) -> str:
     return "".join(unicodedata.normalize("NFKC", value).split())
@@ -26,7 +37,8 @@ def seasonal_distance(left: date, right: date) -> int:
 
 def _mismatches(target: dict, candidate: dict, fields: tuple[str, ...]) -> list[str]:
     return [key for key in fields if target.get(key) in (None, "", "UNKNOWN", "UNKNOWN_CLASS")
-            or candidate.get(key) in (None, "", "UNKNOWN", "UNKNOWN_CLASS") or target[key] != candidate[key]]
+            or candidate.get(key) in (None, "", "UNKNOWN", "UNKNOWN_CLASS")
+            or comparable_value(key, target[key]) != comparable_value(key, candidate[key])]
 
 
 def select(target: dict, races: list[dict], rules: dict) -> dict:
@@ -54,6 +66,11 @@ def select(target: dict, races: list[dict], rules: dict) -> dict:
         selected = in_period and name_matches and not mismatches
         audit.append({"race_key": race["race_key"], "in_period": in_period,
                       "name_match": name_matches, "condition_mismatches": mismatches,
+                      "class_identity": race.get("race_class"),
+                      "class_equivalence_applied": (
+                          target.get("race_class") != race.get("race_class")
+                          and comparable_value("race_class", target.get("race_class"))
+                          == comparable_value("race_class", race.get("race_class"))),
                       "exact_selected": selected})
         if in_period:
             eligible.append(race)
