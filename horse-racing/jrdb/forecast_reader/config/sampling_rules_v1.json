@@ -3,6 +3,7 @@
   "exact_threshold": 10,
   "target_races": 10,
   "supplement_per_year": 0,
+  "forecast_confirmation_max_samples": 5,
   "stages": [
     {
       "name": "S1",
