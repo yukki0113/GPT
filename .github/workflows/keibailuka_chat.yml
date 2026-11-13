@@ -53,6 +53,7 @@ jobs:
       - name: Resolve request
         id: request
         env:
+          GH_TOKEN: ${{ github.token }}
           EVENT_NAME: ${{ github.event_name }}
           DISPATCH_PAYLOAD: ${{ toJSON(github.event.client_payload) }}
           MANUAL_REQUEST_ID: ${{ inputs.request_id }}
