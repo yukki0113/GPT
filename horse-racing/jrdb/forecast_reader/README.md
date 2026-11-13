@@ -115,7 +115,16 @@ Historical population is the previous ten calendar years. Select up to **10 race
 
 The seven conditions are venue, surface, distance, race_class, eligibility,
 course and weight_rule. **venue, surface, distance, race_class and course never
-change.** Unknown condition values cannot qualify for relaxation. There is no
+change.** For sampling comparisons, ordinary Open and Listed open-class identities
+`OP:5`, `OP:6` and `OP:L` are treated as the **same open class**. This is
+a class-equivalence normalization, **not a relaxed sampling condition**:
+it applies at S0 through S4 and does not merge G1/G2/G3, three-win,
+or unknown classes. The original `race_class` value is preserved in
+condition records and candidate audit (`class_identity`), with
+`class_equivalence_applied` identifying a cross-code match. The separate
+eligibility and weight_rule fields still obey their original stage-specific
+matching rules; venue/surface/distance/course remain strict.
+ Unknown condition values cannot qualify for relaxation. There is no
 ±70-day search, no more-than-42-day widening, no automatic distance-band
 extension, and no fallback to website data. Multiple races from one year may
 qualify. Each stage records the candidate decisions, selected keys, added_count,
