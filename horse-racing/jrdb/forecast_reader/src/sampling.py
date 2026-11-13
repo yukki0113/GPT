@@ -128,3 +128,18 @@ def select(target: dict, races: list[dict], rules: dict) -> dict:
             "selected_stage": selected_stage, "supplement_race_keys": sorted(supplement),
             "failure_code": "NO_ACCEPTABLE_SUPPLEMENT" if len(exact) < goal and not supplement else None,
             "candidates": audit, "stages": stages}
+
+
+def needs_forecast_confirmation(selection: dict, rules: dict) -> bool:
+    """Require user approval only when the verified sample is at most five.
+
+    Sampling remains independent of the user-facing forecast gate. This helper
+    must not override source-integrity, as-of leakage or PASS/PARTIAL checks.
+    """
+    count = selection["total_selected"]
+    threshold = rules.get("forecast_confirmation_max_samples", 5)
+    if not isinstance(count, int) or isinstance(count, bool) or count < 0:
+        raise ValueError("INVALID_SAMPLE_COUNT")
+    if not isinstance(threshold, int) or isinstance(threshold, bool) or threshold < 0:
+        raise ValueError("INVALID_CONFIRMATION_THRESHOLD")
+    return count <= threshold

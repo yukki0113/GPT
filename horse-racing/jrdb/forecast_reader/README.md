@@ -137,27 +137,30 @@ An S0+S1+S2+S3+S4 pool smaller than ten is an explicit sampling limitation;
 existing PASS/PARTIAL source-integrity gates still apply.
 
 
-### Confirm-before-forecast operating rule (approved 2026-11-01)
+### Confirm-before-forecast operating rule (revised 2026-11-13)
 
-Sampling and forecasting are separate user-facing steps. After S0-S4 collection,
-show the exact selected race count, the S0/S1/S2/S3/S4 contributions, selected
-race identities, and any shortfall against the ten-race goal. The stage S4
-boundary is final: do not widen dates beyond ±42 days, automatically expand
-distance bands, or weaken venue/surface/distance/course/class to fill a quota.
+Sampling and forecasting are separate processing steps, but **a user approval
+pause is necessary only when the selected sample contains 0–5 races** after
+S0–S4 (inclusive). The configured threshold is
+`forecast_confirmation_max_samples: 5` in `config/sampling_rules_v1.json`.
+The pure helper `sampling.needs_forecast_confirmation(selection, rules)` evaluates
+this threshold against `total_selected`.
 
-**If fewer than ten races remain after S4, pause for explicit user approval.**
-The user may authorize forecasting with the selected N races (for example:
-"その9レースで予想してください"). Only then proceed to forecasting using those
-same verified races. Do not imply that a shortfall is a data corruption or a
-mandatory rejection; disclose N and applicable limits. Never silently substitute
-extra races or infer missing data. If the user requests a different sampling
-policy, treat that as a separate explicit decision.
+| Verified race count after S4 | User-facing action |
+| --- | --- |
+| 0–5 | Report the selected identities, counts, shortfall and limitations; pause for explicit approval before any forecast. Zero races cannot support a data-based forecast even with approval. |
+| 6–9 | Report the selected identities, S0–S4 breakdown and shortfall, **then proceed directly to eight-axis analysis and forecast without asking approval**. |
+| 10 | Proceed directly to forecast; report the ten selected races. |
 
-Sampling availability alone is not a prediction, and existing source,
-pre-race leakage, contract, and operational-acceptance checks remain mandatory.
-The Reader's technical PASS/PARTIAL status must not be rewritten just because
-the user approves a sample-size shortfall.
+After S0–S4 collection, disclose the exact race count, stage contributions,
+selected race identities, and shortfall against ten. **Ten races remains the
+sampling target, not the confirmation threshold.** S4 is the final boundary:
+never widen dates beyond ±42 days, automatically expand distance bands, or
+weaken venue/surface/distance/course/class to fill a quota. Preserve all
+verified source, pre-race leakage, contract, operational-acceptance, and
+missing-axis safeguards. Never report a missing sample as fabricated data,
+or rewrite technical PASS/PARTIAL status due to user approval.
 
-Acceptance example: 2026-10-31 Kyoto 10R Halloween Stakes, 9 selected races
-(S0 1, S1 2, S2 0, S3 2, S4 4). Present this nine-race inventory and wait
-for the user's affirmative instruction before producing its forecast.
+Examples: a seven-race Kyoto デイリー杯2歳S and a nine-race Kyoto
+Halloween Stakes proceed automatically after the sample inventory; a five-race
+sample requires confirmation before prediction.
