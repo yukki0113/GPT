@@ -47,6 +47,8 @@ def run(spec: dict, analysis_root: Path, work_dir: Path, output_dir: Path) -> di
         raise ValueError("Abnormal code or missing winner payout requires review: "+str(audit_row))
     columns,rows=execute_query(dataset,sql["summary"])
     summary=_records(columns,rows)
+    if len(rows)>500:
+        raise ValueError("Too many summary groups (>500); narrow grouping conditions")
     if (sum(int(r["entries"]) for r in summary)+int(audit_row["excluded_band_entries"]))!=audit_row["matching_entries"]:
         raise ValueError("Group entry counts do not reconcile")
     if any(int(r["starts"])+int(r["cancelled"])!=int(r["entries"]) for r in summary):
