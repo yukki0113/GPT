@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "starts": "all rows except abnormal_code 1=取消,2=除外 (also 01,02)",
+  "other": "starts excluding first/second/third including DNF/DQ/NULL finish",
+  "win_rate": "win/starts *100",
+  "top2_rate": "(win+second)/starts *100",
+  "top3_rate": "(win+second+third)/starts *100",
+  "win_roi": "sum(win_payout in JPY per 100 JPY win stake)/starts; percent",
+  "place_roi": "sum(place_payout in JPY per 100 JPY place stake)/starts; percent",
+  "base_metrics": [
+    "entries",
+    "starts",
+    "cancelled",
+    "horses"
+  ],
+  "supported_metrics": [
+    "win",
+    "second",
+    "third",
+    "other",
+    "win_rate",
+    "top2_rate",
+    "top3_rate",
+    "win_roi",
+    "place_roi"
+  ],
+  "payout_unit": "JPY returned per JPY100 bet",
+  "unknown_payout_note": "NULL payout on placed horse audited; absence of place payouts can be legitimate in short fields"
+}
