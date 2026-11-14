@@ -198,7 +198,7 @@ class WarehouseRaceNoteReader:
         return matches
 
     def boundary_previous_keys(self, year: int) -> list[str]:
-        require_historical_year(year)
+        require_historical_year(year, self.covered_years)
         return out_of_warehouse_previous_keys(self._rows("kyi", year))
 
     def build(
@@ -209,7 +209,7 @@ class WarehouseRaceNoteReader:
         source_member_date: dt.date | None = None,
     ) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
         """Build one historical RaceNote day with bulk Parquet filtering."""
-        year = require_historical_year(day.year)
+        year = require_historical_year(day.year, self.covered_years)
         requested_keys = {str(value) for value in race_keys or [] if str(value)}
 
         try:

@@ -34,13 +34,15 @@ class RaceNoteWarehouseError(RuntimeError):
     """Warehouse evidence cannot safely satisfy the RaceNote compatibility contract."""
 
 
-def require_historical_year(year: int) -> int:
-    """Fail closed outside the accepted 2010-2025 Historical Warehouse coverage."""
+def require_historical_year(year: int, covered_years: set[int] | None = None) -> int:
+    """Fail closed outside manifest coverage; retain legacy default when unspecified."""
     value = int(year)
-    if not HISTORICAL_YEAR_FROM <= value <= HISTORICAL_YEAR_TO:
+    allowed = (set(range(HISTORICAL_YEAR_FROM, HISTORICAL_YEAR_TO + 1))
+               if covered_years is None else {int(x) for x in covered_years})
+    if value not in allowed:
         raise RaceNoteWarehouseError(
             f"year {value} outside accepted RaceNote Historical Warehouse coverage "
-            f"{HISTORICAL_YEAR_FROM}-{HISTORICAL_YEAR_TO}; keep the 2026 PACI/Raw route"
+            f"{sorted(allowed)}"
         )
     return value
 

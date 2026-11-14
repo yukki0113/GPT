@@ -1,0 +1,113 @@
+name: RaceNote v0.5.6 BTDAY PACI staged shadow
+on:
+  workflow_dispatch:
+    inputs:
+      staging_artifact_id:
+        description: Approved pre-staged GitHub artifact ID (same repository)
+        required: true
+        type: string
+      staging_sha256:
+        description: SHA-256 of the GitHub artifact ZIP
+        required: true
+        type: string
+      selection_id:
+        description: Shadow Selection ID included in staged artifact
+        required: true
+        type: string
+      target_date:
+        description: Historical target date YYYY-MM-DD
+        required: true
+        type: string
+      race_lap_period_to:
+        description: Accepted RaceLap cutoff before target date
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: racenote-v056-btday-paci-shadow
+  cancel-in-progress: false
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ github.token }}
+      STAGE_ID: ${{ inputs.staging_artifact_id }}
+      STAGE_SHA: ${{ inputs.staging_sha256 }}
+      SELECTION_ID: ${{ inputs.selection_id }}
+      TARGET_DATE: ${{ inputs.target_date }}
+      LAP_PERIOD: ${{ inputs.race_lap_period_to }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install canonical T1 dependencies
+        run: |
+          python -m pip install -r tools/data-storage/requirements.txt
+          python -m pip install jsonschema pandas numpy
+      - name: Fetch pinned staged GitHub Artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$STAGE_ID" =~ ^[1-9][0-9]*$ ]]
+          [[ "$STAGE_SHA" =~ ^[a-f0-9]{64}$ ]]
+          [[ "$SELECTION_ID" =~ ^BTDAY-[0-9]{4}$ ]]
+          [[ "$TARGET_DATE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]
+          [[ "$LAP_PERIOD" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$STAGE_ID/zip" > /tmp/btday-staged.zip
+          python horse-racing/jrdb/src/racenote_v056_btday_staged_input.py \
+            --archive /tmp/btday-staged.zip --sha256 "$STAGE_SHA" --output /tmp/btday-shadow
+          export PYTHONPATH="$GITHUB_WORKSPACE/horse-racing/jrdb/src"
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from racenote_v056_btday_source_router import verify_readiness_receipt
+          repo = Path(os.environ['GITHUB_WORKSPACE'])
+          stage = Path('/tmp/btday-shadow')
+          sid = os.environ['SELECTION_ID']
+          rel_selection = Path('horse-racing/jrdb/backtests') / sid / 'selection.json'
+          raw = (repo / rel_selection).read_bytes()
+          selection = json.loads(raw)
+          row = selection['source_row']
+          if (selection.get('selection_id') != sid or selection.get('target_date') != os.environ['TARGET_DATE']
+                  or row.get('source_mode') != 'paci' or str(row.get('staging_artifact_id')) != os.environ['STAGE_ID']
+                  or row.get('staging_sha256') != os.environ['STAGE_SHA']):
+              raise SystemExit('staged artifact differs from immutable Selection')
+          verify_readiness_receipt(row, repo)
+          rel_receipt = Path(row['readiness_receipt_path'])
+          for rel, data in ((rel_selection, raw), (rel_receipt, (repo / rel_receipt).read_bytes())):
+              dst = stage / rel
+              dst.parent.mkdir(parents=True, exist_ok=True)
+              with dst.open('xb') as f: f.write(data)
+          with (stage / 'inputs/source_row.json').open('x', encoding='utf-8') as f:
+              json.dump(row, f, ensure_ascii=False)
+          PY
+      - name: Run isolated BTDAY candidate and package clean Reader artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          export PYTHONPATH="$GITHUB_WORKSPACE/horse-racing/jrdb/src"
+          cd /tmp/btday-shadow
+          compact="${TARGET_DATE//-/}"
+          root="horse-racing/jrdb/backtests/$SELECTION_ID/$compact"
+          python "$GITHUB_WORKSPACE/horse-racing/jrdb/src/racenote_v056_btday_paci_t1.py" \
+            --date "$TARGET_DATE" --selection-id "$SELECTION_ID" --main-sha "$GITHUB_SHA" \
+            --paci "inputs/PACI${compact:2}.zip" --paci-source-receipt inputs/paci_receipt.json \
+            --source-row inputs/source_row.json --analysis-root inputs/analysis \
+            --course-fit-root inputs/course_fit --racereview-root inputs/rrdb \
+            --race-lap-current-bundle inputs/racelap --race-lap-expected-period-to "$LAP_PERIOD" \
+            --rrdb-zip inputs/rrdb.zip --rrdb-receipt inputs/rrdb_receipt.json --output-root "$root"
+          python "$GITHUB_WORKSPACE/horse-racing/jrdb/src/racenote_v056_racezip_delivery.py" \
+            --selection-id "$SELECTION_ID" --output /tmp/btday-shadow-readers.zip
+          cp "$root/operation_handoff.json" /tmp/btday-shadow-handoff.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: racenote-v056-btday-paci-shadow-${{ inputs.selection_id }}
+          path: |
+            /tmp/btday-shadow-readers.zip
+            /tmp/btday-shadow-handoff.json
+          if-no-files-found: error
+          retention-days: 7

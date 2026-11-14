@@ -1,0 +1,9 @@
+{
+  "schema_version": "racenote-v056-mixed-source-gate-v1",
+  "status": "DISABLED",
+  "acceptance": {
+    "historical_warehouse": null,
+    "paci": null
+  },
+  "reason": "New source routing remains DISABLED pending verified date-specific T1/Artifact/main readback and Clean Blind evidence; each source can be accepted independently after real proof. Prediction/Confidence Freeze is a post-T1 completion condition, not a prerequisite for first prediction."
+}

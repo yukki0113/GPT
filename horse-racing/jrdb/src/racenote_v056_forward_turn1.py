@@ -106,6 +106,17 @@ def main() -> int:
     )
     selection_id = args.selection_id or f"DAILY-{args.date.replace('-', '')}"
 
+    return build_common(args, paci_receipt, freshness, selection_id, execution_mode="FORWARD")
+
+
+def build_common(args, paci_receipt, freshness, selection_id, *, execution_mode,
+                 handoff_extra=None, source_receipt_bytes=None):
+    """Shared PACI materialization after caller-specific safety preflight."""
+    if execution_mode not in ("FORWARD", "BTDAY"):
+        raise ValueError("invalid PACI T1 execution mode")
+    mode_fields = ({"execution_mode": "FORWARD", "forward_t1_checked": True}
+                   if execution_mode == "FORWARD" else
+                   {"execution_mode": "BTDAY", "forward_t1_checked": False})
     src = Path(__file__).resolve().parent
     prep_cmd = [
         sys.executable, str(src / "racenote_v053_from_paci.py"),
@@ -165,8 +176,8 @@ def main() -> int:
     base_handoff = json.loads((args.output_root / "operation_handoff.json").read_text(encoding="utf-8"))
     base_handoff.update({
         "paci_source": paci_receipt,
-        "schema_version": "racenote-v056-forward-turn1-handoff-0.1",
-        "execution_mode": "FORWARD",
+        "schema_version": ("racenote-v056-forward-turn1-handoff-0.1" if execution_mode == "FORWARD" else "racenote-v056-btday-paci-turn1-handoff-0.1"),
+        "execution_mode": mode_fields["execution_mode"],
         "reader_manifest_sha256": session["reader_manifest_sha256"],
         "status": "READY_FOR_V056_AUTHORING",
         "logic_version": session["logic_version"],
@@ -185,21 +196,21 @@ def main() -> int:
         },
         "analysis_freshness": {
             "owner": "DEDICATED_ANALYSIS_OPERATION",
-            "forward_t1_checked": True,
+            "forward_t1_checked": mode_fields["forward_t1_checked"],
             "status": freshness["status"],
             "required_completed_through": freshness["required_completed_through"],
             **freshness["analysis"],
         },
         "rrdb_freshness": {
             "owner": "DEDICATED_RRDB_OPERATION",
-            "forward_t1_checked": True,
+            "forward_t1_checked": mode_fields["forward_t1_checked"],
             "status": freshness["status"],
             "required_completed_through": freshness["required_completed_through"],
             **freshness["rrdb"],
         },
         "race_lap_freshness": {
-            "owner": "FORWARD_T1",
-            "forward_t1_checked": True,
+            "owner": "FORWARD_T1" if execution_mode == "FORWARD" else "BTDAY_T1",
+            "forward_t1_checked": mode_fields["forward_t1_checked"],
             "expected_period_to": args.race_lap_expected_period_to,
         },
         "market_blind": True,
@@ -207,6 +218,20 @@ def main() -> int:
         "result_opened": False,
         "target_market_opened": False,
     })
+    if handoff_extra:
+        if execution_mode != "BTDAY":
+            raise ValueError("extra source provenance is restricted to BTDAY")
+        if set(handoff_extra) != {"source_mode", "source_generation_id", "source_sha256",
+                                  "source_receipt_sha256", "as_of_exclusive"}:
+            raise ValueError("unexpected BTDAY provenance fields")
+        if handoff_extra["source_mode"] != "paci" or handoff_extra["as_of_exclusive"] != args.date:
+            raise ValueError("BTDAY source provenance mismatch")
+        if (not isinstance(source_receipt_bytes, bytes)
+                or hashlib.sha256(source_receipt_bytes).hexdigest() != handoff_extra["source_receipt_sha256"]):
+            raise ValueError("BTDAY source receipt digest mismatch")
+        base_handoff.update(handoff_extra)
+    elif execution_mode == "BTDAY":
+        raise ValueError("BTDAY source provenance required")
     if base_handoff.get("paci", {}).get("sha256") != paci_receipt["sha256"]:
         raise ValueError("Day prep PACI SHA is inconsistent with Drive receipt")
     if base_handoff.get("selection_id") != selection_id or base_handoff.get("target_date") != args.date:
@@ -215,7 +240,9 @@ def main() -> int:
         raise ValueError("Reader/authoring roster mismatch")
     audit_root = args.output_root / "source_audit"
     audit_root.mkdir(exist_ok=True)
-    write_json(audit_root / "forward_analysis_rrdb_freshness.json", freshness)
+    if execution_mode == "BTDAY":
+        (audit_root / "selection_source_receipt.json").write_bytes(source_receipt_bytes)
+    write_json(audit_root / ("forward_analysis_rrdb_freshness.json" if execution_mode == "FORWARD" else "btday_as_of_evidence.json"), freshness)
     write_json(args.output_root / "operation_handoff.json", base_handoff)
     print(json.dumps({
         "status": base_handoff["status"],
