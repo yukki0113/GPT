@@ -45,6 +45,13 @@
 | 開催後Analysis/Mart更新 | `docs/README_post_race_analysis_mart_refresh.md` |
 | PWA / 条件別集計 / Newspaper表示運用 | `pwa/.gpt/HANDOFF.md` + `pwa/README.md` |
 
+## Niche Query (reusable historical aggregation)
+
+- Entry: `src/niche_query/run_query.py` and `src/niche_query/build_request.py`; QuerySpec/config examples under `config/niche_query/`.
+- Operation contract: `docs/NICHE_QUERY_OPERATION_v0_1.md`.
+- Uses canonical `tools/data-storage/` and Analysis v1.4 CURRENT manifest-only partitions. SQL is generated from an allowlisted QuerySpec; no ad-hoc per-query Python commits.
+- Synthetic acceptance: Issue #2561, Actions run 43558150122 (2026-11-14). Real-data transfer remains subject to Drive permissions and JRDB rights.
+
 ## Daily Raw acquisition
 
 2026 current-operation raw acquisition is defined in:
