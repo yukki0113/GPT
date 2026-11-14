@@ -51,6 +51,10 @@ def safe_unpack(archive: Path, output: Path) -> dict:
             if len(members) > MAX_ENTRIES:
                 raise ValueError("too many archive entries")
             for member in members:
+                # Standard tar archives may include an explicit root directory entry (./).
+                # It is not a file to extract; all other members still pass path validation.
+                if member.isdir() and member.name in (".", "./"):
+                    continue
                 target = output / relative(member.name)
                 if not member.isfile() and not member.isdir():
                     raise ValueError("tar links/devices/other specials are not allowed")
