@@ -1,6 +1,6 @@
 # JRDB Niche Query Runner v0.1 — 運用契約
 
-Status: implementation / **synthetic integration acceptance required** (see Actions audit). 2026-11-14.
+Status: **IMPLEMENTED / SYNTHETIC E2E PASS** (2026-11-14). Acceptance: Issue #2561 / Actions run 43558150122, DuckDB 1.1.3, unit + synthetic integration PASS. Live-current query acceptance is separate.
 
 ## 目的と正本
 
