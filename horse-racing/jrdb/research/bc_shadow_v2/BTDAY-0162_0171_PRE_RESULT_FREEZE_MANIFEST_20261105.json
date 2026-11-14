@@ -1,0 +1,133 @@
+{
+  "schema_version": "racenote-shadow-v2-cohort-freeze-manifest-v1",
+  "status": "9_BT_DAY_RESEARCH_FROZEN_1_BT_DAY_REVIEW_REQUIRED",
+  "date": "2026-11-05",
+  "branch": "research/racenote-shadow-v2-0162-0171-pre-result-20261105",
+  "source_commit_before_evidence": "4cec200989dd01aec56299998863c7d170882a73",
+  "results_or_payouts_consulted": false,
+  "A_Z_untouched": true,
+  "canonical_prediction_confidence_untouched": true,
+  "research_spec": "horse-racing/jrdb/docs/racenote/RACENOTE_V056_BC_SHADOW_V2_FORWARD_OPERATION_20261104.md",
+  "quality_note": "Drafts use pre-result Reader facts and analyst-reviewed grade exceptions; structural validator cannot verify semantic quality.",
+  "days": {
+    "162": {
+      "btday": 162,
+      "date": "20250503",
+      "expected_bc": 27,
+      "draft_count": 26,
+      "review_required": 1,
+      "shadow_B": 18,
+      "shadow_C": 8,
+      "draft_sha256": "4ae56737f0df69fbc3d57a0ce6984d338d5b65912f2d3864805c9828ba219253",
+      "status": "REVIEW_REQUIRED_NOT_FROZEN"
+    },
+    "163": {
+      "btday": 163,
+      "date": "20250510",
+      "expected_bc": 32,
+      "draft_count": 32,
+      "review_required": 0,
+      "shadow_B": 22,
+      "shadow_C": 10,
+      "draft_sha256": "156055d8f237942bc78cd5203d848b9c2b6f3eac32c63036ecd8c9a767e5d2a0",
+      "status": "READY_FOR_RESEARCH_FREEZE",
+      "validated_sha256": "f710713bc7b624a87ab010707b2bdec16242d60980697f17408411366e5df66f"
+    },
+    "164": {
+      "btday": 164,
+      "date": "20250928",
+      "expected_bc": 17,
+      "draft_count": 17,
+      "review_required": 0,
+      "shadow_B": 14,
+      "shadow_C": 3,
+      "draft_sha256": "c8ffe1facbf19fc5f50f0bfb3451562ef7e5572786f04819974e1074a753db44",
+      "status": "READY_FOR_RESEARCH_FREEZE",
+      "validated_sha256": "295220f1df9526c77b6cfbfc5a83127a7f5efae9c58ad944075bfe24b3e93318"
+    },
+    "165": {
+      "btday": 165,
+      "date": "20250322",
+      "expected_bc": 28,
+      "draft_count": 28,
+      "review_required": 0,
+      "shadow_B": 19,
+      "shadow_C": 9,
+      "draft_sha256": "b99a290b4f5c2bc383fb172f418be40308f8109c037e09f099bac2a61c48f461",
+      "status": "READY_FOR_RESEARCH_FREEZE",
+      "validated_sha256": "41a319b1b56c876e45849c7df724a1fc03f6419f9d570028bc589e8d0115d827"
+    },
+    "166": {
+      "btday": 166,
+      "date": "20250209",
+      "expected_bc": 24,
+      "draft_count": 24,
+      "review_required": 0,
+      "shadow_B": 17,
+      "shadow_C": 7,
+      "draft_sha256": "59900e6e29ace25c43109eb3be1ecf429fc78da2e0c4f21977dda68fdf71f26a",
+      "status": "READY_FOR_RESEARCH_FREEZE",
+      "validated_sha256": "d7ee3fb8a5e77ae1c20fd23137bc9c23ebb1f32e4ddf4460f57c9d6f2f87b3d4"
+    },
+    "167": {
+      "btday": 167,
+      "date": "20250614",
+      "expected_bc": 22,
+      "draft_count": 22,
+      "review_required": 0,
+      "shadow_B": 19,
+      "shadow_C": 3,
+      "draft_sha256": "ec1e734b18537a76802f8a61fd31ff3e17e0a09fac3b3bf5c3245d221c2698ff",
+      "status": "READY_FOR_RESEARCH_FREEZE",
+      "validated_sha256": "0b4d2e1d282f7bb75635fd7d31ec16a19f1a07c5bf7471ee8107acb529548ed7"
+    },
+    "168": {
+      "btday": 168,
+      "date": "20250330",
+      "expected_bc": 23,
+      "draft_count": 23,
+      "review_required": 0,
+      "shadow_B": 18,
+      "shadow_C": 5,
+      "draft_sha256": "bd1b679624b76fe1e60f3908061609078ce7bd2cc3c0d43128da01589aa035f8",
+      "status": "READY_FOR_RESEARCH_FREEZE",
+      "validated_sha256": "be2e6c787958ab5fb6aeff5ba394cdee90cea73710bc97e7dd11be2d42768a87"
+    },
+    "169": {
+      "btday": 169,
+      "date": "20251108",
+      "expected_bc": 20,
+      "draft_count": 20,
+      "review_required": 0,
+      "shadow_B": 19,
+      "shadow_C": 1,
+      "draft_sha256": "d4ac629289b04247cde435723e0c09a29dc148a5dae415dcf3f515acb46e62f4",
+      "status": "READY_FOR_RESEARCH_FREEZE",
+      "validated_sha256": "24e5a6ccb49a9c4d24acd6a9b57bddfe319316c3979b656f28c6e231a3245c4a"
+    },
+    "170": {
+      "btday": 170,
+      "date": "20250915",
+      "expected_bc": 14,
+      "draft_count": 14,
+      "review_required": 0,
+      "shadow_B": 11,
+      "shadow_C": 3,
+      "draft_sha256": "8a7a71920ec825b85f2c97c70f381a4e9bcd9f7e7546854669bb35e1e32ed9c8",
+      "status": "READY_FOR_RESEARCH_FREEZE",
+      "validated_sha256": "82db638d83b462d7aa13d4ce2e4836aeecec51343c162b12cea7433387cf2353"
+    },
+    "171": {
+      "btday": 171,
+      "date": "20250301",
+      "expected_bc": 24,
+      "draft_count": 24,
+      "review_required": 0,
+      "shadow_B": 19,
+      "shadow_C": 5,
+      "draft_sha256": "43ebb36c3a6188f8412dda6b1286b17d856e4ad530f65bfd897fef50b69c883f",
+      "status": "READY_FOR_RESEARCH_FREEZE",
+      "validated_sha256": "fb06c4a8874b3c26898a2bfd5e1703d8f2f36e6aeb487f821559a98ec3b8d61f"
+    }
+  }
+}
