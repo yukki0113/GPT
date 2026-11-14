@@ -1,0 +1,221 @@
+{
+  "schema_version": "racenote-v056-bc-shadow-cohort-snapshot-20261104-v1",
+  "status": "RESEARCH_SNAPSHOT_VALIDATED_NOT_CANONICAL_CONFIDENCE_FREEZE",
+  "created_for": "BTDAY-0155..0161",
+  "source_ref": "research/racenote-v056-bc-shadow-0155-0161-20261104",
+  "source_result_access": "no results, payout or final target-day odds opened in this work",
+  "operator_result_unopened_assertion": true,
+  "validation_run": 41795314486,
+  "committed_bytes_verification_run": 41795788292,
+  "source_cohort_count": 7,
+  "source_race_count": 201,
+  "canonical_totals": {
+    "A": 35,
+    "B": 114,
+    "C": 31,
+    "Z": 21
+  },
+  "shadow_eligible_count": 145,
+  "shadow_totals": {
+    "B": 82,
+    "C": 63
+  },
+  "transitions": {
+    "B->B": 74,
+    "B->C": 40,
+    "C->B": 8,
+    "C->C": 23
+  },
+  "days": [
+    {
+      "btday": "BTDAY-0155",
+      "date": "2025-08-16",
+      "races": 36,
+      "A": 5,
+      "B": 23,
+      "C": 3,
+      "Z": 5,
+      "shadowB": 19,
+      "shadowC": 7,
+      "transitions": {
+        "B->B": 18,
+        "B->C": 5,
+        "C->B": 1,
+        "C->C": 2
+      },
+      "sha256": "159a4f4c114b483694f63b4637bca815ae8277bfc47146edb2ea0773f23a4c8c"
+    },
+    {
+      "btday": "BTDAY-0156",
+      "date": "2025-12-27",
+      "races": 24,
+      "A": 5,
+      "B": 11,
+      "C": 3,
+      "Z": 5,
+      "shadowB": 10,
+      "shadowC": 4,
+      "transitions": {
+        "B->B": 8,
+        "B->C": 3,
+        "C->B": 2,
+        "C->C": 1
+      },
+      "sha256": "d5b579ffbfb1bd59baccb08ed6943388f24b7baa868b50dff1b59cac5d744086"
+    },
+    {
+      "btday": "BTDAY-0157",
+      "date": "2025-12-13",
+      "races": 9,
+      "A": 4,
+      "B": 4,
+      "C": 1,
+      "Z": 0,
+      "shadowB": 2,
+      "shadowC": 3,
+      "transitions": {
+        "B->B": 2,
+        "B->C": 2,
+        "C->B": 0,
+        "C->C": 1
+      },
+      "sha256": "9b510799237643cb09cac5f9d0877ad87daddb2f79ccd2f668bd43c9aa394829"
+    },
+    {
+      "btday": "BTDAY-0158",
+      "date": "2025-01-13",
+      "races": 24,
+      "A": 5,
+      "B": 12,
+      "C": 3,
+      "Z": 4,
+      "shadowB": 10,
+      "shadowC": 5,
+      "transitions": {
+        "B->B": 8,
+        "B->C": 4,
+        "C->B": 2,
+        "C->C": 1
+      },
+      "sha256": "a033a8515e07aa9d45e6ecec6b86264ed462b1d8dfe61f6f32ab79d72e7af1a3"
+    },
+    {
+      "btday": "BTDAY-0159",
+      "date": "2025-04-19",
+      "races": 36,
+      "A": 6,
+      "B": 25,
+      "C": 4,
+      "Z": 1,
+      "shadowB": 23,
+      "shadowC": 6,
+      "transitions": {
+        "B->B": 20,
+        "B->C": 5,
+        "C->B": 3,
+        "C->C": 1
+      },
+      "sha256": "747b2d30b0da51a45eccaf60f5b61adc3b81a744b6ed296a635def516919f823"
+    },
+    {
+      "btday": "BTDAY-0160",
+      "date": "2025-08-17",
+      "races": 36,
+      "A": 3,
+      "B": 25,
+      "C": 3,
+      "Z": 5,
+      "shadowB": 9,
+      "shadowC": 19,
+      "transitions": {
+        "B->B": 9,
+        "B->C": 16,
+        "C->B": 0,
+        "C->C": 3
+      },
+      "sha256": "20bdf53a3dfe1c26b628a3464c2d2f2e9d13faf905463bff9ed0d926d10e7f49",
+      "qa": "SOURCE_REASON_TEMPLATE_DOMINANT"
+    },
+    {
+      "btday": "BTDAY-0161",
+      "date": "2025-03-23",
+      "races": 36,
+      "A": 7,
+      "B": 14,
+      "C": 14,
+      "Z": 1,
+      "shadowB": 9,
+      "shadowC": 19,
+      "transitions": {
+        "B->B": 9,
+        "B->C": 5,
+        "C->B": 0,
+        "C->C": 14
+      },
+      "sha256": "83d3500405dcb53601051d14b3d3f7573a85567273b164b52ff8f6b7fd2335d7",
+      "qa": "RE_FREEZE_AFTER_INITIAL_CONFIDENCE_AND_SOURCE_TEMPLATE_DOMINANT"
+    }
+  ],
+  "previous_0152_0154_reference": {
+    "source_ref": "research/racenote-v056-bc-shadow-0152-0154-20261104",
+    "days": [
+      {
+        "btday": "BTDAY-0152",
+        "date": "2025-09-07",
+        "races": 36,
+        "shadowB": 24,
+        "shadowC": 3,
+        "sha256": "eaa32c9ab1d33452a49cb15b37322446052daf85ecb911839bd17d714df16461"
+      },
+      {
+        "btday": "BTDAY-0153",
+        "date": "2025-10-25",
+        "races": 36,
+        "shadowB": 22,
+        "shadowC": 3,
+        "sha256": "83daf6124266db947c4d0d8034b4df4119bcfa02f543af0868af8a0af865ea0c"
+      },
+      {
+        "btday": "BTDAY-0154",
+        "date": "2025-08-09",
+        "races": 36,
+        "shadowB": 23,
+        "shadowC": 4,
+        "sha256": "ede469d04eabf482f16daf1ba3a41036d82713433fced24c5a2e1d227b1dce42"
+      }
+    ]
+  },
+  "cumulative_0152_0161": {
+    "btday_days": 10,
+    "races": 309,
+    "canonical": {
+      "A": 50,
+      "B": 187,
+      "C": 37,
+      "Z": 35
+    },
+    "shadow_eligible": 224,
+    "shadow": {
+      "B": 151,
+      "C": 73
+    },
+    "transitions": {
+      "B->B": 138,
+      "B->C": 49,
+      "C->B": 13,
+      "C->C": 24
+    }
+  },
+  "quarantine": [
+    {
+      "btday": "BTDAY-0160",
+      "reason": "Original Prediction/Confidence reason text is formulaic and focuses on indexed Ability/Adjustment; independent semantic axis evidence is weak. Shadow label particularly uncertain."
+    },
+    {
+      "btday": "BTDAY-0161",
+      "reason": "Original confidence was re-frozen after first immutable Freeze; 21 of 36 grades changed (first A0/B35/C0/Z1 -> latest A7/B14/C14/Z1). All 36 reasons changed. Also formulaic input evidence; exclude from primary confirmation pending provenance audit."
+    }
+  ],
+  "freeze_semantics": "Git research commit + SHA256 immutable snapshot reference; no canonical T2 or confidence mutation; branch and PR not a branch-protection guarantee",
+  "note": "10 BT DAYs means ten selections, not 360 races; actual count 309"
+}
