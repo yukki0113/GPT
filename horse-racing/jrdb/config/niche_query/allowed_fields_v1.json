@@ -27,7 +27,8 @@
     "jockey_name": "text",
     "running_style": "text",
     "distance_aptitude": "text",
-    "track_condition": "derived_text"
+    "track_condition": "derived_text",
+    "win5_leg_no": "integer"
   },
   "filter_ops": [
     "eq",
