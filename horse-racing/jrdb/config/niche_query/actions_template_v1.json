@@ -1,0 +1,16 @@
+{
+  "request_id": "jrdb-niche-template",
+  "source_ref": "main",
+  "steps": [
+    {
+      "name": "unpack-analysis",
+      "entrypoint": "tools/data-storage/scripts/safe_unpack_staged_archive.py",
+      "args": ["--archive", "{public_drive:analysis}/jrdb_analysis_v1_4_canonical_current.tar.xz", "--output-dir", "{work}/analysis"]
+    },
+    {
+      "name": "niche-query",
+      "entrypoint": "horse-racing/jrdb/src/niche_query/run_query.py",
+      "args": ["--analysis-root", "{work}/analysis", "--spec-json", "__QUERY_SPEC_JSON__", "--work-dir", "{work}/current_only", "--output-dir", "{output}/niche_query"]
+    }
+  ]
+}

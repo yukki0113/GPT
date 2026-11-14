@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "dataset": "jrdb.analysis.current",
+  "fields": {
+    "year": "integer",
+    "age": "integer",
+    "horse_no": "integer",
+    "frame_no": "integer",
+    "distance": "integer",
+    "race_no": "integer",
+    "meeting_no": "integer",
+    "meeting_day": "integer",
+    "finish": "integer",
+    "final_win_popularity": "integer",
+    "race_date": "text",
+    "venue_code": "text",
+    "track_type": "text",
+    "race_condition_code": "text",
+    "track_condition_code": "text",
+    "grade_code": "text",
+    "race_name": "text",
+    "horse_id": "text",
+    "horse_name": "text",
+    "sex_code": "text",
+    "sire_name": "text",
+    "broodmare_sire_name": "text",
+    "jockey_name": "text",
+    "running_style": "text",
+    "distance_aptitude": "text",
+    "track_condition": "derived_text"
+  },
+  "filter_ops": [
+    "eq",
+    "ne",
+    "in",
+    "between",
+    "gte",
+    "lte"
+  ],
+  "max_filters": 16,
+  "max_groupings": 3,
+  "max_bands": 12
+}

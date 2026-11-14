@@ -1,0 +1,20 @@
+{
+  "dataset": "jrdb.analysis.current",
+  "as_of_generation": "CURRENT_AT_REQUEST",
+  "date_from": "2021-01-01",
+  "date_to": "2026-10-18",
+  "filters": [
+    {"field":"age","op":"eq","value":2},
+    {"field":"jockey_name","op":"eq","value":"横山典弘"},
+    {"field":"race_condition_code","op":"eq","value":"OP"}
+  ],
+  "groupings": [
+    {"field":"distance","kind":"bands","bands":[
+      {"label":"1200-1400","min":1200,"max":1400},
+      {"label":"1600-1800","min":1600,"max":1800},
+      {"label":"2000+","min":2000,"max":null}
+    ],"other_bucket":"excluded_with_count"}
+  ],
+  "metrics": ["win","second","third","other","win_rate","top2_rate","top3_rate","win_roi","place_roi"],
+  "detail": true
+}

@@ -1,0 +1,16 @@
+{
+  "dataset": "jrdb.analysis.current",
+  "as_of_generation": "CURRENT_AT_REQUEST",
+  "date_from": "2021-01-01",
+  "date_to": "2026-10-18",
+  "filters": [
+    {"field":"age","op":"eq","value":2},
+    {"field":"sire_name","op":"eq","value":"サートゥルナーリア"}
+  ],
+  "groupings": [
+    {"field":"track_type"},
+    {"field":"track_condition"}
+  ],
+  "metrics": ["win","second","third","other","win_rate","top2_rate","top3_rate","win_roi","place_roi"],
+  "detail": false
+}
