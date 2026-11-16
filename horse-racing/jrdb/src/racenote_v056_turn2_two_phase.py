@@ -8,6 +8,7 @@ import re
 from collections import Counter
 from pathlib import Path
 
+from racenote_v056_contract_gates import inspect_confidence_card_quality
 from racenote_v056_single_day import (
     build_freeze, expected_by_venue, freeze_confidence, load_session,
     save_confidence_review, save_venue, verify_confidence_freeze,
@@ -75,6 +76,8 @@ def preflight(root: Path, draft: Path, phase: str):
             key = (str(x["venue"]), int(x["race_no"]))
             if int(x.get("honmei", -1)) != int(by_key[key]["decision_core"]["marks"][0]):
                 raise ValueError(f"FROZEN_HONMEI_MISMATCH: {key}")
+    if phase == "confidence":
+        inspect_confidence_card_quality(data)
     return session, data
 
 
@@ -96,6 +99,7 @@ def run(root: Path, draft: Path, phase: str):
         }
         write_json(root / "prediction_phase_summary.json", result)
     else:
+        quality_audit = inspect_confidence_card_quality(records)
         path = incoming / "confidence.json"
         write_json(path, records)
         save_confidence_review(root, path)
@@ -111,6 +115,7 @@ def run(root: Path, draft: Path, phase: str):
             "record_count": len(records), "prediction_status": pred["status"],
             "confidence_status": conf["status"],
             "confidence_counts": dict(sorted(Counter(x["confidence"] for x in records).items())),
+            "confidence_quality": quality_audit,
             "prediction_records_sha256": pred["records_sha256"],
             "confidence_records_sha256": conf["confidence_records_sha256"],
             "authoring_quality": quality["status"],
