@@ -82,8 +82,10 @@ def settle_tickets(race, strategy, ticket_list, cancelled):
         by_number[key(x["numbers"], ordered)] += x["payout_yen"]
     refunded = [t for t in ticket_list if cancelled.intersection(t)]
     live = [t for t in ticket_list if not cancelled.intersection(t)]
-    payouts_sum = sum(by_number[key(t, ordered)] for t in live)
+    # defaultdict indexing would insert zero-return losing tickets and falsely
+    # classify them as hits. Use .get so the win-map remains immutable.
     hits = sum(key(t, ordered) in by_number for t in live)
+    payouts_sum = sum(by_number.get(key(t, ordered), 0) for t in live)
     refund_yen = 100 * len(refunded)
     return {"tickets": len(ticket_list), "stake_yen": 100 * len(ticket_list),
             "effective_stake_yen": 100 * len(live),
