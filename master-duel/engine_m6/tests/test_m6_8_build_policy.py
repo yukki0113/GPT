@@ -173,6 +173,33 @@ class EvidencePolicyV2Tests(unittest.TestCase):
         self.assertTrue(all(x["score_components"]["tier"]=="SS" for x in traces))
         self.assertTrue(all(x["copy_reason"] for x in traces))
 
+    def test_extra_discovery_stage_is_tiebreak_not_fixed_penalty(self):
+        p=v2(sample()[3])
+        special=next(x for x in p["assessments"] if x["card_id"]=="konami:2007")
+        special["game8"]={"tier":"SS",
+                          "source_url":"https://game8.jp/yugioh-masterduel/423814",
+                          "checked_on":"2026-11-11","applicability":"APPLICABLE"}
+        special["general_value"]=None
+        special["evidence_refs"].append("https://game8.jp/yugioh-masterduel/423814")
+        result=run(p)
+        pure=next(x for x in result["solutions"] if x["family"]=="PURE_THEME")
+        first_ex=next(x for x in pure["competitive_decisions"]
+                      if x["section"]=="EXTRA")
+        self.assertEqual("konami:2007",first_ex["card_id"])
+        self.assertEqual({},pure["role_target_shortfalls"])
+
+    def test_policy_fingerprint_changes_when_predeclared_reason_changes(self):
+        policy=v2(sample()[3])
+        first=run(policy)
+        again=run(deepcopy(policy))
+        self.assertEqual(first["decision_policy_sha256"],
+                         again["decision_policy_sha256"])
+        amended=deepcopy(policy)
+        amended["assessments"][0]["copy_reasons"][0]="Changed predeclared reason"
+        different=run(amended)
+        self.assertNotEqual(first["decision_policy_sha256"],
+                            different["decision_policy_sha256"])
+
     def test_no_automatically_filled_unowned_ur(self):
         out=run(v2(sample()[3]))
         for sol in out["solutions"]:
