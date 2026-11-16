@@ -65,8 +65,103 @@ def execute(pedigree: Path, relations: Path, top50_file: Path,
         "child_horse_id", "role", "resolved_parent_horse_id",
         "resolution_status", "parent_name", "parent_birth_year",
     ]
+    # The frozen JRDB relation source includes a small number of nonnumeric
+    # UKC child keys. They are never official JRDB eight-digit person IDs.
+    # Fail closed if any malformed child has an already resolved parent.
+    invalid_rows = database.execute(
+        """
+        SELECT resolution_status, count(*)
+        FROM read_parquet(?)
+        WHERE role IN ('sire', 'dam')
+          AND NOT regexp_matches(child_horse_id, '^[0-9]{8}
+    records = [dict(zip(relation_columns, row)) for row in relation_rows]
+    graph = build_graph(top50, records, crosswalk, bridge, audit)
+    candidate_roots = inspect_shared_ancestor_candidates(graph)
+    graph["source_sha256"] = {
+        "top50": EXPECTED_SHA["top50"],
+        "pedigree": EXPECTED_SHA["pedigree"],
+        "relations": EXPECTED_SHA["relations"],
+        "crosswalk": sha256(crosswalk_file),
+        "bridge": sha256(bridge_file),
+    }
+    graph["shared_ancestor_candidates"] = candidate_roots
+    graph["input_exclusions"] = {
+        "non_eight_digit_child_rows": sum(count for _, count in invalid_rows),
+        "status_counts": {status: count for status, count in invalid_rows},
+        "policy": "excluded only unresolved noncanonical JRDB child keys",
+    }
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(graph, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return graph["stats"]
+
+
+def main() -> None:
+    """Run with immutable research inputs and a non-production output."""
+    parser = argparse.ArgumentParser()
+    for name in ("pedigree", "relations", "top50", "crosswalk",
+                 "bridge", "output"):
+        parser.add_argument("--" + name, required=True, type=Path)
+    args = parser.parse_args()
+    stats = execute(
+        args.pedigree, args.relations, args.top50,
+        args.crosswalk, args.bridge, args.output,
+    )
+    print(json.dumps(stats, ensure_ascii=False, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()
+)
+        GROUP BY resolution_status
+        """,
+        [str(relations)],
+    ).fetchall()
+    allowed_unresolved = {"NO_CANDIDATE", "INSUFFICIENT_KEY"}
+    if any(status not in allowed_unresolved for status, _ in invalid_rows):
+        raise ValueError("Malformed JRDB child ID has unresolved provenance conflict")
     relation_rows = database.execute(
-        "SELECT " + ", ".join(relation_columns) + " FROM read_parquet(?) WHERE role IN ('sire', 'dam')",
+        "SELECT " + ", ".join(relation_columns) +
+        " FROM read_parquet(?) WHERE role IN ('sire', 'dam')"
+        " AND regexp_matches(child_horse_id, '^[0-9]{8}
+    records = [dict(zip(relation_columns, row)) for row in relation_rows]
+    graph = build_graph(top50, records, crosswalk, bridge, audit)
+    candidate_roots = inspect_shared_ancestor_candidates(graph)
+    graph["source_sha256"] = {
+        "top50": EXPECTED_SHA["top50"],
+        "pedigree": EXPECTED_SHA["pedigree"],
+        "relations": EXPECTED_SHA["relations"],
+        "crosswalk": sha256(crosswalk_file),
+        "bridge": sha256(bridge_file),
+    }
+    graph["shared_ancestor_candidates"] = candidate_roots
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(
+        json.dumps(graph, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    return graph["stats"]
+
+
+def main() -> None:
+    """Run with immutable research inputs and a non-production output."""
+    parser = argparse.ArgumentParser()
+    for name in ("pedigree", "relations", "top50", "crosswalk",
+                 "bridge", "output"):
+        parser.add_argument("--" + name, required=True, type=Path)
+    args = parser.parse_args()
+    stats = execute(
+        args.pedigree, args.relations, args.top50,
+        args.crosswalk, args.bridge, args.output,
+    )
+    print(json.dumps(stats, ensure_ascii=False, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()
+)",
         [str(relations)],
     ).fetchall()
     records = [dict(zip(relation_columns, row)) for row in relation_rows]
