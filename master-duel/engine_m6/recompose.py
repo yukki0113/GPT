@@ -420,6 +420,7 @@ def _select_variant(request,teacher,discoveries,records, *,
       "extra_rejected":rejected,
       "competitive_decisions":selection_trace,
       "competitive_policy_applied":policy_map is not None,
+      "competitive_input_version":("V2_COPY_EVIDENCE" if policy_map and any("score_by_copy" in x for x in policy_map.values()) else "V1_LEGACY"),
       "md_regulation_gate_applied":regulation_limits is not None,
       "competitive_candidate_comparisons":comparisons,
       "weak_generic_fillers":weak_generic_fillers,
@@ -482,6 +483,20 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
     policy_source_gaps=([{"section":sec,"card_id":cid}
         for (sec,cid) in sorted(policy_map) if (sec,cid) not in records]
         if policy_map is not None else [])
+    v2_policy=(isinstance(decision_policy,dict) and
+               decision_policy.get("schema")=="md-m6-8-evidence-build-policy-v2")
+    if v2_policy:
+        # Never preselect unreviewed theme minimums or change per-card copy
+        # ceilings in violation of the reviewed quantity decision.
+        _require(not policy_assessment_gaps and not policy_source_gaps,
+                 "V2_ALL_ANNOTATED_CARDS_REQUIRE_REVIEW")
+        for key,record in records.items():
+            assessed=policy_map[key]
+            _require(assessed["role"]==record["annotation"]["role"],
+                     "V2_ROLE_CONFLICT")
+            _require(record["annotation"]["minimum"]<=assessed["recommended_max"],
+                     "V2_MANDATORY_COPIES_EXCEED_REVIEWED_MAX")
+
     # Discovery is a superset of explicitly assessed cards. Newly retrieved
     # alternatives must remain visible for research, never silently discarded.
     discovered_keys=sorted({(row["section_candidate"],row["card_id"])
@@ -538,7 +553,9 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
             "solutions":solutions,"rejected":rejections,
             "competitive_policy_applied":policy_map is not None,
             "md_regulation_gate_applied":regulation_limits is not None,
-            "policy_mode":"EVIDENCE_SCORED" if policy_map is not None else "LEGACY_HEURISTIC",
+            "policy_mode":("EVIDENCE_COPY_SCORING_V2" if v2_policy else
+                           "LEGACY_SIX_AXIS_V1_REVIEW_REQUIRED" if policy_map is not None
+                           else "LEGACY_HEURISTIC"),
             "policy_assessment_gaps":policy_assessment_gaps,
             "policy_source_gaps":policy_source_gaps,
             "required_name_gaps":required_name_gaps,
