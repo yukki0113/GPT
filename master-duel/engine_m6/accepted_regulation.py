@@ -43,9 +43,14 @@ def validate_accepted_baseline(policy, *, master_sha256, as_of, candidate_ids):
              "ACCEPTED_BASELINE_SHAPE")
     _require(policy["schema"]==_SCHEMA and policy["format"]=="MD_STANDARD",
              "ACCEPTED_BASELINE_MD_FORMAT_REQUIRED")
+    # The baseline remembers its originating Gen6 SQLite SHA, but must
+    # survive later unrelated inventory/rarity updates. The current SQLite
+    # remains independently pinned by M6 and baseline IDs are checked against
+    # the current catalog in preflight/evaluation.
     _require(isinstance(master_sha256,str) and bool(_SHA.fullmatch(master_sha256))
-             and policy["master_sqlite_sha256"]==master_sha256,
-             "ACCEPTED_BASELINE_DB_SHA_MISMATCH")
+             and isinstance(policy["master_sqlite_sha256"],str)
+             and bool(_SHA.fullmatch(policy["master_sqlite_sha256"])),
+             "ACCEPTED_BASELINE_DB_SHA_INVALID")
     _require(policy["acceptance"]=="USER_APPROVED_OPERATIONAL_BASELINE",
              "ACCEPTED_BASELINE_NOT_USER_APPROVED")
     _require(policy["original_source_verification"] in
