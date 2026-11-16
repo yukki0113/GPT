@@ -43,20 +43,27 @@ jobs:
           path = Path("horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json")
           state = json.loads(path.read_text(encoding="utf-8"))
           report = summary(state)
-          assert report["total_days"] == 202, report
-          assert report["used_days"] == 0, report
-          assert report["eligible_unused_days"] == 194, report
-          assert report["last_date"] == "2026-11-01", report
-          assert report["selection_count"] == 181, report
-
           rows = state["days"]
+          selections = state.get("selections", [])
+          assert report["version"] == state["version"], report
+          assert report["total_days"] == len(rows), report
+          assert report["used_days"] == sum(bool(row.get("used")) for row in rows), report
+          assert report["unused_days"] == len(rows) - report["used_days"], report
+          assert report["eligible_unused_days"] == sum(
+              not row.get("used") and row.get("eligible", True) for row in rows
+          ), report
+          assert report["selection_count"] == len(selections), report
+          assert report["first_date"] == min(row["date"] for row in rows), report
+          assert report["last_date"] == max(row["date"] for row in rows), report
+
+          # Active pool is one canonical row per date. Used-state fields must
+          # remain internally consistent as real BTDAY reservations accumulate.
           assert len({row["date"] for row in rows}) == len(rows)
-          assert all(not row["used"] for row in rows)
-          assert all(row["used_at"] is None for row in rows)
-          assert all(row["selection_id"] is None for row in rows)
-          assert sum(row["selection_cycle"] == 1 for row in rows) == 20
-          assert sum(row["selection_cycle"] == 2 for row in rows) == 182
-          assert sum(not row["eligible"] for row in rows) == 8
+          for row in rows:
+              if row.get("used"):
+                  assert row.get("used_at") and row.get("selection_id"), row
+              else:
+                  assert row.get("used_at") is None and row.get("selection_id") is None, row
 
           # Exercise each cycle through the real picker in memory only.
           for source_mode, cycle in (
