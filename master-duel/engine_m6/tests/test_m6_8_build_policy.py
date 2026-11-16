@@ -105,7 +105,7 @@ class EvidencePolicyV2Tests(unittest.TestCase):
         r["game8"]["applicability"]="CONSTRAINED"
         with self.assertRaisesRegex(ValueError,"V2_CONSTRAINED_CARD_REQUIRES"):
             validate_decision_policy(p,master_sha256=PIN)
-        r["evidence_refs"].append("SYNTHETIC:TEXT_CONSTRAINT")
+        r["evidence_refs"].append("CONSTRAINT:SYNTHETIC_CARD_TEXT_REVIEW")
         reviewed=validate_decision_policy(p,master_sha256=PIN)
         self.assertEqual(50,reviewed["MAIN","konami:1200"]["score_by_copy"][0])
 
