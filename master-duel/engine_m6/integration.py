@@ -168,6 +168,9 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     summary["new_status"]=portfolio["status"]
     summary["competitive_policy_applied"]=portfolio["competitive_policy_applied"]
     summary["competitive_policy_coverage"]=portfolio["policy_coverage_status"]
+    summary["decision_policy_sha256"]=portfolio["decision_policy_sha256"]
+    summary["new_build_policy"]="EVIDENCE_COPY_SCORING_V2"
+    summary["unassessed_owned_review_required"]=(owned_generic_coverage["missing_assessment_count"]>0)
     summary["required_names_missing"]=len(portfolio["required_name_gaps"])
     summary["unscored_research_candidates"]=portfolio["unscored_discovery_count"]
     summary["owned_generic_research_query_applied"]=True
@@ -261,6 +264,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                 "schema":"md-m6-7-competitive-decisions-v1",
                 "candidate_id":review["candidate_id"],
                 "source_master_sha256":pins["sqlite_sha"],
+                "decision_policy_sha256":portfolio["decision_policy_sha256"],
+                "policy_schema":decision_policy["schema"],
                 "policy_as_of":decision_policy["as_of"],
                 "policy_coverage_status":portfolio["policy_coverage_status"],
                 "required_name_gaps":portfolio["required_name_gaps"],
