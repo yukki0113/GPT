@@ -6,7 +6,6 @@ Only source-pinned IDs are accepted. The caller owns external meta evidence.
 """
 from __future__ import annotations
 
-from collections import Counter
 from datetime import datetime
 import re
 
@@ -80,17 +79,17 @@ def validate_decision_policy(policy, *, master_sha256):
 
 
 def policy_score(assessment, *, competing_selected=0, role_selected=0):
-    """Conservative 0..100 utility. Diminishing value for duplicate roles."""
+    """Six-axis card utility; role/group counts do not impose fixed penalties.
+
+    The legacy count arguments remain accepted for API compatibility, but
+    must not change the value. Deck fit and role need are already assessed
+    independently. Per-card copy limits are handled by recommended_max and
+    hard ownership / format gates rather than generic duplicate penalties.
+    """
     axes=assessment["axes"]
-    value=(axes["baseline"]*4+axes["meta_fit"]*4+
-           axes["deck_fit"]*5+axes["tempo"]*3+
-           axes["resource_efficiency"]*2+axes["role_need"]*2)
-    # Role diversity is a tie-breaker, not a blanket veto against strong
-    # staples. In the real Suship replay, Ash/Imperm consumed the broad
-    # INTERRUPTION group and pushed independently useful Droll/Nibiru below
-    # lower-baseline traps. Role_need is already scored in the six axes;
-    # applying another 30-point penalty double-counted overlap.
-    return max(0,value-min(10,competing_selected*2)-min(4,role_selected//3))
+    return (axes["baseline"]*4+axes["meta_fit"]*4+
+            axes["deck_fit"]*5+axes["tempo"]*3+
+            axes["resource_efficiency"]*2+axes["role_need"]*2)
 
 
 def screened_choice(record, policy_map, *, counts, zone):
@@ -112,11 +111,9 @@ def screened_choice(record, policy_map, *, counts, zone):
              item["condition_review"]=="UNKNOWN")):
         return None,{"card_id":a["card_id"],"section":zone,
                      "reason":"EX_USAGE_OR_LOCK_NOT_REVIEWED"}
-    group_count=sum(counts.get((zone,cid),0) for (sec,cid),assess in policy_map.items()
-                    if sec==zone and assess["competitive_group"]==item["competitive_group"])
-    role_count=sum(counts.get((zone,cid),0) for (sec,cid),assess in policy_map.items()
-                   if sec==zone and assess["role"]==item["role"])
-    score=policy_score(item,competing_selected=group_count,role_selected=role_count)
+    # No category-wide count-based deductions. The source-backed
+    # recommended_max supplies the individually assessed copy ceiling.
+    score=policy_score(item)
     return score,{"card_id":a["card_id"],"section":zone,
                   "competitive_group":item["competitive_group"],
                   "score":score,"assessment_status":item["assessment_status"],
