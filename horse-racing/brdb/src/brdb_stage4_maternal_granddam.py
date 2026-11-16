@@ -220,11 +220,28 @@ def main() -> None:
             decisions.get("prediction_safe") is False,
             "source root decisions are not reviewed")
     approved = {}
+    source_profiles = {p["rank"]: p for p in observations["profiles"]}
+    source_subjects = {s["rank"]: s for s in top50["subjects"]}
+    valid_approved = {
+        "MULTI_FIELD_EXACT",
+        "EXISTING_AUDITED_CROSSWALK",
+        "EXTERNAL_PROFILE_AND_SEED_MATCH",
+    }
     for item in decisions.get("decisions", []):
         rank = item.get("rank")
-        require(type(rank) is int and rank not in approved,
-                "duplicate root identity approval")
-        approved[rank] = item.get("approved")
+        require(type(rank) is int and rank not in approved
+                and rank in source_profiles and rank in source_subjects,
+                "duplicate or unrelated root identity decision")
+        status = item.get("basis")
+        require(status in valid_approved | {"ROOT_IDENTITY_REVIEW_REQUIRED"},
+                "unknown audited identity status")
+        require(item.get("approved") is (status in valid_approved) and
+                item.get("name") == source_subjects[rank]["name"] and
+                item.get("jbis_id") == source_profiles[rank]["jbis_id"],
+                "source subject identity decision contradicts evidence")
+        approved[rank] = item["approved"]
+    require(sum(approved.values()) == 45 and len(approved) == 50,
+            "audited stage3B 45/5 subject population changed")
     result = build_maternal_observations(
         top50, observations, graph, approved,
     )
