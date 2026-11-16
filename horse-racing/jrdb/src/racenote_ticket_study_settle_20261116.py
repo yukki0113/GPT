@@ -71,7 +71,7 @@ def key(numbers, ordered):
     return tuple(numbers if ordered else sorted(numbers))
 
 
-def settle_tickets(race, strategy, ticket_list):
+def settle_tickets(race, strategy, ticket_list, cancelled):
     bet_type = BET_TYPES[strategy]
     payouts = race["payouts"][bet_type]
     ordered = bet_type == "trifecta"
@@ -80,10 +80,16 @@ def settle_tickets(race, strategy, ticket_list):
         if x["payout_yen"] is None:
             raise ValueError(f"payout null {race['race_key']} {bet_type}")
         by_number[key(x["numbers"], ordered)] += x["payout_yen"]
-    ret = sum(by_number[key(t, ordered)] for t in ticket_list)
-    hits = sum(key(t, ordered) in by_number for t in ticket_list)
+    refunded = [t for t in ticket_list if cancelled.intersection(t)]
+    live = [t for t in ticket_list if not cancelled.intersection(t)]
+    payouts_sum = sum(by_number[key(t, ordered)] for t in live)
+    hits = sum(key(t, ordered) in by_number for t in live)
+    refund_yen = 100 * len(refunded)
     return {"tickets": len(ticket_list), "stake_yen": 100 * len(ticket_list),
-            "return_yen": ret, "hits": hits, "hit_race": bool(hits)}
+            "effective_stake_yen": 100 * len(live),
+            "refund_yen": refund_yen, "payout_yen": payouts_sum,
+            "return_yen": payouts_sum + refund_yen,
+            "hits": hits, "hit_race": bool(hits)}
 
 
 def aggregate(rows):
@@ -96,6 +102,9 @@ def aggregate(rows):
         returns = sum(r["return_yen"] for r in selected)
         result[strategy] = {
             "races": races, "tickets": tickets, "stake_yen": spent,
+            "effective_stake_yen": sum(r["effective_stake_yen"] for r in selected),
+            "refund_yen": sum(r["refund_yen"] for r in selected),
+            "payout_yen": sum(r["payout_yen"] for r in selected),
             "return_yen": returns, "profit_yen": returns - spent,
             "roi_percent": round(100 * returns / spent, 2) if spent else None,
             "hit_races": sum(r["hit_race"] for r in selected),
@@ -168,7 +177,7 @@ def main():
             results[k] = race
 
     per_race = []
-    abnormal = []
+    special_cases = []
     for doc, r in records:
         rk = (doc["target_date"], r["venue"], int(r["race_no"]))
         race = results.get(rk)
@@ -178,10 +187,16 @@ def main():
         actual = {int(x["horse_no"]): x for x in race["all_runners"] if x["horse_no"] is not None}
         if not set(marks) <= set(actual):
             raise ValueError(f"unresolved horse numbers {rk}")
+        cancelled = set()
         for no in marks:
             runner = actual[no]
             if not runner["completed_normally"]:
-                abnormal.append({"race": rk, "horse_no": no, "abnormal": runner["abnormal_label"]})
+                label = runner["abnormal_label"]
+                if label in ("取消", "除外"):
+                    cancelled.add(no)
+                elif label != "中止":
+                    raise ValueError(f"UNKNOWN_ABNORMAL_RESULT {rk} {no}: {label}")
+                special_cases.append({"race": rk, "horse_no": no, "abnormal": label})
         top = list(race["top3"])
         top_nos = [int(x["horse_no"]) for x in top]
         actual_finish = actual[marks[0]]["finish"]
@@ -198,22 +213,22 @@ def main():
             "bet_decision": r["bet_decision"], "new_strategy": r["strategy"],
         }
         for strategy in STRATEGIES:
-            primary[strategy] = settle_tickets(race, strategy, combos(marks, strategy))
+            primary[strategy] = settle_tickets(race, strategy, combos(marks, strategy), cancelled)
         if r["bet_decision"] == "BET":
             old_tickets = r["tickets"]
             generated = combos(marks, r["strategy"])
             if sorted(map(tuple, old_tickets)) != sorted(map(tuple, generated)):
                 raise ValueError(f"ticket Freeze mismatch {rk}")
-            primary["NEW_SELECTION"] = settle_tickets(race, r["strategy"], old_tickets)
+            primary["NEW_SELECTION"] = settle_tickets(race, r["strategy"], old_tickets, cancelled)
         elif r["bet_decision"] != "PASS" or r["tickets"]:
             raise ValueError(f"PASS ticket mismatch {rk}")
         per_race.append(primary)
     if len(per_race) != 156:
         raise ValueError("result count not 156")
-    # Refunds and disqualifications need a separate official settlement audit;
-    # report outcomes but do not present computed ROI as definitive in this case.
-    if abnormal:
-        raise ValueError("UNRESOLVED_SPECIAL_RESULT: " + json.dumps(abnormal, ensure_ascii=False))
+    # JRA official betting rules: cancellation/exclusion refunds all stakes
+    # containing the non-starter; race interruptions ("中止") are not refunded.
+    # https://www.jra.go.jp/kouza/baken/index.html
+    # https://www.jra.go.jp/faq/pop03/1_14.html
     by_day = {}
     for day_id in DATES:
         group = [x for x in per_race if x["selection_id"] == day_id]
@@ -247,6 +262,7 @@ def main():
         "status": "SUCCESS", "cohort": seal["cohort"], "freeze_git_blob_sha": blob_hash(freeze_path),
         "warehouse_generation": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
         "totals": totals, "days": by_day, "races": per_race,
+        "special_result_audit": special_cases,
         "limitations": seal["limitations"],
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
