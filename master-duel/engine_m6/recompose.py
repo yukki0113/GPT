@@ -225,7 +225,10 @@ def _select_variant(request,teacher,discoveries,records, *,
                 if score<decision_policy["min_main_score"]:
                     rejected.append({**trace,"reason":"BELOW_MAIN_UTILITY_THRESHOLD"})
                     continue
-                eligible.append((-score,-int(desire>0),-desire,
+                # Competitive selection compares independently assessed card
+                # value. Do not silently impose role-target balance via
+                # tie-breaks; role targets are diagnostics only.
+                eligible.append((-score,0,0,
                                  -a["priority"],a["card_id"],r,trace))
             else:
                 phase=0 if strategic==need_more_strategy else 1
@@ -296,13 +299,12 @@ def _select_variant(request,teacher,discoveries,records, *,
                     if trace["reason"]!="RECOMMENDED_MAX_REACHED":
                         rejected.append(trace)
                     continue
-            # Prefer a distinct useful option rather than a redundant repeat.
-            duplicate=selected["EXTRA",cid]>0
-            marginal=score-(12 if duplicate else 0)
-            # A 25-point practical advantage is enough to override a
-            # one-stage search preference (e.g. strong Rank 4 vs weak Link).
-            rank_value=marginal-24*stage
-            choices.append((-rank_value,-marginal,stage,-a["priority"],
+            # The individual recommended_max / material checks control
+            # quantity. No arbitrary penalty for a second copy or for an
+            # existing same-role monster. Search stages remain a soft
+            # preference, not a rigid ranking.
+            rank_value=score-24*stage
+            choices.append((-rank_value,-score,stage,-a["priority"],
                             cid,r,trace,score))
         if not choices:break
         chosen=min(choices,key=lambda x:x[:5])
