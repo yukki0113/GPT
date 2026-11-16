@@ -23,7 +23,8 @@ def assess_from_private_sources(head, source_zip, cp_policy_path, cp_policy_sha2
                                 cp_budget_by_rarity=None, scope="PRODUCTION",
                                 craftability_policy="PROVISIONAL_GO",
                                 craftability_registry_path=None,
-                                craftability_registry_sha256=None):
+                                craftability_registry_sha256=None,
+                                regulation_policy=None):
     """Evaluate user-supplied recipe without mutation and without invented rules.
 
     Missing or future CP policies fail closed instead of using a default price.
@@ -55,6 +56,7 @@ def assess_from_private_sources(head, source_zip, cp_policy_path, cp_policy_sha2
             cp_budget_by_rarity=cp_budget_by_rarity,
             craftability_policy=craftability_policy,
             craftability_exceptions=craftability_exceptions,
+            regulation_policy=regulation_policy,
         )
     result["source_context"] = {
         "head_generation": validated_head["generation"],
@@ -65,6 +67,7 @@ def assess_from_private_sources(head, source_zip, cp_policy_path, cp_policy_sha2
         "craftability_registry_sha256": craftability_registry_sha256,
         "craftability_policy": craftability_policy,
         "cp_policy_status": resolution["status"],
+        "operational_regulation_accepted":result["regulation_context"]["operational_baseline_accepted"],
         "cp_policy_id": (resolution["policy"]["policy_id"]
                          if resolution["policy"] else None),
         "format_id": format_id,
