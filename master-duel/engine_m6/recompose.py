@@ -323,11 +323,10 @@ def _select_variant(request,teacher,discoveries,records, *,
                     if trace["reason"]!="RECOMMENDED_MAX_REACHED":
                         rejected.append(trace)
                     continue
-            # The individual recommended_max / material checks control
-            # quantity. No arbitrary penalty for a second copy or for an
-            # existing same-role monster. Search stages remain a soft
-            # preference, not a rigid ranking.
-            rank_value=score-24*stage
+            # Search stages are for discovery and equal-score tie-breaking,
+            # NOT arbitrary numeric handicaps. Use evaluated practical
+            # utility directly; a better alternative can beat theme cards.
+            rank_value=score
             choices.append((-rank_value,-score,stage,-a["priority"],
                             cid,r,trace,score))
         if not choices:break
@@ -442,7 +441,8 @@ def _select_variant(request,teacher,discoveries,records, *,
       "family":family,"engine_id":engine_id,
       "candidate":candidate,"provenance":result["card_provenance"],
       "main_role_counts":dict(sorted(roles.items())),
-      "role_target_shortfalls":{k:max(0,v-roles[k]) for k,v in TARGETS.items()},
+      "role_target_shortfalls":({} if policy_map is not None else
+                                {k:max(0,v-roles[k]) for k,v in TARGETS.items()}),
       "extra_used":ex_count,"extra_unused":cap_extra-ex_count,
       "extra_completion_status":extra_completion_status,
       "extra_shortfall":extra_shortfall,
