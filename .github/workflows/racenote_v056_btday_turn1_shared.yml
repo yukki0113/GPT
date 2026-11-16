@@ -41,7 +41,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Resolve one future canonical BTDAY request
+      - name: Resolve one canonical BTDAY request
         env:
           BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.sha }}
@@ -81,8 +81,12 @@ jobs:
           selection=json.loads(path.read_text(encoding='utf-8'))
           if selection.get('selection_id')!=sid or selection.get('n')!=1 or len(selection.get('dates',[]))!=1:
               raise SystemExit('Invalid canonical single-day selection')
-          if len(selection.get('sources',[]))!=1 or selection['sources'][0].get('source_mode')!='historical_warehouse':
-              raise SystemExit('Shared historical T1 requires historical_warehouse source')
+          if len(selection.get('sources',[]))!=1:
+              raise SystemExit('Shared BTDAY T1 requires exactly one source contract')
+          source=selection['sources'][0]
+          source_mode=source.get('source_mode')
+          if source_mode not in ('historical_warehouse','paci'):
+              raise SystemExit('Unsupported BTDAY source_mode: '+str(source_mode))
           mode=selection.get('race_lap_mode','baseline')
           if mode not in ('baseline','approved_current'):
               raise SystemExit(f'Unsupported BTDAY RaceLap mode: {mode}')
@@ -92,10 +96,19 @@ jobs:
           date=selection['dates'][0]
           if not re.fullmatch(r'20\d{2}-\d{2}-\d{2}',date):
               raise SystemExit('Invalid target date')
-          # The current historical golden materialization provides BAC/KYI 2025.
-          # Never silently reuse the 2025 raw archives for another target year.
-          if not date.startswith('2025-'):
-              raise SystemExit(f'Historical raw archive year not supported: {date}')
+          if source_mode=='historical_warehouse':
+              # The accepted Historical Warehouse raw materialization is 2025-only.
+              if not date.startswith('2025-'):
+                  raise SystemExit(f'Historical raw archive year not supported: {date}')
+              if not source.get('source_reference'):
+                  raise SystemExit('Historical Warehouse source_reference missing')
+          else:
+              expected='PACI'+date[2:4]+date[5:7]+date[8:10]+'.zip'
+              if source.get('file_name')!=expected:
+                  raise SystemExit('PACI filename/date mismatch')
+              drive_id=str(source.get('drive_file_id') or '')
+              if not re.fullmatch(r'[A-Za-z0-9_-]{20,128}',drive_id):
+                  raise SystemExit('Canonical PACI Drive file ID missing or invalid')
           target=Path('horse-racing/jrdb/backtests')/sid/date.replace('-','')
           if target.exists():
               raise SystemExit(f'Immutable T1 already exists: {target}')
@@ -104,8 +117,12 @@ jobs:
               f.write(f'RACELAP_INPUT_MODE={mode}\n')
               f.write(f'BTDAY_TARGET_DATE={date}\n')
               f.write(f'BTDAY_DATE_RAW={date.replace("-","")}\n')
+              f.write(f'BTDAY_SOURCE_MODE={source_mode}\n')
               f.write(f'TARGET={target}\n')
-          print(f'BTDAY_REQUEST_ACCEPTED {sid} {date}')
+              if source_mode=='paci':
+                  f.write(f'PACI_DRIVE_FILE_ID={source["drive_file_id"]}\n')
+                  f.write(f'PACI_FILE_NAME={source["file_name"]}\n')
+          print(f'BTDAY_REQUEST_ACCEPTED {sid} {date} source={source_mode}')
           PY
       - name: Install dependencies
         if: env.SKIP_T1 != 'true'
@@ -148,6 +165,19 @@ jobs:
           PY
           mkdir -p /tmp/historical/analysis
           tar -xJf /tmp/historical/analysis.tar.xz -C /tmp/historical/analysis
+
+      - name: Materialize canonical PACI from Drive when selected
+        if: env.SKIP_T1 != 'true' && env.BTDAY_SOURCE_MODE == 'paci'
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/racenote-paci
+          PACI="/tmp/racenote-paci/$PACI_FILE_NAME"
+          python horse-racing/jrdb/src/racenote_v056_forward_drive_paci.py \
+            --date "$BTDAY_TARGET_DATE" \
+            --drive-file-id "$PACI_DRIVE_FILE_ID" \
+            --output "$PACI" \
+            --receipt /tmp/racenote-paci/source_receipt.json
+          echo "PACI=$PACI" >> "$GITHUB_ENV"
       - name: Materialize verified RRDB CURRENT (per-run digest)
         if: env.SKIP_T1 != 'true'
         run: |
@@ -194,7 +224,7 @@ jobs:
           test -s /tmp/racelap/race_lap.parquet
           test -f /tmp/racelap/race_lap.input_receipt.json
       - name: Build historical market-blind forecast prep
-        if: env.SKIP_T1 != 'true'
+        if: env.SKIP_T1 != 'true' && env.BTDAY_SOURCE_MODE == 'historical_warehouse'
         shell: bash
         run: |
           MAIN_SHA="$(git rev-parse HEAD)"
@@ -257,16 +287,49 @@ jobs:
           (target/'day_prep'/'manifest.json').write_text(manifest_path.read_text(encoding='utf-8'),encoding='utf-8')
           (target/'day_prep'/'validation_report.json').write_text((target/'day_prep'/('RaceNote_'+os.environ['BTDAY_DATE_RAW'])/'validation_report.json').read_text(encoding='utf-8'),encoding='utf-8')
           PY
+
+      - name: Build PACI market-blind forecast prep
+        if: env.SKIP_T1 != 'true' && env.BTDAY_SOURCE_MODE == 'paci'
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_v053_from_paci.py \
+            --date "$BTDAY_TARGET_DATE" \
+            --paci "$PACI" \
+            --selection-id "$BTDAY_ID" \
+            --main-sha "$(git rev-parse HEAD)" \
+            --analysis-root /tmp/historical/analysis \
+            --course-fit-root /tmp/course-fit \
+            --race-lap-parquet /tmp/racelap/race_lap.parquet \
+            --racereview-root /tmp/rrdb/postrace_review/v0_1 \
+            --output-root "$TARGET" \
+            --prep-only
+          test -f "$TARGET/forecast_prep/day_prep_handoff.json"
       - name: Build KYI evidence and seal v0.5.6 Lean Reader
         if: env.SKIP_T1 != 'true'
         run: |
           mkdir -p "$TARGET/v054_inputs" "$TARGET/source_audit"
-          python horse-racing/jrdb/src/racenote_v054_kyi_bundle.py             --prep-root "$TARGET/forecast_prep"             --kyi-archive /tmp/historical/raw/KYI/KYI_2025.zip             --output "$TARGET/v054_inputs/kyi_bundle.json"
-          python horse-racing/jrdb/src/racenote_v056_single_day.py init             --prep-root "$TARGET/forecast_prep"             --root "$TARGET/v056"             --base-main-sha "$(git rev-parse HEAD)"             --evidence-bundle "$TARGET/v054_inputs/kyi_bundle.json"             --race-lap-parquet /tmp/racelap/race_lap.parquet
-          python horse-racing/jrdb/src/racenote_v056_authoring_bundle.py             --root "$TARGET/v056"
+          if [[ "$BTDAY_SOURCE_MODE" == "paci" ]]; then
+            KYI_ARCHIVE="$PACI"
+          else
+            KYI_ARCHIVE="/tmp/historical/raw/KYI/KYI_2025.zip"
+          fi
+          python horse-racing/jrdb/src/racenote_v054_kyi_bundle.py \
+            --prep-root "$TARGET/forecast_prep" \
+            --kyi-archive "$KYI_ARCHIVE" \
+            --output "$TARGET/v054_inputs/kyi_bundle.json"
+          python horse-racing/jrdb/src/racenote_v056_single_day.py init \
+            --prep-root "$TARGET/forecast_prep" \
+            --root "$TARGET/v056" \
+            --base-main-sha "$(git rev-parse HEAD)" \
+            --evidence-bundle "$TARGET/v054_inputs/kyi_bundle.json" \
+            --race-lap-parquet /tmp/racelap/race_lap.parquet
+          python horse-racing/jrdb/src/racenote_v056_authoring_bundle.py --root "$TARGET/v056"
           cp /tmp/current-rrdb/receipt.json "$TARGET/source_audit/rrdb_current_receipt.json"
           cp /tmp/racelap/race_lap.audit.json "$TARGET/source_audit/race_lap.audit.json"
           cp /tmp/racelap/race_lap.input_receipt.json "$TARGET/source_audit/race_lap_input_receipt.json"
+          if [[ "$BTDAY_SOURCE_MODE" == "paci" ]]; then
+            cp /tmp/racenote-paci/source_receipt.json "$TARGET/source_audit/paci_source_receipt.json"
+          fi
       - name: Validate current TURN 1 final state
         if: env.SKIP_T1 != 'true'
         run: |
@@ -291,12 +354,13 @@ jobs:
           assert len(m['entries'])==len(s['race_roster'])
           assert a['status']=='READY_FOR_LLM_RACE_BY_RACE_REVIEW'
           assert a['race_count']==len(s['race_roster'])
+          source_mode=os.environ['BTDAY_SOURCE_MODE']
           op={
-            'schema_version':'racenote-v056-current-turn1-handoff-0.1',
+            'schema_version':'racenote-v056-current-turn1-handoff-0.2',
             'status':'READY_FOR_V056_AUTHORING',
             'selection_id':os.environ['BTDAY_ID'],'target_date':os.environ['BTDAY_TARGET_DATE'],
-            'source_backend':'historical_warehouse',
-            'source_generation_id':'jrdb_normalized_warehouse_v1_2010_2025_g20260921',
+            'source_backend':'historical_warehouse' if source_mode=='historical_warehouse' else 'canonical_drive_paci',
+            'source_generation_id':'jrdb_normalized_warehouse_v1_2010_2025_g20260921' if source_mode=='historical_warehouse' else None,
             'logic_version':s['logic_version'],'contract_revision':s['contract_revision'],
             'reader_projection':s['reader_projection'],'session_id':s['session_id'],
             'race_count':len(s['race_roster']),'expected_venues':s['expected_venues'],
@@ -309,6 +373,11 @@ jobs:
               'mean_reduction_pct':round(sum(e['model_reader_reduction_pct'] for e in m['entries'])/len(m['entries']),1)
             }
           }
+          if source_mode=='paci':
+              receipt=json.loads((root/'source_audit/paci_source_receipt.json').read_text(encoding='utf-8'))
+              if receipt.get('target_date')!=os.environ['BTDAY_TARGET_DATE'] or receipt.get('source')!='GOOGLE_DRIVE_CANONICAL_PACI':
+                  raise SystemExit('PACI source receipt mismatch')
+              op['paci_source']=receipt
           (root/'operation_handoff.json').write_text(json.dumps(op,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
           print(json.dumps(op,ensure_ascii=False))
           PY
