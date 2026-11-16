@@ -7,6 +7,8 @@ not infer combo viability from levels, names or copied teacher cards.
 from __future__ import annotations
 
 from collections import Counter
+from hashlib import sha256
+import json
 from .schema import validate_request, validate_candidate
 from .rebuild import rebuild_from_discovery
 from .dependency import inspect_packages
@@ -405,6 +407,10 @@ def _select_variant(request,teacher,discoveries,records, *,
                 "assessment_reason":rated["reason"] if rated is not None else None,
                 "assessment_evidence_refs":rated["evidence_refs"] if rated is not None else [],
                 "assessment_status":rated["assessment_status"] if rated is not None else "MISSING",
+                "game8_tier":rated["game8"]["tier"] if rated is not None and "game8" in rated else None,
+                "reviewed_copy_scores":rated.get("score_by_copy") if rated is not None else None,
+                "deck_adjustment":rated.get("deck_adjustment") if rated is not None else None,
+                "quantity_reason":rated.get("quantity_reason") if rated is not None else None,
             })
     # Every selected row maps to a pinned DB result, regardless of whether
     # the card appeared in the teacher recipe.
@@ -415,7 +421,10 @@ def _select_variant(request,teacher,discoveries,records, *,
         assessment=policy_map.get((sec,cid)) if policy_map is not None else None
         rationale=(a["reason"] if assessment is None else
                    a["reason"]+" | Competitive review: "+assessment["reason"]+
-                   " | Evidence: "+", ".join(assessment["evidence_refs"]))
+                   " | Evidence: "+", ".join(assessment["evidence_refs"])+
+                   (" | Quantity: "+assessment["quantity_reason"]+
+                    " | Copies: "+"; ".join(assessment["copy_reasons"][:n])
+                    if "copy_reasons" in assessment else ""))
         rows.append({"card_id":cid,"section":sec,"quantity":n,
              "origin":ORIGINS[a["category"]],"role":a["role"],
              "essentiality":"CORE" if a["category"]=="THEME_CORE" else "OPTIONAL",
@@ -494,6 +503,9 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
         as_of=request["as_of"],
         candidate_ids=[cid for (_,cid) in records])
         if regulation_policy is not None else None)
+    policy_fingerprint=(sha256(json.dumps(decision_policy,ensure_ascii=False,
+         sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
+         if decision_policy is not None else None)
     truncated_source_searches=sum(bool(d.get("truncated")) for d in discovery_results)
     policy_map=(validate_decision_policy(decision_policy,
         master_sha256=teacher_candidate["lineage"]["source_master_sha256"])
@@ -575,6 +587,7 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
             "solutions":solutions,"rejected":rejections,
             "competitive_policy_applied":policy_map is not None,
             "md_regulation_gate_applied":regulation_limits is not None,
+            "decision_policy_sha256":policy_fingerprint,
             "policy_mode":("EVIDENCE_COPY_SCORING_V2" if v2_policy else
                            "LEGACY_SIX_AXIS_V1_REVIEW_REQUIRED" if policy_map is not None
                            else "LEGACY_HEURISTIC"),
