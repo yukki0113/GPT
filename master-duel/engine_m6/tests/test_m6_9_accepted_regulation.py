@@ -40,6 +40,15 @@ class AcceptedRegulationTests(unittest.TestCase):
         self.assertEqual({"konami:101":0,"konami:102":1,
                           "konami:103":2,"konami:104":3},limits(baseline()))
 
+    def test_new_inventory_generation_does_not_expire_original_baseline(self):
+        original=baseline()
+        self.assertEqual(original["master_sqlite_sha256"],PIN)
+        # Changing an inventory row changes the SQLite file hash, but not
+        # the originally accepted game-rule change history.
+        resolved=validate_regulation_policy(original,master_sha256="d"*64,
+                    as_of="2027-03-01",candidate_ids=["konami:101","konami:104"])
+        self.assertEqual({"konami:101":0,"konami:104":3},resolved)
+
     def test_no_31_day_expiry_or_rescrape_requirement(self):
         self.assertEqual(0,limits(baseline(),"2030-12-01")["konami:101"])
 
@@ -69,8 +78,8 @@ class AcceptedRegulationTests(unittest.TestCase):
                                          [("konami:102",2,0)]))
 
     def test_cannot_replace_master_snapshot_or_unapprove(self):
-        p=baseline();p["master_sqlite_sha256"]="d"*64
-        with self.assertRaisesRegex(ValueError,"DB_SHA_MISMATCH"):limits(p)
+        p=baseline();p["master_sqlite_sha256"]="INVALID"
+        with self.assertRaisesRegex(ValueError,"DB_SHA_INVALID"):limits(p)
         p=baseline();p["acceptance"]="UNVERIFIED_SOURCE"
         with self.assertRaisesRegex(ValueError,"NOT_USER_APPROVED"):limits(p)
 
