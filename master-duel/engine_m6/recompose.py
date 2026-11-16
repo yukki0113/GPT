@@ -242,55 +242,85 @@ def _select_variant(request,teacher,discoveries,records, *,
         return None,{"family":family,"engine":engine_id,
                      "reason":"NOT_ENOUGH_SOURCED_MAIN_CARDS",
                      "found":main_count,"needed":target_main}
-    # EXTRA: ranked, independently material-screened candidates, not
-    # arbitrary remaining-source URs. Missing reviews remain a gap.
+    # EXTRA: theme first, then matching summon method, then other generics.
+    # Preference is NOT a hard ranking: a materially stronger alternative may
+    # beat a same-method generic. All candidates require pinned material review.
+    # Unlike MAIN, EXTRA should fill to capacity when a usable sourced choice
+    # exists: marginal utility thresholds must not leave an avoidable empty slot.
     screens=screen_by_card
     extras=sorted((r for r in records.values() if r["annotation"]["section"]=="EXTRA"
                    and (r["annotation"]["package_id"] is None or
                         r["annotation"]["package_id"] in selected_pkg_ids)),
-        key=lambda r:(-r["annotation"]["priority"],
-                      -int(r["source"]["owned_state"]=="KNOWN_POSITIVE"),
-                      r["annotation"]["card_id"]))
-    if policy_map is None:
+        key=lambda r:(-r["annotation"]["priority"],r["annotation"]["card_id"]))
+
+    def summon_method(record):
+        src=record["source"]
+        if src.get("rank") is not None:return "XYZ"
+        if src.get("link") is not None:return "LINK"
+        # Discovery cannot classify every Fusion/Synchro solely by source
+        # attributes. Do not pretend unknown is a matching method.
+        return "UNCLASSIFIED"
+
+    primary_methods={summon_method(r) for r in extras
+                     if r["annotation"]["category"]=="THEME_EXTRA"}
+    primary_methods.discard("UNCLASSIFIED")
+
+    def extra_stage(record):
+        a=record["annotation"]
+        if a["category"]=="THEME_EXTRA":return 0
+        if summon_method(record) in primary_methods:return 1
+        if a["category"]=="GENERIC_EXTRA":return 2
+        return 3
+
+    # A fixed bounded pass adds one copy per iteration. Optional second copies
+    # compete on reduced marginal utility and never override hard constraints.
+    while ex_count<cap_extra:
+        choices=[]
         for r in extras:
-            if ex_count>=cap_extra:break
-            a=r["annotation"];cid=a["card_id"];screen=screens.get(cid)
+            a=r["annotation"];cid=a["card_id"]
+            if selected["EXTRA",cid]>=_available(r,request):continue
+            screen=screens.get(cid)
             if screen is None or screen["screen"]!="POSSIBLE_ON_PAPER":
-                rejected.append({"card_id":cid,"reason":"EX_MATERIAL_NOT_DEMONSTRATED"})
+                rejected.append({"card_id":cid,"section":"EXTRA",
+                                 "reason":"EX_MATERIAL_NOT_DEMONSTRATED"})
                 continue
-            count=min(_available(r,request),cap_extra-ex_count)
-            if not count:continue
-            selected["EXTRA",cid]=max(selected["EXTRA",cid],count)
-            ex_count=sum(n for (z,_),n in selected.items() if z=="EXTRA")
-    else:
-        # Evaluate the best *marginal use* each time. A second copy of the
-        # same role is discounted, even when material matching looks possible.
-        while ex_count<cap_extra:
-            choices=[]
-            for r in extras:
-                a=r["annotation"];cid=a["card_id"]
-                if selected["EXTRA",cid]>=_available(r,request):continue
-                screen=screens.get(cid)
-                if screen is None or screen["screen"]!="POSSIBLE_ON_PAPER":
-                    rejected.append({"card_id":cid,"section":"EXTRA",
-                                     "reason":"EX_MATERIAL_NOT_DEMONSTRATED"})
-                    continue
+            stage=extra_stage(r)
+            if policy_map is None:
+                score=a["priority"]
+                trace={"card_id":cid,"section":"EXTRA",
+                       "reason":"LEGACY_SOURCE_PRIORITY_UNSCORED"}
+            else:
                 score,trace=screened_choice(r,policy_map,counts=selected,zone="EXTRA")
                 if score is None:
                     if trace["reason"]!="RECOMMENDED_MAX_REACHED":
                         rejected.append(trace)
                     continue
-                if score<decision_policy["min_extra_score"]:
-                    rejected.append({**trace,"reason":"BELOW_EXTRA_UTILITY_THRESHOLD"})
-                    continue
-                choices.append((-score,-a["priority"],cid,r,trace))
-            if not choices:break
-            chosen=min(choices,key=lambda x:x[:-2])
-            a=chosen[-2]["annotation"];cid=a["card_id"]
-            selected["EXTRA",cid]+=1
-            ex_count+=1
-            selection_trace.append({**chosen[-1],"copy_number":selected["EXTRA",cid],
-                "material_verification":"POSSIBLE_ON_PAPER_NOT_DUEL_VERIFIED"})
+            # Prefer a distinct useful option rather than a redundant repeat.
+            duplicate=selected["EXTRA",cid]>0
+            marginal=score-(12 if duplicate else 0)
+            # A 25-point practical advantage is enough to override a
+            # one-stage search preference (e.g. strong Rank 4 vs weak Link).
+            rank_value=marginal-24*stage
+            choices.append((-rank_value,-marginal,stage,-a["priority"],
+                            cid,r,trace,score))
+        if not choices:break
+        chosen=min(choices,key=lambda x:x[:5])
+        a=chosen[5]["annotation"];cid=a["card_id"]
+        selected["EXTRA",cid]+=1
+        ex_count+=1
+        trace=chosen[6]
+        selection_trace.append({**trace,
+            "copy_number":selected["EXTRA",cid],
+            "extra_search_stage":chosen[2],
+            "below_standard_utility_threshold":bool(
+                policy_map is not None and chosen[7]<decision_policy["min_extra_score"]),
+            "material_verification":"POSSIBLE_ON_PAPER_NOT_DUEL_VERIFIED"})
+
+    # An unfilled EX is a documented sourcing/eligibility gap, never a silent
+    # statement that fourteen is strategically optimal.
+    extra_completion_status=("FULL_15_OR_CONFIGURED_CAP" if ex_count==cap_extra else
+                             "EX_SLOTS_UNFILLED_RESEARCH_REQUIRED")
+    extra_shortfall=cap_extra-ex_count
     # Compare every sourced option, including skipped owned cards and
     # candidates which a cost/ownership gate makes unavailable.
     comparisons=[]
@@ -364,6 +394,9 @@ def _select_variant(request,teacher,discoveries,records, *,
       "main_role_counts":dict(sorted(roles.items())),
       "role_target_shortfalls":{k:max(0,v-roles[k]) for k,v in TARGETS.items()},
       "extra_used":ex_count,"extra_unused":cap_extra-ex_count,
+      "extra_completion_status":extra_completion_status,
+      "extra_shortfall":extra_shortfall,
+      "extra_primary_methods":sorted(primary_methods),
       "extra_reviewed_options":len(screens),
       "extra_rejected":rejected,
       "competitive_decisions":selection_trace,
