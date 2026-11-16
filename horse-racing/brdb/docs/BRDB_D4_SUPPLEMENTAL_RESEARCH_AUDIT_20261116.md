@@ -1,7 +1,7 @@
 # BRDB ⑥ D4 — D3条件別研究から統合レビュー候補への補足接続（研究用）
 
 Date: 2026-11-16 (JST)  
-Status: **RESEARCH SIDECAR / NO PRODUCTION AUTHORIZATION**
+Status: **RESEARCH SIDECAR E2E PASS / NO PRODUCTION AUTHORIZATION**
 
 ## 背景・境界
 
@@ -50,3 +50,31 @@ python horse-racing/brdb/src/run_brdb_d4_sidecar.py \
 ```
 
 出力には個票と利用元の父/母父名が含まれるため、現実の競走馬の入力と生成物は公開Gitへ保存しない。研究用デモのみ公表可能。
+## 2026-11-16 最終E2E・回帰検証
+
+[GitHub Actions #43834441975](https://github.com/yukki0113/GPT/actions/runs/43834441975) は source commit 037c7026e098679e8b77f41c132215780aa00b7f で実行、結論 **PASS**。artifact data-storage-fallback-43834441975 (ID 14209669608) から正本D4のPython 3ファイルを取得し、SHAを各ファイルについて独立照合した。
+
+| 回帰テスト | 件数 | 判定 |
+|---|---:|---|
+| ③ Stage3 | 73 | PASS |
+| ④ Stage4 | 10 | PASS |
+| ⑤ D3 | 9 | PASS |
+| ⑥ D4 | 11 | PASS |
+| **計** | **103** | **PASS** |
+
+研究用D3実データ正本3ファイルを固定入力とし、GitHub artifactから取得した**そのままのD4正本コード**で仮想研究レース（2026-11-16、venue_code 05、芝2000m、架空の馬IDを持つ3頭）を2回処理し、出力JSONがバイト一致することを確認。**仮の3頭は公式PACIの実出走馬ではなく合成フィールド**である。
+
+| 正本E2E項目 | 実測 |
+|---|---:|
+| 研究レース登録馬 | 3/3 |
+| D3に厳密一致する補足根拠 | **17件** |
+| SIRE / BMS / PAIR | **8 / 8 / 1** |
+| 上位50対象外の架空父名 | 根拠0件 |
+| 統計母数・Wilson区間・基準値 | D3の元値を保持 |
+| positive / negative factors | 全馬で空 |
+| summary | 全馬 null |
+| confidence | 全馬 UNASSESSED |
+| prediction_safe | false |
+| 2回生成した研究用JSON SHA-256 | ddc42aa1d80ba9d63f5e3d7e19f39149a0c3426ccfb725acc3c757884f23691e（完全一致） |
+
+**D4初期研究バッチの取り込み可**。ただしこれは「⑤統合評価・スコア・本番結合の完成」ではなく、条件別統計を安全に表示できる独立補足インターフェースの受入である。公式PACI全出走馬での実レースE2E、race-day血統資料の当時配信時刻、交絡調整、適性ラベルの妥当性、RaceNote/PWA本番表示は**未実装／未承認**。
