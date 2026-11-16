@@ -16,7 +16,7 @@ class ResearchTests(unittest.TestCase):
         self.addCleanup(self.d.cleanup)
         self.root = Path(self.d.name)
         self.analysis = self.root/'analysis'
-        self.gen = self.analysis/'generations'/'synthetic'
+        self.gen = self.analysis/'generations'/'analysis-v1_4-postrace-20261101-01'
         self.gen.mkdir(parents=True)
         self.fact = self.analysis/'objects'/'year=2025'/'fact.parquet'
         self.fact.parent.mkdir(parents=True)
@@ -42,10 +42,10 @@ class ResearchTests(unittest.TestCase):
         self.sha = d3.sha256(self.topfile)
     def write_parquet(self):
         self.db.execute("COPY raw TO '"+str(self.fact)+"' (FORMAT PARQUET)")
-        mf = {'generation_id':'synthetic','schema_version':'v1.4','validation_status':'PASS',
+        mf = {'generation_id':'analysis-v1_4-postrace-20261101-01','schema_version':'v1.4','validation_status':'PASS',
               'fact_table':{'partitions':[{'relative_path':str(self.fact.relative_to(self.analysis)), 'sha256':d3.sha256(self.fact)}]}}
         (self.gen/'manifest.json').write_text(json.dumps(mf))
-        (self.analysis/'current.json').write_text(json.dumps({'status':'CURRENT','generation_id':'synthetic',
+        (self.analysis/'current.json').write_text(json.dumps({'status':'CURRENT','generation_id':'analysis-v1_4-postrace-20261101-01',
            'manifest':str((self.gen/'manifest.json').relative_to(self.analysis))}))
     def run_research(self):
         with patch.object(d3,'TOP50_SHA',self.sha):
