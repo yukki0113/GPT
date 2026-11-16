@@ -18,7 +18,7 @@
       "previous_selection_records_preserved": 181
     }
   },
-  "updated_at": "2026-11-11T06:35:37+00:00",
+  "updated_at": "2026-11-16T02:18:10+00:00",
   "days": [
     {
       "date": "2025-01-05",
@@ -1145,9 +1145,9 @@
       "source_mode": "historical_warehouse",
       "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
       "selection_cycle": 2,
-      "used": false,
-      "used_at": null,
-      "selection_id": null,
+      "used": true,
+      "used_at": "2026-11-16T02:18:10+00:00",
+      "selection_id": "BTDAY-0190",
       "eligible": true,
       "exclusion_reason": null
     },
@@ -5189,6 +5189,23 @@
       "sources": [
         {
           "target_date": "2025-01-19",
+          "source_mode": "historical_warehouse",
+          "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
+          "selection_cycle": 2
+        }
+      ]
+    },
+    {
+      "selection_id": "BTDAY-0190",
+      "selected_at": "2026-11-16T02:18:10+00:00",
+      "seed": "ff6306f621650608054796e00cfb6e1c",
+      "n": 1,
+      "dates": [
+        "2025-10-18"
+      ],
+      "sources": [
+        {
+          "target_date": "2025-10-18",
           "source_mode": "historical_warehouse",
           "source_reference": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
           "selection_cycle": 2
