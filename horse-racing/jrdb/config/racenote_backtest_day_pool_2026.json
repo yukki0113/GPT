@@ -1,9 +1,9 @@
 {
-  "version": "racenote-backtest-day-picker-0.1.0",
+  "version": "racenote-backtest-day-picker-0.2.0",
   "source": {
     "drive_folder_id": "1zFajenPU5jxInZCcmqZzkgiaYil3MD8r",
     "inventory_snapshot_date": "2026-11-06",
-    "note": "Unified daily PACI 2026 and accepted 2025 Historical Warehouse days. The current active draw cycle is per date (not global): previously completed selections advance to cycle 2; never-selected and newly ingested PACI dates remain cycle 1. Previous selection history is retained verbatim. Known exposed dates remain ineligible. Reused cycle-2 dates are NOT independent first-blind validation observations; source_mode and selection_cycle must remain visible in reports.",
+    "note": "Unified BTDAY pool. NEXT draws one random unused eligible date without pre-filtering by year/source. The selected date keeps its canonical source contract: Historical Warehouse for historical_warehouse rows, canonical Drive PACI for paci rows. Upcoming/today selections require PACI. Previously completed historical selections may advance by selection_cycle; reused cycle-2 dates are not independent first-blind validation observations. source_mode, source identity, selection_cycle, and date timing remain visible in reports.",
     "historical_warehouse_generation_id": "jrdb_normalized_warehouse_v1_2010_2025_g20260921",
     "historical_warehouse_2025_inventory_basis": "BAC_2025.zip member dates (109 actual JRA race days)",
     "paci_latest_date": "2026-11-01",
