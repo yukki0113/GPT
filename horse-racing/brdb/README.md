@@ -311,3 +311,10 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - 既存のDeep Impact、King Kamehamehaに加え、**ダイワメジャー、ハーツクライ、エピファネイア**のJRDB個体IDとJBIS個体IDを、実Parquet氏名・完全生年月日・性別・父母・公式系統コードと公開一次資料を照合して研究用に登録（2→5件）。
 - 優先4祖先の既存48名前経路のうち、**前26＋今回3＝29経路（60.42%）**について混合JRDB/JBIS出典チェーンを確保。残り19経路は人物接続待ち。JRDB正式旧祖先IDは0追加。JRDB source generation`5279af0bd8226cde`・top50研究JSONのSHAを固定。
 - ローカル独立auditの実Parquet確認とローカル回帰テスト7件はPASS。**コミット済みGitHub Pythonモジュールそのものは未実行**。歴史的as-of未認証、`prediction_safe=false`、CURRENT/Review/RaceNote/PWAへは接続なし。
+
+## 2026-11-16 — D3：条件別血統成績の検証（研究専用）
+
+- [D3研究用の条件別統計](src/brdb_d3_condition_research.py)：③-B上位50頭の父・母父・父×母父を、manifest/SHAを確認したJRDB Analysis v1.4の実出走履歴で記述分析。芝ダ、距離、距離帯、競馬場、馬場状態**原コード**で条件を明示し、同一条件全体の基準値・一意馬数・勝率・複勝率・Wilson95%区間・少サンプルを返す。
+- [時期分割診断](src/brdb_d3_temporal_validation.py)：2016〜2023年と2024〜2026年の条件別集計を独立比較し、符号一致/逆転/サンプル不足を記録。因果効果や将来の予想性能は保証しない。
+- [一括再現入口](src/run_brdb_d3_research_e2e.py)／[実測と92件テスト監査](docs/BRDB_D3_CONDITION_RESEARCH_AUDIT_20261116.md)：503,760実出走・58,164一意馬、父12,971/母父6,741/父×母父3,934集計セル。GitHub正本コードで実Parquetを2回生成し全3出力SHA一致。
+- **研究専用** `AS_OF_UNVERIFIED` / `prediction_safe=false`。集計選定母集団と実出走母集団は異なる。内包12血脈を馬名だけで推測接続せず、統計傾向を適性ラベル・⑤の主評価・RaceNote/PWA本番に自動昇格しない。内包血脈、予想時点の検証、D4統合出力は後続の独立した受入工程。
