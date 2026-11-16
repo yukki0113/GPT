@@ -30,6 +30,39 @@ def sha256(path: Path) -> str:
     return value.hexdigest()
 
 
+def read_verified_parent_candidates(database: duckdb.DuckDBPyConnection,
+                                    relations: Path) -> tuple[list[dict], dict]:
+    """Read sire/dam Parquet rows, auditing malformed child identities."""
+    relation_columns = [
+        "child_horse_id", "role", "resolved_parent_horse_id",
+        "resolution_status", "parent_name", "parent_birth_year",
+    ]
+    # The research relation input also contains broodmare-sire rows and
+    # six sire/dam records with nonnumeric child keys. These six are never
+    # RESOLVED_EXACT/RESOLVED_ALIAS; abort if that invariant changes.
+    invalid_rows = database.execute(
+        """
+        SELECT resolution_status, count(*)
+        FROM read_parquet(?)
+        WHERE role IN ('sire', 'dam')
+          AND NOT COALESCE(regexp_matches(child_horse_id, '^[0-9]{8}$'), false)
+        GROUP BY resolution_status
+        """,
+        [str(relations)],
+    ).fetchall()
+    allowed_unresolved = {"NO_CANDIDATE", "INSUFFICIENT_KEY"}
+    if any(status not in allowed_unresolved for status, _ in invalid_rows):
+        raise ValueError("Noncanonical JRDB child ID has resolved parent evidence")
+    relation_rows = database.execute(
+        "SELECT " + ", ".join(relation_columns) +
+        " FROM read_parquet(?) WHERE role IN ('sire', 'dam')"
+        " AND regexp_matches(child_horse_id, '^[0-9]{8}$')",
+        [str(relations)],
+    ).fetchall()
+    records = [dict(zip(relation_columns, row)) for row in relation_rows]
+    return records, {status: count for status, count in invalid_rows}
+
+
 def execute(pedigree: Path, relations: Path, top50_file: Path,
             crosswalk_file: Path, bridge_file: Path, output: Path) -> dict:
     """Validate canonical input manifests before extracting research edges."""
@@ -65,29 +98,7 @@ def execute(pedigree: Path, relations: Path, top50_file: Path,
         "child_horse_id", "role", "resolved_parent_horse_id",
         "resolution_status", "parent_name", "parent_birth_year",
     ]
-    # The research relation input also contains broodmare-sire rows and
-    # six sire/dam records with nonnumeric child keys. These six are never
-    # RESOLVED_EXACT/RESOLVED_ALIAS; abort if that invariant changes.
-    invalid_rows = database.execute(
-        """
-        SELECT resolution_status, count(*)
-        FROM read_parquet(?)
-        WHERE role IN ('sire', 'dam')
-          AND NOT COALESCE(regexp_matches(child_horse_id, '^[0-9]{8}$'), false)
-        GROUP BY resolution_status
-        """,
-        [str(relations)],
-    ).fetchall()
-    allowed_unresolved = {"NO_CANDIDATE", "INSUFFICIENT_KEY"}
-    if any(status not in allowed_unresolved for status, _ in invalid_rows):
-        raise ValueError("Noncanonical JRDB child ID has resolved parent evidence")
-    relation_rows = database.execute(
-        "SELECT " + ", ".join(relation_columns) +
-        " FROM read_parquet(?) WHERE role IN ('sire', 'dam')"
-        " AND regexp_matches(child_horse_id, '^[0-9]{8}$')",
-        [str(relations)],
-    ).fetchall()
-    records = [dict(zip(relation_columns, row)) for row in relation_rows]
+    records, excluded = read_verified_parent_candidates(database, relations)
     graph = build_graph(top50, records, crosswalk, bridge, audit)
     candidate_roots = inspect_shared_ancestor_candidates(graph)
     graph["source_sha256"] = {
@@ -99,8 +110,8 @@ def execute(pedigree: Path, relations: Path, top50_file: Path,
     }
     graph["shared_ancestor_candidates"] = candidate_roots
     graph["input_exclusions"] = {
-        "non_eight_digit_child_rows": sum(count for _, count in invalid_rows),
-        "status_counts": {status: count for status, count in invalid_rows},
+        "non_eight_digit_child_rows": sum(excluded.values()),
+        "status_counts": excluded,
         "policy": "excluded only unresolved noncanonical JRDB child keys",
     }
     output.parent.mkdir(parents=True, exist_ok=True)
