@@ -25,6 +25,8 @@ from .report import compare_candidates
 from .deck_review import full_recipe_review, recipe_markdown, make_private_review_archive
 from .proposal_store import make_proposal_archive, verify_proposal_archive
 from .schema import validate_request
+from .decision_policy import validate_decision_policy
+from .generic_coverage import owned_generic_research_query, audit_owned_generic_coverage
 
 
 def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
@@ -109,6 +111,9 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     # Explicit research targets are searched even when no teacher recipe
     # mentions them. Names are source-name candidates, not guaranteed effects.
     research_queries=list(discovery_queries)
+    # Include every currently owned MAIN candidate, not only teacher cards
+    # and manually named staples. Discovery never implies automatic adoption.
+    research_queries.append(owned_generic_research_query())
     if decision_policy is not None:
         names=decision_policy.get("required_review_names",[])
         if names:
@@ -127,7 +132,7 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                 {"section":"EXTRA","ranks":[4],"limit":300},
                 {"section":"EXTRA","links":[2],"limit":300},
             ])
-    if len(research_queries)>40:
+    if len(research_queries)>41:
         raise ValueError("bounded competitive research queries required")
     discoveries=[]
     for query in research_queries:
@@ -136,6 +141,11 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
         discoveries.append(search_cards(
             master_sqlite_path,expected_sqlite_sha256=pins["sqlite_sha"],
             **query))
+    owned_generic_coverage=audit_owned_generic_coverage(
+        discoveries,annotations,validate_decision_policy(
+            decision_policy,master_sha256=pins["sqlite_sha"]))
+    summary["owned_generic_coverage_status"]=owned_generic_coverage["status"]
+    summary["owned_generic_unassessed"]=owned_generic_coverage["missing_assessment_count"]
     if not isinstance(extra_card_ids,(list,tuple)):
         raise ValueError("EXTRA IDs required")
     anchors=load_effect_anchors(
@@ -155,6 +165,7 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     summary["competitive_policy_coverage"]=portfolio["policy_coverage_status"]
     summary["required_names_missing"]=len(portfolio["required_name_gaps"])
     summary["unscored_research_candidates"]=portfolio["unscored_discovery_count"]
+    summary["owned_generic_research_query_applied"]=True
     summary["automatic_comparative_searches"]=len(research_queries)-len(discovery_queries)
     summary["selection_policy"]="EVIDENCE_SCORED" if decision_policy is not None else "LEGACY_HEURISTIC_REVIEW_REQUIRED"
     evaluated=[]
@@ -257,6 +268,7 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                 "selected_marginal_scores":option["competitive_decisions"],
                 "weak_generic_fillers":option["weak_generic_fillers"],
                 "md_regulation_gate_applied":option["md_regulation_gate_applied"],
+                "owned_generic_coverage":owned_generic_coverage,
                 "gameplay_verified":False,
             })
         review_archive,review_manifest_raw=make_private_review_archive(
@@ -274,4 +286,5 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
             "archive":archive,"manifest_raw":manifest_raw,
             "full_reviews":full_reviews,"review_markdowns":review_markdowns,
             "review_archive":review_archive,"review_manifest_raw":review_manifest_raw,
-            "decision_audits":decision_audits}
+            "decision_audits":decision_audits,
+            "owned_generic_coverage":owned_generic_coverage}
