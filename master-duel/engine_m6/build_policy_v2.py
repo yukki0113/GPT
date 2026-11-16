@@ -122,7 +122,10 @@ def validate_build_policy_v2(policy, *, master_sha256):
         if tier in _TIERS and game8["applicability"]=="APPLICABLE":
             _check(adjust>=-15,
                    "V2_APPLICABLE_HIGH_TIER_CANNOT_BE_SILENTLY_DOWNRANKED")
-        _check(game8["applicability"]!="CONSTRAINED" or len(refs)>=3,
+        _check(game8["applicability"]!="CONSTRAINED" or (
+                   len(refs)>=4 and any(ref.startswith(
+                       ("CONSTRAINT:","MATCHUP:","LOCK:","CARD_TEXT:"))
+                       for ref in refs)),
                "V2_CONSTRAINED_CARD_REQUIRES_CONSTRAINT_EVIDENCE")
         _check(game8["applicability"]!="NOT_APPLICABLE" or
                item["recommended_max"]==0,"V2_INAPPLICABLE_MUST_EXCLUDE")
