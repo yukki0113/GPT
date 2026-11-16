@@ -155,7 +155,11 @@ def _select_variant(request,teacher,discoveries,records, *,
             if not part["minimum"]:continue
             key=(part["section"],part["card_id"])
             record=records.get(key)
-            if record is None or min(_available(record,request), regulation_limits[part["card_id"]] if regulation_limits is not None else 3)<part["minimum"]:
+            if record is None or min(
+                    _available(record,request),
+                    regulation_limits[part["card_id"]] if regulation_limits is not None else 3,
+                    policy_map[key]["recommended_max"] if policy_map is not None and key in policy_map else 3
+                    )<part["minimum"]:
                 return None,{"family":family,"engine":engine_id,
                              "reason":"ENGINE_REQUIRED_PART_MISSING",
                              "missing":part["card_id"]}
@@ -191,11 +195,29 @@ def _select_variant(request,teacher,discoveries,records, *,
             return None,{"family":family,"engine":engine_id,"reason":"CROSS_THEME_UNAVAILABLE"}
     # Prevent a "mixed" deck that never adopts a cross-theme card.
     if family=="MIXED_REDESIGN":
-        cross=sorted((r for r in candidates if r["annotation"]["category"]=="CROSS_THEME"
-                      and min(_available(r,request), regulation_limits[r["annotation"]["card_id"]] if regulation_limits is not None else 3)>0),key=lambda r:
-                     (-r["annotation"]["priority"],r["annotation"]["card_id"]))[0]
-        a=cross["annotation"];selected["MAIN",a["card_id"]]=max(
-            selected["MAIN",a["card_id"]],max(1,a["minimum"]))
+        cross_choices=[]
+        for r in candidates:
+            a=r["annotation"];cid=a["card_id"]
+            if a["category"]!="CROSS_THEME":continue
+            if min(_available(r,request),
+                   regulation_limits[cid] if regulation_limits is not None else 3)<=0:
+                continue
+            if policy_map is not None:
+                score,trace=screened_choice(r,policy_map,counts=selected,zone="MAIN")
+                if score is None or score<decision_policy["min_main_score"]:
+                    continue
+                cross_choices.append((-score,cid,r,trace))
+            else:
+                cross_choices.append((-a["priority"],cid,r,None))
+        if not cross_choices:
+            return None,{"family":family,"engine":engine_id,
+                         "reason":"CROSS_THEME_NOT_REVIEWED_OR_USABLE"}
+        chosen=min(cross_choices,key=lambda x:x[:2])
+        a=chosen[2]["annotation"]
+        selected["MAIN",a["card_id"]]=max(1,a["minimum"])
+        if chosen[3] is not None:
+            selection_trace.append({**chosen[3],"copy_number":1,
+                                    "forced_mixed_cross_theme":True})
         main_count=sum(n for (sec,_),n in selected.items() if sec=="MAIN")
     if main_count>target_main:
         return None,{"family":family,"engine":engine_id,"reason":"REQUIRED_PARTS_EXCEED_SLOTS"}
