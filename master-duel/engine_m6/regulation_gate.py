@@ -8,8 +8,8 @@ from __future__ import annotations
 from datetime import date
 import re
 
-_CID = re.compile(r"konami:[0-9]+\\Z")
-_SHA = re.compile(r"[a-f0-9]{64}\\Z")
+_CID = re.compile(r"konami:[0-9]+\Z")
+_SHA = re.compile(r"[a-f0-9]{64}\Z")
 
 
 def validate_regulation_policy(policy, *, master_sha256, as_of, candidate_ids):
