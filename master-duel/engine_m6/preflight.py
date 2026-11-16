@@ -15,6 +15,7 @@ from zipfile import ZipFile, BadZipFile
 import json
 import sqlite3
 
+from .regulation_gate import validate_regulation_policy
 from .schema import SCHEMA, validate_inventory_audit, validate_source_pins
 from engine_m5.private_bundle import open_sidecar
 
@@ -75,7 +76,7 @@ def _check_policy(raw, expected_sha):
     return _digest(raw), policy["effective_on"], policy["verification"]
 
 
-def _read_only_audit(db, sqlite_sha, generation, decision_overrides):
+def _read_only_audit(db, sqlite_sha, generation, decision_overrides, *, regulation_policy=None, as_of=None):
     """Return private full inventory decision rows and public-safe summary."""
     with TemporaryDirectory(prefix="md-m6-1-") as tmp:
         file = Path(tmp) / "catalog.sqlite"
@@ -115,6 +116,12 @@ def _read_only_audit(db, sqlite_sha, generation, decision_overrides):
             if not set(restrictions).issubset(
                 {row[0] for row in conn.execute("SELECT card_id FROM cards")}):
                 raise ValueError("banlist card outside catalog")
+            accepted_limits=(validate_regulation_policy(regulation_policy,
+                master_sha256=sqlite_sha,as_of=as_of,
+                candidate_ids=[r[0] for r in rows])
+                if isinstance(regulation_policy,dict) and
+                regulation_policy.get("schema")=="md-regulation-accepted-baseline-v1"
+                else None)
             inventory_sha = _digest(json.dumps(
                 rows, ensure_ascii=False, separators=(",",":"), allow_nan=False
             ).encode("utf-8"))
@@ -137,8 +144,12 @@ def _read_only_audit(db, sqlite_sha, generation, decision_overrides):
                     disposition, reason, zone, selected = (
                         custom["disposition"], custom["reason"], custom["main_or_extra"],
                         custom["selected_quantity"])
-                candidate_limit = restrictions.get(card_id)
-                if candidate_limit == 0 and verification != "GAME_VERIFIED":
+                candidate_limit = (accepted_limits[card_id] if accepted_limits is not None
+                                   else restrictions.get(card_id))
+                if candidate_limit == 0 and accepted_limits is not None and (
+                        custom is not None and (disposition == "ADOPT" or selected > 0)):
+                    raise ValueError("ACCEPTED_MD_REGULATION_BANNED_CARD:"+card_id)
+                if candidate_limit == 0 and verification != "GAME_VERIFIED" and accepted_limits is None:
                     if custom is not None and (disposition == "ADOPT" or selected > 0):
                         raise ValueError("unverified candidate banned card must not be adopted")
                     disposition, reason, zone, selected = (
@@ -149,13 +160,15 @@ def _read_only_audit(db, sqlite_sha, generation, decision_overrides):
                 limit = candidate_limit
                 # M3 values are candidate facts only; do not install a
                 # provisional banned=0 value as a confirmed restriction.
-                if verification != "GAME_VERIFIED":
+                if verification != "GAME_VERIFIED" and accepted_limits is None:
                     limit = None
                 decisions.append({
                     "card_id":card_id, "known_state":state,
                     "owned_quantity":owned, "rarity":rarity or "UNKNOWN",
                     "regulation_limit":limit,
-                    "regulation_confidence":verification if card_id in restrictions else "UNKNOWN",
+                    "regulation_confidence":("USER_APPROVED_OPERATIONAL_BASELINE"
+                        if accepted_limits is not None else
+                        verification if card_id in restrictions else "UNKNOWN"),
                     "disposition":disposition, "decision_reason":reason,
                     "main_or_extra":zone, "selected_quantity":selected
                 })
@@ -182,6 +195,7 @@ def _read_only_audit(db, sqlite_sha, generation, decision_overrides):
                 "inventory_as_of":max((r[4] for r in rows), default=None),
                 "m3_snapshot":sid, "m3_effective_on":effective,
                 "m3_verification":verification,
+                "operational_regulation_accepted":accepted_limits is not None,
                 "banlist_candidate_count":len(restrictions),
                 "unverified_zero_candidate_count_in_inventory":sum(
                     card_id in restrictions and restrictions[card_id] == 0
@@ -197,7 +211,8 @@ def preflight_from_verified_bytes(*, head_before, head_after, expected_head_sha2
                                   expected_m5_zip_sha256, expected_m5_manifest_sha256,
                                   owned_deck_catalog_bytes=None,
                                   expected_owned_deck_catalog_sha256=None,
-                                  decision_overrides=None, retrieved_at=None):
+                                  decision_overrides=None, retrieved_at=None,
+                                  regulation_policy=None):
     """Pure read-only input gate, with independently pinned HEAD and M5 bytes.
 
     'head_after' must be freshly fetched by caller after snapshot retrieval.
@@ -225,7 +240,9 @@ def preflight_from_verified_bytes(*, head_before, head_after, expected_head_sha2
         expected_zip_sha256=expected_m5_zip_sha256,
         expected_manifest_sha256=expected_m5_manifest_sha256,
         expected_master_db_sha256=sqlite_sha)
-    audit, stats = _read_only_audit(db,sqlite_sha,generation,decision_overrides)
+    audit, stats = _read_only_audit(db,sqlite_sha,generation,decision_overrides,
+                                   regulation_policy=regulation_policy,
+                                   as_of=(retrieved_at or datetime.now(timezone.utc).isoformat())[:10])
     now = retrieved_at or datetime.now(timezone.utc).isoformat()
     pins = {
         "head_generation":generation,"head_raw_sha":expected_head_sha256,
@@ -263,5 +280,6 @@ def preflight_from_verified_bytes(*, head_before, head_after, expected_head_sha2
             "m5_knowledge_version":m5_verified["knowledge"]["knowledge_version"],
             "m5_recommendation_eligible":False,
             "current_md_legality_verified":False,
+            "operational_regulation_accepted":stats["operational_regulation_accepted"],
             "owned_deck_counts_are_inventory":False,
             "preflight_status":audit["preflight_status"]}
