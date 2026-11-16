@@ -9,6 +9,8 @@ from __future__ import annotations
 from datetime import datetime
 import re
 
+from .build_policy_v2 import validate_build_policy_v2
+
 _CID=re.compile(r"konami:[0-9]+\Z")
 _SHA=re.compile(r"[0-9a-f]{64}\Z")
 _ZONES={"MAIN","EXTRA"}
@@ -18,6 +20,8 @@ _GROUP_RE=re.compile(r"[a-zA-Z0-9_:-]{1,60}\Z")
 
 
 def validate_decision_policy(policy, *, master_sha256):
+    if isinstance(policy,dict) and policy.get("schema")=="md-m6-8-evidence-build-policy-v2":
+        return validate_build_policy_v2(policy,master_sha256=master_sha256)
     if not isinstance(policy,dict) or set(policy)!={
         "schema","master_sqlite_sha256","as_of","assessments","min_main_score","min_extra_score","required_review_names"}:
         raise ValueError("decision policy shape")
@@ -86,6 +90,8 @@ def policy_score(assessment, *, competing_selected=0, role_selected=0):
     independently. Per-card copy limits are handled by recommended_max and
     hard ownership / format gates rather than generic duplicate penalties.
     """
+    if "score_by_copy" in assessment:
+        return assessment["score_by_copy"][0]
     axes=assessment["axes"]
     return (axes["baseline"]*4+axes["meta_fit"]*4+
             axes["deck_fit"]*5+axes["tempo"]*3+
@@ -113,13 +119,21 @@ def screened_choice(record, policy_map, *, counts, zone):
                      "reason":"EX_USAGE_OR_LOCK_NOT_REVIEWED"}
     # No category-wide count-based deductions. The source-backed
     # recommended_max supplies the individually assessed copy ceiling.
-    score=policy_score(item)
+    selected_copies=counts.get(key,0)
+    score=(item["score_by_copy"][selected_copies]
+           if "score_by_copy" in item else policy_score(item))
     return score,{"card_id":a["card_id"],"section":zone,
                   "competitive_group":item["competitive_group"],
                   "score":score,"assessment_status":item["assessment_status"],
                   "evidence_refs":item["evidence_refs"],
                   "reason":item["reason"],
-                  "gameplay_verified":item["assessment_status"]=="GAME_TESTED"}
+                  "gameplay_verified":item["assessment_status"]=="GAME_TESTED",
+                  "copy_number":selected_copies+1,
+                  "score_components":item.get("score_components"),
+                  "quantity_reason":item.get("quantity_reason"),
+                  "copy_reason":(item["copy_reasons"][selected_copies]
+                                 if "copy_reasons" in item else None),
+                  "game8_tier":(item["game8"]["tier"] if "game8" in item else None)}
 
 
 def missing_competitive_candidates(discoveries,annotations,policy_map,*,zones=("MAIN","EXTRA")):
