@@ -48,6 +48,44 @@ def check_confidence_review(record: dict, frozen_honmei: int, *, z_required: boo
             raise ValueError(f"Missing or insufficient {key}")
 
 
+
+def inspect_confidence_card_quality(records: list[dict]) -> dict:
+    """Pre-Freeze-only draft audit; never change grades or historical Freeze."""
+    standard = [r for r in records if r.get("confidence") in ("A", "B", "C")]
+    counts = {g: sum(r.get("confidence") == g for r in standard) for g in ("A", "B", "C")}
+    duplicated = []
+    reasons = {}
+    for record in standard:
+        label = f"{record.get('venue')} {record.get('race_no')}R"
+        review = record.get("confidence_review") or {}
+        relative = review.get("relative_advantage")
+        final = review.get("final_grade_reason")
+        if not isinstance(relative, str) or not isinstance(final, str):
+            continue
+        normalized_relative = " ".join(relative.split())
+        normalized_final = " ".join(final.split())
+        if normalized_relative == normalized_final:
+            duplicated.append(label)
+        reasons.setdefault(normalized_final, []).append(label)
+    if duplicated:
+        raise ValueError("CONFIDENCE_REASON_DUPLICATED: relative_advantage and "
+                         "final_grade_reason must be independently authored: "
+                         + ", ".join(duplicated))
+    warnings = []
+    repeated = [labels for labels in reasons.values() if len(labels) >= 3]
+    if repeated:
+        warnings.append("REPEATED_FINAL_REASON: "
+                        + "; ".join(", ".join(labels) for labels in repeated))
+    if len(standard) >= 20 and counts["A"] / len(standard) >= 0.30:
+        warnings.append("HIGH_A_SHARE_REVIEW: inspect A reasoning; never auto-demote")
+    return {
+        "status": "PASS_WITH_WARNINGS" if warnings else "PASS",
+        "gate_version": "v056-confidence-draft-quality-v1",
+        "standard_races": len(standard),
+        "confidence_counts": counts,
+        "warnings": warnings,
+    }
+
 def check_newspaper_comment(record: dict, *, execution_mode: str, prediction_frozen: bool,
                             confidence_frozen: bool) -> None:
     if execution_mode != "FORWARD":
