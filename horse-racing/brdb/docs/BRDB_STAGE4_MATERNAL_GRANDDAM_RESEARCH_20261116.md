@@ -1,7 +1,7 @@
 # BRDB ④：母母ライン（DD/DDS/DDD）任意補完・研究用監査
 
 Date: 2026-11-16  
-Status: **RESEARCH E2E PROVISIONAL / 150 source observations / 2 certified-person DD paths**  
+Status: **RESEARCH E2E PASS / 150 source observations / 2 certified-person DD paths**  
 Source generation: `5279af0bd8226cde`
 
 ## 目的と境界
@@ -75,4 +75,18 @@ JBISの同位置で観測した名前は、国表記の補助記号などが含�
 
 ## 残作業
 
-研究コードをGitHub PRで回帰テストし、正本出力を2回比較してshaを固定し、mainへ取り込む。取り込みは**研究用出典観測の確定**であり、母系適性・地域ルーツ・血統クロスの実運用認証ではない。
+正本出力と回帰テストの実行は2026-11-16に完了した。mainへの取り込みは**研究用出典観測の確定**であり、母系適性・地域ルーツ・血統クロスの実運用認証ではない。
+
+## 最終検証：正本E2Eと回帰テスト（2026-11-16）
+
+ソースcommit `4b35e6ac967c13317dd0cf33a280e82e4ef35564`の正本`brdb_stage4_maternal_granddam.py`、50頭のroot decisions、JBIS出典観測と外部seedを[GitHub Actions #43827775700](https://github.com/yukki0113/GPT/actions/runs/43827775700)で出力し、artifact `data-storage-fallback-43827775700`の**4ファイルSHA-256を実バイト照合、全件PASS**。
+
+ローカルに保持された固定③-B top50原本と、③-Cの[正本E2Eで確定した直接親子グラフ](BRDB_STAGE3C_FINAL_E2E_ACCEPTANCE_20261116.md)を使い、④正本runnerを2回実行した。いずれも次の集計を出力し、**結果JSONは完全なバイト一致**。
+
+- `DD=50`、`DDS=50`、`DDD=50`、合計150スロット。
+- `CERTIFIED_DIRECT_PARENT_CHAIN=2`（`DD`2枠）、`SOURCE_NAME_ONLY_APPROVED_ROOT=133`、`ROOT_IDENTITY_REVIEW_REQUIRED=15`。
+- 2回の同一出力SHA-256：`52fe47bb662109718f04cb9a022fb36069cbac7fd1d2c70831841993960d68e5`。
+- Actionsの正本`run_brdb_stage4_test_gate.py`：Stage3回帰73件＋Stage4回帰10件＝**83件、0 failures / 0 errors、PASS**。
+- ④はあくまで研究用の**名前・生年と祖先位置を持つ資料**を固定する工程。2/150以外の個体IDを正式に確認したという意味ではない。
+
+**合格範囲**：研究用の任意補完④を完了できる。個体ID未確認148枠は、⑤D3の成績比較で確定ID扱いしない。RaceNote・⑤血統レビュー・PWA・BRDB CURRENTへの変更は行わない。
