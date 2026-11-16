@@ -82,8 +82,15 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
     # For broad EX discovery, take rank/link only and flag other extra methods
     # as a separate evidence gap.
     if section=="EXTRA":
-        where.append("(a.rank IS NOT NULL OR a.link IS NOT NULL OR ("
-                     "a.kind='MONSTER' AND t.body LIKE '%このカードがＬ召喚%'))")
+        # In the source DB some Link monsters have a NULL link rating.
+        # For explicit ID lookups, the no-level/no-DEF monster footprint
+        # admits candidates that must still receive human zone review.
+        # Broad lookups also require corroborating Link-summon text.
+        candidate_link="(a.kind='MONSTER' AND a.level IS NULL AND a.def IS NULL"
+        if not exact:
+            candidate_link += " AND (t.body LIKE '%Ｌ召喚%' OR t.body LIKE '%リンク召喚%')"
+        candidate_link += ")"
+        where.append("(a.rank IS NOT NULL OR a.link IS NOT NULL OR "+candidate_link+")")
     else:
         where.append("(a.rank IS NULL AND a.link IS NULL AND ("
                      "t.body IS NULL OR t.body NOT LIKE '%このカードがＬ召喚%'))")
