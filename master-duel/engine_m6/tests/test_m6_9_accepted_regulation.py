@@ -91,7 +91,7 @@ class AcceptedRegulationTests(unittest.TestCase):
 
     def test_duplicate_event_and_same_card_rejected(self):
         e=event("2026-12-a","2026-12-01",[("konami:102",1,0)])
-        p=append_notice(baseline(),e)
+        p=append_notice(baseline(),event=e)
         with self.assertRaisesRegex(ValueError,"ID_DUPLICATE"):
             append_notice(p,event=e)
         e=event("2026-12-b","2026-12-01",
