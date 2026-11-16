@@ -318,3 +318,9 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - [時期分割診断](src/brdb_d3_temporal_validation.py)：2016〜2023年と2024〜2026年の条件別集計を独立比較し、符号一致/逆転/サンプル不足を記録。因果効果や将来の予想性能は保証しない。
 - [一括再現入口](src/run_brdb_d3_research_e2e.py)／[実測と92件テスト監査](docs/BRDB_D3_CONDITION_RESEARCH_AUDIT_20261116.md)：503,760実出走・58,164一意馬、父12,971/母父6,741/父×母父3,934集計セル。GitHub正本コードで実Parquetを2回生成し全3出力SHA一致。
 - **研究専用** `AS_OF_UNVERIFIED` / `prediction_safe=false`。集計選定母集団と実出走母集団は異なる。内包12血脈を馬名だけで推測接続せず、統計傾向を適性ラベル・⑤の主評価・RaceNote/PWA本番に自動昇格しない。内包血脈、予想時点の検証、D4統合出力は後続の独立した受入工程。
+
+## 2026-11-16 — D4：条件別成績の研究用補足接続
+
+- [D4補足アダプター](src/brdb_d4_supplemental_adapter.py) と [一括研究用出力](src/run_brdb_d4_sidecar.py) を追加。D3の固定・出典付き条件別実績（父/母父/父×母父）を、架空研究レースの全頭へ **非採点サイドカー** として投影する。
+- [D4監査レポート](docs/BRDB_D4_SUPPLEMENTAL_RESEARCH_AUDIT_20261116.md)：Stage3 73件、Stage4 10件、D3 9件、D4 11件の計103テストPASS。固定D3の実データとGitHub正本アダプターを接続し、仮想3頭の研究フィールドから17件の補足観測を生成。2回再生成バイトSHA一致。
+- `supplemental_insights` は **独立した研究用サイドカー** のみに存在する。凍結済み `brdb-review-v0.1` と既存 `brdb-integrated-blood-review-v0.2-candidate` schema への追加・変更はしていない。`AS_OF_UNVERIFIED` / `prediction_safe=false`、好材料・懸念の自動判定なし、予想スコア・印なし。PACI実出走馬やRaceNote/PWA本番への接続は後続の正式受入が必要。
