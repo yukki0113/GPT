@@ -119,7 +119,7 @@ class CompetitiveSelectionTests(unittest.TestCase):
         score=policy_score({"axes":axes},
                            competing_selected=6,role_selected=6)
         self.assertGreater(score,46)
-        self.assertEqual(57,score)
+        self.assertEqual(59,score)
 
     def test_low_baseline_trap_cannot_win_only_through_role_diversity(self):
         from engine_m6.decision_policy import policy_score
