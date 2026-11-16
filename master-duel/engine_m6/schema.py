@@ -225,7 +225,7 @@ def validate_inventory_audit(v):
         enum(row["rarity"],set(RARITIES)|{"UNKNOWN"},"rarity")
         if row["regulation_limit"] is not None:
             integer(row["regulation_limit"],"regulation_limit",0,3)
-        enum(row["regulation_confidence"],{"GAME_VERIFIED","UNVERIFIED_SOURCE","UNKNOWN","STALE"},"regulation_confidence")
+        enum(row["regulation_confidence"],{"GAME_VERIFIED","UNVERIFIED_SOURCE","UNKNOWN","STALE","USER_APPROVED_OPERATIONAL_BASELINE"},"regulation_confidence")
         enum(row["disposition"],DISPOSITIONS,"disposition")
         text(row["decision_reason"],"decision_reason")
         enum(row["main_or_extra"],{"MAIN","EXTRA","NONE","UNKNOWN"},"main_or_extra")
