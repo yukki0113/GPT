@@ -70,15 +70,55 @@ class CompetitiveSelectionTests(unittest.TestCase):
         self.assertNotIn("konami:1200",ids)
         self.assertTrue(any(x["card_id"]=="konami:1203" for x in pure["competitive_decisions"]))
 
-    def test_low_utility_extra_not_added_just_to_fill(self):
+    def test_extra_threshold_does_not_silently_leave_usable_slots(self):
         t,r,d,a,s,p=sample()
         pol=policy(a)
         result=generate(t,r,d,a,s,p,pol)
         pure=next(x for x in result["solutions"] if x["family"]=="PURE_THEME")
         ids={x["card_id"] for x in pure["candidate"]["cards"]}
-        self.assertNotIn("konami:2004",ids)
         self.assertIn("konami:2007",ids)
-        self.assertLess(pure["extra_used"],15)
+        self.assertEqual(14,pure["extra_used"])
+        self.assertEqual("EX_SLOTS_UNFILLED_RESEARCH_REQUIRED",
+                         pure["extra_completion_status"])
+        self.assertEqual(1,pure["extra_shortfall"])
+        self.assertTrue(any(x.get("below_standard_utility_threshold")
+                            for x in pure["competitive_decisions"]
+                            if x["section"]=="EXTRA"))
+
+    def test_extra_reaches_fifteen_when_fifteenth_is_sourced(self):
+        t,r,d,a,s,p=sample()
+        extra=dict(d[0]["results"][-1])
+        extra.update(card_id="konami:2010",name="SYNTHETIC-konami:2010",
+                     rank=4,link=None,owned_state="UNKNOWN",owned_count=None)
+        d[0]["results"].append(extra)
+        template=dict(next(x for x in a if x["card_id"]=="konami:2007"))
+        template.update(card_id="konami:2010",category="GENERIC_EXTRA",
+                        maximum=1,minimum=0,priority=4,
+                        evidence_ref="DB:konami:2010")
+        a.append(template)
+        s["results"].append({"card_id":"konami:2010",
+                             "screen":"POSSIBLE_ON_PAPER"})
+        pol=policy(a)
+        result=generate(t,r,d,a,s,p,pol)
+        pure=next(x for x in result["solutions"] if x["family"]=="PURE_THEME")
+        self.assertEqual(15,pure["extra_used"])
+        self.assertEqual(0,pure["extra_shortfall"])
+        self.assertEqual("FULL_15_OR_CONFIGURED_CAP",pure["extra_completion_status"])
+        self.assertIn("konami:2010",
+                      {x["card_id"] for x in pure["candidate"]["cards"]})
+
+    def test_extra_theme_first_but_strong_other_method_can_win(self):
+        t,r,d,a,s,p=sample()
+        for row in d[0]["results"]:
+            if row["card_id"]=="konami:2007":
+                row["rank"]=None;row["link"]=2
+        pol=policy(a)
+        result=generate(t,r,d,a,s,p,pol)
+        pure=next(x for x in result["solutions"] if x["family"]=="PURE_THEME")
+        traces=[x for x in pure["competitive_decisions"] if x["section"]=="EXTRA"]
+        self.assertTrue(any(x["card_id"]=="konami:2007" and
+                            x["extra_search_stage"]==2 for x in traces))
+        self.assertEqual(["XYZ"],pure["extra_primary_methods"])
 
     def test_missing_trend_candidate_must_be_reported(self):
         t,r,d,a,s,p=sample()
