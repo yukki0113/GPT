@@ -112,6 +112,49 @@ class M3Tests(unittest.TestCase):
             with self.subTest(key=key),self.assertRaises(ValueError):
                 validate_snapshot(bad)
 
+    def _accepted_policy(self, entries):
+        from engine_m6.accepted_regulation import canonical_sha
+        return {"schema":"md-regulation-accepted-baseline-v1",
+                "format":"MD_STANDARD",
+                "master_sqlite_sha256":"c"*64,
+                "baseline_snapshot_id":"fiction-snapshot",
+                "baseline_effective_on":"2026-11-05",
+                "accepted_on":"2026-11-16",
+                "acceptance":"USER_APPROVED_OPERATIONAL_BASELINE",
+                "original_source_verification":"UNVERIFIED_SOURCE",
+                "baseline_entries_sha256":canonical_sha(entries),
+                "baseline_entries":entries,"events":[]}
+
+    def test_m3_accepts_user_baseline_without_38_individual_checks(self):
+        s=fixture_snapshot(rules={"konami:1001":1,"konami:1002":2})
+        accepted=self._accepted_policy(s["rules"])
+        r=assess_deck_with_m3(self.db,self.recipe,snapshots=[s],
+            as_of="2026-11-16",cp_policy=cp_policy(True),
+            regulation_policy=accepted)
+        self.assertEqual(38,r["regulation_context"]["operationally_accepted_card_count"])
+        self.assertEqual(0,r["regulation_context"]["unknown_card_count"])
+        self.assertEqual(0,r["regulation_context"]["candidate_card_count"])
+        self.assertFalse(r["candidate_recommendation"]["requires_regulation_check"])
+        self.assertFalse(r["regulation_context"]["official_md_legality_verified"])
+        self.assertIn("BANLIST_EXCEEDED:konami:1002",r["errors"])
+
+    def test_m3_acceptance_can_change_only_target_limit(self):
+        s=fixture_snapshot(rules={"konami:1001":1,"konami:1002":2})
+        accepted=self._accepted_policy(s["rules"])
+        accepted["events"]=[{"event_id":"2026-12-01-a",
+             "kind":"REGULATION_REVISION","announced_on":"2026-11-16",
+             "effective_on":"2026-12-01","basis":"GAME_IN_APP_NOTICE",
+             "changes":[{"card_id":"konami:1002","before":2,"after":3}]}]
+        before=assess_deck_with_m3(self.db,self.recipe,snapshots=[s],
+            as_of="2026-11-30",cp_policy=cp_policy(True),
+            regulation_policy=accepted)
+        after=assess_deck_with_m3(self.db,self.recipe,snapshots=[s],
+            as_of="2026-12-01",cp_policy=cp_policy(True),
+            regulation_policy=accepted)
+        self.assertIn("BANLIST_EXCEEDED:konami:1002",before["errors"])
+        self.assertNotIn("BANLIST_EXCEEDED:konami:1002",after["errors"])
+        self.assertEqual(1,after["cards"][0]["regulation"]["allowed"])
+
     def test_candidate_rule_cannot_fail_or_pass_legality(self):
         s=fixture_snapshot(rules={"konami:1001":0,"konami:1002":2})
         r=assess_deck_with_m3(self.db,self.recipe,snapshots=[s],as_of="2026-11-10",
