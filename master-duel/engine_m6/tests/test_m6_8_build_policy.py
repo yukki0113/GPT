@@ -21,11 +21,13 @@ def v2(annotations):
             "recommended_max":1 if a["category"]=="GENERIC_EXTRA" else a["maximum"],
             "quantity_reason":"Synthetic independent per-copy rationale",
             "assessment_status":"HUMAN_REVIEWED",
-            "evidence_refs":["SYNTHETIC:REVIEWED:FOOTPRINT"],
+            "evidence_refs":["DB:"+a["card_id"],"SYNTHETIC:REVIEWED:FOOTPRINT"] +
+                (["https://game8.jp/yugioh-masterduel/423814"] if tier!="NOT_LISTED" else []),
             "reason":"Synthetic suitability and effect review",
             "summon_role":"SYNTHETIC_REVIEW",
             "lock_review":"REVIEWED","condition_review":"REVIEWED",
-            "general_value":58 if a["category"]!="THEME_CORE" else 70,
+            "general_value":(None if tier!="NOT_LISTED" else
+                             (58 if a["category"]!="THEME_CORE" else 70)),
             "game8":{"tier":tier,
                      "source_url":"https://game8.jp/yugioh-masterduel/423814"
                      if tier!="NOT_LISTED" else None,
@@ -88,6 +90,7 @@ class EvidencePolicyV2Tests(unittest.TestCase):
     def test_missing_game8_evidence_fails_preconstruction(self):
         p=v2(sample()[3]);row=p["assessments"][0]
         row["game8"]["tier"]="SS"
+        row["general_value"]=None
         row["game8"]["source_url"]=None
         row["game8"]["applicability"]="APPLICABLE"
         with self.assertRaisesRegex(ValueError,"V2_GAME8_SOURCE_REQUIRED"):
