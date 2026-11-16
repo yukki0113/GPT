@@ -47,6 +47,16 @@ A/B/Cの目標件数や比率、固定スコアや機械的な件数調整は禁
 - 構造ValidatorのPASSは競馬的な意味論のPASSではない。Freeze前に判定理由の質を確認する。
 - 馬券収益の研究はConfidenceから独立させ、次段階はAの購入価値・見送り判断を優先する。
 
+
+## 6. 新規ConfidenceドラフトのFreeze前品質ゲート（2026-11-16追記）
+
+新規の未Freeze v0.5.6 BTDAY / FORWARDに限り、`src/racenote_v056_contract_gates.py` の `inspect_confidence_card_quality` をConfidenceレビュー保存前・二段階提出preflight・正式Freezeランナーの事前確認で使用する。
+
+- **拒否（fail-closed）**：通常ABCで `relative_advantage` と `final_grade_reason` が空白正規化後に完全一致。前者は相手比較、後者はA/B/Cの総合判定を独立著述する。再レビューは結果・当日市場を開かず、未Freezeドラフトだけに限定する。
+- **警告（非ブロッキング）**：同じ `final_grade_reason` が3R以上で反復した場合、または通常ABCが20R以上ありAが30%以上の場合。分布や文字列の警告だけで格付けの自動修正・A件数ノルマを行わない。
+- Confidenceの正常終了サマリーに `confidence_quality`（判定件数・警告一覧）を残す。旧Freeze・旧判定のSHAは維持し、新規ルールで過去のFreezeの再判定・再検証を行わない。
+- この検査は形式的な重複検出であり、◎の勝ち切り経路・ライバルの優位・負け筋の**意味的妥当性**までは保証しない。LLMの独立レビューと既存のClean Blind境界を継続する。
+
 ## 原典
 - `docs/racenote/FORECAST_HUMAN_CONTEXT_READER_v0_5_5_CANDIDATE.md`：ordinary five・Challenger・A/B/C。
 - `docs/racenote/RACENOTE_V056_MIGRATION_IMPLEMENTATION_CONTRACT_20261030.md`：v0.5.6の独立Confidenceと二段階Freeze。
