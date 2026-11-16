@@ -101,6 +101,11 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
         raise ValueError("COMPETITIVE_POLICY_REQUIRED_FOR_NEW_DECK_REVIEW")
     if regulation_policy is None:
         raise ValueError("MD_REGULATION_POLICY_REQUIRED_BEFORE_CONSTRUCTION")
+    # The old six-axis policy can be replayed for historical comparison,
+    # but may not be used to claim a newly integrated deck is reviewed.
+    if decision_policy.get("schema")!="md-m6-8-evidence-build-policy-v2":
+        raise ValueError("EVIDENCE_COPY_BUILD_POLICY_V2_REQUIRED")
+
     # A teacher-origin source variant is a structural starting point only.
     reference=next(
         (x["candidate"] for x in assembled["candidates"]
