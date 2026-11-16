@@ -20,6 +20,7 @@ Cohort: BTDAY-0192–0196, 5開催日156R, selection_cycle=2
 - 156Rの `frozen/records.json`、`confidence_frozen/records.json`、`reader_manifest.json` と凍結SHA／網羅件数を確認済み。
 - 代表例 BTDAY-0192 京都11Rの `reader` は全9頭、`race`, `horses`, `shared_context`, `tier_legend` を持つ。馬ごとに `evidence`（ABILITY / CONNECTIONS / PACE_POSITION / SUITABILITY / TRAINING_CONDITION）、`other_context`（近走、前走以前、調教、血統、実績カバレッジ、RaceReview等）、`historical_race_lap_contexts`, `rrdb_v05` がある。
 - Prediction Coreの `marks`, `honmei_win.evidence`, `honmei_win.main_risk`, `shot_case`, `candidate_selection`, `prediction_audit_comment` は全156Rに保存されている。
+- Readerの追加現物確認：BTDAY-0193中京11R（14頭）、0194函館11R（15頭）、0195京都11R（16頭）、0196京都11R（11頭）。0194/0195は確認した11Rの全頭で過去ラップ5件、0196では1〜4件と分布に差がある。カバレッジに差があるため、同じ密度の根拠が全レース・全馬に存在すると仮定しない。
 - **不足しやすいのは情報そのものよりも、印内5頭の「連対／3着内の役割」「相互の同時好走条件」「◎軸の破綻条件」を明示した中間判断**である。これは仮説であり、全Readerでの充足確認・競馬的根拠監査は未完了。
 - 対象日の当日市場を使わない初期案では、客観的な「期待値プラス／買い得」は確定できない。評価するのは予想に基づく**購入優先順位・的中構造**であり、事後回収率は配当照会後に別評価する。
 
