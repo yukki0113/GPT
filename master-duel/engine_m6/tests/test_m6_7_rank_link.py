@@ -41,5 +41,39 @@ class RankAndLinkReviewTests(unittest.TestCase):
         self.assertEqual("REQUIRES_REVIEW",x["results"][1]["screen"])
 
 
+    def test_effect_monster_link_needs_explicit_effect_material_evidence(self):
+        original=self.bundle()
+        original["cards"]["konami:12"]=effect("konami:12","架空効果リンク",
+                                             "効果モンスター２体")
+        ids=["konami:12"]
+        level_only=[{"kind":"LEVEL_MONSTERS","level":4,"count":2,
+                     "distinct_names":True,
+                     "evidence_ids":["HYPOTHESIS:level-only"],
+                     "verification":"HYPOTHESIS"}]
+        uncertain=screen_extra_materials(original,extra_card_ids=ids,
+                                         board_capabilities=level_only)
+        self.assertEqual("REQUIRES_REVIEW",uncertain["results"][0]["screen"])
+        effect_pool={"kind":"EFFECT_MONSTERS","level":None,"count":2,
+                     "distinct_names":True,
+                     "evidence_ids":["HYPOTHESIS:effect-pair"],
+                     "verification":"HYPOTHESIS"}
+        possible=screen_extra_materials(original,extra_card_ids=ids,
+                                        board_capabilities=level_only+[effect_pool])
+        self.assertEqual("POSSIBLE_ON_PAPER",possible["results"][0]["screen"])
+        self.assertFalse(possible["results"][0]["gameplay_compatibility_verified"])
+
+    def test_nonlink_materials_match_level_board(self):
+        original=self.bundle()
+        original["cards"]["konami:13"]=effect("konami:13","架空非リンク素材",
+                                             "Ｌモンスター以外のモンスター２体")
+        rows=screen_extra_materials(
+            original,extra_card_ids=["konami:13"],
+            board_capabilities=[{"kind":"LEVEL_MONSTERS","level":4,
+                                 "count":2,"distinct_names":True,
+                                 "evidence_ids":["HYPOTHESIS:non-link-pair"],
+                                 "verification":"HYPOTHESIS"}])
+        self.assertEqual("POSSIBLE_ON_PAPER",rows["results"][0]["screen"])
+
+
 if __name__=="__main__":
     unittest.main()
