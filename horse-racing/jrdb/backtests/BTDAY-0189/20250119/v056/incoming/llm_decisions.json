@@ -1,0 +1,794 @@
+[
+  {
+    "venue": "中京",
+    "race_no": 1,
+    "marks": [
+      5,
+      9,
+      2,
+      8,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        9,
+        2,
+        8,
+        11
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は芝中心の近走で、ダート1200mの裏付けでは8番・11番に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "5番は前走ダート1400m4着まで前進し、1200mへの短縮で先行力を活かしやすい。9番も近走5着で差は小さい。",
+      "main_risk": "9番が先手争いを制し、短距離向きのスピードを出し切ると逆転される。"
+    },
+    "shot_case": {
+      "case": "2番は前走ダート1400m2着で、前に行ける強みから流れ次第で勝ち負け。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5番の前走内容と短縮適性を中心に、9番と2番の先行力を比較した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 2,
+    "marks": [
+      11,
+      5,
+      8,
+      4,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        5,
+        8,
+        4,
+        1
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は芝での好走歴はあるが、ダート1800mの実績では通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "11番は前走ダート1800m3着で内容が最も安定。5番も同距離2着があり強敵。",
+      "main_risk": "5番の先行持続力が上回ると押し切られる可能性がある。"
+    },
+    "shot_case": {
+      "case": "8番は直近1800m6着から上積み余地があり、差しが届けば浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "11番の前走3着を軸に、5番の同距離2着と比較した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 3,
+    "marks": [
+      13,
+      12,
+      10,
+      1,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        12,
+        10,
+        1,
+        14
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番は同距離6着と前進余地はあるが、1番や14番の近走内容を上回る材料が乏しい。"
+    },
+    "honmei_win": {
+      "evidence": "13番は前走ダート1400m3着で能力が一段上。12番も同距離3着で相手筆頭。",
+      "main_risk": "12番が好位から先に抜け出す展開では差し切れない恐れ。"
+    },
+    "shot_case": {
+      "case": "10番はダート1400m3着歴があり、近走6着でも相手なりに走れる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "13番と12番の同距離好走を最上位に、10番の再浮上余地を見た。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 4,
+    "marks": [
+      7,
+      2,
+      1,
+      8,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        2,
+        1,
+        8,
+        4
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は芝での好走歴が中心で、ダート1900mの裏付けでは通常5頭に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "7番は前走ダート1800m2着で地力上位。2番も1900m3着と今回条件への適性が高い。",
+      "main_risk": "2番の距離慣れと終いの安定感に上回られると取りこぼす。"
+    },
+    "shot_case": {
+      "case": "1番は1800mで安定した内容を残し、先行して粘り込める。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "7番の地力と2番の1900m実績を軸に比較した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 5,
+    "marks": [
+      13,
+      7,
+      5,
+      6,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        13,
+        7,
+        5,
+        6,
+        14
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は初戦素材として悪くないが、14番までの5頭より仕上がり面で見劣る。"
+    },
+    "honmei_win": {
+      "evidence": "13番は初戦向けの基礎評価と追い切り内容が最も充実。7番も素質面では近い。",
+      "main_risk": "新馬戦で位置取りや折り合いが未知数な点が最大のリスク。"
+    },
+    "shot_case": {
+      "case": "5番は能力と仕上がりのバランスが良く、初戦から上位争い可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2000m新馬らしく完成度と持続力を重視し、13番を中心に据えた。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 6,
+    "marks": [
+      9,
+      6,
+      1,
+      5,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        6,
+        1,
+        5,
+        7
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は近走1400m中心で、7番の1200m勝ち実績を上回る根拠が弱い。"
+    },
+    "honmei_win": {
+      "evidence": "9番はダート1200mで1着・2着と高い再現性。6番も前走同距離1着で能力が高い。",
+      "main_risk": "6番が楽に先行できると◎を逆転する可能性がある。"
+    },
+    "shot_case": {
+      "case": "1番は前走1200m勝ちで、差しに展開が向けば昇級でも通用。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9番と6番の同距離勝ち上がり内容を最重視した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 7,
+    "marks": [
+      5,
+      6,
+      3,
+      1,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        6,
+        3,
+        1,
+        2
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番は前走3着歴がある一方、その後大敗しており1番・2番を上回らない。"
+    },
+    "honmei_win": {
+      "evidence": "5番はこの組み合わせで能力値が最上位、1800m勝ち上がり実績もある。6番は直近2・3着で安定。",
+      "main_risk": "6番の先行力と近況の安定感に屈する可能性。"
+    },
+    "shot_case": {
+      "case": "3番は前走1800m2着で、楽に運べれば粘り込みがある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5番の地力と6番の近況安定を比較し、3番の先行力も評価した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 8,
+    "marks": [
+      9,
+      6,
+      5,
+      13,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        6,
+        5,
+        13,
+        14
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は1400m勝ち歴があるが、近走7着で14番の短距離実績を下げるほどではない。"
+    },
+    "honmei_win": {
+      "evidence": "9番はダート1400mで2着・4着の実績があり、今回の仕上がりも良好。6番も同距離3着で接近。",
+      "main_risk": "休み明けで反応が鈍ると6番や5番に先着される。"
+    },
+    "shot_case": {
+      "case": "5番は1400mで3着続きと安定しており、差しが届く展開なら逆転可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9番の同距離実績と仕上がりを軸に、6番・5番の近況を比較した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 9,
+    "marks": [
+      10,
+      6,
+      7,
+      8,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        6,
+        7,
+        8,
+        2
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番は2200mで2着歴があるが、今回2000mでは2番の現級5着を優先。"
+    },
+    "honmei_win": {
+      "evidence": "10番は1800m勝ちと2000m2着の実績があり、現級でも能力上位。6番の2000m勝ち上がりが対抗。",
+      "main_risk": "休み明けで動き切れないと6番や7番の勢いに逆転される。"
+    },
+    "shot_case": {
+      "case": "7番は1800m2着続きで安定感があり、持続戦なら上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10番の地力と6番の上昇力、7番の安定感を比較した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 10,
+    "marks": [
+      2,
+      16,
+      9,
+      1,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        16,
+        9,
+        1,
+        8
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番は1400m勝ち上がり実績はあるが、1200mでの具体的裏付けでは8番に劣る。"
+    },
+    "honmei_win": {
+      "evidence": "2番はダート1200mで前走2着、昇級後も高水準。16番も同距離4着で能力が高い。",
+      "main_risk": "16番や9番の差しが展開に乗ると取りこぼす可能性。"
+    },
+    "shot_case": {
+      "case": "9番は前走1200m2着で末脚の再現性がある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2番の現級実績を中心に、16番・9番の差し脚を比較した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 11,
+    "marks": [
+      7,
+      13,
+      1,
+      9,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        13,
+        1,
+        9,
+        14
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番は2000m連続2着と強いが、2200m適性では14番までの5頭を優先。"
+    },
+    "honmei_win": {
+      "evidence": "7番は2200mで1着・3着と今回条件への適性が高く、能力も上位。13番は2400m連勝で勢い十分。",
+      "main_risk": "13番の末脚や1番の先行力に押し切られる可能性。"
+    },
+    "shot_case": {
+      "case": "1番は2200m勝ちから2400m2着で、先行持続なら逆転圏。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "7番の同距離実績を最重視し、13番の連勝と1番の先行力を比較した。"
+  },
+  {
+    "venue": "中京",
+    "race_no": 12,
+    "marks": [
+      9,
+      4,
+      14,
+      12,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        4,
+        14,
+        12,
+        7
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は芝2000m中心で、今回の1600m適性では7番を上回らない。"
+    },
+    "honmei_win": {
+      "evidence": "9番は1600mで3・4着と安定し、今回も仕上がり良好。4番は1500m勝ちとマイル3着で対抗。",
+      "main_risk": "4番が好位から先に抜け出すと差し切れない可能性。"
+    },
+    "shot_case": {
+      "case": "14番は同距離4・5着で安定し、前が崩れると上位進出。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9番のマイル安定感を軸に、4番と14番の近況を比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 1,
+    "marks": [
+      16,
+      14,
+      5,
+      13,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        16,
+        14,
+        5,
+        13,
+        11
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は芝での好走が中心で、ダート1200mの実戦裏付けでは11番に譲る。"
+    },
+    "honmei_win": {
+      "evidence": "16番はダート1200mで2・3着と安定し、能力も一段上。14番も同距離2着続きで強敵。",
+      "main_risk": "14番が先手を取ってそのまま押し切る形が最大の敗因。"
+    },
+    "shot_case": {
+      "case": "5番は前走ダート1400m2着で、短縮が噛み合えば勝ち負け。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "16番と14番の1200m好走実績を中心に比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 2,
+    "marks": [
+      14,
+      16,
+      8,
+      2,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        16,
+        8,
+        2,
+        15
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は初出走で距離適性が未知数なため通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "14番はダート1800mで2・3着と連続好走。16番も同距離5着で上向き。",
+      "main_risk": "16番の差しや8番の先行力が展開に乗ると逆転される。"
+    },
+    "shot_case": {
+      "case": "8番は短距離中心だが基礎能力が高く、距離延長をこなせば浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "14番の同距離安定感を最上位に、16番の前進度を比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 3,
+    "marks": [
+      10,
+      12,
+      14,
+      6,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        12,
+        14,
+        6,
+        11
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番はダート1700m2着歴はあるが、直近の大敗から6番・11番を上回れない。"
+    },
+    "honmei_win": {
+      "evidence": "10番は前走ダート1800m4着で内容が最も良い。12番も同距離5着で安定。",
+      "main_risk": "12番が前目で運び、◎より先に動けると逆転される。"
+    },
+    "shot_case": {
+      "case": "14番は前走7着でも能力は近く、展開次第で差し込み可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10番の前走4着を軸に、12番と14番の1800m実績を比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 4,
+    "marks": [
+      1,
+      3,
+      6,
+      11,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        3,
+        6,
+        11,
+        2
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番も障害経験はあるが、2番の連続4着の安定感を上回る材料は弱い。"
+    },
+    "honmei_win": {
+      "evidence": "1番は中山障害2880mで前走2着と今回条件の裏付けが最も強い。3番も障害で2・4着と安定。",
+      "main_risk": "3番の飛越安定や6番の先行が勝ると逆転される。"
+    },
+    "shot_case": {
+      "case": "6番は障害で3・4着と経験豊富で、前で運べれば粘り込める。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "障害戦は前走同コース2着の1番を軸に、3番・6番の経験を比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 5,
+    "marks": [
+      16,
+      7,
+      6,
+      2,
+      5
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        16,
+        7,
+        6,
+        2,
+        5
+      ],
+      "external_challenger_horse_no": 8,
+      "excluded_horse_no": 8,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "8番も初戦向きの材料はあるが、5番までの5頭より決め手に欠ける。"
+    },
+    "honmei_win": {
+      "evidence": "16番は初戦向けの能力評価が最上位。7番も素材が高く、6番は仕上がり面が良い。",
+      "main_risk": "新馬戦で出遅れや折り合いを欠くと優位が消える。"
+    },
+    "shot_case": {
+      "case": "6番は能力と状態の両面が整い、実戦でスムーズなら上位可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "芝1600m新馬として素材と完成度を重視し、16番を中心にした。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 6,
+    "marks": [
+      9,
+      15,
+      10,
+      14,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        15,
+        10,
+        14,
+        2
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は前走1200m勝ちだが、2番の1400m勝ちと能力面を上回らない。"
+    },
+    "honmei_win": {
+      "evidence": "9番はダートで高い能力を示し、差し脚も優秀。15番は1300m勝ちで状態も良い。",
+      "main_risk": "15番や10番が前で楽に運ぶと差し届かない恐れ。"
+    },
+    "shot_case": {
+      "case": "10番は前走1200m1着で、先行力を活かせれば昇級でも通用。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9番の地力を最上位に、15番・10番の先行力を比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 7,
+    "marks": [
+      12,
+      8,
+      4,
+      3,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        8,
+        4,
+        3,
+        2
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は2400m5着だが、2番の1800m3着という今回条件の裏付けを優先。"
+    },
+    "honmei_win": {
+      "evidence": "12番はダート1600m2着と1800m3着で現級実績が抜ける。8番も直近1800m2着で強敵。",
+      "main_risk": "8番の末脚や4番の先行が噛み合うと逆転される。"
+    },
+    "shot_case": {
+      "case": "4番は1900m3着で持続力があり、好位なら上位争い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "12番の現級好走を軸に、8番・4番の近況を比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 8,
+    "marks": [
+      6,
+      2,
+      4,
+      11,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        2,
+        4,
+        11,
+        8
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番は過去に1800m勝ちがあるが、近況の裏付けでは8番に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "6番は芝1800m2着と2000m2着で能力が高く安定。2番も1800m3着で相手筆頭。",
+      "main_risk": "2番や4番に前目で運ばれ、差し遅れる可能性。"
+    },
+    "shot_case": {
+      "case": "4番は1800m3着歴と好調教があり、先行残りなら浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6番の安定した中距離実績を中心に、2番と4番を比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 9,
+    "marks": [
+      1,
+      12,
+      3,
+      6,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        12,
+        3,
+        6,
+        8
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番はマイル3着歴があるが、8番の現級能力を上回る材料が弱い。"
+    },
+    "honmei_win": {
+      "evidence": "1番はマイルで2・3着と安定し、現級でも能力上位。12番は前走1600m勝ちで勢いがある。",
+      "main_risk": "12番の差しや3番の逃げが展開に乗ると取りこぼす。"
+    },
+    "shot_case": {
+      "case": "3番は前走マイル2着で、単騎逃げなら勝ち切りまで。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1番の現級安定感を軸に、12番の昇級勢いと3番の先行力を比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 10,
+    "marks": [
+      11,
+      16,
+      2,
+      9,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        16,
+        2,
+        9,
+        1
+      ],
+      "external_challenger_horse_no": 15,
+      "excluded_horse_no": 15,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "15番は1200m2着歴があるが、1番の近走高水準を上回るほどではない。"
+    },
+    "honmei_win": {
+      "evidence": "11番は前走ダート1200m1着で能力も最上位。16番も同距離1・2着で非常に強い。",
+      "main_risk": "16番の末脚や2番の差しに展開が向くと逆転される。"
+    },
+    "shot_case": {
+      "case": "2番は前走同距離3着で安定しており、流れが速ければ浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "11番と16番の1200m実績を最上位に、2番の差し脚を加えた。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 11,
+    "marks": [
+      8,
+      13,
+      5,
+      12,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        13,
+        5,
+        12,
+        9
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番は芝2000m勝ちがあるが、9番の能力と仕上がりを上回る決め手に欠ける。"
+    },
+    "honmei_win": {
+      "evidence": "8番は芝2000mで1着・2着と高い能力と再現性。13番も同距離4着で地力がある。",
+      "main_risk": "13番や5番が流れに乗り、◎が外を回されると逆転される。"
+    },
+    "shot_case": {
+      "case": "5番は芝1800m勝ちとマイル3着があり、距離をこなせば上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "8番の2000m実績を軸に、13番と5番の地力を比較した。"
+  },
+  {
+    "venue": "中山",
+    "race_no": 12,
+    "marks": [
+      9,
+      1,
+      3,
+      12,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        1,
+        3,
+        12,
+        13
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は芝1200m4着で能力はあるが、マイル実績では13番に譲る。"
+    },
+    "honmei_win": {
+      "evidence": "9番は芝1600mで2着実績があり、終いの指標も優秀。1番と3番も同距離で直近好走。",
+      "main_risk": "1番や3番の逃げが楽になると差し届かない可能性。"
+    },
+    "shot_case": {
+      "case": "3番は前走1600m2着で先行力があり、そのまま押し切る余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9番の末脚を最上位に、1番・3番の先行実績を比較した。"
+  }
+]
