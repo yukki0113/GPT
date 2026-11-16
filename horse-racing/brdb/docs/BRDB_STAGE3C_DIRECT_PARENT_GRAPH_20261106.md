@@ -93,3 +93,34 @@ PR branch HEAD `abf24ed48879722d571f259f076baddf639ccdd8` に対するstage3回�
 [Actions #42183373418](https://github.com/yukki0113/GPT/actions/runs/42183373418) / [Issue #2434](https://github.com/yukki0113/GPT/issues/2434#issuecomment-6679991191)。
 
 **変更後のグラフ生成器と受け入れゲートを実Parquetで連続実行した証跡は依然未作成**。この最後のE2Eを完了し、run artifactのsource SHAと生成件数を照合してからready/mergeする。
+
+
+## 2026-11-16：最終E2E追加検証と入力契約の修正
+
+2026-11-16に前回の固定研究ZIPを開き直し、SHAを再確認したうえで③-C直接親子グラフの計算経路を再実行した。
+
+- 入力 `pedigree_fact.parquet` SHA: `1e7574f78703d79d8d83797f9e350a8927b728fc68c659cf5d340ee0f79b3536`
+- 入力 `parent_relation.parquet` SHA: `c90482851f91b8f2d99ec88407f4246471d10b38f18163464f88760cb197ff85`
+- 入力 `stage3b_top50_master_research.json` SHA: `89d01e2c05af27a929c8398ef9e94660f5f1e442362d458383db6e6a9bd7bdc0`
+
+実Parquetの全397,956行には`sire`／`dam`／`broodmare_sire`がそれぞれ132,652行ずつ存在する。初版runnerは全役割を渡し、`ParentGraphError: invalid JRDB parent role`で停止した。
+
+修正後も6件の非8桁`child_horse_id`（`000k2027`、`000K2577`、`000k1826`の父・母各1行）が存在し、初版の型ガードでは停止する。いずれも親ID未確定で`NO_CANDIDATE`または`INSUFFICIENT_KEY`。そのため**確定親子辺を含むような不正IDを除外しないfail-closedガード**のもと、当該6行のみ監査対象として除外する入力フィルタを導入した。対象行は265,304→265,298となる。
+
+**実データからのグラフ実測**（ChatGPTローカル環境での正本アルゴリズムの移植実行・旧③-B監査済み2頭4リンクを利用。今回のGitHubブランチの全ソースをバイト単位でcheckoutし、正本`run_brdb_stage3c_direct_parent_graph.py`をそのまま実行した証拠とは区別する）：
+
+| 指標 | 2026-11-16 再検算 |
+|---|---:|
+| JRDB起点 | 37 |
+| JRDB直接親子辺 | 42 |
+| 監査済みJBIS直接親子辺 | 4 |
+| 直接親子辺計 | **46** |
+| 名前空間付きノード | **59** |
+| 2根以上から到達した共有祖先候補 | **13** |
+| 不正IDの確定辺追加 | 0 |
+| 未確認のID統合 | 0 |
+| 2回のローカル再生成SHA | `ebd0575bd7a3478d2a0fef1adf4aadfed2db1cb25c8b0bccafa21c3dd69153a6`（完全一致） |
+
+新規回帰2件：複数親族役割＋不正IDがある場合のフィルタ、また不正IDに`RESOLVED_EXACT`が付与されたら必ず停止する検証。旧来の回帰テストと併せてGitHub Actionsの正規fallbackで最新HEADを再実行する。
+
+**厳密な完了境界**：正本runnerを元Parquet・元JSON・元のJBIS 31 anchor/48 source edgeファイルと一緒に実行した記録はまだ未確認。E2Eがすべて通ったとするには、これらの全入力を使う正本runnerの実測と出力受入ゲートが必要。単体テストと移植実行だけを実データ正本E2Eと呼ばない。
