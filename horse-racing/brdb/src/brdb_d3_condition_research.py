@@ -66,9 +66,10 @@ def verified_history(root: Path) -> tuple[str, list[Path], dict[str, str]]:
     require(manifest_path.is_relative_to(root), 'manifest escaped analysis root')
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
     generation = pointer.get('generation_id')
-    require(generation == manifest.get('generation_id') and
+    require(generation == 'analysis-v1_4-postrace-20261101-01' and
+            generation == manifest.get('generation_id') and
             manifest.get('schema_version') == 'v1.4' and
-            manifest.get('validation_status') is not None,
+            manifest.get('validation_status') == 'PASS',
             'unsupported or drifted Analysis generation')
     partitions = manifest.get('fact_table', {}).get('partitions')
     require(isinstance(partitions, list) and len(partitions) >= 1, 'no fact partitions')
@@ -182,10 +183,14 @@ def _extract(conn: duckdb.DuckDBPyConnection, scope: str,
 
 
 def analyse(analysis_root: Path, top50_file: Path, *,
-            cutoff_exclusive: str = '2026-11-02') -> dict:
+            cutoff_exclusive: str = '2026-11-02',
+            period_start: str = '2016-01-01') -> dict:
     """Compute conditional retrospective evidence over pinned Analysis facts."""
-    require(cutoff_exclusive == '2026-11-02',
-            'D3 initial cohort is pinned to the 2026-11-01 completed snapshot')
+    require((period_start, cutoff_exclusive) in (
+            ('2016-01-01', '2026-11-02'),
+            ('2016-01-01', '2024-01-01'),
+            ('2024-01-01', '2026-11-02')),
+            'unsupported D3 fixed-cohort window')
     subjects = verified_subjects(top50_file)
     generation, files, hashes = verified_history(analysis_root)
     names = {s['name'] for s in subjects}
@@ -201,11 +206,11 @@ def analyse(analysis_root: Path, top50_file: Path, *,
                  ELSE 'LONG' END AS distance_band,
             sire_name, broodmare_sire_name, abnormal_code, finish
             FROM read_parquet({literal_list})
-            WHERE race_date < ? AND race_date >= '2016-01-01'
+            WHERE race_date < ? AND race_date >= ?
               AND track_type IN ('1','2')
               AND abnormal_code IN ('0','3','4','5','6')
               AND horse_id IS NOT NULL AND race_key IS NOT NULL
-              AND distance > 0''', [cutoff_exclusive])
+              AND distance > 0''', [cutoff_exclusive, period_start])
         quality = conn.execute('''SELECT count(*) AS starts,
             count(distinct (race_key,horse_id)) AS unique_starts,
             count(distinct horse_id) AS unique_horses,
@@ -254,7 +259,7 @@ def analyse(analysis_root: Path, top50_file: Path, *,
             'historical_asof_status': 'AS_OF_UNVERIFIED',
             'source_snapshot_generation': generation,
             'selection_generation': SOURCE_GENERATION,
-            'as_of_exclusive': cutoff_exclusive,
+            'as_of_exclusive': cutoff_exclusive, 'period_start':period_start,
             'population': {
                 'source_subject_count': len(subjects),
                 'source_subjects': [{'rank': s['rank'], 'name': s['name']} for s in subjects],
@@ -267,7 +272,8 @@ def analyse(analysis_root: Path, top50_file: Path, *,
             },
             'source_sha256': {
                 'top50': sha256(top50_file),
-                'manifest': sha256((analysis_root / 'current.json').resolve()),
+                'current_pointer': sha256((analysis_root / 'current.json').resolve()),
+                'manifest': sha256((analysis_root / 'generations' / generation / 'manifest.json').resolve()),
                 'parquet_partitions': hashes,
             },
             'policy': {
@@ -282,7 +288,7 @@ def analyse(analysis_root: Path, top50_file: Path, *,
                 'going_code_policy': 'raw source code; no interpretation of wet/dry effects',
                 'overlap_policy': 'sire, BMS, and pair lanes overlap; do not sum across lanes',
                 'historical_source_timing': 'not independently verified for race-day use',
-                'asof_outcome_guard': 'completed history before 2026-11-02; retrospective only',
+                'asof_outcome_guard': 'completed history strictly before cutoff; retrospective only',
                 'unverified_ancestor_ids': 'no ancestral identity join and no suitability claims',
                 'score_or_rank_production': False,
             },
