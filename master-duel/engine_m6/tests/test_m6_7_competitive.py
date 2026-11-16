@@ -77,27 +77,31 @@ class CompetitiveSelectionTests(unittest.TestCase):
         pure=next(x for x in result["solutions"] if x["family"]=="PURE_THEME")
         ids={x["card_id"] for x in pure["candidate"]["cards"]}
         self.assertIn("konami:2007",ids)
-        self.assertEqual(14,pure["extra_used"])
+        self.assertEqual(11,pure["extra_used"])
         self.assertEqual("EX_SLOTS_UNFILLED_RESEARCH_REQUIRED",
                          pure["extra_completion_status"])
-        self.assertEqual(1,pure["extra_shortfall"])
+        self.assertEqual(4,pure["extra_shortfall"])
         self.assertTrue(any(x.get("below_standard_utility_threshold")
                             for x in pure["competitive_decisions"]
                             if x["section"]=="EXTRA"))
 
     def test_extra_reaches_fifteen_when_fifteenth_is_sourced(self):
         t,r,d,a,s,p=sample()
-        extra=dict(d[0]["results"][-1])
-        extra.update(card_id="konami:2010",name="SYNTHETIC-konami:2010",
-                     rank=4,link=None,owned_state="UNKNOWN",owned_count=None)
-        d[0]["results"].append(extra)
-        template=dict(next(x for x in a if x["card_id"]=="konami:2007"))
-        template.update(card_id="konami:2010",category="GENERIC_EXTRA",
-                        maximum=1,minimum=0,priority=4,
-                        evidence_ref="DB:konami:2010")
-        a.append(template)
-        s["results"].append({"card_id":"konami:2010",
-                             "screen":"POSSIBLE_ON_PAPER"})
+        # Four independently reviewed, one-copy generic alternatives fill
+        # the four open slots without overriding recommended_max.
+        for j in range(4):
+            cid="konami:"+str(2010+j)
+            extra=dict(d[0]["results"][-1])
+            extra.update(card_id=cid,name="SYNTHETIC-"+cid,
+                         rank=4,link=None,owned_state="UNKNOWN",owned_count=None)
+            d[0]["results"].append(extra)
+            template=dict(next(x for x in a if x["card_id"]=="konami:2007"))
+            template.update(card_id=cid,category="GENERIC_EXTRA",
+                            maximum=1,minimum=0,priority=4,
+                            evidence_ref="DB:"+cid)
+            a.append(template)
+            s["results"].append({"card_id":cid,
+                                 "screen":"POSSIBLE_ON_PAPER"})
         pol=policy(a)
         result=generate(t,r,d,a,s,p,pol)
         pure=next(x for x in result["solutions"] if x["family"]=="PURE_THEME")
