@@ -1,0 +1,1545 @@
+{
+  "schema_version": "racenote-ticket-selection-draft-0.1",
+  "selection_id": "BTDAY-0195",
+  "target_date": "2025-05-24",
+  "result_opened": false,
+  "target_market_opened": false,
+  "confidence_used": false,
+  "status": "DRAFT_NOT_FROZEN",
+  "records": [
+    {
+      "venue": "京都",
+      "race_no": 1,
+      "marks": [
+        6,
+        9,
+        11,
+        1,
+        10
+      ],
+      "frozen_decision_core_sha256": "3be5cef9629fc7aff40b29637a931cf52fd37c01e4d9bf6e76468deaeb7cd975",
+      "reader_sha256": "021a1a9c68cf119a2ab8de5f3841bff0cc3dd8feb72f4c44a368b74f6ac1b7cf",
+      "race_scenario": "6番が差し遅れると9番や先行する11番が先に抜け出す。",
+      "five_roles": {
+        "1": "TOP3_OR_OUTSIDER_RISK",
+        "6": "TOP3",
+        "9": "WIN_OR_TOP2",
+        "10": "TOP3_OR_OUTSIDER_RISK",
+        "11": "TOP2_OR_TOP3"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "6はダ1000m/1200m2着、9も1200m2着、11は1200m2着、1は1200m2着、10は1400m3着。",
+      "coverage_risk": "6の差し脚は先行9・11の競合を利せる可能性があるが16頭で差し届かずのリスク。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          6,
+          9,
+          11
+        ],
+        [
+          1,
+          6,
+          9
+        ],
+        [
+          6,
+          9,
+          10
+        ],
+        [
+          1,
+          6,
+          11
+        ],
+        [
+          6,
+          10,
+          11
+        ],
+        [
+          1,
+          6,
+          10
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "6番はダ1200で連続2着し調教13.5、9番も同距離2着で追走力が高い。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 2,
+      "marks": [
+        6,
+        13,
+        4,
+        9,
+        7
+      ],
+      "frozen_decision_core_sha256": "1dd80aac6a959f1151f248efd7dae341c4082e0ec2f0dd0e18d22b446d8d1328",
+      "reader_sha256": "602293bb705cd6b5247fe54cc6ce781d0bf98437da48768bf7bf797080dffb9a",
+      "race_scenario": "13番は1800で2着しており、距離短縮で6番が忙しくなると逆転する。",
+      "five_roles": {
+        "4": "TOP2_OR_TOP3",
+        "6": "UNSUITABLE",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "9": "TOP3_OR_OUTSIDER_RISK",
+        "13": "WIN_OR_TOP2"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "6は2100m3着も1800m6着、13は1800m2着、4は同距離5着、9・7は同距離6〜7着。",
+      "coverage_risk": "6の条件短縮より13の1800m連対実績が強い可能性。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "6番は2100で3着の前走に加え調教17.2、先行力がありダ1800でも押し切り可能。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 3,
+      "marks": [
+        9,
+        14,
+        12,
+        8,
+        5
+      ],
+      "frozen_decision_core_sha256": "d615b2c6d929431ffbb12e7a307e00f9b2b04ad4952965c352165fc8be608a61",
+      "reader_sha256": "a16090388cbe0f699d4cd9db3a0ac79a36466de28b6a65d87823fc954acfd36b",
+      "race_scenario": "9番の先行が外から競られると14番や12番の末脚が上回る。",
+      "five_roles": {
+        "5": "TOP3_OR_OUTSIDER_RISK",
+        "8": "TOP3_OR_OUTSIDER_RISK",
+        "9": "UNSUITABLE",
+        "12": "TOP2_OR_TOP3",
+        "14": "WIN_OR_TOP2"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "9・14は1400m2着、12は1200m2・3着、8は1400m3着、5は1400m4着。",
+      "coverage_risk": "18頭で先行9・14・8・5の競合、12の差しもあり軸優位不明。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "9番は芝1400で2着し能力41、調教15.9。14番も芝1400で2着、調教16.6と僅差。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 4,
+      "marks": [
+        7,
+        6,
+        17,
+        13,
+        9
+      ],
+      "frozen_decision_core_sha256": "e029bf7ab84f2b6691bec188bfaa31b50f8a818a94f4ebce833dbf20a2c7e711",
+      "reader_sha256": "5d1df478c2bad89b377fcfbd6aa9e347e7a690208fddde6f5163e7239d3f4706",
+      "race_scenario": "17番は芝1600からの延長でも調教20.4と能力40.1、上積みで逆転し得る。",
+      "five_roles": {
+        "6": "WIN_OR_TOP2",
+        "7": "TOP3",
+        "9": "TOP3_OR_OUTSIDER_RISK",
+        "13": "TOP3_OR_OUTSIDER_RISK",
+        "17": "TOP2_OR_TOP3"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "7は1800m2着・4着、6は1800m3着、17は1600m4着、13は1600m4着、9は1800m3着歴。",
+      "coverage_risk": "7の先行は外枠17との競合はあるが、同距離2着経験を着内軸に評価。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          6,
+          7,
+          17
+        ],
+        [
+          6,
+          7,
+          13
+        ],
+        [
+          6,
+          7,
+          9
+        ],
+        [
+          7,
+          13,
+          17
+        ],
+        [
+          7,
+          9,
+          17
+        ],
+        [
+          7,
+          9,
+          13
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "7番は芝1800で2着・4着、能力43と調教16.2。6番も同距離3着があり調教10.5と安定。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 5,
+      "marks": [
+        4,
+        6,
+        9,
+        5,
+        7
+      ],
+      "frozen_decision_core_sha256": "5d6bd05ab0b699d6e679d6907810c34f6cbd2cbd41436362eee913c0b28ac909",
+      "reader_sha256": "7cd277e1e2c40a535cd4733aa0dfda0d28ffe81aa9d66bc5cc1eb88d2f4a30e3",
+      "race_scenario": "4番は追込で前が残ると6番や9番が先に押し切る。",
+      "five_roles": {
+        "4": "TOP3",
+        "5": "TOP3_OR_OUTSIDER_RISK",
+        "6": "WIN_OR_TOP2",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "9": "TOP2_OR_TOP3"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "4は2000m2着・IDM41、6も2000m2着、9は2000m3着、5は2000m4着、7は1800m3着。",
+      "coverage_risk": "4の追込が届かない形で6・9の先行差しが先着する可能性。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          4,
+          6,
+          9
+        ],
+        [
+          4,
+          5,
+          6
+        ],
+        [
+          4,
+          6,
+          7
+        ],
+        [
+          4,
+          5,
+          9
+        ],
+        [
+          4,
+          7,
+          9
+        ],
+        [
+          4,
+          5,
+          7
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "4番は芝2000で2着、調教17.1に能力41。6番も同距離2着と2400経験があり対応可能。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 6,
+      "marks": [
+        4,
+        2,
+        7,
+        3,
+        8
+      ],
+      "frozen_decision_core_sha256": "0aa0e9ab06c4f08000050caa4754780d7c817cf9478c4be0e224da00c58682d0",
+      "reader_sha256": "9a914cadd0b77cd29b30882eeca0bf785b295fc9a50d6c35d862c110d2ad132c",
+      "race_scenario": "4番の先行が2・3番の逃げと競り合えば7番の末脚が届く。",
+      "five_roles": {
+        "2": "WIN_OR_TOP2",
+        "3": "TOP3_OR_OUTSIDER_RISK",
+        "4": "TOP3",
+        "7": "TOP2_OR_TOP3",
+        "8": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "4は1400m2着・勝ち、2は同距離勝ち、7は同距離3着、3は同距離勝ち、8は1200m勝ち。",
+      "coverage_risk": "9頭だが逃げ2・3と先行4・8が競合し、4に全幅の信頼を置かない。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_BOX",
+      "tickets": [
+        [
+          2,
+          4,
+          7
+        ],
+        [
+          2,
+          3,
+          4
+        ],
+        [
+          2,
+          4,
+          8
+        ],
+        [
+          3,
+          4,
+          7
+        ],
+        [
+          4,
+          7,
+          8
+        ],
+        [
+          3,
+          4,
+          8
+        ],
+        [
+          2,
+          3,
+          7
+        ],
+        [
+          2,
+          7,
+          8
+        ],
+        [
+          2,
+          3,
+          8
+        ],
+        [
+          3,
+          7,
+          8
+        ]
+      ],
+      "stake_yen": 1000,
+      "evidence_note": "4番はダ1400で2着後勝ち上がり、能力50と調教22.5。2番も1400勝ちで調教13.6と充実。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 7,
+      "marks": [
+        5,
+        1,
+        6,
+        3,
+        7
+      ],
+      "frozen_decision_core_sha256": "892b3fc028b8cbe831de096d7a6576272dc280c29ba27bc1eb13ee77491bfc22",
+      "reader_sha256": "18c82c3eab409ab6179a5e5279f501c018a43c849847acda8fc879d27021adcb",
+      "race_scenario": "5番が最後の持続戦で甘くなれば2600で走る1番や2200で2着の6番が上回る。",
+      "five_roles": {
+        "1": "WIN_OR_TOP2",
+        "3": "TOP3_OR_OUTSIDER_RISK",
+        "5": "UNSUITABLE",
+        "6": "TOP2_OR_TOP3",
+        "7": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "5は2400m2着、1は2600m2・3着、6は2200m2着、3は2000m3着、7は2200m3着。",
+      "coverage_risk": "5の追込と1の長距離適性の差が微妙で、12頭の隊列で位置取り不確実。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "5番は芝2400で2着、能力50・調教21.9。1番は2600で2・3着と長距離の地力がある。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 8,
+      "marks": [
+        15,
+        8,
+        4,
+        1,
+        2
+      ],
+      "frozen_decision_core_sha256": "30201d3acc20c4fb95eb965407e2c25f6b3e2b47ad6882f08a031608fe20973d",
+      "reader_sha256": "03e088b241486a82038f8086b9b4144e52b86fe1ff45263d2c1ac9a5fd128667",
+      "race_scenario": "15番が前で詰まるか脚を使い過ぎると8番や4番の差し脚に負ける。",
+      "five_roles": {
+        "1": "TOP3_OR_OUTSIDER_RISK",
+        "2": "TOP3_OR_OUTSIDER_RISK",
+        "4": "TOP2_OR_TOP3",
+        "8": "WIN_OR_TOP2",
+        "15": "TOP3"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "15は1800m2着2回・IDM49、8は1800/1900m3着反復、4は1800m3着、1は2100m2着、2は1800m2着。",
+      "coverage_risk": "15は先行で勝ち切りは他馬の差しに脅かされるが同距離連対反復が強み。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          4,
+          8,
+          15
+        ],
+        [
+          1,
+          8,
+          15
+        ],
+        [
+          2,
+          8,
+          15
+        ],
+        [
+          1,
+          4,
+          15
+        ],
+        [
+          2,
+          4,
+          15
+        ],
+        [
+          1,
+          2,
+          15
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "15番はダ1800で2着を2回続け能力49と調教22.6。8番も1800・1900で3着し状態15.8。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 9,
+      "marks": [
+        6,
+        3,
+        1,
+        9,
+        10
+      ],
+      "frozen_decision_core_sha256": "b68fc9d846e399a54d7d6c709dc870bf6b427a1c7d57e8a8adbdf7cc1fba92cb",
+      "reader_sha256": "69dbb8bd36a9880245096dee26c16643b13a00dbc19dca10373e87bd69ef818a",
+      "race_scenario": "6番が先行争いで余力をなくすと1番の1800連対の末脚、9番の1600連対が怖い。",
+      "five_roles": {
+        "1": "TOP2_OR_TOP3",
+        "3": "WIN_OR_TOP2",
+        "6": "TOP3",
+        "9": "TOP3_OR_OUTSIDER_RISK",
+        "10": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "6は1600m2着・IDM51、3は1400m2着、1は1800m2着、9は1600m2着、10は1600m勝ち。",
+      "coverage_risk": "6の先行は3との先行競合に弱いが、現級のマイル2着は軸根拠。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          1,
+          3,
+          6
+        ],
+        [
+          3,
+          6,
+          9
+        ],
+        [
+          3,
+          6,
+          10
+        ],
+        [
+          1,
+          6,
+          9
+        ],
+        [
+          1,
+          6,
+          10
+        ],
+        [
+          6,
+          9,
+          10
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "6番は芝1600で2着と芝1800で4着、能力48・調教18.3。3番は1400で2・3着のスピードを持つ。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 10,
+      "marks": [
+        4,
+        5,
+        1,
+        7,
+        3
+      ],
+      "frozen_decision_core_sha256": "60d886200f2ac336e5458e3be2e18c8794fe97d2e529db725873fb59b469a487",
+      "reader_sha256": "298f4d0c0f989a2b09bc8124fdd119d689d3cbf45bd8a3f6c51d6e0d9861a3f0",
+      "race_scenario": "4番は2000の勝ち歴がなく、5番の距離実績や1番の2000勝ちが差を詰める。",
+      "five_roles": {
+        "1": "TOP2_OR_TOP3",
+        "3": "TOP3_OR_OUTSIDER_RISK",
+        "4": "UNSUITABLE",
+        "5": "WIN_OR_TOP2",
+        "7": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "4は1600m3着・高能力67、5は2000m連勝、1は同距離勝ち、7は1800m勝ち、3は2000m勝ち。",
+      "coverage_risk": "8頭でも4の2000m未経験に対し5・1・3に距離の裏付けがある。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "4番は芝1600で3着・1800で2着と能力67、調教21.9。5番は2000を連勝し距離の裏付けがある。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 11,
+      "marks": [
+        8,
+        6,
+        13,
+        1,
+        15
+      ],
+      "frozen_decision_core_sha256": "3d147b8df716e239ff874a9e0c94b3f5771b0d0e1dec6f4168c787662209660f",
+      "reader_sha256": "ed2d297165782bfa06df87295ee3367048b1fa0a8a860c08e4ac6592c8896bae",
+      "race_scenario": "8番が後方のままでは6番の好位抜け出し、13番の1900先行に届かない。",
+      "five_roles": {
+        "1": "TOP3_OR_OUTSIDER_RISK",
+        "6": "WIN_OR_TOP2",
+        "8": "UNSUITABLE",
+        "13": "TOP2_OR_TOP3",
+        "15": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "8は1900/1800m連勝・IDM69、6も1800m69級、13は1900m勝ち、1は1800m2着、15は1800m2着。",
+      "coverage_risk": "16頭オープンで能力僅差の先行6・13・1・15が競合し、差し8が危うい。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "8番はダ1900・1800を連勝し能力69.2、調教16.5。6番は1800で1・3着し能力69と僅差。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "京都",
+      "race_no": 12,
+      "marks": [
+        10,
+        3,
+        6,
+        11,
+        8
+      ],
+      "frozen_decision_core_sha256": "c6530b28b1175a442ac37a342610d53e071edf6d66029e526460fd3e3be6a416",
+      "reader_sha256": "ee20b4c76c2cf411c3b6fe91a87c92924caf46aa315e9ad178956960b14a23fe",
+      "race_scenario": "10番の差しが遅れると先行する11番や6番が粘り込む。",
+      "five_roles": {
+        "3": "WIN_OR_TOP2",
+        "6": "TOP2_OR_TOP3",
+        "8": "TOP3_OR_OUTSIDER_RISK",
+        "10": "TOP3",
+        "11": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "10は1400m現級2着、3は1400m2着反復、6は同距離勝ち、11は1400m3着、8は1400m2着歴。",
+      "coverage_risk": "10・3の差し脚はペース依存だが現級の継続した着内実績が評価できる。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          3,
+          6,
+          10
+        ],
+        [
+          3,
+          10,
+          11
+        ],
+        [
+          3,
+          8,
+          10
+        ],
+        [
+          6,
+          10,
+          11
+        ],
+        [
+          6,
+          8,
+          10
+        ],
+        [
+          8,
+          10,
+          11
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "10番はダ1400で2・4着、能力57.4。3番は同距離2着を反復し能力57、6番も1着・2着と充実。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 1,
+      "marks": [
+        14,
+        3,
+        1,
+        13,
+        10
+      ],
+      "frozen_decision_core_sha256": "560d0b4decdbf419973ea61b7d0265a988ea651ad960ff92d3272136bf9b9877",
+      "reader_sha256": "1415700793f1adb33529d468d93567410ea9b4e79743563d9e02709d6245b5bc",
+      "race_scenario": "14番の飛越ミスや3番の先行がうまく運ぶと着順は逆転する。",
+      "five_roles": {
+        "1": "TOP2_OR_TOP3",
+        "3": "WIN_OR_TOP2",
+        "10": "TOP3_OR_OUTSIDER_RISK",
+        "13": "TOP3_OR_OUTSIDER_RISK",
+        "14": "UNSUITABLE"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "障害。14は3290m2着・3250m3着、3は3200m3着、1・13・10は長距離障害勝ち歴。",
+      "coverage_risk": "長距離の飛越ミスリスクと有力障害馬の複数存在。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "14番は障害3290で2着、3250で3着と長めの障害重賞級距離への実績。3番は2890で2着・3200で3着し調教18.5。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 2,
+      "marks": [
+        1,
+        5,
+        10,
+        7,
+        13
+      ],
+      "frozen_decision_core_sha256": "ac1a7f1b0159e013b60c40b34309f40d2310032b149a2cd91b0d10959c24e67b",
+      "reader_sha256": "38b1b73692f91f2b6848c4a546b051cf8d30750794500588f0487c9203944d98",
+      "race_scenario": "1番の1800適性が未知なため、5番の直接距離実績や7番の芝からの転向で上回られる。",
+      "five_roles": {
+        "1": "UNSUITABLE",
+        "5": "WIN_OR_TOP2",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "10": "TOP2_OR_TOP3",
+        "13": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "1はダ1700m2着、5は1800m2着、10は同距離4着、7は芝から、13は1800m3着歴。",
+      "coverage_risk": "1の1800m延長で5・13の同条件実績が強く、15頭で軸が不安。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "1番はダ1700で2・4着、能力35.2と調教17.1。5番は1800で2着し今回距離の連対経験がある。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 3,
+      "marks": [
+        15,
+        12,
+        10,
+        9,
+        8
+      ],
+      "frozen_decision_core_sha256": "76d603f782dda2cb5099c365bd5553056a90319dca217baf1b8a8a5af1847123",
+      "reader_sha256": "0c6280dad89de2ae88dda2585f47933cd032eab7d812b27202147d39d43fe611",
+      "race_scenario": "15番の逃げが9番と競り合えば12番の先行差しや10番の安定した末脚が届く。",
+      "five_roles": {
+        "8": "TOP3_OR_OUTSIDER_RISK",
+        "9": "TOP3_OR_OUTSIDER_RISK",
+        "10": "TOP2_OR_TOP3",
+        "12": "WIN_OR_TOP2",
+        "15": "TOP3"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "15は1150m2着・IDM47、12は1200m2着、10は同距離4着、9は1200m4着歴、8は同距離5着。",
+      "coverage_risk": "15逃げが9逃げと競合、12先行が逆転する可能性がある。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          10,
+          12,
+          15
+        ],
+        [
+          9,
+          12,
+          15
+        ],
+        [
+          8,
+          12,
+          15
+        ],
+        [
+          9,
+          10,
+          15
+        ],
+        [
+          8,
+          10,
+          15
+        ],
+        [
+          8,
+          9,
+          15
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "15番はダ1150で2着、能力47・調教19.8。12番はダ1200で2着と4着、能力43と調教19.6で追う。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 4,
+      "marks": [
+        3,
+        12,
+        7,
+        5,
+        10
+      ],
+      "frozen_decision_core_sha256": "715a7a6b32674761989eccf73e32f44ae842fcabb5e075d967684a88383ebc61",
+      "reader_sha256": "f95c8487200dacb40a63f1467115f26915147456eaefbaf2d912ecf080f17999",
+      "race_scenario": "3番が飛越に乱れを見せれば12番、7番の経験が生きる。",
+      "five_roles": {
+        "3": "UNSUITABLE",
+        "5": "TOP3_OR_OUTSIDER_RISK",
+        "7": "TOP2_OR_TOP3",
+        "10": "TOP3_OR_OUTSIDER_RISK",
+        "12": "WIN_OR_TOP2"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "障害。3は2890m3着、12は同距離4着、7は2880m3着、5・10も障害既走。",
+      "coverage_risk": "飛越と騎乗リズムの変動が大きい。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "3番は障害2890と2860で3着、調教21.7と障害適性・状態が揃う。12番は2890で4着、調教14.4で追う。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 5,
+      "marks": [
+        4,
+        15,
+        12,
+        3,
+        7
+      ],
+      "frozen_decision_core_sha256": "6a9b85a7a5055050d7063100ce70497f083b6c4c314481c79f07608f7dc31b65",
+      "reader_sha256": "fc43c6b69a56258d8f89b2187325f40c816a4e54f6c4593c74f7e56e7c300a94",
+      "race_scenario": "4番が差し遅れる場合、15番の先行か12番の芝1600での末脚が上回る。",
+      "five_roles": {
+        "3": "TOP3_OR_OUTSIDER_RISK",
+        "4": "UNSUITABLE",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "12": "TOP2_OR_TOP3",
+        "15": "WIN_OR_TOP2"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "4は1800m3着も前々走10着、15は同距離3着、12は1600m3着、3・7は同距離で掲示板級。",
+      "coverage_risk": "16頭で4の近走の振れが大きく15の先行に優位がある可能性。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "4番は芝1800で3着、能力41・調教15.8。15番も同距離3着で先行でき、今回のペースに対応可能。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 6,
+      "marks": [
+        8,
+        1,
+        6,
+        7,
+        12
+      ],
+      "frozen_decision_core_sha256": "4d5d67ddac1d0003859da568e9331bc1d6710fd78e1104bd8469a67f8c6e6ad8",
+      "reader_sha256": "45152181531ea07becc6f1d9a6c69417f9f7067b4fd00a71fa3cdb475e0bc92f",
+      "race_scenario": "8番の一戦ごとのムラが続くなら1番の安定、6番の同距離3着が上回る。",
+      "five_roles": {
+        "1": "WIN_OR_TOP2",
+        "6": "TOP2_OR_TOP3",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "8": "UNSUITABLE",
+        "12": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "8は1800m3着・9着、1は同距離3・4着、6は同距離3着、7も1800m3着、12は同距離5着。",
+      "coverage_risk": "◎8のムラと差し位置取りに対し1の安定が勝る余地。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "8番はダ1800で3着、能力41。1番は同距離3・4着で調教17.9と状態面が充実。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 7,
+      "marks": [
+        11,
+        3,
+        15,
+        1,
+        2
+      ],
+      "frozen_decision_core_sha256": "03361d05ac08bf77d45469ab63222f9448cef784257d50ad35d6878167efcc1d",
+      "reader_sha256": "f523fd18955040a46f2709b1e55af4360c167117765e7cb0b9331121b0f5e1d8",
+      "race_scenario": "11番が1400への延長で決め手を欠けば、3番と15番の同距離3着が競り勝つ。",
+      "five_roles": {
+        "1": "TOP3_OR_OUTSIDER_RISK",
+        "2": "TOP3_OR_OUTSIDER_RISK",
+        "3": "WIN_OR_TOP2",
+        "11": "UNSUITABLE",
+        "15": "TOP2_OR_TOP3"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "11は1200m2着、3は1400m2着、15は1400m3着、1は同距離4着、2は1400m5着。",
+      "coverage_risk": "11の1400m延長が未知で3の同条件2着が強い。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "11番は芝1200で2着、能力40・調教14.3。3番は芝1400で2着、RRDBと過去内容に補強がある。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 8,
+      "marks": [
+        10,
+        9,
+        12,
+        4,
+        8
+      ],
+      "frozen_decision_core_sha256": "a4524b8895c33f32d4b8f3cb8a190c413a6eb6b8baf9248ce2010daa26ba43cf",
+      "reader_sha256": "f7dfee9d982caa6db63ca6a987efee218a85408a67b0cd41c56b4ba6c7190e59",
+      "race_scenario": "10番の差しが進路に恵まれないと9番の逃げや4番の先行が残る。",
+      "five_roles": {
+        "4": "TOP3_OR_OUTSIDER_RISK",
+        "8": "TOP3_OR_OUTSIDER_RISK",
+        "9": "WIN_OR_TOP2",
+        "10": "TOP3",
+        "12": "TOP2_OR_TOP3"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "10は1800m2着2回、9は1800m2着、12は1700m3着反復、4・8は1800m3着。",
+      "coverage_risk": "9逃げと4先行の残り方で10差しの着順が左右される。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          9,
+          10,
+          12
+        ],
+        [
+          4,
+          9,
+          10
+        ],
+        [
+          8,
+          9,
+          10
+        ],
+        [
+          4,
+          10,
+          12
+        ],
+        [
+          8,
+          10,
+          12
+        ],
+        [
+          4,
+          8,
+          10
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "10番はダ1800で2着を2回続け、能力45.1と調教21.9。9番も同距離2着と調教15.9で接近。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 9,
+      "marks": [
+        14,
+        5,
+        7,
+        9,
+        6
+      ],
+      "frozen_decision_core_sha256": "bfe7dc306aed7ecdf2c95fa0b8d33e3590bccf422a854ed8c925e1e7a2bb6d47",
+      "reader_sha256": "8e947974ea377ca4a4e3ee1db6993c384cadccb65cd53b559d0f73992d889196",
+      "race_scenario": "新潟千直への初対応で外ラチ進路の取り合いが生じると7番の差しや5番の先行が変わる。",
+      "five_roles": {
+        "5": "WIN_OR_TOP2",
+        "6": "TOP3_OR_OUTSIDER_RISK",
+        "7": "TOP2_OR_TOP3",
+        "9": "TOP3_OR_OUTSIDER_RISK",
+        "14": "UNSUITABLE"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "14は1200m勝ち・2着、5は同距離2・3着、7・9・6は1200〜1600m経験。",
+      "coverage_risk": "新潟直線1000mはコーナー型1200mの実績を単純転用しにくい。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "14番は芝1200で1・2着、能力47と調教18で先行力が明確。5番も1200で2・3着と調教21.4が好調。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 10,
+      "marks": [
+        1,
+        16,
+        3,
+        2,
+        4
+      ],
+      "frozen_decision_core_sha256": "0d1392666c8735b54ce8b0cbd44868374eaba1eb17905c9074fef7a0d6223e4f",
+      "reader_sha256": "cbf3553916f91ee8e1556bdc38c0448520deeb909774bc1f7939439dea049d40",
+      "race_scenario": "1番が追込で展開を待つ間に3番の先行力や16番の差し脚に先行される。",
+      "five_roles": {
+        "1": "UNSUITABLE",
+        "2": "TOP3_OR_OUTSIDER_RISK",
+        "3": "TOP2_OR_TOP3",
+        "4": "TOP3_OR_OUTSIDER_RISK",
+        "16": "WIN_OR_TOP2"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "1は2000m3着、16は2000m4・5着、3は1600m2着、2は2600m3着、4は2000m2着歴。",
+      "coverage_risk": "16頭で1の追込届かず・3先行・4の巻き返しが多分岐。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "1番は芝2000で3着、調教14.1と継続した末脚。16番は2000で4・5着、調教18.5。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 11,
+      "marks": [
+        12,
+        5,
+        10,
+        7,
+        1
+      ],
+      "frozen_decision_core_sha256": "99b333314261c72b69c66fb14456738a9dab980e3fd59a37a7c6e6d2017be068",
+      "reader_sha256": "12cf06edc542e38b744a4a2af210b02df7d3c6316574aad2202926e40f981778",
+      "race_scenario": "12番の昇級直後の追走が厳しくなると5番や10番の同距離実績が上回る。",
+      "five_roles": {
+        "1": "TOP3_OR_OUTSIDER_RISK",
+        "5": "WIN_OR_TOP2",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "10": "TOP2_OR_TOP3",
+        "12": "UNSUITABLE"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "12は1200m勝ち・IDM53、5も同距離勝ち、10は同距離3着、7は1200m5着、1は1400m8着。",
+      "coverage_risk": "12は昇級で相手が多く、5の同距離勝ちと10の実績が拮抗。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "12番は芝1200を勝ち調教21.7、能力53.7。5番も同距離で勝ち、10番は1200で3着した。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "新潟",
+      "race_no": 12,
+      "marks": [
+        15,
+        10,
+        9,
+        1,
+        7
+      ],
+      "frozen_decision_core_sha256": "4128eba20f17b334b92fa0f8fd3f4fac2128ecb13f64d3456bcef8c543055bbd",
+      "reader_sha256": "a3eeeef5cf8559a405b064a309dff469c05924a379deeb04ce8b815563aba4f9",
+      "race_scenario": "15番が逃げで競られると10番の追込や9番の先行に先着される可能性。",
+      "five_roles": {
+        "1": "TOP3_OR_OUTSIDER_RISK",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "9": "TOP2_OR_TOP3",
+        "10": "WIN_OR_TOP2",
+        "15": "TOP3"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "15はダ1200m2着・1150m2着、10は1200m2着、9は1200m2着歴、1は1200m4着、7は同距離3着。",
+      "coverage_risk": "15の逃げが競られると後方10の差しに逆転されるが連対実績を評価。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          9,
+          10,
+          15
+        ],
+        [
+          1,
+          10,
+          15
+        ],
+        [
+          7,
+          10,
+          15
+        ],
+        [
+          1,
+          9,
+          15
+        ],
+        [
+          7,
+          9,
+          15
+        ],
+        [
+          1,
+          7,
+          15
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "15番はダ1200で2着とダ1150で2着、能力49に調教21.5。10番も1200で2着、末脚が良い。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 1,
+      "marks": [
+        1,
+        8,
+        12,
+        6,
+        7
+      ],
+      "frozen_decision_core_sha256": "9962c0f316422e6f9f5af942d60cdea1b7e265549ad471d67784c5dd4a001c28",
+      "reader_sha256": "ad7d8a14afbc3f8a207db05473212b6f92f7ae6b21e7f317b9d90b770a66d230",
+      "race_scenario": "8番の1800連続2・3着や12番の1600での3着が、1番を早めに捕える展開に注意。",
+      "five_roles": {
+        "1": "TOP3",
+        "6": "TOP3_OR_OUTSIDER_RISK",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "8": "WIN_OR_TOP2",
+        "12": "TOP2_OR_TOP3"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "1はダ1600m2着・1700m2着、8は1800m2・3着、12は1600m3着、6は同距離3着、7は1600m2着。",
+      "coverage_risk": "1の先行は8・12の追走に脅かされるが連対反復は強い。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          1,
+          8,
+          12
+        ],
+        [
+          1,
+          6,
+          8
+        ],
+        [
+          1,
+          7,
+          8
+        ],
+        [
+          1,
+          6,
+          12
+        ],
+        [
+          1,
+          7,
+          12
+        ],
+        [
+          1,
+          6,
+          7
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "1番はダ1600・1700で連続2着、能力40と調教19.9が大きく先行で粘れる。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 2,
+      "marks": [
+        11,
+        1,
+        9,
+        15,
+        7
+      ],
+      "frozen_decision_core_sha256": "2940b28da2eaf518d2c0065379a37dd2eb727e635caa5a0d83486e73f7092d86",
+      "reader_sha256": "171f11840e677e8bb94477171eb65fae9413d0193fe3458fcb73b713f1bdbe0b",
+      "race_scenario": "11番が前で行き過ぎると1番の追込、9番の先行が展開利を得る。",
+      "five_roles": {
+        "1": "WIN_OR_TOP2",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "9": "TOP2_OR_TOP3",
+        "11": "TOP3",
+        "15": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "11はダ1400m2着・IDM41、1は同距離4着、9・15は1400m5着、7は1600m2着。",
+      "coverage_risk": "11の先行が行き過ぎた場合1追込の末脚が届くが、11の1400m連対は明確。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          1,
+          9,
+          11
+        ],
+        [
+          1,
+          11,
+          15
+        ],
+        [
+          1,
+          7,
+          11
+        ],
+        [
+          9,
+          11,
+          15
+        ],
+        [
+          7,
+          9,
+          11
+        ],
+        [
+          7,
+          11,
+          15
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "11番はダ1400で2着、能力41と調教19.9で上位。1番は1400で4着と調教18.7、差し脚に期待。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 3,
+      "marks": [
+        9,
+        15,
+        7,
+        1,
+        8
+      ],
+      "frozen_decision_core_sha256": "e8ff323b32ff2a50b5a88eb1d46acaefd569ac6af9012f0798c85f9dff351ea9",
+      "reader_sha256": "388e77aada9a75b5affbbacdceb751ec0270d811f09ca620ed396a723562ca3e",
+      "race_scenario": "9番の2100延長が負担になるなら15番の同距離連対に負ける余地。",
+      "five_roles": {
+        "1": "TOP3_OR_OUTSIDER_RISK",
+        "7": "TOP2_OR_TOP3",
+        "8": "TOP3_OR_OUTSIDER_RISK",
+        "9": "UNSUITABLE",
+        "15": "WIN_OR_TOP2"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "9は1800m2着、15は2100m2着、7は1900m2着、1は芝2000m3着、8は1800m3着。",
+      "coverage_risk": "◎9に2100m実走がなく、15の直接距離適性を軽視できない。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "9番はダ1800で2着と4着、能力43で先行型。15番は2100で2着し今回距離への適性が高い。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 4,
+      "marks": [
+        9,
+        8,
+        6,
+        18,
+        2
+      ],
+      "frozen_decision_core_sha256": "ef9dadb235fcdbb24aaf1ca1e84db5035fa10c8561ede4d328d267d260778daa",
+      "reader_sha256": "aaa5f0fc9e7dce59c373d538cec8901b05ff410649207626878a51194e5df2af",
+      "race_scenario": "9番の差しが届かない展開で8番の先行粘りや6番の1400適性が強く出る。",
+      "five_roles": {
+        "2": "TOP3_OR_OUTSIDER_RISK",
+        "6": "TOP2_OR_TOP3",
+        "8": "WIN_OR_TOP2",
+        "9": "UNSUITABLE",
+        "18": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "9は芝1600m3着、8も同距離3着、6は1600m4着、18は1800m3着、2は1600m4着。",
+      "coverage_risk": "18頭で9・8の差と勝ち筋が接近、差し馬の後方滞留懸念。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "9番は芝1600で3着と2000で4着、能力43.2・調教16.3。8番も1600で3着し仕上がり21.1。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 5,
+      "marks": [
+        15,
+        8,
+        9,
+        3,
+        5
+      ],
+      "frozen_decision_core_sha256": "3f9adc137b6b563801b7d14354fb71580de92ab6a6e90509b4a28c50f6404a8e",
+      "reader_sha256": "e62b969f38106066cc82a5eedc114ec7a7814f53c0738acfa4efc087aeab20da",
+      "race_scenario": "15番が先行で無理をすると8番の逃げや9番の差しが逆転する。",
+      "five_roles": {
+        "3": "TOP3_OR_OUTSIDER_RISK",
+        "5": "TOP3_OR_OUTSIDER_RISK",
+        "8": "WIN_OR_TOP2",
+        "9": "TOP2_OR_TOP3",
+        "15": "UNSUITABLE"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "15は2000m3着、8は同距離2着、9は1800m7着、3は2000m6着、5は2200m6着。",
+      "coverage_risk": "17頭で◎15の先行持続に対して8逃げと9の能力が脅威。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "15番は芝2000で3着、能力41・調教12。8番は2000で2着歴、9番は能力40.5・調教19.2。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 6,
+      "marks": [
+        3,
+        10,
+        8,
+        12,
+        1
+      ],
+      "frozen_decision_core_sha256": "3e3208970f5a044c095cb4eb02baeaa642083f422d658991ec55d32a2562bdc0",
+      "reader_sha256": "848911868cf37e4d7bc1effa0cb56970ba3bd23cd40642af70a58da5331b2dbf",
+      "race_scenario": "3番の新クラス適応が遅れると10番の同条件勝ち経験や8番の先行力が上回る。",
+      "five_roles": {
+        "1": "TOP3_OR_OUTSIDER_RISK",
+        "3": "UNSUITABLE",
+        "8": "TOP2_OR_TOP3",
+        "10": "WIN_OR_TOP2",
+        "12": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "3は1800m勝ち・1600m2着、10は1600m勝ち・3着、8は同距離4着、12は1800m3着、1は1600m勝ち。",
+      "coverage_risk": "3の昇級と10・1の同距離勝ちを比較しきれない。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "3番はダ1800勝ち・1600で2着、調教18.8と昇級余地。10番は1600で1・3着、能力47.1と充実。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 7,
+      "marks": [
+        6,
+        5,
+        9,
+        7,
+        10
+      ],
+      "frozen_decision_core_sha256": "765f14cf682883113a0a371f7e112cdc92a77dc77b64d871a5bb5860dba23a59",
+      "reader_sha256": "28bce533d1b6ae0f1b595a9cc3301523622ffe35a04e3864c955c4901f734825",
+      "race_scenario": "6番が末脚を出せない緩い流れなら9番の先行、5番の1800適性が利く。",
+      "five_roles": {
+        "5": "WIN_OR_TOP2",
+        "6": "TOP3",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "9": "TOP2_OR_TOP3",
+        "10": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "6はマイル2・3着・IDM52、5は1800m4着、9はマイル5着、7は1800m4着、10はマイル7着。",
+      "coverage_risk": "6は追込で流れ次第だが現級マイル連対・3着の差が明確。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          5,
+          6,
+          9
+        ],
+        [
+          5,
+          6,
+          7
+        ],
+        [
+          5,
+          6,
+          10
+        ],
+        [
+          6,
+          7,
+          9
+        ],
+        [
+          6,
+          9,
+          10
+        ],
+        [
+          6,
+          7,
+          10
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "6番は芝1600で2・3着、能力52と調教18.8で上位の裏付けが明確。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 8,
+      "marks": [
+        12,
+        1,
+        9,
+        11,
+        5
+      ],
+      "frozen_decision_core_sha256": "5078b1a7958a9aaac54c4e39e22efbdcd155d32b540d6af919fdfab8873ed975",
+      "reader_sha256": "df58d4a5ab24778d58948880770e0109f4c0ca2a9ae55a47d950ea9d3f963b2f",
+      "race_scenario": "12番の1400延長で粘りが鈍ると1番の直接同距離3着や9番の逃げが上回る。",
+      "five_roles": {
+        "1": "WIN_OR_TOP2",
+        "5": "TOP3_OR_OUTSIDER_RISK",
+        "9": "TOP2_OR_TOP3",
+        "11": "TOP3_OR_OUTSIDER_RISK",
+        "12": "UNSUITABLE"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "12は1300m2着、1は1400m3着、9は同距離5着、11は1200m4着、5は1400m6着。",
+      "coverage_risk": "12の1400m延長と先行9の抵抗、16頭での展開不確実性。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "12番はダ1300で2着、調教14.4。1番はダ1400で3着、調教20.8が強み。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 9,
+      "marks": [
+        9,
+        8,
+        6,
+        7,
+        5
+      ],
+      "frozen_decision_core_sha256": "e1b54b3255dcdbef466c085c6b3840279ca4eb21be40ace5bfe3c69273315037",
+      "reader_sha256": "182112afb6755263dcc692c132f07182a0a2e389765bc9895f2442a0c62f68c3",
+      "race_scenario": "9番の追込が届かない場合、7番の芝1800勝ちや5番の前残りが脅威。",
+      "five_roles": {
+        "5": "TOP3_OR_OUTSIDER_RISK",
+        "6": "TOP2_OR_TOP3",
+        "7": "TOP3_OR_OUTSIDER_RISK",
+        "8": "WIN_OR_TOP2",
+        "9": "UNSUITABLE"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "9は1600m3着・2000m4着、8は1600m勝ち、6は1600m5着、7は1800m勝ち、5は1800m勝ち・2000m2着。",
+      "coverage_risk": "9の1800m距離適性が不確か、7・5の同距離実績を重視。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "9番は能力52.1と調教22.6、芝1600で3着・2000で4着。8番は芝1600勝ちで能力52。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 10,
+      "marks": [
+        6,
+        4,
+        11,
+        2,
+        5
+      ],
+      "frozen_decision_core_sha256": "1d1cf0e7298bfe6c68d8199de07163a84f23bd9d3037021e2a735d650660796e",
+      "reader_sha256": "29eacb5b24f2e510539b17ac5965fc22520d82a32907af36de1aeca99a9fd1c7",
+      "race_scenario": "6番が先行争いで消耗すると4番や11番の差しが勝る。",
+      "five_roles": {
+        "2": "TOP3_OR_OUTSIDER_RISK",
+        "4": "WIN_OR_TOP2",
+        "5": "TOP3_OR_OUTSIDER_RISK",
+        "6": "UNSUITABLE",
+        "11": "TOP2_OR_TOP3"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "6は1400m2着、4は同距離5着、11は同距離3着、2は1600m4着、5は1400m3着。",
+      "coverage_risk": "逃げ6が11など先行馬に競られ、近走11着の脆さも残る。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "6番は芝1400で2着と能力54.2、調教19.2で逃げ粘りを狙える。4番は同距離で5着、能力54で差す。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 11,
+      "marks": [
+        15,
+        13,
+        12,
+        8,
+        1
+      ],
+      "frozen_decision_core_sha256": "7b83813ba29950068b86e288b67b2c0677926968c21c676b9f1c46c2d053ddd1",
+      "reader_sha256": "b018377d20333dec6550b8ffe21ff3e884aafdd8e2b2e624e48d428b189df8df",
+      "race_scenario": "15番の昇級ペースで先行が苦しくなると13番の先行持続、12番の差し脚が届く。",
+      "five_roles": {
+        "1": "TOP3_OR_OUTSIDER_RISK",
+        "8": "TOP3_OR_OUTSIDER_RISK",
+        "12": "TOP2_OR_TOP3",
+        "13": "WIN_OR_TOP2",
+        "15": "UNSUITABLE"
+      },
+      "honmei_axis": "UNSUITABLE",
+      "partner_structure": "15は1400m連勝・IDM66、13も同距離1・2着、12は1200m2着、8は1400m4着、1は1400m12着。",
+      "coverage_risk": "昇級15と現級13の比較が難しく、16頭先行競合で軸を立てにくい。",
+      "bet_decision": "PASS",
+      "strategy": "PASS",
+      "tickets": [],
+      "stake_yen": 0,
+      "evidence_note": "15番はダ1400で連勝し能力66・調教23.4、昇級でも先行して押し切りまで期待。13番は同距離2・1着と相手筆頭。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    },
+    {
+      "venue": "東京",
+      "race_no": 12,
+      "marks": [
+        9,
+        1,
+        6,
+        2,
+        10
+      ],
+      "frozen_decision_core_sha256": "388d69b4321c5e80dd77ebb149c9cb9a39618f82ad366ae592f54477880ea0da",
+      "reader_sha256": "03108b2b1f3ee766c491f53438e5b3a062f31b5672b63d90ce94b75182e65f6c",
+      "race_scenario": "9番の追込が間に合わず先行する10番が粘れば、1番や6番の差し込みが勝る。",
+      "five_roles": {
+        "1": "WIN_OR_TOP2",
+        "2": "TOP3_OR_OUTSIDER_RISK",
+        "6": "TOP2_OR_TOP3",
+        "9": "TOP3",
+        "10": "TOP3_OR_OUTSIDER_RISK"
+      },
+      "honmei_axis": "TOP3",
+      "partner_structure": "9は1600m3着・1700m2着、1は1600m3着、6は同距離3・4着、2は1600m4着、10は1800m勝ち。",
+      "coverage_risk": "差し9の追込不発で先行10が残ることはあるが現級好走を着内軸に。",
+      "bet_decision": "BET",
+      "strategy": "TRIO_FLOW",
+      "tickets": [
+        [
+          1,
+          6,
+          9
+        ],
+        [
+          1,
+          2,
+          9
+        ],
+        [
+          1,
+          9,
+          10
+        ],
+        [
+          2,
+          6,
+          9
+        ],
+        [
+          6,
+          9,
+          10
+        ],
+        [
+          2,
+          9,
+          10
+        ]
+      ],
+      "stake_yen": 600,
+      "evidence_note": "9番はダ1600で3着、1700で2着と安定し能力57・調教14.1。1番も1600で3着、能力55.1と近い。",
+      "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
+    }
+  ]
+}
