@@ -14,6 +14,7 @@ import re
 import sqlite3
 
 from .schema import RARITIES, validate_candidate, validate_request, validate_source_pins
+from .regulation_gate import validate_regulation_policy
 
 _SHA = re.compile(r"[a-f0-9]{64}\Z")
 _STATES = {"KNOWN_POSITIVE", "KNOWN_ZERO", "UNKNOWN"}
@@ -53,7 +54,8 @@ def _cost_policy(policy_bytes, source_pins):
 
 def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
                                   cp_policy_bytes, trusted_core_ids=(),
-                                  core_verification="UNKNOWN", cp_balance=None):
+                                  core_verification="UNKNOWN", cp_balance=None,
+                                  regulation_policy=None):
     """Return card-by-card low/high craft needs and independent ternary gates.
 
     Only trusted_core_ids verified by an independent REVIEWED/GAME_TESTED
@@ -89,6 +91,12 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
         _check(set(trusted_core_ids) <= ids, "candidate does not contain provided core")
     if cp_balance is not None and source_pins["cp_policy_sha"] is None:
         raise ValueError("CP policy not pinned")
+    accepted=(isinstance(regulation_policy,dict) and
+              regulation_policy.get("schema")=="md-regulation-accepted-baseline-v1")
+    accepted_limits=(validate_regulation_policy(
+        regulation_policy,master_sha256=source_pins["sqlite_sha"],
+        as_of=request["as_of"],candidate_ids=sorted(ids))
+        if accepted else None)
     file = _pinned_file(db_path, source_pins["sqlite_sha"])
     conn = sqlite3.connect(f"file:{file.resolve().as_posix()}?mode=ro&immutable=1", uri=True)
     conn.row_factory=sqlite3.Row
@@ -122,7 +130,7 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
         # This implementation must not assume that candidate rows are official.
         _check(snapshot["verification"] in {"UNVERIFIED_SOURCE","GAME_VERIFIED"},
                "unknown M3 verification state")
-        if snapshot["verification"] != "GAME_VERIFIED":
+        if snapshot["verification"] != "GAME_VERIFIED" and not accepted:
             warnings.append("MD_REGULATION_ONLY_UNVERIFIED_SOURCE")
         if date.fromisoformat(snapshot["effective_on"]) > date.fromisoformat(
                 request["as_of"][:10]):
@@ -175,7 +183,11 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
                 blockers.append("UNCRAFTABLE_MISSING:"+cid)
             elif missing and craftable!="YES":
                 warnings.append("CRAFTABILITY_UNVERIFIED")
-            if row["max_copies"] is not None:
+            if accepted:
+                limit=accepted_limits[cid]
+                if qty>limit:
+                    blockers.append("ACCEPTED_MD_REGULATION_VIOLATION:"+cid)
+            elif row["max_copies"] is not None:
                 limit=row["max_copies"]
                 if qty>limit:
                     if snapshot["verification"]=="GAME_VERIFIED":
@@ -193,8 +205,11 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
                 "new_needed_upper":qty if missing is None else missing,
                 "craftability":craftable,
                 "m3_candidate_limit":row["max_copies"],
-                "banlist_verification":snapshot["verification"]
-                    if row["max_copies"] is not None else "UNKNOWN",
+                "banlist_verification":(
+                    "USER_APPROVED_OPERATIONAL_BASELINE" if accepted else
+                    snapshot["verification"] if row["max_copies"] is not None
+                    else "UNKNOWN"),
+                "accepted_operational_limit":accepted_limits[cid] if accepted else None,
                 "official_banlist_limit":row["max_copies"]
                     if snapshot["verification"]=="GAME_VERIFIED" else None
             })
@@ -251,7 +266,7 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
         outcome="BLOCKED"
     else:
         outcome="REVIEW_REQUIRED"
-    if snapshot["verification"] != "GAME_VERIFIED":
+    if snapshot["verification"] != "GAME_VERIFIED" and not accepted:
         warnings.append("OFFICIAL_MD_LEGALITY_NOT_ESTABLISHED")
     return {
         "schema":"md-m6-4-conservative-evaluation-v1",
@@ -273,7 +288,8 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
         "m3":{"snapshot_id":snapshot["snapshot_id"],
               "effective_on":snapshot["effective_on"],
               "verification":snapshot["verification"],
-              "official_md_legality_verified":False},
+              "official_md_legality_verified":False,
+              "operational_baseline_accepted":accepted},
         "cards":results,"warnings":sorted(set(warnings)),
         "blocking_reasons":sorted(set(blockers)),
         "gameplay_tested":False,"source_pins_revalidated":False,
