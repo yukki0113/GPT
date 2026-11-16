@@ -255,6 +255,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                 "unscored_discovery_sample":portfolio["unscored_discovery_sample"],
                 "comparisons":option["competitive_candidate_comparisons"],
                 "selected_marginal_scores":option["competitive_decisions"],
+                "weak_generic_fillers":option["weak_generic_fillers"],
+                "md_regulation_gate_applied":option["md_regulation_gate_applied"],
                 "gameplay_verified":False,
             })
         review_archive,review_manifest_raw=make_private_review_archive(
