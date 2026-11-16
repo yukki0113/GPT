@@ -1,0 +1,362 @@
+{
+  "schema_version": "brdb-stage4-root-decisions-v0.1",
+  "source_generation": "5279af0bd8226cde",
+  "research_only": true,
+  "prediction_safe": false,
+  "historical_asof_status": "AS_OF_UNVERIFIED",
+  "evidence_source_sha256": "afb3ca403c200210e0bf4490c4c8400db1016a76fc489c0bb28075135b6fb78b",
+  "jrdb_pedigree_sha256": "1e7574f78703d79d8d83797f9e350a8927b728fc68c659cf5d340ee0f79b3536",
+  "external_seed_sha256": "28793703a85b3fcb4c41490dec70b49770457e7139e0443688d35a7688bc2602",
+  "decisions": [
+    {
+      "rank": 1,
+      "name": "ディープインパクト",
+      "jbis_id": "0000742976",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 2,
+      "name": "キングカメハメハ",
+      "jbis_id": "0000729458",
+      "approved": true,
+      "basis": "EXISTING_AUDITED_CROSSWALK"
+    },
+    {
+      "rank": 3,
+      "name": "ロードカナロア",
+      "jbis_id": "0001089850",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 4,
+      "name": "ダイワメジャー",
+      "jbis_id": "0000725485",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 5,
+      "name": "ハーツクライ",
+      "jbis_id": "0000722158",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 6,
+      "name": "エピファネイア",
+      "jbis_id": "0001124297",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 7,
+      "name": "クロフネ",
+      "jbis_id": "0000615577",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 8,
+      "name": "ルーラーシップ",
+      "jbis_id": "0001042049",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 9,
+      "name": "キズナ",
+      "jbis_id": "0001120570",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 10,
+      "name": "ハービンジャー",
+      "jbis_id": "0001115148",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 11,
+      "name": "サートゥルナーリア",
+      "jbis_id": "0001215724",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 12,
+      "name": "オルフェーヴル",
+      "jbis_id": "0001090360",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 13,
+      "name": "モーリス",
+      "jbis_id": "0001138240",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 14,
+      "name": "レイデオロ",
+      "jbis_id": "0001189721",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 15,
+      "name": "ルヴァンスレーヴ",
+      "jbis_id": "0001205475",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 16,
+      "name": "キタサンブラック",
+      "jbis_id": "0001155349",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 17,
+      "name": "シルバーステート",
+      "jbis_id": "0001171845",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 18,
+      "name": "ブリックスアンドモルタル",
+      "jbis_id": "0001293348",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 19,
+      "name": "ドレフォン",
+      "jbis_id": "0001240055",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 20,
+      "name": "リアルスティール",
+      "jbis_id": "0001157711",
+      "approved": false,
+      "basis": "ROOT_IDENTITY_REVIEW_REQUIRED"
+    },
+    {
+      "rank": 21,
+      "name": "シンボリクリスエス",
+      "jbis_id": "0000700008",
+      "approved": false,
+      "basis": "ROOT_IDENTITY_REVIEW_REQUIRED"
+    },
+    {
+      "rank": 22,
+      "name": "マンハッタンカフェ",
+      "jbis_id": "0000324971",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 23,
+      "name": "ゴールドアリュール",
+      "jbis_id": "0000619768",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 24,
+      "name": "エンパイアメーカー",
+      "jbis_id": "0000749845",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 25,
+      "name": "リオンディーズ",
+      "jbis_id": "0001170063",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 26,
+      "name": "ステイゴールド",
+      "jbis_id": "0000286968",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 27,
+      "name": "ヘニーヒューズ",
+      "jbis_id": "0001028940",
+      "approved": false,
+      "basis": "ROOT_IDENTITY_REVIEW_REQUIRED"
+    },
+    {
+      "rank": 28,
+      "name": "サトノダイヤモンド",
+      "jbis_id": "0001175221",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 29,
+      "name": "イスラボニータ",
+      "jbis_id": "0001142398",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 30,
+      "name": "コントレイル",
+      "jbis_id": "0001237042",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 31,
+      "name": "モズアスコット",
+      "jbis_id": "0001213491",
+      "approved": false,
+      "basis": "ROOT_IDENTITY_REVIEW_REQUIRED"
+    },
+    {
+      "rank": 32,
+      "name": "ゼンノロブロイ",
+      "jbis_id": "0000701668",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 33,
+      "name": "タワーオブロンドン",
+      "jbis_id": "0001209439",
+      "approved": false,
+      "basis": "ROOT_IDENTITY_REVIEW_REQUIRED"
+    },
+    {
+      "rank": 34,
+      "name": "パイロ",
+      "jbis_id": "0001085636",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 35,
+      "name": "ミッキーアイル",
+      "jbis_id": "0001141719",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 36,
+      "name": "ゴールドシップ",
+      "jbis_id": "0001104811",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 37,
+      "name": "ナダル",
+      "jbis_id": "0001328857",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 38,
+      "name": "ネオユニヴァース",
+      "jbis_id": "0000701577",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 39,
+      "name": "デクラレーションオブウォー",
+      "jbis_id": "0001181460",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 40,
+      "name": "アドマイヤマーズ",
+      "jbis_id": "0001221956",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 41,
+      "name": "ヴィクトワールピサ",
+      "jbis_id": "0001046333",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 42,
+      "name": "シニスターミニスター",
+      "jbis_id": "0001025279",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 43,
+      "name": "アグネスタキオン",
+      "jbis_id": "0000324933",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 44,
+      "name": "マインドユアビスケッツ",
+      "jbis_id": "0001302899",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 45,
+      "name": "ジャスタウェイ",
+      "jbis_id": "0001106251",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 46,
+      "name": "スワーヴリチャード",
+      "jbis_id": "0001190059",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 47,
+      "name": "カルフォルニアクローム",
+      "jbis_id": "0001211258",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 48,
+      "name": "ニューイヤーズデイ",
+      "jbis_id": "0001298815",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    },
+    {
+      "rank": 49,
+      "name": "ゴールドドリーム",
+      "jbis_id": "0001170750",
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT"
+    },
+    {
+      "rank": 50,
+      "name": "サンダースノー",
+      "jbis_id": "0001226963",
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH"
+    }
+  ]
+}
