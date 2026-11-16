@@ -289,7 +289,7 @@ def _select_variant(request,teacher,discoveries,records, *,
             a=chosen[-2]["annotation"];cid=a["card_id"]
             selected["EXTRA",cid]+=1
             ex_count+=1
-            selection_trace.append({**chosen[-1],"copy_number":selected["EXTRA",cid"],
+            selection_trace.append({**chosen[-1],"copy_number":selected["EXTRA",cid],
                 "material_verification":"POSSIBLE_ON_PAPER_NOT_DUEL_VERIFIED"})
     # Compare every sourced option, including skipped owned cards and
     # candidates which a cost/ownership gate makes unavailable.
