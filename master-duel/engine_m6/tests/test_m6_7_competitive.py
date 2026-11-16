@@ -91,16 +91,24 @@ class CompetitiveSelectionTests(unittest.TestCase):
             generate(t,r,d,a,s,p,policy_input,unverified)
 
     def test_low_evidence_generic_filler_is_not_misreported_as_best(self):
-        t,r,d,a,s,p=sample();pol=policy(a)
-        item=next(x for x in pol["assessments"] if x["card_id"]=="konami:1202")
-        item["axes"]={k:2 for k in item["axes"]}
-        item["evidence_refs"]=["DB:konami:1202","SOURCE_ONLY"]
-        pol["min_main_score"]=30
+        t,r,d,a,s,p=sample()
+        # Deliberately constrain the theme-options pool, so low-evidence
+        # owned generics are actually needed to assemble 40 cards.
+        for annotation in a:
+            if annotation["category"]=="THEME_OPTION":
+                annotation["maximum"]=0
+        pol=policy(a);pol["min_main_score"]=0
+        for assessed in pol["assessments"]:
+            if assessed["section"]=="MAIN" and assessed["card_id"].startswith("konami:12"):
+                assessed["axes"]={k:2 for k in assessed["axes"]}
+                assessed["evidence_refs"]=["DB:"+assessed["card_id"],"SOURCE_ONLY"]
         result=generate(t,r,d,a,s,p,pol)
-        pure=next(x for x in result["solutions"] if x["family"]=="PURE_THEME")
-        self.assertIn("weak_generic_fillers",pure)
+        variant=next(x for x in result["solutions"] if x["family"]=="THEME_WITH_ENGINE")
+        self.assertGreater(len(variant["weak_generic_fillers"]),0)
+        self.assertEqual("REVIEW_REQUIRED_WEAK_GENERIC_FILLERS",
+                         variant["competitive_coverage_status"])
         self.assertTrue(all(x["reason_code"]=="LOW_EVIDENCE_GENERIC_FILLER_RESEARCH_REQUIRED"
-                            for x in pure["weak_generic_fillers"]))
+                            for x in variant["weak_generic_fillers"]))
 
     def test_reject_unpinned_policy(self):
         t,r,d,a,s,p=sample()
