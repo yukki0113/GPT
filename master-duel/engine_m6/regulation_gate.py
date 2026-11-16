@@ -6,6 +6,7 @@ be supported by independently reviewed, dated, format-specific card limits.
 """
 from __future__ import annotations
 from datetime import date
+from .accepted_regulation import validate_accepted_baseline
 import re
 
 _CID = re.compile(r"konami:[0-9]+\Z")
@@ -14,6 +15,9 @@ _SHA = re.compile(r"[a-f0-9]{64}\Z")
 
 def validate_regulation_policy(policy, *, master_sha256, as_of, candidate_ids):
     """Fail closed on missing, stale, or unreviewed per-card regulation evidence."""
+    if isinstance(policy,dict) and policy.get("schema")=="md-regulation-accepted-baseline-v1":
+        return validate_accepted_baseline(policy,master_sha256=master_sha256,
+                                          as_of=as_of,candidate_ids=candidate_ids)
     if not isinstance(policy, dict) or set(policy) != {
         "schema", "format", "master_sqlite_sha256", "effective_on",
         "checked_on", "verification", "source_refs", "card_limits"}:
