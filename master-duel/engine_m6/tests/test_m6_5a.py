@@ -78,6 +78,28 @@ class M65A(unittest.TestCase):
         r=self.search(section="EXTRA",links=[2])
         self.assertEqual(["konami:103"],[x["card_id"] for x in r["results"]])
 
+    def test_explicit_extra_lookup_recovers_null_link_rating(self):
+        # Synthetic card text has no Link marker and the DB link-rating
+        # field is NULL. Its EX zone is caller-supplied, not game-verified.
+        db=sqlite3.connect(self.path)
+        db.execute("INSERT INTO cards VALUES(?,?)",("konami:108","架空の未解析リンク"))
+        db.execute("INSERT INTO md_catalog VALUES(?,?,?,?)",
+                   ("konami:108","SR","UNKNOWN","UNVERIFIED_SOURCE"))
+        db.execute("INSERT INTO card_attributes VALUES(?,?,?,?,?,?,?)",
+                   ("konami:108","MONSTER","DARK","Cyberse",None,None,None))
+        db.execute("INSERT INTO card_texts VALUES(?,?,?,?,?)",
+                   ("konami:108","ja","v1","効果モンスター２体",
+                    "UNVERIFIED_SOURCE"))
+        db.commit();db.close()
+        sha=hashlib.sha256(self.path.read_bytes()).hexdigest()
+        result=search_cards(self.path,expected_sqlite_sha256=sha,
+                            section="EXTRA",exact_card_ids=["konami:108"])
+        self.assertEqual(["konami:108"],[x["card_id"] for x in result["results"]])
+        self.assertFalse(result["proof_of_compatibility"])
+        # Broad searches require an actual source-text Link indicator.
+        broad=search_cards(self.path,expected_sqlite_sha256=sha,section="EXTRA")
+        self.assertNotIn("konami:108",{x["card_id"] for x in broad["results"]})
+
     def test_owned_generic_staple_search(self):
         r=self.search(section="MAIN",owned_only=True,rarities=["UR"])
         self.assertEqual({"konami:105","konami:106"},{x["card_id"] for x in r["results"]})
