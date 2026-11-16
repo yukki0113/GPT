@@ -1,0 +1,1190 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 1,
+    "marks": [
+      3,
+      8,
+      2,
+      6,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        8,
+        2,
+        6,
+        9
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は芝短距離中心でダート1400mの裏付けが弱い。"
+    },
+    "honmei_win": {
+      "evidence": "3番は初ダート1400mで2着と明確に前進。8番も同距離で一定水準。",
+      "main_risk": "8番や2番が先行して展開利を得ると逆転余地。"
+    },
+    "shot_case": {
+      "case": "2番は芝からの転戦だが先行力があり、ダート適応なら上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "3番の同距離2着を中心に比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 2,
+    "marks": [
+      9,
+      3,
+      10,
+      5,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        3,
+        10,
+        5,
+        8
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は芝実績中心で今回条件では通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "9番はダート1800m3着で能力・仕上がりとも上位。",
+      "main_risk": "3番や10番が前で運び切ると押し切られる可能性。"
+    },
+    "shot_case": {
+      "case": "10番は1800m4着続きで安定し、展開次第で勝ち負け。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9番の近走内容を軸に3番・10番を比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 3,
+    "marks": [
+      5,
+      4,
+      7,
+      3,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        4,
+        7,
+        3,
+        2
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番はダート中心で芝マイルの裏付けに乏しい。"
+    },
+    "honmei_win": {
+      "evidence": "5番はマイル2着で末脚も優秀。4番も同距離3着で接近。",
+      "main_risk": "4番の先行力が生きる流れだと差し切れない。"
+    },
+    "shot_case": {
+      "case": "7番は1400mから距離延長だが末脚を活かせれば浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5番と4番のマイル実績を最重視。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 4,
+    "marks": [
+      11,
+      5,
+      9,
+      4,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        11,
+        5,
+        9,
+        4,
+        2
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番も障害3着歴があるが近況の安定感で通常5頭に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "11番は障害2970mで2着、前走内容も安定。",
+      "main_risk": "5番や9番の障害実績に展開次第で逆転される。"
+    },
+    "shot_case": {
+      "case": "9番は障害2770m2着があり、飛越安定なら上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "障害戦は直近の障害好走実績を中心に判断。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 5,
+    "marks": [
+      6,
+      4,
+      12,
+      11,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        4,
+        12,
+        11,
+        9
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番も素材はあるが完成度で通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "6番は初戦向けの能力と仕上がりが高水準。",
+      "main_risk": "新馬戦で実戦対応に不確実性が残る。"
+    },
+    "shot_case": {
+      "case": "12番は仕上がり面が良く、初戦から上位争い可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "素材と仕上がりのバランスを重視。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 6,
+    "marks": [
+      10,
+      1,
+      5,
+      12,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        1,
+        5,
+        12,
+        4
+      ],
+      "external_challenger_horse_no": 9,
+      "excluded_horse_no": 9,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "9番は素材面で通常5頭に一歩及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "10番は初戦向けの基礎能力が最上位で仕上がりも安定。",
+      "main_risk": "新馬ダートで砂適性や発馬が未知数。"
+    },
+    "shot_case": {
+      "case": "5番は能力と仕上がりのバランスが良く前進可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "ダート新馬として基礎能力と完成度を重視。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "marks": [
+      8,
+      7,
+      4,
+      5,
+      6
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        7,
+        4,
+        5,
+        6
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は先行力はあるが近走内容で通常5頭を上回らない。"
+    },
+    "honmei_win": {
+      "evidence": "8番は2000m3着歴があり現級能力も最上位。",
+      "main_risk": "7番の差し脚や4番の上積みに屈する可能性。"
+    },
+    "shot_case": {
+      "case": "7番は2000m勝ち上がりがあり、展開が向けば逆転圏。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "8番の現級実績を中心に比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "marks": [
+      3,
+      7,
+      2,
+      6,
+      4
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        3,
+        7,
+        2,
+        6,
+        4
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は勝ち上がり直後で比較材料が少ない。"
+    },
+    "honmei_win": {
+      "evidence": "3番はダート1400m2着で能力上位。7番も同距離3着で接近。",
+      "main_risk": "7番や2番が前で運び切ると逆転される。"
+    },
+    "shot_case": {
+      "case": "2番は1200m勝ちで状態も良く、距離対応なら上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "3番と7番の同距離実績を重視。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "marks": [
+      10,
+      5,
+      13,
+      7,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        5,
+        13,
+        7,
+        9
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は近走の失速が大きく通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "10番は1400mで2着、能力値もこの組で最上位。",
+      "main_risk": "5番や13番の差しが流れに乗ると取りこぼす。"
+    },
+    "shot_case": {
+      "case": "13番は同距離6着ながら末脚指標が良く展開待ちで浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10番の現級実績を軸に比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "marks": [
+      2,
+      6,
+      8,
+      4,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        6,
+        8,
+        4,
+        3
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は追込脚はあるが現級で決め手不足。"
+    },
+    "honmei_win": {
+      "evidence": "2番は2400mからの短縮でも地力が高く、長距離適性が明確。",
+      "main_risk": "6番や8番の条件適性が上回ると逆転される。"
+    },
+    "shot_case": {
+      "case": "8番は2400m3着で今回条件に近い実績。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2番の地力と8番の近況を比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "marks": [
+      5,
+      4,
+      6,
+      14,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        4,
+        6,
+        14,
+        16
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は現級4着だが勝ち切り材料で通常5頭に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "5番は連勝中で能力上昇が明確。4番も現級2着で強敵。",
+      "main_risk": "4番や6番の差しが展開に乗ると逆転される。"
+    },
+    "shot_case": {
+      "case": "6番は前走1800m勝ちで勢いがあり、昇級でも通用余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5番の上昇力を最上位に4番・6番を比較。"
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "marks": [
+      2,
+      9,
+      11,
+      12,
+      13
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        9,
+        11,
+        12,
+        13
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番は能力はあるが近走1400mで勝ち切り材料が弱い。"
+    },
+    "honmei_win": {
+      "evidence": "2番は1400m2着で現級実績が最も明確。",
+      "main_risk": "9番や11番の先行力に展開利が出ると逆転される。"
+    },
+    "shot_case": {
+      "case": "11番は1400m4着で安定し前目から押し切る余地。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2番の同距離実績を軸に比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 1,
+    "marks": [
+      8,
+      5,
+      13,
+      2,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        5,
+        13,
+        2,
+        12
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番はマイル経験はあるが近走内容で通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "8番は1400m3着からマイル延長でも能力上位。5番も1800m3着。",
+      "main_risk": "5番や13番の先行力に押し切られる可能性。"
+    },
+    "shot_case": {
+      "case": "13番は1800m3着で先行力があり距離短縮なら粘り込み。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "8番の地力と5番・13番の実績を比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 2,
+    "marks": [
+      9,
+      2,
+      12,
+      1,
+      10
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        2,
+        12,
+        1,
+        10
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番は1800m5着だが能力面で通常5頭に一歩劣る。"
+    },
+    "honmei_win": {
+      "evidence": "9番はダート1800mで連続5着でも能力が最上位。",
+      "main_risk": "2番の同距離2着実績に逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "12番は1800m4着があり末脚が嵌れば上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9番の地力と2番の実績を比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 3,
+    "marks": [
+      12,
+      5,
+      10,
+      3,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        5,
+        10,
+        3,
+        8
+      ],
+      "external_challenger_horse_no": 7,
+      "excluded_horse_no": 7,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "7番は素材はあるが1200m実績で通常5頭に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "12番は芝1200m2着で能力が一段上。",
+      "main_risk": "5番や10番の先行力に押し切られる可能性。"
+    },
+    "shot_case": {
+      "case": "10番は1400m2着でスピードがあり短縮対応なら上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "12番の同距離実績を最重視。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 4,
+    "marks": [
+      2,
+      12,
+      13,
+      6,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        12,
+        13,
+        6,
+        11
+      ],
+      "external_challenger_horse_no": 4,
+      "excluded_horse_no": 4,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "4番は1700m好走歴はあるが近況で通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "2番は1800m勝ち上がりの内容が強く、能力も最上位。",
+      "main_risk": "12番や13番の差しが噛み合うと逆転される。"
+    },
+    "shot_case": {
+      "case": "12番は1800m勝ちと1600m3着で地力が高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2番の勝ち上がり内容を中心に比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 5,
+    "marks": [
+      4,
+      7,
+      6,
+      2,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        4,
+        7,
+        6,
+        2,
+        3
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は能力はあるが上位5頭より決め手に欠ける。"
+    },
+    "honmei_win": {
+      "evidence": "4番は新馬向け能力が最上位。7番・6番も素材が高い。",
+      "main_risk": "初戦の発馬やダート適性が未知数。"
+    },
+    "shot_case": {
+      "case": "6番は仕上がりのバランスが良く初戦から上位可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "素材評価を中心に選定。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 6,
+    "marks": [
+      6,
+      13,
+      11,
+      8,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        13,
+        11,
+        8,
+        7
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は長休明けで近況の裏付けが弱い。"
+    },
+    "honmei_win": {
+      "evidence": "6番は地力評価が抜けて高く、1800m3着歴もある。",
+      "main_risk": "13番の1700m勝ち上がりの勢いに逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "11番は1700m勝ちから昇級でも先行力が通用しそう。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6番の地力を最上位に13番・11番を比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 7,
+    "marks": [
+      2,
+      13,
+      15,
+      10,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        13,
+        15,
+        10,
+        14
+      ],
+      "external_challenger_horse_no": 18,
+      "excluded_horse_no": 18,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "18番は能力はあるが近走で決め手に欠ける。"
+    },
+    "honmei_win": {
+      "evidence": "2番は1800m勝ち上がりで能力が高い。13番も同距離3着と安定。",
+      "main_risk": "13番や15番の先行力に屈する可能性。"
+    },
+    "shot_case": {
+      "case": "15番は2000m3着続きで持続力があり距離短縮でも通用。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2番の勝ち上がり内容を中心に比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 8,
+    "marks": [
+      10,
+      2,
+      15,
+      1,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        10,
+        2,
+        15,
+        1,
+        3
+      ],
+      "external_challenger_horse_no": 11,
+      "excluded_horse_no": 11,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "11番は近走1200m8着で通常5頭に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "10番は1000m勝ちを含む短距離実績が高く能力上位。",
+      "main_risk": "2番の先行力や15番の安定感に逆転される。"
+    },
+    "shot_case": {
+      "case": "15番は1200m4・5着で差しが安定し展開待ちで浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "10番の短距離能力を最上位に比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 9,
+    "marks": [
+      14,
+      1,
+      5,
+      4,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        1,
+        5,
+        4,
+        3
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は2000m勝ち上がりだが2200m実績で通常5頭に譲る。"
+    },
+    "honmei_win": {
+      "evidence": "14番は2200m2着で今回条件への適性が高い。",
+      "main_risk": "1番や5番の差し脚に逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "5番は2200m2着で能力も高く勝ち負け可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "14番・5番・1番の同距離好走を比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 10,
+    "marks": [
+      6,
+      10,
+      11,
+      2,
+      14
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        10,
+        11,
+        2,
+        14
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は勝ち上がり直後で現級比較では通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "6番は1200m2着続きで現級安定感が高い。",
+      "main_risk": "10番や11番の差しが展開に乗ると逆転される。"
+    },
+    "shot_case": {
+      "case": "11番は1200m3着で末脚もあり流れが速ければ浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6番の同距離安定を中心に比較。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 11,
+    "marks": [
+      12,
+      13,
+      11,
+      18,
+      3
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        13,
+        11,
+        18,
+        3
+      ],
+      "external_challenger_horse_no": 6,
+      "excluded_horse_no": 6,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "6番も能力はあるが近走9着で通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "12番は1200m連勝で能力が最上位。13番も同距離2着で強敵。",
+      "main_risk": "13番や11番の先行力に屈する可能性。"
+    },
+    "shot_case": {
+      "case": "11番は前走1200m勝ちで勢いがあり昇級でも通用。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "12番の連勝内容を最重視。"
+  },
+  {
+    "venue": "新潟",
+    "race_no": 12,
+    "marks": [
+      6,
+      7,
+      14,
+      1,
+      15
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        6,
+        7,
+        14,
+        1,
+        15
+      ],
+      "external_challenger_horse_no": 10,
+      "excluded_horse_no": 10,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "10番は直線1000m勝ち歴があるが近走16着で通常5頭に及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "6番は直線1000m勝ちで能力が明確。",
+      "main_risk": "7番や14番が外目を活かす展開で逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "14番は直線1000mで3・4着と安定し勝ち負け可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "6番の同条件勝利を中心に比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      9,
+      1,
+      8,
+      7,
+      11
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        9,
+        1,
+        8,
+        7,
+        11
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は芝実績中心でダートの裏付けが不足。"
+    },
+    "honmei_win": {
+      "evidence": "9番はダート1800m3着で能力が最上位。",
+      "main_risk": "1番や8番の差し脚が東京1600mで嵌ると逆転される。"
+    },
+    "shot_case": {
+      "case": "8番は1800m4着で能力も高く距離短縮なら浮上。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "9番の近走内容を軸に比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      5,
+      3,
+      9,
+      7,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        3,
+        9,
+        7,
+        2
+      ],
+      "external_challenger_horse_no": 1,
+      "excluded_horse_no": 1,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "1番は芝中心で今回条件の裏付けが弱い。"
+    },
+    "honmei_win": {
+      "evidence": "5番はダート1200m2着で能力・仕上がりとも上位。",
+      "main_risk": "3番の1400m3着や9番の1700m実績に逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "9番は1700m3着続きで距離短縮に対応すれば上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5番のスピードを最上位に比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      5,
+      4,
+      1,
+      2,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        4,
+        1,
+        2,
+        8
+      ],
+      "external_challenger_horse_no": 3,
+      "excluded_horse_no": 3,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "3番は1800m経験はあるが能力面で通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "5番は2000m2着で能力が高く、1800mでも末脚を活かせる。",
+      "main_risk": "4番の安定した先行力に逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "1番は1800m4着で前進余地がある。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5番と4番の中距離実績を比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      8,
+      5,
+      15,
+      2,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        8,
+        5,
+        15,
+        2,
+        12
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番も仕上がりは良いが上位5頭より素材面で一歩劣る。"
+    },
+    "honmei_win": {
+      "evidence": "8番は新馬向け能力が最上位。5番と15番も素材が高い。",
+      "main_risk": "初戦での位置取りや反応に不確実性がある。"
+    },
+    "shot_case": {
+      "case": "15番は能力評価が高く、仕上がりが噛み合えば逆転可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "素材と完成度を重視。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      7,
+      16,
+      6,
+      5,
+      2
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        7,
+        16,
+        6,
+        5,
+        2
+      ],
+      "external_challenger_horse_no": 12,
+      "excluded_horse_no": 12,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "12番は仕上がりは悪くないが上位5頭ほどの決め手がない。"
+    },
+    "honmei_win": {
+      "evidence": "7番は新馬向け能力が最上位で仕上がりも良好。",
+      "main_risk": "16番の素材や6番の完成度に逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "16番は能力が高く初戦から勝ち負け可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "マイル新馬として素材を最重視。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      2,
+      5,
+      3,
+      9,
+      12
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        5,
+        3,
+        9,
+        12
+      ],
+      "external_challenger_horse_no": 13,
+      "excluded_horse_no": 13,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "13番は東京1600m勝ちがあるが近走15着で通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "2番はダートで連続2着級の実績があり現級で能力最上位。",
+      "main_risk": "5番の先行力や3番の東京1600m実績に逆転される。"
+    },
+    "shot_case": {
+      "case": "5番は前走1800m勝ちで勢いがあり東京1600mでも先行力が生きる。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2番の地力を中心に比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 7,
+    "marks": [
+      1,
+      11,
+      17,
+      9,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        1,
+        11,
+        17,
+        9,
+        8
+      ],
+      "external_challenger_horse_no": 14,
+      "excluded_horse_no": 14,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "14番は1400m3着歴があるが近走内容で通常5頭に譲る。"
+    },
+    "honmei_win": {
+      "evidence": "1番は1400m3着で現級安定感が高い。",
+      "main_risk": "11番や17番の差しが嵌ると逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "11番は1400m2着歴があり、休み明けでも能力は高い。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "1番の近走安定を中心に比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 8,
+    "marks": [
+      2,
+      4,
+      6,
+      3,
+      1
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        2,
+        4,
+        6,
+        3,
+        1
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番は1800m4着で悪くないが上位5頭に一歩及ばない。"
+    },
+    "honmei_win": {
+      "evidence": "2番は2000mで2・3着と現級能力が高い。",
+      "main_risk": "4番の連勝勢いや6番の末脚に逆転される。"
+    },
+    "shot_case": {
+      "case": "4番は1800m・2000m連勝で昇級でも勢い十分。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "2番の現級実績と4番の上昇力を比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 9,
+    "marks": [
+      5,
+      3,
+      1,
+      4,
+      7
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        5,
+        3,
+        1,
+        4,
+        7
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も新馬勝ちだが上位5頭ほどの裏付けがない。"
+    },
+    "honmei_win": {
+      "evidence": "5番はマイル勝ちの内容が高水準で能力最上位。",
+      "main_risk": "3番の素質や1番の1800m実績に逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "3番は新馬1800m勝ちで能力が高く距離対応なら上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "5番の能力を中心に比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 10,
+    "marks": [
+      14,
+      9,
+      7,
+      6,
+      16
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        9,
+        7,
+        6,
+        16
+      ],
+      "external_challenger_horse_no": 5,
+      "excluded_horse_no": 5,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "5番は能力はあるが今回距離の裏付けで通常5頭に譲る。"
+    },
+    "honmei_win": {
+      "evidence": "14番はダート2100mを含む連勝で能力が一段上。",
+      "main_risk": "9番の差し脚や7番の東京2100m実績に逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "7番は東京2100m2着の高い実績があり休み明けでも上位。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "14番の連勝内容と9番・7番の地力を比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 11,
+    "marks": [
+      14,
+      11,
+      6,
+      4,
+      8
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        14,
+        11,
+        6,
+        4,
+        8
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番も能力は高いが上位5頭の勝ち切り材料を上回らない。"
+    },
+    "honmei_win": {
+      "evidence": "14番は前走マイルG1級で1着、能力が明確に最上位。",
+      "main_risk": "11番や6番の高いマイル能力に展開次第で迫られる。"
+    },
+    "shot_case": {
+      "case": "11番は前走マイル2着で能力値も高く、展開次第で逆転可能。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "14番のマイル実績を最重視し11番・6番を比較。"
+  },
+  {
+    "venue": "東京",
+    "race_no": 12,
+    "marks": [
+      12,
+      7,
+      13,
+      3,
+      9
+    ],
+    "candidate_selection": {
+      "ordinary_five": [
+        12,
+        7,
+        13,
+        3,
+        9
+      ],
+      "external_challenger_horse_no": 2,
+      "excluded_horse_no": 2,
+      "decision": "KEEP_ORDINARY_FIVE",
+      "boundary_reason": "2番は1200m3着はあるが1400mでの安定感で通常5頭に届かない。"
+    },
+    "honmei_win": {
+      "evidence": "12番は1400m勝ち上がりの内容が良く、現級でも能力上位。",
+      "main_risk": "7番や13番の差し脚に逆転される可能性。"
+    },
+    "shot_case": {
+      "case": "7番は1400m勝ちから現級4着で安定し、流れが向けば勝ち負け。"
+    },
+    "rrdb_refs": [],
+    "prediction_audit_comment": "12番の上昇力を中心に比較。"
+  }
+]
