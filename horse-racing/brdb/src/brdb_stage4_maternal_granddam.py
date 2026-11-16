@@ -147,6 +147,17 @@ def build_maternal_observations(
                 person_key = ancestor
                 require(len(provenance) == len(path),
                         "partial parent chain promoted to full person identity")
+                recorded = [
+                    node for node in subject.get("paths", [])
+                    if node.get("path") == path
+                ]
+                require(len(recorded) <= 1,
+                        "ambiguous canonical JRDB observed path")
+                if recorded and recorded[0].get("id") is not None:
+                    require(ancestor == "JRDB:" + recorded[0]["id"],
+                            "Stage3B canonical person disagrees with Stage3C chain")
+                if not approved:
+                    status = "JRDB_CHAIN_VERIFIED_EXTERNAL_ROOT_UNREVIEWED"
             else:
                 person_key = None
                 if approved:
@@ -176,8 +187,10 @@ def build_maternal_observations(
             len({(row["rank"], row["path"]) for row in rows}) == 150,
             "duplicate or missing maternal-granddam path")
     require(not any(row["ancestor_person_key"] is not None
-                    and row["identity_status"] !=
-                    "CERTIFIED_DIRECT_PARENT_CHAIN" for row in rows),
+                    and row["identity_status"] not in (
+                        "CERTIFIED_DIRECT_PARENT_CHAIN",
+                        "JRDB_CHAIN_VERIFIED_EXTERNAL_ROOT_UNREVIEWED",
+                    ) for row in rows),
             "external source name was promoted to person ID")
     return {
         "schema_version": "brdb-stage4-maternal-granddam-research-v0.1",
