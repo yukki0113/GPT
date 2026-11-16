@@ -93,7 +93,7 @@ jobs:
               f.write('deliver='+str(d.get('action') in ('PREPARE_NEW_T1','REUSE_READY')).lower()+'\n')
               f.write('action='+d['action']+'\n')
           PY
-      - name: Commit one new random reservation (if created)
+      - name: Commit one new unified random reservation (if created)
         if: steps.resolve.outputs.action == 'PREPARE_NEW_T1'
         run: |
           set -euo pipefail
@@ -101,7 +101,7 @@ jobs:
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git add horse-racing/jrdb/config/racenote_backtest_day_pool_2026.json horse-racing/jrdb/backtests/BTDAY-*/selection.json
-            git commit -m "RaceNote: orchestrator reserve NEXT historical BTDAY"
+            git commit -m "RaceNote: orchestrator reserve NEXT unified BTDAY"
             git pull --rebase origin main
             git push origin HEAD:main
           fi
