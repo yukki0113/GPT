@@ -57,7 +57,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
         expected_cp_policy_sha256=expected_cp_policy_sha256,
         m5_zip=sidecar_zip, m5_manifest=sidecar_manifest,
         expected_m5_zip_sha256=expected_sidecar_zip_sha256,
-        expected_m5_manifest_sha256=expected_sidecar_manifest_sha256)
+        expected_m5_manifest_sha256=expected_sidecar_manifest_sha256,
+        regulation_policy=regulation_policy)
     pins=pre["source_pins"]
     raw_master=Path(master_sqlite_path).read_bytes()
     if sha256(raw_master).hexdigest()!=pins["sqlite_sha"]:
@@ -88,7 +89,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
              "new_status":"INSUFFICIENT_EVIDENCE",
              "recommendation_eligible":False,
              "gameplay_verified":False,
-             "official_md_legality_verified":False}
+             "official_md_legality_verified":False,
+             "operational_regulation_accepted":pre["operational_regulation_accepted"]}
     if not assembled["candidates"]:
         return {"summary":summary,"preflight":pre,"source_assembly":assembled,
                 "portfolio":None,"evaluations":[],"comparisons":None,
@@ -189,7 +191,7 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
             selected_package_ids=option["selected_packages"])
         evaluation=evaluate_structural_candidate(
             master_sqlite_path,candidate,request,source_pins=pins,
-            cp_policy_bytes=cp_policy_bytes)
+            cp_policy_bytes=cp_policy_bytes,regulation_policy=regulation_policy)
         trace=plan_reconstruction(
             request,candidate,
             teacher_card_ids=[r["card_id"] for r in reference["cards"]])
