@@ -127,6 +127,19 @@ def evaluate_structural_candidate(db_path, candidate, request, *, source_pins,
                snapshot["effective_on"]==source_pins["m3_effective_on"] and
                snapshot["verification"]==source_pins["m3_verification"],
                "M3 snapshot pin mismatch")
+        if accepted:
+            _check(not (set(regulation_policy["baseline_entries"]) -
+                {row[0] for row in conn.execute("SELECT card_id FROM md_catalog")}),
+                "ACCEPTED_BASELINE_CARD_IDS_NOT_IN_CURRENT_DB")
+            if regulation_policy["master_sqlite_sha256"]==source_pins["sqlite_sha"]:
+                original=dict(conn.execute(
+                    "SELECT card_id,max_copies FROM banlist_entries WHERE snapshot_id=?",
+                    (snapshot["snapshot_id"],)).fetchall())
+                _check(regulation_policy["baseline_snapshot_id"]==snapshot["snapshot_id"]
+                       and regulation_policy["baseline_effective_on"]==snapshot["effective_on"]
+                       and regulation_policy["original_source_verification"]==snapshot["verification"]
+                       and original==regulation_policy["baseline_entries"],
+                       "ACCEPTED_BASELINE_SOURCE_SNAPSHOT_MISMATCH")
         # This implementation must not assume that candidate rows are official.
         _check(snapshot["verification"] in {"UNVERIFIED_SOURCE","GAME_VERIFIED"},
                "unknown M3 verification state")
