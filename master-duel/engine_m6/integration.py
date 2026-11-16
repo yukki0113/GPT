@@ -39,7 +39,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                            discovery_queries=(), annotations=(),
                            extra_card_ids=(), board_capabilities=(),
                            engine_packages=(), effect_claims=(), route_claims=(),
-                           max_solutions=None,decision_policy=None,regulation_policy=None):
+                           max_solutions=None,decision_policy=None,regulation_policy=None,
+                           expected_decision_policy_sha256=None):
     """Return private, not-yet-game-certified portfolio and ZIP proposal bytes.
 
     Source bytes supplied by caller must be independently fetched and HEAD
@@ -163,7 +164,8 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
         request,reference,discovery_results=discoveries,
         annotations=annotations,material_screen=materials,
         engine_packages=engine_packages,max_solutions=max_solutions,
-        decision_policy=decision_policy,regulation_policy=regulation_policy)
+        decision_policy=decision_policy,regulation_policy=regulation_policy,
+        expected_decision_policy_sha256=expected_decision_policy_sha256)
     summary["new_candidate_count"]=portfolio["solution_count"]
     summary["new_status"]=portfolio["status"]
     summary["competitive_policy_applied"]=portfolio["competitive_policy_applied"]
