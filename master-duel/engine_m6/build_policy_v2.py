@@ -82,8 +82,9 @@ def validate_build_policy_v2(policy, *, master_sha256):
                    "V2_REASON_REQUIRED:"+f)
         refs=item["evidence_refs"]
         _check(isinstance(refs,list) and refs and
-               all(isinstance(x,str) and x.strip() for x in refs),
-               "V2_EVIDENCE_REQUIRED")
+               all(isinstance(x,str) and x.strip() for x in refs) and
+               "DB:"+cid in refs,
+               "V2_PINNED_CARD_EVIDENCE_REQUIRED")
         _check(type(item["recommended_max"]) is int and
                0<=item["recommended_max"]<=3,"V2_COPY_LIMIT")
         game8=item["game8"]
@@ -98,22 +99,28 @@ def validate_build_policy_v2(policy, *, master_sha256):
             _check(game8["applicability"] in
                    {"APPLICABLE","CONSTRAINED","NOT_APPLICABLE"},
                    "V2_GAME8_APPLICABILITY_REVIEW_REQUIRED")
+            _check(game8["source_url"] in refs,
+                   "V2_GAME8_TIER_EVIDENCE_NOT_REFERENCED")
+            _check(item["general_value"] is None,
+                   "V2_RATED_CARD_MUST_USE_TIER_PRIOR")
             base=_TIERS[tier]
         else:
             _check(game8["source_url"] is None and
                    game8["applicability"]=="NOT_LISTED",
                    "V2_NOT_LISTED_IS_NOT_LOW")
             base=item["general_value"]
+            _check(type(base) is int and 0<=base<=100,
+                   "V2_UNLISTED_GENERAL_VALUE_REVIEW_REQUIRED")
         try:
             checked=date.fromisoformat(game8["checked_on"])
             _check(checked<=as_of.date(),"V2_GAME8_FUTURE_REVIEW")
         except (TypeError,ValueError,AttributeError) as exc:
             raise ValueError("V2_GAME8_REVIEW_DATE") from exc
-        _check(type(item["general_value"]) is int and
-               0<=item["general_value"]<=100,"V2_GENERAL_VALUE")
         adjust=item["deck_adjustment"]
         _check(type(adjust) is int and -60<=adjust<=20,
                "V2_DECK_ADJUSTMENT")
+        _check(game8["applicability"]!="CONSTRAINED" or len(refs)>=3,
+               "V2_CONSTRAINED_CARD_REQUIRES_CONSTRAINT_EVIDENCE")
         _check(game8["applicability"]!="NOT_APPLICABLE" or
                item["recommended_max"]==0,"V2_INAPPLICABLE_MUST_EXCLUDE")
         changes=item["copy_adjustments"]
