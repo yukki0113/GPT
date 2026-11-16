@@ -110,26 +110,56 @@ class CompetitiveSelectionTests(unittest.TestCase):
         self.assertTrue(all(x["reason_code"]=="LOW_EVIDENCE_GENERIC_FILLER_RESEARCH_REQUIRED"
                             for x in variant["weak_generic_fillers"]))
 
-    def test_high_utility_distinct_interruption_survives_broad_role_penalty(self):
-        from engine_m6.decision_policy import policy_score
+    def test_group_role_counts_do_not_change_competitive_value(self):
         axes={"baseline":3,"meta_fit":3,"deck_fit":4,
               "tempo":3,"resource_efficiency":5,"role_need":4}
-        # Identical to the previous Gen6 replay's provisional base axes:
-        # unrelated hand traps shared a too-broad MAIN_INTERRUPTION group.
-        score=policy_score({"axes":axes},
-                           competing_selected=6,role_selected=6)
-        self.assertGreater(score,46)
-        self.assertEqual(59,score)
+        base=policy_score({"axes":axes})
+        self.assertEqual(71,base)
+        for group,role in ((0,0),(6,6),(11,11),(30,30)):
+            self.assertEqual(base,policy_score({"axes":axes},
+                                               competing_selected=group,
+                                               role_selected=role))
 
-    def test_low_baseline_trap_cannot_win_only_through_role_diversity(self):
-        from engine_m6.decision_policy import policy_score
+    def test_high_utility_interruption_beats_low_baseline_other_role(self):
         better={"axes":{"baseline":3,"meta_fit":3,"deck_fit":4,
                         "tempo":3,"resource_efficiency":5,"role_need":4}}
         filler={"axes":{"baseline":2,"meta_fit":2,"deck_fit":2,
                         "tempo":2,"resource_efficiency":5,"role_need":2}}
-        self.assertGreater(
-            policy_score(better,competing_selected=6,role_selected=6),
-            policy_score(filler,competing_selected=0,role_selected=0))
+        self.assertGreater(policy_score(better,competing_selected=11,role_selected=11),
+                           policy_score(filler,competing_selected=0,role_selected=0))
+
+    def test_competitive_selection_not_tilted_by_role_count(self):
+        t,r,d,a,s,p=sample()
+        pol=policy(a)
+        # The same source-based score is used with or without prior cards of
+        # the same role. Quantity must still respect reviewed max.
+        from collections import Counter
+        from engine_m6.decision_policy import screened_choice
+        record={"annotation":{"card_id":"konami:1203","role":
+                    next(x["role"] for x in a if x["card_id"]=="konami:1203")}}
+        policy_map=validate_decision_policy(pol,master_sha256=PIN)
+        first,_=screened_choice(record,policy_map,counts=Counter(),zone="MAIN")
+        counts=Counter({("MAIN","konami:1201"):3,
+                        ("MAIN","konami:1202"):3})
+        later,_=screened_choice(record,policy_map,counts=counts,zone="MAIN")
+        self.assertEqual(first,later)
+
+    def test_individual_recommended_max_still_enforced(self):
+        t,r,d,a,s,p=sample()
+        from collections import Counter
+        from engine_m6.decision_policy import screened_choice
+        pol=policy(a)
+        target=next(x for x in pol["assessments"] if x["card_id"]=="konami:1203")
+        target["recommended_max"]=2
+        m=validate_decision_policy(pol,master_sha256=PIN)
+        record={"annotation":{"card_id":"konami:1203","role":target["role"]}}
+        value,_=screened_choice(record,m,counts=Counter({("MAIN","konami:1203"):1}),
+                                 zone="MAIN")
+        self.assertIsNotNone(value)
+        excluded,reason=screened_choice(record,m,counts=Counter({("MAIN","konami:1203"):2}),
+                                        zone="MAIN")
+        self.assertIsNone(excluded)
+        self.assertEqual("RECOMMENDED_MAX_REACHED",reason["reason"])
 
     def test_reject_unpinned_policy(self):
         t,r,d,a,s,p=sample()
