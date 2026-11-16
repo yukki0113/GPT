@@ -10,6 +10,7 @@ from datetime import date, datetime
 
 from deck_assistant.cost import MODES, RARITIES, assess_deck
 from .snapshots import _date, resolve_limit, validate_snapshot
+from engine_m6.regulation_gate import validate_regulation_policy
 from .craftability import assess_craftability_gate
 
 
@@ -46,7 +47,7 @@ def available_owned_copies(owned_count, resolved_limit):
     """Definite available copies; UNKNOWN remains None except verified zero ban."""
     if not isinstance(resolved_limit, dict):
         raise ValueError("invalid resolution")
-    if resolved_limit.get("status") != "VERIFIED":
+    if resolved_limit.get("status") not in {"VERIFIED","ACCEPTED_OPERATIONAL"}:
         return None
     bound = resolved_limit.get("allowed")
     if type(bound) is not int or bound not in (0, 1, 2, 3):
@@ -64,7 +65,7 @@ def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STAN
                         mode="LOW_RARITY_CORE", max_new_ur=None,
                         cp_policy=None, cp_budget_by_rarity=None,
                         craftability_policy="PROVISIONAL_GO",
-                        craftability_exceptions=None):
+                        craftability_exceptions=None,regulation_policy=None):
     """Assess a supplied recipe conservatively, including source/version evidence.
 
     CP-N/R/SR/UR are separate noninterchangeable currencies.
@@ -89,8 +90,22 @@ def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STAN
     ids = {entry.get("card_id") for entry in recipe if isinstance(entry, dict)}
     resolutions = {cid: resolve_limit(validated, card_id=cid, as_of=as_of,
                                       format_id=format_id) for cid in ids}
+    approved=(isinstance(regulation_policy,dict) and
+              regulation_policy.get("schema")=="md-regulation-accepted-baseline-v1")
+    if approved:
+        limits=validate_regulation_policy(regulation_policy,
+                    master_sha256=regulation_policy["master_sqlite_sha256"],
+                    as_of=as_of,candidate_ids=sorted(ids))
+        resolutions={cid:{"card_id":cid,"as_of":as_of,
+                 "format_id":format_id,"status":"ACCEPTED_OPERATIONAL",
+                 "allowed":lim,"candidate_max_copies":None,
+                 "snapshot_id":regulation_policy["baseline_snapshot_id"],
+                 "effective_on":regulation_policy["baseline_effective_on"],
+                 "source":"USER_APPROVED_OPERATIONAL_BASELINE",
+                 "verification":"USER_APPROVED_OPERATIONAL_BASELINE"}
+                     for cid,lim in limits.items()}
     allowed = {cid: r["allowed"] for cid, r in resolutions.items()
-               if r["status"] == "VERIFIED"}
+               if r["status"] in {"VERIFIED","ACCEPTED_OPERATIONAL"}}
     # In CP_BUDGET mode the new per-rarity wallet replaces the old scalar
     # budget check; all other safety checks remain within assess_deck.
     prices = policy["cp_per_card"] if policy is not None else None
@@ -105,9 +120,13 @@ def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STAN
     result["regulation_context"] = {
         "format_id": format_id, "as_of": as_of,
         "verified_card_count": sum(1 for v in resolutions.values() if v["status"] == "VERIFIED"),
+        "operationally_accepted_card_count": sum(1 for v in resolutions.values()
+                                        if v["status"]=="ACCEPTED_OPERATIONAL"),
+        "operational_baseline_accepted":approved,
+        "official_md_legality_verified":False,
         "candidate_card_count": sum(1 for v in resolutions.values() if v["status"] == "CANDIDATE_ONLY"),
         "unknown_card_count": sum(1 for v in resolutions.values()
-                                  if v["status"] not in ("VERIFIED", "CANDIDATE_ONLY")),
+                                  if v["status"] not in ("VERIFIED", "CANDIDATE_ONLY","ACCEPTED_OPERATIONAL")),
         "snapshot_ids": sorted({v["snapshot_id"] for v in resolutions.values()
                                 if v["snapshot_id"] is not None}),
     }
@@ -167,7 +186,7 @@ def assess_deck_with_m3(db_path, recipe, *, snapshots, as_of, format_id="MD_STAN
                    else "GO_PROVISIONAL" if unknowns or
                        gate["status"] == "GO_PROVISIONAL" else "GO_CONFIRMED"),
         "legal_and_affordable_confirmed": result["status"] == "PASS",
-        "requires_regulation_check": any(v["status"] != "VERIFIED"
+        "requires_regulation_check": any(v["status"] not in {"VERIFIED","ACCEPTED_OPERATIONAL"}
                                          for v in resolutions.values()),
         "unknowns": result["unknowns"],
         "hard_errors": result["errors"],
