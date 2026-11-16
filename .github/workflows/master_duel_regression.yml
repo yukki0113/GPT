@@ -23,5 +23,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Run focused M6-7 competitive regression
+        working-directory: master-duel
+        env:
+          PYTHONPATH: .:p1_a0:engine_m6/tests
+        run: |
+          python -m unittest discover -s engine_m6/tests -p 'test_m6_7*.py' -v
       - name: Run synthetic Master Duel regression
         run: python master-duel/tools/run_full_regression.py
