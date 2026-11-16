@@ -96,6 +96,37 @@ class EvidencePolicyV2Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,"V2_GAME8_SOURCE_REQUIRED"):
             validate_decision_policy(p,master_sha256=PIN)
 
+    def test_high_tier_override_needs_deck_constraint_evidence(self):
+        p=v2(sample()[3]);r=next(x for x in p["assessments"]
+                                if x["card_id"]=="konami:1200")
+        r["deck_adjustment"]=-40
+        with self.assertRaisesRegex(ValueError,"V2_APPLICABLE_HIGH_TIER"):
+            validate_decision_policy(p,master_sha256=PIN)
+        r["game8"]["applicability"]="CONSTRAINED"
+        with self.assertRaisesRegex(ValueError,"V2_CONSTRAINED_CARD_REQUIRES"):
+            validate_decision_policy(p,master_sha256=PIN)
+        r["evidence_refs"].append("SYNTHETIC:TEXT_CONSTRAINT")
+        reviewed=validate_decision_policy(p,master_sha256=PIN)
+        self.assertEqual(50,reviewed["MAIN","konami:1200"]["score_by_copy"][0])
+
+    def test_cross_theme_not_forced_when_reviewed_zero(self):
+        p=v2(sample()[3])
+        r=next(x for x in p["assessments"] if x["card_id"]=="konami:1400")
+        r["recommended_max"]=0
+        result=run(p)
+        self.assertFalse(any(x["family"]=="MIXED_REDESIGN" for x in result["solutions"]))
+        self.assertTrue(any(x["reason"]=="CROSS_THEME_NOT_REVIEWED_OR_USABLE"
+                            for x in result["rejected"]))
+
+    def test_engine_package_minimum_respects_reviewed_limit(self):
+        p=v2(sample()[3])
+        row=next(x for x in p["assessments"] if x["card_id"]=="konami:1500")
+        row["recommended_max"]=0
+        result=run(p)
+        self.assertFalse(any(x["family"]=="THEME_WITH_ENGINE" for x in result["solutions"]))
+        self.assertTrue(any(x["reason"]=="ENGINE_REQUIRED_PART_MISSING"
+                            for x in result["rejected"]))
+
     def test_not_listed_not_assigned_zero(self):
         m=validate_decision_policy(v2(sample()[3]),master_sha256=PIN)
         a=m["MAIN","konami:1000"]
