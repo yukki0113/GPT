@@ -504,6 +504,8 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
         as_of=request["as_of"],
         candidate_ids=[cid for (_,cid) in records])
         if regulation_policy is not None else None)
+    v2_policy=(isinstance(decision_policy,dict) and
+               decision_policy.get("schema")=="md-m6-8-evidence-build-policy-v2")
     policy_fingerprint=(sha256(json.dumps(decision_policy,ensure_ascii=False,
          sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
          if decision_policy is not None else None)
@@ -521,8 +523,6 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
     policy_source_gaps=([{"section":sec,"card_id":cid}
         for (sec,cid) in sorted(policy_map) if (sec,cid) not in records]
         if policy_map is not None else [])
-    v2_policy=(isinstance(decision_policy,dict) and
-               decision_policy.get("schema")=="md-m6-8-evidence-build-policy-v2")
     if v2_policy:
         # Never preselect unreviewed theme minimums or change per-card copy
         # ceilings in violation of the reviewed quantity decision.
