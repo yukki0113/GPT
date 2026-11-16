@@ -19,7 +19,7 @@ from racenote_decision_core_v056 import (
     CONTRACT_REVISION, SUPPORTED_CONTRACT_REVISIONS, TWO_STAGE_CONTRACT_REVISIONS,
     validate_core, validate_prose_collection,
 )
-from racenote_v056_contract_gates import check_confidence_review
+from racenote_v056_contract_gates import check_confidence_review, inspect_confidence_card_quality
 
 def inspect_authoring_quality(cores):
     # v056 internal audit commentary is not newspaper prose.
@@ -702,6 +702,7 @@ def save_confidence_review(root: Path, confidence_path: Path) -> dict[str, Any]:
         })
     if seen != set(expected):
         raise ValueError("confidence review must cover every frozen prediction race")
+    inspect_confidence_card_quality(reviewed)
     reviewed.sort(key=lambda x: (x["venue"], x["race_no"]))
     payload = {
         "schema_version": CONFIDENCE_REVIEW_VERSION,
