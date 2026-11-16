@@ -7,7 +7,7 @@ from datetime import date as calendar_date, datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
-VERSION = "racenote-backtest-day-picker-0.1.0"
+VERSION = "racenote-backtest-day-picker-0.2.0"
 
 def now_iso():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
@@ -182,11 +182,14 @@ def pick_days(state, n, seed=None, include_ineligible=False,
         for r in selected
     ):
         # Include explicit cycle provenance for both PACI first and later draws.
-        rec["sources"] = [{"target_date": r["date"],
-                           "source_mode": r.get("source_mode", "paci"),
-                           "source_reference": r.get("source_reference"),
-                           "selection_cycle": r.get("selection_cycle", 1)}
-                          for r in selected]
+        rec["sources"] = [{
+            "target_date": r["date"],
+            "source_mode": r.get("source_mode", "paci"),
+            "source_reference": r.get("source_reference"),
+            "file_name": r.get("file_name") or None,
+            "drive_file_id": r.get("drive_file_id") or None,
+            "selection_cycle": r.get("selection_cycle", 1),
+        } for r in selected]
     state.setdefault("selections", []).append(rec)
     state["updated_at"] = used_at
     return rec
