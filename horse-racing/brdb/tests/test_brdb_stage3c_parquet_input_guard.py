@@ -33,7 +33,8 @@ class RealInputGuardTests(unittest.TestCase):
         )
         database.executemany("INSERT INTO sample VALUES (?, ?, ?, ?, ?, ?)", rows)
         filepath = root / "relations.parquet"
-        database.execute("COPY sample TO ? (FORMAT PARQUET)", [str(filepath)])
+        database.execute("COPY sample TO '" + str(filepath).replace("'", "''") +
+                         "' (FORMAT PARQUET)")
         return filepath
 
     def test_keeps_only_sire_dam_with_canonical_child(self):
