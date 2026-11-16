@@ -69,7 +69,7 @@ v2は各カードに`recommended_max`、`quantity_reason`、`copy_adjustments[3]
 - tier付きカードは原則`general_value=null`（tierと評価の二重取りを禁止）。未掲載はtier点を付けず`general_value`を独立レビュー。
 - 評価に使う`assessment_status`は**EVIDENCE_REVIEWED / HUMAN_REVIEWED / GAME_TESTED**に限定。効果本文を読んだだけの`TEXT_CHECKED`・単なる検索ヒット・UNVERIFIED_SOURCEは、デッキ適合性と枚数理由を審査した扱いにしない。AIが出典付きで判断した場合はEVIDENCE_REVIEWEDとし、人間が確認したと偽らない。
 - v2の全注釈カードは完全に評価済みでなければ構築拒否。必要なテーマminimumがカード別`recommended_max`を超えたら拒否。出張必須部品、混合のクロステーマカードも同じ。
-- `decision_policy_sha256`は凍結入力をカノニカルJSONでSHA-256化した値。**結果を見た後の入力変更は別SHA・別試験**。
+- `decision_policy_sha256`は凍結入力をカノニカルJSONでSHA-256化した値。v2実行には、**実行前に別途保持した`expected_decision_policy_sha256`の一致を必須**にする。未指定・不一致なら構築前に停止。**結果を見た後の入力変更は別SHA・別試験**。単にSHAを計算しただけで外部固定が証明されるわけではないため、実運用ではprivate Drive等に時刻付きで保全する。
 - 古い`md-m6-7-decision-policy-v1`は履歴の互換実行にのみ残し、新規`integrate_private_deck`では`EVIDENCE_COPY_BUILD_POLICY_V2_REQUIRED`で拒否。
 - 規制ゲートは`md-m6-7-regulation-gate-v1`を引き続き要求。日時・MD専用・候補全件・出典確認、出典不足はfail-closed。
 - 全所持MAIN候補の未注釈・未評価を報告。候補検出と正式採用を混同しない。
