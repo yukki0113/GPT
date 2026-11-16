@@ -468,7 +468,8 @@ def _select_variant(request,teacher,discoveries,records, *,
 
 def recompose_portfolio(request,teacher_candidate, *, discovery_results,
                         annotations, material_screen, engine_packages=(),
-                        max_solutions=None,decision_policy=None,regulation_policy=None):
+                        max_solutions=None,decision_policy=None,regulation_policy=None,
+                        expected_decision_policy_sha256=None):
     """Deterministic pure/engine/mixed alternative enumeration.
 
     Requires all card options to originate from *current* SHA-pinned DB
@@ -506,6 +507,9 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
     policy_fingerprint=(sha256(json.dumps(decision_policy,ensure_ascii=False,
          sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
          if decision_policy is not None else None)
+    if v2_policy:
+        _require(expected_decision_policy_sha256==policy_fingerprint,
+                 "V2_POLICY_PRECOMMIT_SHA_REQUIRED_OR_MISMATCH")
     truncated_source_searches=sum(bool(d.get("truncated")) for d in discovery_results)
     policy_map=(validate_decision_policy(decision_policy,
         master_sha256=teacher_candidate["lineage"]["source_master_sha256"])
