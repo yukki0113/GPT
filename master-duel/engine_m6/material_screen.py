@@ -14,7 +14,7 @@ CARD=re.compile(r"konami:[0-9]+\Z")
 def screen_extra_materials(effect_bundle, *, extra_card_ids, board_capabilities):
     """Compare source text with explicitly documented potential board states.
 
-    Each capability is {kind: LEVEL_MONSTERS|NAMED_MONSTERS,
+    Each capability is {kind: LEVEL_MONSTERS|NAMED_MONSTERS|EFFECT_MONSTERS,
       level: number|null, count: int, distinct_names: bool,
       evidence_ids: nonempty list[str], verification: ...}.
     This establishes only that a claimed material pool is numerically compatible.
@@ -30,13 +30,13 @@ def screen_extra_materials(effect_bundle, *, extra_card_ids, board_capabilities)
     for capability in board_capabilities:
         if not isinstance(capability,dict) or set(capability)!={"kind","level","count","distinct_names","evidence_ids","verification"}:
             raise ValueError("capability contract")
-        if capability["kind"] not in {"LEVEL_MONSTERS","NAMED_MONSTERS"}:
+        if capability["kind"] not in {"LEVEL_MONSTERS","NAMED_MONSTERS","EFFECT_MONSTERS"}:
             raise ValueError("unsupported capability")
         if type(capability["count"]) is not int or not 1<=capability["count"]<=5:
             raise ValueError("material count range")
         if capability["kind"]=="LEVEL_MONSTERS" and (type(capability["level"]) is not int or not 1<=capability["level"]<=12):
             raise ValueError("level capability")
-        if capability["kind"]=="NAMED_MONSTERS" and capability["level"] is not None:
+        if capability["kind"] in {"NAMED_MONSTERS","EFFECT_MONSTERS"} and capability["level"] is not None:
             raise ValueError("named monster level must be unspecified")
         if type(capability["distinct_names"]) is not bool:
             raise ValueError("distinct names must be bool")
@@ -52,6 +52,8 @@ def screen_extra_materials(effect_bundle, *, extra_card_ids, board_capabilities)
         first=unicodedata.normalize("NFKC",card["text"].splitlines()[0]).strip()
         rank_match=re.fullmatch(r"(?:[\w属性]+)?レベル([0-9]{1,2})モンスター[×x]([0-9]{1,2})(?:体(?:以上)?)?",first)
         link_match=re.fullmatch(r"(カード名が異なる)?モンスター([0-9]{1,2})体(?:以上)?",first)
+        effect_link_match=re.fullmatch(r"効果モンスター([0-9]{1,2})体(?:以上)?",first)
+        nonlink_match=re.fullmatch(r"Lモンスター以外のモンスター([0-9]{1,2})体(?:以上)?",first)
         if rank_match:
             lv,n=map(int,rank_match.groups())
             if "属性" in first or n>5:
@@ -60,6 +62,16 @@ def screen_extra_materials(effect_bundle, *, extra_card_ids, board_capabilities)
             else:
                 kind="GENERIC_LEVEL_XYZ"
                 applicable=[p for p in board_capabilities if p["kind"]=="LEVEL_MONSTERS" and p["level"]==lv and p["count"]>=n]
+        elif effect_link_match:
+            kind="EFFECT_MONSTER_LINK"
+            n=int(effect_link_match.group(1))
+            applicable=[p for p in board_capabilities
+                        if p["kind"]=="EFFECT_MONSTERS" and p["count"]>=n]
+        elif nonlink_match:
+            kind="NON_LINK_MONSTER_LINK"
+            n=int(nonlink_match.group(1))
+            applicable=[p for p in board_capabilities
+                        if p["kind"]=="LEVEL_MONSTERS" and p["count"]>=n]
         elif link_match:
             different,n=link_match.groups()
             kind="DISTINCT_NAME_LINK" if different else "GENERIC_LINK"
