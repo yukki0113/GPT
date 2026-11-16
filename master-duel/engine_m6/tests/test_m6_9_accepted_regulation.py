@@ -57,7 +57,7 @@ class AcceptedRegulationTests(unittest.TestCase):
             limits(baseline(),"2026-11-15")
 
     def test_change_only_takes_effect_on_effective_date(self):
-        p=append_notice(baseline(),event("2026-12-a","2026-12-01",
+        p=append_notice(baseline(),event=event("2026-12-a","2026-12-01",
                        [("konami:102",1,0),("konami:104",3,1),
                         ("konami:103",2,3)]))
         self.assertEqual(1,limits(p,"2026-11-30")["konami:102"])
@@ -66,7 +66,7 @@ class AcceptedRegulationTests(unittest.TestCase):
         self.assertEqual(3,limits(p,"2027-05-01")["konami:103"])
 
     def test_correction_event_separate_from_regulation_revision(self):
-        p=append_notice(baseline(),event("2026-11-fix","2026-11-16",
+        p=append_notice(baseline(),event=event("2026-11-fix","2026-11-16",
                         [("konami:101",0,2)],kind="DATA_CORRECTION"))
         self.assertEqual(2,limits(p)["konami:101"])
         self.assertEqual("DATA_CORRECTION",p["events"][0]["kind"])
@@ -74,7 +74,7 @@ class AcceptedRegulationTests(unittest.TestCase):
 
     def test_bad_expected_prior_copies_fails(self):
         with self.assertRaisesRegex(ValueError,"BEFORE_MISMATCH"):
-            append_notice(baseline(),event("2026-12-a","2026-12-01",
+            append_notice(baseline(),event=event("2026-12-a","2026-12-01",
                                          [("konami:102",2,0)]))
 
     def test_cannot_replace_master_snapshot_or_unapprove(self):
@@ -93,14 +93,14 @@ class AcceptedRegulationTests(unittest.TestCase):
         e=event("2026-12-a","2026-12-01",[("konami:102",1,0)])
         p=append_notice(baseline(),e)
         with self.assertRaisesRegex(ValueError,"ID_DUPLICATE"):
-            append_notice(p,e)
+            append_notice(p,event=e)
         e=event("2026-12-b","2026-12-01",
                 [("konami:102",0,1),("konami:102",1,2)])
         with self.assertRaisesRegex(ValueError,"CHANGE_ID_INVALID"):
-            append_notice(p,e)
+            append_notice(p,event=e)
 
     def test_future_in_game_notice_does_not_change_today(self):
-        p=append_notice(baseline(),event("2026-12-a","2026-12-01",
+        p=append_notice(baseline(),event=event("2026-12-a","2026-12-01",
                                         [("konami:104",3,1)]))
         self.assertEqual(3,limits(p,"2026-11-16")["konami:104"])
         self.assertEqual(1,limits(p,"2026-12-01")["konami:104"])
