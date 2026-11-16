@@ -21,11 +21,11 @@
       "reader_sha256": "b449aa0f21d2a0f49bd91425529a5150667382cdac7f53e021109e50f1bd8c9b",
       "race_scenario": "10番の末脚や4番の先行が噛み合うと1番が取りこぼす余地。",
       "five_roles": {
-        "1": "TOP3",
-        "4": "TOP2_OR_TOP3",
-        "7": "TOP3_OR_OUTSIDER_RISK",
-        "10": "WIN_OR_TOP2",
-        "16": "TOP3_OR_OUTSIDER_RISK"
+        "1": "WIN_ROUTE",
+        "4": "TOP3_ROUTE",
+        "7": "CONDITIONAL_TOP3",
+        "10": "TOP3_ROUTE",
+        "16": "CONDITIONAL_TOP3"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "1はダ1200m2着・IDM46、10は同距離3着、4・7は同距離5着、16は同距離7着。",
@@ -82,11 +82,11 @@
       "reader_sha256": "62beba0e7647ea3d64c092e05815ec53e3e439ef6c8372eabb809cece9fd6cd8",
       "race_scenario": "10番の上積みや12番の先行持続が上回る可能性。",
       "five_roles": {
-        "7": "TOP3",
-        "10": "WIN_OR_TOP2",
-        "12": "TOP2_OR_TOP3",
-        "13": "TOP3_OR_OUTSIDER_RISK",
-        "15": "TOP3_OR_OUTSIDER_RISK"
+        "7": "WIN_ROUTE",
+        "10": "TOP3_ROUTE",
+        "12": "CONDITIONAL_TOP3",
+        "13": "CONDITIONAL_TOP3",
+        "15": "CONDITIONAL_TOP3"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "7はダ1800m新馬2着、10は同距離6着、12は同距離5着、15はダ1500m2着、13はダ1800m10着。",
@@ -143,11 +143,11 @@
       "reader_sha256": "e1b5ed74059554e8d3ca1444fc62c376f74cc4954498ee11a88d2a1df3dcb32b",
       "race_scenario": "初ダート組中心で適性不確実、2番や4番のダート経験に逆転され得る。",
       "five_roles": {
-        "2": "TOP2_OR_TOP3",
-        "3": "UNSUITABLE",
-        "4": "TOP3_OR_OUTSIDER_RISK",
-        "6": "WIN_OR_TOP2",
-        "16": "TOP3_OR_OUTSIDER_RISK"
+        "2": "TOP3_ROUTE",
+        "3": "WIN_ROUTE",
+        "4": "TOP3_ROUTE",
+        "6": "TOP2_ROUTE",
+        "16": "CONDITIONAL_TOP3"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "3・6は芝で能力を示すがダ1400mは未知、2・4はダートで苦戦、16も芝のみ。",
@@ -173,11 +173,11 @@
       "reader_sha256": "6e088a000da31a3ab04cd2174af8ad51962471a7523803d37129a79676f431cf",
       "race_scenario": "新馬戦で実戦適性が未知なため5番以下の上積みは大きい。",
       "five_roles": {
-        "2": "TOP3_OR_OUTSIDER_RISK",
-        "3": "TOP2_OR_TOP3",
-        "5": "WIN_OR_TOP2",
-        "9": "UNSUITABLE",
-        "10": "TOP3_OR_OUTSIDER_RISK"
+        "2": "DEBUT_UNVERIFIED",
+        "3": "DEBUT_UNVERIFIED",
+        "5": "DEBUT_UNVERIFIED",
+        "9": "DEBUT_UNVERIFIED",
+        "10": "DEBUT_UNVERIFIED"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "ダ1800m新馬。9・5・3・2・10は事前能力のみで同距離実走なし。",
@@ -203,11 +203,11 @@
       "reader_sha256": "f08e4d9404f9305507aa96185fa07d134887f0a32f593d29242ca1c55b84e75a",
       "race_scenario": "16番の同距離安定や6番の格上実績が勝れば逆転される。",
       "five_roles": {
-        "3": "TOP3_OR_OUTSIDER_RISK",
-        "6": "TOP2_OR_TOP3",
-        "9": "TOP3_OR_OUTSIDER_RISK",
-        "14": "UNSUITABLE",
-        "16": "WIN_OR_TOP2"
+        "3": "TOP3_ROUTE",
+        "6": "TOP2_ROUTE",
+        "9": "TOP3_ROUTE",
+        "14": "WIN_ROUTE",
+        "16": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "14は芝1600m2着、16は1400m2・3着、6も1200m3着、3は1600m2着、9は1400m3着。",
@@ -233,11 +233,11 @@
       "reader_sha256": "e9e4e99f1508e098091d95968186970daed16adffe6697b63d70916ed6d11dbf",
       "race_scenario": "1番の未知の上積みや9番の調教上昇で序列が変わる可能性。",
       "five_roles": {
-        "1": "WIN_OR_TOP2",
-        "5": "TOP3_OR_OUTSIDER_RISK",
-        "6": "TOP2_OR_TOP3",
-        "9": "TOP3_OR_OUTSIDER_RISK",
-        "15": "UNSUITABLE"
+        "1": "WIN_ROUTE",
+        "5": "CONDITIONAL_TOP3",
+        "6": "CONDITIONAL_TOP3",
+        "9": "CONDITIONAL_TOP3",
+        "15": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "15は芝1800m2着、1は実走未確認で事前能力43.3、6・9・5はマイル・1800mで掲示板外。",
@@ -263,11 +263,11 @@
       "reader_sha256": "02d37ba4b7646111be08df5e99b47ed05a4fcdcb4ac2ba56476cd2e45b513ee1",
       "race_scenario": "14番が本来の高能力を出すか、3番が前で残ると逆転される。",
       "five_roles": {
-        "3": "TOP2_OR_TOP3",
-        "4": "TOP3",
-        "8": "TOP3_OR_OUTSIDER_RISK",
-        "13": "TOP3_OR_OUTSIDER_RISK",
-        "14": "WIN_OR_TOP2"
+        "3": "TOP3_ROUTE",
+        "4": "WIN_ROUTE",
+        "8": "CONDITIONAL_TOP3",
+        "13": "CONDITIONAL_TOP3",
+        "14": "TOP2_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "4はダ1800m2・3着・IDM49、14は同距離3着、3・13・8は同距離で着外経験。",
@@ -324,11 +324,11 @@
       "reader_sha256": "7331a1a2150940ab459d2808a5e39a26b3f7ac9cf40c2127ee73a42107ae6349",
       "race_scenario": "11番や3番の先行が楽になると9番の差しが届かない。",
       "five_roles": {
-        "3": "TOP2_OR_TOP3",
-        "8": "TOP3_OR_OUTSIDER_RISK",
-        "9": "UNSUITABLE",
-        "11": "WIN_OR_TOP2",
-        "16": "TOP3_OR_OUTSIDER_RISK"
+        "3": "WIN_ROUTE",
+        "8": "TOP2_ROUTE",
+        "9": "WIN_ROUTE",
+        "11": "WIN_ROUTE",
+        "16": "TOP3_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "9は現級1400m3着、11は同距離勝ち、3は同距離2・4着、8は同距離2・3着、16も同距離1着。",
@@ -354,11 +354,11 @@
       "reader_sha256": "262f0447cc8152128acfb7d82cb9a87d548396b35f15e241f307526d999eb84b",
       "race_scenario": "10番の無敗上昇力が9番の実績を上回る可能性。",
       "five_roles": {
-        "6": "TOP3_OR_OUTSIDER_RISK",
-        "7": "TOP3_OR_OUTSIDER_RISK",
-        "8": "TOP2_OR_TOP3",
-        "9": "UNSUITABLE",
-        "10": "WIN_OR_TOP2"
+        "6": "CONDITIONAL_TOP3",
+        "7": "CONDITIONAL_TOP3",
+        "8": "TOP3_ROUTE",
+        "9": "WIN_ROUTE",
+        "10": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "9は2000mオープン4着、10は同距離2戦2勝、8はマイル勝ち、6・7は2000m/1800m勝ち。",
@@ -384,11 +384,11 @@
       "reader_sha256": "76a5ab45ae9d92f943accee214619cffabb90471d55306f7425257b6627aafda",
       "race_scenario": "5番の差し脚や3番の現級2着実績が上回れば取りこぼす。",
       "five_roles": {
-        "1": "TOP3_OR_OUTSIDER_RISK",
-        "3": "TOP2_OR_TOP3",
-        "5": "WIN_OR_TOP2",
-        "12": "TOP3_OR_OUTSIDER_RISK",
-        "13": "TOP3"
+        "1": "TOP3_ROUTE",
+        "3": "TOP2_ROUTE",
+        "5": "WIN_ROUTE",
+        "12": "TOP3_ROUTE",
+        "13": "WIN_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "13はダ1800m勝ちでIDM58、5はダ1900m勝ち・同距離2着、3はダ1800m2着、12は5着反復、1は同距離勝ち。",
@@ -445,11 +445,11 @@
       "reader_sha256": "ec2f9a8d48d256a4e54905134375e47299fca60420fe772dbefaf81b954ec9af",
       "race_scenario": "12番や4番が先に動く展開では9番の差しが届かない可能性。",
       "five_roles": {
-        "2": "TOP3_OR_OUTSIDER_RISK",
-        "3": "TOP3_OR_OUTSIDER_RISK",
-        "4": "TOP2_OR_TOP3",
-        "9": "UNSUITABLE",
-        "12": "WIN_OR_TOP2"
+        "2": "CONDITIONAL_TOP3",
+        "3": "TOP3_ROUTE",
+        "4": "TOP3_ROUTE",
+        "9": "WIN_ROUTE",
+        "12": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "9はダ2100m3勝級2着・IDM61、12は1800mでIDM60、4・3・2も同級高水準の走歴。",
@@ -475,11 +475,11 @@
       "reader_sha256": "3a8faf4fc0c85ba4803a89a98b205ba85ed350a24c7202453cdcf752657e9b78",
       "race_scenario": "1番の2000m連続好走や8番の安定差しに逆転される余地。",
       "five_roles": {
-        "1": "TOP2_OR_TOP3",
-        "4": "TOP3",
-        "8": "TOP3_OR_OUTSIDER_RISK",
-        "9": "WIN_OR_TOP2",
-        "11": "TOP3_OR_OUTSIDER_RISK"
+        "1": "TOP2_ROUTE",
+        "4": "WIN_ROUTE",
+        "8": "TOP3_ROUTE",
+        "9": "WIN_ROUTE",
+        "11": "TOP3_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "4は芝2200m現級2着・IDM54、9は2000m2着、1は2000m2・3着、8は2200m3着、11は2000m3着。",
@@ -536,11 +536,11 @@
       "reader_sha256": "5aad5bfc614dbba25bb7bfa68e8e4663163d3b1f8f29645284907dc38afda19d",
       "race_scenario": "9番や3番が前で運び切ると7番が勝ち切れない。",
       "five_roles": {
-        "2": "TOP3_OR_OUTSIDER_RISK",
-        "3": "TOP2_OR_TOP3",
-        "7": "TOP3",
-        "9": "WIN_OR_TOP2",
-        "13": "TOP3_OR_OUTSIDER_RISK"
+        "2": "TOP3_ROUTE",
+        "3": "TOP2_ROUTE",
+        "7": "WIN_ROUTE",
+        "9": "WIN_ROUTE",
+        "13": "CONDITIONAL_TOP3"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "7はダ1200m連続2着・IDM37、9・3は同距離3着、2は1200m5着、13は芝中心。",
@@ -597,11 +597,11 @@
       "reader_sha256": "21429fc1e3c2df05e30145113381df24d785d1f20bc52ad29ba15edbf7bc2631",
       "race_scenario": "16番の上積みや5番の連続3着が上回る可能性。",
       "five_roles": {
-        "5": "TOP2_OR_TOP3",
-        "7": "TOP3_OR_OUTSIDER_RISK",
-        "14": "TOP3",
-        "15": "TOP3_OR_OUTSIDER_RISK",
-        "16": "WIN_OR_TOP2"
+        "5": "TOP2_ROUTE",
+        "7": "CONDITIONAL_TOP3",
+        "14": "WIN_ROUTE",
+        "15": "TOP2_ROUTE",
+        "16": "WIN_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "14は1800m2着・IDM41、16と5は同距離3着、15は1800m2着、7は同距離6着。",
@@ -658,11 +658,11 @@
       "reader_sha256": "2ce6a46dd5c946c466e3e345f0e7a19437e068f86cea65bcb62a0f18de9869f5",
       "race_scenario": "11番や13番の先行力が展開で上回ると取りこぼす。",
       "five_roles": {
-        "1": "TOP2_OR_TOP3",
-        "4": "UNSUITABLE",
-        "7": "TOP3_OR_OUTSIDER_RISK",
-        "11": "WIN_OR_TOP2",
-        "13": "TOP3_OR_OUTSIDER_RISK"
+        "1": "WIN_ROUTE",
+        "4": "WIN_ROUTE",
+        "7": "CONDITIONAL_TOP3",
+        "11": "WIN_ROUTE",
+        "13": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "4は1200m3・4着、11・1・13も同距離又は1400mで3着、7は同距離6・7着。",
@@ -688,11 +688,11 @@
       "reader_sha256": "e82f095787141e3801803af34c35af9cc8796fbac35d5a8f161486d063ea74df",
       "race_scenario": "新馬戦で実戦適性が未知なため上位差は固定できない。",
       "five_roles": {
-        "5": "TOP2_OR_TOP3",
-        "6": "TOP3_OR_OUTSIDER_RISK",
-        "10": "WIN_OR_TOP2",
-        "11": "TOP3_OR_OUTSIDER_RISK",
-        "15": "UNSUITABLE"
+        "5": "DEBUT_UNVERIFIED",
+        "6": "DEBUT_UNVERIFIED",
+        "10": "DEBUT_UNVERIFIED",
+        "11": "DEBUT_UNVERIFIED",
+        "15": "DEBUT_UNVERIFIED"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "ダ1800m新馬。15・10・5・6・11は予測指数中心で実走なし。",
@@ -718,11 +718,11 @@
       "reader_sha256": "e1fc582faccb2b23d0fcbca4cc1b1e21695876c01ccb34d1802561f001d6e345",
       "race_scenario": "初出走同士で3番や18番の実戦適応が上回る可能性。",
       "five_roles": {
-        "3": "WIN_OR_TOP2",
-        "4": "TOP3_OR_OUTSIDER_RISK",
-        "12": "UNSUITABLE",
-        "13": "TOP3_OR_OUTSIDER_RISK",
-        "18": "TOP2_OR_TOP3"
+        "3": "DEBUT_UNVERIFIED",
+        "4": "DEBUT_UNVERIFIED",
+        "12": "DEBUT_UNVERIFIED",
+        "13": "DEBUT_UNVERIFIED",
+        "18": "DEBUT_UNVERIFIED"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "芝2000m新馬。12・3・18・4・13はいずれも実走なし。",
@@ -748,11 +748,11 @@
       "reader_sha256": "dde719414e40bb0d4d18c8c32ede73517a639baf81e8774fb9e1370773d03808",
       "race_scenario": "3番の同距離経験や1番の上昇力で4番が差される可能性。",
       "five_roles": {
-        "1": "TOP2_OR_TOP3",
-        "2": "TOP3_OR_OUTSIDER_RISK",
-        "3": "WIN_OR_TOP2",
-        "4": "TOP3",
-        "5": "TOP3_OR_OUTSIDER_RISK"
+        "1": "WIN_ROUTE",
+        "2": "TOP3_ROUTE",
+        "3": "WIN_ROUTE",
+        "4": "WIN_ROUTE",
+        "5": "TOP3_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "6頭。4は1600m2着・IDM53、3は1800m3着反復、1は1600m勝ち、5は1800m勝ち、2は1700m勝ち。",
@@ -829,11 +829,11 @@
       "reader_sha256": "25acbfaa5a2ca4815573c551379e4c6385fb5d8d26543cbf043d2499e6c1492e",
       "race_scenario": "4番や12番の同距離実績が展開で上回る可能性。",
       "five_roles": {
-        "4": "TOP2_OR_TOP3",
-        "6": "UNSUITABLE",
-        "12": "TOP3_OR_OUTSIDER_RISK",
-        "13": "WIN_OR_TOP2",
-        "15": "TOP3_OR_OUTSIDER_RISK"
+        "4": "WIN_ROUTE",
+        "6": "WIN_ROUTE",
+        "12": "TOP2_ROUTE",
+        "13": "WIN_ROUTE",
+        "15": "TOP3_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "6は1400m勝ち、13は1200m4着、4は1200m2着、12は1200m2着、15は1200/1400m連対。",
@@ -859,11 +859,11 @@
       "reader_sha256": "28b6519ca35a7a7163a349e879490876632bec4d55c17304bdb4088da4799416",
       "race_scenario": "9番や5番が好位で運ぶと14番の差しが届かない。",
       "five_roles": {
-        "5": "TOP3_OR_OUTSIDER_RISK",
-        "9": "TOP2_OR_TOP3",
-        "10": "TOP3_OR_OUTSIDER_RISK",
-        "12": "WIN_OR_TOP2",
-        "14": "TOP3"
+        "5": "TOP3_ROUTE",
+        "9": "TOP3_ROUTE",
+        "10": "CONDITIONAL_TOP3",
+        "12": "WIN_ROUTE",
+        "14": "WIN_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "14はダ1800m2着・2100m2着、12・9は1800m3着、5・10は1800m4着。",
@@ -920,11 +920,11 @@
       "reader_sha256": "5a62bf936d5cb8b158b1462c4fbcea870b80926d5e11c0bee8c11f4059c3d81c",
       "race_scenario": "4番との能力差が小さく10番の末脚にも逆転余地。",
       "five_roles": {
-        "1": "TOP3_OR_OUTSIDER_RISK",
-        "4": "WIN_OR_TOP2",
-        "5": "TOP3_OR_OUTSIDER_RISK",
-        "6": "UNSUITABLE",
-        "10": "TOP2_OR_TOP3"
+        "1": "WIN_ROUTE",
+        "4": "WIN_ROUTE",
+        "5": "WIN_ROUTE",
+        "6": "WIN_ROUTE",
+        "10": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "6・4・5は芝1600m2着、10は同距離3着反復、1は1600m3着・1800m2着。",
@@ -950,11 +950,11 @@
       "reader_sha256": "b126141c3555bad60a1dd25c4a6d08a856acfa032ae286734407a08070c7bf55",
       "race_scenario": "9番の地力や11番の差しが展開で上回る可能性。",
       "five_roles": {
-        "3": "TOP3",
-        "5": "TOP3_OR_OUTSIDER_RISK",
-        "9": "WIN_OR_TOP2",
-        "10": "TOP3_OR_OUTSIDER_RISK",
-        "11": "TOP2_OR_TOP3"
+        "3": "WIN_ROUTE",
+        "5": "TOP2_ROUTE",
+        "9": "WIN_ROUTE",
+        "10": "TOP3_ROUTE",
+        "11": "TOP2_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "3はダ1800m現級2着・IDM62、9は1600mでIDM60、11は1800m2着、5は1800m3着反復、10は1800m4着。",
@@ -1011,11 +1011,11 @@
       "reader_sha256": "c6cd4f1166d629b532be666ce0c23acfa93d85171566c5265b70d8e5f65a16b2",
       "race_scenario": "12番の2000m安定や13番の連勝上昇に逆転される余地。",
       "five_roles": {
-        "1": "UNSUITABLE",
-        "5": "WIN_OR_TOP2",
-        "12": "TOP2_OR_TOP3",
-        "13": "TOP3_OR_OUTSIDER_RISK",
-        "15": "TOP3_OR_OUTSIDER_RISK"
+        "1": "WIN_ROUTE",
+        "5": "TOP2_ROUTE",
+        "12": "WIN_ROUTE",
+        "13": "WIN_ROUTE",
+        "15": "TOP3_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "1は芝1800/2000mで近走5・6着、5も近走8・9着、12は2000m2着、15は近走13着、13は連勝。",
@@ -1041,11 +1041,11 @@
       "reader_sha256": "5e4df4e3e81798fe6af8cd8866df747318c650566540e103cd5d150462bf6ea4",
       "race_scenario": "8番の先行力や4番の2戦目上積みに逆転される可能性。",
       "five_roles": {
-        "4": "TOP3_OR_OUTSIDER_RISK",
-        "6": "WIN_OR_TOP2",
-        "8": "TOP2_OR_TOP3",
-        "12": "UNSUITABLE",
-        "16": "TOP3_OR_OUTSIDER_RISK"
+        "4": "TOP3_ROUTE",
+        "6": "WIN_ROUTE",
+        "8": "TOP2_ROUTE",
+        "12": "WIN_ROUTE",
+        "16": "TOP3_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "12はマイル3着、8はマイル2着、6はマイル5着、4は同距離3着、16は同距離4着。",
@@ -1071,11 +1071,11 @@
       "reader_sha256": "59e9660deb99eb12a59f9f7247361fbf47a572df33e84545f32269a301f631a9",
       "race_scenario": "12番のダート替わりや7番の末脚が上回る可能性。",
       "five_roles": {
-        "4": "TOP3_OR_OUTSIDER_RISK",
-        "7": "TOP2_OR_TOP3",
-        "8": "TOP3_OR_OUTSIDER_RISK",
-        "11": "UNSUITABLE",
-        "12": "WIN_OR_TOP2"
+        "4": "TOP3_ROUTE",
+        "7": "CONDITIONAL_TOP3",
+        "8": "TOP3_ROUTE",
+        "11": "WIN_ROUTE",
+        "12": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "11はダ1400m2・3着、12は芝で高能力も初ダート、7・4はダ1800m凡走、8はダ1800m3着。",
@@ -1101,11 +1101,11 @@
       "reader_sha256": "1723845dec02c8010378568f05978b1821614d0c79c597496f488b9cea90e008",
       "race_scenario": "12番の同距離先行や3番の1200m2着歴が勝れば逆転される。",
       "five_roles": {
-        "3": "TOP2_OR_TOP3",
-        "6": "TOP3_OR_OUTSIDER_RISK",
-        "12": "WIN_OR_TOP2",
-        "14": "TOP3_OR_OUTSIDER_RISK",
-        "16": "TOP3"
+        "3": "WIN_ROUTE",
+        "6": "TOP3_ROUTE",
+        "12": "WIN_ROUTE",
+        "14": "TOP2_ROUTE",
+        "16": "WIN_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "16は芝1400m連続2着、12は1200m2着、3は同距離2着歴、14は1200m2着、6も1200m3着。",
@@ -1162,11 +1162,11 @@
       "reader_sha256": "c28542cf90aeee1009e822f931c5dfdb4d4a99de41dfe77ea19744071cce609a",
       "race_scenario": "10番や8番が短距離適性を伸ばすと12番が取りこぼす。",
       "five_roles": {
-        "2": "TOP3_OR_OUTSIDER_RISK",
-        "4": "TOP3_OR_OUTSIDER_RISK",
-        "8": "TOP2_OR_TOP3",
-        "10": "WIN_OR_TOP2",
-        "12": "UNSUITABLE"
+        "2": "CONDITIONAL_TOP3",
+        "4": "TOP3_ROUTE",
+        "8": "WIN_ROUTE",
+        "10": "WIN_ROUTE",
+        "12": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "12はダ1150m2着、10は1200m3着、8は1200m2着、4は1200m2着歴、2は1150m4着。",
@@ -1192,11 +1192,11 @@
       "reader_sha256": "14b9b5a3c4b6f14611dbe5a1912f7d1ddfe1b68ad26383981b1a739dddfc0bba",
       "race_scenario": "2番や8番が飛越安定で上回ると9番の上積みを封じる。",
       "five_roles": {
-        "1": "TOP3_OR_OUTSIDER_RISK",
-        "2": "WIN_OR_TOP2",
-        "5": "TOP3_OR_OUTSIDER_RISK",
-        "8": "TOP2_OR_TOP3",
-        "9": "UNSUITABLE"
+        "1": "CONDITIONAL_TOP3",
+        "2": "TOP3_ROUTE",
+        "5": "CONDITIONAL_TOP3",
+        "8": "TOP3_ROUTE",
+        "9": "TOP2_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "障害。9は2850m5着、2は2880m経験、8・1は障害3〜4着、5も障害経験。",
@@ -1222,11 +1222,11 @@
       "reader_sha256": "4387dffda257d757b91bea892f3000d9ded16b484b5bed37814be8ced09fad3f",
       "race_scenario": "7番の上昇や2番の長距離障害適性に逆転される可能性。",
       "five_roles": {
-        "1": "UNSUITABLE",
-        "2": "TOP2_OR_TOP3",
-        "3": "TOP3_OR_OUTSIDER_RISK",
-        "6": "TOP3_OR_OUTSIDER_RISK",
-        "7": "WIN_OR_TOP2"
+        "1": "WIN_ROUTE",
+        "2": "TOP3_ROUTE",
+        "3": "TOP3_ROUTE",
+        "6": "CONDITIONAL_TOP3",
+        "7": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "障害オープン。1は3200m2着・3170m3着、7は3170m3着、2は3570m3着、3は3380m3着、6は同級下位。",
@@ -1252,11 +1252,11 @@
       "reader_sha256": "81f1fce61966d382a82ad4ff9f0f98c71e3f3304481875486ab9ddaf345aa194",
       "race_scenario": "新馬戦で9番や1番の実戦適応が上回る可能性。",
       "five_roles": {
-        "1": "TOP2_OR_TOP3",
-        "6": "TOP3_OR_OUTSIDER_RISK",
-        "9": "WIN_OR_TOP2",
-        "14": "UNSUITABLE",
-        "18": "TOP3_OR_OUTSIDER_RISK"
+        "1": "DEBUT_UNVERIFIED",
+        "6": "DEBUT_UNVERIFIED",
+        "9": "DEBUT_UNVERIFIED",
+        "14": "DEBUT_UNVERIFIED",
+        "18": "DEBUT_UNVERIFIED"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "芝2000m新馬。14・9・1・6・18は予測能力のみ。",
@@ -1282,11 +1282,11 @@
       "reader_sha256": "afeedb0c9715aeb01b856aa8c18b01c1f4cf321f2759f82188c6fdfff9c1dbc6",
       "race_scenario": "15番の差しや2番の能力54が距離延長で上回る可能性。",
       "five_roles": {
-        "1": "TOP3_OR_OUTSIDER_RISK",
-        "2": "TOP2_OR_TOP3",
-        "12": "TOP3",
-        "13": "TOP3_OR_OUTSIDER_RISK",
-        "15": "WIN_OR_TOP2"
+        "1": "TOP2_ROUTE",
+        "2": "WIN_ROUTE",
+        "12": "WIN_ROUTE",
+        "13": "TOP3_ROUTE",
+        "15": "WIN_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "12は芝2600m2着、15は同距離2着、13は2600m3着、2は2200m3着、1は2200m5着。",
@@ -1343,11 +1343,11 @@
       "reader_sha256": "29528ed49fd41e91b526c7e6909d84ccd90cb74cfe755088b3ead6b0653fd7e9",
       "race_scenario": "15番の前走3着や10番の先行力が上回る可能性。",
       "five_roles": {
-        "1": "WIN_OR_TOP2",
-        "3": "UNSUITABLE",
-        "7": "TOP3_OR_OUTSIDER_RISK",
-        "10": "TOP3_OR_OUTSIDER_RISK",
-        "15": "TOP2_OR_TOP3"
+        "1": "WIN_ROUTE",
+        "3": "WIN_ROUTE",
+        "7": "CONDITIONAL_TOP3",
+        "10": "TOP3_ROUTE",
+        "15": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "3は1800m3着反復、15は1700m勝ち・1800m3着、1は1600m4着、10は1700m13着、7は1400m3着。",
@@ -1373,11 +1373,11 @@
       "reader_sha256": "2bc19b9630a4081eae0d71a5d214238f147313ab4ca721cf7246926a91382ceb",
       "race_scenario": "11番の先行や7番の差しが噛み合うと12番が勝ち切れない。",
       "five_roles": {
-        "2": "TOP3_OR_OUTSIDER_RISK",
-        "6": "TOP3_OR_OUTSIDER_RISK",
-        "7": "TOP2_OR_TOP3",
-        "11": "WIN_OR_TOP2",
-        "12": "TOP3"
+        "2": "WIN_ROUTE",
+        "6": "TOP3_ROUTE",
+        "7": "TOP2_ROUTE",
+        "11": "WIN_ROUTE",
+        "12": "WIN_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "12は芝1200mオープン5着、11は同距離2着、7は1400m3着、2は1200m勝ち、6は1200m3着。",
@@ -1434,11 +1434,11 @@
       "reader_sha256": "51506ad7376371badaab85cda7717003e9c383ab6468f0625e8c1f087dce7cfd",
       "race_scenario": "1番の末脚や3番の1700m2着歴に逆転される余地。",
       "five_roles": {
-        "1": "WIN_OR_TOP2",
-        "2": "TOP3_OR_OUTSIDER_RISK",
-        "3": "TOP3_OR_OUTSIDER_RISK",
-        "6": "TOP3",
-        "7": "TOP2_OR_TOP3"
+        "1": "WIN_ROUTE",
+        "2": "TOP3_ROUTE",
+        "3": "WIN_ROUTE",
+        "6": "WIN_ROUTE",
+        "7": "TOP2_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "6は1700m現級2着、1は1800m2着、3も1700m2着、7は1700m5着、2は1700m勝ち。",
@@ -1495,11 +1495,11 @@
       "reader_sha256": "26d8101d9e18f7da6d92878b33ac8fd788918d617b1b32d0af291b68aed62fed",
       "race_scenario": "9番の格や16番の2000m2着実績が上回る可能性。",
       "five_roles": {
-        "3": "TOP3_OR_OUTSIDER_RISK",
-        "7": "UNSUITABLE",
-        "9": "WIN_OR_TOP2",
-        "16": "TOP2_OR_TOP3",
-        "17": "TOP3_OR_OUTSIDER_RISK"
+        "3": "WIN_ROUTE",
+        "7": "WIN_ROUTE",
+        "9": "WIN_ROUTE",
+        "16": "WIN_ROUTE",
+        "17": "WIN_ROUTE"
       },
       "honmei_axis": "UNSUITABLE",
       "partner_structure": "7は1800m2着も近走2200m10着、9はG2勝ちも2000m15着、16・3は2000m実績、17は展開逃げ候補。",
@@ -1525,11 +1525,11 @@
       "reader_sha256": "0f3684eb27b39da2d64eec145a87c399dce2a91cb49f12316f7bb969c2f69f01",
       "race_scenario": "1番の上昇や3番・14番の同距離安定に逆転される可能性。",
       "five_roles": {
-        "1": "WIN_OR_TOP2",
-        "3": "TOP2_OR_TOP3",
-        "4": "TOP3_OR_OUTSIDER_RISK",
-        "6": "TOP3",
-        "14": "TOP3_OR_OUTSIDER_RISK"
+        "1": "WIN_ROUTE",
+        "3": "TOP2_ROUTE",
+        "4": "TOP3_ROUTE",
+        "6": "WIN_ROUTE",
+        "14": "TOP2_ROUTE"
       },
       "honmei_axis": "TOP3",
       "partner_structure": "6は1800〜2000m2着反復、1は1800m勝ち・IDM53、3は1800m2・3着、14は1800m2・3着、4は1800m5着。",
@@ -1572,5 +1572,6 @@
       "evidence_note": "6番は1800〜2000mで2着続き、1番は能力53と調教抜群。",
       "verification_status": "MODEL_AUTHORED_DRAFT_NOT_FROZEN"
     }
-  ]
+  ],
+  "role_authoring_method": "Per-race manually selected role categories from frozen evidence and reviewed five-horse performance, not mark-order defaults."
 }
