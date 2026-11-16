@@ -37,13 +37,71 @@ def policy(annotations):
             "assessments":rows}
 
 
-def generate(t,r,d,a,s,p,pol):
+def regulation(annotations, *, as_of="2026-11-11"):
+    return {"schema":"md-m6-7-regulation-gate-v1","format":"MD_STANDARD",
+            "master_sqlite_sha256":PIN,"effective_on":as_of,
+            "checked_on":as_of,"verification":"REVIEWED_MD_SOURCE",
+            "source_refs":["https://example.org/synthetic-md-regulation"],
+            "card_limits":{a["card_id"]:3 for a in annotations}}
+
+
+def generate(t,r,d,a,s,p,pol,legality=None):
     return recompose_portfolio(r,t,discovery_results=d,annotations=a,
                                material_screen=s,engine_packages=p,
-                               decision_policy=pol)
+                               decision_policy=pol,
+                               regulation_policy=regulation(a) if legality is None else legality)
 
 
 class CompetitiveSelectionTests(unittest.TestCase):
+    def test_regulation_required_before_competitive_construction(self):
+        t,r,d,a,s,p=sample()
+        with self.assertRaisesRegex(ValueError,"MD_REGULATION_POLICY_REQUIRED"):
+            recompose_portfolio(r,t,discovery_results=d,annotations=a,
+                                material_screen=s,engine_packages=p,
+                                decision_policy=policy(a))
+
+    def test_banned_and_limited_cards_cannot_be_adopted(self):
+        t,r,d,a,s,p=sample();limits=regulation(a)
+        limits["card_limits"]["konami:1203"]=0
+        limits["card_limits"]["konami:1000"]=1
+        result=generate(t,r,d,a,s,p,policy(a),limits)
+        self.assertEqual(0,result["solution_count"])
+        self.assertTrue(any(x["reason"]=="REQUIRED_THEME_CARD_UNAVAILABLE"
+                            for x in result["rejected"]))
+        limits["card_limits"]["konami:1000"]=3
+        result=generate(t,r,d,a,s,p,policy(a),limits)
+        self.assertGreater(result["solution_count"],0)
+        for option in result["solutions"]:
+            self.assertNotIn("konami:1203",{c["card_id"] for c in option["candidate"]["cards"]})
+            self.assertTrue(option["md_regulation_gate_applied"])
+
+    def test_regulation_coverage_unknown_and_stale_fail_closed(self):
+        t,r,d,a,s,p=sample();policy_input=policy(a)
+        missing=regulation(a);missing["card_limits"].pop("konami:2000")
+        with self.assertRaisesRegex(ValueError,"MD_REGULATION_INCOMPLETE_CARD_COVERAGE"):
+            generate(t,r,d,a,s,p,policy_input,missing)
+        stale=regulation(a);stale["effective_on"]="2026-09-01";stale["checked_on"]="2026-09-01"
+        with self.assertRaisesRegex(ValueError,"MD_REGULATION_STALE_REVIEW"):
+            generate(t,r,d,a,s,p,policy_input,stale)
+        wrong=regulation(a);wrong["format"]="OCG"
+        with self.assertRaisesRegex(ValueError,"MD_REGULATION_FORMAT_MISMATCH"):
+            generate(t,r,d,a,s,p,policy_input,wrong)
+        unverified=regulation(a);unverified["verification"]="UNVERIFIED_SOURCE"
+        with self.assertRaisesRegex(ValueError,"MD_REGULATION_UNVERIFIED_SOURCE"):
+            generate(t,r,d,a,s,p,policy_input,unverified)
+
+    def test_low_evidence_generic_filler_is_not_misreported_as_best(self):
+        t,r,d,a,s,p=sample();pol=policy(a)
+        item=next(x for x in pol["assessments"] if x["card_id"]=="konami:1202")
+        item["axes"]={k:2 for k in item["axes"]}
+        item["evidence_refs"]=["DB:konami:1202","SOURCE_ONLY"]
+        pol["min_main_score"]=30
+        result=generate(t,r,d,a,s,p,pol)
+        pure=next(x for x in result["solutions"] if x["family"]=="PURE_THEME")
+        self.assertIn("weak_generic_fillers",pure)
+        self.assertTrue(all(x["reason_code"]=="LOW_EVIDENCE_GENERIC_FILLER_RESEARCH_REQUIRED"
+                            for x in pure["weak_generic_fillers"]))
+
     def test_reject_unpinned_policy(self):
         t,r,d,a,s,p=sample()
         pol=policy(a);pol["master_sqlite_sha256"]="f"*64
