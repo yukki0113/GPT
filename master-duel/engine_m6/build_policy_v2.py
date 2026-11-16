@@ -15,7 +15,7 @@ import re
 _SHA=re.compile(r"[0-9a-f]{64}\Z")
 _ID=re.compile(r"konami:[0-9]+\Z")
 _TIERS={"SS":90,"S":80,"A":70,"B":60}
-_REVIEWS={"TEXT_CHECKED","HUMAN_REVIEWED","GAME_TESTED"}
+_REVIEWS={"EVIDENCE_REVIEWED","HUMAN_REVIEWED","GAME_TESTED"}
 _ROOT={"schema","master_sqlite_sha256","as_of","assessments",
        "min_main_score","min_extra_score","required_review_names"}
 _FIELDS={"card_id","section","role","competitive_group",
