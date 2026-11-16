@@ -11,6 +11,8 @@ from pathlib import Path
 SOURCES = [
     "horse-racing/brdb/taxonomy/stage3b_top50_jbis_observations_candidate_v0_1.json",
     "horse-racing/brdb/taxonomy/stage3b_external_top50_pedigrees_candidate_v0_1.json",
+    "horse-racing/brdb/taxonomy/stage4_root_decisions_research_v0_1.json",
+    "horse-racing/brdb/src/brdb_stage4_maternal_granddam.py",
 ]
 
 
