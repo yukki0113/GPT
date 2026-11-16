@@ -67,7 +67,7 @@ v2は各カードに`recommended_max`、`quantity_reason`、`copy_adjustments[3]
 - policy schema: `md-m6-8-evidence-build-policy-v2`。
 - MASTER SQLite SHAと`as_of`を一致させる。評価に使うGame8 URLと確認日、カードIDの`DB:<card_id>`根拠が必須。
 - tier付きカードは原則`general_value=null`（tierと評価の二重取りを禁止）。未掲載はtier点を付けず`general_value`を独立レビュー。
-- 評価に使う`assessment_status`はTEXT_CHECKED/HUMAN_REVIEWED/GAME_TESTEDに限定。単なる検索ヒットやUNVERIFIED_SOURCEは採用評価に昇格させない。
+- 評価に使う`assessment_status`は**EVIDENCE_REVIEWED / HUMAN_REVIEWED / GAME_TESTED**に限定。効果本文を読んだだけの`TEXT_CHECKED`・単なる検索ヒット・UNVERIFIED_SOURCEは、デッキ適合性と枚数理由を審査した扱いにしない。AIが出典付きで判断した場合はEVIDENCE_REVIEWEDとし、人間が確認したと偽らない。
 - v2の全注釈カードは完全に評価済みでなければ構築拒否。必要なテーマminimumがカード別`recommended_max`を超えたら拒否。出張必須部品、混合のクロステーマカードも同じ。
 - `decision_policy_sha256`は凍結入力をカノニカルJSONでSHA-256化した値。**結果を見た後の入力変更は別SHA・別試験**。
 - 古い`md-m6-7-decision-policy-v1`は履歴の互換実行にのみ残し、新規`integrate_private_deck`では`EVIDENCE_COPY_BUILD_POLICY_V2_REQUIRED`で拒否。
