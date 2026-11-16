@@ -10,7 +10,7 @@ import hashlib
 import json
 import re
 from pathlib import Path
-from racenote_v056_contract_gates import check_prediction_audit_comment, check_confidence_review
+from racenote_v056_contract_gates import check_prediction_audit_comment, check_confidence_review, inspect_confidence_card_quality
 from racenote_decision_core_v056 import validate_core
 from racenote_v056_single_day import _validator_reader, confidence_scope
 
@@ -97,10 +97,11 @@ def validate(root: Path, draft: Path, phase: str):
             race = special.get("race") or {}
             z_required = confidence_scope(special)[0] == "OUT_OF_SCOPE"
             check_confidence_review(r, frozen_honmei, z_required=z_required)
+        quality = inspect_confidence_card_quality(records)
         dest = root / "incoming/llm_confidence.json"
     else:
         raise ValueError("Unsupported phase")
-    return {"status": "READY_FOR_V056_INTEGRATION", "phase": phase, "race_count": len(records), "session_id": session["session_id"], "draft_sha256": _sha(draft), "target_path": str(dest), "note": "Validation only: production v056 Freeze workflow not implemented"}
+    return {"confidence_quality": quality if phase == "confidence" else None, "status": "READY_FOR_V056_INTEGRATION", "phase": phase, "race_count": len(records), "session_id": session["session_id"], "draft_sha256": _sha(draft), "target_path": str(dest), "note": "Validation only: production v056 Freeze workflow not implemented"}
 
 def main():
     parser = argparse.ArgumentParser()
