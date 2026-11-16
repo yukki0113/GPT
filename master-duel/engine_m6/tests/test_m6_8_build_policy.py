@@ -1,6 +1,8 @@
 """M6-8 evidence and copy-level regression (fictional cards only)."""
 from copy import deepcopy
 from collections import Counter
+from hashlib import sha256
+import json
 import unittest
 
 from engine_m6.decision_policy import validate_decision_policy, screened_choice
@@ -47,15 +49,37 @@ def v2(annotations):
             "assessments":rows}
 
 
+def fingerprint(pol):
+    return sha256(json.dumps(pol,ensure_ascii=False,sort_keys=True,
+               separators=(",",":")).encode("utf-8")).hexdigest()
+
+
 def run(pol, annotations=None):
     t,req,disc,anns,screen,packages=sample()
     if annotations is not None:anns=annotations
     return recompose_portfolio(req,t,discovery_results=disc,
         annotations=anns,material_screen=screen,engine_packages=packages,
-        decision_policy=pol,regulation_policy=regulation(anns))
+        decision_policy=pol,regulation_policy=regulation(anns),
+        expected_decision_policy_sha256=fingerprint(pol))
 
 
 class EvidencePolicyV2Tests(unittest.TestCase):
+    def test_precommitted_policy_hash_is_mandatory(self):
+        t,req,disc,anns,screen,packages=sample()
+        p=v2(anns)
+        kwargs={"discovery_results":disc,"annotations":anns,
+                "material_screen":screen,"engine_packages":packages,
+                "decision_policy":p,"regulation_policy":regulation(anns)}
+        with self.assertRaisesRegex(ValueError,"V2_POLICY_PRECOMMIT"):
+            recompose_portfolio(req,t,**kwargs)
+        with self.assertRaisesRegex(ValueError,"V2_POLICY_PRECOMMIT"):
+            recompose_portfolio(req,t,expected_decision_policy_sha256="f"*64,
+                                **kwargs)
+        out=recompose_portfolio(req,t,
+                                expected_decision_policy_sha256=fingerprint(p),
+                                **kwargs)
+        self.assertEqual(fingerprint(p),out["decision_policy_sha256"])
+
     def test_tier_prior_is_predeclared_and_not_silent_six_axis_override(self):
         a=sample()[3];p=v2(a)
         mapping=validate_decision_policy(p,master_sha256=PIN)
