@@ -124,3 +124,9 @@ PR branch HEAD `abf24ed48879722d571f259f076baddf639ccdd8` に対するstage3回�
 新規回帰2件：複数親族役割＋不正IDがある場合のフィルタ、また不正IDに`RESOLVED_EXACT`が付与されたら必ず停止する検証。旧来の回帰テストと併せてGitHub Actionsの正規fallbackで最新HEADを再実行する。
 
 **厳密な完了境界**：正本runnerを元Parquet・元JSON・元のJBIS 31 anchor/48 source edgeファイルと一緒に実行した記録はまだ未確認。E2Eがすべて通ったとするには、これらの全入力を使う正本runnerの実測と出力受入ゲートが必要。単体テストと移植実行だけを実データ正本E2Eと呼ばない。
+
+## 2026-11-16：正本E2E最終PASS
+
+上記の未実行ゲートは**解消済み**。GitHub登録の正本ソース7ファイルをActions run `43825782921`からエクスポート・SHA照合し、元の固定Parquetで`run_brdb_stage3c_final_e2e.py`を実行。46直接親子辺（JRDB42/JBIS4）、59ノード、共有祖先候補13の受入判定はPASS、2回の生成ファイルSHAは完全一致した。Stage3B/C回帰テスト73件も全件PASS。詳細は[BRDB_STAGE3C_FINAL_E2E_ACCEPTANCE_20261116.md](BRDB_STAGE3C_FINAL_E2E_ACCEPTANCE_20261116.md)を本工程の最終監査正本とする。
+
+この追記より前に記載した「正本E2E pending」は**実行当時の履歴**であり現在の未解決事項ではない。研究用取り込みを許容するが、`prediction_safe=false`、`AS_OF_UNVERIFIED`は引き続き厳守。
