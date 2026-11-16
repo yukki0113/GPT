@@ -66,7 +66,7 @@ def execute(pedigree: Path, relations: Path, top50_file: Path,
         "resolution_status", "parent_name", "parent_birth_year",
     ]
     relation_rows = database.execute(
-        "SELECT " + ", ".join(relation_columns) + " FROM read_parquet(?)",
+        "SELECT " + ", ".join(relation_columns) + " FROM read_parquet(?) WHERE role IN ('sire', 'dam')",
         [str(relations)],
     ).fetchall()
     records = [dict(zip(relation_columns, row)) for row in relation_rows]
