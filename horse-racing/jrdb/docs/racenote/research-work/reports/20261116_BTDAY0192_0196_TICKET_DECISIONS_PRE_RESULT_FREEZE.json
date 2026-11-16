@@ -1,0 +1,95 @@
+{
+  "schema_version": "racenote-ticket-selection-research-freeze-v0.1",
+  "cohort": "BTDAY-0192_0196",
+  "created_date": "2026-11-16",
+  "status": "PRE_RESULT_TICKET_DECISIONS_FROZEN",
+  "scope": "Independent additive research artifact only; never rewrites original Prediction/Confidence or original Freeze.",
+  "source_cycle": 2,
+  "baseline_file": "20261116_BTDAY0192_0196_TICKET_RESEARCH_BASELINE_LEDGER.json",
+  "baseline_blob_sha": "06ef86675a4879721d71f4c7eda249d02a3532c8",
+  "locked_drafts": [
+    {
+      "file": "20261116_TICKET_SELECTION_DRAFT_BTDAY0192.json",
+      "blob_sha": "82e2331f411b5c18a39a13c537f4bb14bc2bf916",
+      "selection_id": "BTDAY-0192",
+      "target_date": "2025-10-12",
+      "races": 24,
+      "BET": 12,
+      "PASS": 12,
+      "tickets": 78,
+      "stake_yen": 7800
+    },
+    {
+      "file": "20261116_TICKET_SELECTION_DRAFT_BTDAY0193.json",
+      "blob_sha": "dbc9ad26f7ae3eed23ca5fc1e32ed7f56c4c4fcb",
+      "selection_id": "BTDAY-0193",
+      "target_date": "2025-01-25",
+      "races": 36,
+      "BET": 15,
+      "PASS": 21,
+      "tickets": 94,
+      "stake_yen": 9400
+    },
+    {
+      "file": "20261116_TICKET_SELECTION_DRAFT_BTDAY0194.json",
+      "blob_sha": "e8613d6d259a2c3d1c2b3949be44786a3da4a03b",
+      "selection_id": "BTDAY-0194",
+      "target_date": "2025-06-22",
+      "races": 36,
+      "BET": 14,
+      "PASS": 22,
+      "tickets": 82,
+      "stake_yen": 8200
+    },
+    {
+      "file": "20261116_TICKET_SELECTION_DRAFT_BTDAY0195.json",
+      "blob_sha": "b5f9e9de2bf58634a462e0fe371b9cb22d1a03c6",
+      "selection_id": "BTDAY-0195",
+      "target_date": "2025-05-24",
+      "races": 36,
+      "BET": 14,
+      "PASS": 22,
+      "tickets": 88,
+      "stake_yen": 8800
+    },
+    {
+      "file": "20261116_TICKET_SELECTION_DRAFT_BTDAY0196.json",
+      "blob_sha": "972ed439d4c01f17f024a1274af2a1691fb86d30",
+      "selection_id": "BTDAY-0196",
+      "target_date": "2025-11-29",
+      "races": 24,
+      "BET": 9,
+      "PASS": 15,
+      "tickets": 58,
+      "stake_yen": 5800
+    }
+  ],
+  "totals": {
+    "races": 156,
+    "BET": 64,
+    "PASS": 92,
+    "tickets": 400,
+    "stake_yen": 40000
+  },
+  "mechanical_quality": {
+    "status": "PASS",
+    "race_coverage": 156,
+    "duplicate_races": 0,
+    "sha_mark_binding_mismatches": 0,
+    "ticket_shape_or_stake_errors": 0,
+    "role_field_missing": 0,
+    "bet_pass_contradictions": 0
+  },
+  "limitations": [
+    "This is a second-cycle replay cohort, not first-use independent validation.",
+    "Decision authoring considered five frozen marked horses, their recent Reader evidence and original frozen risk/candidate rationale; the full field was not independently re-ranked from scratch.",
+    "Role labels are qualitative; they are not calibrated win/place probabilities.",
+    "Target-day odds were excluded, so selection is a pre-market structural hypothesis, not a demonstrated positive expected value.",
+    "Race-specific narrative quality is not fully established by structural validation; economic validity requires post-freeze settlement."
+  ],
+  "result_data_opened_in_current_work": false,
+  "target_day_market_opened_in_current_work": false,
+  "confidence_grade_used_for_decision": false,
+  "post_freeze_rule": "No BET/PASS/axis/role/strategy/ticket editing after this manifest. A new version must be labeled as post-hoc/exploratory and cannot replace this pre-result research freeze.",
+  "result_unlock": "Allowed only after this freeze has been committed and verified on main."
+}
