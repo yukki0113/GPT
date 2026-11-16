@@ -19,7 +19,7 @@
 
 - v056専用T1 Orchestrator: `.github/workflows/racenote_v056_t1_orchestrator.yml`
 - リクエスト: `horse-racing/jrdb/backtests/requests/orchestrator-v056/<unique>.json`。JSON形式 `{"mode":"NEXT","selection_id":null}` または `{"mode":"EXISTING","selection_id":"BTDAY-NNNN"}`。
-- `NEXT` は2025年Historical Warehouseから日を1つ選び、共有 `racenote_v056_btday_turn1_shared.yml` でT1作成後、`racenote_v056_racezip_delivery.py` でArtifact `racenote-v056-orchestrator-BTDAY-NNNN` を公開する。
+- `NEXT` は統合poolの**未使用・eligible日付から年/sourceを事前固定せず1日をランダム選定**する。選定後、`selection.json.sources[0]` のcanonical source contractで取得経路を分岐する。`historical_warehouse` は受入済みHistorical Warehouse、`paci` はcanonical Drive PACIを使用する。対象日が当日以降の場合はPACI必須。共有 `racenote_v056_btday_turn1_shared.yml` でmarket-blind T1を作成後、`racenote_v056_racezip_delivery.py` でArtifact `racenote-v056-orchestrator-BTDAY-NNNN` を公開する。
 - v056 T1パス `horse-racing/jrdb/backtests/BTDAY-NNNN/YYYYMMDD/v056`。
 - 新T2の機械的実行器: `src/racenote_v056_turn2_two_phase.py`。LLM著述した全レースの `incoming/llm_decisions.json` 提出後 `racenote_v056_llm_prediction_freeze.yml` → mainの `frozen/day_handoff.json` と `frozen/records.json` を照合。
 - 独立したLLM Confidenceを `incoming/llm_confidence.json` 提出後 `racenote_v056_llm_confidence_freeze.yml` → mainの `confidence_frozen/day_handoff.json` と `turn2_summary.json` を照合。
@@ -29,7 +29,7 @@
 ## 予想スレッドが最初にすべきこと
 
 1. mainにv056 tools/workflowsがmerge済みか、CI実行結果と直近SHAを検証。未mergeならT1を起動しない。
-2. 2025年Warehouseの未使用適格日を新v056 orchestratorで選定。既存v055 T1 Orchestratorと**リクエスト先を混同しない**。
+2. 統合BTDAY poolの未使用適格日から新v056 orchestratorでランダム選定する。年やsourceを先に固定しない。選定後のcanonical source（Historical Warehouse / Drive PACI）と日付区分（PAST / UPCOMING）を確認する。既存v055 T1 Orchestratorと**リクエスト先を混同しない**。
 3. NEXTのreserve/t1/deliver各job・Artifact・index/全レースSHAを監視。失敗時は原因を修正して同一BTDAYを再開し、日付を勝手に変更しない。
 4. 全36RのReaderでLLM独立予想・圧縮短評を生成。全レースを揃えてPrediction Freezeを確定。凍結済みPredictionを再予想・変更しない。
 5. 全36Rの◎についてLLMが独立したConfidenceを構造記録付きで判断。Confidence Freezeを確定。結果はこの後の既存cohort gateに従って解禁。
@@ -37,7 +37,7 @@
 
 ## 未検証として扱うもの
 
-- 2025年Warehouse実データのv056 T1→36R著述→二段階Freeze一気通貫は未実施。
+- Historical Warehouse / canonical Drive PACI の双方をBTDAY sourceとして扱う統合NEXTは、変更後の実データ初回起動で受入確認する。PACI経路も結果・当日市場をPrediction/Confidence Freeze前に開かない。
 - FORWARD PACI T1は `racenote_v056_forward_turn1.py` と `racenote_v056_forward_paci_t1.yml` で実装。PACIは既存Driveの `PACI` フォルダを正本とし、`racenote_v056_forward_drive_paci.py` で指定Drive IDから取得。JRDB直接再取得は禁止。日次の本番入力受入は未実施。新聞清書・PWA連携は未実装・未受入。指示書 `RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md` を参照。
 - T1の直後に生成したReader ZIPを受けたLLMの実予想作業は、予想スレッド側の責務。
 - `config/racenote_forecast_logic_current.json` の古いresearch pointerに依存せず、初回実験は明示的v056のworkflow/contractを指定する。成功までcurrentを一括変更しない。
