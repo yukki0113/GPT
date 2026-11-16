@@ -122,6 +122,17 @@ def _read_only_audit(db, sqlite_sha, generation, decision_overrides, *, regulati
                 if isinstance(regulation_policy,dict) and
                 regulation_policy.get("schema")=="md-regulation-accepted-baseline-v1"
                 else None)
+            if accepted_limits is not None:
+                accepted_ids=set(regulation_policy["baseline_entries"])
+                _catalog_ids={r[0] for r in conn.execute("SELECT card_id FROM cards")}
+                if not accepted_ids.issubset(_catalog_ids):
+                    raise ValueError("ACCEPTED_BASELINE_CARD_IDS_NOT_IN_CURRENT_DB")
+                if regulation_policy["master_sqlite_sha256"]==sqlite_sha:
+                    if (regulation_policy["baseline_snapshot_id"]!=sid or
+                        regulation_policy["baseline_effective_on"]!=effective or
+                        regulation_policy["original_source_verification"]!=verification or
+                        regulation_policy["baseline_entries"]!=restrictions):
+                        raise ValueError("ACCEPTED_BASELINE_SOURCE_SNAPSHOT_MISMATCH")
             inventory_sha = _digest(json.dumps(
                 rows, ensure_ascii=False, separators=(",",":"), allow_nan=False
             ).encode("utf-8"))
