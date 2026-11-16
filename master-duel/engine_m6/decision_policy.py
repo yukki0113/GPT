@@ -85,7 +85,12 @@ def policy_score(assessment, *, competing_selected=0, role_selected=0):
     value=(axes["baseline"]*4+axes["meta_fit"]*4+
            axes["deck_fit"]*5+axes["tempo"]*3+
            axes["resource_efficiency"]*2+axes["role_need"]*2)
-    return max(0,value-min(18,competing_selected*3)-min(12,role_selected))
+    # Role diversity is a tie-breaker, not a blanket veto against strong
+    # staples. In the real Suship replay, Ash/Imperm consumed the broad
+    # INTERRUPTION group and pushed independently useful Droll/Nibiru below
+    # lower-baseline traps. Role_need is already scored in the six axes;
+    # applying another 30-point penalty double-counted overlap.
+    return max(0,value-min(10,competing_selected*2)-min(4,role_selected//3))
 
 
 def screened_choice(record, policy_map, *, counts, zone):
