@@ -11,6 +11,7 @@ from .schema import validate_request, validate_candidate
 from .rebuild import rebuild_from_discovery
 from .dependency import inspect_packages
 from .decision_policy import validate_decision_policy, screened_choice
+from .regulation_gate import validate_regulation_policy
 
 FAMILIES=("PURE_THEME","THEME_WITH_ENGINE","MIXED_REDESIGN")
 CATEGORIES={"THEME_CORE","THEME_OPTION","CROSS_THEME","OWNED_GENERIC",
@@ -121,7 +122,7 @@ def _selected_families(records,packages):
 
 
 def _select_variant(request,teacher,discoveries,records, *,
-                    family,packages,extra_screens,staple_goal,engine_id,policy_map=None,decision_policy=None):
+                    family,packages,extra_screens,staple_goal,engine_id,policy_map=None,decision_policy=None,regulation_limits=None):
     selected=Counter()
     rejected=[]
     selection_trace=[]
@@ -154,7 +155,7 @@ def _select_variant(request,teacher,discoveries,records, *,
             if not part["minimum"]:continue
             key=(part["section"],part["card_id"])
             record=records.get(key)
-            if record is None or _available(record,request)<part["minimum"]:
+            if record is None or min(_available(record,request), regulation_limits[part["card_id"]] if regulation_limits is not None else 3)<part["minimum"]:
                 return None,{"family":family,"engine":engine_id,
                              "reason":"ENGINE_REQUIRED_PART_MISSING",
                              "missing":part["card_id"]}
@@ -166,7 +167,7 @@ def _select_variant(request,teacher,discoveries,records, *,
             selected[key]=max(selected[key],part["minimum"])
     for r in base:
         a=r["annotation"];key=(a["section"],a["card_id"])
-        if _available(r,request)<a["minimum"]:
+        if min(_available(r,request), regulation_limits[a["card_id"]] if regulation_limits is not None else 3)<a["minimum"]:
             return None,{"family":family,"engine":engine_id,
                          "reason":"REQUIRED_THEME_CARD_UNAVAILABLE",
                          "card_id":a["card_id"]}
@@ -186,12 +187,12 @@ def _select_variant(request,teacher,discoveries,records, *,
                      r["annotation"]["package_id"] in selected_pkg_ids)]
     if family=="MIXED_REDESIGN":
         if not any(r["annotation"]["category"]=="CROSS_THEME"
-                   and _available(r,request)>0 for r in candidates):
+                   and min(_available(r,request), regulation_limits[r["annotation"]["card_id"]] if regulation_limits is not None else 3)>0 for r in candidates):
             return None,{"family":family,"engine":engine_id,"reason":"CROSS_THEME_UNAVAILABLE"}
     # Prevent a "mixed" deck that never adopts a cross-theme card.
     if family=="MIXED_REDESIGN":
         cross=sorted((r for r in candidates if r["annotation"]["category"]=="CROSS_THEME"
-                      and _available(r,request)>0),key=lambda r:
+                      and min(_available(r,request), regulation_limits[r["annotation"]["card_id"]] if regulation_limits is not None else 3)>0),key=lambda r:
                      (-r["annotation"]["priority"],r["annotation"]["card_id"]))[0]
         a=cross["annotation"];selected["MAIN",a["card_id"]]=max(
             selected["MAIN",a["card_id"]],max(1,a["minimum"]))
@@ -209,7 +210,7 @@ def _select_variant(request,teacher,discoveries,records, *,
         need_more_strategy=non_generic_count<min(28,target_main) if policy_map is None else False
         for r in candidates:
             a=r["annotation"];key=("MAIN",a["card_id"])
-            if selected[key]>=_available(r,request):continue
+            if selected[key]>=min(_available(r,request), regulation_limits[a["card_id"]] if regulation_limits is not None else 3):continue
             desire=max(0,TARGETS.get(a["role"],0)-role_counts[a["role"]])
             # The engine/core first establishes the strategy; owned generic
             # completes the remaining functional roles in a second pass.
@@ -278,7 +279,7 @@ def _select_variant(request,teacher,discoveries,records, *,
         choices=[]
         for r in extras:
             a=r["annotation"];cid=a["card_id"]
-            if selected["EXTRA",cid]>=_available(r,request):continue
+            if selected["EXTRA",cid]>=min(_available(r,request), regulation_limits[cid] if regulation_limits is not None else 3):continue
             screen=screens.get(cid)
             if screen is None or screen["screen"]!="POSSIBLE_ON_PAPER":
                 rejected.append({"card_id":cid,"section":"EXTRA",
@@ -321,6 +322,22 @@ def _select_variant(request,teacher,discoveries,records, *,
     extra_completion_status=("FULL_15_OR_CONFIGURED_CAP" if ex_count==cap_extra else
                              "EX_SLOTS_UNFILLED_RESEARCH_REQUIRED")
     extra_shortfall=cap_extra-ex_count
+    # Distinguish low-evidence 40-card fillers from fully researched staples.
+    weak_generic_fillers=[]
+    if policy_map is not None:
+        seen=set()
+        for trace in selection_trace:
+            cid=trace["card_id"]
+            if (trace["section"]!="MAIN" or cid in seen or
+                    trace.get("score",101)>=50 or
+                    "SOURCE_ONLY" not in trace.get("evidence_refs",[]) or
+                    records[("MAIN",cid)]["annotation"]["category"]!="OWNED_GENERIC"):
+                continue
+            seen.add(cid)
+            weak_generic_fillers.append({
+                "card_id":cid,"selected_quantity":selected["MAIN",cid],
+                "score_at_selection":trace["score"],
+                "reason_code":"LOW_EVIDENCE_GENERIC_FILLER_RESEARCH_REQUIRED"})
     # Compare every sourced option, including skipped owned cards and
     # candidates which a cost/ownership gate makes unavailable.
     comparisons=[]
@@ -329,13 +346,13 @@ def _select_variant(request,teacher,discoveries,records, *,
             ann=record["annotation"]
             selected_qty=selected[(sec,cid)]
             rated=policy_map.get((sec,cid))
-            possible=_available(record,request)
+            possible=min(_available(record,request), regulation_limits[cid] if regulation_limits is not None else 3)
             if selected_qty:
                 verdict="ADOPT"
                 why="SELECTED_AFTER_COMPARATIVE_SCORING"
             elif possible==0:
                 verdict="EXCLUDE"
-                why="OWNERSHIP_OR_UR_MODE_CONSTRAINT"
+                why="MD_REGULATION_LIMIT_ZERO" if regulation_limits is not None and regulation_limits[cid]==0 else "OWNERSHIP_OR_UR_MODE_CONSTRAINT"
             elif rated is None:
                 verdict="REVIEW_REQUIRED"
                 why="MISSING_COMPETITIVE_ASSESSMENT"
@@ -401,7 +418,10 @@ def _select_variant(request,teacher,discoveries,records, *,
       "extra_rejected":rejected,
       "competitive_decisions":selection_trace,
       "competitive_policy_applied":policy_map is not None,
+      "md_regulation_gate_applied":regulation_limits is not None,
       "competitive_candidate_comparisons":comparisons,
+      "weak_generic_fillers":weak_generic_fillers,
+      "competitive_coverage_status":"REVIEW_REQUIRED_WEAK_GENERIC_FILLERS" if weak_generic_fillers else "REVIEW_REQUIRED_GAMEPLAY_UNVERIFIED",
       "selected_packages":selected_pkg_ids,
       "package_review":preview,
       "status":"STRUCTURAL_RECOMPOSITION_REVIEW_REQUIRED",
@@ -414,7 +434,7 @@ def _select_variant(request,teacher,discoveries,records, *,
 
 def recompose_portfolio(request,teacher_candidate, *, discovery_results,
                         annotations, material_screen, engine_packages=(),
-                        max_solutions=None,decision_policy=None):
+                        max_solutions=None,decision_policy=None,regulation_policy=None):
     """Deterministic pure/engine/mixed alternative enumeration.
 
     Requires all card options to originate from *current* SHA-pinned DB
@@ -439,6 +459,16 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
              "bounded solution limit")
     cap=min(max_solutions or request["max_variants"],request["max_variants"])
     records=_validated_catalog(teacher_candidate,discovery_results,annotations)
+    # Competitive construction is blocked until every candidate has a
+    # reviewed, dated, explicitly sourced MD-specific copy limit.
+    if decision_policy is not None and regulation_policy is None:
+        raise ValueError("MD_REGULATION_POLICY_REQUIRED_BEFORE_CONSTRUCTION")
+    regulation_limits=(validate_regulation_policy(
+        regulation_policy,
+        master_sha256=teacher_candidate["lineage"]["source_master_sha256"],
+        as_of=request["as_of"],
+        candidate_ids=[cid for (_,cid) in records])
+        if regulation_policy is not None else None)
     truncated_source_searches=sum(bool(d.get("truncated")) for d in discovery_results)
     policy_map=(validate_decision_policy(decision_policy,
         master_sha256=teacher_candidate["lineage"]["source_master_sha256"])
@@ -488,7 +518,8 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
         item,why=_select_variant(request,teacher_candidate,discovery_results,records,
                  family=family,packages=engine_packages,extra_screens=material_screen,
                  staple_goal=TARGETS,engine_id=pid,
-                 policy_map=policy_map,decision_policy=decision_policy)
+                 policy_map=policy_map,decision_policy=decision_policy,
+                 regulation_limits=regulation_limits)
         if why:
             rejections.append(why)
             continue
@@ -504,6 +535,7 @@ def recompose_portfolio(request,teacher_candidate, *, discovery_results,
             "master_sqlite_sha256":teacher_candidate["lineage"]["source_master_sha256"],
             "solutions":solutions,"rejected":rejections,
             "competitive_policy_applied":policy_map is not None,
+            "md_regulation_gate_applied":regulation_limits is not None,
             "policy_mode":"EVIDENCE_SCORED" if policy_map is not None else "LEGACY_HEURISTIC",
             "policy_assessment_gaps":policy_assessment_gaps,
             "policy_source_gaps":policy_source_gaps,
