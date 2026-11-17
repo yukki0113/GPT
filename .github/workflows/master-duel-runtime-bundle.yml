@@ -29,7 +29,7 @@ jobs:
           find dist/runtime -type d -name '__pycache__' -prune -exec rm -rf {} +
           find dist/runtime -type f -name '*.pyc' -delete
           printf '%s\n' "${GITHUB_SHA}" > dist/runtime/GIT_COMMIT_SHA.txt
-          (cd dist/runtime && find . -type f -print0 | sort -z | xargs -0 sha256sum > FILE_SHA256SUMS.txt)
+          (cd dist/runtime && find . -type f ! -name 'FILE_SHA256SUMS.txt' -print0 | sort -z | xargs -0 sha256sum > FILE_SHA256SUMS.txt)
           (cd dist/runtime && zip -qr ../md-m68-runtime.zip .)
           sha256sum dist/md-m68-runtime.zip
       - uses: actions/upload-artifact@v4
