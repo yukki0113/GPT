@@ -185,7 +185,7 @@ class TestM7EvidenceAdapter(unittest.TestCase):
         with self.assertRaises(M7FieldError):
             build_v02(context, receipt, source, pairing=pairing, relatives=relatives)
 
-    def test_③_lineage_asof_promotion_rejected(self):
+    def test_pair_lineage_asof_promotion_rejected(self):
         context, receipt, source, pairing, relatives = inputs()
         pairing["prediction_safe"] = True
         with self.assertRaises(M7FieldError):
@@ -197,7 +197,7 @@ class TestM7EvidenceAdapter(unittest.TestCase):
         with self.assertRaises(M7FieldError):
             build_v02(context, receipt, source, pairing=pairing, relatives=relatives)
 
-    def test_④_future_relative_profile_rejected(self):
+    def test_relatives_future_profile_rejected(self):
         context, receipt, source, pairing, relatives = inputs()
         relatives["horses"][0]["relatives"][0]["profile_data_date"] = "20261116"
         with self.assertRaises(M7FieldError):
