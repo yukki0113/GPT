@@ -40,15 +40,31 @@ class Store:
     def _validate_schema(self):
         try:
             versions = [row[0] for row in self.db.execute('SELECT version FROM schema_migrations ORDER BY version')]
-            if versions not in ([VERSION], [VERSION, 2]):
+            if versions not in ([VERSION], [VERSION, 2], [VERSION, 2, 3]):
                 raise ValueError('unsupported schema version')
-            if versions == [VERSION, 2]:
+            if versions in ([VERSION, 2], [VERSION, 2, 3]):
                 columns = [r[1] for r in self.db.execute('PRAGMA table_info(card_monster_types)')]
                 if columns != ['card_id','monster_type','source','verification']:
                     raise ValueError('missing or invalid v2 monster types table')
                 indices = [r[1] for r in self.db.execute("PRAGMA index_list(card_monster_types)")]
                 if 'idx_card_monster_types_type' not in indices:
                     raise ValueError('missing monster type search index')
+            if versions == [VERSION, 2, 3]:
+                for table, expected_columns, index in (
+                    ('card_spell_trap_properties',
+                     ['card_id','property','source','verification'],
+                     'idx_card_spell_trap_property'),
+                    ('card_link_markers',
+                     ['card_id','arrow','source','verification'],
+                     'idx_card_link_markers_arrow'),
+                    ('card_pendulum_details',
+                     ['card_id','scale','ja_pendulum_effect','source','verification'], None)):
+                    columns=[r[1] for r in self.db.execute(f'PRAGMA table_info({table})')]
+                    if columns!=expected_columns:
+                        raise ValueError('missing or invalid v3 card property table: '+table)
+                    if index and index not in [
+                            r[1] for r in self.db.execute(f'PRAGMA index_list({table})')]:
+                        raise ValueError('missing v3 property index: '+index)
             # Compare all required table definitions against the canonical migration.
             reference = sqlite3.connect(':memory:')
             try:
