@@ -1,0 +1,58 @@
+{
+  "schema_version": "brdb-stage3b-root-parent-aliases-research-v0.1",
+  "research_only": true,
+  "prediction_safe": false,
+  "historical_asof_status": "AS_OF_UNVERIFIED",
+  "policy": "EXPLICIT_PAIR_ONLY_NO_TRANSLITERATION_OR_FUZZY_MATCH",
+  "aliases": [
+    {
+      "target": "リアルスティール",
+      "role": "dam",
+      "jrdb": "ラヴスオンリーミー",
+      "external": "ラヴズオンリーミー",
+      "basis": "JBIS_AND_JRA_SAME_ROOT_PROFILE"
+    },
+    {
+      "target": "シンボリクリスエス",
+      "role": "sire",
+      "jrdb": "クリスエス",
+      "external": "Kris S.",
+      "basis": "JBIS_AND_JRA_SAME_ROOT_PROFILE"
+    },
+    {
+      "target": "シンボリクリスエス",
+      "role": "dam",
+      "jrdb": "ティーケイ",
+      "external": "Tee Kay",
+      "basis": "JBIS_AND_JRA_SAME_ROOT_PROFILE"
+    },
+    {
+      "target": "モズアスコット",
+      "role": "sire",
+      "jrdb": "フランケル",
+      "external": "Frankel",
+      "basis": "JBIS_AND_JRA_SAME_ROOT_PROFILE"
+    },
+    {
+      "target": "モズアスコット",
+      "role": "dam",
+      "jrdb": "インディア",
+      "external": "India",
+      "basis": "JBIS_AND_JRA_SAME_ROOT_PROFILE"
+    },
+    {
+      "target": "タワーオブロンドン",
+      "role": "sire",
+      "jrdb": "レイヴンズパス",
+      "external": "Raven's Pass",
+      "basis": "JBIS_AND_JRA_SAME_ROOT_PROFILE"
+    },
+    {
+      "target": "ヘニーヒューズ",
+      "role": "sire",
+      "jrdb": "Hennessy",
+      "external": "ヘネシー",
+      "basis": "SAME_JBIS_ROOT_ID_SEED_VS_PROFILE"
+    }
+  ]
+}
