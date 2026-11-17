@@ -332,3 +332,10 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - D4の既存非採点補足66件を変更せずv0.3へ結合。2回の独立した①〜④実再集計から生成したv0.2/v0.3のSHAが完全一致。両JSON Schema PASS、正本コードで19件の追加合成回帰PASS、Library `/BRDB/M7/` に非公開保存し読み戻しSHAも確認。
 - **M7研究用実レースE2EはPASSだが、本番昇格は未承認。** ③④は歴史的as-of未検証、適性正負・要因・summary・スコア・confidence昇格なし。④条件別の各近親数値は既存v0.2へ情報損失なく格納できないため、研究用原本を保持し統合契約には関係IDを表示。
 - 次は資格付けされた解釈規則、必要な④非損失補足契約、consumer回帰、明示的本番受入。M6 [#2395](https://github.com/yukki0113/GPT/issues/2395) の正式科学的予測ゲートは引き続きBLOCKED。BRDB CURRENT、RaceNote、PWA、新聞は未変更。
+
+## 2026-11-17 — M7 ④非損失詳細サイドカーと研究用consumer境界
+
+- [④詳細研究契約・受入証跡](docs/BRDB_M7_RELATIVES_DETAIL_RESEARCH_CONTRACT_v0_1_20261117.md) / [PR #2633](https://github.com/yukki0113/GPT/pull/2633): 前工程のv0.3で保持できなかった④近親別の5条件成績を、**元の④研究JSON全体を忠実保持する別サイドカー**として受入。18頭、近親75件、375条件観測、うち0走285セルの率は`null`維持。
+- 新規の研究用consumer previewは、①②を記述統計、③④を過去時点未検証として表示**候補の状態コード**に限定。旧Newspaper handoffがv0.3/previewを誤受理しない回帰を実施。予想、ランク、スコア、印、confidence昇格は実装せず。
+- 37件のM7ローカル回帰およびGitHub BRDB/リポジトリ横断CIがPASS。私的成果物はLibrary `/BRDB/M7/` へ保存、3ファイルSHA読み戻し一致。
+- **研究用契約は受入済み。本番統合/表示受入は未承認。** M6 [#2395](https://github.com/yukki0113/GPT/issues/2395) はBLOCKEDのまま、CURRENT・RaceNote・PWA・新聞・既存v0.1/v0.2/v0.3を変更していない。
