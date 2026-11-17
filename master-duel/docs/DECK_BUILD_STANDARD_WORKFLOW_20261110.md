@@ -1,3 +1,5 @@
+> **2026-11-17 現行正本 Gen8**：魔法・罠property、リンク値・マーカー、ペンデュラムスケール・日本語P効果がSQLite schema v3で登録済み。M6-5Aではモンスター種別のDB分類とリンク値を使用し、魔法・罠種別は`card_spell_trap_properties`を参照する。EX素材の自動判定はこれら基本属性があるだけでは成立しない。元効果文と素材条件に根拠がない場合は`REQUIRES_REVIEW`を維持。旧Gen7/Gen6のSHA固定成果物は別世代・別SHAに移行する。[監査](GEN8_STAGE1_CARD_PROPERTIES_PRODUCTION_AUDIT_20261117.md)。
+
 > **2026-11-17 正本DB Gen7更新**：最新HEADはGen7（monster type分類付きSQLite schema v2）。カード種別の検索はM6-5Aの`card_monster_types`を優先し、FUSION/SYNCHRO/XYZ/LINK判定をカード効果本文の単語だけから行わない。旧Gen6固定のM5C/評価入力・規制参照はGen7へ正規再発行して別SHAで扱い、無言で再ピンしない。所持184種類・禁止制限215件の内容は不変。[監査](GEN7_MONSTER_TYPES_PRODUCTION_MIGRATION_AUDIT_20261117.md)。
 
 > **2026-11-17 融合テーマ・独立スレッド実行（現行優先）**：構築スレッドでは既存M6-8 Python本体を使い、GitHubに直接接続できない環境はActions配布のコミット固定ZIPを取得する。融合EXはM6-5Aでレベルを持つ素材列挙カードも候補に含め、M6-5Bは出典付き素材証拠が一致する場合のみ`POSSIBLE_ON_PAPER`。事前固定した独自JSONが正式v2形式でなければ元ファイルを保持し、新しい入力SHAの別試験にする。入力が揃わなければ明確に未実行として報告し、類似比較器を再作成しない。[正式実行手順](M6_8_FUSION_AND_OFFLINE_RUNTIME_WORKFLOW_20261117.md)。
