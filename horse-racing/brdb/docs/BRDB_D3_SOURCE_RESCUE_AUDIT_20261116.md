@@ -1,6 +1,6 @@
 # BRDB D3 fixed-source rescue audit — 2026-11-16
 
-Status: **ALL FIXED INPUTS RECOVERED AND VERIFIED / ACTIONS FALLBACK ROUTING NOT YET COMPLETE**. A local DuckDB package restriction is *not* a project-level execution blocker.
+Status: **ALL FIXED INPUTS RECOVERED AND VERIFIED / ACTIONS FALLBACK IS THE APPROVED NEXT ROUTE**. A local DuckDB package restriction is *not* a project-level execution blocker.
 
 ## Recovered canonical inputs
 
@@ -24,12 +24,14 @@ The execution environment lacked `duckdb`; a single normal dependency-install at
 
 The repository's authoritative route is `tools/data-storage/README.md` -> `tools/data-storage/docs/CODEX_LOCAL_FIRST_ACTIONS_FALLBACK.md` -> `[DATA_STORAGE_FALLBACK]` issue -> `.github/workflows/data_storage_fallback_issue.yml`, after determining whether the private-input transfer meets licensing and the approved transport contract. The prior report incorrectly stopped at local install failure without resolving this fallback route.
 
-**Transport eligibility preflight, 2026-11-16:**
-- The 2016 Parquet Drive file and Stage3B audit ZIP were observed with `anyone:reader` metadata. This alone **does not prove that the JRDB data license permits anonymous Actions downloads**.
-- The reviewed public-drive manifest, if created, must contain exact file IDs, expected names, sizes and SHA-256 and must be approved for this source. Avoid publishing private licensed assets or creating newly public permissions.
-- If licensed public fetching is permitted: use `public_drive_inputs` or the documented dynamic registry route, and retain canonical DuckDB execution in Actions.
-- If authenticated/private transport is required: the optional encrypted bridge is documented in `tools/data-storage/docs/DRIVE_GPT_ACTIONS_BRIDGE.md`, but its own runbook states the requisite RSA Actions secret was **not configured**, and the bridge requires an additional authorized scoped GH_TOKEN; do not imply it is already runnable.
-- No GitHub Actions run was initiated for D3 reconstruction during this task because no approved transport for these **licensed fixed inputs** had been established.
+**Project routing correction, 2026-11-17:**
+- The prior transport/licensing blocker language was incorrect for this Project. It improperly overrode the Project's established source/transport policy with a new general interpretation.
+- `PROJECT_SOURCES_GUIDE_261102.md` establishes the normal Drive permission model as **"link-shared viewer"** and requires `tools/data-storage/` bootstrap/fallback for Parquet/DuckDB work.
+- `tools/data-storage/docs/DYNAMIC_DRIVE_MANIFEST_RUNBOOK.md` records a real JRDB Drive -> Actions -> DuckDB E2E PASS and explicitly states that the user's established folder-wide link-sharing policy remains unchanged.
+- Therefore D3 reconstruction must follow the existing approved Data Storage fallback route using exact Drive IDs, size/SHA pins and the repository's standard public/dynamic Drive transport. Do **not** introduce a new license gate or require a permission model change unless the Project policy itself is amended.
+- Raw JRDB bytes still must not be committed to Git, embedded in Issues, or published as result artifacts; the existing fallback already preserves that boundary.
+- The next action is to prepare the fixed D3 source request and execute it via `[DATA_STORAGE_FALLBACK]`, then inspect the audit/artifact and verify the three frozen D3 output SHAs.
+
 
 **No new D3 output JSON was produced in this turn.** Prior documented expected SHA-256 remain the acceptance pins:
 - `d3_full_condition_evidence.json`: `705a85d4c43b369b14cbba9177f5af13ed3111f1a5031a97ee76acf51064e764`
