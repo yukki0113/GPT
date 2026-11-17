@@ -13,6 +13,7 @@ except ImportError:
 
 BASE=json.loads((ROOT/'tests/fixtures/brdb_integrated_review_v0_2_candidate_example.json').read_text(encoding='utf-8'))
 SCHEMA=json.loads((ROOT/'schema/brdb_integrated_review_v0_3_candidate.schema.json').read_text(encoding='utf-8'))
+EXAMPLE_V03=json.loads((ROOT/'tests/fixtures/brdb_integrated_review_v0_3_candidate_example.json').read_text(encoding='utf-8'))
 
 
 def sidecar():
@@ -47,6 +48,12 @@ class TestIntegratedV03(unittest.TestCase):
         if jsonschema is not None:
             jsonschema.Draft202012Validator.check_schema(SCHEMA)
             jsonschema.Draft202012Validator(SCHEMA,format_checker=jsonschema.FormatChecker()).validate(payload)
+
+    def test_fixture_is_valid(self):
+        self.validate_schema(EXAMPLE_V03)
+
+    def test_merge_matches_fixed_fixture(self):
+        self.assertEqual(merge(copy.deepcopy(BASE),sidecar()), EXAMPLE_V03)
 
     def test_valid_merge_and_schema(self):
         out=merge(copy.deepcopy(BASE),sidecar())
