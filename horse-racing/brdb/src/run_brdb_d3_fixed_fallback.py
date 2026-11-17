@@ -49,7 +49,7 @@ def execute(input_root: Path, output_dir: Path) -> dict:
                 'status': 'CURRENT',
                 'generation_id': GENERATION,
                 'manifest': f'generations/{GENERATION}/manifest.json'
-            }, ensure_ascii=False, sort_keys=True, indent=2) + '\n',
+            }, ensure_ascii=False, indent=2) + '\n',
             encoding='utf-8'
         )
         _safe_extract_top50(archive, workspace / 'stage3b_top50_master_research.json')
