@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "paci_20261115",
+      "file_id": "1wVcoTvNw38nFaPcDWJme-zMsl6MobR3l",
+      "destination": "PACI261115.zip",
+      "expected_name": "PACI261115.zip",
+      "expected_size": 565352,
+      "sha256": "3c80e70a74a13874a82b7f7cf4c5f9415d6abbf186ec0ccfa1d2842e51a7b050"
+    }
+  ]
+}
