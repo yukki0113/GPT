@@ -11,6 +11,7 @@ from pathlib import Path
 import json, re, sqlite3
 from .material_eligibility import diagnose_qualified_materials
 from .extended_material_eligibility import diagnose_extended_link_materials
+from .identity_material_evidence import diagnose_identity_claims
 
 CID=re.compile(r'konami:[0-9]+\Z')
 SHA=re.compile(r'[0-9a-f]{64}\Z')
@@ -18,7 +19,7 @@ METHODS={'FUSION','SYNCHRO','XYZ','LINK'}
 
 
 def screen_structured_extra_materials(db_path, *, expected_sqlite_sha256,
-                                      extra_card_ids, proposed_routes=()):
+                                      extra_card_ids, proposed_routes=(), identity_evidence=()):
     """Produce M6-5B schema-compatible screen from explicit source evidence.
 
     proposed_routes elements contain EXACT keys:
@@ -46,6 +47,18 @@ def screen_structured_extra_materials(db_path, *, expected_sqlite_sha256,
     keys={'extra_card_id','summon_method','material_card_ids','evidence_ids',
           'simultaneous_state_evidence_ids','summon_method_evidence_ids',
           'restriction_review','material_labels','link_material_ratings'}
+    if not isinstance(identity_evidence,(list,tuple)) or len(identity_evidence)>120:
+        raise ValueError('IDENTITY_EVIDENCE_INVALID')
+    identity_by_extra={}
+    for bundle in identity_evidence:
+        if (not isinstance(bundle,dict) or
+            set(bundle)!={'master_sqlite_sha256','extra_card_id',
+                         'material_header_sha256','occurrences'}):
+            raise ValueError('IDENTITY_EVIDENCE_CONTRACT')
+        target=bundle['extra_card_id']
+        if target not in extra_card_ids or target in identity_by_extra:
+            raise ValueError('IDENTITY_EVIDENCE_TARGET_INVALID')
+        identity_by_extra[target]=bundle
     by_extra={}
     for r in proposed_routes:
         if not isinstance(r,dict) or set(r)!=keys:
@@ -127,6 +140,20 @@ def screen_structured_extra_materials(db_path, *, expected_sqlite_sha256,
                                 reason='QUALIFIED_MATERIAL_'+status+'_'+detail
                         elif detail!='UNPARSED_SOURCE_GRAMMAR':
                             reason='QUALIFIED_MATERIAL_'+status+'_'+detail
+                    # Identity claims are a separate, opt-in evidence bundle.
+                    # Even REVIEWED means only caller-reviewed, not official
+                    # membership or an authenticated live board state.
+                    if eid in identity_by_extra:
+                        istatus,ireason=diagnose_identity_claims(
+                            con,method=req['summon_method'],
+                            header=req['material_header'],extra_card_id=eid,
+                            material_card_ids=mat_ids,
+                            expected_sqlite_sha256=expected_sqlite_sha256,
+                            evidence=identity_by_extra[eid],
+                            link_material_ratings=route['link_material_ratings'],
+                            target_link=target_link)
+                        if ireason!='IDENTITY_SOURCE_GRAMMAR_UNSUPPORTED':
+                            reason='IDENTITY_'+istatus+'_'+ireason
                 elif route['restriction_review']!='REVIEWED':
                     reason='SUMMON_RESTRICTIONS_NOT_REVIEWED'
                 else:
