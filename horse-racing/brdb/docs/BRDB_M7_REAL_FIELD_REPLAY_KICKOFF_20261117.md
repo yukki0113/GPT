@@ -30,3 +30,9 @@ Issue #2395 stays OPEN/BLOCKED. Conditional 2016–2025 retrospective evidence d
 
 ## Absolute non-goals
 No CURRENT pointer change; no RaceNote/PWA/Newspaper deployment; no change to frozen `brdb-review-v0.1` or v0.2 candidate contract; no scoring/positive-negative factor generation; no unreviewed lineage crosswalk; `prediction_safe=false` and `AS_OF_UNVERIFIED` retained where applicable.
+
+## 2026-11-17 implementation checkpoint (identity-only scaffold; not E2E)
+- Added `src/brdb_m7_identity_field_scaffold.py`: research-only, canonical `horse_id` + `horse_no` field projection from validated PACI context and receipt. Unavailable pedigree facts and ①–④ evidence remain explicitly `SOURCE_UNAVAILABLE`; `AS_OF_UNVERIFIED`, empty factors, `summary=null`, and `confidence=UNASSESSED` are preserved. **No claim that ①–④ real evidence has been integrated.**
+- Added `tests/test_brdb_m7_identity_field_scaffold.py`: six synthetic regressions including v0.2/v0.3 JSON Schema validation (mandatory jsonschema), duplicate/missing identity and date mismatch rejection, and v0.3 identity mismatch fail-closed.
+- PR [#2629](https://github.com/yukki0113/GPT/pull/2629) merged at `799238a4ac1ba0148ac11845d9003407c30211fd`. BRDB research CI [run 44046164116](https://github.com/yukki0113/GPT/actions/runs/44046164116) **completed/success**; cross-repo regression [run 44046163927](https://github.com/yukki0113/GPT/actions/runs/44046163927) **completed/success**. Exact source, test and workflow were read back from main.
+- **Still pending:** exact real PACI 18-horse context + D3/D4 asset materialization and real-field replay; actual source-qualified ①–④ evidence producer; two-run deterministic v0.3 SHA/readback; interpretation/consumer gates. No M7 research E2E PASS is asserted. M6 #2395 remains OPEN/BLOCKED.
