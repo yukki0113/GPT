@@ -111,19 +111,22 @@ def screen_structured_extra_materials(db_path, *, expected_sqlite_sha256,
                             material_card_ids=mat_ids,
                             link_material_ratings=route['link_material_ratings'],
                             target_link=target_link)
-                        if detail!='UNPARSED_SOURCE_GRAMMAR':
-                            reason='QUALIFIED_MATERIAL_'+status+'_'+detail
-                        elif req['summon_method']=='LINK':
-                            # Extra constrained grammar remains diagnostic-only.
-                            # Original Gen9 grammar is unchanged and no route
-                            # can be authorized from static attributes alone.
-                            status,detail=diagnose_extended_link_materials(
+                        # The legacy opaque qualifier regex may observe
+                        # range/union headers as single unknown labels. Give
+                        # the narrower, full-header parser first refusal,
+                        # but never grant a summon verdict from either.
+                        if req['summon_method']=='LINK':
+                            xstatus,xdetail=diagnose_extended_link_materials(
                                 con,source_header=req['material_header'],
                                 material_card_ids=mat_ids,
                                 link_material_ratings=route['link_material_ratings'],
                                 target_link=target_link)
-                            if detail!='EXTENDED_LINK_GRAMMAR_NOT_RECOGNIZED':
-                                reason='EXTENDED_LINK_'+status+'_'+detail
+                            if xdetail!='EXTENDED_LINK_GRAMMAR_NOT_RECOGNIZED':
+                                reason='EXTENDED_LINK_'+xstatus+'_'+xdetail
+                            elif detail!='UNPARSED_SOURCE_GRAMMAR':
+                                reason='QUALIFIED_MATERIAL_'+status+'_'+detail
+                        elif detail!='UNPARSED_SOURCE_GRAMMAR':
+                            reason='QUALIFIED_MATERIAL_'+status+'_'+detail
                 elif route['restriction_review']!='REVIEWED':
                     reason='SUMMON_RESTRICTIONS_NOT_REVIEWED'
                 else:
