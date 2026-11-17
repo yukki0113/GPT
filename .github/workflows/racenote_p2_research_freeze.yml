@@ -35,7 +35,7 @@ jobs:
               text=True
           ).splitlines()
           found = [x for x in files if re.fullmatch(
-              r'horse-racing/jrdb/backtests/research-p2/BTDAY-\\d{4}/p2_authored_full_day\\.json', x
+              r'horse-racing/jrdb/backtests/research-p2/BTDAY-\d{4}/p2_authored_full_day\.json', x
           )]
           if len(found) != 1:
               raise SystemExit(f'exactly one research draft required: {found}')
@@ -44,16 +44,16 @@ jobs:
               raise SystemExit('unsafe research draft')
           obj=json.loads(path.read_text(encoding='utf-8'))
           sid=path.parent.name
-          if obj.get('selection_id') != sid or not re.fullmatch(r'BTDAY-\\d{4}',sid):
+          if obj.get('selection_id') != sid or not re.fullmatch(r'BTDAY-\d{4}',sid):
               raise SystemExit('draft and path selection mismatch')
           date=obj['target_date']
-          if not re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}',date):
+          if not re.fullmatch(r'\d{4}-\d{2}-\d{2}',date):
               raise SystemExit('unsafe date')
           root=f'horse-racing/jrdb/backtests/{sid}/{date.replace("-","")}/v056'
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:
-              f.write(f'root={root}\\n')
-              f.write(f'draft={path}\\n')
-              f.write(f'freeze={path.parent}/p2_frozen.json\\n')
+              f.write(f'root={root}\n')
+              f.write(f'draft={path}\n')
+              f.write(f'freeze={path.parent}/p2_frozen.json\n')
           PY
       - name: Validate all-runners P2 decision
         env:
