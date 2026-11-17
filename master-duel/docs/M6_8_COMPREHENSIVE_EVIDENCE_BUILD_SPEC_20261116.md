@@ -141,3 +141,10 @@ v2は各カードに`recommended_max`、`quantity_reason`、`copy_adjustments[3]
 - M6-5AのEX候補検索はDB分類`FUSION/SYNCHRO/XYZ/LINK`から判定。旧Gen6の効果本文ヒューリスティックは歴史リプレイに限定。
 - Gen6固定のM5-C、評価ポリシー等はGen7に無言で流用しない。再発行には新DB SHAを使い、元の採点値・出典を可能な限り維持し変更が必要なら明示。承認済みMD禁止制限の215件を再検証せず、内容不変のGen7 baselineを利用。
 - Gen7移行監査：[GEN7_MONSTER_TYPES_PRODUCTION_MIGRATION_AUDIT_20261117.md](GEN7_MONSTER_TYPES_PRODUCTION_MIGRATION_AUDIT_20261117.md)。
+
+## 11. Gen8第1段階カード属性とEX素材検証の境界（2026-11-17追加）
+
+- 現行正本はGen8/schema v3。魔法・罠property 4,834件、リンク値453件、マーカー1,095行、Pスケール385件、P効果369件を保持する。
+- M6-5BのEX素材判定は、**EX種別・リンク値・効果本文の存在のみではPASSにしない**。素材の型と枚数、利用する融合／シンクロ／Xyz／リンク召喚手段、同時確保制約、使用制約を区別し、未根拠の部分は`REQUIRES_REVIEW`または`UNVERIFIED`。机上可能は実対戦での成立保証ではない。
+- 旧Gen7/Gen6にSHA固定された構築入力はそのままGen8で流用しない。元評価を保存し、新DB根拠で新SHAに再発行する。
+- [Gen8 stage1本番正本移行監査](GEN8_STAGE1_CARD_PROPERTIES_PRODUCTION_AUDIT_20261117.md)。
