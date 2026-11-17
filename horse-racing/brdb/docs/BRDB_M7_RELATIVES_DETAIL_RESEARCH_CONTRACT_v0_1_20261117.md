@@ -1,7 +1,7 @@
 # BRDB M7 ④近親条件別実績 詳細サイドカー v0.1 candidate / research-only
 
 - Date: 2026-11-17 JST
-- Status: **RESEARCH-ONLY CANDIDATE / SOURCE-CANONICAL E2E LOCALLY VERIFIED / NOT PRODUCTION AUTHORIZED**
+- Status: **RESEARCH-ONLY CONTRACT AND REAL-FIELD E2E ACCEPTED / NOT PRODUCTION AUTHORIZED**
 - Tracker: [M7 #2628](https://github.com/yukki0113/GPT/issues/2628)
 - Dependencies: accepted M7 real-field E2E v0.3 and canonical ④ raw producer v0.1.
 
@@ -57,3 +57,12 @@ Output SHA256 values are recorded in the private research receipt; publicly publ
 - Cross-component consumer regression on the *actual* RaceNote/Newspaper field schema and exact identities, not this research preview alone.
 - M6 prospective prediction-value scientific gate [#2395](https://github.com/yukki0113/GPT/issues/2395) remains OPEN/BLOCKED.
 - **No production M7 promotion or M8 start without explicit graduation decision.**
+
+## Acceptance and GitHub readback — 2026-11-17
+
+- [PR #2633](https://github.com/yukki0113/GPT/pull/2633), merged commit `530e6065e3f4e5d5c039dd8de237ca5d3617715e`.
+- [BRDB research CI](https://github.com/yukki0113/GPT/actions/runs/44052284944): **completed/success**; [repository-wide regression](https://github.com/yukki0113/GPT/actions/runs/44052285021): **completed/success**.
+- All seven new repository files and the updated CI workflow were read back from `main`, with source byte Git blob SHA matching the exact locally tested files. Local M7 suite: **37/37 PASS** (previous 19 + current 18).
+- Same 18-horse fixed v0.3/④ inputs, two isolated detail+preview compositions, **byte-identical** on both runs. Detail SHA `08ac62bb1305e075aa2e73a6298d9e9211ddadc06eff3fc031b02abd7b042211`; preview SHA `a86cd81d9b1dd9f0cfb094bc327e2739080da15e6c2c003c7cb15686f2e20a1d`; execution receipt SHA `fcbbd42e29b7df34d4b0e7f73fed3db76df8a0cdb1bcd069fb2606132b92f2c6`.
+- The three raw horse-level/receipt files were stored privately in Library `/BRDB/M7/`, and all three were materialized from Library and SHA-readback verified. None were committed to Git.
+- **Acceptance boundary:** research-only non-lossy ④ detail contract and qualified non-scoring preview accepted; this is *not* end-user display approval, full RaceNote consumer contract acceptance, independent historical as-of, or M7 production graduation.
