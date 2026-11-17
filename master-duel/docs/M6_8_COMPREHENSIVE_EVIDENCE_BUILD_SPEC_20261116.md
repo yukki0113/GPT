@@ -148,3 +148,11 @@ v2は各カードに`recommended_max`、`quantity_reason`、`copy_adjustments[3]
 - M6-5BのEX素材判定は、**EX種別・リンク値・効果本文の存在のみではPASSにしない**。素材の型と枚数、利用する融合／シンクロ／Xyz／リンク召喚手段、同時確保制約、使用制約を区別し、未根拠の部分は`REQUIRES_REVIEW`または`UNVERIFIED`。机上可能は実対戦での成立保証ではない。
 - 旧Gen7/Gen6にSHA固定された構築入力はそのままGen8で流用しない。元評価を保存し、新DB根拠で新SHAに再発行する。
 - [Gen8 stage1本番正本移行監査](GEN8_STAGE1_CARD_PROPERTIES_PRODUCTION_AUDIT_20261117.md)。
+
+## 12. Gen9のEX素材・召喚制約アンカーとM6-5B判定（2026-11-17）
+
+- 現行正本Gen9/schema v4はFUSION/SYNCHRO/XYZ/LINK合計2,129枚の素材指定原文・効果前段落の制約文・原文SHAを保持。機械分類1,167件、未解析962件。未解析を勝手に対応可能/不可能と決定しない。
+- `engine_m6.integration.integrate_private_deck` はGen9素材テーブルがある場合、旧M6-5Bの単純本文照合ではなく、`engine_m6.structured_materials`に切り替える。候補カード・レベル/リンク値/素材数などと証拠付きボード・召喚方法・制約レビューを照合するが、必ずゲーム内実証フラグはfalse。
+- **素材の原文登録はEX召喚の成立検証ではない。** 入力に同時確保・召喚手段・制約確認の根拠がなければ`REQUIRES_REVIEW`。複雑な素材文は人手で根拠付きレビューし、軽率に`POSSIBLE_ON_PAPER`へ変更しない。
+- 旧Gen6～8のSHA固定成果物を新Gen9へ無言流用しない。規制215件は内容を維持したGen9再ピンを使用する。
+- [Gen9 第2段階監査](GEN9_STAGE2_EXTRA_MATERIAL_EVIDENCE_AUDIT_20261117.md)。
