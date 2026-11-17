@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from hashlib import sha256
 from pathlib import Path
+import sqlite3
 
 from engine_m5.private_bundle import open_sidecar, theme_knowledge_bundle
 from .preflight import preflight_from_verified_bytes
@@ -18,6 +19,7 @@ from .assemble import assemble_candidates
 from .discovery import search_cards
 from .effect_review import load_effect_anchors, audit_effect_routes
 from .material_screen import screen_extra_materials
+from .structured_materials import screen_structured_extra_materials
 from .recompose import recompose_portfolio
 from .evaluate import evaluate_structural_candidate
 from .reasoning import plan_reconstruction, audit_reconstruction
@@ -40,7 +42,7 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
                            extra_card_ids=(), board_capabilities=(),
                            engine_packages=(), effect_claims=(), route_claims=(),
                            max_solutions=None,decision_policy=None,regulation_policy=None,
-                           expected_decision_policy_sha256=None):
+                           expected_decision_policy_sha256=None, proposed_material_routes=()):
     """Return private, not-yet-game-certified portfolio and ZIP proposal bytes.
 
     Source bytes supplied by caller must be independently fetched and HEAD
@@ -156,12 +158,28 @@ def integrate_private_deck(*, head_before, head_after, expected_head_sha256,
     summary["owned_generic_unassessed"]=owned_generic_coverage["missing_assessment_count"]
     if not isinstance(extra_card_ids,(list,tuple)):
         raise ValueError("EXTRA IDs required")
-    anchors=load_effect_anchors(
-        master_sqlite_path,expected_sqlite_sha256=pins["sqlite_sha"],
-        card_ids=list(extra_card_ids))
-    materials=screen_extra_materials(
-        anchors,extra_card_ids=extra_card_ids,
-        board_capabilities=board_capabilities)
+    # Gen9+ is source-structured. Never let the old source-text-only
+    # M6-5B heuristic silently classify EXTRA cards as paper-possible.
+    # Explicit, route-scoped evidence is required for the new gate.
+    with sqlite3.connect(f"file:{Path(master_sqlite_path).resolve().as_posix()}?mode=ro&immutable=1",
+                         uri=True) as source_db:
+        has_stage2=bool(source_db.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' "
+            "AND name='card_extra_material_requirements'").fetchone())
+    if has_stage2:
+        materials=screen_structured_extra_materials(
+            master_sqlite_path,expected_sqlite_sha256=pins["sqlite_sha"],
+            extra_card_ids=list(extra_card_ids),
+            proposed_routes=proposed_material_routes)
+    else:
+        if proposed_material_routes:
+            raise ValueError("GEN9_STRUCTURED_MATERIAL_SOURCE_REQUIRED")
+        anchors=load_effect_anchors(
+            master_sqlite_path,expected_sqlite_sha256=pins["sqlite_sha"],
+            card_ids=list(extra_card_ids))
+        materials=screen_extra_materials(
+            anchors,extra_card_ids=extra_card_ids,
+            board_capabilities=board_capabilities)
     portfolio=recompose_portfolio(
         request,reference,discovery_results=discoveries,
         annotations=annotations,material_screen=materials,
