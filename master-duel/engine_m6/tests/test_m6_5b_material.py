@@ -54,7 +54,47 @@ class MaterialScreenTests(unittest.TestCase):
     def test_fusion_not_misclassified_as_main_or_generic(self):
         x=screen_extra_materials(source(),extra_card_ids=["konami:304"],
                                  board_capabilities=[pool()])
-        self.assertEqual("UNPARSED_MATERIAL_REQUIREMENT",x["results"][0]["material_class"])
+        self.assertEqual("EXPLICIT_FUSION_MATERIAL_LIST",x["results"][0]["material_class"])
+        self.assertEqual("REQUIRES_REVIEW",x["results"][0]["screen"])
+
+    def test_fusion_only_with_exact_labelled_material_evidence(self):
+        labels=["「架空A」","「架空B」"]
+        p={"kind":"FUSION_MATERIALS","level":None,"count":2,
+           "distinct_names":False,"material_labels":labels,
+           "evidence_ids":["SOURCE:fictional-material-pool"],
+           "verification":"HYPOTHESIS"}
+        x=screen_extra_materials(source(),extra_card_ids=["konami:304"],
+                                 board_capabilities=[p])
+        row=x["results"][0]
+        self.assertEqual("EXPLICIT_FUSION_MATERIAL_LIST",row["material_class"])
+        self.assertEqual("POSSIBLE_ON_PAPER",row["screen"])
+        self.assertFalse(row["materials_simultaneously_available_verified"])
+        self.assertFalse(row["gameplay_compatibility_verified"])
+
+    def test_fusion_wrong_or_partial_evidence_stays_review(self):
+        p={"kind":"FUSION_MATERIALS","level":None,"count":2,
+           "distinct_names":False,"material_labels":["「架空A」","「架空C」"],
+           "evidence_ids":["SOURCE:fictional-wrong-pool"],
+           "verification":"HYPOTHESIS"}
+        x=screen_extra_materials(source(),extra_card_ids=["konami:304"],
+                                 board_capabilities=[p])
+        self.assertEqual("REQUIRES_REVIEW",x["results"][0]["screen"])
+        p["material_labels"]=["「架空A」"]
+        with self.assertRaisesRegex(ValueError,"fusion material label"):
+            screen_extra_materials(source(),extra_card_ids=["konami:304"],
+                                   board_capabilities=[p])
+
+    def test_fusion_complex_material_requirements_stay_review(self):
+        b=source()
+        raw="「架空A」モンスター＋「架空B」モンスター１体以上\\n融合召喚"
+        b["cards"]["konami:306"]=card("konami:306","複雑な架空融合",raw)
+        p={"kind":"FUSION_MATERIALS","level":None,"count":2,
+           "distinct_names":False,
+           "material_labels":["「架空A」モンスター","「架空B」モンスター１体以上"],
+           "evidence_ids":["SOURCE:fictional"],"verification":"HYPOTHESIS"}
+        x=screen_extra_materials(b,extra_card_ids=["konami:306"],
+                                 board_capabilities=[p])
+        self.assertEqual("REQUIRES_REVIEW",x["results"][0]["screen"])
 
     def test_unanchored_board_evidence_rejected(self):
         p=pool();p["evidence_ids"]=[]
