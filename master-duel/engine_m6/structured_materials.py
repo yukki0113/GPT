@@ -103,7 +103,8 @@ def screen_structured_extra_materials(db_path, *, expected_sqlite_sha256,
                     elif req['summon_method']=='SYNCHRO' and req['grammar']=='GENERIC_SYNCHRO_TUNER':
                         flags={cid:{t[0] for t in con.execute('SELECT monster_type FROM card_monster_types WHERE card_id=?',(cid,))} for cid in set(mat_ids)}
                         target=con.execute('SELECT level FROM card_attributes WHERE card_id=?',(eid,)).fetchone()[0]
-                        accepted=(len(mat_ids)>=n and sum('TUNER' in flags[i] for i in mat_ids)==1
+                        accepted=((len(mat_ids)>=n if '以上' in req['material_header'] else len(mat_ids)==n)
+                                  and sum('TUNER' in flags[i] for i in mat_ids)==1
                                   and all(matmap[i]['level'] is not None for i in mat_ids)
                                   and sum(matmap[i]['level'] for i in mat_ids)==target)
                         reason='SOURCE_ALIGNED_SYNCHRO_HYPOTHESIS' if accepted else 'SYNCHRO_TUNER_LEVEL_COUNT_MISMATCH'
@@ -111,7 +112,8 @@ def screen_structured_extra_materials(db_path, *, expected_sqlite_sha256,
                         ratings=route['link_material_ratings']
                         target=con.execute('SELECT link FROM card_attributes WHERE card_id=?',(eid,)).fetchone()[0]
                         flags={cid:{t[0] for t in con.execute('SELECT monster_type FROM card_monster_types WHERE card_id=?',(cid,))} for cid in set(mat_ids)}
-                        accepted=(len(mat_ids)>=n and len(ratings)==len(mat_ids) and target is not None
+                        accepted=((len(mat_ids)>=n if '以上' in req['material_header'] else len(mat_ids)==n)
+                                  and len(ratings)==len(mat_ids) and target is not None
                                   and sum(ratings)==target
                                   and all(rate in (1,matmap[cid]['link']) for rate,cid in zip(ratings,mat_ids))
                                   and (req['qualifier']!='EFFECT_ONLY' or all('EFFECT' in flags[cid] for cid in mat_ids)))
