@@ -1,0 +1,947 @@
+[
+  {
+    "venue": "東京",
+    "race_no": 1,
+    "marks": [
+      5,
+      7,
+      15,
+      8,
+      4
+    ],
+    "reader_sha256": "b34095ec455e7791c035315174642dcaca1dd3e88197089818b318392182f067",
+    "decision_core_sha256": "1fe474a877a820117f816961fa1cafac61a5dd389bd37b4553bfb2c0d98a966e",
+    "five_roles": [
+      {
+        "horse_no": 5,
+        "win_path": "5番ウィングブルーはダート1800m2着と芝1800m6着。先行でダート1600mに対応し、能力33を生かして本命の中心的勝利条件を満たせば勝機がある。",
+        "top2_path": "ウィングブルーは調教19.9とダート1800m2着と芝1800m6着を手掛かりに、先行の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "5番は1600mの追走とダート1800m2着と芝1800m6着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "5番の先行が不発となり、ペースが合わないとダート1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "win_path": "7番フライスカイハイはダート1800m3着とダート1800m8着。差しでダート1600mに対応し、能力26.1を生かして対抗が逆転する条件を満たせば勝機がある。",
+        "top2_path": "フライスカイハイは調教1.9とダート1800m3着とダート1800m8着を手掛かりに、差しの位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "7番は1600mの追走とダート1800m3着とダート1800m8着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "7番の差しが不発となり、ペースが合わないとダート1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 15,
+        "win_path": "15番ジャストビコーズはダート1800m5着と芝1800m6着。逃げでダート1600mに対応し、能力25を生かして単穴の一撃を満たせば勝機がある。",
+        "top2_path": "ジャストビコーズは調教13.6とダート1800m5着と芝1800m6着を手掛かりに、逃げの位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "15番は1600mの追走とダート1800m5着と芝1800m6着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "15番の逃げが不発となり、ペースが合わないとダート1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/14/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 8,
+        "win_path": "8番レヴェランジェは芝1600m4着と芝1600m5着。先行でダート1600mに対応し、能力26を生かして連下の逆転を満たせば勝機がある。",
+        "top2_path": "レヴェランジェは調教17.8と芝1600m4着と芝1600m5着を手掛かりに、先行の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "8番は1600mの追走と芝1600m4着と芝1600m5着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "8番の先行が不発となり、ペースが合わないとダート1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "win_path": "4番エコールナヴァールは芝1400m9着と芝1400m2着。追込でダート1600mに対応し、能力20を生かして最終候補の好走を満たせば勝機がある。",
+        "top2_path": "エコールナヴァールは調教15.7と芝1400m9着と芝1400m2着を手掛かりに、追込の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "4番は1600mの追走と芝1400m9着と芝1400m2着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "4番の追込が不発となり、ペースが合わないとダート1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 1,
+        "classification": "LOW",
+        "top3_path": "1番サバイバルトゥルーは芝2000m14着と芝1600m16着。能力14と調教-12.1、追込から、今回ダート1600mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 2,
+        "classification": "LOW",
+        "top3_path": "2番クイーンズホリデーはダート1800m12着。能力11と調教7.4、差しから、今回ダート1600mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "classification": "LOW",
+        "top3_path": "3番ガーネットテソーロは芝1600m16着。能力18と調教-0.1、追込から、今回ダート1600mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 6,
+        "classification": "LOW",
+        "top3_path": "6番ソーマッチは芝1600m12着。能力17と調教-10.4、追込から、今回ダート1600mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "classification": "LOW",
+        "top3_path": "9番ナタールは芝1600m7着と芝1600m9着。能力10と調教-12.1、先行から、今回ダート1600mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "classification": "LOW",
+        "top3_path": "10番ロココはダート1150m7着と芝1200m8着。能力17と調教-12.1、追込から、今回ダート1600mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "classification": "LOW",
+        "top3_path": "11番ニシノガランテはダート1200m12着。能力10と調教-6、差しから、今回ダート1600mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "classification": "LOW",
+        "top3_path": "12番ロンドンプライドは芝1800m9着と芝1600m9着。能力14と調教-3.7、先行から、今回ダート1600mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 13,
+        "classification": "LOW",
+        "top3_path": "13番エンゼルランプはダート1800m10着。能力15と調教-12.1、追込から、今回ダート1600mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/12/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 14,
+        "classification": "MONITOR",
+        "top3_path": "14番アーティラリーはダート1800m8着。能力23と調教-8.6、差しから、今回ダート1600mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/13/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "5番のダ1800初戦2着と7番の3着に重きを置く。印外14番の1800で8着は短縮で少し改善余地があるが強い連対証拠はない。",
+    "cooccurrence_cases": [
+      {
+        "case_id": "wide_5_7",
+        "horse_nos": [
+          5,
+          7
+        ],
+        "bet_type": "WIDE",
+        "shared_scenario": "5番が先行して7番が中団から差す別々の位置取りで、1600短縮をこなし両馬3着内。",
+        "conflict_scenario": "5番が1600の流れに乗れず7番も差し遅れると2頭同時好走は崩れる。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm",
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "purchase_decision": "PROVISIONAL_BET",
+    "tickets": [
+      {
+        "bet_type": "WIDE",
+        "horse_nos": [
+          5,
+          7
+        ],
+        "stake_yen": 100,
+        "case_id": "wide_5_7"
+      }
+    ],
+    "no_bet_reason": null,
+    "market_available": false
+  },
+  {
+    "venue": "東京",
+    "race_no": 2,
+    "marks": [
+      8,
+      6,
+      11,
+      10,
+      4
+    ],
+    "reader_sha256": "7cc2140f4d725134862c0ebbf45bb3aa4fa65c16ddd0d40e9f6103718ace0f07",
+    "decision_core_sha256": "e9c6c88dcafc4d2a82b679f1025067f8c4d742402863c8c42c7431744a53adcc",
+    "five_roles": [
+      {
+        "horse_no": 8,
+        "win_path": "8番グラティアムはダート1200m2着とダート1150m2着。差しでダート1400mに対応し、能力35を生かして本命の中心的勝利条件を満たせば勝機がある。",
+        "top2_path": "グラティアムは調教22.1とダート1200m2着とダート1150m2着を手掛かりに、差しの位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "8番は1400mの追走とダート1200m2着とダート1150m2着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "8番の差しが不発となり、ペースが合わないとダート1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 6,
+        "win_path": "6番エコロバロンはダート1200m3着とダート1200m9着。差しでダート1400mに対応し、能力24を生かして対抗が逆転する条件を満たせば勝機がある。",
+        "top2_path": "エコロバロンは調教11.5とダート1200m3着とダート1200m9着を手掛かりに、差しの位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "6番は1400mの追走とダート1200m3着とダート1200m9着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "6番の差しが不発となり、ペースが合わないとダート1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "win_path": "11番ベアアッコチャンはダート1200m4着とダート1200m8着。追込でダート1400mに対応し、能力23.1を生かして単穴の一撃を満たせば勝機がある。",
+        "top2_path": "ベアアッコチャンは調教9とダート1200m4着とダート1200m8着を手掛かりに、追込の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "11番は1400mの追走とダート1200m4着とダート1200m8着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "11番の追込が不発となり、ペースが合わないとダート1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "win_path": "10番エクスプレスナイトはダート1200m6着とダート1200m5着。追込でダート1400mに対応し、能力23を生かして連下の逆転を満たせば勝機がある。",
+        "top2_path": "エクスプレスナイトは調教-1.2とダート1200m6着とダート1200m5着を手掛かりに、追込の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "10番は1400mの追走とダート1200m6着とダート1200m5着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "10番の追込が不発となり、ペースが合わないとダート1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "win_path": "4番エッジアキュートは芝1400m6着。差しでダート1400mに対応し、能力16.1を生かして最終候補の好走を満たせば勝機がある。",
+        "top2_path": "エッジアキュートは調教10.7と芝1400m6着を手掛かりに、差しの位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "4番は1400mの追走と芝1400m6着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "4番の差しが不発となり、ペースが合わないとダート1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 1,
+        "classification": "LOW",
+        "top3_path": "1番ドレドレはダート1800m8着とダート1200m7着。能力16と調教-6.6、差しから、今回ダート1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 2,
+        "classification": "LOW",
+        "top3_path": "2番ロゼインパルスはダート1200m13着と芝1400m18着。能力10と調教-11.6、追込から、今回ダート1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "classification": "LOW",
+        "top3_path": "3番アイアンブランドはダート1200m10着。能力13と調教-12.1、差しから、今回ダート1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "classification": "LOW",
+        "top3_path": "5番フレンチブラッサムはダート1800m10着。能力11と調教-3.2、差しから、今回ダート1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "classification": "MONITOR",
+        "top3_path": "7番ゴディアンフィンチはダート1800m6着。能力15と調教7.7、差しから、今回ダート1400mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "classification": "LOW",
+        "top3_path": "9番ヘイマーは芝1600m7着。能力10と調教-5.9、先行から、今回ダート1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "classification": "LOW",
+        "top3_path": "12番ニシノランペイジはダート1200m7着とダート1800m10着。能力20と調教-6、差しから、今回ダート1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 13,
+        "classification": "LOW",
+        "top3_path": "13番ヴェネチアンキングはダート1800m10着。能力14と調教9.9、逃げから、今回ダート1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/12/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "8番は1150・1200で連続2着、6番は1200で3着。印外7番は1800で6着のみで距離短縮の読みが不確か。",
+    "cooccurrence_cases": [
+      {
+        "case_id": "wide_6_8",
+        "horse_nos": [
+          6,
+          8
+        ],
+        "bet_type": "WIDE",
+        "shared_scenario": "8番が短距離の追走力で前を取り6番が好位から差すと1400で双方着内に残る。",
+        "conflict_scenario": "8番が1400で距離を保てず6番が差し遅れると両立しない。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm",
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "purchase_decision": "PROVISIONAL_BET",
+    "tickets": [
+      {
+        "bet_type": "WIDE",
+        "horse_nos": [
+          6,
+          8
+        ],
+        "stake_yen": 100,
+        "case_id": "wide_6_8"
+      }
+    ],
+    "no_bet_reason": null,
+    "market_available": false
+  },
+  {
+    "venue": "東京",
+    "race_no": 3,
+    "marks": [
+      9,
+      3,
+      8,
+      7,
+      10
+    ],
+    "reader_sha256": "0b35f4ecac2e0188d759facdde8bc4e68b30990637849f4f23d660fe20b92b2c",
+    "decision_core_sha256": "385454674cbbd89f8bddb488835868af83a13ecadf24ae5806d1ddbb6c359526",
+    "five_roles": [
+      {
+        "horse_no": 9,
+        "win_path": "9番シャオママルは芝1600m2着と芝1400m9着。追込で芝1400mに対応し、能力35.2を生かして本命の中心的勝利条件を満たせば勝機がある。",
+        "top2_path": "シャオママルは調教22.5と芝1600m2着と芝1400m9着を手掛かりに、追込の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "9番は1400mの追走と芝1600m2着と芝1400m9着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "9番の追込が不発となり、ペースが合わないと芝1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "win_path": "3番ミスターマーボーは芝1600m3着と芝1800m5着。先行で芝1400mに対応し、能力33を生かして対抗が逆転する条件を満たせば勝機がある。",
+        "top2_path": "ミスターマーボーは調教14.2と芝1600m3着と芝1800m5着を手掛かりに、先行の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "3番は1400mの追走と芝1600m3着と芝1800m5着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "3番の先行が不発となり、ペースが合わないと芝1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 8,
+        "win_path": "8番ウレシイゴサンはダート1200m12着と芝1200m9着。追込で芝1400mに対応し、能力35を生かして単穴の一撃を満たせば勝機がある。",
+        "top2_path": "ウレシイゴサンは調教4とダート1200m12着と芝1200m9着を手掛かりに、追込の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "8番は1400mの追走とダート1200m12着と芝1200m9着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "8番の追込が不発となり、ペースが合わないと芝1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "win_path": "7番ダイヤテソーロはダート1000m9着と芝1200m4着。先行で芝1400mに対応し、能力30.6を生かして連下の逆転を満たせば勝機がある。",
+        "top2_path": "ダイヤテソーロは調教8.7とダート1000m9着と芝1200m4着を手掛かりに、先行の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "7番は1400mの追走とダート1000m9着と芝1200m4着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "7番の先行が不発となり、ペースが合わないと芝1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "win_path": "10番ファインコンダクトは芝1500m5着。先行で芝1400mに対応し、能力24.1を生かして最終候補の好走を満たせば勝機がある。",
+        "top2_path": "ファインコンダクトは調教13.3と芝1500m5着を手掛かりに、先行の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "10番は1400mの追走と芝1500m5着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "10番の先行が不発となり、ペースが合わないと芝1400mで着外となる。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 1,
+        "classification": "LOW",
+        "top3_path": "1番カゼノハゴロモは芝1600m12着とダート1200m8着。能力20と調教-12.1、先行から、今回芝1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 2,
+        "classification": "LOW",
+        "top3_path": "2番フックセンチョウは芝1600m16着と芝1200m12着。能力23と調教-12.1、追込から、今回芝1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "classification": "MONITOR",
+        "top3_path": "4番カズノダイジョウは芝1800m8着と芝1600m13着。能力15と調教3.4、逃げから、今回芝1400mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "classification": "LOW",
+        "top3_path": "5番リトルエンジェルは芝1200m8着。能力12と調教-10.8、追込から、今回芝1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 6,
+        "classification": "LOW",
+        "top3_path": "6番トーアシチフクジンはダート1800m12着。能力10と調教-7.1、差しから、今回芝1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "classification": "MONITOR",
+        "top3_path": "11番ワディアルリヤハは芝1600m7着。能力24と調教9.6、差しから、今回芝1400mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "classification": "LOW",
+        "top3_path": "12番ヴェリタスポルタは芝2000m15着。能力10と調教-11.9、逃げから、今回芝1400mで印内の好走材料を上回るためには展開利と上積みを同時に要する。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "9番は芝1600で2着、3番は同距離3着。印外11番は1600で7着、4番は1800で8着と未知の短縮適性がある。",
+    "cooccurrence_cases": [
+      {
+        "case_id": "wide_3_9",
+        "horse_nos": [
+          3,
+          9
+        ],
+        "bet_type": "WIDE",
+        "shared_scenario": "3番が芝1400で先行し9番が後方から末脚を伸ばす形なら双方3着内。",
+        "conflict_scenario": "9番が追走に苦労し3番も前半に脚を使いすぎれば共倒れ。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm",
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "purchase_decision": "PROVISIONAL_BET",
+    "tickets": [
+      {
+        "bet_type": "WIDE",
+        "horse_nos": [
+          3,
+          9
+        ],
+        "stake_yen": 100,
+        "case_id": "wide_3_9"
+      }
+    ],
+    "no_bet_reason": null,
+    "market_available": false
+  },
+  {
+    "venue": "東京",
+    "race_no": 4,
+    "marks": [
+      6,
+      7,
+      10,
+      14,
+      1
+    ],
+    "reader_sha256": "64c415d0aaa81488ac631d84e1981aa14378bec38646fb4edb5d042b30966985",
+    "decision_core_sha256": "066e04414c776a52be671945ea192bda494ab0347ca5486562e1f5b8bcaec08a",
+    "five_roles": [
+      {
+        "horse_no": 6,
+        "win_path": "6番テーオーリカードは障害2970m3着と障害2970m3着。先行で障害3000mに対応し、能力10.3を生かして本命の中心的勝利条件を満たせば勝機がある。",
+        "top2_path": "テーオーリカードは調教24と障害2970m3着と障害2970m3着を手掛かりに、先行の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "6番は3000mの追走と障害2970m3着と障害2970m3着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "6番の先行が不発となり、ペースが合わないと障害3000mで着外となる。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "win_path": "7番ジーティーオウジャは障害3000m4着と障害2890m3着。追込で障害3000mに対応し、能力10.4を生かして対抗が逆転する条件を満たせば勝機がある。",
+        "top2_path": "ジーティーオウジャは調教14.6と障害3000m4着と障害2890m3着を手掛かりに、追込の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "7番は3000mの追走と障害3000m4着と障害2890m3着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "7番の追込が不発となり、ペースが合わないと障害3000mで着外となる。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "win_path": "10番ゴールデンルーキーは障害2880m2着と障害3000m11着。差しで障害3000mに対応し、能力10.5を生かして単穴の一撃を満たせば勝機がある。",
+        "top2_path": "ゴールデンルーキーは調教9.8と障害2880m2着と障害3000m11着を手掛かりに、差しの位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "10番は3000mの追走と障害2880m2着と障害3000m11着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "10番の差しが不発となり、ペースが合わないと障害3000mで着外となる。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 14,
+        "win_path": "14番サンライズウェーヴは障害2850m5着と障害2860m9着。追込で障害3000mに対応し、能力10.1を生かして連下の逆転を満たせば勝機がある。",
+        "top2_path": "サンライズウェーヴは調教6.4と障害2850m5着と障害2860m9着を手掛かりに、追込の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "14番は3000mの追走と障害2850m5着と障害2860m9着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "14番の追込が不発となり、ペースが合わないと障害3000mで着外となる。",
+        "evidence_refs": [
+          "/horses/13/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 1,
+        "win_path": "1番リプレイは障害2970m6着と障害3000m11着。追込で障害3000mに対応し、能力10を生かして最終候補の好走を満たせば勝機がある。",
+        "top2_path": "リプレイは調教-12.1と障害2970m6着と障害3000m11着を手掛かりに、追込の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "1番は3000mの追走と障害2970m6着と障害3000m11着で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "1番の追込が不発となり、ペースが合わないと障害3000mで着外となる。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 2,
+        "classification": "MONITOR",
+        "top3_path": "2番トーアマリシテンは障害3000m8着と障害2860m着順未記録着。能力10と調教-12.1、追込から、今回障害3000mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "3番ボエームはダート1200m16着とダート1200m8着。能力10と調教-11.6、先行から、今回障害3000mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "4番ペンティメントはダート1700m13着とダート2100m9着。能力10と調教-1.5、逃げから、今回障害3000mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "5番カールスタードはダート1700m10着とダート1700m7着。能力10と調教1.7、追込から、今回障害3000mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 8,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "8番ビリオネアボーイは芝1500m5着と芝1200m11着。能力10.2と調教-10、差しから、今回障害3000mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "9番メイショウコガシラはダート1800m8着とダート1800m12着。能力10と調教10、先行から、今回障害3000mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "classification": "MONITOR",
+        "top3_path": "11番サトノトルネードは障害2880m7着と障害2750m11着。能力10と調教7.2、差しから、今回障害3000mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "classification": "MONITOR",
+        "top3_path": "12番ワカムシャは障害2880m11着と芝1800m13着。能力10と調教-5.2、追込から、今回障害3000mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 13,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "13番ニシノリアリティは芝1000m7着と芝1200m9着。能力9.9と調教-8.6、先行から、今回障害3000mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/12/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "障害3000で6番の2970連続3着と7番の3000で4着が比較軸。印外2番は同距離8着、11番も飛越経験はあるため着内可能性を限定できず見送り。",
+    "cooccurrence_cases": [],
+    "purchase_decision": "PASS",
+    "tickets": [],
+    "no_bet_reason": "障害3000で6番の2970連続3着と7番の3000で4着が比較軸。印外2番は同距離8着、11番も飛越経験はあるため着内可能性を限定できず見送り。 同時好走を明確に限定できないため投資は見送る。",
+    "market_available": false
+  },
+  {
+    "venue": "東京",
+    "race_no": 5,
+    "marks": [
+      6,
+      2,
+      10,
+      9,
+      4
+    ],
+    "reader_sha256": "0852e2eb56d24b649bdb8d0d6adcf08a761bb9d5a3e837dee661f43e57e74938",
+    "decision_core_sha256": "9287f7f61a28c8b540de9ced48286ee08530c1d74047446164db4d09ce55d3f2",
+    "five_roles": [
+      {
+        "horse_no": 6,
+        "win_path": "6番リゾートアイランドは新馬など実走情報未確認。実走脚質未確定で芝1800mに対応し、能力45.7を生かして本命の中心的勝利条件を満たせば勝機がある。",
+        "top2_path": "リゾートアイランドは調教21.4と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "6番は1800mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "6番の実走脚質未確定が不発となり、ペースが合わないと芝1800mで着外となる。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 2,
+        "win_path": "2番アラクランは新馬など実走情報未確認。実走脚質未確定で芝1800mに対応し、能力43を生かして対抗が逆転する条件を満たせば勝機がある。",
+        "top2_path": "アラクランは調教14.3と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "2番は1800mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "2番の実走脚質未確定が不発となり、ペースが合わないと芝1800mで着外となる。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "win_path": "10番ノービレは新馬など実走情報未確認。実走脚質未確定で芝1800mに対応し、能力36.8を生かして単穴の一撃を満たせば勝機がある。",
+        "top2_path": "ノービレは調教13.9と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "10番は1800mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "10番の実走脚質未確定が不発となり、ペースが合わないと芝1800mで着外となる。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "win_path": "9番ポッドクロスは新馬など実走情報未確認。実走脚質未確定で芝1800mに対応し、能力34.4を生かして連下の逆転を満たせば勝機がある。",
+        "top2_path": "ポッドクロスは調教7.5と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "9番は1800mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "9番の実走脚質未確定が不発となり、ペースが合わないと芝1800mで着外となる。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "win_path": "4番マイネルディザイアは新馬など実走情報未確認。実走脚質未確定で芝1800mに対応し、能力32.1を生かして最終候補の好走を満たせば勝機がある。",
+        "top2_path": "マイネルディザイアは調教6と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "4番は1800mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "4番の実走脚質未確定が不発となり、ペースが合わないと芝1800mで着外となる。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 1,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "1番ユイノサダハルは新馬など実走情報未確認。能力20と調教-12.1、実走脚質未確定から、今回芝1800mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "classification": "MONITOR",
+        "top3_path": "3番オーケーグリットは新馬など実走情報未確認。能力29.1と調教9.9、実走脚質未確定から、今回芝1800mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "5番スタニングレディは新馬など実走情報未確認。能力22と調教-3.7、実走脚質未確定から、今回芝1800mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "7番オウケンハニーは新馬など実走情報未確認。能力20と調教-10.3、実走脚質未確定から、今回芝1800mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 8,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "8番マンサニージャは新馬など実走情報未確認。能力20と調教-4.8、実走脚質未確定から、今回芝1800mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "11番イロゴルシは新馬など実走情報未確認。能力20と調教-3.3、実走脚質未確定から、今回芝1800mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "12番ラクシオンデクラは新馬など実走情報未確認。能力20と調教-8.8、実走脚質未確定から、今回芝1800mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 13,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "13番ネッカーズルムは新馬など実走情報未確認。能力20と調教-5.3、実走脚質未確定から、今回芝1800mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/12/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "新馬芝1800で6番の能力・調教が上位でも実戦未知。印外3番を含め出走全頭の上限が未確定で購入を控える。",
+    "cooccurrence_cases": [],
+    "purchase_decision": "PASS",
+    "tickets": [],
+    "no_bet_reason": "新馬芝1800で6番の能力・調教が上位でも実戦未知。印外3番を含め出走全頭の上限が未確定で購入を控える。 同時好走を明確に限定できないため投資は見送る。",
+    "market_available": false
+  },
+  {
+    "venue": "東京",
+    "race_no": 6,
+    "marks": [
+      8,
+      14,
+      4,
+      12,
+      6
+    ],
+    "reader_sha256": "f673ebb425c7d0bb170b81e932dff54b9387605494a6ce6f1fd6f85de150a172",
+    "decision_core_sha256": "a750d0e7fd28a3253a63a638db7290421686e64b9f8c4acc4409e35b136b90c5",
+    "five_roles": [
+      {
+        "horse_no": 8,
+        "win_path": "8番バルボアパークは新馬など実走情報未確認。実走脚質未確定で芝1600mに対応し、能力45.1を生かして本命の中心的勝利条件を満たせば勝機がある。",
+        "top2_path": "バルボアパークは調教18.3と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "8番は1600mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "8番の実走脚質未確定が不発となり、ペースが合わないと芝1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 14,
+        "win_path": "14番スカイドリーマーは新馬など実走情報未確認。実走脚質未確定で芝1600mに対応し、能力38.8を生かして対抗が逆転する条件を満たせば勝機がある。",
+        "top2_path": "スカイドリーマーは調教16.1と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "14番は1600mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "14番の実走脚質未確定が不発となり、ペースが合わないと芝1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/13/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "win_path": "4番ノーザンタイタンは新馬など実走情報未確認。実走脚質未確定で芝1600mに対応し、能力36.9を生かして単穴の一撃を満たせば勝機がある。",
+        "top2_path": "ノーザンタイタンは調教9.2と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "4番は1600mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "4番の実走脚質未確定が不発となり、ペースが合わないと芝1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "win_path": "12番ミッキーパラソルは新馬など実走情報未確認。実走脚質未確定で芝1600mに対応し、能力31.1を生かして連下の逆転を満たせば勝機がある。",
+        "top2_path": "ミッキーパラソルは調教6.2と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "12番は1600mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "12番の実走脚質未確定が不発となり、ペースが合わないと芝1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 6,
+        "win_path": "6番ピエドゥラパンは新馬など実走情報未確認。実走脚質未確定で芝1600mに対応し、能力30.7を生かして最終候補の好走を満たせば勝機がある。",
+        "top2_path": "ピエドゥラパンは調教3.4と新馬など実走情報未確認を手掛かりに、実走脚質未確定の位置取りを確保して連対圏まで伸びる。",
+        "top3_path": "6番は1600mの追走と新馬など実走情報未確認で示した脚を両立させれば3着内に踏みとどまる。",
+        "failure_path": "6番の実走脚質未確定が不発となり、ペースが合わないと芝1600mで着外となる。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 1,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "1番ゼルノードゥスは新馬など実走情報未確認。能力20と調教-12.9、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 2,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "2番ヘリオドールは新馬など実走情報未確認。能力20.5と調教-12.1、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "3番フロンテアムーンは新馬など実走情報未確認。能力20と調教-4.8、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "5番フォセットジェンヌは新馬など実走情報未確認。能力20と調教-11.6、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "7番オーシャンドリームは新馬など実走情報未確認。能力20と調教-12.1、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "classification": "MONITOR",
+        "top3_path": "9番アリアベルデは新馬など実走情報未確認。能力30.6と調教1.5、実走脚質未確定から、今回芝1600mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "classification": "MONITOR",
+        "top3_path": "10番ブライトエアリーは新馬など実走情報未確認。能力28.1と調教2.2、実走脚質未確定から、今回芝1600mで条件替わりに対応すれば印内の1頭を捕まえ3着内もある。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "11番キャリアビジョンは新馬など実走情報未確認。能力22.3と調教-3.3、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 13,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "13番ティンブロポップは新馬など実走情報未確認。能力20と調教-6、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/12/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 15,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "15番ミルトメロディーは新馬など実走情報未確認。能力20と調教-10.3、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/14/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 16,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "16番エルミーは新馬など実走情報未確認。能力22.6と調教-4.6、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/15/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 17,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "17番ヒナタは新馬など実走情報未確認。能力23.1と調教-2.4、実走脚質未確定から、今回芝1600mで実戦情報が不足するため適性の上限を断定できない。",
+        "evidence_refs": [
+          "/horses/16/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "新馬マイルで8番と14番の能力・状態は高いが、印外9番・10番の調教・素質も未知のため同時着内券の根拠が弱い。",
+    "cooccurrence_cases": [],
+    "purchase_decision": "PASS",
+    "tickets": [],
+    "no_bet_reason": "新馬マイルで8番と14番の能力・状態は高いが、印外9番・10番の調教・素質も未知のため同時着内券の根拠が弱い。 同時好走を明確に限定できないため投資は見送る。",
+    "market_available": false
+  }
+]
