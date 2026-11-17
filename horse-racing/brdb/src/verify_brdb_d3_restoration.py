@@ -90,7 +90,7 @@ def run(source, output, python=sys.executable):
             require(proc.returncode == 0, 'canonical D3 execution failed: '
                     + proc.stderr[-1200:])
             actual = {name: sha(target / name) for name in EXPECTED}
-            require(actual == EXPECTED, f'run {number} frozen D3 SHA mismatch')
+            require(actual == EXPECTED, f'run {number} frozen D3 SHA mismatch: actual={json.dumps(actual, sort_keys=True)} expected={json.dumps(EXPECTED, sort_keys=True)}')
         output.mkdir(parents=True, exist_ok=True)
         for name in EXPECTED:
             shutil.copyfile(base / 'run2' / name, output / name)
