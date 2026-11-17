@@ -40,8 +40,15 @@ class Store:
     def _validate_schema(self):
         try:
             versions = [row[0] for row in self.db.execute('SELECT version FROM schema_migrations ORDER BY version')]
-            if versions != [VERSION]:
+            if versions not in ([VERSION], [VERSION, 2]):
                 raise ValueError('unsupported schema version')
+            if versions == [VERSION, 2]:
+                columns = [r[1] for r in self.db.execute('PRAGMA table_info(card_monster_types)')]
+                if columns != ['card_id','monster_type','source','verification']:
+                    raise ValueError('missing or invalid v2 monster types table')
+                indices = [r[1] for r in self.db.execute("PRAGMA index_list(card_monster_types)")]
+                if 'idx_card_monster_types_type' not in indices:
+                    raise ValueError('missing monster type search index')
             # Compare all required table definitions against the canonical migration.
             reference = sqlite3.connect(':memory:')
             try:
