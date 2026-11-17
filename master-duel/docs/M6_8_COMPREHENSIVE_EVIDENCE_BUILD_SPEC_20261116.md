@@ -134,3 +134,10 @@ v2は各カードに`recommended_max`、`quantity_reason`、`copy_adjustments[3]
 - 正式実行と、全カードの効果裁定・勝率実証・ユーザー向けの戦略サマリーは別物とする。追加の重い全ルート検証は原則不要。
 
 詳細：[M6-8融合EX・オフライン実行手順](M6_8_FUSION_AND_OFFLINE_RUNTIME_WORKFLOW_20261117.md)。
+
+## 10. Gen7正本DBのカード種別（2026-11-17更新）
+
+- 正本`MD_CURRENT_HEAD.json`はGen7、SQLiteスキーマv2。正式なカード種別は`card_monster_types`（1枚に複数行）に保存。
+- M6-5AのEX候補検索はDB分類`FUSION/SYNCHRO/XYZ/LINK`から判定。旧Gen6の効果本文ヒューリスティックは歴史リプレイに限定。
+- Gen6固定のM5-C、評価ポリシー等はGen7に無言で流用しない。再発行には新DB SHAを使い、元の採点値・出典を可能な限り維持し変更が必要なら明示。承認済みMD禁止制限の215件を再検証せず、内容不変のGen7 baselineを利用。
+- Gen7移行監査：[GEN7_MONSTER_TYPES_PRODUCTION_MIGRATION_AUDIT_20261117.md](GEN7_MONSTER_TYPES_PRODUCTION_MIGRATION_AUDIT_20261117.md)。
