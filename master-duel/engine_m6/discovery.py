@@ -77,10 +77,11 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
         if vals:
             where.append(field+" IN ("+",".join("?" for _ in vals)+")")
             args.extend(vals)
-    # Explicit EX ranks and links. Fusion/Synchro cannot be classified from
-    # kind=MONSTER alone in current DB: callers must supply sourced section.
-    # For broad EX discovery, take rank/link only and flag other extra methods
-    # as a separate evidence gap.
+    # Source-backed EXTRA footprints: rank/link, no-level Link candidates,
+    # and Fusion material headers. Fusion monsters may have a normal LEVEL,
+    # unlike Xyz/Link cards. Merely having "Fusion" in the effect description
+    # is insufficient: main-deck monsters can themselves perform Fusion.
+    # This query is discovery only; final zone/material claims need review.
     if section=="EXTRA":
         # In the source DB some Link monsters have a NULL link rating.
         # For explicit ID lookups, the no-level monster footprint
@@ -90,7 +91,16 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
         if not exact:
             candidate_link += " AND (t.body LIKE '%Ｌ召喚%' OR t.body LIKE '%リンク召喚%')"
         candidate_link += ")"
-        where.append("(a.rank IS NOT NULL OR a.link IS NOT NULL OR "+candidate_link+")")
+        # Japanese printed Fusion headers list at least two materials with
+        # a full-width plus sign, and the body refers to Fusion summoning.
+        # The source-card zone is still a candidate (not verified).
+        candidate_fusion=(
+            "(a.kind='MONSTER' AND a.level IS NOT NULL "
+            "AND (t.body LIKE '%＋%' OR t.body LIKE '% + %') "
+            "AND (t.body LIKE '%融合召喚%' OR t.body LIKE '%融合モンスター%'))"
+        )
+        where.append("(a.rank IS NOT NULL OR a.link IS NOT NULL OR "+
+                     candidate_link+" OR "+candidate_fusion+")")
     else:
         where.append("(a.rank IS NULL AND a.link IS NULL AND ("
                      "t.body IS NULL OR t.body NOT LIKE '%このカードがＬ召喚%'))")
