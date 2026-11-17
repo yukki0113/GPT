@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BRDB M7 strictly research-only consumer preview, not production addon",
+  "type": "object", "additionalProperties": false,
+  "required": ["contract_version", "release_status", "research_only", "prediction_safe", "production_authorized", "as_of_status", "source_contracts", "source_sha256", "race", "horses"],
+  "properties": {
+    "contract_version": {"const": "brdb-m7-research-consumer-preview-v0.1"},
+    "release_status": {"const": "RESEARCH_PREVIEW_ONLY"},
+    "research_only": {"const": true},
+    "prediction_safe": {"const": false},
+    "production_authorized": {"const": false},
+    "as_of_status": {"const": "AS_OF_UNVERIFIED"},
+    "source_contracts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["integrated", "relatives_detail"],
+      "properties": {
+        "integrated": {"const": "brdb-integrated-blood-review-v0.3-candidate"},
+        "relatives_detail": {"const": "brdb-m7-relatives-detail-v0.1-candidate"}
+      }
+    },
+    "source_sha256": {
+      "type": "object", "additionalProperties": false,
+      "required": ["integrated_v03", "relatives_detail"],
+      "properties": {
+        "integrated_v03": {"$ref": "#/$defs/sha"},
+        "relatives_detail": {"$ref": "#/$defs/sha"}
+      }
+    },
+    "race": {
+      "type": "object", "additionalProperties": false,
+      "required": ["race_key", "target_date", "venue_code", "surface_code", "distance_m", "course_code", "field_size"],
+      "properties": {
+        "race_key": {"type": "string", "pattern": "^[0-9A-Za-z]{8}$"},
+        "target_date": {"type": "string", "format": "date"},
+        "venue_code": {"type": "string"},
+        "surface_code": {"enum": ["1", "2"]},
+        "distance_m": {"type": "integer", "minimum": 600, "maximum": 5000},
+        "course_code": {"type": ["string", "null"]},
+        "field_size": {"type": "integer", "minimum": 1}
+      }
+    },
+    "horses": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/horse"}}
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "lane": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_status", "display_reason", "evidence_items", "may_infer_suitability"],
+      "properties": {
+        "source_status": {"enum": ["AVAILABLE", "LOW_SAMPLE", "NO_SAMPLE", "SOURCE_UNAVAILABLE", "AS_OF_UNVERIFIED"]},
+        "display_reason": {"enum": ["DESCRIPTIVE_SAMPLE_ONLY", "SMALL_SAMPLE_ONLY", "NO_RECORDED_STARTS", "SOURCE_UNAVAILABLE", "HISTORICAL_AS_OF_UNVERIFIED"]},
+        "evidence_items": {"type": "integer", "minimum": 0},
+        "may_infer_suitability": {"const": false}
+      }
+    },
+    "horse": {
+      "type": "object", "additionalProperties": false,
+      "required": ["horse_id", "horse_no", "overall_status", "lanes", "d4_observation_items", "qualified_interpretation", "score", "rank", "probability"],
+      "properties": {
+        "horse_id": {"type": "string", "pattern": "^[0-9]{8}$"},
+        "horse_no": {"type": "integer", "minimum": 1},
+        "overall_status": {"const": "AS_OF_UNVERIFIED"},
+        "lanes": {
+          "type": "object", "additionalProperties": false,
+          "required": ["sire", "broodmare_sire", "pairing", "relatives"],
+          "properties": {
+            "sire": {"$ref": "#/$defs/lane"},
+            "broodmare_sire": {"$ref": "#/$defs/lane"},
+            "pairing": {"$ref": "#/$defs/lane"},
+            "relatives": {"$ref": "#/$defs/lane"}
+          }
+        },
+        "d4_observation_items": {"type": "integer", "minimum": 0},
+        "qualified_interpretation": {"const": "NO_FIT_VERDICT_PERMITTED"},
+        "score": {"type": "null"},
+        "rank": {"type": "null"},
+        "probability": {"type": "null"}
+      }
+    }
+  }
+}
