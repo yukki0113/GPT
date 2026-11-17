@@ -84,8 +84,9 @@ def screen_structured_extra_materials(db_path, *, expected_sqlite_sha256,
             if route:
                 reason='REQUIRES_REVIEW'
                 mat_ids=route['material_card_ids']
+                unique_ids=list(dict.fromkeys(mat_ids))
                 mats=con.execute('SELECT a.card_id,a.kind,a.level,a.link FROM card_attributes a WHERE a.card_id IN ('+
-                                 ','.join('?' for _ in mat_ids)+')',list(set(mat_ids))).fetchall()
+                                 ','.join('?' for _ in unique_ids)+')',unique_ids).fetchall()
                 matmap={m['card_id']:m for m in mats}
                 if len(matmap)!=len(set(mat_ids)) or not all(matmap[i]['kind']=='MONSTER' for i in mat_ids):
                     reason='MATERIAL_ID_MISSING_OR_NONMONSTER'
