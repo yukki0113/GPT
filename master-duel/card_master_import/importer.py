@@ -204,10 +204,20 @@ def convert(base_zip, rows, audit, *, acquired_at):
         try:
             v2=s.version()>=2
             v3=s.version()>=3
+            v4=s.version()>=4
             s.db.execute('BEGIN IMMEDIATE')
             try:
                 for r in rows:
                     cid=r['card_id']; prev=s.get_card(cid)
+                    # The MD import feed lacks a guaranteed source-pinned
+                    # Japanese EXTRA material header. Do not silently add a
+                    # new EXTRA card to a v4 catalog without its requirement.
+                    if v4 and set(r['monster_types']) & {'FUSION','SYNCHRO','XYZ','LINK'}:
+                        evidence=s.db.execute(
+                            'SELECT 1 FROM card_extra_material_requirements WHERE card_id=?',(cid,)).fetchone()
+                        if evidence is None:
+                            raise ValueError('GEN9_EXTRA_MATERIAL_EVIDENCE_REQUIRED')
+
                     if prev:
                         if prev['konami_id']!=r['konami_id'] or prev['name']!=r['name'] or prev['source'] != 'cards.json:sha256:'+audit['cards_sha256']: raise ValueError('card identity or input version conflict')
                         olda=s.get_attributes(cid); oldm=s.get_md_catalog(cid)
