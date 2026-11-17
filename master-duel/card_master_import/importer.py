@@ -64,6 +64,26 @@ def kind(record):
         return 'MONSTER'
     return None
 
+# Preserve the complete original MD monster subtype flags on v2 writes.
+# v1 snapshots remain readable for historical replay only.
+MONSTER_TYPES={'NORMAL','EFFECT','FUSION','SYNCHRO','XYZ','LINK','RITUAL',
+               'PENDULUM','TUNER','FLIP','GEMINI','SPIRIT','UNION','TOON'}
+
+def subtype_flags(record):
+    raw=record.get('types')
+    if isinstance(raw,str):
+        parts=[part.strip() for part in raw.split('/')]
+        if len(parts)<2 or not parts[0]:
+            return None
+        flags=[part.upper() for part in parts[1:]]
+    elif isinstance(raw,list):
+        flags=[part.strip().upper() for part in raw if isinstance(part,str)]
+    else:
+        return () if kind(record)!='MONSTER' else None
+    if not flags or len(flags)!=len(set(flags)) or any(v not in MONSTER_TYPES for v in flags):
+        return None
+    return tuple(flags)
+
 def numeric(value):
     # MD numeric fields are decimal strings, cards.json uses integers.
     # A question-mark ATK/DEF denotes an unknown value, not zero.
@@ -130,7 +150,11 @@ def dry_run(md,cards,metadata):
         # "Dragon / Effect"); it has no separate "race" property.
         type_line=item.get('types')
         race=type_line.split(' / ',1)[0].strip() if card_kind=='MONSTER' and isinstance(type_line,str) else None
-        rows.append({'card_id':f'konami:{k}','konami_id':k,'name':next(iter(names)),'kind':card_kind,'attribute':item.get('attribute'),'race':race,'level':vals['level'],'rank':vals['rank'],'atk':vals['atk'],'def':vals['def'],'rarity':rarity,'craftable':'NO' if craft=='No' else 'UNKNOWN'})
+        subtypes=subtype_flags(item)
+        if subtypes is None:
+            audit['invalid']+=1
+            continue
+        rows.append({'card_id':f'konami:{k}','konami_id':k,'name':next(iter(names)),'kind':card_kind,'attribute':item.get('attribute'),'race':race,'level':vals['level'],'rank':vals['rank'],'atk':vals['atk'],'def':vals['def'],'rarity':rarity,'craftable':'NO' if craft=='No' else 'UNKNOWN','monster_types':subtypes})
         audit['joined']+=1; audit[method]+=1
     audit['ok']=audit['joined']==len(md) and not any(audit[k] for k in ('unresolved','duplicate_konami_id','missing_ja','missing_rarity','invalid'))
     return audit,rows
@@ -141,6 +165,7 @@ def convert(base_zip, rows, audit, *, acquired_at):
     with tempfile.TemporaryDirectory() as d:
         path=Path(d)/NAME; unpack(base_zip,path); s=Store(path)
         try:
+            v2=s.version()>=2
             s.db.execute('BEGIN IMMEDIATE')
             try:
                 for r in rows:
@@ -151,12 +176,18 @@ def convert(base_zip, rows, audit, *, acquired_at):
                         for key in ('kind','attribute','race','level','rank','atk','def'):
                             if olda is None or olda[key]!=r[key]: raise ValueError('attribute conflict')
                         if oldm is None or oldm['source'] != 'MD:yaml-yugi:'+audit['md_sha256'] or any(oldm[k]!=r[k] for k in ('rarity','craftable')): raise ValueError('catalog or input version conflict')
+                        if v2:
+                            existing={row[0] for row in s.db.execute('SELECT monster_type FROM card_monster_types WHERE card_id=?',(cid,))}
+                            if existing!=set(r['monster_types']): raise ValueError('monster subtype conflict')
                         continue
                     source='cards.json:sha256:'+audit['cards_sha256']
                     mdsource='MD:yaml-yugi:'+audit['md_sha256']
                     s.db.execute('INSERT INTO cards(card_id,konami_id,name,source,acquired_at) VALUES (?,?,?,?,?)',(cid,r['konami_id'],r['name'],source,acquired_at))
                     s.db.execute('INSERT INTO card_attributes(card_id,kind,attribute,race,level,rank,atk,def,source,acquired_at) VALUES (?,?,?,?,?,?,?,?,?,?)',(cid,r['kind'],r['attribute'],r['race'],r['level'],r['rank'],r['atk'],r['def'],mdsource,acquired_at))
                     s.db.execute('INSERT INTO md_catalog(card_id,rarity,rarity_source,craftable,source,acquired_at) VALUES (?,?,?,?,?,?)',(cid,r['rarity'],mdsource,r['craftable'],mdsource,acquired_at))
+                    if v2:
+                        s.db.executemany('INSERT INTO card_monster_types(card_id,monster_type,source,verification) VALUES (?,?,?,?)',
+                            [(cid,t,mdsource,'UNVERIFIED_SOURCE') for t in r['monster_types']])
                 s.db.commit()
             except Exception: s.db.rollback(); raise
             if not s.integrity_check()['ok']: raise ValueError('integrity check failed')
