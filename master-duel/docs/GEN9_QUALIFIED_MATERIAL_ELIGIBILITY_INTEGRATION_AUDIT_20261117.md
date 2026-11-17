@@ -31,3 +31,11 @@
 - 本番Drive HEAD、Gen9 ZIP、SQLite、所持184種類、禁止制限215件を変更していない。
 - 将来、厳格な `POSSIBLE_ON_PAPER` 判定へ進める際は、別途ソース固定の素材供給・同時確保・召喚方法・全制約の根拠を要求し、実カード回帰と反例を追加する。
 - 既存Gen9の `grammar` 列は変更しておらず、336件のソース観測のみを利用している。
+
+## GitHub最終回帰・不具合修正
+
+- 初回の合成テストが、同一カードIDを複数素材として指定したケースでSQLiteバインド数不一致を検出。既存M6-5BのID重複解消をSQL検索用だけに限定し、素材枚数は変更しない修正を実施。
+- 最終ソースコミット：`c7c99bd1bc40903c1984eace6f8905ce66da4ac5`。
+- [Python regression run 44049256127](https://github.com/yukki0113/GPT/actions/runs/44049256127)：**SUCCESS**、engine_m6 **321 tests PASS**、全体 **699 tests / 1 skipped / PASS**。
+- [M6-8 runtime bundle run 44049255843](https://github.com/yukki0113/GPT/actions/runs/44049255843)：**SUCCESS**。
+- 結果はGitHub Actionsのジョブとログから確認。合成テストとprivate実データにおける分類集計は別の証拠であり、private実カードごとの召喚ルート成功を意味しない。
