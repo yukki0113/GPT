@@ -9,6 +9,7 @@ from collections import Counter
 from hashlib import sha256
 from pathlib import Path
 import json, re, sqlite3
+from .material_eligibility import diagnose_qualified_materials
 
 CID=re.compile(r'konami:[0-9]+\Z')
 SHA=re.compile(r'[0-9a-f]{64}\Z')
@@ -91,7 +92,25 @@ def screen_structured_extra_materials(db_path, *, expected_sqlite_sha256,
                 elif route['summon_method']!=req['summon_method']:
                     reason='SUMMON_METHOD_MISMATCH'
                 elif req['grammar']=='UNPARSED':
+                    # Qualified source observations are diagnostic only:
+                    # never promote an unparsed canonical requirement to
+                    # POSSIBLE_ON_PAPER without a verified route model.
                     reason='MATERIAL_REQUIREMENT_UNPARSED'
+                    if req['summon_method'] in ('XYZ','LINK'):
+                        target_link = None
+                        if req['summon_method']=='LINK':
+                            target_row=con.execute(
+                                'SELECT link FROM card_attributes WHERE card_id=?',
+                                (eid,)).fetchone()
+                            target_link=target_row[0] if target_row else None
+                        status,detail=diagnose_qualified_materials(
+                            con, method=req['summon_method'],
+                            source_header=req['material_header'],
+                            material_card_ids=mat_ids,
+                            link_material_ratings=route['link_material_ratings'],
+                            target_link=target_link)
+                        if detail!='UNPARSED_SOURCE_GRAMMAR':
+                            reason='QUALIFIED_MATERIAL_'+status+'_'+detail
                 elif route['restriction_review']!='REVIEWED':
                     reason='SUMMON_RESTRICTIONS_NOT_REVIEWED'
                 else:
