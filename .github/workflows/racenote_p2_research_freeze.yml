@@ -1,0 +1,94 @@
+name: RaceNote P2 v0.1 Research Freeze
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'horse-racing/jrdb/backtests/research-p2/BTDAY-*/p2_authored_full_day.json'
+permissions:
+  contents: write
+concurrency:
+  group: racenote-p2-research-freeze
+  cancel-in-progress: false
+jobs:
+  validate-and-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Locate exactly one P2 research draft
+        id: target
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os, pathlib, re, subprocess, json
+          files = subprocess.check_output(
+              ['git','diff','--name-only',os.environ['BEFORE'],os.environ['AFTER']],
+              text=True
+          ).splitlines()
+          found = [x for x in files if re.fullmatch(
+              r'horse-racing/jrdb/backtests/research-p2/BTDAY-\\d{4}/p2_authored_full_day\\.json', x
+          )]
+          if len(found) != 1:
+              raise SystemExit(f'exactly one research draft required: {found}')
+          path = pathlib.Path(found[0])
+          if path.is_symlink() or not path.is_file():
+              raise SystemExit('unsafe research draft')
+          obj=json.loads(path.read_text(encoding='utf-8'))
+          sid=path.parent.name
+          if obj.get('selection_id') != sid or not re.fullmatch(r'BTDAY-\\d{4}',sid):
+              raise SystemExit('draft and path selection mismatch')
+          date=obj['target_date']
+          if not re.fullmatch(r'\\d{4}-\\d{2}-\\d{2}',date):
+              raise SystemExit('unsafe date')
+          root=f'horse-racing/jrdb/backtests/{sid}/{date.replace("-","")}/v056'
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write(f'root={root}\\n')
+              f.write(f'draft={path}\\n')
+              f.write(f'freeze={path.parent}/p2_frozen.json\\n')
+          PY
+      - name: Validate all-runners P2 decision
+        env:
+          ROOT: ${{ steps.target.outputs.root }}
+          DRAFT: ${{ steps.target.outputs.draft }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_p2_ticket_gate.py --root "$ROOT" --draft "$DRAFT"
+      - name: Produce immutable research Freeze outside v056
+        env:
+          ROOT: ${{ steps.target.outputs.root }}
+          DRAFT: ${{ steps.target.outputs.draft }}
+          FREEZE: ${{ steps.target.outputs.freeze }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_p2_ticket_gate.py --root "$ROOT" --draft "$DRAFT" --freeze-output "$FREEZE"
+      - name: Commit and verify
+        env:
+          FREEZE: ${{ steps.target.outputs.freeze }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$FREEZE"
+          git diff --cached --quiet && { echo 'Freeze output missing'; exit 1; }
+          git commit -m "RaceNote P2: immutable research Freeze ${FREEZE}"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          git fetch origin main
+          git show "origin/main:$FREEZE" > /tmp/p2-frozen-readback.json
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/p2-frozen-readback.json'))
+          assert x['status']=='RESEARCH_TICKET_STRUCTURE_FROZEN'
+          assert x['quality']['status']=='PASS'
+          assert x['quality']['result_opened'] is False
+          assert x['quality']['confidence_used'] is False
+          PY
