@@ -84,6 +84,37 @@ def subtype_flags(record):
         return None
     return tuple(flags)
 
+SPELL_PROPS={'Normal','Quick-Play','Continuous','Field','Equip','Ritual'}
+TRAP_PROPS={'Normal','Continuous','Counter'}
+LINK_ARROWS={'Top-Left','Top-Center','Top-Right','Middle-Left','Middle-Right','Bottom-Left','Bottom-Center','Bottom-Right'}
+
+def extra_properties(record, card_kind, flags):
+    property_value=None
+    if card_kind in ('SPELL','TRAP'):
+        property_value=record.get('property')
+        if property_value not in (SPELL_PROPS if card_kind=='SPELL' else TRAP_PROPS):
+            raise ValueError('missing or unknown spell/trap property')
+    link_directions=()
+    if 'LINK' in flags:
+        raw=record.get('link_arrows')
+        if not isinstance(raw,str): raise ValueError('missing link arrows')
+        link_directions=tuple(x.strip() for x in raw.split(','))
+        if not link_directions or len(set(link_directions))!=len(link_directions) or not set(link_directions)<=LINK_ARROWS:
+            raise ValueError('invalid link arrows')
+    elif record.get('link_arrows') is not None:
+        raise ValueError('unexpected link arrows')
+    scale=None;ja_effect=None
+    if 'PENDULUM' in flags:
+        scale=numeric(record.get('pendulum_scale'))
+        if scale is None or not 0<=scale<=13:
+            raise ValueError('missing/invalid pendulum scale')
+        ja_effect=record.get('ja_pendulum_effect')
+        if ja_effect is not None and (not isinstance(ja_effect,str) or not ja_effect.strip()):
+            raise ValueError('invalid Japanese pendulum effect')
+    elif record.get('pendulum_scale') is not None:
+        raise ValueError('unexpected pendulum scale')
+    return property_value,link_directions,scale,ja_effect
+
 def numeric(value):
     # MD numeric fields are decimal strings, cards.json uses integers.
     # A question-mark ATK/DEF denotes an unknown value, not zero.
@@ -154,7 +185,13 @@ def dry_run(md,cards,metadata):
         if subtypes is None:
             audit['invalid']+=1
             continue
-        rows.append({'card_id':f'konami:{k}','konami_id':k,'name':next(iter(names)),'kind':card_kind,'attribute':item.get('attribute'),'race':race,'level':vals['level'],'rank':vals['rank'],'atk':vals['atk'],'def':vals['def'],'rarity':rarity,'craftable':'NO' if craft=='No' else 'UNKNOWN','monster_types':subtypes})
+        try: property_value,link_arrows,p_scale,p_ja=extra_properties(item,card_kind,subtypes)
+        except ValueError:
+            audit['invalid']+=1
+            continue
+        rows.append({'card_id':f'konami:{k}','konami_id':k,'name':next(iter(names)),'kind':card_kind,'attribute':item.get('attribute'),'race':race,'level':vals['level'],'rank':vals['rank'],'atk':vals['atk'],'def':vals['def'],'rarity':rarity,'craftable':'NO' if craft=='No' else 'UNKNOWN','monster_types':subtypes,'spell_trap_property':property_value,
+                     'link_arrows':link_arrows,'link':len(link_arrows) if link_arrows else None,
+                     'pendulum_scale':p_scale,'ja_pendulum_effect':p_ja})
         audit['joined']+=1; audit[method]+=1
     audit['ok']=audit['joined']==len(md) and not any(audit[k] for k in ('unresolved','duplicate_konami_id','missing_ja','missing_rarity','invalid'))
     return audit,rows
@@ -166,6 +203,7 @@ def convert(base_zip, rows, audit, *, acquired_at):
         path=Path(d)/NAME; unpack(base_zip,path); s=Store(path)
         try:
             v2=s.version()>=2
+            v3=s.version()>=3
             s.db.execute('BEGIN IMMEDIATE')
             try:
                 for r in rows:
@@ -179,12 +217,32 @@ def convert(base_zip, rows, audit, *, acquired_at):
                         if v2:
                             existing={row[0] for row in s.db.execute('SELECT monster_type FROM card_monster_types WHERE card_id=?',(cid,))}
                             if existing!=set(r['monster_types']): raise ValueError('monster subtype conflict')
+                        if v3:
+                            other=s.db.execute('SELECT property FROM card_spell_trap_properties WHERE card_id=?',(cid,)).fetchone()
+                            if (other[0] if other else None)!=r['spell_trap_property']:raise ValueError('spell/trap property conflict')
+                            link_arrows={row[0] for row in s.db.execute('SELECT arrow FROM card_link_markers WHERE card_id=?',(cid,))}
+                            if link_arrows!=set(r['link_arrows']) or olda['link']!=r['link']:
+                                raise ValueError('link property conflict')
+                            pd=s.db.execute('SELECT scale,ja_pendulum_effect FROM card_pendulum_details WHERE card_id=?',(cid,)).fetchone()
+                            if (tuple(pd) if pd else (None,None))!=(r['pendulum_scale'],r['ja_pendulum_effect']):
+                                raise ValueError('pendulum property conflict')
                         continue
                     source='cards.json:sha256:'+audit['cards_sha256']
                     mdsource='MD:yaml-yugi:'+audit['md_sha256']
                     s.db.execute('INSERT INTO cards(card_id,konami_id,name,source,acquired_at) VALUES (?,?,?,?,?)',(cid,r['konami_id'],r['name'],source,acquired_at))
                     s.db.execute('INSERT INTO card_attributes(card_id,kind,attribute,race,level,rank,atk,def,source,acquired_at) VALUES (?,?,?,?,?,?,?,?,?,?)',(cid,r['kind'],r['attribute'],r['race'],r['level'],r['rank'],r['atk'],r['def'],mdsource,acquired_at))
                     s.db.execute('INSERT INTO md_catalog(card_id,rarity,rarity_source,craftable,source,acquired_at) VALUES (?,?,?,?,?,?)',(cid,r['rarity'],mdsource,r['craftable'],mdsource,acquired_at))
+                    if v3:
+                        if r['spell_trap_property'] is not None:
+                            s.db.execute('INSERT INTO card_spell_trap_properties VALUES (?,?,?,?)',
+                                (cid,r['spell_trap_property'],mdsource,'UNVERIFIED_SOURCE'))
+                        if r['link_arrows']:
+                            s.db.execute('UPDATE card_attributes SET link=? WHERE card_id=?',(r['link'],cid))
+                            s.db.executemany('INSERT INTO card_link_markers VALUES (?,?,?,?)',
+                                [(cid,a,mdsource,'UNVERIFIED_SOURCE') for a in r['link_arrows']])
+                        if r['pendulum_scale'] is not None:
+                            s.db.execute('INSERT INTO card_pendulum_details VALUES (?,?,?,?,?)',
+                                (cid,r['pendulum_scale'],r['ja_pendulum_effect'],mdsource,'UNVERIFIED_SOURCE'))
                     if v2:
                         s.db.executemany('INSERT INTO card_monster_types(card_id,monster_type,source,verification) VALUES (?,?,?,?)',
                             [(cid,t,mdsource,'UNVERIFIED_SOURCE') for t in r['monster_types']])
