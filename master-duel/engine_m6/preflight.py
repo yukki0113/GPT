@@ -239,7 +239,7 @@ def preflight_from_verified_bytes(*, head_before, head_after, expected_head_sha2
     if type(generation) is not int or generation < 1:
         raise ValueError("invalid production generation")
     snapshot = head.get("current_snapshot")
-    if not isinstance(snapshot, dict) or snapshot.get("schema_version") not in (1, 2):
+    if not isinstance(snapshot, dict) or snapshot.get("schema_version") not in (1, 2, 3):
         raise ValueError("missing production snapshot")
     sqlite_sha = snapshot["db_sha256"]
     db = _zip_db(snapshot_zip,snapshot["zip_sha256"],sqlite_sha)
