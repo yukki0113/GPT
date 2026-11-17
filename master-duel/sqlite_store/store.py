@@ -40,16 +40,16 @@ class Store:
     def _validate_schema(self):
         try:
             versions = [row[0] for row in self.db.execute('SELECT version FROM schema_migrations ORDER BY version')]
-            if versions not in ([VERSION], [VERSION, 2], [VERSION, 2, 3]):
+            if versions not in ([VERSION], [VERSION, 2], [VERSION, 2, 3], [VERSION, 2, 3, 4]):
                 raise ValueError('unsupported schema version')
-            if versions in ([VERSION, 2], [VERSION, 2, 3]):
+            if versions in ([VERSION, 2], [VERSION, 2, 3], [VERSION, 2, 3, 4]):
                 columns = [r[1] for r in self.db.execute('PRAGMA table_info(card_monster_types)')]
                 if columns != ['card_id','monster_type','source','verification']:
                     raise ValueError('missing or invalid v2 monster types table')
                 indices = [r[1] for r in self.db.execute("PRAGMA index_list(card_monster_types)")]
                 if 'idx_card_monster_types_type' not in indices:
                     raise ValueError('missing monster type search index')
-            if versions == [VERSION, 2, 3]:
+            if versions in ([VERSION, 2, 3], [VERSION, 2, 3, 4]):
                 for table, expected_columns, index in (
                     ('card_spell_trap_properties',
                      ['card_id','property','source','verification'],
@@ -65,6 +65,20 @@ class Store:
                     if index and index not in [
                             r[1] for r in self.db.execute(f'PRAGMA index_list({table})')]:
                         raise ValueError('missing v3 property index: '+index)
+            if versions == [VERSION, 2, 3, 4]:
+                required=['card_id','summon_method','material_header','material_header_sha256',
+                          'pre_effect_restrictions','source_text_sha256','grammar',
+                          'min_materials','level_required','qualifier','material_labels_json',
+                          'material_verification','simultaneous_materials_verified',
+                          'summon_route_verified','source']
+                columns=[x[1] for x in self.db.execute(
+                    'PRAGMA table_info(card_extra_material_requirements)')]
+                if columns!=required:
+                    raise ValueError('missing or invalid v4 EX material evidence table')
+                indices=[x[1] for x in self.db.execute(
+                    'PRAGMA index_list(card_extra_material_requirements)')]
+                if 'idx_card_extra_material_method' not in indices:
+                    raise ValueError('missing v4 EXTRA material search index')
             # Compare all required table definitions against the canonical migration.
             reference = sqlite3.connect(':memory:')
             try:
