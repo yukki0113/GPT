@@ -133,6 +133,40 @@ class M65A(unittest.TestCase):
         self.assertEqual(["konami:109"],[x["card_id"] for x in by_id["results"]])
         self.assertFalse(by_id["proof_of_compatibility"])
 
+    def test_gen7_canonical_types_recover_fusion_without_keywords(self):
+        db=sqlite3.connect(self.path)
+        db.executescript("""
+            CREATE TABLE card_monster_types(
+                card_id TEXT,monster_type TEXT,source TEXT,verification TEXT,
+                PRIMARY KEY(card_id,monster_type));
+        """)
+        inputs=[
+            ("konami:109","デストーイ架空融合","8","「素材A」＋「素材B」\\n効果", "FUSION"),
+            ("konami:110","沼地の架空融合","4","水族モンスター×２\\n効果","FUSION"),
+            ("konami:111","通常のサポート","3","融合召喚を行う。","EFFECT")
+        ]
+        for cid,name,level,body,typ in inputs:
+            db.execute("INSERT INTO cards VALUES(?,?)",(cid,name))
+            db.execute("INSERT INTO md_catalog VALUES(?,?,?,?)",
+                       (cid,"R","UNKNOWN","UNVERIFIED_SOURCE"))
+            db.execute("INSERT INTO card_attributes VALUES(?,?,?,?,?,?,?)",
+                       (cid,"MONSTER","DARK","Fiend",int(level),None,None))
+            db.execute("INSERT INTO card_texts VALUES(?,?,?,?,?)",
+                       (cid,"ja","v1",body,"UNVERIFIED_SOURCE"))
+            db.execute("INSERT INTO card_monster_types VALUES(?,?,?,?)",
+                       (cid,typ,"MD:SYNTHETIC","UNVERIFIED_SOURCE"))
+        db.commit();db.close()
+        sha=hashlib.sha256(self.path.read_bytes()).hexdigest()
+        result=search_cards(self.path,expected_sqlite_sha256=sha,
+                            section="EXTRA",exact_card_ids=["konami:109","konami:110"])
+        self.assertEqual({"konami:109","konami:110"},
+                         {x["card_id"] for x in result["results"]})
+        main=search_cards(self.path,expected_sqlite_sha256=sha,
+                          section="MAIN",exact_card_ids=["konami:111"])
+        self.assertEqual(["konami:111"],[x["card_id"] for x in main["results"]])
+        self.assertEqual([],search_cards(self.path,expected_sqlite_sha256=sha,
+                            section="EXTRA",exact_card_ids=["konami:111"])["results"])
+
     def test_owned_generic_staple_search(self):
         r=self.search(section="MAIN",owned_only=True,rarities=["UR"])
         self.assertEqual({"konami:105","konami:106"},{x["card_id"] for x in r["results"]})
