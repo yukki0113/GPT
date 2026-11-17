@@ -1,0 +1,40 @@
+name: Master Duel M6-8 runtime bundle
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "master-duel/engine_m5/**"
+      - "master-duel/engine_m6/**"
+      - ".github/workflows/master-duel-runtime-bundle.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Regression tests (fictional cards only)
+        working-directory: master-duel
+        run: python -m unittest discover -s engine_m6/tests -p 'test_*.py' -q
+      - name: Build source-pinned runtime ZIP (no private data)
+        run: |
+          mkdir -p dist/runtime
+          cp -a master-duel/engine_m5 dist/runtime/
+          cp -a master-duel/engine_m6 dist/runtime/
+          find dist/runtime -type d -name '__pycache__' -prune -exec rm -rf {} +
+          find dist/runtime -type f -name '*.pyc' -delete
+          printf '%s\n' "${GITHUB_SHA}" > dist/runtime/GIT_COMMIT_SHA.txt
+          (cd dist/runtime && find . -type f -print0 | sort -z | xargs -0 sha256sum > FILE_SHA256SUMS.txt)
+          (cd dist/runtime && zip -qr ../md-m68-runtime.zip .)
+          sha256sum dist/md-m68-runtime.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: md-m68-runtime-${{ github.sha }}
+          path: dist/md-m68-runtime.zip
+          if-no-files-found: error
+          retention-days: 30
