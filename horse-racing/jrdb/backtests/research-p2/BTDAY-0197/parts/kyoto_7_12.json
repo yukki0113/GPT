@@ -1,0 +1,993 @@
+[
+  {
+    "venue": "京都",
+    "race_no": 7,
+    "marks": [
+      12,
+      9,
+      4,
+      3,
+      14
+    ],
+    "reader_sha256": "154aec2aaf22c67ace035da2282a3dbbfbd6e9bc518a66cd996ad8465fb3e8c0",
+    "decision_core_sha256": "dd64952215efacbb1f2591c06e9af5532efe41238e3bce0f9d25648ff644ff0f",
+    "five_roles": [
+      {
+        "horse_no": 12,
+        "win_path": "12番ルクスデイジーはダート1400m1着とダート1400m2着、能力47.2。逃げの形を維持しダート1400mで◎の勝利目標を達成すれば勝ち切れる。",
+        "top2_path": "ルクスデイジーはダート1400m1着とダート1400m2着から実戦の機動力を探り、調教13.1の状態で2着以内への進路を確保する。",
+        "top3_path": "12番の逃げが機能し、近走ダート1400m1着とダート1400m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ルクスデイジーは1400mで逃げの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "win_path": "9番ロンシャンクイーンはダート1400m4着とダート1400m2着、能力43。先行の形を維持しダート1400mで○の対抗評価を達成すれば勝ち切れる。",
+        "top2_path": "ロンシャンクイーンはダート1400m4着とダート1400m2着から実戦の機動力を探り、調教10.6の状態で2着以内への進路を確保する。",
+        "top3_path": "9番の先行が機能し、近走ダート1400m4着とダート1400m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ロンシャンクイーンは1400mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "win_path": "4番プレゼンティーアはダート1400m3着とダート1700m6着、能力45。先行の形を維持しダート1400mで▲の展開逆転を達成すれば勝ち切れる。",
+        "top2_path": "プレゼンティーアはダート1400m3着とダート1700m6着から実戦の機動力を探り、調教15の状態で2着以内への進路を確保する。",
+        "top3_path": "4番の先行が機能し、近走ダート1400m3着とダート1700m6着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "プレゼンティーアは1400mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "win_path": "3番キョラムンはダート1200m6着とダート1200m2着、能力46。先行の形を維持しダート1400mで△の着内残留を達成すれば勝ち切れる。",
+        "top2_path": "キョラムンはダート1200m6着とダート1200m2着から実戦の機動力を探り、調教13.3の状態で2着以内への進路を確保する。",
+        "top3_path": "3番の先行が機能し、近走ダート1200m6着とダート1200m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "キョラムンは1400mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 14,
+        "win_path": "14番ステアハートはダート1400m7着とダート1400m1着、能力40。逃げの形を維持しダート1400mで第5候補の激走を達成すれば勝ち切れる。",
+        "top2_path": "ステアハートはダート1400m7着とダート1400m1着から実戦の機動力を探り、調教9.7の状態で2着以内への進路を確保する。",
+        "top3_path": "14番の逃げが機能し、近走ダート1400m7着とダート1400m1着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ステアハートは1400mで逃げの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/13/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 1,
+        "classification": "MONITOR",
+        "top3_path": "1番アレーティアはダート1700m9着とダート1700m1着、先行・能力40.5・調教0.4。ダート1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 2,
+        "classification": "LOW",
+        "top3_path": "2番デアルーチェは芝2600m11着とダート1700m9着、追込・能力28・調教-11.3。ダート1400mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "classification": "LOW",
+        "top3_path": "5番ラピダリアはダート1400m9着とダート1400m12着、追込・能力34・調教-10.1。ダート1400mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 6,
+        "classification": "LOW",
+        "top3_path": "6番ブロードグリンは芝2000m11着と芝1800m7着、逃げ・能力32.5・調教-7.8。ダート1400mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "classification": "LOW",
+        "top3_path": "7番バシリスはダート1800m10着とダート1200m14着、先行・能力31・調教-7.2。ダート1400mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 8,
+        "classification": "LOW",
+        "top3_path": "8番ゴーオンパーパスはダート1500m1着とダート1800m14着、先行・能力25・調教-11.3。ダート1400mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "classification": "MONITOR",
+        "top3_path": "10番ルルフィーユはダート1750m1着とダート1400m2着、差し・能力33・調教-11.3。ダート1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "classification": "LOW",
+        "top3_path": "11番スニーカースキルはダート1400m5着とダート1700m5着、差し・能力37・調教6.4。ダート1400mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 13,
+        "classification": "MONITOR",
+        "top3_path": "13番デュアルロールはダート1400m9着とダート1400m1着、差し・能力30.5・調教-2.9。ダート1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/12/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 15,
+        "classification": "LOW",
+        "top3_path": "15番フルドドはダート1400m13着とダート1400m7着、先行・能力35・調教-11.3。ダート1400mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/14/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "12番のダ1400連対反復と9番の同距離2着を優先。ただし印外10番にも1400で2着歴があり、同時3着内から印1頭が漏れる場面を警戒。",
+    "cooccurrence_cases": [
+      {
+        "case_id": "wide_9_12",
+        "horse_nos": [
+          9,
+          12
+        ],
+        "bet_type": "WIDE",
+        "shared_scenario": "12番が逃げて9番が好位、2頭とも1400の既往好走位置を守り着内を取る。",
+        "conflict_scenario": "12番と9番が先行争いを激化させ4番や印外10番の差しを誘う。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm",
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "case_id": "wide_4_12",
+        "horse_nos": [
+          4,
+          12
+        ],
+        "bet_type": "WIDE",
+        "shared_scenario": "12番の先行に4番が後方から差し込み、脚質の違いでともに3着内を確保する。",
+        "conflict_scenario": "12番が速すぎる流れを作り4番も届かず、別の先行馬が残る。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm",
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "purchase_decision": "PROVISIONAL_BET",
+    "tickets": [
+      {
+        "bet_type": "WIDE",
+        "horse_nos": [
+          9,
+          12
+        ],
+        "stake_yen": 100,
+        "case_id": "wide_9_12"
+      },
+      {
+        "bet_type": "WIDE",
+        "horse_nos": [
+          4,
+          12
+        ],
+        "stake_yen": 100,
+        "case_id": "wide_4_12"
+      }
+    ],
+    "no_bet_reason": null,
+    "market_available": false
+  },
+  {
+    "venue": "京都",
+    "race_no": 8,
+    "marks": [
+      6,
+      9,
+      11,
+      3,
+      12
+    ],
+    "reader_sha256": "c1295286f872f155c008aac5c5071ff91375e832645c04ce6e4afc2face25ec2",
+    "decision_core_sha256": "2b2b7f33eb7252b29a1a6c132dec3d21d5be0714f92b224488829a0a73627d1c",
+    "five_roles": [
+      {
+        "horse_no": 6,
+        "win_path": "6番ハッピーダンチャンはダート1800m1着とダート1800m2着、能力54。先行の形を維持しダート1900mで◎の勝利目標を達成すれば勝ち切れる。",
+        "top2_path": "ハッピーダンチャンはダート1800m1着とダート1800m2着から実戦の機動力を探り、調教16.9の状態で2着以内への進路を確保する。",
+        "top3_path": "6番の先行が機能し、近走ダート1800m1着とダート1800m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ハッピーダンチャンは1900mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "win_path": "9番モーメントキャッチはダート1700m記録なし着とダート1800m2着、能力46。差しの形を維持しダート1900mで○の対抗評価を達成すれば勝ち切れる。",
+        "top2_path": "モーメントキャッチはダート1700m記録なし着とダート1800m2着から実戦の機動力を探り、調教5.7の状態で2着以内への進路を確保する。",
+        "top3_path": "9番の差しが機能し、近走ダート1700m記録なし着とダート1800m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "モーメントキャッチは1900mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "win_path": "11番ユキノクラウンはダート1700m12着とダート1800m1着、能力45.5。先行の形を維持しダート1900mで▲の展開逆転を達成すれば勝ち切れる。",
+        "top2_path": "ユキノクラウンはダート1700m12着とダート1800m1着から実戦の機動力を探り、調教14の状態で2着以内への進路を確保する。",
+        "top3_path": "11番の先行が機能し、近走ダート1700m12着とダート1800m1着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ユキノクラウンは1900mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "win_path": "3番オーレアミストはダート1800m8着とダート1800m3着、能力43。差しの形を維持しダート1900mで△の着内残留を達成すれば勝ち切れる。",
+        "top2_path": "オーレアミストはダート1800m8着とダート1800m3着から実戦の機動力を探り、調教16.5の状態で2着以内への進路を確保する。",
+        "top3_path": "3番の差しが機能し、近走ダート1800m8着とダート1800m3着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "オーレアミストは1900mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "win_path": "12番ココデイックはダート1800m6着とダート1700m1着、能力42.1。差しの形を維持しダート1900mで第5候補の激走を達成すれば勝ち切れる。",
+        "top2_path": "ココデイックはダート1800m6着とダート1700m1着から実戦の機動力を探り、調教6.3の状態で2着以内への進路を確保する。",
+        "top3_path": "12番の差しが機能し、近走ダート1800m6着とダート1700m1着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ココデイックは1900mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 1,
+        "classification": "LOW",
+        "top3_path": "1番トリプルバレルはダート1400m11着とダート1500m1着、先行・能力25・調教-11.3。ダート1900mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 2,
+        "classification": "MONITOR",
+        "top3_path": "2番エイシンアニーモはダート1800m4着とダート1800m6着、先行・能力40・調教-6.9。ダート1900mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "classification": "LOW",
+        "top3_path": "4番アロガントシェイムは芝2000m6着と芝2000m7着、先行・能力34・調教-8.9。ダート1900mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "classification": "MONITOR",
+        "top3_path": "5番コウジョリョウゾクはダート1800m9着とダート1800m7着、追込・能力42・調教-6.2。ダート1900mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "classification": "MONITOR",
+        "top3_path": "7番ロードシュヴァリエはダート1800m5着とダート1800m6着、差し・能力42.9・調教4.6。ダート1900mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 8,
+        "classification": "LOW",
+        "top3_path": "8番テルアスワッドはダート1800m6着とダート1700m10着、差し・能力33・調教-7。ダート1900mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "classification": "MONITOR",
+        "top3_path": "10番バースライトは芝2000m4着と芝2400m10着、差し・能力40.8・調教9.7。ダート1900mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 13,
+        "classification": "LOW",
+        "top3_path": "13番テンカオーライはダート1800m10着とダート1700m15着、差し・能力36・調教-8.9。ダート1900mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/12/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "6番は1800の勝ちと2着、9番は1800の2着。印外2番の1800で4着も残る余地があるが上位候補の条件実績を優先。",
+    "cooccurrence_cases": [
+      {
+        "case_id": "wide_6_9",
+        "horse_nos": [
+          6,
+          9
+        ],
+        "bet_type": "WIDE",
+        "shared_scenario": "6番が先行で持続し9番が差しに回り、1900への延長を両馬がこなす。",
+        "conflict_scenario": "6番と9番がともに1900の距離延長で最後に止まる。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm",
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "purchase_decision": "PROVISIONAL_BET",
+    "tickets": [
+      {
+        "bet_type": "WIDE",
+        "horse_nos": [
+          6,
+          9
+        ],
+        "stake_yen": 100,
+        "case_id": "wide_6_9"
+      }
+    ],
+    "no_bet_reason": null,
+    "market_available": false
+  },
+  {
+    "venue": "京都",
+    "race_no": 9,
+    "marks": [
+      11,
+      8,
+      9,
+      4,
+      6
+    ],
+    "reader_sha256": "f65cf7985b99c7b84d16f5f1de3c50af3879d564bc18553285dce06b17d44b90",
+    "decision_core_sha256": "879caa60686b7eb2b68a0df26e3968c969fd3a38f4145c62228802e926b943ef",
+    "five_roles": [
+      {
+        "horse_no": 11,
+        "win_path": "11番タガノマカシヤはダート1800m2着とダート1800m11着、能力60。先行の形を維持しダート1800mで◎の勝利目標を達成すれば勝ち切れる。",
+        "top2_path": "タガノマカシヤはダート1800m2着とダート1800m11着から実戦の機動力を探り、調教18.6の状態で2着以内への進路を確保する。",
+        "top3_path": "11番の先行が機能し、近走ダート1800m2着とダート1800m11着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "タガノマカシヤは1800mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 8,
+        "win_path": "8番テーオーライマンはダート1800m3着とダート1800m1着、能力58。差しの形を維持しダート1800mで○の対抗評価を達成すれば勝ち切れる。",
+        "top2_path": "テーオーライマンはダート1800m3着とダート1800m1着から実戦の機動力を探り、調教19.8の状態で2着以内への進路を確保する。",
+        "top3_path": "8番の差しが機能し、近走ダート1800m3着とダート1800m1着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "テーオーライマンは1800mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "win_path": "9番ハナウマビーチはダート1800m1着とダート1800m2着、能力56。差しの形を維持しダート1800mで▲の展開逆転を達成すれば勝ち切れる。",
+        "top2_path": "ハナウマビーチはダート1800m1着とダート1800m2着から実戦の機動力を探り、調教13.5の状態で2着以内への進路を確保する。",
+        "top3_path": "9番の差しが機能し、近走ダート1800m1着とダート1800m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ハナウマビーチは1800mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "win_path": "4番スーパージョックはダート1800m1着とダート1800m3着、能力50。先行の形を維持しダート1800mで△の着内残留を達成すれば勝ち切れる。",
+        "top2_path": "スーパージョックはダート1800m1着とダート1800m3着から実戦の機動力を探り、調教14の状態で2着以内への進路を確保する。",
+        "top3_path": "4番の先行が機能し、近走ダート1800m1着とダート1800m3着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "スーパージョックは1800mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 6,
+        "win_path": "6番ゴヴェルナーレリコはダート1800m8着とダート1800m1着、能力49。先行の形を維持しダート1800mで第5候補の激走を達成すれば勝ち切れる。",
+        "top2_path": "ゴヴェルナーレリコはダート1800m8着とダート1800m1着から実戦の機動力を探り、調教-1.3の状態で2着以内への進路を確保する。",
+        "top3_path": "6番の先行が機能し、近走ダート1800m8着とダート1800m1着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ゴヴェルナーレリコは1800mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 1,
+        "classification": "LOW",
+        "top3_path": "1番コスモオピニオンはダート1800m9着とダート1700m3着、追込・能力42・調教-5.2。ダート1800mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 2,
+        "classification": "LOW",
+        "top3_path": "2番セイウンガレオンは芝1800m12着とダート1700m8着、追込・能力38・調教-9.2。ダート1800mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "classification": "MONITOR",
+        "top3_path": "3番オールマイデイズはダート1800m7着とダート1800m9着、差し・能力41.7・調教-1.8。ダート1800mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "classification": "LOW",
+        "top3_path": "5番キュピドンはダート1600m5着とダート1900m13着、差し・能力35・調教-11.3。ダート1800mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "classification": "LOW",
+        "top3_path": "7番タッチャブルはダート1800m6着とダート1800m8着、追込・能力44・調教-4.5。ダート1800mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "classification": "LOW",
+        "top3_path": "10番シホノペルフェットはダート1400m11着とダート1800m15着、追込・能力46・調教9。ダート1800mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "classification": "LOW",
+        "top3_path": "12番メイショウトムはダート1800m10着とダート1800m11着、先行・能力35・調教-11.3。ダート1800mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "11番は1800の連対と高能力、8番・9番には同距離勝ちがあり序列混戦。印外3番の過去1800歴も注視するが上位3頭の勝ち筋が割れる。",
+    "cooccurrence_cases": [],
+    "purchase_decision": "PASS",
+    "tickets": [],
+    "no_bet_reason": "11番は1800の連対と高能力、8番・9番には同距離勝ちがあり序列混戦。印外3番の過去1800歴も注視するが上位3頭の勝ち筋が割れる。 同時好走の安定した組合せを絞れないため購入を見送る。",
+    "market_available": false
+  },
+  {
+    "venue": "京都",
+    "race_no": 10,
+    "marks": [
+      2,
+      5,
+      6,
+      3,
+      10
+    ],
+    "reader_sha256": "2eafef9855b0c1955e137e7a75f8fbbabb2595d8899e399963dbf04e70c12673",
+    "decision_core_sha256": "833c08a7723deeafe4a3a1ecd795bc6c477ea99b5f4d59a98b10c555737d67ac",
+    "five_roles": [
+      {
+        "horse_no": 2,
+        "win_path": "2番ローランドバローズは芝1800m1着と芝2000m2着、能力58。先行の形を維持し芝1800mで◎の勝利目標を達成すれば勝ち切れる。",
+        "top2_path": "ローランドバローズは芝1800m1着と芝2000m2着から実戦の機動力を探り、調教21.9の状態で2着以内への進路を確保する。",
+        "top3_path": "2番の先行が機能し、近走芝1800m1着と芝2000m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ローランドバローズは1800mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "win_path": "5番レディーミコノスは芝1800m1着と芝1600m1着、能力50.3。逃げの形を維持し芝1800mで○の対抗評価を達成すれば勝ち切れる。",
+        "top2_path": "レディーミコノスは芝1800m1着と芝1600m1着から実戦の機動力を探り、調教12.4の状態で2着以内への進路を確保する。",
+        "top3_path": "5番の逃げが機能し、近走芝1800m1着と芝1600m1着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "レディーミコノスは1800mで逃げの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 6,
+        "win_path": "6番ゼンダンハヤブサは芝1600m4着と芝1800m1着、能力52。差しの形を維持し芝1800mで▲の展開逆転を達成すれば勝ち切れる。",
+        "top2_path": "ゼンダンハヤブサは芝1600m4着と芝1800m1着から実戦の機動力を探り、調教15.7の状態で2着以内への進路を確保する。",
+        "top3_path": "6番の差しが機能し、近走芝1600m4着と芝1800m1着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ゼンダンハヤブサは1800mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "win_path": "3番ジェットマグナムは芝1800m3着と芝1800m5着、能力52.1。差しの形を維持し芝1800mで△の着内残留を達成すれば勝ち切れる。",
+        "top2_path": "ジェットマグナムは芝1800m3着と芝1800m5着から実戦の機動力を探り、調教9.7の状態で2着以内への進路を確保する。",
+        "top3_path": "3番の差しが機能し、近走芝1800m3着と芝1800m5着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ジェットマグナムは1800mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "win_path": "10番チェルノボーグは芝1600m4着と芝1600m3着、能力53.2。差しの形を維持し芝1800mで第5候補の激走を達成すれば勝ち切れる。",
+        "top2_path": "チェルノボーグは芝1600m4着と芝1600m3着から実戦の機動力を探り、調教15.1の状態で2着以内への進路を確保する。",
+        "top3_path": "10番の差しが機能し、近走芝1600m4着と芝1600m3着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "チェルノボーグは1800mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 1,
+        "classification": "MONITOR",
+        "top3_path": "1番ジッピーレーサーは芝1800m9着と芝1400m4着、逃げ・能力47・調教-12.2。芝1800mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "classification": "MONITOR",
+        "top3_path": "4番ベントは芝2000m9着と芝2000m7着、先行・能力48・調教-10.1。芝1800mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "classification": "LOW",
+        "top3_path": "7番ジャルディニエは芝1800m11着と芝1600m11着、追込・能力45.3・調教5.8。芝1800mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 8,
+        "classification": "THREAT",
+        "top3_path": "8番リカントロポは芝1600m5着と芝2000m9着、差し・能力53・調教4.4。芝1800mで印内の一角を押しのけ3着内に割り込む力を見込める。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "classification": "LOW",
+        "top3_path": "9番アラタマフェーヴルは芝1800m8着と芝1800m13着、差し・能力47・調教-11.3。芝1800mで現状の成績からは上位5頭に割って入る条件が限られる。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "2番の1800勝ち・2000連対が核。印外8番は能力53で1400とは異なる差し脚を見せ得るため3着内割込みに警戒。",
+    "cooccurrence_cases": [
+      {
+        "case_id": "wide_2_5",
+        "horse_nos": [
+          2,
+          5
+        ],
+        "bet_type": "WIDE",
+        "shared_scenario": "2番は好位から、5番は逃げから1800の勝利経験を再現し、適度な流れで両馬着内。",
+        "conflict_scenario": "5番の逃げに2番が早めに迫り、6番の追込が両馬を交わす。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm",
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "case_id": "wide_2_6",
+        "horse_nos": [
+          2,
+          6
+        ],
+        "bet_type": "WIDE",
+        "shared_scenario": "2番が先行して6番が差し、異なる位置で1800の脚を発揮し両方3着内に届く。",
+        "conflict_scenario": "2番が前で飛ばし6番も外を回って差し遅れると双方が取りこぼす。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm",
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "purchase_decision": "PROVISIONAL_BET",
+    "tickets": [
+      {
+        "bet_type": "WIDE",
+        "horse_nos": [
+          2,
+          5
+        ],
+        "stake_yen": 100,
+        "case_id": "wide_2_5"
+      },
+      {
+        "bet_type": "WIDE",
+        "horse_nos": [
+          2,
+          6
+        ],
+        "stake_yen": 100,
+        "case_id": "wide_2_6"
+      }
+    ],
+    "no_bet_reason": null,
+    "market_available": false
+  },
+  {
+    "venue": "京都",
+    "race_no": 11,
+    "marks": [
+      8,
+      5,
+      7,
+      12,
+      1
+    ],
+    "reader_sha256": "97f8d239faee4f1aaba06bf05ee0a5fb2ceacb6311dc4d36bd4ce89422411f2d",
+    "decision_core_sha256": "e909f20ed94a80dad1be1c6a40ea7f243162920280bfeb9e783f93b2bdaceadf",
+    "five_roles": [
+      {
+        "horse_no": 8,
+        "win_path": "8番ワールズエンドは芝1400m1着と芝1600m2着、能力69.1。逃げの形を維持し芝1400mで◎の勝利目標を達成すれば勝ち切れる。",
+        "top2_path": "ワールズエンドは芝1400m1着と芝1600m2着から実戦の機動力を探り、調教10.6の状態で2着以内への進路を確保する。",
+        "top3_path": "8番の逃げが機能し、近走芝1400m1着と芝1600m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ワールズエンドは1400mで逃げの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "win_path": "5番ウインマーベルは芝1600m5着と芝1351m2着、能力66.9。逃げの形を維持し芝1400mで○の対抗評価を達成すれば勝ち切れる。",
+        "top2_path": "ウインマーベルは芝1600m5着と芝1351m2着から実戦の機動力を探り、調教13.9の状態で2着以内への進路を確保する。",
+        "top3_path": "5番の逃げが機能し、近走芝1600m5着と芝1351m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ウインマーベルは1400mで逃げの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "win_path": "7番オフトレイルは芝1600m2着と芝1200m14着、能力66.1。追込の形を維持し芝1400mで▲の展開逆転を達成すれば勝ち切れる。",
+        "top2_path": "オフトレイルは芝1600m2着と芝1200m14着から実戦の機動力を探り、調教9.6の状態で2着以内への進路を確保する。",
+        "top3_path": "7番の追込が機能し、近走芝1600m2着と芝1200m14着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "オフトレイルは1400mで追込の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "win_path": "12番ロジリオンは芝1400m3着と芝1600m9着、能力67。差しの形を維持し芝1400mで△の着内残留を達成すれば勝ち切れる。",
+        "top2_path": "ロジリオンは芝1400m3着と芝1600m9着から実戦の機動力を探り、調教9.5の状態で2着以内への進路を確保する。",
+        "top3_path": "12番の差しが機能し、近走芝1400m3着と芝1600m9着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ロジリオンは1400mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 1,
+        "win_path": "1番ランスオブカオスは芝1600m5着と芝1600m1着、能力61。差しの形を維持し芝1400mで第5候補の激走を達成すれば勝ち切れる。",
+        "top2_path": "ランスオブカオスは芝1600m5着と芝1600m1着から実戦の機動力を探り、調教16.3の状態で2着以内への進路を確保する。",
+        "top3_path": "1番の差しが機能し、近走芝1600m5着と芝1600m1着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ランスオブカオスは1400mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 2,
+        "classification": "MONITOR",
+        "top3_path": "2番タイムトゥヘヴンは芝1600m14着と芝1800m4着、追込・能力60・調教-12。芝1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "classification": "MONITOR",
+        "top3_path": "3番ムイは芝1200m12着と芝1400m1着、追込・能力50.9・調教-0.5。芝1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "classification": "MONITOR",
+        "top3_path": "4番ワイドラトゥールは芝1200m10着と芝1600m11着、追込・能力63.3・調教-6.6。芝1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 6,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "6番ソーダズリングは芝1600m17着と芝1600m6着、差し・能力55・調教-6.9。芝1400mで適性が読み切れず印外からの着内を排除できない。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 9,
+        "classification": "MONITOR",
+        "top3_path": "9番シュタールヴィントは芝1200m1着と芝1400m3着、差し・能力61・調教-12.8。芝1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "classification": "MONITOR",
+        "top3_path": "10番アルテヴェローチェは芝1600m13着と芝1600m2着、差し・能力59・調教5.9。芝1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "11番バルサムノートは芝1200m16着と芝1400m8着、差し・能力58・調教-11.3。芝1400mで適性が読み切れず印外からの着内を排除できない。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 13,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "13番ダンツエランは芝1800m17着と芝1600m8着、追込・能力50・調教-11.8。芝1400mで適性が読み切れず印外からの着内を排除できない。",
+        "evidence_refs": [
+          "/horses/12/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 14,
+        "classification": "MONITOR",
+        "top3_path": "14番アドマイヤズームは芝1600m14着と芝1600m2着、先行・能力63.2・調教10.6。芝1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/13/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 15,
+        "classification": "MONITOR",
+        "top3_path": "15番ショウナンザナドゥは芝1200m5着と芝1600m16着、差し・能力63・調教-6.9。芝1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/14/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 16,
+        "classification": "THREAT",
+        "top3_path": "16番グレイイングリーンは芝1400m1着と芝1400m11着、差し・能力63.4・調教-11.8。芝1400mで印内の一角を押しのけ3着内に割り込む力を見込める。",
+        "evidence_refs": [
+          "/horses/15/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 17,
+        "classification": "MONITOR",
+        "top3_path": "17番アサカラキングは芝1400m9着と芝1600m11着、逃げ・能力57.9・調教-1.3。芝1400mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/16/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 18,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "18番レッドモンレーヴは芝1600m15着と芝1400m4着、差し・能力59.5・調教-7.6。芝1400mで適性が読み切れず印外からの着内を排除できない。",
+        "evidence_refs": [
+          "/horses/17/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "芝1400の8番は勝利歴と能力69.1。ただし印外16番は1400勝ち、14番はマイル2着、9番は1400で3着歴があり全頭捕捉は難しい。",
+    "cooccurrence_cases": [],
+    "purchase_decision": "PASS",
+    "tickets": [],
+    "no_bet_reason": "芝1400の8番は勝利歴と能力69.1。ただし印外16番は1400勝ち、14番はマイル2着、9番は1400で3着歴があり全頭捕捉は難しい。 同時好走の安定した組合せを絞れないため購入を見送る。",
+    "market_available": false
+  },
+  {
+    "venue": "京都",
+    "race_no": 12,
+    "marks": [
+      9,
+      7,
+      1,
+      11,
+      14
+    ],
+    "reader_sha256": "18d3e8ae7e35c4209bccbd8c05b04e988e938108f9190a18f44651b0d706bb21",
+    "decision_core_sha256": "c953dcd542b5297a5b89f71b471e4da992b5daa279c761bea073bb722c1a6167",
+    "five_roles": [
+      {
+        "horse_no": 9,
+        "win_path": "9番ロードヴァルカンはダート1200m2着とダート1200m3着、能力49。逃げの形を維持しダート1200mで◎の勝利目標を達成すれば勝ち切れる。",
+        "top2_path": "ロードヴァルカンはダート1200m2着とダート1200m3着から実戦の機動力を探り、調教9.4の状態で2着以内への進路を確保する。",
+        "top3_path": "9番の逃げが機能し、近走ダート1200m2着とダート1200m3着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ロードヴァルカンは1200mで逃げの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/8/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 7,
+        "win_path": "7番モンテディアーナは芝1200m記録なし着と芝1200m2着、能力51。逃げの形を維持しダート1200mで○の対抗評価を達成すれば勝ち切れる。",
+        "top2_path": "モンテディアーナは芝1200m記録なし着と芝1200m2着から実戦の機動力を探り、調教18.2の状態で2着以内への進路を確保する。",
+        "top3_path": "7番の逃げが機能し、近走芝1200m記録なし着と芝1200m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "モンテディアーナは1200mで逃げの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/6/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 1,
+        "win_path": "1番アーデルリーベはダート1200m4着とダート1200m2着、能力46。先行の形を維持しダート1200mで▲の展開逆転を達成すれば勝ち切れる。",
+        "top2_path": "アーデルリーベはダート1200m4着とダート1200m2着から実戦の機動力を探り、調教10.4の状態で2着以内への進路を確保する。",
+        "top3_path": "1番の先行が機能し、近走ダート1200m4着とダート1200m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "アーデルリーベは1200mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/0/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 11,
+        "win_path": "11番ヴェントインコーダはダート1200m2着とダート1200m15着、能力43.1。先行の形を維持しダート1200mで△の着内残留を達成すれば勝ち切れる。",
+        "top2_path": "ヴェントインコーダはダート1200m2着とダート1200m15着から実戦の機動力を探り、調教13.9の状態で2着以内への進路を確保する。",
+        "top3_path": "11番の先行が機能し、近走ダート1200m2着とダート1200m15着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ヴェントインコーダは1200mで先行の好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/10/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 14,
+        "win_path": "14番ヴリトラハンはダート1400m5着とダート1400m2着、能力48.5。差しの形を維持しダート1200mで第5候補の激走を達成すれば勝ち切れる。",
+        "top2_path": "ヴリトラハンはダート1400m5着とダート1400m2着から実戦の機動力を探り、調教2.6の状態で2着以内への進路を確保する。",
+        "top3_path": "14番の差しが機能し、近走ダート1400m5着とダート1400m2着の内容から持続脚を出せれば3着内に残れる。",
+        "failure_path": "ヴリトラハンは1200mで差しの好走パターンを失い、仕掛けとスタミナが両立できなければ着外となる。",
+        "evidence_refs": [
+          "/horses/13/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_screen": [
+      {
+        "horse_no": 2,
+        "classification": "MONITOR",
+        "top3_path": "2番ナムラモモはダート1000m2着とダート1000m1着、先行・能力40・調教-6.9。ダート1200mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/1/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 3,
+        "classification": "MONITOR",
+        "top3_path": "3番ペイドラロワールはダート1400m6着とダート1400m1着、逃げ・能力45・調教1.4。ダート1200mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/2/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 4,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "4番ワイルドブッターはダート1200m11着とダート1000m6着、差し・能力37・調教-8.9。ダート1200mで適性が読み切れず印外からの着内を排除できない。",
+        "evidence_refs": [
+          "/horses/3/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 5,
+        "classification": "MONITOR",
+        "top3_path": "5番ミルミナーヴァはダート1400m14着とダート1200m4着、差し・能力40.1・調教-11.3。ダート1200mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/4/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 6,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "6番サムデイはダート1400m11着とダート1000m6着、差し・能力35・調教-1.1。ダート1200mで適性が読み切れず印外からの着内を排除できない。",
+        "evidence_refs": [
+          "/horses/5/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 8,
+        "classification": "MONITOR",
+        "top3_path": "8番オースミライトはダート1000m9着とダート1200m1着、差し・能力40・調教-8.9。ダート1200mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/7/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 10,
+        "classification": "MONITOR",
+        "top3_path": "10番キープライジングはダート1200m9着とダート1400m1着、差し・能力36・調教-11.8。ダート1200mでレースの流れが味方すれば3着内への侵入余地がある。",
+        "evidence_refs": [
+          "/horses/9/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 12,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "12番セサンパは芝1200m12着と芝1200m18着、先行・能力30・調教-11.8。ダート1200mで適性が読み切れず印外からの着内を排除できない。",
+        "evidence_refs": [
+          "/horses/11/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 13,
+        "classification": "THREAT",
+        "top3_path": "13番セールヴォランはダート1200m3着とダート1200m5着、逃げ・能力44.9・調教11。ダート1200mで印内の一角を押しのけ3着内に割り込む力を見込める。",
+        "evidence_refs": [
+          "/horses/12/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 15,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "15番コーリンラズベリーはダート1230m1着とダート1400m3着、先行・能力36・調教-2.1。ダート1200mで適性が読み切れず印外からの着内を排除できない。",
+        "evidence_refs": [
+          "/horses/14/evidence/ABILITY/P/idm"
+        ]
+      },
+      {
+        "horse_no": 16,
+        "classification": "INSUFFICIENT_EVIDENCE",
+        "top3_path": "16番セルヴァンスは芝1200m14着と芝1200m13着、差し・能力25・調教-11.3。ダート1200mで適性が読み切れず印外からの着内を排除できない。",
+        "evidence_refs": [
+          "/horses/15/evidence/ABILITY/P/idm"
+        ]
+      }
+    ],
+    "outside_summary": "9番は1200で2・3着、7番は芝1200の上位能力。印外13番は1200で3着と能力44.9・調教11があり、印内と十分競り合える。",
+    "cooccurrence_cases": [],
+    "purchase_decision": "PASS",
+    "tickets": [],
+    "no_bet_reason": "9番は1200で2・3着、7番は芝1200の上位能力。印外13番は1200で3着と能力44.9・調教11があり、印内と十分競り合える。 同時好走の安定した組合せを絞れないため購入を見送る。",
+    "market_available": false
+  }
+]
