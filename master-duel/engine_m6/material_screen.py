@@ -7,6 +7,7 @@ board capability evidence. It remains unverified for game execution.
 from __future__ import annotations
 import re
 import unicodedata
+from collections import Counter
 
 CARD=re.compile(r"konami:[0-9]+\Z")
 
@@ -14,9 +15,9 @@ CARD=re.compile(r"konami:[0-9]+\Z")
 def screen_extra_materials(effect_bundle, *, extra_card_ids, board_capabilities):
     """Compare source text with explicitly documented potential board states.
 
-    Each capability is {kind: LEVEL_MONSTERS|NAMED_MONSTERS|EFFECT_MONSTERS,
+    Each capability is {kind: LEVEL_MONSTERS|NAMED_MONSTERS|EFFECT_MONSTERS|FUSION_MATERIALS,
       level: number|null, count: int, distinct_names: bool,
-      evidence_ids: nonempty list[str], verification: ...}.
+      evidence_ids: nonempty list[str], verification: ...}.\n    FUSION_MATERIALS additionally requires material_labels: list[str] matching\n    every exact source-text material label (NFKC normalized), with multiplicity.\n    A label is a documented, explicitly supplied material claim, not an\n    inference from the selected MAIN cards.
     This establishes only that a claimed material pool is numerically compatible.
     It is NOT proof the pool can be produced in one turn or that summons resolve.
     """
@@ -28,16 +29,28 @@ def screen_extra_materials(effect_bundle, *, extra_card_ids, board_capabilities)
         raise ValueError("pinned text bundle required")
     cards=effect_bundle["cards"]
     for capability in board_capabilities:
-        if not isinstance(capability,dict) or set(capability)!={"kind","level","count","distinct_names","evidence_ids","verification"}:
+        if not isinstance(capability,dict) or (
+                set(capability)!={"kind","level","count","distinct_names","evidence_ids","verification"}
+                and not (capability.get("kind")=="FUSION_MATERIALS" and
+                         set(capability)=={"kind","level","count","distinct_names",
+                                          "evidence_ids","verification","material_labels"})):
             raise ValueError("capability contract")
-        if capability["kind"] not in {"LEVEL_MONSTERS","NAMED_MONSTERS","EFFECT_MONSTERS"}:
+        if capability["kind"] not in {"LEVEL_MONSTERS","NAMED_MONSTERS",
+                                   "EFFECT_MONSTERS","FUSION_MATERIALS"}:
             raise ValueError("unsupported capability")
         if type(capability["count"]) is not int or not 1<=capability["count"]<=5:
             raise ValueError("material count range")
         if capability["kind"]=="LEVEL_MONSTERS" and (type(capability["level"]) is not int or not 1<=capability["level"]<=12):
             raise ValueError("level capability")
-        if capability["kind"] in {"NAMED_MONSTERS","EFFECT_MONSTERS"} and capability["level"] is not None:
+        if capability["kind"] in {"NAMED_MONSTERS","EFFECT_MONSTERS",
+                                  "FUSION_MATERIALS"} and capability["level"] is not None:
             raise ValueError("named monster level must be unspecified")
+        if capability["kind"]=="FUSION_MATERIALS":
+            labels=capability["material_labels"]
+            if not isinstance(labels,list) or len(labels)!=capability["count"] or not all(
+                    isinstance(label,str) and label.strip() and len(label)<=120
+                    for label in labels):
+                raise ValueError("fusion material label evidence required")
         if type(capability["distinct_names"]) is not bool:
             raise ValueError("distinct names must be bool")
         if not isinstance(capability["evidence_ids"],list) or not capability["evidence_ids"] or not all(isinstance(x,str) and x for x in capability["evidence_ids"]):
@@ -78,6 +91,28 @@ def screen_extra_materials(effect_bundle, *, extra_card_ids, board_capabilities)
             applicable=[p for p in board_capabilities
                         if p["count"]>=int(n) and
                         (not different or p["distinct_names"])]
+        elif "+" in first and "\n" in card["text"]:
+            # Only a simple, closed first-line list of exact Fusion material
+            # labels is eligible. Requirements with variable multiplicity,
+            # alternatives, substitutions or extra clauses stay REVIEW_REQUIRED.
+            labels=[part.strip() for part in first.split("+")]
+            simple=(
+                2<=len(labels)<=5
+                and all(re.fullmatch(
+                    r'(?:「[^」]+」(?:融合)?モンスター|「[^」]+」|[^\\s+]+モンスター)',
+                    label) for label in labels)
+                and not any(x in first for x in ("以上","または","あるいは","以下","除く"))
+            )
+            if simple:
+                kind="EXPLICIT_FUSION_MATERIAL_LIST"
+                expected=Counter(labels)
+                applicable=[p for p in board_capabilities
+                            if p["kind"]=="FUSION_MATERIALS" and
+                            Counter(unicodedata.normalize("NFKC",label).strip()
+                                    for label in p["material_labels"])==expected]
+            else:
+                kind="UNPARSED_MATERIAL_REQUIREMENT"
+                applicable=[]
         else:
             kind="UNPARSED_MATERIAL_REQUIREMENT"
             applicable=[]
