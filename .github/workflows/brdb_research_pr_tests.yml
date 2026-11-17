@@ -10,6 +10,13 @@ on:
       - 'horse-racing/brdb/tests/test_build_lineage_condition_report.py'
       - 'horse-racing/brdb/src/build_brdb_annual_stability_report.py'
       - 'horse-racing/brdb/tests/test_build_brdb_annual_stability_report.py'
+      - 'horse-racing/brdb/src/brdb_integrated_review_v03_candidate.py'
+      - 'horse-racing/brdb/schema/brdb_integrated_review_v0_2_candidate.schema.json'
+      - 'horse-racing/brdb/schema/brdb_integrated_review_v0_3_candidate.schema.json'
+      - 'horse-racing/brdb/tests/test_brdb_integrated_review_contract_v02_candidate.py'
+      - 'horse-racing/brdb/tests/test_brdb_integrated_review_v03_candidate.py'
+      - 'horse-racing/brdb/tests/fixtures/brdb_integrated_review_v0_2_candidate_example.json'
+      - 'horse-racing/brdb/tests/fixtures/brdb_integrated_review_v0_3_candidate_example.json'
       - '.github/workflows/brdb_research_pr_tests.yml'
   workflow_dispatch:
 
@@ -26,7 +33,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install pinned shared Data Storage dependencies
-        run: python -m pip install -r tools/data-storage/requirements.txt
+        run: python -m pip install -r tools/data-storage/requirements.txt 'jsonschema>=4.22,<5'
       - name: Verify common data-storage dependencies
         env:
           PYTHONPATH: tools/data-storage
@@ -36,3 +43,5 @@ jobs:
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_build_brdb_result_mart.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_build_lineage_condition_report.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_build_brdb_annual_stability_report.py' -v
+          python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_integrated_review_contract_v02_candidate.py' -v
+          python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_integrated_review_v03_candidate.py' -v
