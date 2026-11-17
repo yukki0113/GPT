@@ -41,11 +41,14 @@ def execute(input_root: Path, output_dir: Path) -> dict:
     with tempfile.TemporaryDirectory(prefix='brdb-d3-fixed-') as tmp:
         workspace = Path(tmp) / 'source'
         shutil.copytree(input_root / 'analysis', workspace / 'analysis')
+        generation_manifest = workspace / 'analysis/generations' / GENERATION / 'manifest.json'
+        generation_manifest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(workspace / 'analysis/manifest.json', generation_manifest)
         (workspace / 'analysis/current.json').write_text(
             json.dumps({
                 'status': 'CURRENT',
                 'generation_id': GENERATION,
-                'manifest': 'manifest.json'
+                'manifest': f'generations/{GENERATION}/manifest.json'
             }, ensure_ascii=False, sort_keys=True, indent=2) + '\n',
             encoding='utf-8'
         )
