@@ -1,0 +1,497 @@
+{
+  "approved_total": 50,
+  "baseline_approved": 45,
+  "decisions": [
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000742976",
+      "name": "ディープインパクト",
+      "rank": 1
+    },
+    {
+      "approved": true,
+      "basis": "EXISTING_AUDITED_CROSSWALK",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000729458",
+      "name": "キングカメハメハ",
+      "rank": 2
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001089850",
+      "name": "ロードカナロア",
+      "rank": 3
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000725485",
+      "name": "ダイワメジャー",
+      "rank": 4
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000722158",
+      "name": "ハーツクライ",
+      "rank": 5
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001124297",
+      "name": "エピファネイア",
+      "rank": 6
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000615577",
+      "name": "クロフネ",
+      "rank": 7
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001042049",
+      "name": "ルーラーシップ",
+      "rank": 8
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001120570",
+      "name": "キズナ",
+      "rank": 9
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001115148",
+      "name": "ハービンジャー",
+      "rank": 10
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001215724",
+      "name": "サートゥルナーリア",
+      "rank": 11
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001090360",
+      "name": "オルフェーヴル",
+      "rank": 12
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001138240",
+      "name": "モーリス",
+      "rank": 13
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001189721",
+      "name": "レイデオロ",
+      "rank": 14
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001205475",
+      "name": "ルヴァンスレーヴ",
+      "rank": 15
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001155349",
+      "name": "キタサンブラック",
+      "rank": 16
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001171845",
+      "name": "シルバーステート",
+      "rank": 17
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001293348",
+      "name": "ブリックスアンドモルタル",
+      "rank": 18
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001240055",
+      "name": "ドレフォン",
+      "rank": 19
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT_WITH_EXPLICIT_PARENT_ALIAS",
+      "evidence_urls": [
+        "https://www.jbis.or.jp/horse/0001157711/",
+        "https://www.jra.go.jp/JRADB/accessU.html?CNAME=pw01dud102012104889%2F21"
+      ],
+      "guards": {
+        "birth_date": true,
+        "dam_birth_year": true,
+        "dam_name": "EXPLICIT_ALIAS",
+        "name": true,
+        "sex": true,
+        "sire_birth_year": true,
+        "sire_name": "EXACT_AFTER_COUNTRY_SUFFIX"
+      },
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "jbis_id": "0001157711",
+      "jrdb_horse_id": "12104889",
+      "name": "リアルスティール",
+      "prediction_safe": false,
+      "rank": 20,
+      "research_only": true
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT_WITH_EXPLICIT_PARENT_ALIAS",
+      "evidence_urls": [
+        "https://www.jbis.or.jp/horse/0000700008/",
+        "https://www.jra.go.jp/JRADB/accessU.html?CNAME=pw01dud101999110099%2F58"
+      ],
+      "guards": {
+        "birth_date": true,
+        "dam_birth_year": true,
+        "dam_name": "EXPLICIT_ALIAS",
+        "name": true,
+        "sex": true,
+        "sire_birth_year": true,
+        "sire_name": "EXPLICIT_ALIAS"
+      },
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "jbis_id": "0000700008",
+      "jrdb_horse_id": "99110099",
+      "name": "シンボリクリスエス",
+      "prediction_safe": false,
+      "rank": 21,
+      "research_only": true
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000324971",
+      "name": "マンハッタンカフェ",
+      "rank": 22
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000619768",
+      "name": "ゴールドアリュール",
+      "rank": 23
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000749845",
+      "name": "エンパイアメーカー",
+      "rank": 24
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001170063",
+      "name": "リオンディーズ",
+      "rank": 25
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000286968",
+      "name": "ステイゴールド",
+      "rank": 26
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH_WITH_EXPLICIT_PARENT_ALIAS",
+      "evidence_urls": [
+        "https://www.jbis.or.jp/horse/0001028940/"
+      ],
+      "guards": {
+        "birth_year": true,
+        "dam_name": "EXACT_AFTER_COUNTRY_SUFFIX",
+        "same_jbis_id": true,
+        "sex": true,
+        "sire_name": "EXPLICIT_ALIAS"
+      },
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "jbis_id": "0001028940",
+      "jrdb_horse_id": null,
+      "name": "ヘニーヒューズ",
+      "prediction_safe": false,
+      "rank": 27,
+      "research_only": true
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001175221",
+      "name": "サトノダイヤモンド",
+      "rank": 28
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001142398",
+      "name": "イスラボニータ",
+      "rank": 29
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001237042",
+      "name": "コントレイル",
+      "rank": 30
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT_WITH_EXPLICIT_PARENT_ALIAS",
+      "evidence_urls": [
+        "https://www.jbis.or.jp/horse/0001213491/",
+        "https://www.jra.go.jp/JRADB/accessS.html?CNAME=pw01sde1005202001021120200202%2F07"
+      ],
+      "guards": {
+        "birth_date": true,
+        "dam_birth_year": true,
+        "dam_name": "EXPLICIT_ALIAS",
+        "name": true,
+        "sex": true,
+        "sire_birth_year": true,
+        "sire_name": "EXPLICIT_ALIAS"
+      },
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "jbis_id": "0001213491",
+      "jrdb_horse_id": "14110031",
+      "name": "モズアスコット",
+      "prediction_safe": false,
+      "rank": 31,
+      "research_only": true
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000701668",
+      "name": "ゼンノロブロイ",
+      "rank": 32
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT_WITH_EXPLICIT_PARENT_ALIAS",
+      "evidence_urls": [
+        "https://www.jbis.or.jp/horse/0001209439/",
+        "https://www.jra.go.jp/JRADB/accessU.html?CNAME=pw01dud102015101621%2F9E"
+      ],
+      "guards": {
+        "birth_date": true,
+        "dam_birth_year": true,
+        "dam_name": "EXACT_AFTER_COUNTRY_SUFFIX",
+        "name": true,
+        "sex": true,
+        "sire_birth_year": true,
+        "sire_name": "EXPLICIT_ALIAS"
+      },
+      "historical_asof_status": "AS_OF_UNVERIFIED",
+      "jbis_id": "0001209439",
+      "jrdb_horse_id": "15101621",
+      "name": "タワーオブロンドン",
+      "prediction_safe": false,
+      "rank": 33,
+      "research_only": true
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001085636",
+      "name": "パイロ",
+      "rank": 34
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001141719",
+      "name": "ミッキーアイル",
+      "rank": 35
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001104811",
+      "name": "ゴールドシップ",
+      "rank": 36
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001328857",
+      "name": "ナダル",
+      "rank": 37
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000701577",
+      "name": "ネオユニヴァース",
+      "rank": 38
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001181460",
+      "name": "デクラレーションオブウォー",
+      "rank": 39
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001221956",
+      "name": "アドマイヤマーズ",
+      "rank": 40
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001046333",
+      "name": "ヴィクトワールピサ",
+      "rank": 41
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001025279",
+      "name": "シニスターミニスター",
+      "rank": 42
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0000324933",
+      "name": "アグネスタキオン",
+      "rank": 43
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001302899",
+      "name": "マインドユアビスケッツ",
+      "rank": 44
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001106251",
+      "name": "ジャスタウェイ",
+      "rank": 45
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001190059",
+      "name": "スワーヴリチャード",
+      "rank": 46
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001211258",
+      "name": "カルフォルニアクローム",
+      "rank": 47
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001298815",
+      "name": "ニューイヤーズデイ",
+      "rank": 48
+    },
+    {
+      "approved": true,
+      "basis": "MULTI_FIELD_EXACT",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001170750",
+      "name": "ゴールドドリーム",
+      "rank": 49
+    },
+    {
+      "approved": true,
+      "basis": "EXTERNAL_PROFILE_AND_SEED_MATCH",
+      "carried_from_v0_1": true,
+      "jbis_id": "0001226963",
+      "name": "サンダースノー",
+      "rank": 50
+    }
+  ],
+  "historical_asof_status": "AS_OF_UNVERIFIED",
+  "newly_resolved": 5,
+  "policy": "EXPLICIT_SOURCE_BACKED_ALIAS_ONLY_NO_FUZZY_NO_TRANSLITERATION",
+  "prediction_safe": false,
+  "research_only": true,
+  "resolved_names": [
+    "シンボリクリスエス",
+    "タワーオブロンドン",
+    "ヘニーヒューズ",
+    "モズアスコット",
+    "リアルスティール"
+  ],
+  "schema_version": "brdb-stage3b-root-decisions-research-v0.2",
+  "source_generation": "5279af0bd8226cde"
+}
