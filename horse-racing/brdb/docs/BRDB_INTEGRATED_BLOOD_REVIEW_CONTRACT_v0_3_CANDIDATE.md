@@ -1,6 +1,6 @@
 # BRDB integrated blood review v0.3 candidate — D4 supplemental research attachment
 
-Status: **RESEARCH CONTRACT CANDIDATE / ADAPTER IMPLEMENTED / NOT PRODUCTION AUTHORIZED**  
+Status: **RESEARCH CONTRACT CANDIDATE ACCEPTED / ADAPTER VALIDATED / NOT PRODUCTION AUTHORIZED**  
 Date: 2026-11-17  
 Contract ID: `brdb-integrated-blood-review-v0.3-candidate`
 
@@ -108,3 +108,28 @@ Research-contract acceptance requires:
 9. CI uses a real JSON Schema validator rather than silently skipping validation.
 
 Passing these gates accepts only the **contract composition layer**, not M7 production graduation.
+
+
+## Acceptance evidence — 2026-11-17
+
+Exact branch CI:
+- BRDB research PR tests: Actions run `44027606413` — **PASS**
+  - P0-2 research tests: 4 PASS
+  - P1-1 condition report tests: 4 PASS
+  - P1-2 annual stability tests: 4 PASS
+  - existing v0.2 integrated contract regression: **6 PASS**
+  - v0.3 candidate adapter/schema tests: **12 PASS**
+  - `jsonschema>=4.22,<5` installed in CI; v0.3 fixed fixture and adapter output were validated by Draft 2020-12 schema.
+- Repository-wide EdgeDB decommission T4 regression: Actions run `44027606430` — **PASS**.
+
+The accepted v0.3 test set confirms:
+- fixed fixture is schema-valid;
+- adapter output equals the committed fixture;
+- base input is not mutated;
+- full-field identity/race mismatches fail closed;
+- prediction-safe and as-of promotion fail closed;
+- injected D4 factors or score contribution fail closed;
+- zero supplemental evidence remains valid;
+- existing v0.2 factors/summary/confidence remain unchanged.
+
+This acceptance is limited to the **research contract composition layer**. M7 production promotion remains unaccepted.
