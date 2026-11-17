@@ -8,7 +8,7 @@ from __future__ import annotations
 import hashlib, json, sqlite3
 from pathlib import Path
 from collections import Counter
-from md_monster_type_migration import build_type_map
+from .monster_types_migration import build_type_map
 
 SHA7='d3ab2fa3e3c79e455a10dd9ff8aebb407a3bd045fac0d1f50711cc0443906ecb'
 MD_SHA='b7bf8e365d293cfa6bc309dbbc5cbefae3a7d1b498d34cdf7c54fc26e5bd152b'
