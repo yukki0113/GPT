@@ -1,4 +1,4 @@
-import hashlib, json, sys, tempfile, unittest
+import hashlib, json, sys, tempfile, unittest, sqlite3
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]))
 from sqlite_store import Store
@@ -63,6 +63,43 @@ class Tests(unittest.TestCase):
             self.assertEqual(attrs['race'],'Dragon')
             self.assertEqual(attrs['atk'],1000)
         finally: store.close()
+
+    def test_v2_keeps_fusion_effect_flags_on_import(self):
+        s=Store(self.path)
+        try:
+            s.db.executescript("""
+                CREATE TABLE card_monster_types (
+                    card_id TEXT NOT NULL REFERENCES cards(card_id),
+                    monster_type TEXT NOT NULL,
+                    source TEXT NOT NULL,
+                    verification TEXT NOT NULL DEFAULT 'UNVERIFIED_SOURCE',
+                    PRIMARY KEY(card_id,monster_type)
+                );
+                CREATE INDEX idx_card_monster_types_type
+                    ON card_monster_types(monster_type,card_id);
+                INSERT INTO schema_migrations(version) VALUES(2);
+            """)
+        finally: s.close()
+        self.base,_=pack(self.path)
+        md={'en_name':'Fiction Fusion','types':'Dragon / Fusion / Effect',
+            'rarity':'SR','level':'8'}
+        card={'name':{'en':'Fiction Fusion','ja':'架空融合'},
+              'konami_id':991,'card_type':'Monster',
+              'monster_type_line':'Dragon / Fusion / Effect',
+              'master_duel_rarity':'SR'}
+        audit,rows=dry_run([md],[card],META)
+        self.assertTrue(audit['ok'])
+        self.assertEqual(('FUSION','EFFECT'),rows[0]['monster_types'])
+        output,_=convert(self.base,rows,audit,acquired_at='2026-11-17')
+        restored=self.root/'v2-restored';unpack(output,restored)
+        st=Store(restored)
+        try:
+            self.assertEqual(2,st.version())
+            flags={r[0] for r in st.db.execute(
+                "SELECT monster_type FROM card_monster_types WHERE card_id=?",
+                ("konami:991",))}
+            self.assertEqual({'FUSION','EFFECT'},flags)
+        finally:st.close()
 
     def test_unknown_atk_def_does_not_become_zero(self):
         md={'en_name':'Fiction Unknown','types':'Spellcaster / Effect',
