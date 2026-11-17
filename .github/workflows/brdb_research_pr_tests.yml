@@ -14,6 +14,12 @@ on:
       - 'horse-racing/brdb/src/brdb_m7_identity_field_scaffold.py'
       - 'horse-racing/brdb/src/brdb_m7_evidence_adapter.py'
       - 'horse-racing/brdb/src/run_brdb_m7_integrated_replay.py'
+      - 'horse-racing/brdb/src/brdb_m7_relatives_detail_candidate.py'
+      - 'horse-racing/brdb/src/brdb_m7_research_consumer_preview.py'
+      - 'horse-racing/brdb/src/run_brdb_m7_relatives_preview.py'
+      - 'horse-racing/brdb/schema/brdb_m7_relatives_detail_v0_1_candidate.schema.json'
+      - 'horse-racing/brdb/schema/brdb_m7_research_consumer_preview_v0_1.schema.json'
+      - 'horse-racing/brdb/tests/test_brdb_m7_relatives_detail_candidate.py'
       - 'horse-racing/brdb/tests/test_brdb_m7_evidence_adapter.py'
       - 'horse-racing/brdb/tests/test_brdb_m7_identity_field_scaffold.py'
       - 'horse-racing/brdb/src/brdb_stage3b_root_identity_resolution.py'
@@ -58,5 +64,6 @@ jobs:
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_integrated_review_v03_candidate.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_m7_identity_field_scaffold.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_m7_evidence_adapter.py' -v
+          python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_m7_relatives_detail_candidate.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_stage3b_root_identity_resolution.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_audit_brdb_stage3b_label_differences.py' -v
