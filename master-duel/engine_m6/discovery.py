@@ -60,6 +60,12 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
     path=Path(db_path)
     _require(sha256(path.read_bytes()).hexdigest()==expected_sqlite_sha256,
              "source SQLite SHA mismatch")
+    # Prefer the canonical v2 classification, not keywords in effect text.
+    # v1 source snapshots are still supported for historical replay.
+    with sqlite3.connect(f"file:{path.resolve().as_posix()}?mode=ro&immutable=1",uri=True) as check:
+        has_monster_types=bool(check.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='card_monster_types'"
+        ).fetchone())
     # Ensure named motifs cannot be injected into SQL LIKE wildcards.
     def like(term):
         return "%"+term.replace("\\","\\\\").replace("%","\\%").replace("_","\\_")+"%"
@@ -82,7 +88,14 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
     # unlike Xyz/Link cards. Merely having "Fusion" in the effect description
     # is insufficient: main-deck monsters can themselves perform Fusion.
     # This query is discovery only; final zone/material claims need review.
-    if section=="EXTRA":
+    if section=="EXTRA" and has_monster_types:
+        where.append(
+            "EXISTS (SELECT 1 FROM card_monster_types mt WHERE mt.card_id=c.card_id "
+            "AND mt.monster_type IN ('FUSION','SYNCHRO','XYZ','LINK'))"
+        )
+    elif section=="EXTRA":
+        # Legacy v1 heuristic only. New v2 sources do not rely on
+        # source-text keywords to classify an EXTRA monster.
         # In the source DB some Link monsters have a NULL link rating.
         # For explicit ID lookups, the no-level monster footprint
         # admits candidates that must still receive human zone review.
@@ -101,6 +114,11 @@ def search_cards(db_path, *, expected_sqlite_sha256, section,
         )
         where.append("(a.rank IS NOT NULL OR a.link IS NOT NULL OR "+
                      candidate_link+" OR "+candidate_fusion+")")
+    elif has_monster_types:
+        where.append(
+            "NOT EXISTS (SELECT 1 FROM card_monster_types mt WHERE mt.card_id=c.card_id "
+            "AND mt.monster_type IN ('FUSION','SYNCHRO','XYZ','LINK'))"
+        )
     else:
         where.append("(a.rank IS NULL AND a.link IS NULL AND ("
                      "t.body IS NULL OR t.body NOT LIKE '%このカードがＬ召喚%'))")
