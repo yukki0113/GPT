@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "transport": "public_google_drive",
+  "artifacts": [
+    {
+      "artifact_id": "stage3b_top50_batch_audit_v2_20261106",
+      "file_id": "1LiYKGZBwN17WHdS11SwwVgco6w-oBtUu",
+      "destination": "brdb_stage3b_top50_batch_audit_v2_20261106.zip",
+      "expected_name": "brdb_stage3b_top50_batch_audit_v2_20261106.zip",
+      "expected_size": 99320,
+      "sha256": "126f4052667813e0b15868b72644097aaddf4ed98dec82d12dea4a72098844dd"
+    }
+  ]
+}
