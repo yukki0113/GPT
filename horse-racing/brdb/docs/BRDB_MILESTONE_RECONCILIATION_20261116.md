@@ -31,7 +31,7 @@ Original audit outputs and SHA references remain linked in their corresponding P
 | M3 Research pedigree generation | accepted for fixed cohort | static != as-of; as-of reader remains research-only |
 | M4 Stallion master / ancestry work ③-A/B/C, ④ | research partial completion | remaining identities and verified edges, no inferred cross |
 | M5 Condition research D3 | accepted retrospective description [#2599](https://github.com/yukki0113/GPT/pull/2599) | causal/conditional suitability not demonstrated |
-| M5-D4 Non-scoring supplemental sidecar | initial E2E accepted [#2601](https://github.com/yukki0113/GPT/pull/2601) | real PACI cohort and race-day timing |
+| M5-D4 Non-scoring supplemental sidecar | real PACI full-field E2E accepted [#2603](https://github.com/yukki0113/GPT/pull/2603); exact PACI user-side pre-off availability accepted in #2619 | provider release timestamp remains independently unknown; D3 remains AS_OF_UNVERIFIED |
 | M6 Predictive-value study | **BLOCKED** [#2395](https://github.com/yukki0113/GPT/issues/2395) | immutable pre-off-time pairs, results and independently supported as-of |
 | M7 Integrated Blood Review promotion | **not accepted** | versioned new contract, integration tests, qualified interpretations |
 | M8 RaceNote / PWA handoff | **not authorized** | M7 acceptance plus consumer-contract regression |
