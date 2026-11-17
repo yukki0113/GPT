@@ -20,33 +20,33 @@ def fixed():
   ]}
 
 class RootIdentityResolutionTests(unittest.TestCase):
- def run(self,f=None,e=None,a=None,s=None):
+ def resolve_case(self,f=None,e=None,a=None,s=None):
   return resolve(f or fixed(),copy.deepcopy(OLD),e or copy.deepcopy(EVID),a or copy.deepcopy(ALIASES),s or copy.deepcopy(SEED))
  def test_five_resolve_to_fifty(self):
-  o=self.run(); self.assertEqual((o['baseline_approved'],o['newly_resolved'],o['approved_total']),(45,5,50)); self.assertTrue(all(x['approved'] for x in o['decisions']))
+  o=self.resolve_case(); self.assertEqual((o['baseline_approved'],o['newly_resolved'],o['approved_total']),(45,5,50)); self.assertTrue(all(x['approved'] for x in o['decisions']))
  def test_henny_remains_source_only(self):
-  h=next(x for x in self.run()['decisions'] if x['name']=='ヘニーヒューズ'); self.assertIsNone(h['jrdb_horse_id']); self.assertIn('EXTERNAL_PROFILE_AND_SEED',h['basis'])
+  h=next(x for x in self.resolve_case()['decisions'] if x['name']=='ヘニーヒューズ'); self.assertIsNone(h['jrdb_horse_id']); self.assertIn('EXTERNAL_PROFILE_AND_SEED',h['basis'])
  def test_existing_45_are_carried_not_reinterpreted(self):
-  old={x['name']:x for x in OLD['decisions'] if x['approved']}; out={x['name']:x for x in self.run()['decisions']}
+  old={x['name']:x for x in OLD['decisions'] if x['approved']}; out={x['name']:x for x in self.resolve_case()['decisions']}
   for n,v in old.items():
    self.assertTrue(out[n]['carried_from_v0_1']); self.assertEqual(out[n]['basis'],v['basis']); self.assertEqual(out[n]['jbis_id'],v['jbis_id'])
  def test_unlisted_transliteration_fails(self):
   f=fixed(); next(x for x in f['targets'] if x['target_label']=='モズアスコット')['sire_name']='FrankelX'
-  with self.assertRaisesRegex(ResolutionError,'parent identity mismatch'): self.run(f=f)
+  with self.assertRaisesRegex(ResolutionError,'parent identity mismatch'): self.resolve_case(f=f)
  def test_birth_date_mismatch_fails(self):
   e=copy.deepcopy(EVID); next(x for x in e['profiles'] if x['name']=='リアルスティール')['birth_date']='20120302'
-  with self.assertRaisesRegex(ResolutionError,'name/date/sex'): self.run(e=e)
+  with self.assertRaisesRegex(ResolutionError,'name/date/sex'): self.resolve_case(e=e)
  def test_parent_birth_year_mismatch_fails(self):
   e=copy.deepcopy(EVID); next(x for x in e['profiles'] if x['name']=='タワーオブロンドン')['sire_birth_year']=2004
-  with self.assertRaisesRegex(ResolutionError,'birth-year'): self.run(e=e)
+  with self.assertRaisesRegex(ResolutionError,'birth-year'): self.resolve_case(e=e)
  def test_henny_unexpected_jrdb_candidate_fails(self):
   f=fixed(); h=next(x for x in f['targets'] if x['target_label']=='ヘニーヒューズ'); h['candidate_count']=1; h['candidates']=[{'horse_id':'00000001'}]
-  with self.assertRaisesRegex(ResolutionError,'unexpected JRDB Henny'): self.run(f=f)
+  with self.assertRaisesRegex(ResolutionError,'unexpected JRDB Henny'): self.resolve_case(f=f)
  def test_henny_alias_not_generic(self):
   a=copy.deepcopy(ALIASES); next(x for x in a['aliases'] if x['target']=='ヘニーヒューズ')['external']='ヘネシーX'
-  with self.assertRaisesRegex(ResolutionError,'Henny seed/profile'): self.run(a=a)
+  with self.assertRaisesRegex(ResolutionError,'Henny seed/profile'): self.resolve_case(a=a)
  def test_prediction_boundary_unchanged(self):
-  o=self.run(); self.assertFalse(o['prediction_safe']); self.assertEqual(o['historical_asof_status'],'AS_OF_UNVERIFIED')
+  o=self.resolve_case(); self.assertFalse(o['prediction_safe']); self.assertEqual(o['historical_asof_status'],'AS_OF_UNVERIFIED')
  def test_baseline_held_set_drift_fails(self):
   old=copy.deepcopy(OLD); next(x for x in old['decisions'] if x['name']=='リアルスティール')['approved']=True
   with self.assertRaisesRegex(ResolutionError,'expected frozen 45/50'): resolve(fixed(),old,EVID,ALIASES,SEED)
