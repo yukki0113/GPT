@@ -1,3 +1,5 @@
+> **2026-11-17 正本Gen9（素材・召喚制約）**：Gen9/schema v4ではEXの素材指定と召喚制約の原文アンカーが2,129件保存されている。独立した構築実行では`engine_m6.structured_materials.screen_structured_extra_materials`に、現行SQLite SHA・対象EX ID・根拠付きの候補素材/同時状態/召喚手段/制約レビューを渡してM6-5B正式形式を得る。ルート入力がなければ**REQUIRES_REVIEW**が正しい。EXの「POSSIBLE_ON_PAPER」は実対戦成功保証ではない。Gen8以前の固定M6入力・M5Cの再発行とSHA監査が必要。[Gen9監査](GEN9_STAGE2_EXTRA_MATERIAL_EVIDENCE_AUDIT_20261117.md)。
+
 > **2026-11-17 現行正本 Gen8**：魔法・罠property、リンク値・マーカー、ペンデュラムスケール・日本語P効果がSQLite schema v3で登録済み。M6-5AではモンスターのMAIN/EX区分にDB分類を使用する。魔法・罠種別は`card_spell_trap_properties`へ格納済みだが、M6-5Aの種別指定フィルタとの接続は別工程として明示する。EX素材の自動判定はこれら基本属性があるだけでは成立しない。元効果文と素材条件に根拠がない場合は`REQUIRES_REVIEW`を維持。旧Gen7/Gen6のSHA固定成果物は別世代・別SHAに移行する。[監査](GEN8_STAGE1_CARD_PROPERTIES_PRODUCTION_AUDIT_20261117.md)。
 
 > **2026-11-17 正本DB Gen7更新**：最新HEADはGen7（monster type分類付きSQLite schema v2）。カード種別の検索はM6-5Aの`card_monster_types`を優先し、FUSION/SYNCHRO/XYZ/LINK判定をカード効果本文の単語だけから行わない。旧Gen6固定のM5C/評価入力・規制参照はGen7へ正規再発行して別SHAで扱い、無言で再ピンしない。所持184種類・禁止制限215件の内容は不変。[監査](GEN7_MONSTER_TYPES_PRODUCTION_MIGRATION_AUDIT_20261117.md)。
