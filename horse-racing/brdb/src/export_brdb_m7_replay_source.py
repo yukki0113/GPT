@@ -29,6 +29,7 @@ FILES = (
     "horse-racing/brdb/tests/test_brdb_m7_identity_field_scaffold.py",
     "horse-racing/brdb/tests/test_brdb_m7_evidence_adapter.py",
     "horse-racing/jrdb/src/jrdb_raw.py",
+    "horse-racing/jrdb/src/jrdb_ukc.py",
 )
 
 
