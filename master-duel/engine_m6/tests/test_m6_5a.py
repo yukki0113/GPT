@@ -100,6 +100,39 @@ class M65A(unittest.TestCase):
         broad=search_cards(self.path,expected_sqlite_sha256=sha,section="EXTRA")
         self.assertNotIn("konami:108",{x["card_id"] for x in broad["results"]})
 
+    def test_level_bearing_fusion_extra_search(self):
+        db=sqlite3.connect(self.path)
+        db.execute("INSERT INTO cards VALUES(?,?)",("konami:109","架空融合モンスター"))
+        db.execute("INSERT INTO md_catalog VALUES(?,?,?,?)",
+                   ("konami:109","SR","UNKNOWN","UNVERIFIED_SOURCE"))
+        db.execute("INSERT INTO card_attributes VALUES(?,?,?,?,?,?,?)",
+                   ("konami:109","MONSTER","DARK","Fiend",8,None,None))
+        db.execute("INSERT INTO card_texts VALUES(?,?,?,?,?)",
+                   ("konami:109","ja","v1",
+                    "「架空A」モンスター＋「架空B」モンスター\\n融合召喚でのみ特殊召喚できる。",
+                    "UNVERIFIED_SOURCE"))
+        # A MAIN-deck card may describe a Fusion effect, but has no
+        # material header. Do not let it enter broad EXTRA discovery.
+        db.execute("INSERT INTO cards VALUES(?,?)",("konami:110","架空融合サポート"))
+        db.execute("INSERT INTO md_catalog VALUES(?,?,?,?)",
+                   ("konami:110","R","UNKNOWN","UNVERIFIED_SOURCE"))
+        db.execute("INSERT INTO card_attributes VALUES(?,?,?,?,?,?,?)",
+                   ("konami:110","MONSTER","DARK","Fiend",3,None,None))
+        db.execute("INSERT INTO card_texts VALUES(?,?,?,?,?)",
+                   ("konami:110","ja","v1",
+                    "①：このカードを捨てて融合召喚を行う。","UNVERIFIED_SOURCE"))
+        db.commit();db.close()
+        sha=hashlib.sha256(self.path.read_bytes()).hexdigest()
+        result=search_cards(self.path,expected_sqlite_sha256=sha,
+                            section="EXTRA",theme_terms=["架空融合"])
+        ids={row["card_id"] for row in result["results"]}
+        self.assertIn("konami:109",ids)
+        self.assertNotIn("konami:110",ids)
+        by_id=search_cards(self.path,expected_sqlite_sha256=sha,
+                           section="EXTRA",exact_card_ids=["konami:109"])
+        self.assertEqual(["konami:109"],[x["card_id"] for x in by_id["results"]])
+        self.assertFalse(by_id["proof_of_compatibility"])
+
     def test_owned_generic_staple_search(self):
         r=self.search(section="MAIN",owned_only=True,rarities=["UR"])
         self.assertEqual({"konami:105","konami:106"},{x["card_id"] for x in r["results"]})
