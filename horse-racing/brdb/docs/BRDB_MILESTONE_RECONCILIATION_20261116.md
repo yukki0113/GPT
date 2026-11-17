@@ -33,7 +33,7 @@ Original audit outputs and SHA references remain linked in their corresponding P
 | M5 Condition research D3 | accepted retrospective description [#2599](https://github.com/yukki0113/GPT/pull/2599) | causal/conditional suitability not demonstrated |
 | M5-D4 Non-scoring supplemental sidecar | real PACI full-field E2E accepted [#2603](https://github.com/yukki0113/GPT/pull/2603); exact PACI user-side pre-off availability accepted in #2619 | provider release timestamp remains independently unknown; D3 remains AS_OF_UNVERIFIED |
 | M6 Predictive-value study | **BLOCKED** [#2395](https://github.com/yukki0113/GPT/issues/2395) | immutable pre-off-time pairs, results and independently supported as-of |
-| M7 Integrated Blood Review promotion | **not accepted** | versioned new contract, integration tests, qualified interpretations |
+| M7 Integrated Blood Review promotion | v0.3 research contract candidate accepted; **production promotion not accepted** | qualified interpretation rules, real integrated field replay, consumer-contract regression and explicit graduation |
 | M8 RaceNote / PWA handoff | **not authorized** | M7 acceptance plus consumer-contract regression |
 
 ## Prioritized next work
