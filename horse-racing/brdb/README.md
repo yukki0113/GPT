@@ -324,3 +324,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - [D4補足アダプター](src/brdb_d4_supplemental_adapter.py) と [一括研究用出力](src/run_brdb_d4_sidecar.py) を追加。D3の固定・出典付き条件別実績（父/母父/父×母父）を、架空研究レースの全頭へ **非採点サイドカー** として投影する。
 - [D4監査レポート](docs/BRDB_D4_SUPPLEMENTAL_RESEARCH_AUDIT_20261116.md)：Stage3 73件、Stage4 10件、D3 9件、D4 11件の計103テストPASS。固定D3の実データとGitHub正本アダプターを接続し、仮想3頭の研究フィールドから17件の補足観測を生成。2回再生成バイトSHA一致。
 - `supplemental_insights` は **独立した研究用サイドカー** のみに存在する。凍結済み `brdb-review-v0.1` と既存 `brdb-integrated-blood-review-v0.2-candidate` schema への追加・変更はしていない。`AS_OF_UNVERIFIED` / `prediction_safe=false`、好材料・懸念の自動判定なし、予想スコア・印なし。PACI実出走馬やRaceNote/PWA本番への接続は後続の正式受入が必要。
+
+## 2026-11-17 — M7 実PACI全18頭 研究用統合E2E
+
+- [M7実レース統合受入監査](docs/BRDB_M7_REAL_FIELD_E2E_ACCEPTANCE_20261117.md) / [管理Issue #2628](https://github.com/yukki0113/GPT/issues/2628)。
+- `PACI261115.zip` の指定1レース（`05265412`）18頭について、①父90件、②母父180件、③系統ペア90件、④確認された母方近親75関係を、研究用v0.2へ統合。④母のcanonical同定13/18、未同定5/18。
+- D4の既存非採点補足66件を変更せずv0.3へ結合。2回の独立した①〜④実再集計から生成したv0.2/v0.3のSHAが完全一致。両JSON Schema PASS、正本コードで19件の追加合成回帰PASS、Library `/BRDB/M7/` に非公開保存し読み戻しSHAも確認。
+- **M7研究用実レースE2EはPASSだが、本番昇格は未承認。** ③④は歴史的as-of未検証、適性正負・要因・summary・スコア・confidence昇格なし。④条件別の各近親数値は既存v0.2へ情報損失なく格納できないため、研究用原本を保持し統合契約には関係IDを表示。
+- 次は資格付けされた解釈規則、必要な④非損失補足契約、consumer回帰、明示的本番受入。M6 [#2395](https://github.com/yukki0113/GPT/issues/2395) の正式科学的予測ゲートは引き続きBLOCKED。BRDB CURRENT、RaceNote、PWA、新聞は未変更。
