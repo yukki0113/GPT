@@ -1,0 +1,64 @@
+{
+  "schema_version": "brdb-stage3b-root-external-evidence-v0.2",
+  "collected_on": "2026-11-17",
+  "research_only": true,
+  "prediction_safe": false,
+  "historical_asof_status": "AS_OF_UNVERIFIED",
+  "profiles": [
+    {
+      "rank": 20,
+      "name": "リアルスティール",
+      "jbis_id": "0001157711",
+      "birth_date": "20120301",
+      "sex": "牡",
+      "sire": "ディープインパクト",
+      "dam": "ラヴズオンリーミー",
+      "jbis_url": "https://www.jbis.or.jp/horse/0001157711/",
+      "jra_url": "https://www.jra.go.jp/JRADB/accessU.html?CNAME=pw01dud102012104889%2F21"
+    },
+    {
+      "rank": 21,
+      "name": "シンボリクリスエス",
+      "jbis_id": "0000700008",
+      "birth_date": "19990121",
+      "sex": "牡",
+      "sire": "Kris S.",
+      "dam": "Tee Kay",
+      "jbis_url": "https://www.jbis.or.jp/horse/0000700008/",
+      "jra_url": "https://www.jra.go.jp/JRADB/accessU.html?CNAME=pw01dud101999110099%2F58"
+    },
+    {
+      "rank": 27,
+      "name": "ヘニーヒューズ",
+      "jbis_id": "0001028940",
+      "birth_date": "20030405",
+      "sex": "牡",
+      "sire": "ヘネシー",
+      "dam": "Meadow Flyer",
+      "jbis_url": "https://www.jbis.or.jp/horse/0001028940/",
+      "jra_url": null
+    },
+    {
+      "rank": 31,
+      "name": "モズアスコット",
+      "jbis_id": "0001213491",
+      "birth_date": "20140331",
+      "sex": "牡",
+      "sire": "Frankel",
+      "dam": "India",
+      "jbis_url": "https://www.jbis.or.jp/horse/0001213491/",
+      "jra_url": "https://www.jra.go.jp/JRADB/accessS.html?CNAME=pw01sde1005202001021120200202%2F07"
+    },
+    {
+      "rank": 33,
+      "name": "タワーオブロンドン",
+      "jbis_id": "0001209439",
+      "birth_date": "20150209",
+      "sex": "牡",
+      "sire": "Raven's Pass",
+      "dam": "スノーパイン",
+      "jbis_url": "https://www.jbis.or.jp/horse/0001209439/",
+      "jra_url": "https://www.jra.go.jp/JRADB/accessU.html?CNAME=pw01dud102015101621%2F9E"
+    }
+  ]
+}
