@@ -3,7 +3,7 @@
 - Scope: **P0 read/audit only**; no JPDB production implementation, no historical source mutation, no RaceNote connection.
 - Repository: `yukki0113/GPT` `main` inspected at `97e2b754f5662ab3ae1dc34665879ed8795584ae`.
 - User-approved JPDB history start: **2023-01-01**; 2021–2022 comparison in the previous report is historical evidence, not the operational JPDB window.
-- Audit scope this turn: live canonical Drive CURRENT/manifest/audit, **manifest metadata only** for 2023–2025 BAC/KYI/SED, and the repository official master-code transcription. **No new row-level Parquet joins were executed**; row counts below are *declared manifest row counts*, not independently re-counted data rows.
+- Audit scope this turn: live canonical Drive CURRENT/manifest/audit, **manifest metadata only** for 2023–2025 BAC/KYI/SED, and the repository official master-code transcription. **No new row-level Parquet joins were executed**; row counts below are *declared manifest row counts*, not independently re-counted data rows. In a separate byte-integrity check, the accepted 2025 BAC Parquet object was downloaded from its canonical Drive ID and SHA-verified.
 
 ## 1. Live canonical identity / integrity checks
 
@@ -28,7 +28,7 @@ These values come from the *live accepted manifest*, not from the older annual R
 | SED result rows | 47,672 | 47,181 | 47,884 | **142,737** |
 
 - Each of the three 2023–2025 cohorts has a stable family-specific schema hash. BAC: `4adf70bd4114bfaace40872fc46704c5fa9f6f259dd943ce3dcf98a66e44ff90`; KYI: `3078ad6a032ffad839bfb6aa9763f589b4f626ac2d11d054699fa87b35d9c89a`; SED: `17e775fb8ae8387725d8d57ac645502a35500c4d52b8cd064002057282e948c2`.
-- The 2025 BAC asset SHA `b26a364978143fbd6e9d30289db0eb85e9b33e9fe612759b23a85ffbb78a3bb9` matches the repaired successor and is **not** the predecessor's 3,402-row asset.
+- The 2025 BAC object was **independently downloaded from Drive file ID `1nvDnqBnv69KdMgH200lqOEg6E2VTNtpX`**: 171,165 bytes, `PAR1` magic at header/trailer, byte SHA-256 **`b26a364978143fbd6e9d30289db0eb85e9b33e9fe612759b23a85ffbb78a3bb9` = manifest**. This validates transport/immutable object bytes, **not** 3,455 independently queried rows, and is not the predecessor's 3,402-row object.
 - The existing recent-window Raw audit found KYI↔SED identity integrity across 2021–2025, but the **new 2025 BAC Parquet ↔ KYI/SED ↔ Course mapping complete row-level join is not yet repeated here**. Do not interpret matching total counts as proof of complete key equality.
 - 2026 year-to-date is not part of the 2010–2025 Historical Warehouse. JPDB's 2023+ scope must explicitly bind 2026 PACI/SED snapshots through the existing current-year route; 2023–2025 manifest-only checks do not establish 2026 completeness or historical pre-race availability.
 
@@ -48,7 +48,7 @@ Disposition:
 |---|---|---|
 | Canonical Warehouse CURRENT source binding / JSON hashes | **PASS** | Live Drive fetch, semantic SHA, generation and file IDs above |
 | 2023–2025 cohort presence and manifest row/schema totals | **PASS (metadata only)** | Entries above; independent Parquet record scan still open |
-| BAC repair distribution to CURRENT | **PASS at manifest/audit level** | Read-only actual 2025 Parquet SHA/relation-key verification is still open |
+| BAC repair distribution to CURRENT | **PASS (manifest + physical object byte SHA)** | 2025 BAC Parquet downloaded and exact SHA-verified; relation-key/row-level query still open |
 | SED abnormal code `5` label | **FOUND (master-code reference)** | Confirm field/version applicability and inspect both affected record keys |
 | KYI scheduled rider vs SED actual rider | **PARTIAL** | Classify 2023+ mismatches; verify historical last-pre-race source/late rider changes rather than equating all differences to substitutions |
 | Previous-race historical resolution | **PARTIAL** | Distinguish OUTSIDE_WINDOW, NON_JRA, NO_LINK, NOT_YET_AVAILABLE, BROKEN_LINK and preserve as-of exclusivity |
