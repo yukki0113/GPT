@@ -137,6 +137,73 @@ class M65C(unittest.TestCase):
         self.assertEqual(0,result["solutions"][0]["extra_used"])
         self.assertEqual(15,result["solutions"][0]["extra_unused"])
 
+    def test_route_evidence_missing_keeps_extra_provisionally(self):
+        # SOURCE-referenced material screen deliberately has no summon route:
+        # not proof of impossibility, so source-scored deckbuilding may
+        # provisionally select the card while keeping game proof false.
+        t,r,d,a,s,p=sample()
+        row=next(x for x in s["results"] if x["card_id"]=="konami:2005")
+        row.update({
+            "review_reason":"ROUTE_EVIDENCE_MISSING",
+            "gameplay_compatibility_verified":False,
+            "materials_simultaneously_available_verified":False,
+            "official_md_legality_verified":False})
+        result=run(screen=s)
+        item=result["solutions"][0]
+        cards={x["card_id"] for x in item["candidate"]["cards"]}
+        self.assertIn("konami:2005",cards)
+        provisional=[x for x in item["competitive_decisions"] if
+                     x["section"]=="EXTRA" and x["card_id"]=="konami:2005"]
+        self.assertTrue(provisional)
+        self.assertTrue(provisional[0]["provisional_extra_selection"])
+        self.assertEqual("REQUIRES_REVIEW_ROUTE_EVIDENCE_MISSING",
+                         provisional[0]["material_verification"])
+        self.assertFalse(item["gameplay_tested"])
+
+    def test_unsupported_or_negative_material_screen_not_provisionally_admitted(self):
+        for reason in ("MATERIAL_REQUIREMENT_UNPARSED",
+                       "QUALIFIED_MATERIAL_MISMATCH_MATERIAL_QUALIFIER_MISMATCH",
+                       "SUMMON_METHOD_MISMATCH"):
+            with self.subTest(reason=reason):
+                t,r,d,a,s,p=sample()
+                row=next(x for x in s["results"] if x["card_id"]=="konami:2005")
+                row.update({
+                    "review_reason":reason,
+                    "gameplay_compatibility_verified":False,
+                    "materials_simultaneously_available_verified":False,
+                    "official_md_legality_verified":False})
+                item=run(screen=s)["solutions"][0]
+                self.assertNotIn("konami:2005",
+                    {x["card_id"] for x in item["candidate"]["cards"]})
+        t,r,d,a,s,p=sample()
+        row=next(x for x in s["results"] if x["card_id"]=="konami:2005")
+        row.update({"review_reason":"ROUTE_EVIDENCE_MISSING",
+                    "gameplay_compatibility_verified":True,
+                    "materials_simultaneously_available_verified":False,
+                    "official_md_legality_verified":False})
+        self.assertNotIn("konami:2005",{
+            x["card_id"] for x in run(screen=s)["solutions"][0]["candidate"]["cards"]})
+
+    def test_required_package_extra_route_missing_is_reviewable(self):
+        t,r,d,a,s,p=sample()
+        p[0]["parts"].append({"card_id":"konami:2005",
+                             "section":"EXTRA","minimum":1,
+                             "maximum":1,"role":"engine extra"})
+        for row in a:
+            if row["card_id"]=="konami:2005":
+                row["package_id"]="fake-engine"
+        entry=next(x for x in s["results"] if x["card_id"]=="konami:2005")
+        entry.update({
+            "review_reason":"ROUTE_EVIDENCE_MISSING",
+            "gameplay_compatibility_verified":False,
+            "materials_simultaneously_available_verified":False,
+            "official_md_legality_verified":False})
+        result=run(annotations=a,packages=p,screen=s)
+        self.assertFalse(any(x["reason"]=="ENGINE_EXTRA_MATERIAL_UNPROVEN"
+                             for x in result["rejected"]))
+        variant=next(x for x in result["solutions"] if x["family"]=="THEME_WITH_ENGINE")
+        self.assertIn("konami:2005",{x["card_id"] for x in variant["candidate"]["cards"]})
+
     def test_engine_package_is_complete(self):
         r=run()
         item=next(x for x in r["solutions"] if x["family"]=="THEME_WITH_ENGINE")
