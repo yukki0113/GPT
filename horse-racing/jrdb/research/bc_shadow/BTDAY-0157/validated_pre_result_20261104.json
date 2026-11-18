@@ -1,0 +1,92 @@
+{
+  "automated_shadows": false,
+  "canonical_a_z_unchanged": true,
+  "confidence_records_sha256": "0841b908cda3b10693f03f182c9f1b5fcba0df12ba150e01310f88de73953695",
+  "contract_revision": "v056-prediction-confidence-audit-newspaper-v1",
+  "grade_transitions": {
+    "B->B": 2,
+    "B->C": 2,
+    "C->C": 1
+  },
+  "prediction_records_sha256": "a19a3f26096bec9d29ce09a2489e12ad0516f484cad212b561c653865f897eef",
+  "record_count": 5,
+  "records": [
+    {
+      "axis_failure_scenario": "○5が逆転し、◎が馬券外となる可能性。事前リスク：5番プリンセスモコは前走1着IDM48、デキ抜群で完成度が高く、勝ち切り性能では最大の逆転候補。",
+      "axis_positive_case": "Frozen Predictionの事前証拠：11番マルガは前走5着IDM47でも先手を取れており、前々走1着IDM41、KYI22、上昇調教と再上昇余地が大きい。",
+      "canonical_confidence": "B",
+      "canonical_confidence_reason": "◎を最有力とする根拠は十分だが、○以下にも現実的な逆転筋が残る。 5番プリンセスモコは前走1着IDM48、デキ抜群で完成度が高く、勝ち切り性能では最大の逆転候補。",
+      "final_reason": "◎11の直近5着IDM47に対し○5は前走勝利IDM48で軸優位が弱い。",
+      "honmei": 11,
+      "race_no": 9,
+      "relative_axis_case": "◎11の直近5着IDM47に対し○5は前走勝利IDM48で軸優位が弱い。",
+      "shadow_grade": "C",
+      "strongest_rival": 5,
+      "unverified_assumptions": "当日の展開・状態が事前想定どおりになるとは限らず、特に5番プリンセスモコは前走1着IDM48、デキ抜群で完成度が高く、勝ち切り性能では最大の逆転候補。",
+      "venue": "中京"
+    },
+    {
+      "axis_failure_scenario": "○11が逆転し、◎が馬券外となる可能性。事前リスク：11番コパノトーマスは前々走1着IDM47、上位能力反復と上昇調教で逆転候補。",
+      "axis_positive_case": "Frozen Predictionの事前証拠：10番クリエープキーは前走3着IDM44、KYI12.9で同組の現級実績が最も安定。",
+      "canonical_confidence": "B",
+      "canonical_confidence_reason": "◎を最有力とする根拠は十分だが、○以下にも現実的な逆転筋が残る。 11番コパノトーマスは前々走1着IDM47、上位能力反復と上昇調教で逆転候補。",
+      "final_reason": "◎10の「10番クリエープキーは前走3着IDM44、KYI12.9で同組の現級実績が最も安定。」という事前実績を、○11の逆転材料より軸固定の積極根拠として評価。",
+      "honmei": 10,
+      "race_no": 9,
+      "relative_axis_case": "◎10の「10番クリエープキーは前走3着IDM44、KYI12.9で同組の現級実績が最も安定。」という事前実績を、○11の逆転材料より軸固定の積極根拠として評価。",
+      "shadow_grade": "B",
+      "strongest_rival": 11,
+      "unverified_assumptions": "当日の展開・状態が事前想定どおりになるとは限らず、特に11番コパノトーマスは前々走1着IDM47、上位能力反復と上昇調教で逆転候補。",
+      "venue": "中山"
+    },
+    {
+      "axis_failure_scenario": "○4が逆転し、◎が馬券外となる可能性。事前リスク：4番ワイドアラジンは基礎IDM57.1、KYI22.5で上昇余地が大きく逆転候補。",
+      "axis_positive_case": "Frozen Predictionの事前証拠：15番マイネルブリックスは近2走4・5着IDM59・56で大崩れが少なく、この混戦では安定度を最重視できる。",
+      "canonical_confidence": "C",
+      "canonical_confidence_reason": "◎を最上位には置くが上位馬の能力差が小さく、展開・位置取り・当日の再現性への依存が大きい。 4番ワイドアラジンは基礎IDM57.1、KYI22.5で上昇余地が大きく逆転候補。",
+      "final_reason": "◎15は4・5着続き、○4の上昇余地と比較して軸の着内証拠が弱い。",
+      "honmei": 15,
+      "race_no": 11,
+      "relative_axis_case": "◎15は4・5着続き、○4の上昇余地と比較して軸の着内証拠が弱い。",
+      "shadow_grade": "C",
+      "strongest_rival": 4,
+      "unverified_assumptions": "当日の展開・状態が事前想定どおりになるとは限らず、特に4番ワイドアラジンは基礎IDM57.1、KYI22.5で上昇余地が大きく逆転候補。",
+      "venue": "中山"
+    },
+    {
+      "axis_failure_scenario": "○3が逆転し、◎が馬券外となる可能性。事前リスク：3番ブレナヴォンは1・2着IDM38・35、KYI17.4と実戦再現性で逆転候補。",
+      "axis_positive_case": "Frozen Predictionの事前証拠：8番ベレシートは初戦1着IDM39、KYI21.5、上昇調教で今回の上積みが最も大きい。",
+      "canonical_confidence": "B",
+      "canonical_confidence_reason": "◎を最有力とする根拠は十分だが、○以下にも現実的な逆転筋が残る。 3番ブレナヴォンは1・2着IDM38・35、KYI17.4と実戦再現性で逆転候補。",
+      "final_reason": "◎8は初戦勝利、○3は1・2着の反復で着内の再現性を比較しきれない。",
+      "honmei": 8,
+      "race_no": 9,
+      "relative_axis_case": "◎8は初戦勝利、○3は1・2着の反復で着内の再現性を比較しきれない。",
+      "shadow_grade": "C",
+      "strongest_rival": 3,
+      "unverified_assumptions": "当日の展開・状態が事前想定どおりになるとは限らず、特に3番ブレナヴォンは1・2着IDM38・35、KYI17.4と実戦再現性で逆転候補。",
+      "venue": "阪神"
+    },
+    {
+      "axis_failure_scenario": "○6が逆転し、◎が馬券外となる可能性。事前リスク：6番ソウルアンドジャズは2・3着IDM56・54、KYI18.7で逆転候補。",
+      "axis_positive_case": "Frozen Predictionの事前証拠：4番ゴッドエスパーダは連続2・3着IDM55・56、KYI14.2、デキ抜群で勝ち切りに最も近い。",
+      "canonical_confidence": "B",
+      "canonical_confidence_reason": "◎を最有力とする根拠は十分だが、○以下にも現実的な逆転筋が残る。 6番ソウルアンドジャズは2・3着IDM56・54、KYI18.7で逆転候補。",
+      "final_reason": "◎4の「4番ゴッドエスパーダは連続2・3着IDM55・56、KYI14.2、デキ抜群で勝ち切りに最も近い。」という事前実績を、○6の逆転材料より軸固定の積極根拠として評価。",
+      "honmei": 4,
+      "race_no": 10,
+      "relative_axis_case": "◎4の「4番ゴッドエスパーダは連続2・3着IDM55・56、KYI14.2、デキ抜群で勝ち切りに最も近い。」という事前実績を、○6の逆転材料より軸固定の積極根拠として評価。",
+      "shadow_grade": "B",
+      "strongest_rival": 6,
+      "unverified_assumptions": "当日の展開・状態が事前想定どおりになるとは限らず、特に6番ソウルアンドジャズは2・3着IDM56・54、KYI18.7で逆転候補。",
+      "venue": "阪神"
+    }
+  ],
+  "research_only": true,
+  "results_unopened_operator_assertion": true,
+  "schema_version": "racenote-v056-bc-shadow-axis-v1",
+  "selection_id": "BTDAY-0157",
+  "session_id": "V056-c3ce09d8267bf3b7dd58",
+  "status": "SHADOW_BC_DRAFT_VALIDATED_NOT_CANONICAL_FREEZE",
+  "target_date": "2025-12-13"
+}
