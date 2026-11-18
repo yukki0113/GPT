@@ -6,6 +6,13 @@
 - 判定: **P0 feasibility largely PASS / production acceptance OPEN**
 - 範囲: 既存Raw・Course Profileの読み取り専用検証。JPDB実装・RaceNote本番接続・更新頻度の決定は行わない。
 
+## 最新方針・BAC修復候補（2026-11-18追記）
+
+- **ユーザー確定: JPDBの通常収集・集計は2023-01-01以降**。以下の5年比較は検討過程の監査履歴として残すが、2021〜2022のJPDB実装対象という意味ではない。3年ローリングへの固定ではなく「2023年以降」が開始境界。
+- 2025年12月13・14日の欠損BAC **53R**はJRDBの正規取得workflowで両日36Rずつ回収済み。補修候補ZIPで2025年BAC 3,455/3,455 RをKYI/SEDレースキーに完全一致させた。重複19Rのフィールド内容は更新されているため現行Rawおよびaccepted Warehouseは変更せず、候補を別世代扱いとして保全。
+- 詳細と証跡: [JPDB_P0_BAC_2025_RECOVERY_20261118.md](JPDB_P0_BAC_2025_RECOVERY_20261118.md)。本ファイルの後続節のBAC欠損・5年方針の記述は**監査実施時点の記録**であり、最新の復旧状況は追記・別紙を優先。
+- **復旧候補の検証 PASS ≠ 既存Historical Warehouse修復完了**。正本切替／世代移行・as-of保証は別ゲート。
+
 ## 1. 検証方法と母数
 Google Drive既存のannual Rawフォルダから2021〜2025年の `BAC_YYYY.zip`、`KYI_YYYY.zip`、`SED_YYYY.zip` （計15ZIP）を取得。各ZIPのcanonical memberの固定長・キーを検査し、GitHub `horse-racing/jrdb/src/jrdb_raw.py` の**現行1-based byte offset**に合わせた一時的な監査用投影で照合した。恒久的なRaw parserは作っていない。会話上の2026-11-15 PACI/SED実査も別の既存証跡とする。
 - 今回の3年対5年比較は、**完了済み暦年**の `2023-01-01〜2025-12-31` と `2021-01-01〜2025-12-31` であり、2026-11-18を起点とした厳密なrolling 3/5年ではない。2026年YTD全量は未追加。
