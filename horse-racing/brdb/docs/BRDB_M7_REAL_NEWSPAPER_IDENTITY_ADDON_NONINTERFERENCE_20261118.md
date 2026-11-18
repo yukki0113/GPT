@@ -69,3 +69,12 @@ All per-horse and full-day source/generated data remain private/local; **no priv
 - **Still not done:** comparison with the *original historically published* 2026-11-15 immutable Newspaper package; production consumer integration, BRDB source-status registration, PWA display and explicit graduation.
 
 M6 #2395 stays OPEN/BLOCKED, M7 #2628 stays OPEN. No production changes.
+
+## Verified CI, main readback and disposition — 2026-11-18
+
+- [PR #2636](https://github.com/yukki0113/GPT/pull/2636) successfully merged; merge commit `be35598ebbe4159a2716992ff2bca512f275f465`.
+- [BRDB research CI run 44215290154](https://github.com/yukki0113/GPT/actions/runs/44215290154) **completed/success** (new real public sparse input + 18-horse synthetic noninterference test suite and existing BRDB regressions).
+- [Repository cross-workstream CI run 44215290228](https://github.com/yukki0113/GPT/actions/runs/44215290228) **completed/success**.
+- **Source-real result** is the separate local 36-race canonical PACI execution documented above; **CI fixture is intentionally synthetic** and does not imply private PACI was available to public CI.
+- The research-only all-horse join gate is **PASS**, non-RaceNote addon non-interference **PASS**, and **strict after-merge Newspaper schema gate remains BLOCKED** by separately filed [#2637](https://github.com/yukki0113/GPT/issues/2637) and [#2638](https://github.com/yukki0113/GPT/issues/2638).
+- Private target base, target merged and receipt were independently read back from Library `/BRDB/M7/` and all exact raw file SHA256 fingerprints matched. No production publication.
