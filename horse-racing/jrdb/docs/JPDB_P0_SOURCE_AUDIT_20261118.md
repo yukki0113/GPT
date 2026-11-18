@@ -7,6 +7,13 @@
 - Status: **P0 PARTIAL / REVIEW_REQUIRED** (sample evidence PASS; rolling 3–5-year identity and course-version acceptance NOT YET verified)
 - Scope: Read-only source/data inspection; no JPDB implementation, no RaceNote change, no new prediction/consumer approval.
 
+## 確定事項・復旧状況（2026-11-18 最新追記）
+
+- **JPDB対象開始日を2023-01-01に確定**。以下に記録された「過去3〜5年」「3年と5年の比較」「期間未定」は**旧検討段階**の証跡であり、採用方針ではない。2021〜2022年のJPDB常用データ収集・統計集計は行わない。2023以降でもphysical Courseの一部PARTIALは別途管理。
+- 2025-12-13/14のBAC欠損53RについてJRDB正規workflowで2日分を再取得し、全72Rを取得できた。2025年間BACの**修復候補**でBAC/KYI/SEDのrace-key 3,455/3,455一致を確認。ただし元19RのRawバイトが改版されており、既存annual Raw、accepted Warehouse、CURRENTは未改変。
+- [JPDB_P0_BAC_2025_RECOVERY_20261118.md](JPDB_P0_BAC_2025_RECOVERY_20261118.md) が詳細監査・Source SHA／Run／復旧境界の最新版。**データ復旧候補PASS／正本世代の切替OPEN**。
+- JPDB更新頻度は未決定。P1、本番RaceNote連携は未承認。
+
 ## P0追加検証への参照（2026-11-18）
 
 本ファイルの実査・OPENゲートは**初回監査時点**の記録です。その後、同日に2021〜2025年のBAC/KYI/SED annual Raw（計15ZIP）と既存Course Profileの実データ照合を実施し、結果を次の文書へ独立して保存しました。
