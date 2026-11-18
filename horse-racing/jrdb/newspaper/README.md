@@ -200,3 +200,11 @@ No standalone RRDB mark column is created.
 ### Retired-source verification
 
 通常NewspaperではEdgeDB Query/Previewを起動しません。新revisionのレースJSON・manifest・配信projectionに旧 `edge`、`edge_v05`、`special_memos`、`edge_matches`、`my_index` が再伝播しないことを `../tests/test_newspaper_source_retirement.py` と `PHASE3_AUDIT.md` で確認します。研究資産は `../archive/retired-edge-training/` の履歴へ分離済みです。
+
+
+## 2026-11-18 — 疎RaceNote・海外過去走の互換性監査
+
+- [正本データ・PWA表示監査](SPARSE_RACENOTE_AND_OVERSEAS_HISTORY_SEMANTICS_AUDIT_20261118.md)、[PR #2639](https://github.com/yukki0113/GPT/pull/2639)：疎RaceNote取込は上位5頭の選択結果だけを持ち、未選択は不適性・低評価ではない。旧v0.1通常全馬CSV契約とは明示的に別モード。
+- 2026-11-15東京11R・フォーチュンタイムの海外過去走（2026-02-14、サウジ芝1351m、6着）のZED原本には馬番`00`。競馬場コード80・着順は原本/JRDBコード表/JRA海外記録で照合。JRDB独自の馬番`00`の厳密な定義は未確認で、実馬番0と決めつけない。
+- 実PACI再構築36R/505頭を**深いコピーに限って**仮補正（未選択RN 325件 `missing→null`、海外過去走1件 `0→null`）すると、厳密なJSON Schema違反は326→0。既存RN印180頭、過去走6着/13頭、他addon等を維持。個人PWA v4/v5実関数（標準/compact/RN source状態）と桃太郎投影の表示互換テストPASS、[BRDB CI 44217735239](https://github.com/yukki0113/GPT/actions/runs/44217735239)・[横断CI 44217735235](https://github.com/yukki0113/GPT/actions/runs/44217735235) PASS。
+- **本番修正未実施**。Issue [#2637](https://github.com/yukki0113/GPT/issues/2637)・[#2638](https://github.com/yukki0113/GPT/issues/2638) はOPEN。schema合格候補は実機表示・桃太郎の全日投影・Current Publish・idempotent再結合の正式受入を代替しない。既存immutable revision、current pointer、PWA公開は未変更。
