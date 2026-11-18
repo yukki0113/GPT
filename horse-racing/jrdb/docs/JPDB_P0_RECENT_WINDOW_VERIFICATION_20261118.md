@@ -1,4 +1,6 @@
 # JockeyProfileDB（JPDB）P0追加現物検証 — 3年／5年比較
+
+> **2026-11-18最新：2025年BAC欠損53Rを補完した正規Warehouse新世代を受入済み。** 単一の `jrdb/v1/current.json` が `jrdb_normalized_warehouse_v1_2010_2025_g20261118_bacfix` を指します。2025年BAC 3,455R、全192資産のうち1資産のみ差し替え。従来のJPDB専用補修ZIPは出所証跡として保全しますが**JPDB研究用の独立CURRENTではありません**。詳細: [Warehouse受入・切替監査](JRDB_Warehouse_BAC_2025_Repair_Promotion_20261118.md)。旧記述の「未切替」は検証途中時点の状態です。
 - 実査日: 2026-11-18 JST
 - GitHub対象: `yukki0113/GPT` `main`; 直前に再確認したHEAD: `b8322f8b45c0ef1ac38a24a0e6d6a5d69f08337c`
 - 構想正本: Library `/🏇/JPDB_INITIAL_CONCEPT_20261118.md`
