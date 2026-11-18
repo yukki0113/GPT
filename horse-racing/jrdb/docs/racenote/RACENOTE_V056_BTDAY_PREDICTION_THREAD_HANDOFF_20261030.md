@@ -45,3 +45,9 @@
 ## 切戻し
 
 v056の新規起動を止め、旧v055 r6の旧root / Freeze / workflowは保持する。いずれのFrozenも上書きしない。
+
+## B/C軸固定Shadow研究（オプトイン・正本無変更）
+
+A/B/C/Z正本の意味・閾値・Freeze・T2完了条件は**変更しない**。新規BTDAYで明示的にShadow研究を行う場合のみ、PredictionとConfidenceの両Freezeをmainで検証した後、**結果・当日市場を見る前**に別系統のB/C軸固定判定を作成する。A/ZはShadow対象外。新規BTDAY実行はこの節だけでは許可されない。
+
+定義・著述手順・結果非参照宣言・独立研究成果物の固定は [RACENOTE_V056_BC_SHADOW_RESEARCH_OPERATION_20261104.md](RACENOTE_V056_BC_SHADOW_RESEARCH_OPERATION_20261104.md) を参照する。提出検査器は `src/racenote_v056_bc_shadow.py`。自動生成・本番Confidence上書きはしない。Shadow完了を既存の結果解禁ゲート／TURN2_COMPLETEの条件に**追加しない**。
