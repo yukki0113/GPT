@@ -1,5 +1,7 @@
 # JockeyProfileDB (JPDB) — P0 Source / Data Audit
 
+> **2026-11-18最新：Historical Warehouse CURRENTを補修済み新世代へ切替済み。** `jrdb_normalized_warehouse_v1_2010_2025_g20261118_bacfix`、正本ポインタ `jrdb/v1/current.json`。BAC/2025=3,455R（53R復旧）、他191資産継承。JPDBの通常参照はこの単一CURRENTに統一し、独立したJPDB補修版へのbindingは廃止。旧P0監査に記載の未切替状態は過去の監査時点の情報です。[正式切替・SHA監査](JRDB_Warehouse_BAC_2025_Repair_Promotion_20261118.md)。
+
 - Audit date: 2026-11-18 (JST)
 - Initial concept: Library `/🏇/JPDB_INITIAL_CONCEPT_20261118.md`
 - Repository: `yukki0113/GPT`, branch `main`
