@@ -1,0 +1,43 @@
+{
+  "schema_version": "racenote-shadow-v2.2-two-grade-cohort-freeze-addendum-v1",
+  "status": "TEN_BTDAY_RESEARCH_FROZEN_BC_ONLY",
+  "date": "2026-11-05",
+  "branch": "research/racenote-shadow-v2-0162-0171-pre-result-20261105",
+  "canonical_population": 336,
+  "canonical_BC_population": 231,
+  "shadow_B": 177,
+  "shadow_C": 54,
+  "shadow_U": 0,
+  "transitions": {
+    "B->B": 168,
+    "B->C": 9,
+    "C->B": 9,
+    "C->C": 45
+  },
+  "btday0162": {
+    "population": 27,
+    "shadow_B": 19,
+    "shadow_C": 8,
+    "source_path": "horse-racing/jrdb/research/bc_shadow_v2/BTDAY-0162/shadow_v22_draft_pre_result_20261105.json",
+    "validated_path": "horse-racing/jrdb/research/bc_shadow_v2/BTDAY-0162/validated_pre_result_v22_20261105.json",
+    "validated_sha256": "b4f5c4b71c45e2e0055b9a20232268ba4b291e6db1ba00257bdf6080e4bc33d3",
+    "validated_blob_sha": "de66c5303dfc921fabb97e17f3f8cf93aef3181a",
+    "only_modified_race": {
+      "venue": "京都",
+      "race_no": 1,
+      "honmei": 10,
+      "original_confidence": "B",
+      "shadow_grade": "B",
+      "evidence_source": "PRE_RACE_PROXY_NO_HISTORY"
+    }
+  },
+  "methodology": "horse-racing/jrdb/docs/racenote/RACENOTE_V056_BC_SHADOW_V22_NO_PRIOR_RUN_EVIDENCE_POLICY_20261105.md",
+  "initial_validation": "https://github.com/yukki0113/GPT/actions/runs/41962125483",
+  "committed_byte_and_old26_unchanged_validation": "https://github.com/yukki0113/GPT/actions/runs/41962386800",
+  "supersedes": "BTDAY-0162_0171_PRE_RESULT_FREEZE_V21_ADDENDUM_20261105.json",
+  "legacy_v21_preserved_for_audit": true,
+  "original_prediction_confidence_unchanged": true,
+  "original_A_Z_unchanged": true,
+  "results_consulted_during_update": false,
+  "main_merged": false
+}

@@ -1,0 +1,68 @@
+{
+  "schema_version": "racenote-shadow-v2.1-cohort-freeze-addendum-v1",
+  "status": "TEN_BTDAY_RESEARCH_FROZEN_WITH_ONE_U",
+  "date": "2026-11-05",
+  "branch": "research/racenote-shadow-v2-0162-0171-pre-result-20261105",
+  "supersedes_status_only": "horse-racing/jrdb/research/bc_shadow_v2/BTDAY-0162_0171_PRE_RESULT_FREEZE_MANIFEST_20261105.json",
+  "note": "Original 9 BTDAY Freeze blobs and initial partial 0162 blobs remain unchanged; this addendum records 0162 complete v2.1 U-aware research Freeze.",
+  "cohorts": "BTDAY-0162..0171",
+  "canonical": {
+    "total_races": 336,
+    "original_B": 177,
+    "original_C": 54,
+    "original_A_Z_unchanged": true
+  },
+  "shadow": {
+    "eligible_BC": 231,
+    "B": 176,
+    "C": 54,
+    "U": 1,
+    "rated": 230,
+    "unrated": 1
+  },
+  "transition_totals": {
+    "B->B": 167,
+    "B->C": 9,
+    "B->U": 1,
+    "C->B": 9,
+    "C->C": 45
+  },
+  "btday_0162": {
+    "date": "2025-05-03",
+    "eligible": 27,
+    "B": 18,
+    "C": 8,
+    "U": 1,
+    "original_B": 15,
+    "original_C": 12,
+    "transitions": {
+      "B->B": 13,
+      "B->C": 1,
+      "B->U": 1,
+      "C->B": 5,
+      "C->C": 7
+    },
+    "draft_path": "horse-racing/jrdb/research/bc_shadow_v2/BTDAY-0162/shadow_v21_draft_pre_result_20261105.json",
+    "draft_git_blob_sha": "6b366e5e830ac900ef38644fdf346bc30393a90a",
+    "validated_path": "horse-racing/jrdb/research/bc_shadow_v2/BTDAY-0162/validated_pre_result_v21_20261105.json",
+    "validated_git_blob_sha": "1054058c5b37f5da438b72e19dccda9111498ddc",
+    "validated_sha256": "d7b12c2e0674621c123f5f446a7dbb3565d2ceb4f8cea10f7437277bb33ecb19",
+    "source_prediction_sha256": "ef27e2f38c0051e43bf4609df1ec5313a0ec298ada5b5027a27454d1e0663bb6",
+    "source_confidence_sha256": "5fc27758b88310181bfdd2dfe3e84c6d93c013baf9c09160308f6f119373d793",
+    "unrated_race": {
+      "venue": "京都",
+      "race_no": 1,
+      "honmei": 10,
+      "rival": 14,
+      "original_confidence": "B",
+      "status": "UNRATED_NO_PRIOR_RUN"
+    }
+  },
+  "methodology": "horse-racing/jrdb/docs/racenote/RACENOTE_V056_BC_SHADOW_V21_DEBUT_UNRATED_POLICY_20261105.md",
+  "source_validator": "horse-racing/jrdb/src/racenote_v056_bc_shadow_v21.py",
+  "validation_run": "https://github.com/yukki0113/GPT/actions/runs/41960707433",
+  "post_commit_byte_and_negative_tests": "https://github.com/yukki0113/GPT/actions/runs/41961043740",
+  "results_consulted_during_this_work": false,
+  "analysis_rules": "U is excluded from B/C-conditioned hit and ROI, is counted in overall selection denominator, and is reported separately upon results unblinding.",
+  "main_merged": false
+}
