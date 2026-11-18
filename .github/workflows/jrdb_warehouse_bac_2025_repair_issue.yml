@@ -1,0 +1,128 @@
+name: JRDB Warehouse BAC 2025 Repair Candidate via Issue
+
+on:
+  repository_dispatch:
+    types: [jrdb_warehouse_bac_2025_repair_request]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: Existing owner request issue number
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+jobs:
+  rebuild-bac:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate owner request and artifact IDs
+        id: request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.client_payload.issue_number || inputs.issue_number }}
+        run: |
+          python - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+          number=str(os.getenv('ISSUE_NUMBER',''))
+          if not re.fullmatch(r'[1-9][0-9]*',number):
+              raise SystemExit('invalid issue number')
+          issue=json.loads(subprocess.check_output(['gh','api',f'repos/{os.environ["GITHUB_REPOSITORY"]}/issues/{number}'],text=True))
+          if issue['user']['login']!='yukki0113' or not issue['title'].startswith('[JRDB_WAREHOUSE_BAC_2025_REPAIR]'):
+              raise SystemExit('not an authorized JRDB owner request')
+          req=json.loads(issue['body'] or '{}')
+          if set(req)!={'annual_run_id','daily_run_id'}:
+              raise SystemExit('request must contain exactly annual_run_id and daily_run_id')
+          annual=int(req['annual_run_id']); daily=int(req['daily_run_id'])
+          if annual<=0 or daily!=44250027970:
+              raise SystemExit('unapproved input artifact run IDs')
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as out:
+              out.write(f'annual_run_id={annual}\n')
+              out.write(f'daily_run_id={daily}\n')
+              out.write(f'issue_number={number}\n')
+          PY
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Prepare canonical shared Parquet runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install shared storage dependencies
+        run: python -m pip install --disable-pip-version-check -r tools/data-storage/requirements.txt
+
+      - name: Download previously validated JRDB artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ANNUAL_RUN: ${{ steps.request.outputs.annual_run_id }}
+          DAILY_RUN: ${{ steps.request.outputs.daily_run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/jrdb-annual /tmp/jrdb-daily
+          gh run download "$ANNUAL_RUN" --repo "$GITHUB_REPOSITORY" -n jrdb-annual-raw-2025-2025 -D /tmp/jrdb-annual
+          gh run download "$DAILY_RUN" --repo "$GITHUB_REPOSITORY" -n jrdb-daily-history-20251213-20251214 -D /tmp/jrdb-daily
+          test -f /tmp/jrdb-annual/BAC/BAC_2025.zip
+          test -f /tmp/jrdb-daily/BAC/BAC251213.zip
+          test -f /tmp/jrdb-daily/BAC/BAC251214.zip
+
+      - name: Rebuild exactly the 2025 BAC immutable partition
+        env:
+          GIT_SOURCE: ${{ github.sha }}
+          REQUEST_ISSUE: ${{ steps.request.outputs.issue_number }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/tools/repair_2025_bac_warehouse_partition.py \
+            --annual /tmp/jrdb-annual/BAC/BAC_2025.zip \
+            --daily13 /tmp/jrdb-daily/BAC/BAC251213.zip \
+            --daily14 /tmp/jrdb-daily/BAC/BAC251214.zip \
+            --output-root /tmp/jrdb-2025-bac-rebuild \
+            --generation-id jrdb_bac_2025_repair_g20261118 \
+            --source-git-commit "$GIT_SOURCE"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/jrdb-2025-bac-rebuild')
+          report=json.loads((root/'repair_receipt.json').read_text())
+          assert report['status']=='PASS' and report['repaired_races']==3455
+          entry=report['warehouse_parquet_asset']
+          assert (root/'warehouse'/entry['relative_path']).is_file()
+          PY
+
+      - name: Upload audited BAC generation for Drive-native publication
+        uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-warehouse-bac-2025-repair-g20261118
+          path: /tmp/jrdb-2025-bac-rebuild/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+      - name: Report successful build
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ steps.request.outputs.issue_number }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python - <<'PY'
+          import json,os
+          from pathlib import Path
+          r=json.loads(Path('/tmp/jrdb-2025-bac-rebuild/repair_receipt.json').read_text())
+          body='JRDB_WAREHOUSE_BAC_2025_REPAIR_RESULT\n'+'~~~json\n'+json.dumps({'status':'PASS','run_id':int(os.environ['RUN_ID']),'receipt':r},ensure_ascii=False,indent=2)+'\n~~~\n'
+          Path('/tmp/issue_comment.md').write_text(body,encoding='utf-8')
+          PY
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file /tmp/issue_comment.md
+          gh issue close "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --reason completed
+      - name: Report failure
+        if: failure() && steps.request.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ steps.request.outputs.issue_number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --repo "$GITHUB_REPOSITORY" --body "BAC partition rebuild failed. Workflow: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
