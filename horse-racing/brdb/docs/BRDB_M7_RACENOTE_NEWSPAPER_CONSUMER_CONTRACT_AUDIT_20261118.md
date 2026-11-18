@@ -61,3 +61,12 @@ Test file `tests/test_brdb_m7_consumer_boundary_audit.py` validates the actual `
 **Current conclusion: only identity-level research preflight is suitable for acceptance**, not a production bridge. A future authorizing decision must review the exact display fields and wording, every horse status, optional addon failure behavior, complete real Newspaper package regression and real-device preview. Production CURRENT, RaceNote, Newspaper, Kensho_Labo/Momotaro and PWA remain untouched. M6 #2395 remains OPEN/BLOCKED.
 
 Research M7 can proceed independently; as-of-unsafe blood evidence must not silently become a predictive score or production mark.
+
+## 6. Verified CI and GitHub readback — 2026-11-18
+
+- [PR #2634](https://github.com/yukki0113/GPT/pull/2634) merged to `main` at commit `7adfb3cb6cae6a16a85514d86d7da7a4679fa100`.
+- [BRDB research PR tests, Actions 44212243392](https://github.com/yukki0113/GPT/actions/runs/44212243392): **completed/success**. The new boundary audit suite defines 27 focused source/synthetic regressions, and the PR workflow also executes existing BRDB P2 + frozen BRDB Newspaper handoff and actual JRDB Newspaper base/merger tests.
+- [Repository-wide EdgeDB regression, Actions 44212243355](https://github.com/yukki0113/GPT/actions/runs/44212243355): **completed/success**.
+- The audit-only module, 27-test source file, contract audit report and workflow were independently read back from `main` after merge; expected functions/test references were present.
+- **Scope limitation:** the positive Newspaper bundle in the boundary tests is constructed from the real `jrdb_newspaper_build._runner_row` source but using **synthetic two-horse inputs**. The 2026-11-15 sparse CSV itself is **real source data** validated through the real `load_racenote` loader. This acceptance does **not** claim a same-day 18-horse actual **Newspaper bundle + M7 preview** E2E, or a BRDB production addon merge. That stronger real-package preflight remains a separate future gate.
+- No live daily generation, Newspaper data overwrite, `source_status.brdb` addition, RaceNote forecast, PWA or CURRENT changes were performed. M7 tracker #2628 stays OPEN; M6 #2395 remains OPEN/BLOCKED.
