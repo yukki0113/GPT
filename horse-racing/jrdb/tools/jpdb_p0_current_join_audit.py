@@ -30,7 +30,8 @@ def inspect_year(db, root, year):
         if not p.is_file():
             raise RuntimeError(f"missing verified input: {p}")
         # Files are SHA verified by the input transport; bind fixed local paths.
-        db.execute(f"CREATE OR REPLACE VIEW {family} AS SELECT * FROM read_parquet(?)", [str(p)])
+        safe_path = str(p.resolve()).replace("'", "''")
+        db.execute(f"CREATE OR REPLACE VIEW {family} AS SELECT * FROM read_parquet('{safe_path}')")
     counts = {family: scalar(db, f"SELECT COUNT(*) FROM {family}") for family in EXPECTED}
     if any(counts[k] != EXPECTED[k][year] for k in counts):
         raise RuntimeError(f"manifest row-count mismatch: {year} {counts}")
