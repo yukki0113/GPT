@@ -4,8 +4,18 @@
 - Initial concept: Library `/🏇/JPDB_INITIAL_CONCEPT_20261118.md`
 - Repository: `yukki0113/GPT`, branch `main`
 - Inspected baseline commit: `cb3b1ad9add52c8fcbbf0826194a351223b9458a`
-- Status: **P0 PARTIAL / REVIEW_REQUIRED** (sample evidence PASS; multi-year and course-version acceptance NOT YET verified)
+- Status: **P0 PARTIAL / REVIEW_REQUIRED** (sample evidence PASS; rolling 3–5-year identity and course-version acceptance NOT YET verified)
 - Scope: Read-only source/data inspection; no JPDB implementation, no RaceNote change, no new prediction/consumer approval.
+
+## 0. Scope decision — 2026-11-18 (supersedes broad historical JPDB ingestion assumptions)
+
+**User decision:** JPDB's initial historical data collection/retention scope is limited to roughly **the past 3–5 years**, rather than consuming all 2010–2025 accepted Warehouse history. The rationale is to limit unnecessary accumulation of retired jockey data and prioritize recent, potentially changing riding tendencies. The exact lookback span, calendar-year vs rolling-date cutoff, and statistical windows remain **TBD** pending P0 data/sample-size review. This decision governs JPDB's operational dataset; it does not delete or modify upstream JRDB Raw/Historical Warehouse assets.
+
+- **Historical storage vs target-race eligibility:** Do not keep an unlimited JPDB-wide historical rider fact copy. The prediction target's jockey must be identified from its pre-race entry; inactive/retired riders are not actively ranked when they are not in the target entry set. **Do not purge historical rides solely because the rider subsequently retired**, since that can distort comparison-group denominators, historical as-of replay, or reactivation handling. Define the precise activity/retirement criteria separately, distinguishing missing current rides from formally confirmed retirement.
+- **Trends:** A 3-year vs 5-year comparison, temporal decay and shorter-term change indicators are **research candidates**, not fixed modeling assumptions. Show sample counts / uncertainty; do not infer skill from small conditional subgroups.
+- **Temporal safety:** For a target race at time T, only use history available before T, then intersect it with the adopted lookback window. The use of current retirement status, later races or future corrected data in past replay is prohibited unless the historical snapshot and knowledge time are independently verified.
+- **Refresh frequency = undecided:** Two alternatives remain open: (A) hook an idempotent JPDB update into the existing pre-race Raw acquisition scheduled processing, or (B) run a lower-frequency independent refresh. Distinguish **Raw acquisition cadence** from **JPDB derived-statistics/publication cadence**. No daily/weekly/monthly frequency, workflow coupling, automation or production update is approved here.
+- **P0 gate change:** Assess rider IDs, previous rides, sample sufficiency and course joins across the **chosen recent-window cohorts and its moving boundary**, not as an exhaustive 2010–2025 retention requirement. Historical Warehouse remains a reproducible upstream reference for controlled sampling only.
 
 ## 1. Existing source contracts checked
 
@@ -70,7 +80,7 @@ An audit-only, read-only extraction of current `jrdb_raw.py` field positions was
 - `docs/JRDB_Normalized_Warehouse_Operation_v1.md` records accepted generation `jrdb_normalized_warehouse_v1_2010_2025_g20260921`, status PASS, 10 families, 192 referenced assets.
 - 2025 BAC/KYI/SED immutable objects were resolved via `config/warehouse_drive_index_{bac,kyi,sed_a}_v1.json` and downloaded from canonical Drive locations. Drive object sizes match indexed metadata (169,370; 5,914,994; 3,612,532 bytes). All three have `PAR1` header/trailer.
 - **Not independently row-queried:** local runtime lacks DuckDB and PyArrow, and one dependency-repair attempt failed due to network resolution. `tools/data-storage/` is the required execution path; do not substitute an ad hoc Parquet engine.
-- Thus 2010–2025 jockey-code longitudinal stability, per-year missingness, pre-race/result agreement, duplicate rates, and historical course join percentages are **NOT measured by this audit**. An earlier accepted warehouse status does not itself prove those JPDB-specific contracts.
+- The 2010–2025 Warehouse remains an upstream source and optional reference; JPDB initial ingestion is **not** a full-period copy. Jockey-code stability, missingness, pre-race/result agreement, duplicate rates, and course joins in JPDB's chosen rolling window are **NOT measured by this audit**. An earlier accepted warehouse status does not itself prove those JPDB-specific contracts.
 
 ## 3. Course Profile limits
 
@@ -95,7 +105,7 @@ An audit-only, read-only extraction of current `jrdb_raw.py` field positions was
 | Real 2026 PACI/SED source reachable | PASS | Preserve downloaded source SHA/identity |
 | One-day entry/result rider and race identity | PASS (2026-11-15 only) | Replicate across seasons, venues, anomaly dates |
 | One-day first-previous rider resolution | PASS (437/437) | Formalize NULL/debut/continuity semantics |
-| Stable jockey identity across years | **OPEN** | Query 2010–2025 KYI/SED, detect code/name changes/reuse |
+| Stable jockey identity across the selected recent window | **OPEN** | Check 3–5-year KYI/SED cohorts for code/name changes/reuse, including moving-window boundaries |
 | Cancellation/abnormal event denominator | **OPEN** | Official code book + representative abnormal cohorts |
 | Historical rider+horse+course join rate | **OPEN** | Validate non-missing/version-aligned mappings per time band |
 | As-of snapshot/version provenance | **OPEN** | Confirm pre-day storage history and replay boundaries |
@@ -106,8 +116,8 @@ An audit-only, read-only extraction of current `jrdb_raw.py` field positions was
 
 ## 6. Next strictly scoped P0 completion work
 
-1. Run approved `tools/data-storage/` DuckDB checks over year-partitioned accepted BAC/KYI/SED, with reproducible 2025/2024/2010 sample and longitudinal aggregates: code NULL/zero/alias drift, key uniqueness, KYI↔SED rider mismatches, previous result coverage. Ensure data transport matches repository policy.
-2. Reuse existing Course Profile Master and mapping assets; test `course_key` and **version-valid** joins by time period, especially pre-2023/renovation periods. Report denominator/exclusions.
+1. Run approved `tools/data-storage/` DuckDB checks over accepted BAC/KYI/SED **within the provisional rolling 3–5-year scope**, with reproducible recent-year and boundary cohorts (e.g., 2022–2026 where covered), plus code NULL/zero/alias drift, key uniqueness, KYI↔SED rider mismatches and previous-result coverage. Do not impose a full 2010–2025 JPDB load. Ensure data transport matches repository policy.
+2. Reuse existing Course Profile Master and mapping assets; test `course_key` and **version-valid** joins by time period **inside the selected recent window**, including any pre-2023/renovation records actually included. Report denominator/exclusions; older history outside scope is not a P0 completion requirement.
 3. Read official JRDB abnormal/cancel code definitions; decide which races/entries contribute to starts vs result rates, without changing source records.
 4. Freeze a P0 evidence manifest with exact `main` commit, source manifests/generations, downloaded SHA, date/window, predicate definitions and query versions; decide P0 pass/review only from those tests.
 5. Only after P0 acceptance: propose P1 storage schema and Reader API. Avoid creating production `horse-racing/jpdb/` code until contract and location are approved.
