@@ -1,5 +1,8 @@
 /* BRDB pedigree modal: read-only info surface shared by personal/Momotaro papers. */
+/* Name column is already position:sticky, so it anchors the lower-right button. */
+.newspaper-table-v4 .newspaper-horse-name-cell { vertical-align: top; }
 .newspaper-blood-name-wrap {
+  padding-bottom: 31px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -11,6 +14,9 @@
 }
 .newspaper-table-v4 .newspaper-blood-trigger {
   display: block;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
   align-self: flex-end;
   min-width: 43px;
   min-height: 25px;
@@ -126,6 +132,8 @@
     padding: 3px 4px;
     font-size: 10px;
     margin-top: 4px;
+    bottom: 4px;
+    right: 3px;
   }
   .newspaper-blood-dialog { width: calc(100vw - 16px); }
   .newspaper-blood-dialog form { padding: 12px; }
