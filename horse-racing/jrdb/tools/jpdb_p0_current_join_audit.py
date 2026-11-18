@@ -26,9 +26,10 @@ def scalar(db, sql):
 
 def inspect_year(db, root, year):
     for family in ("bac", "kyi", "sed"):
-        p = root / f"{family}_{year}.parquet"
-        if not p.is_file():
-            raise RuntimeError(f"missing verified input: {p}")
+        candidates = list((root / f"{family}_{year}").glob("*.parquet"))
+        if len(candidates) != 1:
+            raise RuntimeError(f"expected one SHA-verified parquet for {family}_{year}, got {len(candidates)}")
+        p = candidates[0]
         # Files are SHA verified by the input transport; bind fixed local paths.
         safe_path = str(p.resolve()).replace("'", "''")
         db.execute(f"CREATE OR REPLACE VIEW {family} AS SELECT * FROM read_parquet('{safe_path}')")
