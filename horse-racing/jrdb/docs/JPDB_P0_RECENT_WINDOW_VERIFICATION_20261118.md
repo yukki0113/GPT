@@ -13,6 +13,12 @@
 - 詳細と証跡: [JPDB_P0_BAC_2025_RECOVERY_20261118.md](JPDB_P0_BAC_2025_RECOVERY_20261118.md)。本ファイルの後続節のBAC欠損・5年方針の記述は**監査実施時点の記録**であり、最新の復旧状況は追記・別紙を優先。
 - **復旧候補の検証 PASS ≠ 既存Historical Warehouse修復完了**。正本切替／世代移行・as-of保証は別ゲート。
 
+## 補修版のsource-of-truth整合（2026-11-18追記）
+
+2025年12月13・14日BACの回収済み全72Rを組み込んだ**別世代補修済み年間BAC**（3,455R）をGoogle Driveへ保存し、読み戻しSHA-256一致を確認済み。元canonical年間BACと受入済みHistorical Warehouseは保全したまま。GitHubの世代manifest `config/jpdb_p0_bac_2025_repair_generation_g20261118.json`に原本・再取得原本・補修版の各Drive ID/SHAと差分を固定した。2025年のJPDB P0研究では補修版だけを明示的に指定し、旧Warehouse BAC 3,402Rを混在させない。詳細は [JPDB_P0_BAC_2025_RECOVERY_20261118.md](JPDB_P0_BAC_2025_RECOVERY_20261118.md) 第7節。
+
+**この対応はJPDB P0研究用のバージョン整合を作るもので、既存2010〜2025 Warehouse CURRENTを修復・切替したものではない。** P1のReaderでsource binding/manifest fail-closedする契約と、2025当時の開催前可用性確認は別途必要。JPDBの使用期間は2023年以降で確定、更新頻度は未決定。
+
 ## 1. 検証方法と母数
 Google Drive既存のannual Rawフォルダから2021〜2025年の `BAC_YYYY.zip`、`KYI_YYYY.zip`、`SED_YYYY.zip` （計15ZIP）を取得。各ZIPのcanonical memberの固定長・キーを検査し、GitHub `horse-racing/jrdb/src/jrdb_raw.py` の**現行1-based byte offset**に合わせた一時的な監査用投影で照合した。恒久的なRaw parserは作っていない。会話上の2026-11-15 PACI/SED実査も別の既存証跡とする。
 - 今回の3年対5年比較は、**完了済み暦年**の `2023-01-01〜2025-12-31` と `2021-01-01〜2025-12-31` であり、2026-11-18を起点とした厳密なrolling 3/5年ではない。2026年YTD全量は未追加。
