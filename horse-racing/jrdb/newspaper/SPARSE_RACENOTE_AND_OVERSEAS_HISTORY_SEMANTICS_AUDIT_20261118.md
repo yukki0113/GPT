@@ -2,7 +2,7 @@
 
 Status: **SOURCE + REAL-PACI RECONSTRUCTION AUDITED; OFFLINE CANDIDATE 36/36 SCHEMA PASS; PWA / MOMOTARO REGRESSION TEST IN PR; NO LIVE CODE / RELEASE CHANGE**.
 
-Tracking defects: [#2637](https://github.com/yukki0113/GPT/issues/2637) and [#2638](https://github.com/yukki0113/GPT/issues/2638). Parent M7: [#2628](https://github.com/yukki0113/GPT/issues/2628). Prior [real Newspaper preflight](../brdb/placeholder) is actually at `../../brdb/docs/BRDB_M7_REAL_NEWSPAPER_IDENTITY_ADDON_NONINTERFERENCE_20261118.md`.
+Tracking defects: [#2637](https://github.com/yukki0113/GPT/issues/2637) and [#2638](https://github.com/yukki0113/GPT/issues/2638). Parent M7: [#2628](https://github.com/yukki0113/GPT/issues/2628). Prior [real Newspaper preflight](../../brdb/docs/BRDB_M7_REAL_NEWSPAPER_IDENTITY_ADDON_NONINTERFERENCE_20261118.md) established M7 18/18 ID match and non-interference.
 
 ## Source of truth inspected
 
