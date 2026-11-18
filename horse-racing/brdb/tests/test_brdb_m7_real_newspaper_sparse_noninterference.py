@@ -51,7 +51,7 @@ def make_fixture(root: Path):
     for no in range(1, 19):
         horse = _runner_row({
             "blood_registration_no": f"{no:08d}",
-            "horse_no": no, "frame_no": (no + 1) // 2,
+            "horse_no": no, "frame_no": (no - 1) // 3 + 1,
             "horse_name": names.get(no, f"未選択の合成馬{no}"),
             "race_horse_key": RACE_KEY + f"{no:02d}",
         }, target_date=DATE, profile=None, cha=None, cyb=None, history=[])
