@@ -1,4 +1,6 @@
 # JPDB P0 — BAC 2025/12/13・12/14 欠損復旧・正本保全監査
+
+> **2026-11-18最新：2025年BACの補修はHistorical Warehouseの単一CURRENTへ統合完了。** 受入済み新世代 `jrdb_normalized_warehouse_v1_2010_2025_g20261118_bacfix`、既存Drive `current.json`（ID `1uB0IQecWNKNn_ASZx4_0MhlWNXUmFrYA`）をin-place更新し読み戻しPASS。2025年BACは3,455R、Warehouse全192資産のうちBAC/2025のみ更新、191資産を継承。以前の「Driveに別世代保存のみ／Warehouse CURRENT未変更」という説明は古い時点の記録です。**JPDBは独立した補修BACを通常参照せず、Warehouse CURRENTを正本とします。** 詳細: [Warehouse受入・CURRENT切替の監査](JRDB_Warehouse_BAC_2025_Repair_Promotion_20261118.md)。
 - 実査日: 2026-11-18 JST
 - 親監査: `JPDB_P0_RECENT_WINDOW_VERIFICATION_20261118.md`
 - データ方針（ユーザー確定）: **JPDBの通常集計・保存対象は2023-01-01以降**。2021〜2022の延長案は採用せず、Course Profile現行epochとの不整合を避ける。期間端とas-ofは引き続き遵守。更新頻度は未決定。
