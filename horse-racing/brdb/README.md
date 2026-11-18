@@ -354,3 +354,10 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - 予想以外の馬情報とaddonは505/505で不変、他source statusとレースコメントは各36/36で不変。元JSONを改変しない研究専用照合。実レース用JSON2件とレシートはLibrary `/BRDB/M7/` に非公開保存・SHA読み戻し一致。
 - 既存Newspaper JSON Schemaの不一致を検出：[Issue #2637](https://github.com/yukki0113/GPT/issues/2637) 疎予想で非選択325頭の`racenote_prediction`必須キー欠落、[Issue #2638](https://github.com/yukki0113/GPT/issues/2638) 東京11R過去走の`horse_no=0`。M7全馬ID照合/非干渉はPASS、厳密な全日Newspaper schema受入はBLOCKED。生産コードを無断修正しない。
 - [BRDB CI 44215290154](https://github.com/yukki0113/GPT/actions/runs/44215290154)・[横断CI 44215290228](https://github.com/yukki0113/GPT/actions/runs/44215290228) PASS。**過去公開済みNewspaper packageの比較ではなく、正本コードによる実PACI再生成**。BRDB CURRENT、RaceNote、Newspaper、PWAに変更なし。M7 #2628 OPEN、M6 #2395 BLOCKED。
+
+
+## 2026-11-18 — 過去年次血統データの正式受入方針
+
+- [年次JRDB血統の同等性受入決定](docs/BRDB_M6_HISTORICAL_EQUIVALENCE_POLICY_DECISION_20261118.md) / [PR #2640](https://github.com/yukki0113/GPT/pull/2640)。2016〜2025年次UKC/KYIを研究用正本相当として扱い、過去の原配信ZIPのバイト一致・配信時刻の独立証明は研究完了の必須条件から撤廃。欠損124件は別途明示・除外し、存在しない血統は補完しない。
+- M6-Rの2021〜2025年5fold（235,700頭、17,239レース）研究結果を制約付きで受入。研究用非血統baseline 0.26121709072530674 に対する血統追加 0.2608869015289739（Δlog loss −0.0003301891963328283）。これは実際のRaceNote予想の改善を直接測定したものではない。
+- [M6 #2395](https://github.com/yukki0113/GPT/issues/2395) は血統配信版証明によるBLOCKEDを解除し、**M6-P ACTIVE（実RaceNote追加効果）**に整理。M7の非予測的な血統参照・表示研究は並行して進められる。既存v0.3のAS_OF状態、本番CURRENT、RaceNote、PWAはこの判断だけでは変更しない。
