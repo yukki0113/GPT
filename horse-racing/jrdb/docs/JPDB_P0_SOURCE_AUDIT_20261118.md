@@ -7,6 +7,17 @@
 - Status: **P0 PARTIAL / REVIEW_REQUIRED** (sample evidence PASS; rolling 3–5-year identity and course-version acceptance NOT YET verified)
 - Scope: Read-only source/data inspection; no JPDB implementation, no RaceNote change, no new prediction/consumer approval.
 
+## P0追加検証への参照（2026-11-18）
+
+本ファイルの実査・OPENゲートは**初回監査時点**の記録です。その後、同日に2021〜2025年のBAC/KYI/SED annual Raw（計15ZIP）と既存Course Profileの実データ照合を実施し、結果を次の文書へ独立して保存しました。
+
+- [JPDB_P0_RECENT_WINDOW_VERIFICATION_20261118.md](JPDB_P0_RECENT_WINDOW_VERIFICATION_20261118.md)
+- KYI/SEDの出走キー237,778/237,778整合、騎手コード差異1,062件。
+- 3完全年（2023〜2025）と5完全年（2021〜2025）を比較。2025年BACの53レース／735頭欠損、2021〜2022の物理属性のepoch非適合を確認。
+- 前走リンクの未解決は主にJRA年間SED外の場コード。履歴窓の端で別途coverageを示す。
+- **新しい総合判定：P0現物調査は大幅に前進したが、pre-race provenance・2025 BAC欠損・物理versionと異常コード5が残り、本番受入は未完了。**
+- 更新頻度、3年／5年の採用、JPDB本番実装、RaceNote接続は未決定／未承認のまま。
+
 ## 0. Scope decision — 2026-11-18 (supersedes broad historical JPDB ingestion assumptions)
 
 **User decision:** JPDB's initial historical data collection/retention scope is limited to roughly **the past 3–5 years**, rather than consuming all 2010–2025 accepted Warehouse history. The rationale is to limit unnecessary accumulation of retired jockey data and prioritize recent, potentially changing riding tendencies. The exact lookback span, calendar-year vs rolling-date cutoff, and statistical windows remain **TBD** pending P0 data/sample-size review. This decision governs JPDB's operational dataset; it does not delete or modify upstream JRDB Raw/Historical Warehouse assets.
