@@ -55,7 +55,6 @@ def prepare(db, root: Path, manifest: Path):
         if not asset.is_file() or sha256(asset)!=spec["sha256"] or asset.stat().st_size!=spec["expected_size"]:
             raise RuntimeError(f"SED {y} immutable source hash/size mismatch")
         paths.append(str(asset))
-    db.execute("CREATE VIEW sed_all AS SELECT * FROM read_parquet(?, union_by_name=true)",[paths]) if False else None
     quoted=",".join("'" + p.replace("'","''") + "'" for p in paths)
     db.execute(f"CREATE VIEW sed_all AS SELECT * FROM read_parquet([{quoted}], union_by_name=true)")
     annual={int(y):int(n) for y,n in db.execute(
