@@ -70,7 +70,7 @@ def main():
           ON b.venue_code=m.venue_code AND b.surface_code=m.surface_code
            AND TRY_CAST(b.distance_raw AS BIGINT)=m.distance_m
            AND b.turn_code=m.turn_code AND b.layout_code=m.layout_code
-           AND b.course_code IS NOT DISTINCT FROM m.course_code
+           AND NULLIF(TRIM(b.course_code),'') IS NOT DISTINCT FROM m.course_code
           LEFT JOIN cm c ON m.course_key=c.course_key
           LEFT JOIN geo g ON b.venue_code=g.venue_code AND b.surface_code=g.surface_code
            AND split_part(c.course_key,':',5)=g.layout_variant
