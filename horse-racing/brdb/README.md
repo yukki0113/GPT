@@ -346,3 +346,11 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - 2026-11-15東京12RのRaceNote疎な予想CSVは**5頭**、M7研究用レビューは**18頭**。予想CSVは`horse_id`を持たず馬番・馬名等で結合。Newspaper Baseの`key.horse_id`は存在するが、現行schemaはnullを許容する。疎な予想がREADYでもBRDB全頭の正本照合済みとは扱わない。
 - [研究専用の全馬ID照合監査](src/brdb_m7_consumer_boundary_audit.py)と[27件の回帰テスト](tests/test_brdb_m7_consumer_boundary_audit.py)を追加。既存Newspaper/RaceNote/P2関連の回帰と併せて[BRDB CI 44212243392](https://github.com/yukki0113/GPT/actions/runs/44212243392)・[横断CI 44212243355](https://github.com/yukki0113/GPT/actions/runs/44212243355) PASS。
 - **監査のみ受入**。実際の18頭Newspaper packageとの統合再演、BRDB addon本番契約、表示文言・デバイス検証、昇格は未実施・未承認。既存CURRENT、RaceNote、Newspaper、PWA、凍結契約に変更なし。M6 #2395 BLOCKED、M7 #2628 OPEN。
+
+
+## 2026-11-18 — M7 実Newspaperの全馬照合・addon非干渉
+
+- [監査書](docs/BRDB_M7_REAL_NEWSPAPER_IDENTITY_ADDON_NONINTERFERENCE_20261118.md) / [PR #2636](https://github.com/yukki0113/GPT/pull/2636)：PACI261115.zipから正本のNewspaper日次JSONを非公開環境で再生成（36レース・505頭）。実RaceNote v056疎予想180頭を既存mergerで全件結合。東京12R `05265412` のM7研究用previewと馬番・血統登録番号が18/18完全一致（結合前後ともPASS）。
+- 予想以外の馬情報とaddonは505/505で不変、他source statusとレースコメントは各36/36で不変。元JSONを改変しない研究専用照合。実レース用JSON2件とレシートはLibrary `/BRDB/M7/` に非公開保存・SHA読み戻し一致。
+- 既存Newspaper JSON Schemaの不一致を検出：[Issue #2637](https://github.com/yukki0113/GPT/issues/2637) 疎予想で非選択325頭の`racenote_prediction`必須キー欠落、[Issue #2638](https://github.com/yukki0113/GPT/issues/2638) 東京11R過去走の`horse_no=0`。M7全馬ID照合/非干渉はPASS、厳密な全日Newspaper schema受入はBLOCKED。生産コードを無断修正しない。
+- [BRDB CI 44215290154](https://github.com/yukki0113/GPT/actions/runs/44215290154)・[横断CI 44215290228](https://github.com/yukki0113/GPT/actions/runs/44215290228) PASS。**過去公開済みNewspaper packageの比較ではなく、正本コードによる実PACI再生成**。BRDB CURRENT、RaceNote、Newspaper、PWAに変更なし。M7 #2628 OPEN、M6 #2395 BLOCKED。
