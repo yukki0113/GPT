@@ -5,7 +5,7 @@
     {
       "artifact_id": "bac_2023",
       "file_id": "1XGYonMUbiYunmQcjnXK-k5n2iNNVZLbE",
-      "destination": "bac_2023.parquet",
+      "destination": "bac_2023/c17ee5ccb8f953f090cca186ee751d12fc75b97003199dad7c14b7fee70a5daa.parquet",
       "expected_name": "c17ee5ccb8f953f090cca186ee751d12fc75b97003199dad7c14b7fee70a5daa.parquet",
       "expected_size": 170174,
       "sha256": "c17ee5ccb8f953f090cca186ee751d12fc75b97003199dad7c14b7fee70a5daa"
@@ -13,7 +13,7 @@
     {
       "artifact_id": "bac_2024",
       "file_id": "1xhErVj2_Qv_wVkX1Xmznl0k66_olsEs4",
-      "destination": "bac_2024.parquet",
+      "destination": "bac_2024/ed1b831b9236eaa85a075b1f6fce792e7292ece830688b4bd28546885761b898.parquet",
       "expected_name": "ed1b831b9236eaa85a075b1f6fce792e7292ece830688b4bd28546885761b898.parquet",
       "expected_size": 171800,
       "sha256": "ed1b831b9236eaa85a075b1f6fce792e7292ece830688b4bd28546885761b898"
@@ -21,7 +21,7 @@
     {
       "artifact_id": "bac_2025",
       "file_id": "1nvDnqBnv69KdMgH200lqOEg6E2VTNtpX",
-      "destination": "bac_2025.parquet",
+      "destination": "bac_2025/b26a364978143fbd6e9d30289db0eb85e9b33e9fe612759b23a85ffbb78a3bb9.parquet",
       "expected_name": "b26a364978143fbd6e9d30289db0eb85e9b33e9fe612759b23a85ffbb78a3bb9.parquet",
       "expected_size": 171165,
       "sha256": "b26a364978143fbd6e9d30289db0eb85e9b33e9fe612759b23a85ffbb78a3bb9"
@@ -29,7 +29,7 @@
     {
       "artifact_id": "kyi_2023",
       "file_id": "1nPX4GJuQvq8K8yXpcYj_xRgqLPeDq-_K",
-      "destination": "kyi_2023.parquet",
+      "destination": "kyi_2023/d68afa2d37e2b4308df8c1897279e6cd38f27fc83d66324b4222e4cff44ed0ce.parquet",
       "expected_name": "d68afa2d37e2b4308df8c1897279e6cd38f27fc83d66324b4222e4cff44ed0ce.parquet",
       "expected_size": 5936231,
       "sha256": "d68afa2d37e2b4308df8c1897279e6cd38f27fc83d66324b4222e4cff44ed0ce"
@@ -37,7 +37,7 @@
     {
       "artifact_id": "kyi_2024",
       "file_id": "1ixpJ3NmOHwctiwg4x14xOVkDSoDhrv3g",
-      "destination": "kyi_2024.parquet",
+      "destination": "kyi_2024/21d0d47337daa7c78f08e6e79fc41ee15eebed05630a3ff3ec6bca4d190340df.parquet",
       "expected_name": "21d0d47337daa7c78f08e6e79fc41ee15eebed05630a3ff3ec6bca4d190340df.parquet",
       "expected_size": 5859260,
       "sha256": "21d0d47337daa7c78f08e6e79fc41ee15eebed05630a3ff3ec6bca4d190340df"
@@ -45,7 +45,7 @@
     {
       "artifact_id": "kyi_2025",
       "file_id": "1BsUYCalaMyVAZsjEa1R0i_YzsdzrvcJW",
-      "destination": "kyi_2025.parquet",
+      "destination": "kyi_2025/55fdcc9fd03c70f284b028fa85ef3c6b2882071c685639621061ba146c0fa10b.parquet",
       "expected_name": "55fdcc9fd03c70f284b028fa85ef3c6b2882071c685639621061ba146c0fa10b.parquet",
       "expected_size": 5914994,
       "sha256": "55fdcc9fd03c70f284b028fa85ef3c6b2882071c685639621061ba146c0fa10b"
@@ -53,7 +53,7 @@
     {
       "artifact_id": "sed_2023",
       "file_id": "1-FnXu0IT-ICx4f1IVmQTRXc8okXzyKUb",
-      "destination": "sed_2023.parquet",
+      "destination": "sed_2023/3cb2cb29f509209017d2b623a9fa5bdae18d217d4bd1b9cf82cbe7ae887e28ec.parquet",
       "expected_name": "3cb2cb29f509209017d2b623a9fa5bdae18d217d4bd1b9cf82cbe7ae887e28ec.parquet",
       "expected_size": 3612666,
       "sha256": "3cb2cb29f509209017d2b623a9fa5bdae18d217d4bd1b9cf82cbe7ae887e28ec"
@@ -61,7 +61,7 @@
     {
       "artifact_id": "sed_2024",
       "file_id": "1xq47rGmwvEduPWa5O0__4cW-3iL6nBR8",
-      "destination": "sed_2024.parquet",
+      "destination": "sed_2024/e18da9b6147c71973d5769f5ca859bd3b1e80b53773f9ed861c7b58941464fc8.parquet",
       "expected_name": "e18da9b6147c71973d5769f5ca859bd3b1e80b53773f9ed861c7b58941464fc8.parquet",
       "expected_size": 3596242,
       "sha256": "e18da9b6147c71973d5769f5ca859bd3b1e80b53773f9ed861c7b58941464fc8"
@@ -69,7 +69,7 @@
     {
       "artifact_id": "sed_2025",
       "file_id": "1VgLnndHbxaOmpgB2w6lGsXH-zOp-Ow-8",
-      "destination": "sed_2025.parquet",
+      "destination": "sed_2025/6a7be1dc005833c9caaa20559ac3ad40af99bdc95a342b0e57d638ca979f8974.parquet",
       "expected_name": "6a7be1dc005833c9caaa20559ac3ad40af99bdc95a342b0e57d638ca979f8974.parquet",
       "expected_size": 3612532,
       "sha256": "6a7be1dc005833c9caaa20559ac3ad40af99bdc95a342b0e57d638ca979f8974"
