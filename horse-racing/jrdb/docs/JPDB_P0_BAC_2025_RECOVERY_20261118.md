@@ -50,3 +50,44 @@
 - `JPDB_BAC_2025_REPAIRED_CANDIDATE_20261118.zip`: 保全型補修候補（GitHub/Drive現行正本とは別）。
 - `JPDB_BAC_2025_REPAIR_VERIFICATION_20261118.json`: 年間／日別のsourceハッシュ、missing keys、変更対象、照合結果、発行しない理由。
 - `jpdb_bac_2025_repair_verify.py`: 一時的実査スクリプト（JPDB production parserではない）。
+
+## 7. 別世代の実体をDriveに保存し、GitHub manifestで固定（2026-11-18追記）
+
+**補修版をDriveへ実際に永続保存し、ダウンロード読戻しのbyte SHA256一致を確認済み。** 前節の「候補だけ、Drive未公開」という旧監査時点の記述は、この節の新しい保存状況で更新する。元のcanonical `BAC_2025.zip`、既存accepted Warehouse Parquet、manifest、CURRENTは変更していない。
+
+| 用途 | Google Driveファイル | SHA-256 |
+|---|---|---|
+| 旧canonical（保全） | [BAC_2025.zip](https://drive.google.com/file/d/1k1HagEAM0BjwEVD0bT1sz1PwEMQy3btg/view) | `aeab5d807c12640b908152eb24249c872b4aaafcfc7e97baaafda440994c5491` |
+| JRDB再取得原本・Actions artifact保存 | [source ZIP](https://drive.google.com/file/d/10hw6EWuSFAs0RrSs0tiSQ3GEPkgKD_-D/view) | `23b01f762ff59ae1c98631e536cc82f2d177defae2797ee5499566535316f20e` |
+| **JPDB専用別世代BAC補修版** | [BAC_2025_JPDB_REPAIRED_g20261118.zip](https://drive.google.com/file/d/14zZTr4mbK3XbpKxyUzX-bpnkp347Pimx/view) | `38bdb48d825aa97a91b43b2ba16d356b903c7fffd1acb45ceaaf738eed638efd` |
+
+Drive保存先は [JPDB_P0_BAC_2025_REPAIR_EVIDENCE_g20261118](https://drive.google.com/drive/folders/1ffV-j82agkok_GeKkh53C1IKB9EzWCs2)。補修版は109 member・3,455R、ZIP破損0。補修版以外の107日分は旧年間BACとバイト一致。二日分はJRDB取得原本のmemberとバイト一致。取得原本ZIPもDriveから読み戻しSHA一致を確認。
+
+### P0研究での一貫したsource binding
+
+- **2023〜2024 BAC:** 既存年間Raw（改変なし）。
+- **2025 BAC:** 上記 `BAC_2025_JPDB_REPAIRED_g20261118.zip` **のみ**（研究用、manifest固定）。
+- **2025 KYI/SED:** 既存同年Rawまたは同一由来のaccepted Warehouse実績。BACとKYI/SEDで日付・レースキーを検証する。SED結果を対象レース事前情報に使うことは不可。
+- **2026以降:** 既存の開催前PACI／開催後SED保存規約に従う。更新タイミング未決定。
+- **禁止:** 2025年について旧Warehouse BAC 3,402Rを補修版BAC 3,455Rと同じ集合であるかのように参照すること。条件統計の入出力にはBAC source generationと対象期間／欠損率を含めること。
+
+機械可読の出所・期間・SHA・継承・未承認境界は
+`horse-racing/jrdb/config/jpdb_p0_bac_2025_repair_generation_g20261118.json` で固定。読み取り専用検証ツールは
+`horse-racing/jrdb/tools/jpdb_p0_bac_repair_verify.py`。
+ツールは元年間BAC・取得artifact・補修BAC・年間KYI・SEDの現物とmanifestを取り、共同 `jrdb_raw.py` Parserでsource SHA、変更member、BACの全レースキー一致、非対象memberバイト一致を再検査する。GitHub上のコードは登録済み。再実行時のコマンド例:
+
+```bash
+python horse-racing/jrdb/tools/jpdb_p0_bac_repair_verify.py \
+  --manifest horse-racing/jrdb/config/jpdb_p0_bac_2025_repair_generation_g20261118.json \
+  --annual-bac /path/to/old/BAC_2025.zip \
+  --source-artifact /path/to/jrdb_bac_20251213_14_source_artifact_g20261118.zip \
+  --repaired-bac /path/to/BAC_2025_JPDB_REPAIRED_g20261118.zip \
+  --kyi /path/to/KYI_2025.zip \
+  --sed /path/to/SED_2025.zip
+```
+
+**状態の切り分け:**
+1. **Raw原本の取り戻し／補修版の別世代Drive保存 = PASS。**
+2. **JPDB P0研究用の明示的なsource generation = FIXED / READ-ONLY。** 新しいWarehouse正本やJPDB Readerの自動切替は未実装。
+3. **旧accepted Historical Warehouseの内容修復 = NOT DONE（意図的保全）。** 全下流利用者へ影響する「既存Warehouse CURRENT上書き」は実施しない。必要であれば新しいimmutable Warehouse generationを別途組み立て、旧acceptedを保持し、利用者ごとに検証した上で切替承認する。
+4. **当時の事前可用性 = NOT PROVEN。** 取得日時が後日のBACを歴史的pre-raceスナップショットとみなさない。
