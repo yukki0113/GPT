@@ -19,14 +19,19 @@ jrdb/v1/
 
 A final manifest uses `asset_reference_mode: staging_immutable_reference`: its assets point to the published, content-addressed Parquet objects in family staging. It never copies, regenerates, or reuploads those objects.
 
-## Accepted generation
+## Accepted generation — CURRENT (updated 2026-11-18)
 
-- Generation: `jrdb_normalized_warehouse_v1_2010_2025_g20260921`
-- Status: `PASS` / `accepted`
-- Families: BAC, KYI, CHA, CYB, SED, SKB, ZED, ZKB, HJC, UKC
-- Coverage: 2010–2025
-- Assets: 192
-- Duplicate object references: 0
+- **Generation: `jrdb_normalized_warehouse_v1_2010_2025_g20261118_bacfix`**.
+- Status: **`PASS` / `accepted`**, confirmed by Drive `current.json` readback.
+- Families: BAC, KYI, CHA, CYB, SED, SKB, ZED, ZKB, HJC, UKC.
+- Coverage: 2010–2025; 192 Parquet assets; duplicate references 0.
+- Exactly one asset changed: `bac/year=2025`, **3,402 → 3,455 rows**, 53 restored race keys, same schema hash and canonical key. The other 191 assets are inherited byte-identically from the predecessor.
+- `current.json` file ID **`1uB0IQecWNKNn_ASZx4_0MhlWNXUmFrYA`** remains unchanged, and now resolves to the new final `generations/<generation_id>/manifest.json` and `audit.json`.
+- New `bac/year=2025` content-addressed Parquet: SHA256 `b26a364978143fbd6e9d30289db0eb85e9b33e9fe612759b23a85ffbb78a3bb9`, Drive object `1nvDnqBnv69KdMgH200lqOEg6E2VTNtpX`.
+- **Old accepted generation** `jrdb_normalized_warehouse_v1_2010_2025_g20260921` is retained immutable for provenance/rollback, but **is no longer CURRENT**. Its generation-pinned historical index set remains an archival snapshot, not an alternative active CURRENT.
+- Exceptional repair used an **accepted-generation single-partition successor** with explicit `successor_lineage` / `staging_partition_override` and a dedicated patch audit, rather than silently mutating the predecessor BAC staging manifest. The ordinary 10-family initial finalizer described below remains unchanged. Detailed receipt: [`JRDB_Warehouse_BAC_2025_Repair_Promotion_20261118.md`](JRDB_Warehouse_BAC_2025_Repair_Promotion_20261118.md).
+
+**Consumer rule:** For new/current Warehouse research and consumers, resolve `jrdb/v1/current.json` first; verify the referenced final manifest/audit semantic SHA and use its BAC 2025 asset. Do not mix predecessor-generation `warehouse_drive_index_bac_v1.json` with CURRENT without an explicit immutable historical replay requirement.
 
 The final audit records per-relation canonical keys and schema hashes. A relation may have historical schema variants only when its canonical key is invariant; cross-family audit remains PASS.
 
