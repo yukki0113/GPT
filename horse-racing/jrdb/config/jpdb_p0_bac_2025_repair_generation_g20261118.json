@@ -1,0 +1,80 @@
+{
+  "schema": "jpdb_p0_bac_repair_generation_v1",
+  "generation_id": "jpdb_p0_bac_2025_repair_g20261118",
+  "created_date_jst": "2026-11-18",
+  "status": "RESEARCH_REPAIR_SOURCE_VERIFIED_NOT_WAREHOUSE_PROMOTED",
+  "jpdb_population_start_inclusive": "2023-01-01",
+  "jpdb_population_end_exclusive": null,
+  "scope": "JRA 2025 annual BAC source repair only; no alteration to accepted upstream immutable Warehouse or canonical annual Raw",
+  "immutable_lineage": {
+    "canonical_original_bac": {
+      "drive_file_id": "1k1HagEAM0BjwEVD0bT1sz1PwEMQy3btg",
+      "filename": "BAC_2025.zip",
+      "sha256": "aeab5d807c12640b908152eb24249c872b4aaafcfc7e97baaafda440994c5491",
+      "bytes": 109750,
+      "member_count": 109,
+      "race_count": 3402
+    },
+    "source_reacquisition": {
+      "issue": 2641,
+      "workflow_run_id": 44250027970,
+      "artifact_id": 14403133146,
+      "drive_file_id": "10hw6EWuSFAs0RrSs0tiSQ3GEPkgKD_-D",
+      "filename": "jrdb_bac_20251213_14_source_artifact_g20261118.zip",
+      "sha256": "23b01f762ff59ae1c98631e536cc82f2d177defae2797ee5499566535316f20e",
+      "bytes": 5188,
+      "daily_archives": [
+        {
+          "name": "BAC251213.zip",
+          "sha256": "f159c63f89889bd4a1151e63584055ba43306806f3383da3dd72de492cca41ff",
+          "race_count": 36
+        },
+        {
+          "name": "BAC251214.zip",
+          "sha256": "3610a3d09161d9da57a2c50916ead3c337195fe1caa66e1cb15e0edd4afea160",
+          "race_count": 36
+        }
+      ]
+    },
+    "verified_repaired_bac": {
+      "drive_file_id": "14zZTr4mbK3XbpKxyUzX-bpnkp347Pimx",
+      "filename": "BAC_2025_JPDB_REPAIRED_g20261118.zip",
+      "sha256": "38bdb48d825aa97a91b43b2ba16d356b903c7fffd1acb45ceaaf738eed638efd",
+      "bytes": 109879,
+      "member_count": 109,
+      "race_count": 3455
+    },
+    "evidence_folder_id": "1ffV-j82agkok_GeKkh53C1IKB9EzWCs2",
+    "accepted_historical_warehouse_generation_unchanged": "jrdb_normalized_warehouse_v1_2010_2025_g20260921"
+  },
+  "replacement_policy": {
+    "strategy": "replace_complete_daily_members_not_append_race_records",
+    "replaced_members": [
+      "BAC251213.txt",
+      "BAC251214.txt"
+    ],
+    "untouched_member_count": 107,
+    "new_races": 53,
+    "existing_races_with_changed_raw_bytes": 19,
+    "race_key_duplicates": 0,
+    "race_key_coverage_2025_with_kyi": 3455,
+    "race_key_coverage_2025_with_sed": 3455
+  },
+  "validation": {
+    "original_unchanged": true,
+    "drive_repaired_readback_sha256_match": true,
+    "drive_source_artifact_readback_sha256_match": true,
+    "zip_integrity": "PASS",
+    "all_2025_kyi_and_sed_race_keys_match": "PASS",
+    "2025_repaired_bac_count": 3455,
+    "pre_race_source_availability_proven": false,
+    "production_warehouse_readers_updated": false
+  },
+  "consumer_guardrails": [
+    "Do not use current accepted Warehouse BAC_2025 and repaired BAC interchangeably without explicit source binding.",
+    "Do not overwrite accepted immutable Warehouse object, manifest or CURRENT.",
+    "Do not claim BAC annual re-fetch was available before the 2025 target races.",
+    "JPDB P0 can use this pinned repaired BAC only with explicit generation identity; P1 implementation or RaceNote production binding remains separate approval."
+  ],
+  "refresh_cadence": "TBD"
+}
