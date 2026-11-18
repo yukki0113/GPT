@@ -19,6 +19,11 @@ on:
       - 'horse-racing/brdb/src/brdb_m7_consumer_boundary_audit.py'
       - 'horse-racing/brdb/tests/test_brdb_m7_consumer_boundary_audit.py'
       - 'horse-racing/brdb/tests/test_brdb_m7_real_newspaper_sparse_noninterference.py'
+      - 'horse-racing/brdb/tests/test_brdb_m7_newspaper_semantics_candidate.py'
+      - 'horse-racing/brdb/tests/test_brdb_m7_newspaper_display_equivalence.cjs'
+      - 'horse-racing/jrdb/src/build_momotaro_newspaper_projection.py'
+      - 'horse-racing/jrdb/pwa/newspaper-v4.js'
+      - 'horse-racing/jrdb/pwa/newspaper-v5.js'
       - 'horse-racing/brdb/src/export_brdb_m7_newspaper_audit_inputs.py'
       - 'horse-racing/jrdb/src/jrdb_newspaper_build.py'
       - 'horse-racing/jrdb/src/jrdb_newspaper_merge_external.py'
@@ -77,6 +82,8 @@ jobs:
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_racenote_p2_adapter.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_m7_consumer_boundary_audit.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_m7_real_newspaper_sparse_noninterference.py' -v
+          python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_m7_newspaper_semantics_candidate.py' -v
+          node horse-racing/brdb/tests/test_brdb_m7_newspaper_display_equivalence.cjs
           python -m unittest discover -s horse-racing/jrdb/tests -p 'test_jrdb_newspaper_build.py' -v
           python -m unittest discover -s horse-racing/jrdb/tests -p 'test_jrdb_newspaper_merge_external.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_stage3b_root_identity_resolution.py' -v
