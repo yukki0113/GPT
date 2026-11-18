@@ -339,3 +339,10 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - 新規の研究用consumer previewは、①②を記述統計、③④を過去時点未検証として表示**候補の状態コード**に限定。旧Newspaper handoffがv0.3/previewを誤受理しない回帰を実施。予想、ランク、スコア、印、confidence昇格は実装せず。
 - 37件のM7ローカル回帰およびGitHub BRDB/リポジトリ横断CIがPASS。私的成果物はLibrary `/BRDB/M7/` へ保存、3ファイルSHA読み戻し一致。
 - **研究用契約は受入済み。本番統合/表示受入は未承認。** M6 [#2395](https://github.com/yukki0113/GPT/issues/2395) はBLOCKEDのまま、CURRENT・RaceNote・PWA・新聞・既存v0.1/v0.2/v0.3を変更していない。
+
+## 2026-11-18 — M7 RaceNote・競馬新聞の実入出力契約監査
+
+- [実装・契約監査結果](docs/BRDB_M7_RACENOTE_NEWSPAPER_CONSUMER_CONTRACT_AUDIT_20261118.md) / [PR #2634](https://github.com/yukki0113/GPT/pull/2634)。RaceNote本体・P2、予想CSV、Newspaper Base/merger/schema、BRDB凍結v0.1 handoffの**実コード**を監査。
+- 2026-11-15東京12RのRaceNote疎な予想CSVは**5頭**、M7研究用レビューは**18頭**。予想CSVは`horse_id`を持たず馬番・馬名等で結合。Newspaper Baseの`key.horse_id`は存在するが、現行schemaはnullを許容する。疎な予想がREADYでもBRDB全頭の正本照合済みとは扱わない。
+- [研究専用の全馬ID照合監査](src/brdb_m7_consumer_boundary_audit.py)と[27件の回帰テスト](tests/test_brdb_m7_consumer_boundary_audit.py)を追加。既存Newspaper/RaceNote/P2関連の回帰と併せて[BRDB CI 44212243392](https://github.com/yukki0113/GPT/actions/runs/44212243392)・[横断CI 44212243355](https://github.com/yukki0113/GPT/actions/runs/44212243355) PASS。
+- **監査のみ受入**。実際の18頭Newspaper packageとの統合再演、BRDB addon本番契約、表示文言・デバイス検証、昇格は未実施・未承認。既存CURRENT、RaceNote、Newspaper、PWA、凍結契約に変更なし。M6 #2395 BLOCKED、M7 #2628 OPEN。
