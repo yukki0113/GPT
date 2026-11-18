@@ -21,6 +21,25 @@ CATEGORIES={"THEME_CORE","THEME_OPTION","CROSS_THEME","OWNED_GENERIC",
 ROLES={"STARTER","EXTENDER","SEARCH","DRAW","INTERRUPTION","REMOVAL",
        "BOARD_BREAK","PROTECTION","RECOVERY","FINISHER","UTILITY"}
 TARGETS={"STARTER":9,"INTERRUPTION":6,"BOARD_BREAK":2}
+
+
+def _extra_material_disposition(screen):
+    """Separate unproved route from an actual incompatible material claim.
+
+    An unsubmitted route is not evidence of impossibility. Allow selection as
+    a *provisional deckbuilding hypothesis* only when the canonical screen
+    explicitly identifies that narrow absence. Everything else fails closed.
+    No game, summon, or simultaneous-material verification is promoted.
+    """
+    if not isinstance(screen,dict):return "BLOCK"
+    if screen.get("screen")=="POSSIBLE_ON_PAPER":return "PAPER"
+    if (screen.get("screen")=="REQUIRES_REVIEW" and
+        screen.get("review_reason")=="ROUTE_EVIDENCE_MISSING" and
+        screen.get("gameplay_compatibility_verified") is False and
+        screen.get("materials_simultaneously_available_verified") is False and
+        screen.get("official_md_legality_verified") is False):
+        return "PROVISIONAL_ROUTE_UNPROVEN"
+    return "BLOCK"
 ORIGINS={"THEME_CORE":"THEME_LOW_RARITY",
          "THEME_OPTION":"THEME_LOW_RARITY",
          "CROSS_THEME":"CROSS_THEME",
@@ -166,7 +185,7 @@ def _select_variant(request,teacher,discoveries,records, *,
                              "reason":"ENGINE_REQUIRED_PART_MISSING",
                              "missing":part["card_id"]}
             if part["section"]=="EXTRA" and (
-                   screen_by_card.get(part["card_id"],{}).get("screen")!="POSSIBLE_ON_PAPER"):
+                   _extra_material_disposition(screen_by_card.get(part["card_id"]))=="BLOCK"):
                 return None,{"family":family,"engine":engine_id,
                              "reason":"ENGINE_EXTRA_MATERIAL_UNPROVEN",
                              "missing":part["card_id"]}
@@ -308,7 +327,8 @@ def _select_variant(request,teacher,discoveries,records, *,
             a=r["annotation"];cid=a["card_id"]
             if selected["EXTRA",cid]>=min(_available(r,request), regulation_limits[cid] if regulation_limits is not None else 3):continue
             screen=screens.get(cid)
-            if screen is None or screen["screen"]!="POSSIBLE_ON_PAPER":
+            material_disposition=_extra_material_disposition(screen)
+            if material_disposition=="BLOCK":
                 rejected.append({"card_id":cid,"section":"EXTRA",
                                  "reason":"EX_MATERIAL_NOT_DEMONSTRATED"})
                 continue
@@ -340,7 +360,12 @@ def _select_variant(request,teacher,discoveries,records, *,
             "extra_search_stage":chosen[2],
             "below_standard_utility_threshold":bool(
                 policy_map is not None and chosen[7]<decision_policy["min_extra_score"]),
-            "material_verification":"POSSIBLE_ON_PAPER_NOT_DUEL_VERIFIED"})
+            "material_verification":(
+                "POSSIBLE_ON_PAPER_NOT_DUEL_VERIFIED" if
+                _extra_material_disposition(screens.get(cid))=="PAPER" else
+                "REQUIRES_REVIEW_ROUTE_EVIDENCE_MISSING"),
+            "provisional_extra_selection":(
+                _extra_material_disposition(screens.get(cid))=="PROVISIONAL_ROUTE_UNPROVEN")})
 
     # An unfilled EX is a documented sourcing/eligibility gap, never a silent
     # statement that fourteen is strategically optimal.
@@ -381,7 +406,7 @@ def _select_variant(request,teacher,discoveries,records, *,
             elif rated is None:
                 verdict="REVIEW_REQUIRED"
                 why="MISSING_COMPETITIVE_ASSESSMENT"
-            elif sec=="EXTRA" and screen_by_card.get(cid,{}).get("screen")!="POSSIBLE_ON_PAPER":
+            elif sec=="EXTRA" and _extra_material_disposition(screen_by_card.get(cid))=="BLOCK":
                 verdict="REVIEW_REQUIRED"
                 why="EX_MATERIAL_NOT_DEMONSTRATED"
             elif sec=="EXTRA" and (rated["lock_review"]=="UNKNOWN" or
