@@ -1,0 +1,100 @@
+{
+  "schema_version": "jpdb-p2-condition-course-real-e2e-20261119-v1",
+  "audit_date_jst": "2026-11-19",
+  "status": "PASS",
+  "status_scope": "P2 READ_ONLY RESEARCH CANDIDATE; NOT PRODUCTION APPROVED",
+  "historical_source_generation": "jrdb_normalized_warehouse_v1_2010_2025_g20261118_bacfix",
+  "historical_manifest_sha256": "292100c9231b482180fba44f94870331b6a3202900c9ed7647ca222726851902",
+  "daily_2026_sed_manifest_sha256": "0dd1b2ce68ba1b00ea36820dd11481d527468bbea518141349d181cf6350cdeb",
+  "daily_2026_paci_bac_manifest_sha256": "a97d0d9709f9de3630ed0edb30b2345f24a598742995342bdc47e99d94f51a27",
+  "phase3_course_seed_sha256": {
+    "master": "4bf5039a7b9f42ef991ff3edf0cd2f11e461687c3d137a9b9a2418d191c5a97a",
+    "mapping": "76563b141a5f5a4ff4981abee8f20881d8417f71772d7bb9718e719c2aec335f",
+    "geometry": "d7ea198ffee104e8bf51b5c90e9a77d7426903132898e06f1acaef42bb2e418f"
+  },
+  "inputs": {
+    "historical_sed_rows_2023_2025": 142737,
+    "sed_2026_rows": 42185,
+    "sed_total_rows": 184922,
+    "flat_total_rows": 179436,
+    "flat_2026_rows": 40945,
+    "daily_2026_sed_days": 97,
+    "daily_2026_paci_days": 97,
+    "paci_2026_bac_races": 3066,
+    "phase3_course_master_rows": 177,
+    "phase3_mapping_rows": 433,
+    "phase3_geometry_rows": 57
+  },
+  "flat_races_by_year": {
+    "2023": 3329,
+    "2024": 3327,
+    "2025": 3335,
+    "2026": 2960
+  },
+  "flat_rides_by_year": {
+    "2023": 46212,
+    "2024": 45796,
+    "2025": 46483,
+    "2026": 40945
+  },
+  "dimensions": {
+    "raw": [
+      "VENUE",
+      "SURFACE_DISTANCE_EXACT",
+      "CLASS_GRADE_RAW",
+      "GOING_RAW",
+      "COURSE_RAW_CODE"
+    ],
+    "physical": [
+      "COURSE_KEY",
+      "GEOMETRY_KEY",
+      "TURN_DIRECTION",
+      "FINAL_SLOPE",
+      "COURSE_SIZE",
+      "FINAL_STRAIGHT_M"
+    ]
+  },
+  "independent_sql": {
+    "sample_rider_count": 12,
+    "target_dates": [
+      "2025-11-16",
+      "2026-01-04",
+      "2026-06-13",
+      "2026-11-16"
+    ],
+    "windows": [
+      "ROLLING_3Y",
+      "RECENT_365D",
+      "RECENT_90D"
+    ],
+    "raw_condition_cells": 12207,
+    "raw_comparisons": 36621,
+    "physical_condition_cells": 16146,
+    "physical_comparisons": 48438,
+    "status": "PASS"
+  },
+  "p2_real_test_suites": {
+    "raw": "3/3 PASS",
+    "physical": "3/3 PASS"
+  },
+  "course_resolution": {
+    "bac_to_sed_race_key_join": "PASS / NO MISSING / NO FANOUT",
+    "mapping_status_all_flat": "CONFIRMED",
+    "master_geometry_physical_epoch": "2023PLUS PASS / PARTIAL",
+    "unrecognized_sed_course_code_rides_2025": 462,
+    "unrecognized_sed_course_code_rides_2026": 1117,
+    "mitigation": "Use historical accepted BAC and 2026 PACI BAC as course authority; do not coerce SED course_code",
+    "missing_final_straight_m_flat_rides": 38946,
+    "missing_course_size_class_flat_rides": 7406,
+    "missing_final_slope_flat_rides": 0
+  },
+  "policy": {
+    "source_asof": "JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1",
+    "strict_historical_release_asof_certified": false,
+    "complete_historical_course_version_registry": false,
+    "candidate_30_sample_threshold_not_ability_proof": true,
+    "rider_skill_or_ability_labels_generated": false,
+    "racenote_p4_or_pwa_changed": false,
+    "licensed_raw_published": false
+  }
+}
