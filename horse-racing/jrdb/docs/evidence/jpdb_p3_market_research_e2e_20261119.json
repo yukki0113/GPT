@@ -1,0 +1,124 @@
+{
+  "schema_version": "jpdb-p3-retrospective-market-research-audit-v0.1",
+  "executed_on_jst": "2026-11-19",
+  "disposition": "RESEARCH_DIAGNOSTIC_PASS",
+  "p3_full_ability_assessment_pass": false,
+  "repo": "yukki0113/GPT",
+  "source_ref": "b17b49c329b5b6d92fc1291a6524552794ef75bf",
+  "exact_source_export": {
+    "actions_issue": 2661,
+    "run_id": 44485940202,
+    "artifact_id": 14510681785,
+    "files_pinned": 17,
+    "sha256_checks": "17/17 PASS",
+    "artifact_sha256": "db0b6d0176234cd7fb6ce393422de10d5889e447054375c8d9af986ab670689a"
+  },
+  "modules": {
+    "baseline": {
+      "path": "horse-racing/jrdb/src/jpdb_p3_market_baselines.py",
+      "sha256": "4377b5a8ff28a1ce1b15350165ad80970f959adde02142cb94f0a706c576892e"
+    },
+    "runner": {
+      "path": "horse-racing/jrdb/src/jpdb_p3_market_research_runner.py",
+      "sha256": "a010010582fc0093ac04e4556c30718d3bfcf38f3f791f5124b02af4cf40f68c"
+    }
+  },
+  "execution": {
+    "python": "3.13.5",
+    "duckdb": "1.1.3",
+    "synthetic": "3/3 PASS on Actions and canonical local source",
+    "real_source": "PASS in private native local runtime",
+    "rerun_same_bytes": true,
+    "independent_full_receipt_sha256": "1dbf5633497304d06c9553f32c0140fcfe8235e6edd0bf371980182c5a4c39b0"
+  },
+  "inputs": {
+    "historical_manifest_sha256": "292100c9231b482180fba44f94870331b6a3202900c9ed7647ca222726851902",
+    "daily_manifest_sha256": "5c3e8df888ef32de1d7e7660b6032f72ee85227e52a720740ec3df86206b2035",
+    "historical_sed_rows": 142737,
+    "year_2026_sed_rows": 42185,
+    "combined_sed_rows": 184922
+  },
+  "target_date_exclusive": "2026-11-16",
+  "flat_rides": 179436,
+  "flat_races": 12951,
+  "market_eligible": {
+    "races": 12934,
+    "riders": 178515,
+    "expected_wins": 12934,
+    "observed_wins": 12934,
+    "prior_year_peer_baseline_covered_rides": 132532
+  },
+  "race_fail_closed": {
+    "nonunique_or_no_winner": 16,
+    "abnormal_or_finish_review": 1,
+    "incomplete_market": 0
+  },
+  "calendar_year_holdout": [
+    {
+      "year": 2023,
+      "races": 3325,
+      "starts": 45983,
+      "market_brier": 0.057496,
+      "prior_year_peer_brier": null
+    },
+    {
+      "year": 2024,
+      "races": 3321,
+      "starts": 45515,
+      "market_brier": 0.057184,
+      "prior_year_peer_brier": 0.059159,
+      "prior_year_peer_top3_brier": 0.134674
+    },
+    {
+      "year": 2025,
+      "races": 3330,
+      "starts": 46248,
+      "market_brier": 0.057079,
+      "prior_year_peer_brier": 0.058879,
+      "prior_year_peer_top3_brier": 0.134312
+    },
+    {
+      "year": 2026,
+      "races": 2958,
+      "starts": 40769,
+      "market_brier": 0.0573,
+      "prior_year_peer_brier": 0.059186,
+      "prior_year_peer_top3_brier": 0.134276
+    }
+  ],
+  "annual_stability": [
+    {
+      "year_pair": "2024-2025",
+      "rider_surface_pairs_n_ge100": 152,
+      "residual_rate_correlation": 0.101139,
+      "same_sign": 76,
+      "opposite_sign": 76
+    },
+    {
+      "year_pair": "2025-2026",
+      "rider_surface_pairs_n_ge100": 163,
+      "residual_rate_correlation": 0.241526,
+      "same_sign": 90,
+      "opposite_sign": 73
+    }
+  ],
+  "sensitivity": {
+    "test_target_date": "2026-11-15",
+    "test_flat_rows": 178952,
+    "test_eligible_races": 12900,
+    "test_eligible_starts": 178032,
+    "cutoff_exclusion": "PASS"
+  },
+  "explored_rider_venue_surface_cells_n_ge30": 2033,
+  "interpretation": {
+    "market_input": "SED historical final odds; only retrospective information, not attested before each race",
+    "peer_baseline": "All earlier CALENDAR years only; popularity bucket x surface; evaluated rider's earlier rows excluded; peer_n>=100",
+    "expected_win_total_equals_races_by_definition": true,
+    "strict_asof_certified": false,
+    "independent_horse_preatrace_strength_model": false,
+    "multicomparison_adjustment_done": false,
+    "definitive_skill_or_best_condition_claim": false,
+    "race_note_or_pwa_updated": false,
+    "licensed_raw_uploaded": false
+  }
+}
