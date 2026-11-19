@@ -4,14 +4,14 @@
   "disposition": "RESEARCH_DIAGNOSTIC_PASS",
   "p3_full_ability_assessment_pass": false,
   "repo": "yukki0113/GPT",
-  "source_ref": "b17b49c329b5b6d92fc1291a6524552794ef75bf",
+  "source_ref": "7c084e47498e8acd570c6df904fa1b7663f85d83",
   "exact_source_export": {
-    "actions_issue": 2661,
-    "run_id": 44485940202,
-    "artifact_id": 14510681785,
-    "files_pinned": 17,
-    "sha256_checks": "17/17 PASS",
-    "artifact_sha256": "db0b6d0176234cd7fb6ce393422de10d5889e447054375c8d9af986ab670689a"
+    "actions_issue": 2663,
+    "run_id": 44486974807,
+    "artifact_id": 14510912879,
+    "files_pinned": 19,
+    "sha256_checks": "19/19 PASS",
+    "artifact_sha256": "f9efdb64366bfc9e69eddef2bc12406ee06459cf02739243b311e97296cf8c38"
   },
   "modules": {
     "baseline": {
@@ -20,16 +20,21 @@
     },
     "runner": {
       "path": "horse-racing/jrdb/src/jpdb_p3_market_research_runner.py",
-      "sha256": "a010010582fc0093ac04e4556c30718d3bfcf38f3f791f5124b02af4cf40f68c"
+      "sha256": "2517bd1dc27f59fc7e2b2d9ba58c809e6b5f74b4c60077d5c9d3650de7a1f496"
+    },
+    "condition_robustness": {
+      "path": "horse-racing/jrdb/src/jpdb_p3_condition_robustness.py",
+      "sha256": "dd0d0530971dc13028c298788390fa60ef3ead18bb25dcf0389b69e046384ac1"
     }
   },
   "execution": {
     "python": "3.13.5",
     "duckdb": "1.1.3",
-    "synthetic": "3/3 PASS on Actions and canonical local source",
+    "synthetic": "6/6 PASS on GitHub Actions and exact private runtime",
     "real_source": "PASS in private native local runtime",
     "rerun_same_bytes": true,
-    "independent_full_receipt_sha256": "1dbf5633497304d06c9553f32c0140fcfe8235e6edd0bf371980182c5a4c39b0"
+    "independent_full_receipt_sha256": "0323a414c9178a811ef8938b7fcef4ccfe0e582af0e01f6e39c376aae6f40acf",
+    "canonical_full_runner_twice_byte_identical": true
   },
   "inputs": {
     "historical_manifest_sha256": "292100c9231b482180fba44f94870331b6a3202900c9ed7647ca222726851902",
@@ -120,5 +125,53 @@
     "definitive_skill_or_best_condition_claim": false,
     "race_note_or_pwa_updated": false,
     "licensed_raw_uploaded": false
+  },
+  "condition_robustness": {
+    "rider_venue_same_rider_other_venue_n_ge30_each": 1996,
+    "per_year": [
+      {
+        "year": 2023,
+        "cells": 510,
+        "nominal_p_below_005": 26,
+        "approx_bh_q_below_005": 0
+      },
+      {
+        "year": 2024,
+        "cells": 491,
+        "nominal_p_below_005": 24,
+        "approx_bh_q_below_005": 1
+      },
+      {
+        "year": 2025,
+        "cells": 523,
+        "nominal_p_below_005": 15,
+        "approx_bh_q_below_005": 0
+      },
+      {
+        "year": 2026,
+        "cells": 472,
+        "nominal_p_below_005": 27,
+        "approx_bh_q_below_005": 0
+      }
+    ],
+    "year_pair": [
+      {
+        "years": "2024-2025",
+        "pairs": 337,
+        "effect_correlation": -0.02396,
+        "effect_sign_persistent": 160,
+        "effect_sign_reversed": 177
+      },
+      {
+        "years": "2025-2026",
+        "pairs": 365,
+        "effect_correlation": -0.117429,
+        "effect_sign_persistent": 170,
+        "effect_sign_reversed": 195
+      }
+    ],
+    "approx_significance_requires_model_assumptions": true,
+    "ability_status": "UNATTESTED",
+    "prediction_safe": false
   }
 }
