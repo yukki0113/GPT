@@ -1,5 +1,8 @@
 # JPDB P0 — RaceNote-oriented date-cutoff retrospective audit, 2026-11-18
 
+> **2026-11-19 JPDB policy update:** Historical SED release-time/late-revision attestation is **not a prerequisite** for the assumption-based JPDB backtest lane. For an outcome race date strictly before the target date, the accepted final SED is assumed available under `JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1`. See [approved simplified SED as-of policy](JPDB_P0_ASOF_SIMPLIFIED_POLICY_20261119.md). This is a modeling assumption, not proof of historical release timing. The audit findings and stricter provenance interpretation below remain the record of the original 2026-11-18 investigation; they are not silently relabeled. Target-day SED exclusion, target KYI caveats, population decisions, and separate RaceNote approval still apply.
+
+
 **Gate:** `PASS_RETROSPECTIVE_CUTOFF_ONLY` (**NOT historical as-of certified**). Research audit, not a JPDB Reader, not a P1 implementation, and not wired to RaceNote.
 
 ## Evidence and reproducibility
