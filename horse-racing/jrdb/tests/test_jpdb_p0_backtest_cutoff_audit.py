@@ -41,6 +41,8 @@ class CutoffTests(unittest.TestCase):
         self.assertEqual(r["flat_future_or_same_day_entries_excluded"],2)
         self.assertEqual(r["observed_max_history_date"],"2024-11-14")
         self.assertFalse(r["prediction_safe"])
+        self.assertTrue(r["assumption_based_backtest_eligible"])
+        self.assertEqual(r["sed_availability_policy_id"],"JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1")
 
     def test_empty_boundary_is_safe(self):
         r=mod.audit_cutoff(self.db,mod.parse_target("2023-01-01"))
