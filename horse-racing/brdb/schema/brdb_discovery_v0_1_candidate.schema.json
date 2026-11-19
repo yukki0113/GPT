@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BRDB discovery research candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "release_status",
+    "race",
+    "as_of_exclusive",
+    "policy",
+    "horses"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "brdb-discovery-v0.1-candidate"
+    },
+    "release_status": {
+      "const": "RESEARCH_ONLY"
+    },
+    "race": {
+      "type": "object"
+    },
+    "as_of_exclusive": {
+      "type": "string"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prediction_safe",
+        "production_authorized",
+        "display_authorized",
+        "review_text_generated"
+      ],
+      "properties": {
+        "prediction_safe": {
+          "const": false
+        },
+        "production_authorized": {
+          "const": false
+        },
+        "display_authorized": {
+          "const": false
+        },
+        "review_text_generated": {
+          "const": false
+        }
+      }
+    },
+    "horses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "horse_no",
+          "horse_id",
+          "findings",
+          "unavailable_discoveries"
+        ],
+        "properties": {
+          "horse_no": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "horse_id": {
+            "type": "string",
+            "pattern": "^[0-9]{8}$"
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "finding_id",
+                "kind",
+                "interpretation_status",
+                "evidence_refs",
+                "scope_key",
+                "metrics",
+                "signal",
+                "sample_status",
+                "historical_asof_status",
+                "display_eligible",
+                "prediction_eligible"
+              ],
+              "properties": {
+                "finding_id": {
+                  "type": "string"
+                },
+                "kind": {
+                  "enum": [
+                    "SIRE_BASELINE_COMPARISON",
+                    "BMS_TARGET_BAND_OBSERVATION"
+                  ]
+                },
+                "interpretation_status": {
+                  "const": "OBSERVATION_ONLY"
+                },
+                "evidence_refs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "scope_key": {
+                  "type": "string"
+                },
+                "metrics": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": [
+                      "number",
+                      "integer"
+                    ]
+                  }
+                },
+                "signal": {
+                  "enum": [
+                    "ABOVE",
+                    "BELOW",
+                    "EQUAL",
+                    "OBSERVED"
+                  ]
+                },
+                "sample_status": {
+                  "type": "string"
+                },
+                "historical_asof_status": {
+                  "type": "string"
+                },
+                "display_eligible": {
+                  "const": false
+                },
+                "prediction_eligible": {
+                  "const": false
+                }
+              }
+            }
+          },
+          "unavailable_discoveries": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "reason"
+              ],
+              "properties": {
+                "kind": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
