@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
+      - 'horse-racing/brdb/src/brdb_sed_going_ingest.py'
+      - 'horse-racing/brdb/tests/test_brdb_sed_going_ingest.py'
+      - 'horse-racing/brdb/docs/BRDB_SED_REAL_GOING_INGEST_V0_1_20261119.md'
       - 'horse-racing/brdb/src/build_brdb_result_mart.py'
       - 'horse-racing/brdb/tests/test_build_brdb_result_mart.py'
       - 'horse-racing/brdb/src/build_lineage_condition_report.py'
@@ -88,3 +91,4 @@ jobs:
           python -m unittest discover -s horse-racing/jrdb/tests -p 'test_jrdb_newspaper_merge_external.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_stage3b_root_identity_resolution.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_audit_brdb_stage3b_label_differences.py' -v
+          python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_sed_going_ingest.py' -v
