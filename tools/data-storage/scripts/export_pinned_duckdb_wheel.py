@@ -16,10 +16,14 @@ PIN = "1.1.3"
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--output-dir", type=Path, required=True)
+    ap.add_argument("--python-version", choices=("312", "313"), default="313")
     args = ap.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run([sys.executable, "-m", "pip", "download", "--no-deps",
-                    "--only-binary=:all:", "--dest", str(args.output_dir),
+                    "--only-binary=:all:", "--python-version", args.python_version,
+                    "--implementation", "cp", "--abi", "cp" + args.python_version,
+                    "--platform", "manylinux2014_x86_64",
+                    "--dest", str(args.output_dir),
                     f"duckdb=={PIN}"], check=True)
     files = list(args.output_dir.glob("duckdb-*.whl"))
     if len(files) != 1 or not files[0].name.startswith("duckdb-1.1.3-"):
