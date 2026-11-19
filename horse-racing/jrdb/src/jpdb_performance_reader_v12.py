@@ -202,6 +202,8 @@ class JPDBPerformanceReader2026(JPDBPerformanceReader):
             target_validator=lambda d: validate_extended_target(d,fresh_through=self.daily_coverage_to)
         )
         result["schema_version"]=VERSION
+        result["assumption_based_backtest_eligible"]=True
+        result["strict_asof_certified"]=False
         result["source_generation"]=SOURCE_GENERATION+"+daily2026:"+self.daily_manifest_sha256[:16]
         result["historical_source_manifest_sha256"]=self.manifest_sha256
         result["historical_source_assets"]=self.asset_receipts
