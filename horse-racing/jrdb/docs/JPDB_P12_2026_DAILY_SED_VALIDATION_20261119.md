@@ -1,6 +1,6 @@
 # JPDB P1.2 — 2026 daily SED + historical Reader validation record (2026-11-19)
 
-**Disposition: P1.2 implementation candidate and synthetic integration PASS; current real 2026 daily Raw inventory/structural audit PASS; full real 2023–2026 combined DuckDB replay OPEN.** This separation is mandatory; do not relabel tests using synthetic 2026 as genuine 2026 historical results.
+**Current disposition (2026-11-19): P1.2 REAL COMBINED E2E PASS (read-only source/Reader acceptance).** This document preserves the original earlier OPEN gate below as historical audit context; its resolution is the addendum at the end. This separation is mandatory; do not relabel tests using synthetic 2026 as genuine 2026 historical results.
 
 ## Inventory / licensed-source read-only evidence
 
@@ -52,3 +52,16 @@ Further acceptance requires an approved DuckDB-capable local/native execution co
 
 - Not addressed: full official `abnormal_code=5` denominator policy in 2023–2025, RaceNote pre-race rider roster, 2026 future update automation, prediction weights, PWA, Freeze.
 - Historical SED availability remains the approved `JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1` assumption; no 2026 row with `race_date>=target_date` can be used in an actual target-day aggregate.
+
+
+## Final real-source combined E2E — acceptance addendum (2026-11-19)
+
+The previously OPEN gate above has now been **RESOLVED: PASS**. An approved native GPT container independently materialized all 97 exact selected real 2026 SED ZIPs through connected Drive, plus three SHA-validated accepted real 2023–2025 SED Parquet partitions. Actions [run 44449287458](https://github.com/yukki0113/GPT/actions/runs/44449287458) exported the fixed DuckDB 1.1.3 CPython 3.13 wheel; [run 44449380252](https://github.com/yukki0113/GPT/actions/runs/44449380252) exported the exact repository implementation and test source at `57c53cd58e88602ca9b38bcd09c021a5aa90ec45`. **Only open-source wheel and repository code** were transported by Actions; licensed ZIP and Parquet source bytes remained in native/private local runtime.
+
+- Original-source evidence cross-check: 97 ZIPs / 5,014,439 bytes; CRC 97/97; 42,185 records (40,945 flat + 1,240 obstacle), agreeing with the earlier private Raw audit. A fresh locally byte-pinned daily manifest was constructed from these selected ZIPs, SHA256 `0dd1b2ce68ba1b00ea36820dd11481d527468bbea518141349d181cf6350cdeb`. This is a **new serialization/pin**, not a claim that the original private manifest SHA `9e9a...` is unchanged.
+- The exact `JPDBPerformanceReader2026` joined real historic Parquet 142,737 rows and 2026 real ZIP 42,185 rows using DuckDB **1.1.3** in Python 3.13.5. The full view contains **184,922 rows**; source date overlap **0**, cross-source runner-key collisions **0**.
+- An independent conditional-SUM SQL comparison, without using the P1.1 aggregate query, matched **288 rider×period×surface cells** for **12 actual rider IDs** and targets **2026-01-04, 2026-06-13, 2026-11-15, 2026-11-16**. Three windows (3 years, 365 days, 90 days) and all outcome categories were compared; no target-day leakage was observed.
+- P1.1 2025 window outputs were identical to the integrated Reader; local P1.2 synthetic suite **4/4 PASS**. The real combined E2E audit was run twice with byte-identical aggregate-only JSON receipt SHA256 `beb4a65a909079f61d559fd75a4cdc3bf124890bbcace1a9c4a399e4be6e072b`.
+- Machine-readable public audit (counts/hashes/status only, no licensed source rows): [`docs/evidence/jpdb_p12_real_combined_e2e_20261119.json`](evidence/jpdb_p12_real_combined_e2e_20261119.json).
+
+**Scope of PASS:** P1.2 implementation and fixed 2026 snapshot real-source integrated read-only E2E. **Not certified:** strict historical publication time (approved as-of assumption remains), 2026 automatic refresh/CURRENT, P2/P3 model effects, P4 RaceNote integration, or official abnormal code=5 denominator resolution. Previously recorded limitations about the old managed runtime describe the *earlier attempt* and are no longer the current E2E disposition.
