@@ -1,0 +1,905 @@
+{
+  "schema_version": "jpdb-p12-drive-inventory-evidence-v1",
+  "inventory_checked_on": "2026-11-19",
+  "source_folder_id": "1mm6sU8-skS7K2XYHm2citcorUVyMyL58",
+  "scope": "2026_daily_SED",
+  "policy": "NEWEST_MODIFIED_METADATA_CANDIDATE_PIN_BYTES_LATER",
+  "files_in_folder_2026_raw": 106,
+  "distinct_dates": 97,
+  "duplicates": 9,
+  "verified_paci_dates": 97,
+  "selected": [
+    {
+      "name": "SED260104.zip",
+      "race_date": "2026-01-04",
+      "drive_file_id": "1K7Hmhn92prVGqKqs63m_Hj_xLnwVesgS",
+      "drive_size_bytes": 40189,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260105.zip",
+      "race_date": "2026-01-05",
+      "drive_file_id": "1TWsfoRN87EhSJE5mHWFA_0lIfkXmETda",
+      "drive_size_bytes": 42691,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260110.zip",
+      "race_date": "2026-01-10",
+      "drive_file_id": "16f3t3WqMpDYYohqHpaRN-CL9IuDWdNOj",
+      "drive_size_bytes": 42861,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260111.zip",
+      "race_date": "2026-01-11",
+      "drive_file_id": "1AzKrNGUUuQKtb8ab1wjBcg0sZnOjfbSo",
+      "drive_size_bytes": 45348,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260112.zip",
+      "race_date": "2026-01-12",
+      "drive_file_id": "1viK9ynutUPLuAqEAln55x0tuNEBAHu7K",
+      "drive_size_bytes": 46567,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260117.zip",
+      "race_date": "2026-01-17",
+      "drive_file_id": "1QOLXH75Pa9uncdJMzSppi6L8UTftST8F",
+      "drive_size_bytes": 40716,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260118.zip",
+      "race_date": "2026-01-18",
+      "drive_file_id": "1lc2-bCmxr0eVJJxDjNMaMzFEVHjHW1W2",
+      "drive_size_bytes": 44844,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260124.zip",
+      "race_date": "2026-01-24",
+      "drive_file_id": "1IQaT8VLPsvl-ESm6FQcDAapXL10cDZ-c",
+      "drive_size_bytes": 60169,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260125.zip",
+      "race_date": "2026-01-25",
+      "drive_file_id": "1D74BGErjzXNxIi-byV1x-Up7r_Em9Xym",
+      "drive_size_bytes": 64334,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260131.zip",
+      "race_date": "2026-01-31",
+      "drive_file_id": "1Y6eLhAXpRW3rt49RgRXxGbvDAtcpnDai",
+      "drive_size_bytes": 60980,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260201.zip",
+      "race_date": "2026-02-01",
+      "drive_file_id": "1pPDKVLcNDzWvuLvdWU0zgg8jbBE0dm0Q",
+      "drive_size_bytes": 63599,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260207.zip",
+      "race_date": "2026-02-07",
+      "drive_file_id": "1LmLvNYiK-_RJZ5TCQCHhqMeVe_LYiQ2C",
+      "drive_size_bytes": 52627,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260208.zip",
+      "race_date": "2026-02-08",
+      "drive_file_id": "1ze70_t6eP6bWRTlJ0vMDxL-SHY4DcZYd",
+      "drive_size_bytes": 22674,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260210.zip",
+      "race_date": "2026-02-10",
+      "drive_file_id": "1HcbapDWlbmfrfB_4Lsf6yIlmPIjFxi52",
+      "drive_size_bytes": 41548,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260214.zip",
+      "race_date": "2026-02-14",
+      "drive_file_id": "1sZkrQX9DG0dhySOYy-dQ-7zy1yvjfoVA",
+      "drive_size_bytes": 62823,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260215.zip",
+      "race_date": "2026-02-15",
+      "drive_file_id": "1a6jMd-1UT1jB7UEBIrdN5Av0ZWN5yiCJ",
+      "drive_size_bytes": 63665,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260221.zip",
+      "race_date": "2026-02-21",
+      "drive_file_id": "11y1oyMDWYSRnD5-Sa_-IxYmW0KvvQbgy",
+      "drive_size_bytes": 62701,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260222.zip",
+      "race_date": "2026-02-22",
+      "drive_file_id": "1IuA7z_PM7r5K3xI7oMZdkXwUQ7JpNOmk",
+      "drive_size_bytes": 61905,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260228.zip",
+      "race_date": "2026-02-28",
+      "drive_file_id": "1bAEpky91aZrxLlbezomXQ1riGbK56Zy1",
+      "drive_size_bytes": 62300,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260301.zip",
+      "race_date": "2026-03-01",
+      "drive_file_id": "1Qh4My3SMyDazYQ6bf8uyY8omJtTRRm_o",
+      "drive_size_bytes": 64786,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260307.zip",
+      "race_date": "2026-03-07",
+      "drive_file_id": "1vB52SsVbpHcfqvyPT5IPvBXnd4wns3Nf",
+      "drive_size_bytes": 42151,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260308.zip",
+      "race_date": "2026-03-08",
+      "drive_file_id": "1bqTgsCEMxCgFKkqyY_TpWuwTRWRbTf6q",
+      "drive_size_bytes": 42561,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260314.zip",
+      "race_date": "2026-03-14",
+      "drive_file_id": "1qgZCXCIhrGYh7QXF_RSTFj8HwMWi1j4c",
+      "drive_size_bytes": 61167,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260315.zip",
+      "race_date": "2026-03-15",
+      "drive_file_id": "15brmGO7BOlzc4MMtbrb9LrQQi2zEOKFX",
+      "drive_size_bytes": 65374,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260321.zip",
+      "race_date": "2026-03-21",
+      "drive_file_id": "1Tp18dLkrePcwTRB1CyzDKAA5dYvnGs76",
+      "drive_size_bytes": 60786,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260322.zip",
+      "race_date": "2026-03-22",
+      "drive_file_id": "1u6b7PiFJfLaieqRWAU_Oc7Dm9uF4-zOI",
+      "drive_size_bytes": 63820,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260328.zip",
+      "race_date": "2026-03-28",
+      "drive_file_id": "1DHR8sX2U88h6DPiMQJUOZDOuS8FURiYy",
+      "drive_size_bytes": 59903,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260329.zip",
+      "race_date": "2026-03-29",
+      "drive_file_id": "1u61G0hJZ2c4xFWIjDvwTB75qkaUJZFvS",
+      "drive_size_bytes": 62597,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260404.zip",
+      "race_date": "2026-04-04",
+      "drive_file_id": "1Sxu0YNa6tc32L_Tt_-i4AnocTFj1UzBN",
+      "drive_size_bytes": 41639,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260405.zip",
+      "race_date": "2026-04-05",
+      "drive_file_id": "1-1iJPpGWCG80mscKt-1GsLv1umjTSMzr",
+      "drive_size_bytes": 44472,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260411.zip",
+      "race_date": "2026-04-11",
+      "drive_file_id": "1hATBLj6XXizTOIDuyZ2WkGRiXXl8s5US",
+      "drive_size_bytes": 62192,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260412.zip",
+      "race_date": "2026-04-12",
+      "drive_file_id": "1MFmwiloNHY6LNlrSqidCqapOquQXwZkv",
+      "drive_size_bytes": 64744,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260418.zip",
+      "race_date": "2026-04-18",
+      "drive_file_id": "1IgLfgFyS8iRFNGmFlzftNgB54dOocBmi",
+      "drive_size_bytes": 58814,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260419.zip",
+      "race_date": "2026-04-19",
+      "drive_file_id": "1pSkk-QFA0QRnbqPM3awLOkWF7Ai4YuRa",
+      "drive_size_bytes": 61510,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260425.zip",
+      "race_date": "2026-04-25",
+      "drive_file_id": "1FYsua9dVt0uQOrI0fYPa5x7cre4f39OZ",
+      "drive_size_bytes": 60794,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260426.zip",
+      "race_date": "2026-04-26",
+      "drive_file_id": "1Ke5Qkgx-eNLPYVnqzBd9TKraBcCTWvM7",
+      "drive_size_bytes": 64583,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260502.zip",
+      "race_date": "2026-05-02",
+      "drive_file_id": "1Jr6W4JG5zGOkWW41w8LzKhRl55ghEsNG",
+      "drive_size_bytes": 59427,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260503.zip",
+      "race_date": "2026-05-03",
+      "drive_file_id": "1GzgVx_obcjj-1n_CTyqShS35NN57CNN6",
+      "drive_size_bytes": 62698,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260509.zip",
+      "race_date": "2026-05-09",
+      "drive_file_id": "1PqXAcbaOzlfK2r7SKW473o09CH0YXeme",
+      "drive_size_bytes": 59481,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260510.zip",
+      "race_date": "2026-05-10",
+      "drive_file_id": "1wCtDgy6apj6uX8L4QBxocZELFdixty0z",
+      "drive_size_bytes": 63025,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260516.zip",
+      "race_date": "2026-05-16",
+      "drive_file_id": "1mhmh87OJh93uc2sOspA-ROvHZvCdglIU",
+      "drive_size_bytes": 58725,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260517.zip",
+      "race_date": "2026-05-17",
+      "drive_file_id": "1AWOtDje2IxDS7_q8ZZviBh3PKVWAZRF4",
+      "drive_size_bytes": 61383,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260523.zip",
+      "race_date": "2026-05-23",
+      "drive_file_id": "1sdxNjQ-FwEw3oFCtRBGyWpqPAcRCvpAh",
+      "drive_size_bytes": 64420,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260524.zip",
+      "race_date": "2026-05-24",
+      "drive_file_id": "1fZQlM4grKsxIbwqCK1qEPhmeUkLt7EIj",
+      "drive_size_bytes": 64528,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260530.zip",
+      "race_date": "2026-05-30",
+      "drive_file_id": "14bHNobbtcX8akLkOHj_uuOomdCi3ZvE0",
+      "drive_size_bytes": 43142,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260531.zip",
+      "race_date": "2026-05-31",
+      "drive_file_id": "1qmJ5kxAm2JEbdCujy4sYZQufWqoKarSA",
+      "drive_size_bytes": 45141,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260606.zip",
+      "race_date": "2026-06-06",
+      "drive_file_id": "1ifQt5YgOWo9x6y3njRifb2ROo9h7HJEC",
+      "drive_size_bytes": 40385,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260607.zip",
+      "race_date": "2026-06-07",
+      "drive_file_id": "1LrLSnO_gnSSv14QMDzZCvLIJ7m7SlnXl",
+      "drive_size_bytes": 45705,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260613.zip",
+      "race_date": "2026-06-13",
+      "drive_file_id": "1aOXm_asrOWp-GndKxqLpMrvcp29xaSci",
+      "drive_size_bytes": 60205,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260614.zip",
+      "race_date": "2026-06-14",
+      "drive_file_id": "1yFjYEDYjisNWHlNVu86qiFWKkbUBj5rs",
+      "drive_size_bytes": 61636,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260620.zip",
+      "race_date": "2026-06-20",
+      "drive_file_id": "1Ku9peU3MA0fOMJ0UJYxXT-QAiJm1sVWb",
+      "drive_size_bytes": 61133,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260621.zip",
+      "race_date": "2026-06-21",
+      "drive_file_id": "1kwPq1eccjmcMpmlffZRR5Tg7J1CvKetX",
+      "drive_size_bytes": 62816,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260627.zip",
+      "race_date": "2026-06-27",
+      "drive_file_id": "1UXssZc3axXYmxJjfQ0u1mUilt4qBQLHl",
+      "drive_size_bytes": 55654,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260628.zip",
+      "race_date": "2026-06-28",
+      "drive_file_id": "15jy0x9tSiU-DMD7wO9RfhhbgZCRm7u_W",
+      "drive_size_bytes": 59733,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260704.zip",
+      "race_date": "2026-07-04",
+      "drive_file_id": "1tpRTsWHEZ6VghP_oxEJWlMDQ131kuqky",
+      "drive_size_bytes": 57440,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260705.zip",
+      "race_date": "2026-07-05",
+      "drive_file_id": "1hq94yDUSN-cHwOC4nrlCiBiWXi-v3WbP",
+      "drive_size_bytes": 60579,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260711.zip",
+      "race_date": "2026-07-11",
+      "drive_file_id": "1wIVaVaB8495Dq8AZP0gTjVJEaTrP3YiQ",
+      "drive_size_bytes": 57324,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260712.zip",
+      "race_date": "2026-07-12",
+      "drive_file_id": "1OROqNNv_ywxvCsXXKUfYHEMiyhEDQZAA",
+      "drive_size_bytes": 60488,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260718.zip",
+      "race_date": "2026-07-18",
+      "drive_file_id": "1eHPl4G6hVZPytZPt_tP7G-bLKoAXPSGq",
+      "drive_size_bytes": 57748,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260719.zip",
+      "race_date": "2026-07-19",
+      "drive_file_id": "1xBT4wxeWu1RiVzIHB3crKag8hoX5HOAe",
+      "drive_size_bytes": 61966,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260725.zip",
+      "race_date": "2026-07-25",
+      "drive_file_id": "1Fu3kS53lbmJG0QuyXTy55yVOcVccoV2X",
+      "drive_size_bytes": 54985,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260726.zip",
+      "race_date": "2026-07-26",
+      "drive_file_id": "1ZTxIKWlyO9Xz01nztZ-KmmR4-pS89iFj",
+      "drive_size_bytes": 57827,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260801.zip",
+      "race_date": "2026-08-01",
+      "drive_file_id": "1amO9LEgFfpnYdh0oNJxYCcNwA9t0oDEn",
+      "drive_size_bytes": 55941,
+      "drive_modified_time": "2026-09-16T03:20:24.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260802.zip",
+      "race_date": "2026-08-02",
+      "drive_file_id": "1xT4Mkz77UNkGLeWU6Njme8jEyh99rYL5",
+      "drive_size_bytes": 60169,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260808.zip",
+      "race_date": "2026-08-08",
+      "drive_file_id": "1XcWtb-0P0eCMYAofGVmJcKYLPQY-9flh",
+      "drive_size_bytes": 56518,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260809.zip",
+      "race_date": "2026-08-09",
+      "drive_file_id": "10wWLXyxluDcd0ziEoig1XNc67ETWsSAU",
+      "drive_size_bytes": 62238,
+      "drive_modified_time": "2026-09-16T03:20:23.000Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260815.zip",
+      "race_date": "2026-08-15",
+      "drive_file_id": "1AMR_qR2gA5d3X8hF7vJr7vNa4KySfKyH",
+      "drive_size_bytes": 57402,
+      "drive_modified_time": "2026-10-17T06:26:21.241Z",
+      "duplicate_candidate_count": 2,
+      "alternate_drive_file_ids": [
+        "152tlfg1gsyP_eXzcam6hiUpa_ArdEPtU"
+      ]
+    },
+    {
+      "name": "SED260816.zip",
+      "race_date": "2026-08-16",
+      "drive_file_id": "1UvoRfVwOFP7lUII4H0SJrK8vDc9mp0VT",
+      "drive_size_bytes": 62035,
+      "drive_modified_time": "2026-10-17T06:26:29.288Z",
+      "duplicate_candidate_count": 2,
+      "alternate_drive_file_ids": [
+        "1Oc4K4gImdAkMuL7jYZLWgg1ab9RQiBTe"
+      ]
+    },
+    {
+      "name": "SED260822.zip",
+      "race_date": "2026-08-22",
+      "drive_file_id": "15UYA7KKVFBOUNv3Qibm4xagLCbRn8B7c",
+      "drive_size_bytes": 58146,
+      "drive_modified_time": "2026-10-17T06:26:34.585Z",
+      "duplicate_candidate_count": 2,
+      "alternate_drive_file_ids": [
+        "1pGQTJQoYzIeiegM0TaqfSug5ECVMs-vo"
+      ]
+    },
+    {
+      "name": "SED260823.zip",
+      "race_date": "2026-08-23",
+      "drive_file_id": "1HEq4K1m57lY7oAiaeeO8uoGS0kN-HN0I",
+      "drive_size_bytes": 59402,
+      "drive_modified_time": "2026-10-17T06:26:40.058Z",
+      "duplicate_candidate_count": 2,
+      "alternate_drive_file_ids": [
+        "1N7qbcBAsjQ-BMSPV52hpxrk1mSF3-IeJ"
+      ]
+    },
+    {
+      "name": "SED260829.zip",
+      "race_date": "2026-08-29",
+      "drive_file_id": "1HQTCSHWTlXNEdG6Df9rpa-k4WV0Cdeqx",
+      "drive_size_bytes": 59176,
+      "drive_modified_time": "2026-10-14T23:57:07.686Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260830.zip",
+      "race_date": "2026-08-30",
+      "drive_file_id": "1c-_Re7z3Zivu4h-1aI5uOViQDaEfznLm",
+      "drive_size_bytes": 60603,
+      "drive_modified_time": "2026-10-17T06:26:45.356Z",
+      "duplicate_candidate_count": 2,
+      "alternate_drive_file_ids": [
+        "1l1oHgEfST2UijLksFTAt7S0ITulirsGV"
+      ]
+    },
+    {
+      "name": "SED260905.zip",
+      "race_date": "2026-09-05",
+      "drive_file_id": "1rGo4FUNr3NWTMWYvhzmcRL45e6PFzEeD",
+      "drive_size_bytes": 56578,
+      "drive_modified_time": "2026-10-17T06:26:50.446Z",
+      "duplicate_candidate_count": 2,
+      "alternate_drive_file_ids": [
+        "1_SO1RlmVCcbLceA_ol_BIQG0GvjTE25R"
+      ]
+    },
+    {
+      "name": "SED260906.zip",
+      "race_date": "2026-09-06",
+      "drive_file_id": "1V5vSW7DPjrqFgCLCzilM4JE0IvZrbORj",
+      "drive_size_bytes": 61104,
+      "drive_modified_time": "2026-10-14T23:57:15.691Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260912.zip",
+      "race_date": "2026-09-12",
+      "drive_file_id": "17PO0IAt0q-rOOXPqC_c6osT0NDg9xzp9",
+      "drive_size_bytes": 38772,
+      "drive_modified_time": "2026-10-14T23:57:20.036Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260913.zip",
+      "race_date": "2026-09-13",
+      "drive_file_id": "1THuVx90xpL4CTahrilmRAxY5EGiWijqS",
+      "drive_size_bytes": 41373,
+      "drive_modified_time": "2026-10-14T23:57:25.538Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260919.zip",
+      "race_date": "2026-09-19",
+      "drive_file_id": "1CAU1uUx6dQqOZBZAKFPnvfGEjvcCWCfm",
+      "drive_size_bytes": 20415,
+      "drive_modified_time": "2026-09-23T03:20:06.708Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260920.zip",
+      "race_date": "2026-09-20",
+      "drive_file_id": "114LnlTzt7E4m0i908VbRBnLgl35e-YB4",
+      "drive_size_bytes": 23269,
+      "drive_modified_time": "2026-09-23T03:20:12.327Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260921.zip",
+      "race_date": "2026-09-21",
+      "drive_file_id": "1s0kX7w9cwjNJSNmVEQ4jOku1UjavHG7A",
+      "drive_size_bytes": 11358,
+      "drive_modified_time": "2026-09-23T03:20:17.455Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260922.zip",
+      "race_date": "2026-09-22",
+      "drive_file_id": "1czsagH5BtgovpaCTzWimgMUdo7l1m5YE",
+      "drive_size_bytes": 11796,
+      "drive_modified_time": "2026-09-23T03:20:24.330Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260926.zip",
+      "race_date": "2026-09-26",
+      "drive_file_id": "1bkAIzKRcQ16RvYEbb7ZNBk_pNhbs9S2A",
+      "drive_size_bytes": 21927,
+      "drive_modified_time": "2026-09-28T04:24:15.134Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED260927.zip",
+      "race_date": "2026-09-27",
+      "drive_file_id": "1Vb3DsKz2hEA-FFHG-00ZwjrDTxCEA3qI",
+      "drive_size_bytes": 21678,
+      "drive_modified_time": "2026-09-28T04:24:21.476Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261003.zip",
+      "race_date": "2026-10-03",
+      "drive_file_id": "1UdoBJNva0qZ3uts24FATcwQz7wFhS0o_",
+      "drive_size_bytes": 23702,
+      "drive_modified_time": "2026-10-05T00:01:34.955Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261004.zip",
+      "race_date": "2026-10-04",
+      "drive_file_id": "1lMfSByrlZi2H_J5AT0Kr-i37M_sUNnAZ",
+      "drive_size_bytes": 24603,
+      "drive_modified_time": "2026-10-05T00:01:40.867Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261010.zip",
+      "race_date": "2026-10-10",
+      "drive_file_id": "1eNpgCQ46aN4sB4Jh-2yXeB88Au5j4e4i",
+      "drive_size_bytes": 38419,
+      "drive_modified_time": "2026-10-16T14:54:02.982Z",
+      "duplicate_candidate_count": 2,
+      "alternate_drive_file_ids": [
+        "1HG064sBqYSEsYvx2VmOe17DlPn_dyI08"
+      ]
+    },
+    {
+      "name": "SED261011.zip",
+      "race_date": "2026-10-11",
+      "drive_file_id": "17ts6a9Xu-1EOCVFU9LHAdw2iwJSanvkm",
+      "drive_size_bytes": 43193,
+      "drive_modified_time": "2026-10-16T14:54:07.729Z",
+      "duplicate_candidate_count": 2,
+      "alternate_drive_file_ids": [
+        "1XuP8KuevaeHOifU8BZIkL0sOEFy-EqmZ"
+      ]
+    },
+    {
+      "name": "SED261012.zip",
+      "race_date": "2026-10-12",
+      "drive_file_id": "1kSbCBl-cyB6u0pTmW_clh5AUmov55iG3",
+      "drive_size_bytes": 22120,
+      "drive_modified_time": "2026-10-16T15:17:09.650Z",
+      "duplicate_candidate_count": 2,
+      "alternate_drive_file_ids": [
+        "1jvuNTHTaPTkIBbbTu86mHH-zApik8ZUI"
+      ]
+    },
+    {
+      "name": "SED261017.zip",
+      "race_date": "2026-10-17",
+      "drive_file_id": "1ABvUE1gc32ly5mY8oDT682VPZsNgqeD-",
+      "drive_size_bytes": 56573,
+      "drive_modified_time": "2026-10-23T14:11:19.891Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261018.zip",
+      "race_date": "2026-10-18",
+      "drive_file_id": "1k9z4UxSzLOuD9JkXcvobOA6_o0_lW7eD",
+      "drive_size_bytes": 57353,
+      "drive_modified_time": "2026-10-23T14:11:24.762Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261024.zip",
+      "race_date": "2026-10-24",
+      "drive_file_id": "1A0xdYsCJAxujWbczv3FeSz3U22M0Rn1n",
+      "drive_size_bytes": 56762,
+      "drive_modified_time": "2026-10-30T10:41:18.388Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261025.zip",
+      "race_date": "2026-10-25",
+      "drive_file_id": "1jj5G1IXZ_AJI2Y474H6UH4K8xLFAvmB3",
+      "drive_size_bytes": 59748,
+      "drive_modified_time": "2026-10-30T10:41:24.012Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261031.zip",
+      "race_date": "2026-10-31",
+      "drive_file_id": "1oZKW56KAy1uHCTI9Ia7_jfPjzh_9ltAC",
+      "drive_size_bytes": 37588,
+      "drive_modified_time": "2026-11-06T10:25:46.204Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261101.zip",
+      "race_date": "2026-11-01",
+      "drive_file_id": "1xpd8u2FSMkjcNm1rg0sAW8YaS37EFujh",
+      "drive_size_bytes": 42116,
+      "drive_modified_time": "2026-11-06T10:27:00.305Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261107.zip",
+      "race_date": "2026-11-07",
+      "drive_file_id": "1ZjRd0y1CPAzaq7KAJACMm31dmqTRsia1",
+      "drive_size_bytes": 59155,
+      "drive_modified_time": "2026-11-13T10:57:37.970Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261108.zip",
+      "race_date": "2026-11-08",
+      "drive_file_id": "1Uze010tsa7i_CMdNyQcU0gh11D-1UQ-S",
+      "drive_size_bytes": 62311,
+      "drive_modified_time": "2026-11-13T11:00:24.785Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261114.zip",
+      "race_date": "2026-11-14",
+      "drive_file_id": "1ats5LhsZgs9lm2RXhizY3OF66How_kE2",
+      "drive_size_bytes": 34636,
+      "drive_modified_time": "2026-11-16T00:06:43.448Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    },
+    {
+      "name": "SED261115.zip",
+      "race_date": "2026-11-15",
+      "drive_file_id": "1gjj4vI8k4qrRozjuvZiHGnfeokomSouA",
+      "drive_size_bytes": 34232,
+      "drive_modified_time": "2026-11-16T00:06:05.695Z",
+      "duplicate_candidate_count": 1,
+      "alternate_drive_file_ids": []
+    }
+  ],
+  "usage": "audit inventory only; NOT a runtime SHA pinned data manifest"
+}
