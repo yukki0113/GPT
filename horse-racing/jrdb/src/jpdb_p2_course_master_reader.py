@@ -232,6 +232,11 @@ class JPDBCourseMasterReader2026(JPDBConditionReader2026):
                 FROM jpdb_course_facts''').fetchone()
             if counts!=(self.condition_source_rows,179436,0,0):
                 raise JPDBHistoryReaderError(f'P2 BAC/CourseMaster join/temporal gate: {counts}')
+            # Immutable, read-only in-memory snapshot avoids repeating the
+            # same source joins for every rider/window/dimension query.
+            self.db.execute('CREATE TEMP TABLE jpdb_course_fact_snapshot AS SELECT * FROM jpdb_course_facts')
+            self.db.execute('DROP VIEW jpdb_course_facts')
+            self.db.execute('ALTER TABLE jpdb_course_fact_snapshot RENAME TO jpdb_course_facts')
             self.verified_flat_rows=counts[1]
         except Exception:
             self.close()
