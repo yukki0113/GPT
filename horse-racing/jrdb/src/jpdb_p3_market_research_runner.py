@@ -23,6 +23,7 @@ from jpdb_history_reader import JPDBHistoryReaderError, POLICY, sha256
 from jpdb_performance_reader_v12 import validate_extended_target
 from jpdb_p2_condition_reader import JPDBConditionReader2026
 from jpdb_p3_market_baselines import SCHEMA, prepare, validate
+from jpdb_p3_condition_robustness import evaluate as evaluate_condition_robustness
 from jrdb_raw import Parser, ymd
 
 def quote(path) -> str:
@@ -204,6 +205,7 @@ def run(args):
         prepare(reader.db,target.isoformat())
         receipt=validate(reader.db,target.isoformat())
         receipt.update(inspect(reader.db))
+        receipt['condition_robustness']=evaluate_condition_robustness(reader.db)
         receipt.update({
             "schema_version":SCHEMA,
             "source_generation":"jrdb_normalized_warehouse_v1_2010_2025_g20261118_bacfix",
