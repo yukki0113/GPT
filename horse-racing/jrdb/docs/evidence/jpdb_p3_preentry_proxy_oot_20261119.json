@@ -46,14 +46,14 @@
   "rider_residual_year_pair_stability": [
     {
       "from_year": 2024,
-      "pearson": 0.783577,
+      "pearson": 0.783125,
       "rider_surface_pairs": 152,
       "sign_reversed": 35,
       "to_year": 2025
     },
     {
       "from_year": 2025,
-      "pearson": 0.801227,
+      "pearson": 0.800858,
       "rider_surface_pairs": 163,
       "sign_reversed": 33,
       "to_year": 2026
@@ -68,22 +68,22 @@
   "target_final_odds_popularity_used": false,
   "walk_forward_years": [
     {
-      "brier_improvement_vs_uniform": 0.0025678,
+      "brier_improvement_vs_uniform": 0.0025793,
       "eval_from": "2024-01-06",
       "eval_races": 3321,
       "eval_rows": 45515,
       "eval_to": "2024-12-28",
       "expected_wins_sum": 3321.0,
-      "model_brier": 0.0647568,
-      "model_race_nll": 2.3797107,
+      "model_brier": 0.0647453,
+      "model_race_nll": 2.3790676,
       "observed_wins": 3321,
       "race_block_bootstrap_iterations": 1000,
       "race_bootstrap_brier_delta_ci95": [
-        0.0022247,
-        0.0029426
+        0.0022329,
+        0.0029566
       ],
-      "runners_with_any_3y_history": 40462,
-      "runners_with_no_3y_history": 5053,
+      "runners_with_any_3y_history": 40456,
+      "runners_with_no_3y_history": 5059,
       "train_rows": 45983,
       "train_to": "2023-12-28",
       "uniform_brier": 0.0673246,
@@ -92,22 +92,22 @@
       "year_entry_kind": "FINAL_KYI_PROXY"
     },
     {
-      "brier_improvement_vs_uniform": 0.0025871,
+      "brier_improvement_vs_uniform": 0.0025906,
       "eval_from": "2025-01-05",
       "eval_races": 3330,
       "eval_rows": 46248,
       "eval_to": "2025-12-28",
       "expected_wins_sum": 3330.0,
-      "model_brier": 0.0639091,
-      "model_race_nll": 2.3860631,
+      "model_brier": 0.0639055,
+      "model_race_nll": 2.3860054,
       "observed_wins": 3330,
       "race_block_bootstrap_iterations": 1000,
       "race_bootstrap_brier_delta_ci95": [
-        0.0022683,
-        0.0029005
+        0.002265,
+        0.0029036
       ],
-      "runners_with_any_3y_history": 41245,
-      "runners_with_no_3y_history": 5003,
+      "runners_with_any_3y_history": 41244,
+      "runners_with_no_3y_history": 5004,
       "train_rows": 91498,
       "train_to": "2024-12-28",
       "uniform_brier": 0.0664961,
@@ -116,22 +116,22 @@
       "year_entry_kind": "FINAL_KYI_PROXY"
     },
     {
-      "brier_improvement_vs_uniform": 0.0024613,
+      "brier_improvement_vs_uniform": 0.0024682,
       "eval_from": "2026-01-04",
       "eval_races": 2958,
       "eval_rows": 40769,
       "eval_to": "2026-11-15",
       "expected_wins_sum": 2958.0,
-      "model_brier": 0.0645236,
-      "model_race_nll": 2.3910635,
+      "model_brier": 0.0645168,
+      "model_race_nll": 2.3908487,
       "observed_wins": 2958,
       "race_block_bootstrap_iterations": 1000,
       "race_bootstrap_brier_delta_ci95": [
-        0.0021476,
-        0.0027995
+        0.0021528,
+        0.002809
       ],
-      "runners_with_any_3y_history": 36577,
-      "runners_with_no_3y_history": 4192,
+      "runners_with_any_3y_history": 36576,
+      "runners_with_no_3y_history": 4193,
       "train_rows": 137746,
       "train_to": "2025-12-28",
       "uniform_brier": 0.0669849,
