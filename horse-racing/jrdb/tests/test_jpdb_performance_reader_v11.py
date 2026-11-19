@@ -45,7 +45,7 @@ class TestJPDBP11(unittest.TestCase):
         a=b["jockey_histories"]["01234"]["windows"]["ROLLING_3Y"]["all_flat"]
         self.assertEqual(a["entries"],9)
         self.assertEqual(a["normal_finishers"],4)
-        self.assertEqual(a["wins"],2+1+1) # 2024-11-14 + 2023 + 2024-01-01
+        self.assertEqual(a["wins"],3) # 2024-11-14 + 2023 + 2024-01-01
         self.assertEqual(a["top2"],4)
         self.assertEqual(a["cancellations"],1)
         self.assertEqual(a["dnf"],1)
