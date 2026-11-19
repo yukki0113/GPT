@@ -45,8 +45,8 @@ def _windows(day):
     }
 
 
-def _grouped(db, target_date: str, jockey_codes: Sequence[str]) -> dict:
-    day = validate_target(target_date)
+def _grouped(db, target_date: str, jockey_codes: Sequence[str], *, target_validator=validate_target) -> dict:
+    day = target_validator(target_date)
     codes = _checked_codes(jockey_codes)
     windows = _windows(day)
     markers = ",".join("?" for _ in codes)
