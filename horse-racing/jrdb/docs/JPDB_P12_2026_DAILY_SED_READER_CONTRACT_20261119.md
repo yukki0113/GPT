@@ -1,6 +1,6 @@
 # JPDB P1.2 — 2026 daily SED extension to historical Reader
 
-Date: 2026-11-19. Status **IMPLEMENTED CANDIDATE / synthetic full-Reader PASS, real daily Raw integrity PASS; actual 97-file full DuckDB joined replay NOT YET EXECUTED.**
+Date: 2026-11-19. Status **P1.2 REAL COMBINED E2E PASS (2026-11-19)**. Earlier text below that describes an unexecuted real combined replay is historical and superseded by the final validation addendum.
 
 ## Source of truth / observed inventory
 
@@ -59,3 +59,10 @@ with JPDBPerformanceReader2026(
 Codes in the example are placeholders, not validated target PACI rider IDs. Reader does not resolve the day's planned jockey. `FINAL_KYI_PROXY` and `OBSERVED_PRE_RACE_PACI` remain distinct source labels and must be implemented in P4 separately.
 
 **No production RaceNote, PWA, predictions, Freeze or canonical Drive content was changed.**
+
+
+## Final acceptance update — 2026-11-19
+
+The previously missing 97-ZIP real-data combined Reader E2E has been **executed and PASSED**, using original repository source, DuckDB 1.1.3, accepted real 2023–2025 SHA-pinned Parquet, and all 97 real Drive-selected 2026 SED ZIPs. Results: **142,737 + 42,185 = 184,922** integrated records; independently checked 288 rider/window/surface cells all equal; 2025 P1.1 compatibility PASS; two read-only executions byte-identical. Detailed evidence and explicit non-certified boundaries are recorded in [`JPDB_P12_2026_DAILY_SED_VALIDATION_20261119.md`](JPDB_P12_2026_DAILY_SED_VALIDATION_20261119.md) and `docs/evidence/jpdb_p12_real_combined_e2e_20261119.json`.
+
+Source selection/availability still follows `JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1`; this acceptance **does not** certify actual historical release times, P2/P3 claims, P4/production RaceNote, or continuous daily refresh.
