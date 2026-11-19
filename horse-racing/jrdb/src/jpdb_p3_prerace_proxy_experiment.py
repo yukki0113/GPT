@@ -136,6 +136,7 @@ def make_features(facts,expected_rows=184922):
  if expected_rows is not None and len(facts)!=expected_rows:raise ValueError('combined source count drift')
  if facts.duplicated(['race_key_raw','horse_no']).any():raise ValueError('runner duplicate')
  facts['race_entries']=facts.groupby('race_key_raw')['horse_no'].transform('size')
+ eligible_race_keys=set(valid_cohort(facts)[0]['race_key_raw'].unique())
  history=collections.defaultdict(collections.deque)
  long_history=collections.defaultdict(collections.deque)
  features=[]
@@ -162,6 +163,7 @@ def make_features(facts,expected_rows=184922):
    features.append(feats)
   # Commit all finishes ONLY once the whole race day has been featurized.
   for row in block.itertuples(index=False):
+   if row.race_key_raw not in eligible_race_keys:continue
    if row.abnormal_code not in ('0','', '3'):
     continue
    valid_normal=(row.abnormal_code in ('0','') and pd.notna(row.finish)
