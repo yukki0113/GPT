@@ -121,7 +121,10 @@ def audit_cutoff(db, target_date: date, *, lookback_years: int=3):
       "official_ride_start_denominator_approved":False,
       "source_available_by_target_verified":False,
       "prediction_safe":False,
-      "status":"PASS_RETROSPECTIVE_CUTOFF_ONLY"
+      "status":"PASS_RETROSPECTIVE_CUTOFF_ONLY",
+      "sed_availability_basis":"ASSUMED_PREVIOUS_DAY",
+      "sed_availability_policy_id":"JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1",
+      "assumption_based_backtest_eligible":True
     }
 
 
@@ -149,6 +152,10 @@ def main():
       "input_sed_assets":sources,
       "target_date_is_exclusive":True,
       "actual_release_time_attested":False,
+      "sed_availability_policy_id":"JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1",
+      "sed_availability_basis":"ASSUMED_PREVIOUS_DAY",
+      "assumption_based_backtest_eligible":True,
+      "historical_revision_attested":False,
       "late_sed_revision_asof_attested":False,
       "population_filter_id":"JPDB_P0_FLAT_RETROSPECTIVE_DIAGNOSTIC_V0",
       "target_checks":checks
