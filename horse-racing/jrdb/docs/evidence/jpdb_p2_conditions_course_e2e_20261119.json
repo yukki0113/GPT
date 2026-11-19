@@ -96,5 +96,21 @@
     "rider_skill_or_ability_labels_generated": false,
     "racenote_p4_or_pwa_changed": false,
     "licensed_raw_published": false
+  },
+  "execution_provenance": {
+    "duckdb_version": "1.1.3",
+    "python_version": "3.13.5",
+    "exact_source_export_actions_run": 44453142159,
+    "exact_source_export_artifact_id": 14495918240,
+    "exact_source_export_sha_verification": "14/14 PASS",
+    "p2_raw_reader_git_blob_sha": "81f0c554767d3502807387565fb96940d4144cf8",
+    "p2_course_reader_final_git_blob_sha": "bdd778267e6f742c874de390000dc7ef0c433e77",
+    "final_reader_local_git_blob_sha_verified": true,
+    "raw_independent_receipt_sha256": "de63834576dcf8a5035ca8c734cdd0c4323b58825a1c5da46a0a6e8323ee1320",
+    "physical_independent_receipt_sha256": "d61585677c4df1aeb0e770b2d4b080787665a272e91735ef0f7f37c052508904",
+    "p12_synthetic_regressions": "4/4 PASS",
+    "p2_raw_tests": "3/3 PASS",
+    "p2_physical_tests": "3/3 PASS",
+    "source_raw_sha_and_validity": "verified private runtime; raw data never published"
   }
 }
