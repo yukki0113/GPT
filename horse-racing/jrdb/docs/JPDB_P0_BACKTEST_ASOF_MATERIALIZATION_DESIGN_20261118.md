@@ -1,5 +1,8 @@
 # JPDB P0 — RaceNote backtest date-effective jockey-history materialization design
 
+> **2026-11-19 JPDB policy update:** Historical SED release-time/late-revision attestation is **not a prerequisite** for the assumption-based JPDB backtest lane. For an outcome race date strictly before the target date, the accepted final SED is assumed available under `JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1`. See [approved simplified SED as-of policy](JPDB_P0_ASOF_SIMPLIFIED_POLICY_20261119.md). This is a modeling assumption, not proof of historical release timing. The audit findings and stricter provenance interpretation below remain the record of the original 2026-11-18 investigation; they are not silently relabeled. Target-day SED exclusion, target KYI caveats, population decisions, and separate RaceNote approval still apply.
+
+
 Date: 2026-11-18. Status: **P0 architecture/proof of cutoff only; NOT P1 or RaceNote integration approval**.
 
 ## Decision: dual-gate as-of Reader
