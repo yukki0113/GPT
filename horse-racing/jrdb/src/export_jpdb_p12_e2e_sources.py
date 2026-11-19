@@ -24,6 +24,8 @@ PATHS = (
     "horse-racing/jrdb/src/jpdb_p2_course_master_reader.py",
     "horse-racing/jrdb/src/jpdb_p2_course_master_e2e_audit.py",
     "horse-racing/jrdb/tests/test_jpdb_p2_course_master_reader.py",
+    "horse-racing/jrdb/src/jpdb_p3_market_baselines.py",
+    "horse-racing/jrdb/tests/test_jpdb_p3_market_baselines.py",
     "horse-racing/jrdb/config/public_drive/jpdb_p0_current_2023_2025_readonly_v0_1.json",
 )
 
