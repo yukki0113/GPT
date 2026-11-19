@@ -1,8 +1,9 @@
 """No-leak tests for JPDB P3 pre-entry proxy baseline. No licensed sources."""
-import importlib.util
 import pathlib
+import sys
 import unittest
 import pandas as pd
+sys.path.insert(0,str(pathlib.Path(__file__).resolve().parents[1] / 'src'))
 from jpdb_p3_prerace_proxy_experiment import FIELDS, make_features, valid_cohort
 
 
