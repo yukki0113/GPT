@@ -1,0 +1,144 @@
+{
+  "cohort": {
+    "all_races": 12951,
+    "eligible_races": 12934,
+    "eligible_runners": 178515,
+    "rejected_races": 17
+  },
+  "entry_version_status": "2023_2025_FINAL_KYI_PROXY_AND_2026_PACI_UNATTESTED",
+  "hist_assets_sha256": {
+    "bac_2023": "c17ee5ccb8f953f090cca186ee751d12fc75b97003199dad7c14b7fee70a5daa",
+    "bac_2024": "ed1b831b9236eaa85a075b1f6fce792e7292ece830688b4bd28546885761b898",
+    "bac_2025": "b26a364978143fbd6e9d30289db0eb85e9b33e9fe612759b23a85ffbb78a3bb9",
+    "kyi_2023": "d68afa2d37e2b4308df8c1897279e6cd38f27fc83d66324b4222e4cff44ed0ce",
+    "kyi_2024": "21d0d47337daa7c78f08e6e79fc41ee15eebed05630a3ff3ec6bca4d190340df",
+    "kyi_2025": "55fdcc9fd03c70f284b028fa85ef3c6b2882071c685639621061ba146c0fa10b",
+    "sed_2023": "3cb2cb29f509209017d2b623a9fa5bdae18d217d4bd1b9cf82cbe7ae887e28ec",
+    "sed_2024": "e18da9b6147c71973d5769f5ca859bd3b1e80b53773f9ed861c7b58941464fc8",
+    "sed_2025": "6a7be1dc005833c9caaa20559ac3ad40af99bdc95a342b0e57d638ca979f8974"
+  },
+  "jockey_effect_estimation_allowed": false,
+  "jockey_or_trainer_target_id_features": false,
+  "label_source": "SED_RACE_RESULT_ONLY",
+  "licensed_rows_in_report": false,
+  "model_features": [
+    "horse_starts_365",
+    "horse_wins_365",
+    "horse_top3_365",
+    "horse_surface_starts_365",
+    "horse_surface_top3_365",
+    "horse_days_since_last",
+    "horse_starts_3y",
+    "race_distance_m",
+    "race_entries",
+    "frame_no",
+    "carried_weight_tenths",
+    "rotation_interval",
+    "race_surface",
+    "race_venue"
+  ],
+  "model_hyperparameter_selection": "NONE_FIXED_C1",
+  "paci_2026_manifest_sha256": "790213961912cc4bd81ac7932e17d8c54ccf20341220d1031504763cb2d635f1",
+  "paci_sed_date_count": 97,
+  "pre_race_snapshot_time_attested": false,
+  "prediction_safe": false,
+  "production_racenote_pwa_changed": false,
+  "rider_residual_year_pair_stability": [
+    {
+      "from_year": 2024,
+      "pearson": 0.783577,
+      "rider_surface_pairs": 152,
+      "sign_reversed": 35,
+      "to_year": 2025
+    },
+    {
+      "from_year": 2025,
+      "pearson": 0.801227,
+      "rider_surface_pairs": 163,
+      "sign_reversed": 33,
+      "to_year": 2026
+    }
+  ],
+  "same_date_history_included": false,
+  "schema": "jpdb-p3-preentry-horse-history-proxy-v0.1",
+  "source_prior_history_policy": "JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1",
+  "source_rows": 184922,
+  "status": "RESEARCH_PROXY_ONLY",
+  "strict_asof_certified": false,
+  "target_final_odds_popularity_used": false,
+  "walk_forward_years": [
+    {
+      "brier_improvement_vs_uniform": 0.0025678,
+      "eval_from": "2024-01-06",
+      "eval_races": 3321,
+      "eval_rows": 45515,
+      "eval_to": "2024-12-28",
+      "expected_wins_sum": 3321.0,
+      "model_brier": 0.0647568,
+      "model_race_nll": 2.3797107,
+      "observed_wins": 3321,
+      "race_block_bootstrap_iterations": 1000,
+      "race_bootstrap_brier_delta_ci95": [
+        0.0022247,
+        0.0029426
+      ],
+      "runners_with_any_3y_history": 40462,
+      "runners_with_no_3y_history": 5053,
+      "train_rows": 45983,
+      "train_to": "2023-12-28",
+      "uniform_brier": 0.0673246,
+      "uniform_race_nll": 2.5915072,
+      "year": 2024,
+      "year_entry_kind": "FINAL_KYI_PROXY"
+    },
+    {
+      "brier_improvement_vs_uniform": 0.0025871,
+      "eval_from": "2025-01-05",
+      "eval_races": 3330,
+      "eval_rows": 46248,
+      "eval_to": "2025-12-28",
+      "expected_wins_sum": 3330.0,
+      "model_brier": 0.0639091,
+      "model_race_nll": 2.3860631,
+      "observed_wins": 3330,
+      "race_block_bootstrap_iterations": 1000,
+      "race_bootstrap_brier_delta_ci95": [
+        0.0022683,
+        0.0029005
+      ],
+      "runners_with_any_3y_history": 41245,
+      "runners_with_no_3y_history": 5003,
+      "train_rows": 91498,
+      "train_to": "2024-12-28",
+      "uniform_brier": 0.0664961,
+      "uniform_race_nll": 2.6041592,
+      "year": 2025,
+      "year_entry_kind": "FINAL_KYI_PROXY"
+    },
+    {
+      "brier_improvement_vs_uniform": 0.0024613,
+      "eval_from": "2026-01-04",
+      "eval_races": 2958,
+      "eval_rows": 40769,
+      "eval_to": "2026-11-15",
+      "expected_wins_sum": 2958.0,
+      "model_brier": 0.0645236,
+      "model_race_nll": 2.3910635,
+      "observed_wins": 2958,
+      "race_block_bootstrap_iterations": 1000,
+      "race_bootstrap_brier_delta_ci95": [
+        0.0021476,
+        0.0027995
+      ],
+      "runners_with_any_3y_history": 36577,
+      "runners_with_no_3y_history": 4192,
+      "train_rows": 137746,
+      "train_to": "2025-12-28",
+      "uniform_brier": 0.0669849,
+      "uniform_race_nll": 2.597695,
+      "year": 2026,
+      "year_entry_kind": "OBSERVED_PACI_VERSION_NOT_TIME_ATTESTED"
+    }
+  ],
+  "year_fold_prior_only": true
+}
