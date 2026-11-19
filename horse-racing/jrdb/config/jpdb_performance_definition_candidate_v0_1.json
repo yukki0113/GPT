@@ -1,0 +1,85 @@
+{
+  "schema_version": "jpdb-performance-definition-candidate-v0.1",
+  "status": "DESIGN_CANDIDATE_NOT_PRODUCTION_APPROVED",
+  "source_generation": "jrdb_normalized_warehouse_v1_2010_2025_g20261118_bacfix",
+  "source_relations": [
+    "sed",
+    "bac",
+    "kyi"
+  ],
+  "history_start_inclusive": "2023-01-01",
+  "history_lookback_calendar_years": 3,
+  "target_date_exclusive": true,
+  "asof_policy_id": "JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1",
+  "jockey_identity": "sed.jockey_code",
+  "target_jockey_identity": "target_paci_or_kyi.jockey_code_SEPARATE",
+  "source_race_grain": [
+    "race_key_raw",
+    "horse_no"
+  ],
+  "surface_filter": [
+    "1",
+    "2"
+  ],
+  "population_filters": {
+    "existing_reader": "JPDB_FLAT_NORMAL_FINISHERS_DIAGNOSTIC_V1",
+    "candidate_ride_start": "JPDB_FLAT_RIDE_START_V1_CANDIDATE"
+  },
+  "abnormal_status": {
+    "normal": [
+      "",
+      "0"
+    ],
+    "nonstarters": [
+      "1",
+      "2"
+    ],
+    "dnf": [
+      "3"
+    ],
+    "demotion_review": [
+      "5"
+    ],
+    "unknown_review": [
+      "4",
+      "6"
+    ],
+    "undefined_policy": "REVIEW_REQUIRED"
+  },
+  "rate_definition": {
+    "normal_win_rate": {
+      "numerator": "normal_finish_wins",
+      "denominator": "normal_finishers",
+      "zero_denominator": null
+    },
+    "normal_top3_rate": {
+      "numerator": "normal_finish_top3",
+      "denominator": "normal_finishers",
+      "zero_denominator": null
+    },
+    "start_basis_rates": "NOT_APPROVED_UNTIL_ABNORMAL_POLICY_FINAL"
+  },
+  "supported_dimensions_phase1": [
+    "all_flat",
+    "surface"
+  ],
+  "proposed_dimensions_phase2": [
+    "venue_code",
+    "distance_m",
+    "race_class_code",
+    "grade_code",
+    "track_condition_code",
+    "course_key",
+    "physical_version_id",
+    "race_pace_code",
+    "race_running_style_code",
+    "trainer_code",
+    "blood_registration_no"
+  ],
+  "first_pass_min_cell_n_candidate": 30,
+  "min_cell_n_status": "RESEARCH_THRESHOLD_CANDIDATE",
+  "hypothesis_evaluation": "MULTIPLICITY_AND_TEMPORAL_OOT_REQUIRED",
+  "output_release_scope": "PRIVATE_AGGREGATE_JOCKEY_RESPONSE_ONLY",
+  "race_note_production_connection": false,
+  "strict_release_time_attested": false
+}
