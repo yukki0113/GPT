@@ -1,0 +1,8 @@
+# JPDB P3 pre-entry horse-history proxy research (Python 3.13)
+# Version-pinned local audit context, not JRDB production requirements.
+duckdb==1.1.3
+pyarrow==25.0.1
+numpy==2.3.5
+pandas==2.2.3
+scikit-learn==1.8.0
+python-dateutil==2.9.0.post0
