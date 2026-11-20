@@ -4,6 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from jsonschema import Draft202012Validator
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 import brdb_newspaper_pedigree_display_projection as mod
 
@@ -85,6 +87,8 @@ def relatives():
 class TestProjection(unittest.TestCase):
     def test_projection_matches_ui_guard_and_keeps_no_prediction_fields(self):
         out = mod.build(v06(), relatives(), "a" * 64)
+        schema_path = Path(__file__).resolve().parents[1] / "schema" / "brdb_newspaper_pedigree_display_projection_v0_1_candidate.schema.json"
+        Draft202012Validator(json.loads(schema_path.read_text(encoding="utf-8"))).validate(out)
         self.assertEqual(out["horse_count"], 1)
         row = out["horses"][0]
         self.assertEqual(row["contract_version"], mod.DISPLAY_VERSION)
