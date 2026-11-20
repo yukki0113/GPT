@@ -364,3 +364,7 @@ See `docs/JRDB_Analysis_Warehouse_Input_Contract_v1.md` and `docs/JRDB_Analysis_
 Historical RaceNote rebuilds for 2010–2025 use the accepted dedicated JRDB Warehouse current pointer and immutable Parquet assets. The existing RaceNote normalizer and v0.2 bundle schema are unchanged. The Raw route remains only for audit, rollback, and the explicit 2010 pre-coverage previous-result boundary; it is not a silent fallback. 2026 daily/current requests remain the PACI/Raw route.
 
 See [RaceNote Historical Warehouse Operation](docs/RaceNote_Historical_Warehouse_Operation_v1.md) and the [dual-read audit](docs/RaceNote_Historical_Warehouse_Dual_Read_Audit_20260922.md).
+
+## JPDB×BRDB independent forecast evidence policy（2026-11-20）
+
+基本設計・開発目的の正本は [RaceNote JPDB×BRDB 独立Evidence拡張方針](docs/racenote/RACENOTE_JPDB_BRDB_INDEPENDENT_EVIDENCE_POLICY_20261120.md)。JPDB（騎手）とBRDB（血統）は、過去走中心のRaceNoteに別視点を提供し、**既走馬の見落とし**と**新馬戦・未経験馬の比較材料不足**をそれぞれ検証する。既存結果を単に重複加点するのではなく、条件別の事実・相対傾向・不確実性を全馬に渡す。RaceNoteの印・Confidence Z・二段階Freeze・PWA/CURRENTは別承認まで変更しない。
