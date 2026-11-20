@@ -84,6 +84,55 @@ def _primary(selected):
     return sorted(selected,key=lambda x:(rank[x['scope_key']], {'STRONG_DESCRIPTIVE':0,'NOTABLE_DESCRIPTIVE':1,'LOW_SAMPLE_SIGNAL':2}[x['tier']], -abs(x['difference_top3_pp'])))[0]
 
 
+
+def relative_links_from_lanes(lanes, relative_condition):
+    """Link only each lane/state primary signal to existing relative condition observations."""
+    if not relative_condition:
+        return []
+    grouped=relative_condition.get('grouped_scopes',[])
+    rel_index={}
+    for r in grouped:
+        n=r['counts']['starts']; t=r['counts']['top3']; rr=r['counts']['top3_rate']
+        require((rr is None and n==0) or (n>0 and rr is not None and abs(rr-t/n)<0.00011),'relative rate mismatch')
+        rel_index.setdefault(r['scope_key'],[]).append(r)
+    links=[]
+    for state_name in NON_GOOD:
+        for lane_name in ('sire','broodmare_sire','pairing'):
+            p=lanes[lane_name]['primary_by_state'].get(state_name)
+            if not p or p['direction']!='STATE_HIGHER':
+                continue
+            rel_scope=REL_SCOPE_MAP[p['scope_key']]
+            rel_rows=[r for r in rel_index.get(rel_scope,[]) if r['counts']['starts']>0]
+            if rel_rows:
+                links.append({
+                    'kind':'PARENT_GOING_SIGNAL_WITH_RELATIVE_CONDITION_OBSERVATION',
+                    'state':state_name,'parent_lane':lane_name,'parent_evidence_ref':p['evidence_id'],
+                    'parent_scope_key':p['scope_key'],'relative_scope_key':rel_scope,
+                    'relative_relation_count':len(rel_rows),
+                    'relative_starts_sum_not_unique':sum(r['counts']['starts'] for r in rel_rows),
+                    'relative_top3_sum_not_unique':sum(r['counts']['top3'] for r in rel_rows),
+                    'relative_going_state_known':False,
+                    'independent_support':False,'causal_claim':False,'distance_compensation_claim':False,
+                    'suitability_claim':False,'prediction_eligible':False,'display_eligible':False,
+                    'interpretation_status':'PARALLEL_OBSERVATION_ONLY',
+                })
+    return links
+
+
+def attach_relative_conditions(existing_result, relative_condition_by_horse):
+    require(existing_result.get('contract_version')==VERSION,'v0.6 contract mismatch')
+    require(existing_result.get('release_status')=='RESEARCH_ONLY','v0.6 release status')
+    policy=existing_result.get('policy',{})
+    require(policy.get('prediction_safe') is False and policy.get('production_authorized') is False and policy.get('display_authorized') is False,'v0.6 authorization')
+    import copy
+    out=copy.deepcopy(existing_result)
+    target_ids={h['horse_id'] for h in out['horses']}
+    require(set(relative_condition_by_horse)<=target_ids,'relative map outside target cohort')
+    for h in out['horses']:
+        h['relative_condition_links']=relative_links_from_lanes(h['lanes'],relative_condition_by_horse.get(h['horse_id']))
+    out['summary']=summarize(out['horses'])
+    return out
+
 def analyze_horse(horse, lane_scope_state_counts, relative_condition=None):
     """Analyze already-aggregated counts for one horse.
 
@@ -128,34 +177,7 @@ def analyze_horse(horse, lane_scope_state_counts, relative_condition=None):
                     'prediction_eligible':False,'display_eligible':False,
                     'interpretation_status':'COOBSERVATION_ONLY',
                 })
-    relative_links=[]
-    if relative_condition:
-        # Existing v0.3 relative stats have condition/distance but not going-state splits.
-        # They may be linked to a parent-line going signal only as a parallel observation.
-        grouped=relative_condition.get('grouped_scopes',[])
-        rel_index={}
-        for r in grouped:
-            n=r['counts']['starts']; t=r['counts']['top3']; rr=r['counts']['top3_rate']
-            require((rr is None and n==0) or (n>0 and rr is not None and abs(rr-t/n)<0.00011),'relative rate mismatch')
-            rel_index.setdefault(r['scope_key'],[]).append(r)
-        for state_name in NON_GOOD:
-            parent=[x for x in selected_by_state[state_name] if x['direction']=='STATE_HIGHER']
-            for p in parent:
-                rel_scope=REL_SCOPE_MAP[p['scope_key']]
-                rel_rows=[r for r in rel_index.get(rel_scope,[]) if r['counts']['starts']>0]
-                if rel_rows:
-                    relative_links.append({
-                        'kind':'PARENT_GOING_SIGNAL_WITH_RELATIVE_CONDITION_OBSERVATION',
-                        'state':state_name,'parent_lane':p['lane'],'parent_evidence_ref':p['evidence_id'],
-                        'parent_scope_key':p['scope_key'],'relative_scope_key':rel_scope,
-                        'relative_relation_count':len(rel_rows),
-                        'relative_starts_sum_not_unique':sum(r['counts']['starts'] for r in rel_rows),
-                        'relative_top3_sum_not_unique':sum(r['counts']['top3'] for r in rel_rows),
-                        'relative_going_state_known':False,
-                        'independent_support':False,'causal_claim':False,'distance_compensation_claim':False,
-                        'suitability_claim':False,'prediction_eligible':False,'display_eligible':False,
-                        'interpretation_status':'PARALLEL_OBSERVATION_ONLY',
-                    })
+    relative_links=relative_links_from_lanes(lanes,relative_condition)
     return {'horse_no':horse['horse_no'],'horse_id':horse['horse_id'],'lanes':lanes,
             'cross_lane_alignments':alignments,'relative_condition_links':relative_links,
             'policy':{'prediction_safe':False,'production_authorized':False,'display_authorized':False}}
