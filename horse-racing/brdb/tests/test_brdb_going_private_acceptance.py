@@ -43,7 +43,7 @@ class T(unittest.TestCase):
   basep=self.write(base);relp=self.write(detail())
   with tempfile.TemporaryDirectory() as td:
    out,receipt=joiner.run(basep,relp,Path(td)/'private.json',Path(td)/'agg.json')
-   self.assertEqual(receipt['horse_count'],2);self.assertGreaterEqual(receipt['relative_condition_link_count'],1)
+   self.assertEqual(receipt['horse_count'],2);self.assertGreaterEqual(receipt['relative_condition_link_count'],1);self.assertEqual(receipt['horses_with_relative_condition_links'],1)
    self.assertEqual(out['policy']['prediction_safe'],False)
  def test_aggregate_receipt_has_no_identity(self):
   result={'race':RACE,'horses':[{},{}],'summary':{'selected_observations':[{'count':3}], 'primary_observations':[{'count':2}],
