@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BRDB private going-relative acceptance aggregate receipt v0.1 candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "acceptance_version","status","discovery_contract","race_key","target_date","horse_count",
+    "relative_input","selected_observation_count","primary_observation_count","cross_lane_alignment_count",
+    "relative_condition_link_count","relative_condition_links_by_state_lane","horses_with_selected_signal_by_state",
+    "private_horse_level_output_written","aggregate_contains_horse_identity","nested_and_related_samples_not_independent",
+    "relative_going_state_known","prediction_eligible","display_eligible","production_authorized"
+  ],
+  "properties": {
+    "acceptance_version": {"const": "brdb-going-private-acceptance-v0.1-candidate"},
+    "status": {"const": "PASS_RESEARCH_ONLY"},
+    "discovery_contract": {"const": "brdb-going-multilane-discovery-v0.6-candidate"},
+    "race_key": {"type":"string","pattern":"^[0-9]{8}$"},
+    "target_date": {"type":"string","format":"date"},
+    "horse_count": {"type":"integer","minimum":1},
+    "relative_input": {
+      "type":"object","additionalProperties":false,
+      "required":["relative_detail_sha256","relative_records","scope_observations","zero_start_cells","horses_with_relative_starts","historical_asof_status"],
+      "properties": {
+        "relative_detail_sha256":{"type":"string","pattern":"^[0-9a-f]{64}$"},
+        "relative_records":{"type":"integer","minimum":0},
+        "scope_observations":{"type":"integer","minimum":0},
+        "zero_start_cells":{"type":"integer","minimum":0},
+        "horses_with_relative_starts":{"type":"integer","minimum":0},
+        "historical_asof_status":{"const":"AS_OF_UNVERIFIED"}
+      }
+    },
+    "selected_observation_count":{"type":"integer","minimum":0},
+    "primary_observation_count":{"type":"integer","minimum":0},
+    "cross_lane_alignment_count":{"type":"integer","minimum":0},
+    "relative_condition_link_count":{"type":"integer","minimum":0},
+    "relative_condition_links_by_state_lane":{"type":"array","items":{"type":"object"}},
+    "horses_with_selected_signal_by_state":{"type":"object"},
+    "private_horse_level_output_written":{"const":true},
+    "aggregate_contains_horse_identity":{"const":false},
+    "nested_and_related_samples_not_independent":{"const":true},
+    "relative_going_state_known":{"const":false},
+    "prediction_eligible":{"const":false},
+    "display_eligible":{"const":false},
+    "production_authorized":{"const":false}
+  }
+}
