@@ -2,6 +2,19 @@
 
 BRDB は、出走馬の血統を固定条件への一致抽出ではなく、**対象レースの各出走馬を同一契約でレビューする**ための中央競馬サブプロジェクトです。
 
+## Project mission — 2026-11-20
+
+BRDB の最上位目的は、**RaceNote の過去走中心の評価を補完する独立した血統情報基盤**である。過去走による実力評価を否定せず、次の二つの不足領域を研究・実証する。
+
+- **既走馬**：過去走だけでは見えにくい条件変化・父/母父・配合・近親・血統要素の根拠を全馬へ供給し、過去走との評価差や市場人気への集中を分析する。
+- **新馬戦・未出走馬**：過去走がない馬を単に「能力不明＝評価不可」とせず、父産駒の初戦傾向、母父/配合、兄姉・母方近親など、対象発走前に利用可能な情報から**別の研究評価経路**を構築する。従来RaceNoteの自信度Zは実証・承認までは維持する。
+
+開発中の**騎手プロファイルDB**とは根拠を分離して相互利用を目指し、RaceNote が過去走・血統・騎手を独立laneとして検証したうえで統合判断する。BRDBはRaceNoteの予想印・自信度・確率・順位を決定しない。市場で人気のない馬を拾えるか、精度や回収率が向上するかは**未検証の仮説**であり、成果として主張しない。
+
+新馬戦向け集計と一般産駒の条件別成績は別の母集団・契約とする。過去時点の情報可用性、低N、選択バイアス、時系列holdout、既存RaceNote baselineからの増分を検証し、研究成果を無断で本番利用しない。
+
+**基本設計・方針の正本**：[`docs/BRDB_BASIC_DESIGN_AND_RESEARCH_POLICY_20261120.md`](docs/BRDB_BASIC_DESIGN_AND_RESEARCH_POLICY_20261120.md)。本README下方のPhase履歴・過去ステータスはその時点の記録であり、現在の研究優先順位は同設計の第7節、実装状況は各監査資料と最新のPR/Issueを参照する。
+
 ## Source of truth
 
 GitHub `yukki0113/GPT` の `main` 配下 `horse-racing/brdb/` を、BRDB の仕様・source・tests・運用書の正本とします。
@@ -67,7 +80,7 @@ BRDB は RaceReviewDB (RRDB) の以下の成熟した consumer boundary を引�
 
 ## Current status
 
-Status: **PHASE 1 COMPLETE / CURRENT READER OPERATIONAL FOUNDATION**
+Historical foundation status (Phase 1): **COMPLETE / CURRENT READER OPERATIONAL FOUNDATION**. This is not the current status of the entire BRDB roadmap; see the project mission above and latest M6/M7 issues.
 
 血統採点ロジックはまだ未実装ですが、Pedigree Fact v0.1、guarded parent-relation resolver、CURRENT pointer contract、read-only BloodReviewReader、deterministic CURRENT bundle builder まで実装済みです。
 
