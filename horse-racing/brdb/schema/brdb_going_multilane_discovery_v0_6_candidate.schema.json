@@ -1,0 +1,20 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"BRDB going multi-lane discovery v0.6 candidate",
+  "type":"object","additionalProperties":false,
+  "required":["contract_version","release_status","race","source","policy","summary","horses"],
+  "properties":{
+    "contract_version":{"const":"brdb-going-multilane-discovery-v0.6-candidate"},
+    "release_status":{"const":"RESEARCH_ONLY"},
+    "race":{"type":"object"},
+    "source":{"type":"object"},
+    "policy":{"type":"object","additionalProperties":false,
+      "required":["prediction_safe","production_authorized","display_authorized","natural_language_review_authorized"],
+      "properties":{"prediction_safe":{"const":false},"production_authorized":{"const":false},"display_authorized":{"const":false},"natural_language_review_authorized":{"const":false}}},
+    "summary":{"type":"object","required":["horse_count","horses_with_selected_signal_by_state","selected_observations","cross_lane_alignments","relative_condition_links","nested_and_related_samples_not_independent"]},
+    "horses":{"type":"array","minItems":1,"items":{"type":"object","required":["horse_no","horse_id","lanes","cross_lane_alignments","relative_condition_links","policy"],
+      "properties":{"horse_no":{"type":"integer","minimum":1},"horse_id":{"type":"string","pattern":"^[0-9]{8}$"},
+      "lanes":{"type":"object","required":["sire","broodmare_sire","pairing"]},
+      "cross_lane_alignments":{"type":"array"},"relative_condition_links":{"type":"array"},"policy":{"type":"object"}}}}
+  }
+}
