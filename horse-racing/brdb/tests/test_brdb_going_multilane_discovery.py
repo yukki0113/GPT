@@ -23,12 +23,18 @@ class T(unittest.TestCase):
   x=mod.analyze_horse(H,{'sire':c(),'pairing':p})
   self.assertFalse(any(z['state']=='稍重' for z in x['cross_lane_alignments']))
  def test_relative_link_does_not_infer_going(self):
-  rel={'grouped_scopes':[{'scope_key':'VENUE_DISTANCE','counts':{'starts':6,'wins':1,'top3':3,'top3_rate':.5}}]}
+  rel={'grouped_scopes':[{'scope_key':'VENUE_COURSE_EXACT','counts':{'starts':6,'wins':1,'top3':3,'top3_rate':.5}}]}
   x=mod.analyze_horse(H,{'sire':c()},rel)
   links=[z for z in x['relative_condition_links'] if z['state']=='稍重']
   self.assertTrue(links);self.assertFalse(links[0]['relative_going_state_known']);self.assertFalse(links[0]['distance_compensation_claim'])
+ def test_relative_link_primary_only(self):
+  rel={'grouped_scopes':[{'scope_key':'VENUE_COURSE_EXACT','counts':{'starts':6,'wins':1,'top3':3,'top3_rate':.5}},
+                         {'scope_key':'VENUE_DISTANCE','counts':{'starts':8,'wins':1,'top3':4,'top3_rate':.5}}]}
+  x=mod.analyze_horse(H,{'sire':c()},rel)
+  links=[z for z in x['relative_condition_links'] if z['state']=='稍重' and z['parent_lane']=='sire']
+  self.assertEqual(len(links),1);self.assertEqual(links[0]['parent_scope_key'],'VENUE_COURSE_DISTANCE')
  def test_bad_relative_rate_rejected(self):
-  rel={'grouped_scopes':[{'scope_key':'VENUE_DISTANCE','counts':{'starts':6,'wins':1,'top3':3,'top3_rate':.9}}]}
+  rel={'grouped_scopes':[{'scope_key':'VENUE_COURSE_EXACT','counts':{'starts':6,'wins':1,'top3':3,'top3_rate':.9}}]}
   with self.assertRaises(ValueError):mod.analyze_horse(H,{'sire':c()},rel)
  def test_summary_no_horse_details(self):
   x=mod.analyze_horse(H,{'sire':c(),'broodmare_sire':c()})
