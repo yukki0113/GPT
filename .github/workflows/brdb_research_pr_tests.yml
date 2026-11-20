@@ -6,6 +6,11 @@ on:
     paths:
       - 'horse-racing/brdb/config/public_drive/brdb_going_full_history_real_20261115_v0_4.json'
       - 'horse-racing/brdb/src/brdb_going_full_history_real_replay.py'
+      - 'horse-racing/brdb/src/brdb_going_multilane_discovery.py'
+      - 'horse-racing/brdb/src/brdb_going_multilane_real_replay.py'
+      - 'horse-racing/brdb/tests/test_brdb_going_multilane_discovery.py'
+      - 'horse-racing/brdb/schema/brdb_going_multilane_discovery_v0_6_candidate.schema.json'
+      - 'horse-racing/brdb/docs/BRDB_GOING_MULTILANE_DISCOVERY_V0_6_20261120.md'
       - 'horse-racing/brdb/src/brdb_going_signal_select.py'
       - 'horse-racing/brdb/tests/test_brdb_going_signal_select.py'
       - 'horse-racing/brdb/schema/brdb_going_signal_selection_v0_5_candidate.schema.json'
@@ -104,6 +109,7 @@ jobs:
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_sed_going_ingest.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_going_condition_compare.py' -v
           python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_going_signal_select.py' -v
+          python -m unittest discover -s horse-racing/brdb/tests -p 'test_brdb_going_multilane_discovery.py' -v
       - name: Fetch SHA-pinned public Drive inputs for source-real going replay
         run: |
           rm -rf /tmp/brdb-going-v04-input /tmp/brdb-going-v04-output
@@ -121,6 +127,13 @@ jobs:
             --race-key 05265412 \
             --target-date 2026-11-15 \
             --output /tmp/brdb-going-v04-output/brdb_going_20261115_t12_aggregate_audit.json
+          python horse-racing/brdb/src/brdb_going_multilane_real_replay.py \
+            --manifest /tmp/brdb-going-v04-input/manifest.json \
+            --objects-root /tmp/brdb-going-v04-input \
+            --paci /tmp/brdb-going-v04-input/PACI261115.zip \
+            --race-key 05265412 \
+            --target-date 2026-11-15 \
+            --output /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_aggregate_audit.json
       - name: Upload source-real going replay audit
         if: always()
         uses: actions/upload-artifact@v4
@@ -131,3 +144,4 @@ jobs:
           path: |
             /tmp/brdb-going-v04-input-receipt.json
             /tmp/brdb-going-v04-output/brdb_going_20261115_t12_aggregate_audit.json
+            /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_aggregate_audit.json
