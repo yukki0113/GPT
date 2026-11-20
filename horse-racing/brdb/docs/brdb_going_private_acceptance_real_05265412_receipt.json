@@ -1,0 +1,72 @@
+{
+  "acceptance_version": "brdb-going-private-acceptance-v0.1-candidate",
+  "aggregate_contains_horse_identity": false,
+  "cross_lane_alignment_count": 17,
+  "discovery_contract": "brdb-going-multilane-discovery-v0.6-candidate",
+  "display_eligible": false,
+  "horse_count": 18,
+  "horses_with_relative_condition_links": 7,
+  "horses_with_relative_condition_links_by_state": {
+    "不良": 4,
+    "稍重": 6,
+    "重": 1
+  },
+  "horses_with_selected_signal_by_state": {
+    "不良": 15,
+    "稍重": 18,
+    "重": 14
+  },
+  "join_contract": "brdb-going-private-existing-join-v0.1-candidate",
+  "nested_and_related_samples_not_independent": true,
+  "prediction_eligible": false,
+  "primary_observation_count": 78,
+  "private_horse_level_output_written": true,
+  "production_authorized": false,
+  "race_key": "05265412",
+  "relative_condition_link_count": 14,
+  "relative_condition_links_by_state_lane": [
+    {
+      "count": 1,
+      "parent_lane": "pairing",
+      "state": "不良"
+    },
+    {
+      "count": 4,
+      "parent_lane": "sire",
+      "state": "不良"
+    },
+    {
+      "count": 4,
+      "parent_lane": "broodmare_sire",
+      "state": "稍重"
+    },
+    {
+      "count": 3,
+      "parent_lane": "pairing",
+      "state": "稍重"
+    },
+    {
+      "count": 1,
+      "parent_lane": "sire",
+      "state": "稍重"
+    },
+    {
+      "count": 1,
+      "parent_lane": "sire",
+      "state": "重"
+    }
+  ],
+  "relative_going_state_known": false,
+  "relative_input": {
+    "historical_asof_status": "AS_OF_UNVERIFIED",
+    "horses_with_relative_starts": 11,
+    "relative_detail_sha256": "08ac62bb1305e075aa2e73a6298d9e9211ddadc06eff3fc031b02abd7b042211",
+    "relative_records": 75,
+    "scope_observations": 375,
+    "zero_start_cells": 285
+  },
+  "selected_observation_count": 127,
+  "status": "PASS_RESEARCH_ONLY",
+  "target_date": "2026-11-15",
+  "v06_input_sha256": "2d806475886904dcf929a1455e7882ee5aa63e58d60f383da0ffcf4fa41d5f77"
+}

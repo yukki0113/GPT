@@ -1,0 +1,418 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BRDB condition discovery research v0.3 candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "release_status",
+    "race",
+    "as_of_exclusive",
+    "policy",
+    "sources",
+    "target_assumption",
+    "horses"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "brdb-condition-discovery-v0.3-candidate"
+    },
+    "release_status": {
+      "const": "RESEARCH_ONLY"
+    },
+    "race": {
+      "type": "object"
+    },
+    "as_of_exclusive": {
+      "type": "string",
+      "format": "date"
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prediction_safe",
+        "production_authorized",
+        "display_authorized",
+        "natural_language_review_authorized"
+      ],
+      "properties": {
+        "prediction_safe": {
+          "const": false
+        },
+        "production_authorized": {
+          "const": false
+        },
+        "display_authorized": {
+          "const": false
+        },
+        "natural_language_review_authorized": {
+          "const": false
+        }
+      }
+    },
+    "target_assumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "going_class",
+        "source",
+        "observation_not_aptitude"
+      ],
+      "properties": {
+        "going_class": {
+          "enum": [
+            "良",
+            "稍重",
+            "重",
+            "不良",
+            null
+          ]
+        },
+        "source": {
+          "enum": [
+            "NOT_SPECIFIED",
+            "USER_ASSUMPTION"
+          ]
+        },
+        "observation_not_aptitude": {
+          "const": true
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "detail_raw_sha256",
+        "going_input_sha256"
+      ],
+      "properties": {
+        "detail_raw_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "going_input_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "horses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/horse"
+      }
+    }
+  },
+  "$defs": {
+    "count": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "starts",
+        "wins",
+        "top3",
+        "top3_rate"
+      ],
+      "properties": {
+        "starts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "wins": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "top3": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "top3_rate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "pending": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "reason"
+      ],
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "individual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relative_horse_id",
+        "relative_name",
+        "relation",
+        "scope_observations",
+        "historical_asof_status"
+      ],
+      "properties": {
+        "relative_horse_id": {
+          "type": "string",
+          "pattern": "^[0-9]{8}$"
+        },
+        "relative_name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "relation": {
+          "enum": [
+            "FULL_SIBLING",
+            "MATERNAL_HALF_SIBLING",
+            "MATERNAL_AUNT_UNCLE",
+            "SAME_DAM_SAME_SIRE_NAME_UNVERIFIED"
+          ]
+        },
+        "historical_asof_status": {
+          "const": "AS_OF_UNVERIFIED"
+        },
+        "scope_observations": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "scope_key",
+              "counts"
+            ],
+            "properties": {
+              "scope_key": {
+                "enum": [
+                  "VENUE_COURSE_EXACT",
+                  "VENUE_DISTANCE",
+                  "VENUE_BAND",
+                  "ALL_VENUES_DISTANCE",
+                  "ALL_VENUES_BAND"
+                ]
+              },
+              "counts": {
+                "$ref": "#/$defs/count"
+              }
+            }
+          }
+        }
+      }
+    },
+    "grouped": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope_key",
+        "relation",
+        "relative_count",
+        "relatives_with_starts",
+        "counts",
+        "source",
+        "interpretation_status",
+        "historical_asof_status",
+        "prediction_eligible",
+        "display_eligible"
+      ],
+      "properties": {
+        "scope_key": {
+          "type": "string"
+        },
+        "relation": {
+          "type": "string"
+        },
+        "relative_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "relatives_with_starts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "counts": {
+          "$ref": "#/$defs/count"
+        },
+        "source": {
+          "const": "M7_RELATIVES_DETAIL"
+        },
+        "interpretation_status": {
+          "const": "OBSERVATION_ONLY"
+        },
+        "historical_asof_status": {
+          "const": "AS_OF_UNVERIFIED"
+        },
+        "prediction_eligible": {
+          "const": false
+        },
+        "display_eligible": {
+          "const": false
+        }
+      }
+    },
+    "going_scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "going_class",
+        "scope",
+        "counts",
+        "historical_parent_mapping_status",
+        "interpretation_status",
+        "display_eligible",
+        "prediction_eligible"
+      ],
+      "properties": {
+        "going_class": {
+          "enum": [
+            "良",
+            "稍重",
+            "重",
+            "不良"
+          ]
+        },
+        "scope": {
+          "const": "ALL_VENUES_SAME_SURFACE_ALL_DISTANCES"
+        },
+        "counts": {
+          "$ref": "#/$defs/count"
+        },
+        "historical_parent_mapping_status": {
+          "enum": [
+            "AS_OF_UNVERIFIED",
+            "VERIFIED"
+          ]
+        },
+        "interpretation_status": {
+          "const": "OBSERVATION_ONLY"
+        },
+        "prediction_eligible": {
+          "const": false
+        },
+        "display_eligible": {
+          "const": false
+        }
+      }
+    },
+    "horse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "horse_no",
+        "horse_id",
+        "relatives_condition",
+        "going_observations",
+        "pending"
+      ],
+      "properties": {
+        "horse_no": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "horse_id": {
+          "type": "string",
+          "pattern": "^[0-9]{8}$"
+        },
+        "relatives_condition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "individual",
+            "grouped_scopes",
+            "pending",
+            "overlapping_scopes",
+            "historical_asof_status"
+          ],
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "individual": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/individual"
+              }
+            },
+            "grouped_scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/grouped"
+              }
+            },
+            "pending": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/pending"
+              }
+            },
+            "overlapping_scopes": {
+              "const": true
+            },
+            "historical_asof_status": {
+              "const": "AS_OF_UNVERIFIED"
+            }
+          }
+        },
+        "going_observations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "going_scopes",
+            "pending"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "SOURCE_UNAVAILABLE",
+                "RESEARCH_OBSERVED",
+                "NO_SAMPLE"
+              ]
+            },
+            "going_scopes": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/going_scope"
+              }
+            },
+            "pending": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/pending"
+              }
+            }
+          }
+        },
+        "pending": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/pending"
+          }
+        }
+      }
+    }
+  }
+}
