@@ -17,7 +17,7 @@ class T(unittest.TestCase):
  def test_cross_lane_alignment_not_independent(self):
   x=mod.analyze_horse(H,{'sire':c(),'broodmare_sire':c(g=(80,8,20),sj=(30,3,15))})
   a=[z for z in x['cross_lane_alignments'] if z['state']=='稍重' and z['direction']=='STATE_HIGHER']
-  self.assertTrue(a);self.assertFalse(a[0]['independent_support']);self.assertFalse(a[0]['suitability_claim'])
+  self.assertTrue(a);self.assertFalse(a[0]['independent_support']);self.assertFalse(a[0]['suitability_claim']);self.assertIsNotNone(x['lanes']['sire']['primary_by_state']['稍重'])
  def test_pairing_opposite_not_alignment(self):
   p=c(g=(100,10,40),sj=(40,2,8))
   x=mod.analyze_horse(H,{'sire':c(),'pairing':p})
