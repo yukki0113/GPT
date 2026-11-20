@@ -36,7 +36,14 @@ class T(unittest.TestCase):
     'cross_lane_alignments':[{'count':1}], 'relative_condition_links':[{'state':'重','parent_lane':'sire','count':2}],
     'horses_with_selected_signal_by_state':{'重':1}}}
   rr={'relative_detail_sha256':'a'*64,'relative_records':1,'scope_observations':5,'zero_start_cells':4,'horses_with_relative_starts':1,'historical_asof_status':'AS_OF_UNVERIFIED'}
-  x=mod.aggregate_receipt(result,rr);blob=json.dumps(x,ensure_ascii=False)
-  self.assertFalse(x['aggregate_contains_horse_identity']);self.assertNotIn('horse_id',blob);self.assertNotIn('horse_no',blob)
+  x=mod.aggregate_receipt(result,rr)
+  self.assertFalse(x['aggregate_contains_horse_identity'])
+  def assert_no_identity_keys(obj):
+   if isinstance(obj,dict):
+    self.assertNotIn('horse_id',obj);self.assertNotIn('horse_no',obj)
+    for v in obj.values():assert_no_identity_keys(v)
+   elif isinstance(obj,list):
+    for v in obj:assert_no_identity_keys(v)
+  assert_no_identity_keys(x)
 
 if __name__=='__main__':unittest.main()
