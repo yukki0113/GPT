@@ -13,7 +13,7 @@ def st(n=0,t=0,w=0):return {'starts':n,'wins':w,'top3':t,'top3_rate':t/n if n el
 
 def detail():
     rel={'horse_id':'10000001','horse_name':'架空近親','relationship':'MATERNAL_HALF_SIBLING','scope_stats':{s:st() for s in SCOPES}}
-    rel['scope_stats']['ALL_VENUES_DISTANCE']=st(4,2,1)
+    rel['scope_stats']['VENUE_COURSE_EXACT']=st(4,2,1)
     return {'contract_version':'brdb-m7-relatives-detail-v0.1-candidate','research_only':True,'prediction_safe':False,
       'historical_asof_status':'AS_OF_UNVERIFIED','source_metadata':{'as_of_exclusive':'2026-11-15'},
       'aggregate_coverage':{'field_size':2,'relative_records':1,'scope_observations':5,'zero_start_cells':4},
