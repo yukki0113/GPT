@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../style.css" />
   <link rel="stylesheet" href="../newspaper.css?v=3" />
   <link rel="stylesheet" href="../newspaper-v4.css?v=12" />
+  <link rel="stylesheet" href="../newspaper-blood.css?v=1" />
   <link rel="stylesheet" href="../newspaper-v5.css?v=2" />
   <link rel="stylesheet" href="../newspaper-v6.css?v=4" />
   <link rel="stylesheet" href="../newspaper-v9.css?v=2" />
@@ -111,6 +112,16 @@
     </form>
   </dialog>
 
+  <dialog id="newspaper-blood-dialog" class="newspaper-blood-dialog" aria-labelledby="newspaper-blood-title">
+    <form method="dialog">
+      <div class="newspaper-dialog-header">
+        <strong id="newspaper-blood-title">血統詳細</strong>
+        <button type="submit" class="secondary">閉じる</button>
+      </div>
+      <div id="newspaper-blood-body"></div>
+    </form>
+  </dialog>
+
   <footer><small>桃太郎新聞</small></footer>
   <script>
     window.JRDB_PWA_CONFIG = {
@@ -133,6 +144,7 @@
   <script src="../newspaper-v10.js?v=3"></script>
   <script src="../newspaper-confidence.js?v=3"></script>
   <script src="./momotaro.js?v=23"></script>
+  <script src="../newspaper-blood.js?v=1"></script>
   <script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("./service-worker.js", {scope:"./"}).catch(console.error);</script>
 </body>
 </html>

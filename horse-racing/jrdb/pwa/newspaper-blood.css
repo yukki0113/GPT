@@ -1,0 +1,141 @@
+/* BRDB pedigree modal: read-only info surface shared by personal/Momotaro papers. */
+/* Name column is already position:sticky, so it anchors the lower-right button. */
+.newspaper-table-v4 .newspaper-horse-name-cell { vertical-align: top; }
+.newspaper-blood-name-wrap {
+  padding-bottom: 31px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 52px;
+  height: 100%;
+}
+.newspaper-blood-name-wrap > .newspaper-horse-name-only {
+  flex: 1 1 auto;
+}
+.newspaper-table-v4 .newspaper-blood-trigger {
+  display: block;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  align-self: flex-end;
+  min-width: 43px;
+  min-height: 25px;
+  padding: 3px 6px;
+  margin-top: 6px;
+  border: 1px solid #647b93;
+  border-radius: 5px;
+  background: #f4f7fa;
+  color: #23435b;
+  -webkit-text-fill-color: #23435b;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+}
+.newspaper-table-v4 .newspaper-blood-trigger:focus-visible {
+  outline: 2px solid #195f93;
+  outline-offset: 2px;
+}
+.newspaper-blood-dialog {
+  width: min(640px, calc(100vw - 24px));
+  max-width: 640px;
+  max-height: min(92dvh, 850px);
+  border-radius: 12px;
+  padding: 0;
+  border: 1px solid #bbb;
+  overflow: auto;
+}
+.newspaper-blood-dialog::backdrop { background: rgba(15, 22, 32, .56); }
+.newspaper-blood-dialog form { padding: 14px 16px 18px; }
+.newspaper-blood-dialog .newspaper-dialog-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 4px 0 12px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+.newspaper-blood-dialog .newspaper-dialog-header strong { font-size: 17px; }
+.newspaper-blood-dialog .newspaper-dialog-header button {
+  min-width: 54px;
+  min-height: 36px;
+  padding: 5px 10px;
+  color: #222;
+  -webkit-text-fill-color: #222;
+  background: #f8f8f8;
+}
+.newspaper-blood-caption, .newspaper-blood-disclaimer {
+  margin: 12px 0;
+  padding: 9px 10px;
+  border-left: 3px solid #87939e;
+  color: #414c58;
+  background: #f5f7f9;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.newspaper-blood-section {
+  margin-top: 18px;
+}
+.newspaper-blood-section h3 {
+  font-size: 14px;
+  margin: 0 0 10px;
+  padding: 0 0 6px;
+  border-bottom: 1px solid #ddd;
+}
+.newspaper-blood-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+  margin: 0;
+}
+.newspaper-blood-facts > div {
+  border-radius: 6px;
+  background: #f7f8fa;
+  padding: 9px;
+  overflow-wrap: anywhere;
+}
+.newspaper-blood-facts dt { font-size: 11px; color: #666; }
+.newspaper-blood-facts dd { margin: 3px 0 0; font-weight: 700; font-size: 13px; }
+.newspaper-blood-empty {
+  padding: 10px;
+  margin: 0;
+  border: 1px dashed #cad1d8;
+  border-radius: 6px;
+  color: #59616b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.newspaper-blood-records, .newspaper-blood-reviews { display: grid; gap: 8px; }
+.newspaper-blood-records article, .newspaper-blood-reviews article {
+  border: 1px solid #e0e4e8;
+  border-radius: 6px;
+  padding: 10px;
+}
+.newspaper-blood-records article p, .newspaper-blood-reviews article p {
+  margin: 6px 0;
+  line-height: 1.55;
+  font-size: 13px;
+}
+.newspaper-blood-records small, .newspaper-blood-reviews small,
+.newspaper-blood-items small { display: block; color: #626b76; font-size: 11px; }
+.newspaper-blood-reviews h4 { margin: 0; font-size: 13px; }
+.newspaper-blood-items { margin: 0; padding-left: 20px; }
+.newspaper-blood-items li { margin: 7px 0; font-size: 13px; line-height: 1.55; }
+@media (max-width: 640px) {
+  .newspaper-table-v4 .newspaper-blood-trigger {
+    min-width: 38px;
+    min-height: 25px;
+    padding: 3px 4px;
+    font-size: 10px;
+    margin-top: 4px;
+    bottom: 4px;
+    right: 3px;
+  }
+  .newspaper-blood-dialog { width: calc(100vw - 16px); }
+  .newspaper-blood-dialog form { padding: 12px; }
+  .newspaper-blood-facts { gap: 6px; }
+}
