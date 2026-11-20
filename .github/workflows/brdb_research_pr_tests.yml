@@ -6,6 +6,9 @@ on:
     paths:
       - 'horse-racing/brdb/config/public_drive/brdb_going_full_history_real_20261115_v0_4.json'
       - 'horse-racing/brdb/src/brdb_going_full_history_real_replay.py'
+      - 'horse-racing/brdb/src/brdb_encrypt_private_output.py'
+      - 'horse-racing/brdb/src/brdb_going_private_join_existing.py'
+      - 'horse-racing/brdb/config/private_acceptance_ephemeral_public_20261120.pem'
       - 'horse-racing/brdb/src/brdb_going_private_acceptance.py'
       - 'horse-racing/brdb/tests/test_brdb_going_private_acceptance.py'
       - 'horse-racing/brdb/schema/brdb_going_private_acceptance_v0_1_candidate.schema.json'
@@ -85,7 +88,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install pinned shared Data Storage dependencies
-        run: python -m pip install -r tools/data-storage/requirements.txt 'jsonschema>=4.22,<5'
+        run: python -m pip install -r tools/data-storage/requirements.txt 'jsonschema>=4.22,<5' 'cryptography>=42,<47'
       - name: Verify common data-storage dependencies
         env:
           PYTHONPATH: tools/data-storage
@@ -138,7 +141,26 @@ jobs:
             --paci /tmp/brdb-going-v04-input/PACI261115.zip \
             --race-key 05265412 \
             --target-date 2026-11-15 \
-            --output /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_aggregate_audit.json
+            --output /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_aggregate_audit.json \
+            --private-output /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_horse_level.json
+      - name: Encrypt transient horse-level v0.6 result
+        run: |
+          python horse-racing/brdb/src/brdb_encrypt_private_output.py \
+            --input /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_horse_level.json \
+            --public-key horse-racing/brdb/config/private_acceptance_ephemeral_public_20261120.pem \
+            --ciphertext /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_horse_level.enc \
+            --metadata /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_horse_level.enc.json
+          rm /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_horse_level.json
+          test ! -e /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_horse_level.json
+      - name: Upload encrypted horse-level v0.6 result
+        uses: actions/upload-artifact@v4
+        with:
+          name: brdb-going-v06-encrypted-horse-level-${{ github.run_id }}
+          retention-days: 1
+          if-no-files-found: error
+          path: |
+            /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_horse_level.enc
+            /tmp/brdb-going-v04-output/brdb_going_multilane_20261115_t12_horse_level.enc.json
       - name: Upload source-real going replay audit
         if: always()
         uses: actions/upload-artifact@v4
