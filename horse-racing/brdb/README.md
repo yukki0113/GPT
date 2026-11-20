@@ -374,3 +374,9 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 - [年次JRDB血統の同等性受入決定](docs/BRDB_M6_HISTORICAL_EQUIVALENCE_POLICY_DECISION_20261118.md) / [PR #2640](https://github.com/yukki0113/GPT/pull/2640)。2016〜2025年次UKC/KYIを研究用正本相当として扱い、過去の原配信ZIPのバイト一致・配信時刻の独立証明は研究完了の必須条件から撤廃。欠損124件は別途明示・除外し、存在しない血統は補完しない。
 - M6-Rの2021〜2025年5fold（235,700頭、17,239レース）研究結果を制約付きで受入。研究用非血統baseline 0.26121709072530674 に対する血統追加 0.2608869015289739（Δlog loss −0.0003301891963328283）。これは実際のRaceNote予想の改善を直接測定したものではない。
 - [M6 #2395](https://github.com/yukki0113/GPT/issues/2395) は血統配信版証明によるBLOCKEDを解除し、**M6-P ACTIVE（実RaceNote追加効果）**に整理。M7の非予測的な血統参照・表示研究は並行して進められる。既存v0.3のAS_OF状態、本番CURRENT、RaceNote、PWAはこの判断だけでは変更しない。
+
+## Cross-project forecasting purpose — JPDB × BRDB（2026-11-20）
+
+BRDBのBlood Reviewの最終的な利用目的は、**RaceNoteが過去走中心の評価から見落とし得る条件適性・潜在的な可能性を、独立した血統根拠として全馬比較へ追加すること**。特に新馬戦・経験の少ない馬について、父・母父の産駒実績、父系×母父系、検証済み近親情報を、JPDBの騎手条件実績および調教・厩舎の別Evidenceと合わせて利用可能にする研究を優先する。
+
+共通設計正本: [RaceNote JPDB×BRDB 独立Evidence方針](../jrdb/docs/racenote/RACENOTE_JPDB_BRDB_INDEPENDENT_EVIDENCE_POLICY_20261120.md)。BRDB単体の統合レビュー候補・CURRENT・Reader・PWA公開ゲートは引き続き本README以下の個別契約が優先し、**本追補だけで統合レビューやRaceNote/PWA投入を承認しない**。新馬戦での予想材料不足を解決できるかと、既走馬の見落とし改善とを別の評価群で検証する。事前時点未認証・未実装・小母数の根拠を適性確定に変換しない。
