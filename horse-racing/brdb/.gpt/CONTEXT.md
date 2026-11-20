@@ -1,54 +1,40 @@
 # BRDB project context
 
-## Status
+## Mission (updated 2026-11-20)
 
-Blood Review DB (BRDB) は Phase 1 CURRENT / Reader 実装完了段階です。次工程は Phase 2 Blood Review v0.1。
+BRDB は RaceNote の**過去走中心の評価を補完する独立した血統evidence lane**である。目的は既走馬の条件変化・血統/配合/近親を別視点から評価する材料を増やすこと、および**新馬戦・未出走馬**において過去走がないために従来Zとして扱っていた領域を研究することである。
 
-目的は、血統に関する固定条件一致馬を列挙することではなく、**対象レースの出走馬を血統専門ロジックで1頭ずつ review し、その結果と根拠を返すこと**です。
+馬の能力・人気・馬券妙味に関する優位性は未実証。単純な加点や「血統が良いから買い」は禁止する。騎手プロファイルDBも将来の独立evidence laneであり、統合・印・自信度・オッズ比較はRaceNoteの責務とする。
+
+**基本設計・ゲート正本**: `docs/BRDB_BASIC_DESIGN_AND_RESEARCH_POLICY_20261120.md`。旧計画のPhase表よりこの文書の目的・研究順序を優先する。
+
+## Current status / boundaries
+
+- Phase 1 CURRENT / Reader 実装済み。固定 `brdb-review-v0.1` と read-only consumer contractは維持。
+- ①父・②母父・③配合・④近親、D3/D4、M7 全頭研究候補、馬場横断研究 v0.6 等は段階ごとに受入範囲と未検証要件が異なる。README/個別監査資料に基づき評価し、完了を一括宣言しない。
+- M6予測価値ゲート #2395 はOPEN/BLOCKED。M7 consumer/production #2628 はOPEN。Draft #2655 はresearch-only、Draft #2643は血統表示候補である。
+- `AS_OF_UNVERIFIED`、`prediction_safe=false`、`production_authorized=false` の研究結果を、RaceNote予想・CURRENT・Newspaper/PWA本番へ移さない。
+- 新馬戦の専用特徴量・初出走母集団・実証評価は**これからの開発目標**であって実装済みではない。
+- private M7 horse-level recordsはpublic Git/Issues/CI artifactsへ出さない。
 
 ## Durable principles
 
-1. `horse_id` は JRDB blood registration number を canonical identity とする。
-2. horse name は表示用。identity fallback に使わない。
-3. 血統事実と、BRDB独自の分類・解釈・採点を分離する。
-4. 父/母/母父/祖先等の pedigree fact は source provenance を保持する。
-5. 「日本型 / 米国型 / 欧州型」等の分類は事実列ではなく versioned taxonomy / derived classification として扱う。
-6. score を出す場合、score だけでなく component / rationale / coverage / confidence を返す。
-7. target field の全馬を review できる契約を基本とし、MATCH馬だけを抽出する設計にはしない。
-8. consumer は Parquet / research tables を直接読まず、BRDB Reader / Review contract を読む。
-9. JRDB fixed-width parser や共通 data-storage 処理を BRDB 側で再実装しない。
-10. missing source / unsupported taxonomy / insufficient coverage は推測補完せず fail-closed する。
-11. BRDB review は RaceNote / RRDB と独立した evidence lane とする。将来統合時も score の単純加算を既定にしない。
-12. PWA の「血統詳細」は表示 surface。blood logic の正本にしない。
+1. Canonical identity はJRDB 8桁 `horse_id`。対象fieldは `race_key` と `horse_no` も厳格照合。馬名fallback・推測ID禁止。
+2. 事実、歴史成績、説明的な相関、未検証仮説、予測的結論を分離し、provenance/coverage/as-of/uncertaintyを保持する。
+3. 対象レース**全頭**を契約の基本とする。RaceNoteの既存選抜馬・市場人気で絞らない。
+4. `NO_SAMPLE` / `LOW_SAMPLE` / `SOURCE_UNAVAILABLE` / `AS_OF_UNVERIFIED` を欠陥隠蔽や0点に使わない。
+5. 父/母父/配合/近親は比較母集団や重複を保持する。5つの包含関係にあるスコープを合算しない。
+6. 現在の祖先関係を過去時点へ遡及しない。歴史時点の特徴量・分類・結果の可用性は独立検証を要する。
+7. 新馬戦では一般の産駒勝率を初戦適性に読み替えず、レース区分と個体初出走を区別する。
+8. BRDB/騎手DB/過去走のスコアを単純加算しない。統合は分離された研究検証の後。
+9. BRDBは予想印、順位、確率、RaceNote自信度を生成しない。PWAは表示surfaceであり血統ロジック正本ではない。
+10. JRDB既存parserと共通 `tools/data-storage/` を再実装しない。consumerはParquetを直接joinせずReader/contract経由。
+11. research→prediction→productionは別ゲート。凍結契約を暗黙変更せず、独立の時系列検証・consumer regression・明示承認が必要。
+12. GitHubの最新 `main` を仕様正本とし、Drive等のprivateデータとは責務を分離する。
 
-## RRDB inheritance baseline
+## Existing baseline and legacy detail
 
-RRDB から次の consumer architecture を引き継ぐ。
-
-- stable CURRENT artifact
-- validated `current.json` / manifest
-- immutable Parquet relations
-- read-only DuckDB Reader
-- `horse_id` query
-- name fallback=false
-- generation / schema / logic version provenance
-- storage detail と consumer contract の分離
-- fail-closed validation
-
-詳細は `../docs/BRDB_RRDB_INHERITANCE_v0_1.md`。\n\nCURRENT / Reader v0.1 は実装済み。最初の immutable pedigree generation は `eeca93556584a5b8`。stable Drive CURRENT `BloodReviewDB_CURRENT.zip` と SHA-pinned resolver も実装済み。Drive general access は operational use 前に Viewer へ harden する。
-
-## Existing pedigree source baseline
-
-JRDB UKC の current parser は以下を保持している。
-
-- horse_id
-- sire_name
-- dam_name
-- broodmare_sire_name
-- sire / dam / broodmare-sire birth year
-- sire_line_code
-- broodmare_sire_line_code
-
-RaceNote には pedigree identity と sire / broodmare-sire historical context の既存実装がある。
-
-BRDB はまずこの coverage を利用し、3〜5代祖先・地域分類等で不足する情報だけを dedicated source として追加する。
+- Initial immutable pedigree generation `eeca93556584a5b8`; stable Drive CURRENT `BloodReviewDB_CURRENT.zip` (既存運用条件維持)。
+- RRDB inheritance: `docs/BRDB_RRDB_INHERITANCE_v0_1.md`。
+- JRDB UKC: horse_id、sire/dam/BMS name + years、父系/母父系コード。RaceNoteにはpedigree identity/P2 historical contextがある。
+- ステータスの正式証跡: `docs/BRDB_MILESTONE_RECONCILIATION_20261116.md`（追記含む）および関連PR/Issue。過去値は変更しない。
