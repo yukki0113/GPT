@@ -17,6 +17,7 @@ if str(JRDB_SRC) not in sys.path:
     sys.path.insert(0,str(JRDB_SRC))
 from jrdb_raw import Parser, iter_archive_records  # noqa: E402
 from brdb_going_condition_compare import build, VERSION, SCOPE_LABELS  # noqa: E402
+from brdb_going_signal_select import select as select_signals  # noqa: E402
 
 
 def require(ok, why):
@@ -65,6 +66,7 @@ def paci_cohort(paci_path: Path, race_key: str, target_date: str):
 
 
 def audit_comparison(result,paci_path:Path):
+    selection=select_signals(result)
     rows=[]
     summary={}
     for scope in SCOPE_LABELS:
@@ -95,6 +97,8 @@ def audit_comparison(result,paci_path:Path):
             'denominator':result['denominator'],
             'total_scope_comparisons':result['total_scope_comparisons'],
             'scope_summaries':rows,'no_horse_level_details_exported':True,
+            'selection_contract':selection['contract_version'],'selection_summary':selection['summary'],
+            'selection_no_horse_level_details_exported':True,
             'prediction_eligible':False,'display_eligible':False,'production_authorized':False}
 
 
