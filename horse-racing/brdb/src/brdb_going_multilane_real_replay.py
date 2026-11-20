@@ -81,9 +81,13 @@ def aggregate_lane_counts(manifest, objects_root, race, horses):
 def main():
     ap=argparse.ArgumentParser()
     for x in ('manifest','objects-root','paci','race-key','target-date','output'):ap.add_argument('--'+x,required=True)
+    ap.add_argument('--private-output')
     a=ap.parse_args();race,horses=cohort(a.paci,a.target_date,a.race_key)
     counts,source=aggregate_lane_counts(a.manifest,a.objects_root,race,horses)
     result=build_from_aggregated(race,horses,counts,source=source)
+    if a.private_output:
+        private_path=Path(a.private_output);private_path.parent.mkdir(parents=True,exist_ok=True)
+        private_path.write_text(json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n',encoding='utf-8')
     # Aggregate-only audit, safe for public Actions artifact.
     summ=result['summary']
     audit={'audit_version':'brdb-going-multilane-real-replay-audit-v0.6','status':'RESEARCH_ONLY','contract_version':VERSION,
