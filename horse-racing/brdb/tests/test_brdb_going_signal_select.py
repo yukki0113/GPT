@@ -36,7 +36,7 @@ class T(unittest.TestCase):
         p=payload([
           {'scope_key':'VENUE_DISTANCE','scope_status':'RESEARCH_OBSERVED','observation':obs(40,8,20,8)},
           {'scope_key':'ALL_VENUES_DISTANCE','scope_status':'RESEARCH_OBSERVED','observation':obs(100,20,60,30)}])
-        x=mod.select(p);self.assertEqual(x['horses'][0]['primary']['scope_key'],'VENUE_DISTANCE')
+        x=mod.select(p);self.assertEqual(x['horses'][0]['primary']['scope_key'],'VENUE_DISTANCE');self.assertEqual(x['summary']['primary_direction_counts']['NON_GOOD_HIGHER'],1)
     def test_mixed_direction_is_flagged(self):
         p=payload([
           {'scope_key':'VENUE_DISTANCE','scope_status':'RESEARCH_OBSERVED','observation':obs(40,8,20,8)},
