@@ -12,7 +12,7 @@ import argparse
 import hashlib
 import json
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -20,9 +20,9 @@ JRDB_SRC = HERE.parents[1] / 'jrdb' / 'src'
 if str(JRDB_SRC) not in sys.path:
     sys.path.insert(0, str(JRDB_SRC))
 
-from brdb_condition_discovery import _relatives, SCOPES as REL_SCOPES  # noqa: E402
+REL_SCOPES = ('VENUE_COURSE_EXACT','VENUE_DISTANCE','VENUE_BAND','ALL_VENUES_DISTANCE','ALL_VENUES_BAND')
+RELATIONS = ('FULL_SIBLING','MATERNAL_HALF_SIBLING','MATERNAL_AUNT_UNCLE','SAME_DAM_SAME_SIRE_NAME_UNVERIFIED')
 from brdb_going_multilane_discovery import build_from_aggregated, VERSION as DISCOVERY_VERSION  # noqa: E402
-from brdb_going_multilane_real_replay import cohort, aggregate_lane_counts  # noqa: E402
 
 VERSION = 'brdb-going-private-acceptance-v0.1-candidate'
 
@@ -39,6 +39,33 @@ def sha256(path: Path) -> str:
             h.update(chunk)
     return h.hexdigest()
 
+
+
+
+def _convert_relatives(row: dict) -> dict:
+    rels=row['relatives']; by_scope=defaultdict(list); individual=[]; seen=set()
+    for rel in rels:
+        rid=rel['horse_id']; relation=rel['relationship']
+        require(isinstance(rid,str) and len(rid)==8 and rid.isdigit(),'relative id invalid')
+        require(rid not in seen,'duplicate relative id'); seen.add(rid)
+        require(relation in RELATIONS,'unknown kinship')
+        require(set(rel['scope_stats'])==set(REL_SCOPES),'relative scope set mismatch')
+        obs=[]
+        for scope in REL_SCOPES:
+            st=rel['scope_stats'][scope]; n,w,t,rate=st['starts'],st['wins'],st['top3'],st['top3_rate']
+            require(all(type(x) is int for x in (n,w,t)) and 0<=w<=t<=n,'relative counts invalid')
+            require((rate is None and n==0) or (n>0 and rate is not None and abs(rate-t/n)<0.00011),'relative rate mismatch')
+            counts={'starts':n,'wins':w,'top3':t,'top3_rate':rate}
+            by_scope[(scope,relation)].append((rid,counts)); obs.append({'scope_key':scope,'counts':counts})
+        individual.append({'relative_horse_id':rid,'relative_name':rel.get('horse_name'),'relation':relation,'scope_observations':obs,'historical_asof_status':'AS_OF_UNVERIFIED'})
+    grouped=[]
+    for scope in REL_SCOPES:
+        for relation in RELATIONS:
+            rows=by_scope[(scope,relation)]
+            if not rows: continue
+            n=sum(x['starts'] for _,x in rows); w=sum(x['wins'] for _,x in rows); t=sum(x['top3'] for _,x in rows)
+            grouped.append({'scope_key':scope,'relation':relation,'relative_count':len(rows),'relatives_with_starts':sum(x['starts']>0 for _,x in rows),'counts':{'starts':n,'wins':w,'top3':t,'top3_rate':t/n if n else None},'source':'M7_RELATIVES_DETAIL','interpretation_status':'OBSERVATION_ONLY','historical_asof_status':'AS_OF_UNVERIFIED','prediction_eligible':False,'display_eligible':False})
+    return {'status':row['status'],'individual':individual,'grouped_scopes':grouped,'pending':[] if rels else [{'kind':'RELATIVES_CONDITION','reason':'NO_CONFIRMED_RELATIVES'}],'overlapping_scopes':True,'historical_asof_status':'AS_OF_UNVERIFIED'}
 
 def load_relatives_detail(path: Path, race: dict, horses: list[dict]) -> tuple[dict[str, dict], dict]:
     raw = json.loads(path.read_text(encoding='utf-8'))
@@ -76,7 +103,7 @@ def load_relatives_detail(path: Path, race: dict, horses: list[dict]) -> tuple[d
                 require((rate is None and n == 0) or (n > 0 and rate is not None and abs(rate - t / n) < 0.00011), 'relative rate mismatch')
                 scope_cells += 1
                 zero_cells += int(n == 0)
-        converted = _relatives(row, race)
+        converted = _convert_relatives(row)
         if any(x['counts']['starts'] > 0 for x in converted['grouped_scopes']):
             with_starts += 1
         mapped[row['horse_id']] = converted
@@ -125,6 +152,7 @@ def aggregate_receipt(result: dict, relative_receipt: dict) -> dict:
 
 def run(manifest: Path, objects_root: Path, paci: Path, race_key: str, target_date: str,
         relative_detail: Path, private_output: Path, aggregate_output: Path) -> tuple[dict, dict]:
+    from brdb_going_multilane_real_replay import cohort, aggregate_lane_counts
     race, horses = cohort(paci, target_date, race_key)
     relative_map, relative_receipt = load_relatives_detail(relative_detail, race, horses)
     lane_counts, source = aggregate_lane_counts(manifest, objects_root, race, horses)
