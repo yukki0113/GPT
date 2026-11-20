@@ -354,3 +354,9 @@ lane, especially for newcomers / lightly raced horses / weak direct suitability
 evidence. It is not a fixed-weight or automatic-axis factor.
 
 P3 sibling history remains deferred.
+
+## 14. JPDB協調・独立Evidence目的（2026-11-20追補）
+
+このP1/P2血統データ整備の最終的な位置づけは、既存過去走からは見えない適性・潜在可能性をRaceNoteへ提供すること。騎手DB（JPDB）の条件プロファイルと統合し、**既走馬の評価見直し**と**過去走のない新馬戦の全馬比較**を別コホートで検証する。過去走・人気・近走評価を単純に重ねて支持するだけで独立した改善とみなさない。
+
+BRDBの父・母父・配合・近親、JPDBの騎手条件実績、既存調教・厩舎情報は情報源を区別し、重複・依存・小母数・as-ofの未認証を明示する。新馬戦で情報が増えても自動的に印・Confidence Zの定義を変更しない。統合用の基本設計・研究/本番ゲートは [RaceNote JPDB×BRDB方針](RACENOTE_JPDB_BRDB_INDEPENDENT_EVIDENCE_POLICY_20261120.md) を正本とする。現行P1/P2の実装・Freezeは不変。
