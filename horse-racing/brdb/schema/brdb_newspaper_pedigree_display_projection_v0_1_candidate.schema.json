@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BRDB Newspaper pedigree display private research projection v0.1 candidate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["projection_version", "release_status", "race_key", "target_date", "horse_count", "source_sha256", "policy", "horses"],
+  "properties": {
+    "projection_version": {"const": "brdb-newspaper-pedigree-display-projection-v0.1-candidate"},
+    "release_status": {"const": "PRIVATE_RESEARCH_PREVIEW_ONLY"},
+    "race_key": {"type": "string", "pattern": "^[0-9]{8}$"},
+    "target_date": {"type": "string", "format": "date"},
+    "horse_count": {"type": "integer", "minimum": 1},
+    "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["prediction_safe", "production_authorized", "newspaper_mutation_authorized", "pwa_publication_authorized", "natural_language_review_authorized", "fit_verdict_authorized", "betting_recommendation_authorized"],
+      "properties": {
+        "prediction_safe": {"const": false},
+        "production_authorized": {"const": false},
+        "newspaper_mutation_authorized": {"const": false},
+        "pwa_publication_authorized": {"const": false},
+        "natural_language_review_authorized": {"const": false},
+        "fit_verdict_authorized": {"const": false},
+        "betting_recommendation_authorized": {"const": false}
+      }
+    },
+    "horses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["contract_version", "release_status", "research_only", "prediction_safe", "production_authorized", "as_of_status", "race_key", "horse_no", "horse_id", "source_sha256", "score", "rank", "probability", "crosses", "condition_records", "reviews", "relatives", "tips"],
+        "properties": {
+          "contract_version": {"const": "brdb-newspaper-pedigree-display-v0.1-candidate"},
+          "release_status": {"const": "RESEARCH_PREVIEW_ONLY"},
+          "research_only": {"const": true},
+          "prediction_safe": {"const": false},
+          "production_authorized": {"const": false},
+          "as_of_status": {"const": "AS_OF_UNVERIFIED"},
+          "race_key": {"type": "string", "pattern": "^[0-9]{8}$"},
+          "horse_no": {"type": "integer", "minimum": 1},
+          "horse_id": {"type": "string", "pattern": "^[0-9]{8}$"},
+          "source_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "score": {"type": "null"},
+          "rank": {"type": "null"},
+          "probability": {"type": "null"},
+          "crosses": {"type": "array", "maxItems": 0},
+          "reviews": {"type": "array", "maxItems": 0},
+          "tips": {"type": "array", "maxItems": 0},
+          "condition_records": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["label", "starts", "wins", "top3", "status", "source_label"],
+              "properties": {
+                "label": {"type": "string"},
+                "starts": {"type": "integer", "minimum": 0},
+                "wins": {"type": "integer", "minimum": 0},
+                "top3": {"type": "integer", "minimum": 0},
+                "status": {"enum": ["AVAILABLE", "NO_SAMPLE"]},
+                "source_label": {"type": "string"}
+              }
+            }
+          },
+          "relatives": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "relationship", "note"],
+              "properties": {
+                "name": {"type": ["string", "null"]},
+                "relationship": {"type": "string"},
+                "note": {"type": "string"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
