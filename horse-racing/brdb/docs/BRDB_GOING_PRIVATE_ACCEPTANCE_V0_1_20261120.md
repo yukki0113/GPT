@@ -40,3 +40,9 @@ private近親入力は `brdb-m7-relatives-detail-v0.1-candidate`、`research_onl
 - private horse-level output only to private path
 - aggregate receipt identity-free
 - all prediction/display/production flags false
+
+## Encrypted output fallback for this acceptance
+
+private-input bridge secretが未設定でも、この受入ではprivate M7をActionsへ送らない。公開Analysis/PACIだけで作るhorse-level v0.6 JSONをActions内の一時ファイルに出し、既存`drive_gpt_actions_bridge.py`と同じ`AES-256-GCM + RSA-OAEP-SHA256`で一回限りの公開鍵へ暗号化する。平文はArtifact upload前に削除する。暗号文をGPT側で復号した後、`brdb_going_private_join_existing.py` がprivate M7とローカル結合する。
+
+この経路でGitHubに渡るprivate-origin dataは0バイト。公開鍵は秘密情報ではない。復号秘密鍵はGit/Actions/Artifact/Libraryへ保存しない。
