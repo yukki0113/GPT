@@ -149,6 +149,15 @@ def select(payload: dict):
             "tier_counts": totals,
             "direction_counts": directions,
             "primary_scope_counts": primary_scopes,
+            "primary_direction_counts": {
+                "NON_GOOD_HIGHER": sum(1 for h in horses if h["primary"] and h["primary"]["direction"] == "NON_GOOD_HIGHER"),
+                "GOOD_HIGHER": sum(1 for h in horses if h["primary"] and h["primary"]["direction"] == "GOOD_HIGHER"),
+            },
+            "primary_tier_counts": {
+                "STRONG_DESCRIPTIVE": sum(1 for h in horses if h["primary"] and h["primary"]["tier"] == "STRONG_DESCRIPTIVE"),
+                "NOTABLE_DESCRIPTIVE": sum(1 for h in horses if h["primary"] and h["primary"]["tier"] == "NOTABLE_DESCRIPTIVE"),
+                "LOW_SAMPLE_SIGNAL": sum(1 for h in horses if h["primary"] and h["primary"]["tier"] == "LOW_SAMPLE_SIGNAL"),
+            },
             "consistent_horses": sum(1 for h in horses if h["scope_direction_consistency"] == "CONSISTENT"),
             "mixed_horses": sum(1 for h in horses if h["scope_direction_consistency"] == "MIXED"),
         },
