@@ -3,6 +3,8 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[0]))
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'src'))
 import brdb_going_private_acceptance as mod
+import brdb_going_multilane_discovery as disc
+import brdb_going_private_join_existing as joiner
 
 RACE={'race_key':'05265412','target_date':'2026-11-15','surface_code':'1','distance_m':2000,'venue_code':'05','course_code':'4','field_size':2}
 HORSES=[{'horse_no':1,'horse_id':'00000001'},{'horse_no':2,'horse_id':'00000002'}]
@@ -31,6 +33,18 @@ class T(unittest.TestCase):
  def test_rate_tamper_rejected(self):
   d=detail();d['horses'][0]['relatives'][0]['scope_stats']['ALL_VENUES_DISTANCE']['top3_rate']=.9
   with self.assertRaisesRegex(ValueError,'rate mismatch'):mod.load_relatives_detail(self.write(d),RACE,HORSES)
+ def test_existing_v06_private_join(self):
+  race=dict(RACE);race['field_size']=2
+  def lane_counts(delta=True):
+   good=(40,4,10);wet=(20,3,9) if delta else (20,1,3)
+   return {scope:{'良':good,'稍重':wet,'重':(0,0,0),'不良':(0,0,0)} for scope in disc.SCOPE_PRIORITY}
+  counts={'00000001':{'sire':lane_counts()},'00000002':{'sire':lane_counts(False)}}
+  base=disc.build_from_aggregated(race,HORSES,counts,source={'generation_id':'synthetic'})
+  basep=self.write(base);relp=self.write(detail())
+  with tempfile.TemporaryDirectory() as td:
+   out,receipt=joiner.run(basep,relp,Path(td)/'private.json',Path(td)/'agg.json')
+   self.assertEqual(receipt['horse_count'],2);self.assertGreaterEqual(receipt['relative_condition_link_count'],1)
+   self.assertEqual(out['policy']['prediction_safe'],False)
  def test_aggregate_receipt_has_no_identity(self):
   result={'race':RACE,'horses':[{},{}],'summary':{'selected_observations':[{'count':3}], 'primary_observations':[{'count':2}],
     'cross_lane_alignments':[{'count':1}], 'relative_condition_links':[{'state':'重','parent_lane':'sire','count':2}],
