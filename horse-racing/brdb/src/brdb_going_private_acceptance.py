@@ -126,6 +126,8 @@ def load_relatives_detail(path: Path, race: dict, horses: list[dict]) -> tuple[d
 def aggregate_receipt(result: dict, relative_receipt: dict) -> dict:
     summary = result['summary']
     rel_links = summary['relative_condition_links']
+    linked_horses = {h['horse_id'] for h in result['horses'] if h.get('relative_condition_links')}
+    linked_by_state = {state: len({h['horse_id'] for h in result['horses'] if any(x['state']==state for x in h.get('relative_condition_links', []))}) for state in ('稍重','重','不良')}
     return {
         'acceptance_version': VERSION,
         'status': 'PASS_RESEARCH_ONLY',
@@ -138,6 +140,8 @@ def aggregate_receipt(result: dict, relative_receipt: dict) -> dict:
         'primary_observation_count': sum(x['count'] for x in summary['primary_observations']),
         'cross_lane_alignment_count': sum(x['count'] for x in summary['cross_lane_alignments']),
         'relative_condition_link_count': sum(x['count'] for x in rel_links),
+        'horses_with_relative_condition_links': len(linked_horses),
+        'horses_with_relative_condition_links_by_state': linked_by_state,
         'relative_condition_links_by_state_lane': rel_links,
         'horses_with_selected_signal_by_state': summary['horses_with_selected_signal_by_state'],
         'private_horse_level_output_written': True,
