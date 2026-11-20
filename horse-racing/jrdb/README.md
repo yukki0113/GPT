@@ -41,6 +41,7 @@
 | EdgeDB v0.3 operational audit | `docs/JRDB_Edge_v0_3_Operational_Audit_20260924.md` |
 | EdgeDB v0.3 shadow design | `docs/JRDB_Edge_v0_3_Granularity_Conflict_Design_v0_1.md` |
 | RaceNoteコメント表示 | `docs/RaceNote_Presentation_Comment_Contract_v0_2.md` |
+| JPDB→RaceNote 騎手条件プロファイル再設計 | `docs/JPDB_RACENOTE_JOCKEY_PROFILE_REDESIGN_20261120.md`（sidecar Shadow先行・予想効果と本番は未認証） |
 | JPDB P3 KYI公式指数出典・同一馬騎手変更比較 | `docs/JPDB_P3_KYI_SOURCE_AND_SWITCH_MATCHING_20261120.md`（公式項目構成監査・記述的実データE2E PASS／純粋馬質・騎手因果効果未認証） |
 | JPDB P3 KYI評価proxy感度・残差安定性 | `docs/JPDB_P3_KYI_PROXY_SENSITIVITY_20261120.md`（研究用アブレーションPASS／騎手能力認証REVIEW_REQUIRED） |
 | JPDB P3 事前情報代理モデル・馬期待勝利確率 | `docs/JPDB_P3_PREENTRY_HORSE_EXPECTATION_20261119.md`（2024–2026ウォークフォワード研究PASS／厳密as-of・騎手能力・本番接続は未承認） |
