@@ -46,11 +46,8 @@ def where_scope(scope,race):
     if scope=='ALL_VENUES_BAND':return 'band=?',[band(race['distance_m'])]
     raise ValueError(scope)
 
-def main():
-    ap=argparse.ArgumentParser()
-    for x in ('manifest','objects-root','paci','race-key','target-date','output'):ap.add_argument('--'+x,required=True)
-    a=ap.parse_args();race,horses=cohort(a.paci,a.target_date,a.race_key)
-    mf,paths,checked=_load_parts(a.manifest,a.objects_root,a.target_date)
+def aggregate_lane_counts(manifest, objects_root, race, horses):
+    mf,paths,checked=_load_parts(manifest,objects_root,race['target_date'])
     import duckdb
     con=duckdb.connect(':memory:')
     try:
@@ -62,7 +59,7 @@ def main():
         venue_code,course_code,try_cast(distance AS INT) distance_m,
         CASE WHEN try_cast(distance AS INT)<1400 THEN 'SHORT' WHEN try_cast(distance AS INT)<1800 THEN 'MILE' WHEN try_cast(distance AS INT)<2400 THEN 'MIDDLE' ELSE 'LONG' END band,
         CASE WHEN track_condition_code IN ('10','11','12') THEN '良' WHEN track_condition_code IN ('20','21','22') THEN '稍重' WHEN track_condition_code IN ('30','31','32') THEN '重' WHEN track_condition_code IN ('40','41','42') THEN '不良' ELSE NULL END going_state,
-        try_cast(finish AS INT) finish FROM source WHERE race_date<? AND track_type=? AND abnormal_code='0' AND try_cast(finish AS INT) BETWEEN 1 AND 18""",[a.target_date,race['surface_code']])
+        try_cast(finish AS INT) finish FROM source WHERE race_date<? AND track_type=? AND abnormal_code='0' AND try_cast(finish AS INT) BETWEEN 1 AND 18""",[race['target_date'],race['surface_code']])
       counts={}
       for h in horses:
         lanes={'sire':('sire_name=?',[h['sire_name']]),'broodmare_sire':('broodmare_sire_name=?',[h['broodmare_sire_name']]),
@@ -77,15 +74,23 @@ def main():
             d={g:(n,w,t) for g,n,w,t in rows};sout[scope]={g:d.get(g,(0,0,0)) for g in GOING_STATES}
           laneout[lname]=sout
         counts[h['horse_id']]=laneout
-      result=build_from_aggregated(race,horses,counts,source={'generation_id':mf['generation_id'],'verified_partitions':checked,'historical_profile_asof':'AS_OF_UNVERIFIED','denominator':'NORMAL_FINISHERS_ONLY'})
-      # Aggregate-only audit, safe for public Actions artifact.
-      summ=result['summary']
-      audit={'audit_version':'brdb-going-multilane-real-replay-audit-v0.6','status':'RESEARCH_ONLY','contract_version':VERSION,
-             'race_key':race['race_key'],'target_date':race['target_date'],'horse_count':len(horses),'source':result['source'],
-             'summary':summ,'relative_lane_real_input':'NOT_INCLUDED_IN_PUBLIC_CI',
-             'no_horse_level_details_exported':True,'prediction_eligible':False,'display_eligible':False,'production_authorized':False}
-      out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(audit,ensure_ascii=False,indent=2,sort_keys=True)+'\n')
-      print(json.dumps({'status':'RESEARCH_ONLY','horse_count':len(horses),'selected_rows':sum(x['count'] for x in summ['selected_observations']),
-                        'alignments':sum(x['count'] for x in summ['cross_lane_alignments'])},ensure_ascii=False))
+      source={'generation_id':mf['generation_id'],'verified_partitions':checked,'historical_profile_asof':'AS_OF_UNVERIFIED','denominator':'NORMAL_FINISHERS_ONLY'}
+      return counts,source
     finally:con.close()
+
+def main():
+    ap=argparse.ArgumentParser()
+    for x in ('manifest','objects-root','paci','race-key','target-date','output'):ap.add_argument('--'+x,required=True)
+    a=ap.parse_args();race,horses=cohort(a.paci,a.target_date,a.race_key)
+    counts,source=aggregate_lane_counts(a.manifest,a.objects_root,race,horses)
+    result=build_from_aggregated(race,horses,counts,source=source)
+    # Aggregate-only audit, safe for public Actions artifact.
+    summ=result['summary']
+    audit={'audit_version':'brdb-going-multilane-real-replay-audit-v0.6','status':'RESEARCH_ONLY','contract_version':VERSION,
+           'race_key':race['race_key'],'target_date':race['target_date'],'horse_count':len(horses),'source':result['source'],
+           'summary':summ,'relative_lane_real_input':'NOT_INCLUDED_IN_PUBLIC_CI',
+           'no_horse_level_details_exported':True,'prediction_eligible':False,'display_eligible':False,'production_authorized':False}
+    out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(audit,ensure_ascii=False,indent=2,sort_keys=True)+'\n')
+    print(json.dumps({'status':'RESEARCH_ONLY','horse_count':len(horses),'selected_rows':sum(x['count'] for x in summ['selected_observations']),
+                      'alignments':sum(x['count'] for x in summ['cross_lane_alignments'])},ensure_ascii=False))
 if __name__=='__main__':main()
