@@ -1,0 +1,136 @@
+{
+  "base_complete_race_cohort": {
+    "all_races": 12951,
+    "eligible_races": 12934,
+    "eligible_runners": 178515,
+    "rejected_races": 17
+  },
+  "causal_jockey_effect_claim_allowed": false,
+  "drive_paci_created_jst_day_vs_race_day": {
+    "earlier": 19,
+    "later": 78,
+    "meaning": "Drive upload/created time only, not authoritative JRDB issue or pre-race availability time",
+    "same": 0,
+    "total": 97
+  },
+  "historical_pre_race_version_attested": false,
+  "history_source_sha256": {
+    "bac_2023": "c17ee5ccb8f953f090cca186ee751d12fc75b97003199dad7c14b7fee70a5daa",
+    "bac_2024": "ed1b831b9236eaa85a075b1f6fce792e7292ece830688b4bd28546885761b898",
+    "bac_2025": "b26a364978143fbd6e9d30289db0eb85e9b33e9fe612759b23a85ffbb78a3bb9",
+    "kyi_2023": "d68afa2d37e2b4308df8c1897279e6cd38f27fc83d66324b4222e4cff44ed0ce",
+    "kyi_2024": "21d0d47337daa7c78f08e6e79fc41ee15eebed05630a3ff3ec6bca4d190340df",
+    "kyi_2025": "55fdcc9fd03c70f284b028fa85ef3c6b2882071c685639621061ba146c0fa10b",
+    "sed_2023": "3cb2cb29f509209017d2b623a9fa5bdae18d217d4bd1b9cf82cbe7ae887e28ec",
+    "sed_2024": "e18da9b6147c71973d5769f5ca859bd3b1e80b53773f9ed861c7b58941464fc8",
+    "sed_2025": "6a7be1dc005833c9caaa20559ac3ad40af99bdc95a342b0e57d638ca979f8974"
+  },
+  "jockey_switch_is_not_official_announcement": true,
+  "kyi_proxy_classification": {
+    "base_win_odds": "NEWSPAPER_CONSENSUS_NOT_INDEPENDENT",
+    "idm": "HISTORICAL_RESULT_FACTORS_WITH_UNDISCLOSED_COMPONENTS",
+    "info_index": "MARKET_STABLE_TRAINING_COMPOSITE_NOT_INDEPENDENT",
+    "jockey_expected_top2_rate": "KNOWN_JOCKEY_DEPENDENT",
+    "jockey_index": "KNOWN_JOCKEY_DEPENDENT",
+    "longshot_index": "KNOWN_JOCKEY_DEPENDENT",
+    "stable_index": "STABLE_EXPERT_PROXY",
+    "total_index": "KNOWN_JOCKEY_DEPENDENT",
+    "training_index": "TRAINING_EXPERT_PROXY"
+  },
+  "licensed_individual_rows_exported": false,
+  "match_features": [
+    "year",
+    "surface",
+    "distance band",
+    "previous normal top3",
+    "prior 365d race count band",
+    "gap days band"
+  ],
+  "model_or_jockey_ability_certified": false,
+  "observed_immediate_previous_start": true,
+  "official_sources": {
+    "described_refresh": "Friday ~19:00; Saturday ~20:00 (not specific file attestation)",
+    "kyi_definitions": "https://docs.google.com/document/d/1L-2GIu9WYT9ASpDPB48RSFJk6YAs9mLbhDK2NWotMlQ/edit",
+    "kyi_layout": "https://docs.google.com/document/d/1ulp2Cyuc9U3mdEFHdGfFLUcmsYryYUSrcj8elNb5VaY/edit"
+  },
+  "python_implementation_sha256": "62c5a7ab1018beefe92a4ce36d95c022e4e6b5b80986ef67ef3fe980ba986179",
+  "repeat_aggregate_json_sha256": "ca45009deeaaef20588176b1c055c3465774bb4ddd27ae634a8673eff119222b",
+  "schema": "jpdb-p3-same-horse-switch-matched-descriptive-v0.1",
+  "selection_bias_and_confounding_remain": true,
+  "source_2026_paci_sed_selection_sha256": "790213961912cc4bd81ac7932e17d8c54ccf20341220d1031504763cb2d635f1",
+  "source_label": "SED_ACTUAL_JOCKEY_ONLY",
+  "source_rows": 184922,
+  "status": "DESCRIPTIVE_RESEARCH_ONLY",
+  "tests": "6/6 PASS",
+  "years": [
+    {
+      "coarsened_match": {
+        "all_same_rider_rows": 11139,
+        "all_switch_rows": 17553,
+        "balance_not_certified": true,
+        "descriptive_top3_difference_pp": -2.18618,
+        "descriptive_win_difference_pp": -0.6496,
+        "matched_same_rider_rows": 11124,
+        "matched_switch_rows": 17532,
+        "potential_repeat_horse_clusters": true,
+        "same_rider_coverage": 0.998653,
+        "strata_with_overlap": 75,
+        "switch_coverage": 0.998804
+      },
+      "eligible_pairs": 28692,
+      "observed_same_rider_pairs": 11139,
+      "observed_switch_pairs": 17553,
+      "same_rider_top3_rate": 0.288626,
+      "same_rider_win_rate": 0.098303,
+      "switch_top3_rate": 0.228964,
+      "switch_win_rate": 0.074916,
+      "year": 2024
+    },
+    {
+      "coarsened_match": {
+        "all_same_rider_rows": 11550,
+        "all_switch_rows": 17714,
+        "balance_not_certified": true,
+        "descriptive_top3_difference_pp": -1.3302,
+        "descriptive_win_difference_pp": -0.44068,
+        "matched_same_rider_rows": 11530,
+        "matched_switch_rows": 17669,
+        "potential_repeat_horse_clusters": true,
+        "same_rider_coverage": 0.998268,
+        "strata_with_overlap": 74,
+        "switch_coverage": 0.99746
+      },
+      "eligible_pairs": 29264,
+      "observed_same_rider_pairs": 11550,
+      "observed_switch_pairs": 17714,
+      "same_rider_top3_rate": 0.284675,
+      "same_rider_win_rate": 0.096537,
+      "switch_top3_rate": 0.226375,
+      "switch_win_rate": 0.072654,
+      "year": 2025
+    },
+    {
+      "coarsened_match": {
+        "all_same_rider_rows": 10521,
+        "all_switch_rows": 15667,
+        "balance_not_certified": true,
+        "descriptive_top3_difference_pp": -0.43962,
+        "descriptive_win_difference_pp": 0.24174,
+        "matched_same_rider_rows": 10502,
+        "matched_switch_rows": 15622,
+        "potential_repeat_horse_clusters": true,
+        "same_rider_coverage": 0.998194,
+        "strata_with_overlap": 74,
+        "switch_coverage": 0.997128
+      },
+      "eligible_pairs": 26188,
+      "observed_same_rider_pairs": 10521,
+      "observed_switch_pairs": 15667,
+      "same_rider_top3_rate": 0.278396,
+      "same_rider_win_rate": 0.092672,
+      "switch_top3_rate": 0.231187,
+      "switch_win_rate": 0.076786,
+      "year": 2026
+    }
+  ]
+}
