@@ -23,7 +23,9 @@
     "relative_going_state_known",
     "prediction_eligible",
     "display_eligible",
-    "production_authorized"
+    "production_authorized",
+    "horses_with_relative_condition_links",
+    "horses_with_relative_condition_links_by_state"
   ],
   "properties": {
     "acceptance_version": {
@@ -136,6 +138,33 @@
     "v06_input_sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
+    },
+    "horses_with_relative_condition_links": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "horses_with_relative_condition_links_by_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "稍重",
+        "重",
+        "不良"
+      ],
+      "properties": {
+        "稍重": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "重": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "不良": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
     }
   }
 }
