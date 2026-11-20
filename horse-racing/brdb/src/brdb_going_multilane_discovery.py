@@ -110,22 +110,19 @@ def analyze_horse(horse, lane_scope_state_counts, relative_condition=None):
                         'difference_top3_pp':c['difference_top3_pp']})
             scopes.append({'scope_key':scope,'state_comparisons':comps})
         lane_selected=[x for vals in selected_by_state.values() for x in vals if x['lane']==lane]
-        lanes[lane]={'scopes':scopes,'selected_observations':lane_selected,
-                     'historical_asof_status':'AS_OF_UNVERIFIED' if lane in ('broodmare_sire','pairing') else 'AS_OF_UNVERIFIED'}
+        lane_primary={state_name:_primary([x for x in selected_by_state[state_name] if x['lane']==lane]) for state_name in NON_GOOD}
+        lanes[lane]={'scopes':scopes,'selected_observations':lane_selected,'primary_by_state':lane_primary,
+                     'historical_asof_status':'AS_OF_UNVERIFIED'}
     alignments=[]
     for state_name in NON_GOOD:
-        candidates=selected_by_state[state_name]
-        by_dir={d:[x for x in candidates if x['direction']==d] for d in ('STATE_HIGHER','GOOD_HIGHER')}
+        primaries=[lanes[ln]['primary_by_state'][state_name] for ln in ('sire','broodmare_sire','pairing') if lanes[ln]['primary_by_state'][state_name] is not None]
+        by_dir={d:[x for x in primaries if x['direction']==d] for d in ('STATE_HIGHER','GOOD_HIGHER')}
         for direction,rows in by_dir.items():
-            lane_names=sorted(set(x['lane'] for x in rows))
+            lane_names=sorted(x['lane'] for x in rows)
             if len(lane_names)>=2:
-                primaries=[]
-                for ln in lane_names:
-                    p=_primary([x for x in rows if x['lane']==ln]);
-                    if p: primaries.append(p)
                 alignments.append({
                     'kind':'MULTILANE_GOING_DIRECTION_ALIGNMENT','state':state_name,'direction':direction,
-                    'lanes':lane_names,'primary_evidence_refs':[x['evidence_id'] for x in primaries],
+                    'lanes':lane_names,'primary_evidence_refs':[x['evidence_id'] for x in rows],
                     'lane_count':len(lane_names),'independent_support':False,
                     'cohort_overlap':'KNOWN_OR_POSSIBLE','causal_claim':False,'suitability_claim':False,
                     'prediction_eligible':False,'display_eligible':False,
@@ -165,7 +162,7 @@ def analyze_horse(horse, lane_scope_state_counts, relative_condition=None):
 
 
 def summarize(horses):
-    candidate_counts=Counter(); align=Counter(); rel=Counter(); state_horses=Counter()
+    candidate_counts=Counter(); primary_counts=Counter(); align=Counter(); rel=Counter(); state_horses=Counter()
     for h in horses:
         seen=set()
         for lane in h['lanes'].values():
@@ -173,12 +170,16 @@ def summarize(horses):
                 candidate_counts[(x['state'],x['lane'],x['direction'],x['tier'])]+=1
                 seen.add(x['state'])
         for s in seen:state_horses[s]+=1
+        for lname,lane in h['lanes'].items():
+            for state_name,p in lane['primary_by_state'].items():
+                if p: primary_counts[(state_name,lname,p['direction'],p['tier'])]+=1
         for x in h['cross_lane_alignments']:align[(x['state'],x['direction'],x['lane_count'])]+=1
         for x in h['relative_condition_links']:rel[(x['state'],x['parent_lane'])]+=1
     def rows(c,names):
         return [{**dict(zip(names,k)),'count':v} for k,v in sorted(c.items())]
     return {'horse_count':len(horses),'horses_with_selected_signal_by_state':dict(sorted(state_horses.items())),
             'selected_observations':rows(candidate_counts,['state','lane','direction','tier']),
+            'primary_observations':rows(primary_counts,['state','lane','direction','tier']),
             'cross_lane_alignments':rows(align,['state','direction','lane_count']),
             'relative_condition_links':rows(rel,['state','parent_lane']),
             'nested_and_related_samples_not_independent':True}
