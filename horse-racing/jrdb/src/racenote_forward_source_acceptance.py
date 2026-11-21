@@ -72,34 +72,41 @@ def _match(actual: dict, accepted: dict, keys: tuple[str, ...], label: str) -> N
 
 
 def _course_fit(root: Path, accepted: dict, target_date: str) -> dict:
-    # Course Fit schema/format is not promoted to a generic CURRENT standard.
-    # Only a producer-accepted, as-of-pinned snapshot can be used in v2.
-    path = root / "manifest.json"
-    if not path.is_file() or path.is_symlink():
-        raise ValueError("course_fit: missing accepted manifest")
-    manifest = _load(path)
-    if manifest.get("validation_status") != "PASS":
-        raise ValueError("course_fit: manifest not PASS")
-    if manifest.get("as_of") != accepted.get("as_of"):
-        raise ValueError("course_fit: as-of date differs from accepted snapshot")
-    value = {
-        "generation_id": manifest.get("generation_id"),
-        "manifest_sha256": _sha(path),
-    }
-    _match(value, accepted, ("generation_id", "manifest_sha256"), "course_fit")
+    """Validate all published Course Fit files; support legacy manifestless ZIP."""
     as_of = accepted.get("as_of")
     if _date(as_of, "course_fit as_of") >= _date(target_date, "target"):
         raise ValueError("course_fit: target/future leakage")
-    # Validate the complete staged file set against producer-declared digest list.
     assets = accepted.get("assets")
     if not isinstance(assets, dict) or not assets:
         raise ValueError("course_fit: missing independently accepted asset hashes")
     if "fit/research/candidate_fit_view.parquet" not in assets:
         raise ValueError("course_fit: prediction input not in accepted asset manifest")
+    root = root.resolve()
+    manifest_path = root / "manifest.json"
+    has_manifest = manifest_path.is_file()
+    mode = accepted.get("manifest_mode", "native")
+    if has_manifest:
+        if mode != "native":
+            raise ValueError("course_fit: source/manifest mode mismatch")
+        manifest = _load(manifest_path)
+        if (manifest.get("validation_status") != "PASS"
+                or manifest.get("as_of") != as_of
+                or manifest.get("generation_id") != accepted.get("generation_id")):
+            raise ValueError("course_fit: manifest status, as-of or generation mismatch")
+        manifest_sha = _sha(manifest_path)
+    elif mode == "accepted_asset_manifest":
+        # Legacy producer ZIP had no machine-readable CURRENT manifest.
+        # The independently committed accepted asset list becomes the binding.
+        canonical = json.dumps(assets, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        manifest_sha = hashlib.sha256(canonical).hexdigest()
+    else:
+        raise ValueError("course_fit: neither native manifest nor accepted asset manifest")
+    if manifest_sha != accepted.get("manifest_sha256"):
+        raise ValueError("course_fit: manifest digest differs from producer receipt")
     actual_files = {
         file.relative_to(root).as_posix() for file in root.rglob("*") if file.is_file()
     }
-    if actual_files != set(assets) | {"manifest.json"}:
+    if actual_files != set(assets) | ({"manifest.json"} if has_manifest else set()):
         raise ValueError("course_fit: unapproved or missing staged asset")
     if any(file.is_symlink() for file in root.rglob("*")):
         raise ValueError("course_fit: symlink asset")
@@ -109,9 +116,10 @@ def _course_fit(root: Path, accepted: dict, target_date: str) -> dict:
                 not isinstance(digest, str) or not HEX.fullmatch(digest)):
             raise ValueError("course_fit: unsafe asset")
         file = (root / relative).resolve()
-        if not file.is_relative_to(root.resolve()) or not file.is_file() or _sha(file) != digest:
+        if not file.is_relative_to(root) or not file.is_file() or _sha(file) != digest:
             raise ValueError(f"course_fit: asset digest mismatch: {name}")
-    return {**value, "as_of": as_of, "assets": assets}
+    return {"generation_id": accepted["generation_id"], "manifest_sha256": manifest_sha,
+            "manifest_mode": mode, "as_of": as_of, "assets": assets}
 
 
 def accept(
