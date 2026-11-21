@@ -1,5 +1,8 @@
 # RaceNote v0.5.6 — 予想スレッド引継ぎ / 初回BTDAY受入運用
 
+**2026-11-21 単一指示化の上位追記**：ユーザーのT1/T2入力は `RACENOTE_UNIFIED_T1_T2_INSTRUCTION_CONTRACT_20261121.md` に従う。内部request JSON・producer acceptance Issue・Freezeの二段階指示をユーザーへ要求せず、ChatGPTが既存orchestratorとLLM著述/検証を遂行する。この文書以下のBTDAY・二段階Freezeの科学的境界は不変更。
+# RaceNote v0.5.6 — 予想スレッド引継ぎ / 初回BTDAY受入運用
+
 更新 2026-10-30。**運用区分: 実戦試験候補（正式昇格は初回BTDAY成功後）**。
 
 ## 2026-11-05 Confidence B/C定義訂正（新規未Freezeのみ）
