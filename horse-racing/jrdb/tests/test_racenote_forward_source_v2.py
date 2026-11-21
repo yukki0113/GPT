@@ -244,6 +244,61 @@ def test_racelap_unknown_bundle_layout_fails(tmp_path):
         source.normalize_racelap_current(folder)
 
 
+
+def test_course_fit_split_distribution_requires_both_pinned_parts(tmp_path, monkeypatch):
+    import shutil
+    from types import SimpleNamespace
+    accepted_file = tmp_path / "source.json"
+    source_bytes = {}
+    parts = []
+    for index in (1, 2):
+        path = tmp_path / f"part{index}.zip"
+        with zipfile.ZipFile(path, "w") as z:
+            z.writestr(f"fit/test-part-{index}.parquet", str(index))
+            z.writestr("READ_FIRST.txt", "Both parts are required")
+        fid = f"approvedfitpart{index}123"
+        source_bytes[fid] = path
+        parts.append({"source_ref": fid, "source_sha256": sha(path.read_bytes()),
+                      "archive_format": "zip"})
+    declaration = {"schema_version": gate.SCHEMA, "status": "ACCEPTED",
+                   "analysis": {"status": "ACCEPTED", "source_mode": "drive_current",
+                                "source_ref": "none", "source_sha256": "0" * 64},
+                   "course_fit": {"status": "ACCEPTED", "source_mode": "drive_current",
+                                  "source_parts": parts,
+                                  "producer_acceptance_ref": "accepted-course-fit-full-archive"},
+                   "race_lap": {"status": "ACCEPTED", "source_mode": "drive_current",
+                                "source_ref": "none", "source_sha256": "0" * 64}}
+    accepted_file.write_text(json.dumps(declaration))
+    # Keep non-Course-Fit datasets materializable with known single-ZIP fixtures.
+    for name in ("analysis", "race_lap"):
+        path = tmp_path / (name + ".zip")
+        with zipfile.ZipFile(path, "w") as z:
+            if name == "race_lap":
+                for x in ("manifest.json", "race_lap.parquet", "audit.json"):
+                    z.writestr("current/" + x, "fixture")
+                z.writestr("resolver_receipt.json", "{}")
+            else:
+                z.writestr("current.json", "{}")
+        fid = "accepted" + name + "123"
+        source_bytes[fid] = path
+        declaration[name].update({"source_ref": fid, "source_sha256": sha(path.read_bytes()),
+                                  "producer_acceptance_ref": "accepted-" + name + "-run"})
+    accepted_file.write_text(json.dumps(declaration))
+    monkeypatch.setattr(source, "_canonical_receipt", lambda *args: sha(accepted_file.read_bytes()))
+    monkeypatch.setitem(sys.modules, "gdown", SimpleNamespace(
+        download=lambda id, output, quiet: str(shutil.copy2(source_bytes[id], output))
+    ))
+    receipt = source.materialize(accepted_file, tmp_path, tmp_path / "result")
+    assert receipt["sources"]["course_fit"]["source_parts"] == parts
+    assert (tmp_path / "result/course_fit/fit/test-part-1.parquet").read_text() == "1"
+    assert (tmp_path / "result/course_fit/fit/test-part-2.parquet").read_text() == "2"
+    declaration["course_fit"]["source_parts"][1]["source_sha256"] = "a" * 64
+    accepted_file.write_text(json.dumps(declaration))
+    with pytest.raises(ValueError, match="SHA mismatch"):
+        source.materialize(accepted_file, tmp_path, tmp_path / "tampered")
+    assert not (tmp_path / "tampered").exists()
+
+
 def test_v1_workflow_keeps_legacy_paths_and_v2_must_be_explicit():
     y = (ROOT / ".github/workflows/racenote_v056_forward_paci_t1.yml").read_text()
     assert "V2_ACCEPTANCE_PATH" in y
