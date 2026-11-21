@@ -52,6 +52,7 @@ jobs:
           PY
           )"
             echo "PRODUCER_EVIDENCE_PATH=$path" >> "$GITHUB_ENV"
+            export PRODUCER_EVIDENCE_PATH="$path"
           fi
           python - <<'PY'
           import os,re
