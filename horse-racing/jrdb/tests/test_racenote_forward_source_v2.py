@@ -133,6 +133,41 @@ def test_v2_acceptance_checks_immutable_generation_and_cutoff(tmp_path, monkeypa
 
 
 
+def test_drive_materializer_pins_accepted_zip_and_cleans_on_error(tmp_path, monkeypatch):
+    import shutil
+    from types import SimpleNamespace
+    accepted_file = tmp_path / "source.json"
+    archives = {}
+    declaration = {"schema_version": gate.SCHEMA, "status": "ACCEPTED"}
+    for name in ("analysis", "course_fit", "race_lap"):
+        archive = tmp_path / (name + ".zip")
+        with zipfile.ZipFile(archive, "w") as z:
+            z.writestr("source.txt", name)
+        fid = "reviewed_" + name + "_source_123"
+        archives[fid] = archive
+        declaration[name] = {
+            "status": "ACCEPTED", "source_mode": "drive_current",
+            "source_ref": fid, "source_sha256": sha(archive.read_bytes()),
+            "producer_acceptance_ref": "producer-run-" + name,
+        }
+    accepted_file.write_text(json.dumps(declaration))
+    monkeypatch.setattr(source, "_canonical_receipt", lambda *args: sha(accepted_file.read_bytes()))
+    monkeypatch.setitem(sys.modules, "gdown", SimpleNamespace(
+        download=lambda id, output, quiet: str(shutil.copy2(archives[id], output))
+    ))
+    receipt = source.materialize(accepted_file, tmp_path, tmp_path / "out")
+    assert receipt["status"] == "MATERIALIZED"
+    for name in ("analysis", "course_fit", "race_lap"):
+        assert (tmp_path / "out" / name / "source.txt").read_text() == name
+    assert (tmp_path / "out/materialization_receipt.json").is_file()
+
+    declaration["race_lap"]["source_sha256"] = "0" * 64
+    accepted_file.write_text(json.dumps(declaration))
+    with pytest.raises(ValueError, match="transport SHA mismatch"):
+        source.materialize(accepted_file, tmp_path, tmp_path / "broken")
+    assert not (tmp_path / "broken").exists()
+
+
 def test_legacy_course_fit_requires_full_accepted_assets(tmp_path):
     root = tmp_path / "fit"
     asset = root / "fit/research/candidate_fit_view.parquet"
