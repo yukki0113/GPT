@@ -19,6 +19,7 @@ import racenote_forward_errors as forward_errors
 import racenote_forward_consumed_field_check as consistency
 import racenote_forward_source_acceptance as gate
 import racenote_forward_source_resolver as source
+import racenote_forward_generation_acceptance as generation
 import racenote_forward_target_binding as binding
 
 
@@ -115,6 +116,26 @@ def test_target_binding_requires_verified_source_integrity(tmp_path):
     with pytest.raises(forward_errors.OrchestrationMissing, match="no accepted") as caught:
         binding.select_generation_set(repo, "2026-11-22")
     assert caught.value.error_code == "ORCHESTRATION_MISSING"
+
+
+def test_course_fit_nested_manifest_is_pinned_as_asset(tmp_path):
+    root = tmp_path / "course_fit"
+    nested = root / "fit/research"
+    nested.mkdir(parents=True)
+    (nested / "candidate_fit_view.parquet").write_bytes(b"test-parquet-asset")
+    (nested / "manifest.json").write_text('{"status":"PASS"}')
+    (root / "READ_FIRST.txt").write_text("readme")
+    producer = {
+        "manifest_mode": "accepted_asset_manifest",
+        "generation_id": "fit-2026-01-01",
+        "as_of": "2026-01-01",
+        "producer_acceptance_ref": "https://example.invalid/source/approved",
+    }
+    record = generation._course_fit_entry(root, producer, "2026-11-15")
+    assert record["status"] == "ACCEPTED"
+    assert "fit/research/manifest.json" in record["assets"]
+    assert "manifest.json" not in record["assets"]
+    assert len(record["manifest_sha256"]) == 64
 
 
 def test_producer_evidence_materializer_pins_finalized_sed(tmp_path, monkeypatch):
