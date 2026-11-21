@@ -135,9 +135,7 @@ def main() -> int:
             "status": "PASS", "target_date": args.date,
             "required_completed_through": source_lock["required_completed_through"],
             "analysis": source_lock["analysis"], "rrdb": source_lock["rrdb"],
-            "source_lock_sha256": hashlib.sha256(
-                json.dumps(source_lock, sort_keys=True, ensure_ascii=False).encode("utf-8")
-            ).hexdigest(),
+            "source_lock_sha256": None,
         }
     else:
         if not all((args.freshness_acceptance, args.analysis_artifact_id, args.analysis_generation_id)):
@@ -264,11 +262,15 @@ def main() -> int:
         raise ValueError("Reader/authoring roster mismatch")
     audit_root = args.output_root / "source_audit"
     audit_root.mkdir(exist_ok=True)
-    write_json(audit_root / "forward_analysis_rrdb_freshness.json", freshness)
     if args.v2_source_acceptance:
-        write_json(audit_root / "forward_source_lock.json", source_lock)
+        lock_path = audit_root / "forward_source_lock.json"
+        write_json(lock_path, source_lock)
+        with lock_path.open("rb") as f:
+            digest = hashlib.sha256(f.read()).hexdigest()
+        freshness["source_lock_sha256"] = digest
         base_handoff["source_contract_version"] = "v2"
-        base_handoff["source_lock_sha256"] = freshness["source_lock_sha256"]
+        base_handoff["source_lock_sha256"] = digest
+    write_json(audit_root / "forward_analysis_rrdb_freshness.json", freshness)
     write_json(args.output_root / "operation_handoff.json", base_handoff)
     print(json.dumps({
         "status": base_handoff["status"],
