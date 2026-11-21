@@ -15,6 +15,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "horse-racing/jrdb/src"))
 
+import racenote_forward_errors as forward_errors
 import racenote_forward_consumed_field_check as consistency
 import racenote_forward_source_acceptance as gate
 import racenote_forward_source_resolver as source
@@ -95,8 +96,9 @@ def test_target_binding_fails_closed_on_ambiguous_latest_generation(tmp_path):
     (folder / "a.json").write_text(json.dumps(generation_record("a")) + "\n")
     (folder / "b.json").write_text(json.dumps(generation_record("b")) + "\n")
     commit_all(repo)
-    with pytest.raises(ValueError, match="ambiguous"):
+    with pytest.raises(forward_errors.DataInvalid, match="ambiguous") as caught:
         binding.select_generation_set(repo, "2026-11-22")
+    assert caught.value.error_code == "DATA_INVALID"
 
 
 def test_target_binding_requires_consumed_field_pass(tmp_path):
@@ -109,8 +111,9 @@ def test_target_binding_requires_consumed_field_pass(tmp_path):
     record["consumed_field_consistency"]["status"] = "FAIL"
     (folder / "bad.json").write_text(json.dumps(record) + "\n")
     commit_all(repo)
-    with pytest.raises(ValueError, match="no accepted"):
+    with pytest.raises(forward_errors.OrchestrationMissing, match="no accepted") as caught:
         binding.select_generation_set(repo, "2026-11-22")
+    assert caught.value.error_code == "ORCHESTRATION_MISSING"
 
 
 def test_producer_evidence_materializer_pins_finalized_sed(tmp_path, monkeypatch):
@@ -181,6 +184,7 @@ def test_consumed_field_comparator_detects_semantic_difference():
     result = consistency._compare(expected, changed, ("finish", "win_payout"), "analysis")
     assert result["status"] == "FAIL"
     assert result["mismatches"][0]["field"] == "finish"
+    assert issubclass(consistency.ConsumedFieldConsistencyError, forward_errors.DataInvalid)
 
 
 def test_forward_workflows_expose_single_orchestrated_t1_entry():
@@ -191,6 +195,58 @@ def test_forward_workflows_expose_single_orchestrated_t1_entry():
     assert "racenote_forward_target_binding.py" in t1
     assert "race_lap_expected_period_to" in t1
     assert "racenote_forward_consumed_field_check.py" in acceptance
+    assert t1.index("Validate pre-race target and immutable destination before binding") < t1.index("Resolve or create target binding from accepted generation set")
+    assert "data, _ = _resolve_target_acceptance(" in t1
+    assert "RACENOTE_FORWARD_FAILURE_JSON" in t1 and "RACENOTE_FORWARD_FAILURE_JSON" in acceptance
+    ci = (ROOT / ".github/workflows/racenote_forward_t1_v2_tests.yml").read_text()
+    assert "pytest -q" in ci and "test_racenote_forward_acceptance_orchestrator.py" in ci.split("pytest -q", 1)[1]
     routes = {item["prefix"]: item for item in registry["routes"]}
     assert routes["[RACENOTE_FORWARD_T1]"]["event_type"] == "racenote_forward_t1_request"
     assert routes["[RACENOTE_FORWARD_ACCEPTANCE]"]["event_type"] == "racenote_forward_acceptance_prepare_request"
+
+
+def test_error_codes_are_machine_readable_and_fail_closed(tmp_path, monkeypatch, capsys):
+    receipt = tmp_path / "failure.json"
+    monkeypatch.setenv("RACENOTE_FORWARD_FAILURE_JSON", str(receipt))
+
+    def missing():
+        raise forward_errors.OrchestrationMissing("generation acceptance not prepared")
+
+    assert forward_errors.run_cli(missing, "TARGET_BINDING") == 2
+    recorded = json.loads(receipt.read_text(encoding="utf-8"))
+    assert recorded["error_code"] == "ORCHESTRATION_MISSING"
+    assert recorded["failed_stage"] == "TARGET_BINDING"
+    assert recorded["retryable"] is False
+    assert "RACENOTE_FORWARD_FAILURE" in capsys.readouterr().err
+
+    def invalid():
+        raise forward_errors.DataInvalid("finalized SED disagrees with producer CURRENT")
+
+    assert forward_errors.run_cli(invalid, "CONSUMED_FIELD_VALIDATION") == 2
+    recorded = json.loads(receipt.read_text(encoding="utf-8"))
+    assert recorded["error_code"] == "DATA_INVALID"
+    assert recorded["failed_stage"] == "CONSUMED_FIELD_VALIDATION"
+
+
+def test_consumed_field_mismatch_is_saved_for_audit(tmp_path, monkeypatch):
+    result = {
+        "schema_version": consistency.SCHEMA,
+        "status": "FAIL",
+        "dates": ["2026-11-15"],
+        "days": [{"date": "2026-11-15", "status": "FAIL"}],
+    }
+    monkeypatch.setattr(consistency, "validate", lambda *args, **kwargs: result)
+    output = tmp_path / "consumed_field_report.json"
+    monkeypatch.setattr(sys, "argv", [
+        "racenote_forward_consumed_field_check.py", "--sed", "SED261115.zip",
+        "--analysis-root", str(tmp_path / "analysis"),
+        "--rrdb-root", str(tmp_path / "rrdb"),
+        "--output", str(output),
+    ])
+    assert forward_errors.run_cli(consistency.main, "CONSUMED_FIELD_VALIDATION") == 2
+    assert json.loads(output.read_text(encoding="utf-8")) == result
+
+
+def test_no_generation_set_is_orchestration_missing(tmp_path):
+    with pytest.raises(forward_errors.OrchestrationMissing):
+        binding.select_generation_set(tmp_path, "2026-11-22")
