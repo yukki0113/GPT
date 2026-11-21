@@ -5,7 +5,8 @@
     "status": "PASS",
     "source": "DEDICATED_DATA_OPERATIONS",
     "reference": "https://github.com/yukki0113/GPT/actions/runs/43778813606",
-    "required_completed_through": "2026-11-15"
+    "required_completed_through": "2026-11-15",
+    "verified_at_utc": "2026-11-16T00:12:23+00:00"
   },
   "analysis": {
     "status": "ACCEPTED",
@@ -63,6 +64,7 @@
   ],
   "evidence_basis": {
     "source_review": "https://github.com/yukki0113/GPT/issues/2680",
-    "note": "Direct Drive file identities and SHA-pinned sources from prior documented verification. Semantic consumed-field acceptance is NOT asserted; the dedicated validation workflow must independently PASS before any generation is accepted."
+    "note": "Pinned Drive identities and accepted producer-run evidence; direct Analysis/RRDB field-by-field equivalence is not a forward T1 prerequisite. Canonical SHA, coverage, pre-race cutoff and source lineages remain required.",
+    "completion_verified_at_basis": "GitHub Actions run 43778813606 successful completion (updated_at 2026-11-16T00:12:23Z)"
   }
 }

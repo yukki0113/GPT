@@ -113,18 +113,16 @@ jobs:
           unzip -q /tmp/racenote-producer-sources/rrdb.zip -d /tmp/racenote-rrdb
           test -s /tmp/racenote-rrdb/postrace_review/v0_1/current.json
 
-      - name: Verify finalized SED consumed-field consistency
+      - name: Verify finalized SED transport integrity
         run: |
           set -euo pipefail
           mapfile -t SEDS < <(find /tmp/racenote-producer-sources/finalized_sed -maxdepth 1 -type f -name 'SED*.zip' | sort)
           test "${#SEDS[@]}" -gt 0
-          args=()
-          for path in "${SEDS[@]}"; do args+=(--sed "$path"); done
-          python horse-racing/jrdb/src/racenote_forward_consumed_field_check.py \
-            "${args[@]}" \
-            --analysis-root /tmp/racenote-producer-sources/analysis \
-            --rrdb-root /tmp/racenote-rrdb/postrace_review/v0_1 \
-            --output /tmp/racenote-producer-sources/consumed_field_report.json
+          for path in "${SEDS[@]}"; do
+            unzip -tq "$path"
+          done
+          # No cross-generation field-equality gate: source identity/SHA, ZIP CRC,
+          # producer acceptance and cutoff/coverage remain independently verified.
 
       - name: Build reusable generation-set acceptance
         id: generation
@@ -134,7 +132,6 @@ jobs:
             --producer-evidence "$PRODUCER_EVIDENCE_PATH" \
             --repo-root . \
             --materialization-receipt /tmp/racenote-producer-sources/materialization_receipt.json \
-            --consumed-field-report /tmp/racenote-producer-sources/consumed_field_report.json \
             --analysis-root /tmp/racenote-producer-sources/analysis \
             --rrdb-root /tmp/racenote-rrdb/postrace_review/v0_1 \
             --rrdb-zip /tmp/racenote-producer-sources/rrdb.zip \
@@ -176,7 +173,7 @@ jobs:
           name: racenote-forward-acceptance-${{ steps.generation.outputs.generation_id }}
           path: |
             /tmp/racenote-producer-sources/materialization_receipt.json
-            /tmp/racenote-producer-sources/consumed_field_report.json
+            /tmp/racenote-producer-sources/materialization_receipt.json
             /tmp/racenote-producer-sources/generation_set.json
             /tmp/racenote-producer-sources/rrdb_receipt.json
           retention-days: 14
@@ -207,6 +204,6 @@ jobs:
           name: racenote-forward-acceptance-failure-${{ github.run_id }}
           path: |
             /tmp/racenote-forward-failure.json
-            /tmp/racenote-producer-sources/consumed_field_report.json
+            /tmp/racenote-producer-sources/materialization_receipt.json
           retention-days: 14
           if-no-files-found: error

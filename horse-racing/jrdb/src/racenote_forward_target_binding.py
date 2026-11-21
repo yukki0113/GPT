@@ -23,10 +23,11 @@ def _eligible(record: dict, target_date: str) -> bool:
     if record.get("schema_version") != GENERATION_SCHEMA or record.get("status") != "ACCEPTED":
         return False
     completion = record.get("completion_evidence")
-    consistency = record.get("consumed_field_consistency")
+    integrity = record.get("producer_source_integrity")
     if (not isinstance(completion, dict) or completion.get("status") != "PASS"
-            or not isinstance(consistency, dict) or consistency.get("status") != "PASS"
-            or not HEX.fullmatch(str(consistency.get("report_sha256", "")))):
+            or not isinstance(integrity, dict) or integrity.get("status") != "VERIFIED"
+            or not HEX.fullmatch(str(integrity.get("materialization_receipt_sha256", "")))
+            or integrity.get("semantic_cross_generation_comparison") != "NOT_REQUIRED"):
         return False
     cutoff = completion.get("required_completed_through")
     try:

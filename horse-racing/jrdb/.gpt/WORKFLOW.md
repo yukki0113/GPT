@@ -1,3 +1,7 @@
+## 2026-11-21 FORWARD T1 の過剰SED比較Gate撤去
+
+`racenote-forward-generation-set-v2` は前版の「確定SEDとAnalysis/RRDB全フィールド一致」を受入条件としない。通常のT1が必要とするのは独立producer受入、正本DriveファイルのIDとSHA、ZIP CRC、世代/manifestの一致、対象期間・cutoff、CLEAN BLIND、Prediction/Confidence独立境界である。比較ツールは必要時のproducer診断のみに使い、T1を停止させない。変更詳細は `forward-acceptance/README.md`。
+
 ## T1/T2 単一指示入口（2026-11-21）
 
 **最優先運用仕様**: `docs/racenote/RACENOTE_UNIFIED_T1_T2_INSTRUCTION_CONTRACT_20261121.md`。
