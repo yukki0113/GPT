@@ -1,6 +1,11 @@
 name: RaceNote Forward Producer Acceptance Prepare
 
 on:
+  workflow_call:
+    inputs:
+      producer_evidence_path:
+        required: true
+        type: string
   repository_dispatch:
     types: [racenote_forward_acceptance_prepare_request]
   workflow_dispatch:
