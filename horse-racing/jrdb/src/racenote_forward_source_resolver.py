@@ -12,6 +12,7 @@ import json
 from pathlib import Path, PurePosixPath
 import stat
 import tempfile
+import tarfile
 import zipfile
 
 from racenote_forward_source_acceptance import _canonical_receipt, _load, SCHEMA, HEX
@@ -66,6 +67,72 @@ def unpack_verified(archive: Path, destination: Path) -> None:
         raise
 
 
+
+def unpack_verified_tar(archive: Path, destination: Path) -> None:
+    """Safely stream an Analysis .tar.xz without tarfile.extractall."""
+    if destination.exists():
+        raise FileExistsError(destination)
+    destination.mkdir(parents=True)
+    try:
+        with tarfile.open(archive, mode="r:xz") as tar:
+            seen = set()
+            total = 0
+            for info in tar:
+                # GNU tar commonly prepends './'; preserve a single canonical root.
+                name = info.name.removeprefix("./")
+                if name in ("", ".") and info.isdir():
+                    continue
+                pure = PurePosixPath(name)
+                if (not name or name.startswith("/") or "\\" in name
+                        or ".." in pure.parts or "." in pure.parts
+                        or name in seen or not (info.isfile() or info.isdir())):
+                    raise ValueError("unsafe or duplicate source TAR entry")
+                seen.add(name)
+                if info.isfile():
+                    total += info.size
+                    if total > MAX_EXPANDED:
+                        raise ValueError("source TAR exceeds expanded size limit")
+                out = destination.joinpath(*pure.parts)
+                if info.isdir():
+                    out.mkdir(parents=True, exist_ok=True)
+                    continue
+                out.parent.mkdir(parents=True, exist_ok=True)
+                handle = tar.extractfile(info)
+                if handle is None:
+                    raise ValueError("source TAR member missing bytes")
+                count = 0
+                with handle as src, out.open("xb") as dst:
+                    while block := src.read(1 << 20):
+                        count += len(block)
+                        if count > info.size:
+                            raise ValueError("source TAR member overrun")
+                        dst.write(block)
+                if count != info.size:
+                    raise ValueError("source TAR member truncated")
+            if not seen:
+                raise ValueError("empty source TAR")
+    except Exception:
+        import shutil
+        shutil.rmtree(destination, ignore_errors=True)
+        raise
+
+
+def normalize_racelap_current(destination: Path) -> None:
+    """Canonical Drive RaceLap ZIP wraps files in current/, unlike Actions."""
+    if (destination / "manifest.json").is_file() and (destination / "race_lap.parquet").is_file():
+        return
+    nested = destination / "current"
+    required = {"manifest.json", "race_lap.parquet", "audit.json"}
+    if (not nested.is_dir() or
+            {p.name for p in nested.iterdir()} != required or
+            not (destination / "resolver_receipt.json").is_file() or
+            {p.name for p in destination.iterdir()} != {"current", "resolver_receipt.json"}):
+        raise ValueError("RaceLap ZIP has an unknown CURRENT bundle layout")
+    for name in required:
+        (nested / name).rename(destination / name)
+    nested.rmdir()
+
+
 def materialize(acceptance_path: Path, repo_root: Path, output_root: Path) -> dict:
     accepted_sha = _canonical_receipt(acceptance_path, repo_root)
     a = _load(acceptance_path)
@@ -93,15 +160,27 @@ def materialize(acceptance_path: Path, repo_root: Path, output_root: Path) -> di
                 digest = entry.get("source_sha256")
                 if not isinstance(digest, str) or not HEX.fullmatch(digest):
                     raise ValueError(name + ": unpinned source SHA")
-                z = Path(tmp) / (name + ".zip")
+                archive_format = entry.get("archive_format", "zip")
+                if archive_format not in ("zip", "tar.xz"):
+                    raise ValueError(name + ": unsupported accepted archive format")
+                if name != "analysis" and archive_format != "zip":
+                    raise ValueError(name + ": unexpected tar archive")
+                extension = "tar.xz" if archive_format == "tar.xz" else "zip"
+                z = Path(tmp) / (name + "." + extension)
                 if not gdown.download(id=fid, output=str(z), quiet=True):
                     raise ValueError(name + ": Drive source not available")
                 if not z.is_file() or z.stat().st_size > MAX_ZIP or _sha(z) != digest:
                     raise ValueError(name + ": accepted transport SHA mismatch")
-                unpack_verified(z, output_root / name)
+                if archive_format == "tar.xz":
+                    unpack_verified_tar(z, output_root / name)
+                else:
+                    unpack_verified(z, output_root / name)
+                if name == "race_lap":
+                    normalize_racelap_current(output_root / name)
                 receipts[name] = {
                     "source_mode": entry["source_mode"], "source_ref": fid,
                     "source_sha256": digest, "transport_size": z.stat().st_size,
+                    "archive_format": archive_format,
                     "producer_acceptance_ref": entry.get("producer_acceptance_ref"),
                 }
         result = {"schema_version": "racenote-forward-materialization-v2",
