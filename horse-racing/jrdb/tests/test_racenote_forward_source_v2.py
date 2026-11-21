@@ -142,7 +142,12 @@ def test_drive_materializer_pins_accepted_zip_and_cleans_on_error(tmp_path, monk
     for name in ("analysis", "course_fit", "race_lap"):
         archive = tmp_path / (name + ".zip")
         with zipfile.ZipFile(archive, "w") as z:
-            z.writestr("source.txt", name)
+            if name == "race_lap":
+                for x in ("manifest.json", "race_lap.parquet", "audit.json"):
+                    z.writestr("current/" + x, x)
+                z.writestr("resolver_receipt.json", "{}")
+            else:
+                z.writestr("source.txt", name)
         fid = "reviewed_" + name + "_source_123"
         archives[fid] = archive
         declaration[name] = {
@@ -157,8 +162,9 @@ def test_drive_materializer_pins_accepted_zip_and_cleans_on_error(tmp_path, monk
     ))
     receipt = source.materialize(accepted_file, tmp_path, tmp_path / "out")
     assert receipt["status"] == "MATERIALIZED"
-    for name in ("analysis", "course_fit", "race_lap"):
+    for name in ("analysis", "course_fit"):
         assert (tmp_path / "out" / name / "source.txt").read_text() == name
+    assert (tmp_path / "out/race_lap/manifest.json").is_file()
     assert (tmp_path / "out/materialization_receipt.json").is_file()
 
     declaration["race_lap"]["source_sha256"] = "0" * 64
