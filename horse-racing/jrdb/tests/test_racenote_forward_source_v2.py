@@ -132,6 +132,29 @@ def test_v2_acceptance_checks_immutable_generation_and_cutoff(tmp_path, monkeypa
         )
 
 
+
+def test_legacy_course_fit_requires_full_accepted_assets(tmp_path):
+    root = tmp_path / "fit"
+    asset = root / "fit/research/candidate_fit_view.parquet"
+    asset.parent.mkdir(parents=True)
+    asset.write_bytes(b"accepted-fit")
+    assets = {"fit/research/candidate_fit_view.parquet": sha(asset.read_bytes())}
+    digest = sha(json.dumps(assets, sort_keys=True, separators=(",", ":")).encode("utf-8"))
+    accepted = {"generation_id": "coursefit-accepted-g1",
+                "manifest_mode": "accepted_asset_manifest",
+                "as_of": "2026-01-01",
+                "manifest_sha256": digest, "assets": assets}
+    result = gate._course_fit(root, accepted, "2026-11-21")
+    assert result["generation_id"] == "coursefit-accepted-g1"
+    (root / "unexpected.parquet").write_bytes(b"unapproved")
+    with pytest.raises(ValueError, match="unapproved"):
+        gate._course_fit(root, accepted, "2026-11-21")
+    (root / "unexpected.parquet").unlink()
+    asset.write_bytes(b"tampered")
+    with pytest.raises(ValueError, match="asset digest"):
+        gate._course_fit(root, accepted, "2026-11-21")
+
+
 def test_v1_workflow_keeps_legacy_paths_and_v2_must_be_explicit():
     y = (ROOT / ".github/workflows/racenote_v056_forward_paci_t1.yml").read_text()
     assert "V2_ACCEPTANCE_PATH" in y
