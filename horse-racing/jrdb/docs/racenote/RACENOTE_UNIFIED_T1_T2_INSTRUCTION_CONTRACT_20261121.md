@@ -38,7 +38,7 @@ GitHub ActionsにChatGPTの人間比較判断を代替させない。
 - ChatGPT側で認証済みDriveコネクタから canonical PACIフォルダ
   `1zFajenPU5jxInZCcmqZzkgiaYil3MD8r` を走査し、対象日の
   `PACIyyMMdd.zip` を **親フォルダ・正確な名前・日付** で確認する。
-  対象日も省略された場合は会話の開催日とDriveの未来PACIを照合し、複数あれば安全に停止。
+  対象日が省略された場合は進行中スレッドの対象日を優先し、なければDriveの未来PACIから**直近の未処理開催日**を一意に選ぶ。同日名が複数、レース開始後の当日、または開催日を確定できない場合のみ停止する。
   GitHub Actionsが公開Driveの一覧を推測したり、JRDBからPACIを取り直すことは禁止。
 - `[RACENOTE_FORWARD_T1] YYYYMMDD` を **一度だけ** 起票する。
   Issue JSONは `target_date` / 検証済み `paci_drive_file_id` / 判明した場合のみ
