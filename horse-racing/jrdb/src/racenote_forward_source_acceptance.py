@@ -7,7 +7,7 @@ must supply its repository-relative path; this module binds it to git HEAD.
 """
 from __future__ import annotations
 
-from datetime import date
+from datetime import datetime, timezone
 import hashlib
 import json
 from pathlib import Path
@@ -80,6 +80,8 @@ def _course_fit(root: Path, accepted: dict, target_date: str) -> dict:
     manifest = _load(path)
     if manifest.get("validation_status") != "PASS":
         raise ValueError("course_fit: manifest not PASS")
+    if manifest.get("as_of") != accepted.get("as_of"):
+        raise ValueError("course_fit: as-of date differs from accepted snapshot")
     value = {
         "generation_id": manifest.get("generation_id"),
         "manifest_sha256": _sha(path),
@@ -92,6 +94,15 @@ def _course_fit(root: Path, accepted: dict, target_date: str) -> dict:
     assets = accepted.get("assets")
     if not isinstance(assets, dict) or not assets:
         raise ValueError("course_fit: missing independently accepted asset hashes")
+    if "fit/research/candidate_fit_view.parquet" not in assets:
+        raise ValueError("course_fit: prediction input not in accepted asset manifest")
+    actual_files = {
+        file.relative_to(root).as_posix() for file in root.rglob("*") if file.is_file()
+    }
+    if actual_files != set(assets) | {"manifest.json"}:
+        raise ValueError("course_fit: unapproved or missing staged asset")
+    if any(file.is_symlink() for file in root.rglob("*")):
+        raise ValueError("course_fit: symlink asset")
     for name, digest in assets.items():
         relative = Path(name)
         if (not name or relative.is_absolute() or ".." in relative.parts or
@@ -116,8 +127,17 @@ def accept(
     if a.get("target_date") != target_date:
         raise ValueError("v2 target date mismatch")
     completion = a.get("completion_evidence")
-    if not isinstance(completion, dict) or completion.get("status") != "PASS" or not completion.get("reference"):
+    if (not isinstance(completion, dict) or completion.get("status") != "PASS"
+            or completion.get("source") not in ("DEDICATED_JRDB_RESULT_OPERATION", "DEDICATED_DATA_OPERATIONS")
+            or not isinstance(completion.get("reference"), str)
+            or len(completion["reference"]) < 8):
         raise ValueError("verified completed-results source missing")
+    try:
+        verified = datetime.fromisoformat(completion["verified_at_utc"].replace("Z", "+00:00"))
+    except (KeyError, AttributeError, ValueError) as exc:
+        raise ValueError("missing completed-results verification time") from exc
+    if verified.tzinfo is None or verified.astimezone(timezone.utc) > datetime.now(timezone.utc):
+        raise ValueError("invalid completed-results verification time")
     cutoff = _date(completion.get("required_completed_through"), "completion cutoff")
     target = _date(target_date, "target date")
     if cutoff >= target:
