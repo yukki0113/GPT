@@ -17,6 +17,7 @@ from typing import Any, Iterable
 
 import duckdb
 
+from racenote_forward_errors import DataInvalid, OrchestrationMissing, run_cli
 from jrdb_analysis_parquet_current import resolve_current
 from jrdb_analysis_raw_adapter import parse_sed as project_analysis_sed
 from jrdb_postrace_review_acceptance import _paths as rrdb_paths
@@ -44,7 +45,7 @@ RRDB_RACE_FIELDS = (
 MAX_EXAMPLES = 30
 
 
-class ConsumedFieldConsistencyError(ValueError):
+class ConsumedFieldConsistencyError(DataInvalid):
     pass
 
 
@@ -177,9 +178,12 @@ def _rrdb_actual(root: Path, day: str) -> tuple[list[dict], list[dict]]:
         con.close()
 
 
-def validate(sed_archives: list[Path], analysis_root: Path, rrdb_root: Path) -> dict:
+def validate(
+    sed_archives: list[Path], analysis_root: Path, rrdb_root: Path, *,
+    fail_on_mismatch: bool = True,
+) -> dict:
     if not sed_archives:
-        raise ConsumedFieldConsistencyError("at least one finalized SED is required")
+        raise OrchestrationMissing("finalized SED delivery missing")
     parser = Parser()
     days = []
     seen = set()
@@ -247,7 +251,7 @@ def validate(sed_archives: list[Path], analysis_root: Path, rrdb_root: Path) -> 
         "rrdb_race_fields": list(RRDB_RACE_FIELDS),
         "days": days,
     }
-    if result["status"] != "PASS":
+    if fail_on_mismatch and result["status"] != "PASS":
         raise ConsumedFieldConsistencyError(json.dumps(result, ensure_ascii=False))
     return result
 
@@ -259,7 +263,7 @@ def main() -> int:
     ap.add_argument("--rrdb-root", type=Path, required=True)
     ap.add_argument("--output", type=Path, required=True)
     args = ap.parse_args()
-    result = validate(args.sed, args.analysis_root, args.rrdb_root)
+    result = validate(args.sed, args.analysis_root, args.rrdb_root, fail_on_mismatch=False)
     if args.output.exists():
         raise FileExistsError(args.output)
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -268,8 +272,12 @@ def main() -> int:
         encoding="utf-8",
     )
     print(json.dumps(result, ensure_ascii=False))
+    if result["status"] != "PASS":
+        raise ConsumedFieldConsistencyError(
+            f"finalized SED consumed-field mismatch; review {args.output}"
+        )
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main, "CONSUMED_FIELD_VALIDATION"))
