@@ -195,6 +195,7 @@ def test_forward_workflows_expose_single_orchestrated_t1_entry():
     assert "racenote_forward_target_binding.py" in t1
     assert "race_lap_expected_period_to" in t1
     assert "racenote_forward_consumed_field_check.py" in acceptance
+    assert 'export PRODUCER_EVIDENCE_PATH="$path"' in acceptance
     assert t1.index("Validate pre-race target and immutable destination before binding") < t1.index("Resolve or create target binding from accepted generation set")
     assert "data, _ = _resolve_target_acceptance(" in t1
     assert "RACENOTE_FORWARD_FAILURE_JSON" in t1 and "RACENOTE_FORWARD_FAILURE_JSON" in acceptance
