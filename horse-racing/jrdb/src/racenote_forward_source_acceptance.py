@@ -21,6 +21,9 @@ from racenote_v056_forward_freshness import (
 from jrdb_race_lap_forward_current import validate as validate_lap
 
 SCHEMA = "racenote-forward-source-acceptance-v2"
+GENERATION_SCHEMA = "racenote-forward-generation-set-v1"
+BINDING_SCHEMA = "racenote-forward-target-binding-v1"
+PRODUCER_EVIDENCE_SCHEMA = "racenote-forward-producer-evidence-v1"
 LOCK_SCHEMA = "racenote-forward-source-lock-v2"
 SAFE_REF = re.compile(r"horse-racing/jrdb/forward-acceptance/[A-Za-z0-9_./-]+\.json\Z")
 HEX = re.compile(r"[a-f0-9]{64}\Z")
@@ -50,6 +53,99 @@ def _canonical_receipt(path: Path, repo_root: Path) -> str:
         raise ValueError("acceptance differs from committed HEAD")
     return hashlib.sha256(stored).hexdigest()
 
+
+
+def _resolve_target_acceptance(
+    path: Path, repo_root: Path, target_date: str
+) -> tuple[dict, dict]:
+    """Resolve legacy target acceptance or a target binding to one generation set."""
+    primary_sha = _canonical_receipt(path, repo_root)
+    data = _load(path)
+    schema = data.get("schema_version")
+    if schema == SCHEMA:
+        if data.get("status") != "ACCEPTED" or data.get("target_date") != target_date:
+            raise ValueError("v2 producer acceptance missing or target mismatch")
+        return data, {
+            "mode": "legacy_target_acceptance",
+            "record_sha256": primary_sha,
+        }
+    if schema != BINDING_SCHEMA or data.get("status") != "BOUND":
+        raise ValueError("forward source record is neither accepted v2 nor target binding")
+    if data.get("target_date") != target_date:
+        raise ValueError("target binding date mismatch")
+    generation_ref = data.get("generation_set_path")
+    if (not isinstance(generation_ref, str)
+            or not generation_ref.startswith("horse-racing/jrdb/forward-acceptance/generation-sets/")
+            or not SAFE_REF.fullmatch(generation_ref)
+            or ".." in Path(generation_ref).parts):
+        raise ValueError("target binding generation_set_path is not reviewed")
+    generation_path = repo_root / generation_ref
+    generation_sha = _canonical_receipt(generation_path, repo_root)
+    generation = _load(generation_path)
+    if (generation.get("schema_version") != GENERATION_SCHEMA
+            or generation.get("status") != "ACCEPTED"):
+        raise ValueError("target binding generation set is not ACCEPTED")
+    generation_id = generation.get("generation_set_id")
+    if not isinstance(generation_id, str) or not generation_id:
+        raise ValueError("generation set has no stable id")
+    if data.get("generation_set_id") != generation_id:
+        raise ValueError("target binding generation_set_id mismatch")
+    consistency = generation.get("consumed_field_consistency")
+    if (not isinstance(consistency, dict)
+            or consistency.get("status") != "PASS"
+            or not HEX.fullmatch(str(consistency.get("report_sha256", "")))):
+        raise ValueError("generation set has no PASS consumed-field consistency evidence")
+    completion = generation.get("completion_evidence")
+    if not isinstance(completion, dict):
+        raise ValueError("generation set completion evidence missing")
+    cutoff = completion.get("required_completed_through")
+    if data.get("required_completed_through") != cutoff:
+        raise ValueError("target binding cutoff differs from generation set")
+    if _date(cutoff, "generation-set cutoff") >= _date(target_date, "target date"):
+        raise ValueError("target binding includes target/future results")
+    effective = {
+        "schema_version": SCHEMA,
+        "status": "ACCEPTED",
+        "target_date": target_date,
+        "completion_evidence": completion,
+        "analysis": generation.get("analysis"),
+        "rrdb": generation.get("rrdb"),
+        "course_fit": generation.get("course_fit"),
+        "race_lap": generation.get("race_lap"),
+    }
+    return effective, {
+        "mode": "generation_set_binding",
+        "record_sha256": primary_sha,
+        "generation_set_id": generation_id,
+        "generation_set_sha256": generation_sha,
+        "generation_set_path": generation_ref,
+        "consumed_field_consistency": consistency,
+    }
+
+
+def _resolve_materialization_record(path: Path, repo_root: Path) -> tuple[dict, dict]:
+    """Resolve any reviewed record that is allowed to name transport bytes."""
+    primary_sha = _canonical_receipt(path, repo_root)
+    data = _load(path)
+    schema = data.get("schema_version")
+    if schema == BINDING_SCHEMA:
+        target = data.get("target_date")
+        if not isinstance(target, str):
+            raise ValueError("target binding has no target_date")
+        return _resolve_target_acceptance(path, repo_root, target)
+    allowed = {
+        SCHEMA: "ACCEPTED",
+        GENERATION_SCHEMA: "ACCEPTED",
+        PRODUCER_EVIDENCE_SCHEMA: "VERIFIED",
+    }
+    expected_status = allowed.get(schema)
+    if expected_status is None or data.get("status") != expected_status:
+        raise ValueError("unaccepted forward source declaration")
+    return data, {
+        "mode": str(schema),
+        "record_sha256": primary_sha,
+        "generation_set_id": data.get("generation_set_id"),
+    }
 
 def _expected(entry: object, label: str) -> dict:
     if not isinstance(entry, dict) or entry.get("status") != "ACCEPTED":
@@ -128,12 +224,8 @@ def accept(
     course_fit_root: Path, race_lap_current_bundle: Path,
     paci_sha256: str, output: Path,
 ) -> dict:
-    committed_digest = _canonical_receipt(acceptance_path, repo_root)
-    a = _load(acceptance_path)
-    if a.get("schema_version") != SCHEMA or a.get("status") != "ACCEPTED":
-        raise ValueError("v2 producer acceptance missing")
-    if a.get("target_date") != target_date:
-        raise ValueError("v2 target date mismatch")
+    a, contract = _resolve_target_acceptance(acceptance_path, repo_root, target_date)
+    committed_digest = contract["record_sha256"]
     completion = a.get("completion_evidence")
     if (not isinstance(completion, dict) or completion.get("status") != "PASS"
             or completion.get("source") not in ("DEDICATED_JRDB_RESULT_OPERATION", "DEDICATED_DATA_OPERATIONS")
@@ -199,6 +291,9 @@ def accept(
         "schema_version": LOCK_SCHEMA, "status": "READY_FOR_T1",
         "target_date": target_date, "required_completed_through": cutoff.isoformat(),
         "acceptance_sha256": committed_digest, "paci_sha256": paci_sha256,
+        "source_contract_mode": contract["mode"],
+        "generation_set_id": contract.get("generation_set_id"),
+        "generation_set_sha256": contract.get("generation_set_sha256"),
         "completion_evidence": completion,
         "analysis": {**measured_analysis, "source_mode": expected["analysis"]["source_mode"],
                      "source_ref": expected["analysis"]["source_ref"]},
