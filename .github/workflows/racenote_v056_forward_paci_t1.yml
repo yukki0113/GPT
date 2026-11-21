@@ -266,7 +266,7 @@ jobs:
           mkdir -p /tmp/racenote-lap
           mv /tmp/racenote-v2-sources/race_lap /tmp/racenote-lap/current
           test -s /tmp/racenote-analysis/current.json
-          test -s /tmp/racenote-fit/manifest.json
+          test -s /tmp/racenote-fit/fit/research/candidate_fit_view.parquet
           test -s /tmp/racenote-lap/current/manifest.json
           test -s /tmp/racenote-lap/current/race_lap.parquet
       - name: Fetch RRDB CURRENT with receipt and CRC
