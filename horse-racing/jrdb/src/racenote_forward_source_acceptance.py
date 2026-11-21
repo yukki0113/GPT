@@ -163,7 +163,7 @@ def accept(
     # Only approved source identities, never an arbitrary local copy.
     for name in ("analysis", "course_fit", "race_lap"):
         entry = expected[name]
-        if entry.get("source_mode") not in ("actions_artifact", "drive_current", "data_storage_handoff"):
+        if entry.get("source_mode") not in ("drive_current", "data_storage_handoff"):
             raise ValueError(name + ": unsupported source mode")
         if not entry.get("source_ref") or not entry.get("source_sha256"):
             raise ValueError(name + ": source provenance missing")
