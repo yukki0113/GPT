@@ -1,7 +1,7 @@
 name: RaceNote v0.5.6 Forward PACI T1
 on:
   repository_dispatch:
-    types: [racenote_v056_forward_paci_t1_request]
+    types: [racenote_v056_forward_paci_t1_request, racenote_forward_t1_request]
   workflow_dispatch:
     inputs:
       target_date:
@@ -17,8 +17,8 @@ on:
         required: false
         type: string
       race_lap_expected_period_to:
-        description: Last completed day YYYY-MM-DD (strictly before target)
-        required: true
+        description: Optional explicit cutoff; auto-derived from accepted generation set in orchestrated v2 mode
+        required: false
         type: string
       analysis_artifact_id:
         description: Accepted canonical Analysis v1.4 Actions artifact ID
@@ -107,46 +107,59 @@ jobs:
               title = issue.get("title", "")
               if ("pull_request" in issue
                       or issue.get("user", {}).get("login") != "yukki0113"
-                      or not title.startswith("[RACENOTE_V056_FORWARD_PACI_T1]")):
+                      or not title.startswith(("[RACENOTE_V056_FORWARD_PACI_T1]", "[RACENOTE_FORWARD_T1]"))):
                   raise SystemExit("invalid owner forward T1 request Issue")
               req = json.loads((issue.get("body") or "").strip())
-              required = {"target_date", "paci_drive_file_id", "race_lap_expected_period_to"}
-              if not req.get("v2_acceptance_path"):
-                  required |= {"analysis_artifact_id", "analysis_generation_id",
-                               "course_fit_artifact_id", "race_lap_artifact_id",
-                               "freshness_acceptance_json"}
+              required = {"target_date", "paci_drive_file_id"}
+              legacy_keys = {"analysis_artifact_id", "analysis_generation_id",
+                             "course_fit_artifact_id", "race_lap_artifact_id",
+                             "freshness_acceptance_json"}
               if not isinstance(req, dict) or not required <= set(req) or set(req) - set(keys):
                   raise SystemExit("incorrect forward T1 Issue input fields")
               values = {key: str(req.get(key, "") or "") for key in keys}
-              label = title[len("[RACENOTE_V056_FORWARD_PACI_T1]"):].strip()
+              prefixes = ("[RACENOTE_V056_FORWARD_PACI_T1]", "[RACENOTE_FORWARD_T1]")
+              prefix = next((item for item in prefixes if title.startswith(item)), None)
+              if prefix is None:
+                  raise SystemExit("invalid owner forward T1 request Issue")
+              label = title[len(prefix):].strip()
               if label != values["target_date"].replace("-", ""):
                   raise SystemExit("Issue title date and target_date disagree")
+              has_legacy = any(values[key] for key in legacy_keys)
+              if has_legacy and not all(values[key] for key in legacy_keys):
+                  raise SystemExit("legacy T1 inputs must be supplied as one complete set")
+              if has_legacy and values["v2_acceptance_path"]:
+                  raise SystemExit("legacy and v2 source contracts are mutually exclusive")
           else:
               values = {key: os.environ.get(env, "") for key, env in keys.items()}
-          for key in ("target_date", "race_lap_expected_period_to"):
-              if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", values[key]):
-                  raise SystemExit("bad date in " + key)
+          if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", values["target_date"]):
+              raise SystemExit("bad date in target_date")
+          if values["race_lap_expected_period_to"] and not re.fullmatch(
+                  r"[0-9]{4}-[0-9]{2}-[0-9]{2}", values["race_lap_expected_period_to"]):
+              raise SystemExit("bad date in race_lap_expected_period_to")
           if not re.fullmatch(r"[A-Za-z0-9_-]{10,128}", values["paci_drive_file_id"]):
               raise SystemExit("bad PACI Drive ID")
           if values["paci_drive_sha256"] and not re.fullmatch(r"[0-9a-f]{64}", values["paci_drive_sha256"]):
               raise SystemExit("bad PACI SHA256")
           v2 = values["v2_acceptance_path"]
+          legacy_present = any(values[k] for k in (
+              "analysis_artifact_id", "course_fit_artifact_id", "race_lap_artifact_id",
+              "analysis_generation_id", "freshness_acceptance_json"))
           if v2:
               if not re.fullmatch(r"horse-racing/jrdb/forward-acceptance/[A-Za-z0-9_./-]+\.json", v2) or ".." in v2.split("/"):
                   raise SystemExit("unapproved v2 acceptance path")
-              if any(values[k] for k in ("analysis_artifact_id", "course_fit_artifact_id",
-                                         "race_lap_artifact_id", "analysis_generation_id",
-                                         "freshness_acceptance_json")):
+              if legacy_present:
                   raise SystemExit("v2 mode must not include legacy artifact/A05 inputs")
               import pathlib
               if not pathlib.Path(v2).is_file():
                   raise SystemExit("committed v2 producer acceptance not found")
-          else:
+          elif legacy_present:
               for key in ("analysis_artifact_id", "course_fit_artifact_id", "race_lap_artifact_id"):
                   if not re.fullmatch(r"[1-9][0-9]{6,19}", values[key]):
                       raise SystemExit("bad artifact ID in " + key)
               if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{3,127}", values["analysis_generation_id"]):
                   raise SystemExit("bad Analysis generation")
+              if not values["race_lap_expected_period_to"]:
+                  raise SystemExit("legacy mode requires race_lap_expected_period_to")
               try:
                   freshness=json.loads(values["freshness_acceptance_json"])
               except (ValueError,TypeError) as exc:
@@ -162,6 +175,51 @@ jobs:
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as stream:
               stream.write(f"target_date={values['target_date']}\n")
           PY
+      - name: Resolve or create target binding from accepted generation set
+        if: ${{ env.V2_ACCEPTANCE_PATH == '' && env.ANALYSIS_ARTIFACT_ID == '' }}
+        run: |
+          set -euo pipefail
+          BINDING="horse-racing/jrdb/forward-acceptance/targets/${TARGET_DATE//-/}.json"
+          python horse-racing/jrdb/src/racenote_forward_target_binding.py             --target-date "$TARGET_DATE"             --repo-root .             --output "$BINDING"
+          CUTOFF="$(python - "$BINDING" <<'PY'
+          import json,sys
+          print(json.load(open(sys.argv[1], encoding="utf-8"))["required_completed_through"])
+          PY
+          )"
+          if [[ -n "$EXPECTED_PERIOD_TO" && "$EXPECTED_PERIOD_TO" != "$CUTOFF" ]]; then
+            echo "explicit cutoff differs from accepted generation-set binding"
+            exit 1
+          fi
+          echo "V2_ACCEPTANCE_PATH=$BINDING" >> "$GITHUB_ENV"
+          echo "EXPECTED_PERIOD_TO=$CUTOFF" >> "$GITHUB_ENV"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$BINDING"
+          if ! git diff --cached --quiet; then
+            git commit -m "RaceNote: bind forward $TARGET_DATE to accepted generation set"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+
+      - name: Resolve cutoff from explicit v2 source contract
+        if: ${{ env.V2_ACCEPTANCE_PATH != '' }}
+        run: |
+          set -euo pipefail
+          CUTOFF="$(python - <<'PY'
+          import os
+          from pathlib import Path
+          from racenote_forward_source_acceptance import _resolve_target_acceptance
+          data,_=_resolve_target_acceptance(
+              Path(os.environ["V2_ACCEPTANCE_PATH"]), Path("."), os.environ["TARGET_DATE"])
+          print(data["completion_evidence"]["required_completed_through"])
+          PY
+          )"
+          if [[ -n "$EXPECTED_PERIOD_TO" && "$EXPECTED_PERIOD_TO" != "$CUTOFF" ]]; then
+            echo "explicit cutoff differs from v2 accepted source contract"
+            exit 1
+          fi
+          echo "EXPECTED_PERIOD_TO=$CUTOFF" >> "$GITHUB_ENV"
+
       - name: Validate one forward date and immutable target
         run: |
           set -euo pipefail
