@@ -68,7 +68,7 @@ def _course_fit_entry(root: Path, evidence: dict, cutoff: str) -> dict:
     assets = {
         path.relative_to(root).as_posix(): _sha(path)
         for path in sorted(root.rglob("*"))
-        if path.is_file() and path.name != "manifest.json"
+        if path.is_file() and path.relative_to(root).as_posix() != "manifest.json"
     }
     if "fit/research/candidate_fit_view.parquet" not in assets:
         raise ValueError("course_fit: prediction view missing")
