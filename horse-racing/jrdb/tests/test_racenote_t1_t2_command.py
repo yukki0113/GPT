@@ -126,6 +126,20 @@ def test_forward_t1_rejects_unresolved_same_cutoff_generation_conflict(tmp_path)
         bootstrap.plan(repo,"2026-11-22")
 
 
+def test_forward_t1_ignores_future_verified_producer_and_reuses_eligible_generation(tmp_path):
+    repo=tmp_path/"repo"
+    repo.mkdir()
+    init_git(repo)
+    write(repo,"horse-racing/jrdb/forward-acceptance/generation-sets/old.json",
+          generation("2026-11-08","c"*64))
+    write(repo,"horse-racing/jrdb/forward-acceptance/producer-evidence/future.json",
+          evidence("2026-11-22"))
+    commit(repo)
+    result=bootstrap.plan(repo,"2026-11-21")
+    assert result["status"]=="ACCEPTED_REUSE"
+    assert result["cutoff"]=="2026-11-08"
+
+
 def test_forward_t1_without_verified_sources_is_orchestration_missing(tmp_path):
     repo=tmp_path/"repo"
     repo.mkdir()
