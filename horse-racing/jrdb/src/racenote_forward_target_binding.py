@@ -6,6 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
+from racenote_forward_errors import DataInvalid, OrchestrationMissing, run_cli
 from racenote_forward_source_acceptance import (
     BINDING_SCHEMA,
     GENERATION_SCHEMA,
@@ -48,22 +49,25 @@ def _eligible(record: dict, target_date: str) -> bool:
 def select_generation_set(repo_root: Path, target_date: str) -> tuple[Path, dict, str]:
     base = (repo_root / GEN_DIR).resolve()
     if not base.is_dir():
-        raise ValueError("no forward generation-set directory")
+        raise OrchestrationMissing("no forward generation-set directory")
     candidates = []
     for path in sorted(base.glob("*.json")):
-        record = _load(path)
+        try:
+            record = _load(path)
+        except (OSError, ValueError) as exc:
+            raise DataInvalid(f"malformed generation-set record: {path.name}") from exc
         if not _eligible(record, target_date):
             continue
         digest = _canonical_receipt(path, repo_root)
         cutoff = record["completion_evidence"]["required_completed_through"]
         candidates.append((cutoff, str(record.get("generation_set_id", "")), path, record, digest))
     if not candidates:
-        raise ValueError("no accepted forward generation set is eligible for target")
+        raise OrchestrationMissing("no accepted forward generation set is eligible for target")
     latest_cutoff = max(item[0] for item in candidates)
     latest = [item for item in candidates if item[0] == latest_cutoff]
     ids = {item[1] for item in latest}
     if len(latest) != 1 or len(ids) != 1 or "" in ids:
-        raise ValueError("ambiguous accepted generation set for latest completed-race cutoff")
+        raise DataInvalid("ambiguous accepted generation set for latest completed-race cutoff")
     _, _, path, record, digest = latest[0]
     return path, record, digest
 
@@ -83,7 +87,7 @@ def build_binding(repo_root: Path, target_date: str, output: Path) -> dict:
     if output.exists():
         existing = _load(output)
         if existing != result:
-            raise ValueError("existing target binding differs from selected generation set")
+            raise DataInvalid("existing target binding differs from selected generation set")
         return existing
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
@@ -109,4 +113,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main, "TARGET_BINDING"))
