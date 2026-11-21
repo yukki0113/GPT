@@ -190,6 +190,60 @@ def test_legacy_course_fit_requires_full_accepted_assets(tmp_path):
         gate._course_fit(root, accepted, "2026-11-21")
 
 
+
+def test_analysis_tar_xz_accepts_canonical_root_and_blocks_link(tmp_path):
+    import tarfile
+    import io
+    valid = tmp_path / "valid.tar.xz"
+    with tarfile.open(valid, "w:xz") as tf:
+        root = tarfile.TarInfo(".")
+        root.type = tarfile.DIRTYPE
+        tf.addfile(root)
+        info = tarfile.TarInfo("./current.json")
+        data = b'{"status":"CURRENT"}'
+        info.size = len(data)
+        tf.addfile(info, io.BytesIO(data))
+        info = tarfile.TarInfo("./generations/test/manifest.json")
+        data = b'{"validation_status":"PASS"}'
+        info.size = len(data)
+        tf.addfile(info, io.BytesIO(data))
+    source.unpack_verified_tar(valid, tmp_path / "unpacked")
+    assert (tmp_path / "unpacked/current.json").is_file()
+    assert (tmp_path / "unpacked/generations/test/manifest.json").is_file()
+    hostile = tmp_path / "hostile.tar.xz"
+    with tarfile.open(hostile, "w:xz") as tf:
+        link = tarfile.TarInfo("safe/target")
+        link.type = tarfile.SYMTYPE
+        link.linkname = "../../outside"
+        tf.addfile(link)
+    with pytest.raises(ValueError, match="unsafe"):
+        source.unpack_verified_tar(hostile, tmp_path / "rejected")
+    assert not (tmp_path / "rejected").exists()
+
+
+def test_drive_racelap_current_bundle_normalizes_exact_known_layout(tmp_path):
+    archive = tmp_path / "racelap.zip"
+    with zipfile.ZipFile(archive, "w") as z:
+        for name in ("manifest.json", "race_lap.parquet", "audit.json"):
+            z.writestr("current/" + name, name)
+        z.writestr("resolver_receipt.json", "{}")
+    root = tmp_path / "race_lap"
+    source.unpack_verified(archive, root)
+    source.normalize_racelap_current(root)
+    assert (root / "manifest.json").is_file()
+    assert (root / "race_lap.parquet").is_file()
+    assert not (root / "current").exists()
+    source.normalize_racelap_current(root)
+
+
+def test_racelap_unknown_bundle_layout_fails(tmp_path):
+    folder = tmp_path / "race_lap"
+    folder.mkdir()
+    (folder / "unexpected.json").write_text("{}")
+    with pytest.raises(ValueError, match="unknown"):
+        source.normalize_racelap_current(folder)
+
+
 def test_v1_workflow_keeps_legacy_paths_and_v2_must_be_explicit():
     y = (ROOT / ".github/workflows/racenote_v056_forward_paci_t1.yml").read_text()
     assert "V2_ACCEPTANCE_PATH" in y
