@@ -132,7 +132,7 @@ jobs:
               raise SystemExit("bad PACI SHA256")
           v2 = values["v2_acceptance_path"]
           if v2:
-              if not re.fullmatch(r"horse-racing/jrdb/forward-acceptance/[A-Za-z0-9_./-]+\\.json", v2) or ".." in v2.split("/"):
+              if not re.fullmatch(r"horse-racing/jrdb/forward-acceptance/[A-Za-z0-9_./-]+\.json", v2) or ".." in v2.split("/"):
                   raise SystemExit("unapproved v2 acceptance path")
               if any(values[k] for k in ("analysis_artifact_id", "course_fit_artifact_id",
                                          "race_lap_artifact_id", "analysis_generation_id",
