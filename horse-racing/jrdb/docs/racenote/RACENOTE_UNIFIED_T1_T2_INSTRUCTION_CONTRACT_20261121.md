@@ -47,7 +47,7 @@ GitHub ActionsにChatGPTの人間比較判断を代替させない。
   `racenote_forward_t1_bootstrap.py` を実行する。
   受入済みgeneration-setが適格なら再利用。
   新たな検証済みproducer evidenceがあれば `accept-producer` reusable jobで
-  **consumed-field検証 → generation-set受入 → main commit** を自動実施してからT1へ進む。
+  **正本ソース・SHA・対象期間の検証 → generation-set受入 → main commit** を自動実施してからT1へ進む。
   対象日binding、cutoff、PACI取得、CLEAN BLIND Reader、main不変出力を最後まで確認する。
 - この自動準備によって別の `[RACENOTE_FORWARD_ACCEPTANCE]` Issueは通常不要。
   既存のproducer acceptance Issueは診断・手動再現経路として維持する。
@@ -58,7 +58,7 @@ GitHub ActionsにChatGPTの人間比較判断を代替させない。
   `ORCHESTRATION_MISSING` で止め、専用producer業務へ進める。
   Actions側単独では非公開Drive一覧とモデルの確認判断を代替できない。
 - 不一致なら `DATA_INVALID`。同cutoffの受入と新producer宣言が食い違う場合は
-  明示的に止める。ZIPのmodified time/transport SHAだけでは不一致扱いしない。
+  明示的に止める。ZIPの変更日時だけでは不一致扱いしない。異なる実データのSHAは必ず検証する。確定SEDと過去Analysis/RRDBのフィールド完全一致はT1受入条件にしない。
   race開始後の遡及FORWARDや未来の結果混入は不可。
 
 ## T2 / BACKTEST・FORWARD共通
