@@ -22,7 +22,7 @@ from jrdb_race_lap_forward_current import validate as validate_lap
 
 SCHEMA = "racenote-forward-source-acceptance-v2"
 LOCK_SCHEMA = "racenote-forward-source-lock-v2"
-SAFE_REF = re.compile(r"horse-racing/jrdb/forward-acceptance/[A-Za-z0-9_./-]+\\.json\\Z")
+SAFE_REF = re.compile(r"horse-racing/jrdb/forward-acceptance/[A-Za-z0-9_./-]+\.json\Z")
 HEX = re.compile(r"[a-f0-9]{64}\\Z")
 
 
