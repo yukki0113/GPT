@@ -165,10 +165,22 @@ def accept(
         entry = expected[name]
         if entry.get("source_mode") not in ("drive_current", "data_storage_handoff"):
             raise ValueError(name + ": unsupported source mode")
-        if not entry.get("source_ref") or not entry.get("source_sha256"):
-            raise ValueError(name + ": source provenance missing")
-        if not HEX.fullmatch(str(entry["source_sha256"])):
-            raise ValueError(name + ": source digest invalid")
+        parts = entry.get("source_parts")
+        if parts is not None:
+            if name != "course_fit" or not isinstance(parts, list) or not (2 <= len(parts) <= 4):
+                raise ValueError(name + ": unexpected multipart source")
+            sources = parts
+        else:
+            sources = [entry]
+        ids = set()
+        for source in sources:
+            if not isinstance(source, dict) or not source.get("source_ref") or not source.get("source_sha256"):
+                raise ValueError(name + ": source provenance missing")
+            if not HEX.fullmatch(str(source["source_sha256"])):
+                raise ValueError(name + ": source digest invalid")
+            if source["source_ref"] in ids:
+                raise ValueError(name + ": repeated multipart source")
+            ids.add(source["source_ref"])
     course_fit = _course_fit(course_fit_root, expected["course_fit"], target_date)
     lap_root = race_lap_current_bundle
     lap_manifest = lap_root / "manifest.json"
