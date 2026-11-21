@@ -68,6 +68,7 @@ jobs:
       RACE_LAP_ARTIFACT_ID: ${{ inputs.race_lap_artifact_id }}
       FRESHNESS_ACCEPTANCE_JSON: ${{ inputs.freshness_acceptance_json }}
       V2_ACCEPTANCE_PATH: ${{ inputs.v2_acceptance_path }}
+      RACENOTE_FORWARD_FAILURE_JSON: /tmp/racenote-forward-failure.json
     steps:
       - uses: actions/checkout@v4
         with:
@@ -174,6 +175,29 @@ jobs:
                   stream.write(f"{env}={values[key]}\n")
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as stream:
               stream.write(f"target_date={values['target_date']}\n")
+          PY
+      - name: Validate pre-race target and immutable destination before binding
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import os
+          from datetime import date, datetime, timedelta
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+          from racenote_forward_errors import DataInvalid, run_cli
+          def check():
+              try:
+                  target = date.fromisoformat(os.environ["TARGET_DATE"])
+              except ValueError as exc:
+                  raise DataInvalid("invalid target date") from exc
+              now = datetime.now(ZoneInfo("Asia/Tokyo")).date()
+              if not now <= target <= now + timedelta(days=7):
+                  raise DataInvalid("target must be today or within seven days JST")
+              root = Path("horse-racing/jrdb/daily") / target.strftime("%Y%m%d") / "v056_day"
+              if root.exists() or root.is_symlink():
+                  raise DataInvalid("immutable forward T1 destination already exists")
+              return 0
+          raise SystemExit(run_cli(check, "TARGET_PREFLIGHT"))
           PY
       - name: Resolve or create target binding from accepted generation set
         if: ${{ env.V2_ACCEPTANCE_PATH == '' && env.ANALYSIS_ARTIFACT_ID == '' }}
@@ -336,7 +360,10 @@ jobs:
           import json,os
           if os.environ.get("V2_ACCEPTANCE_PATH"):
               from pathlib import Path
-              data=json.loads(Path(os.environ["V2_ACCEPTANCE_PATH"]).read_text(encoding="utf-8"))
+              from racenote_forward_source_acceptance import _resolve_target_acceptance
+              data, _ = _resolve_target_acceptance(
+                  Path(os.environ["V2_ACCEPTANCE_PATH"]), Path("."),
+                  os.environ["TARGET_DATE"])
           else:
               data=json.loads(os.environ["FRESHNESS_ACCEPTANCE_JSON"])
           print(data["rrdb"]["file_id"])
@@ -445,4 +472,31 @@ jobs:
           name: racenote-v056-forward-${{ steps.resolve.outputs.target_date }}-authoring
           path: horse-racing/jrdb/daily/*/v056_day/v056/authoring_bundle/
           retention-days: 7
+          if-no-files-found: error
+
+      - name: Write structured failure receipt
+        if: failure()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path("/tmp/racenote-forward-failure.json")
+          if not path.is_file():
+              path.write_text(json.dumps({
+                  "schema_version": "racenote-forward-failure-v1",
+                  "status": "FAILED",
+                  "error_code": "EXECUTION_FAILED",
+                  "failed_stage": "UNCLASSIFIED_RUNNER_STAGE",
+                  "detail": "Consult the failing workflow step; no typed contract error was emitted.",
+                  "retryable": None
+              },sort_keys=True)+"\n",encoding="utf-8")
+          print(path.read_text(encoding="utf-8"))
+          PY
+      - name: Upload forward failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-forward-t1-failure-${{ github.run_id }}
+          path: /tmp/racenote-forward-failure.json
+          retention-days: 14
           if-no-files-found: error
