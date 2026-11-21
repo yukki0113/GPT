@@ -205,6 +205,19 @@ def accept(
         "rrdb": measured_rrdb,
         "course_fit": course_fit,
         "race_lap": lap_actual,
+        "source_provenance": {
+            name: {
+                "source_mode": expected[name]["source_mode"],
+                "producer_acceptance_ref": expected[name]["producer_acceptance_ref"],
+                **({"source_parts": expected[name]["source_parts"]}
+                   if expected[name].get("source_parts") is not None else {
+                       "source_ref": expected[name]["source_ref"],
+                       "source_sha256": expected[name]["source_sha256"],
+                       "archive_format": expected[name].get("archive_format", "zip"),
+                   }),
+            }
+            for name in ("analysis", "course_fit", "race_lap")
+        },
     }
     if output.exists():
         raise FileExistsError(output)
