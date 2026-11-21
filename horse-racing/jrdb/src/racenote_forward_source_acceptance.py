@@ -21,7 +21,7 @@ from racenote_v056_forward_freshness import (
 from jrdb_race_lap_forward_current import validate as validate_lap
 
 SCHEMA = "racenote-forward-source-acceptance-v2"
-GENERATION_SCHEMA = "racenote-forward-generation-set-v1"
+GENERATION_SCHEMA = "racenote-forward-generation-set-v2"
 BINDING_SCHEMA = "racenote-forward-target-binding-v1"
 PRODUCER_EVIDENCE_SCHEMA = "racenote-forward-producer-evidence-v1"
 LOCK_SCHEMA = "racenote-forward-source-lock-v2"
@@ -90,11 +90,12 @@ def _resolve_target_acceptance(
         raise ValueError("generation set has no stable id")
     if data.get("generation_set_id") != generation_id:
         raise ValueError("target binding generation_set_id mismatch")
-    consistency = generation.get("consumed_field_consistency")
-    if (not isinstance(consistency, dict)
-            or consistency.get("status") != "PASS"
-            or not HEX.fullmatch(str(consistency.get("report_sha256", "")))):
-        raise ValueError("generation set has no PASS consumed-field consistency evidence")
+    integrity = generation.get("producer_source_integrity")
+    if (not isinstance(integrity, dict)
+            or integrity.get("status") != "VERIFIED"
+            or not HEX.fullmatch(str(integrity.get("materialization_receipt_sha256", "")))
+            or integrity.get("semantic_cross_generation_comparison") != "NOT_REQUIRED"):
+        raise ValueError("generation set lacks verified producer source integrity")
     completion = generation.get("completion_evidence")
     if not isinstance(completion, dict):
         raise ValueError("generation set completion evidence missing")
@@ -119,7 +120,7 @@ def _resolve_target_acceptance(
         "generation_set_id": generation_id,
         "generation_set_sha256": generation_sha,
         "generation_set_path": generation_ref,
-        "consumed_field_consistency": consistency,
+        "producer_source_integrity": integrity,
     }
 
 
