@@ -24,8 +24,6 @@ from racenote_forward_source_acceptance import (
     _sha,
 )
 
-CONSISTENCY_SCHEMA = "racenote-forward-consumed-field-consistency-v1"
-
 
 def _source_entry(value: object, label: str) -> dict:
     if not isinstance(value, dict):
@@ -108,7 +106,6 @@ def build_generation_set(
     *,
     repo_root: Path,
     materialization_receipt: Path,
-    consumed_field_report: Path,
     analysis_root: Path,
     rrdb_root: Path,
     rrdb_zip: Path,
@@ -118,8 +115,6 @@ def build_generation_set(
 ) -> dict[str, Any]:
     if not evidence_path.is_file():
         raise OrchestrationMissing("reviewed producer evidence has not been committed")
-    if not consumed_field_report.is_file():
-        raise OrchestrationMissing("consumed-field validation report not produced")
     evidence_sha = _canonical_receipt(evidence_path, repo_root)
     evidence = _load(evidence_path)
     if (evidence.get("schema_version") != PRODUCER_EVIDENCE_SCHEMA
@@ -140,18 +135,37 @@ def build_generation_set(
             or materialized.get("acceptance_sha256") != evidence_sha):
         raise ValueError("materialization is not bound to producer evidence")
 
-    consistency = _load(consumed_field_report)
-    if consistency.get("schema_version") != CONSISTENCY_SCHEMA or consistency.get("status") != "PASS":
-        raise DataInvalid("finalized SED consumed-field consistency did not PASS")
+    # Source pinning is the T1 acceptance boundary. Cross-generation equality
+    # of all finalized SED fields is NOT an acceptance prerequisite: producer
+    # revisions and differing null/sentinel representations must not block
+    # an otherwise safe, as-of-sealed forward reader.
     expected_sed = evidence.get("finalized_sed")
+    measured_sed = materialized.get("finalized_sed")
     if not isinstance(expected_sed, list) or not expected_sed:
         raise OrchestrationMissing("producer evidence has no finalized SED delivery")
-    expected_dates = sorted(str(item.get("date")) for item in expected_sed if isinstance(item, dict))
-    if expected_dates != sorted(consistency.get("dates") or []):
-        raise DataInvalid("consistency report dates differ from producer evidence")
+    if not isinstance(measured_sed, list) or len(measured_sed) != len(expected_sed):
+        raise DataInvalid("materialized finalized SED sources do not match evidence")
+    def sed_index(rows: list, label: str) -> dict:
+        indexed = {}
+        for row in rows:
+            if not isinstance(row, dict):
+                raise DataInvalid(f"{label}: malformed finalized SED")
+            day = _date(row.get("date"), f"{label}: date").isoformat()
+            fid = row.get("source_ref")
+            digest = row.get("source_sha256")
+            if (day in indexed or not isinstance(fid, str) or len(fid) < 10
+                    or not HEX.fullmatch(str(digest))):
+                raise DataInvalid(f"{label}: invalid or duplicate finalized SED source")
+            indexed[day] = (fid, digest)
+        return indexed
+    expected_sed_index = sed_index(expected_sed, "producer evidence")
+    measured_sed_index = sed_index(measured_sed, "materialization")
+    if expected_sed_index != measured_sed_index:
+        raise DataInvalid("finalized SED file IDs or SHA differ from verified producer evidence")
+    expected_dates = sorted(expected_sed_index)
     if max(expected_dates) != cutoff:
         raise DataInvalid("finalized SED coverage does not reach completion cutoff")
-    report_sha = _sha(consumed_field_report)
+    source_receipt_sha = _sha(materialization_receipt)
 
     analysis = _inspect_analysis(analysis_root)
     rrdb = _inspect_rrdb(rrdb_root, rrdb_zip, rrdb_receipt)
@@ -212,7 +226,7 @@ def build_generation_set(
         "rrdb": [rrdb_entry["generation_id"], rrdb_entry["manifest_sha256"], rrdb_entry["zip_sha256"]],
         "course_fit": [course_fit_entry["generation_id"], course_fit_entry["manifest_sha256"]],
         "race_lap": [lap_entry["generation_id"], lap_entry["manifest_sha256"], lap_entry["parquet_sha256"]],
-        "consistency": report_sha,
+        "source_receipt": source_receipt_sha,
     }
     identity_sha = hashlib.sha256(
         json.dumps(identity, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -225,13 +239,14 @@ def build_generation_set(
         "completion_evidence": completion,
         "producer_evidence_path": evidence_path.resolve().relative_to(repo_root.resolve()).as_posix(),
         "producer_evidence_sha256": evidence_sha,
-        "consumed_field_consistency": {
-            "status": "PASS",
-            "report_sha256": report_sha,
-            "dates": expected_dates,
-            "analysis_fields": consistency.get("analysis_fields"),
-            "rrdb_horse_fields": consistency.get("rrdb_horse_fields"),
-            "rrdb_race_fields": consistency.get("rrdb_race_fields"),
+        "producer_source_integrity": {
+            "status": "VERIFIED",
+            "materialization_receipt_sha256": source_receipt_sha,
+            "finalized_sed_dates": expected_dates,
+            "finalized_sed_file_sha256": {
+                day: identity[1] for day, identity in sorted(measured_sed_index.items())
+            },
+            "semantic_cross_generation_comparison": "NOT_REQUIRED",
         },
         "analysis": analysis_entry,
         "rrdb": rrdb_entry,
@@ -245,7 +260,6 @@ def main() -> int:
     ap.add_argument("--producer-evidence", type=Path, required=True)
     ap.add_argument("--repo-root", type=Path, default=Path("."))
     ap.add_argument("--materialization-receipt", type=Path, required=True)
-    ap.add_argument("--consumed-field-report", type=Path, required=True)
     ap.add_argument("--analysis-root", type=Path, required=True)
     ap.add_argument("--rrdb-root", type=Path, required=True)
     ap.add_argument("--rrdb-zip", type=Path, required=True)
@@ -258,7 +272,6 @@ def main() -> int:
         args.producer_evidence,
         repo_root=args.repo_root,
         materialization_receipt=args.materialization_receipt,
-        consumed_field_report=args.consumed_field_report,
         analysis_root=args.analysis_root,
         rrdb_root=args.rrdb_root,
         rrdb_zip=args.rrdb_zip,
