@@ -22,23 +22,27 @@ on:
         type: string
       analysis_artifact_id:
         description: Accepted canonical Analysis v1.4 Actions artifact ID
-        required: true
+        required: false
         type: string
       analysis_generation_id:
         description: Accepted Analysis generation ID from its manifest
-        required: true
+        required: false
         type: string
       course_fit_artifact_id:
         description: Accepted Course Fit v0.1 Actions artifact ID
-        required: true
+        required: false
         type: string
       race_lap_artifact_id:
         description: Accepted RaceLap CURRENT Actions artifact ID
-        required: true
+        required: false
         type: string
       freshness_acceptance_json:
-        description: Dedicated Analysis and RRDB accepted freshness receipt JSON, with confirmed race coverage cutoff
-        required: true
+        description: Legacy A05 acceptance JSON (required only when v2_acceptance_path is absent)
+        required: false
+        type: string
+      v2_acceptance_path:
+        description: Committed producer acceptance in horse-racing/jrdb/forward-acceptance/; v2 source mode
+        required: false
         type: string
 permissions:
   contents: write
@@ -63,6 +67,7 @@ jobs:
       COURSE_FIT_ARTIFACT_ID: ${{ inputs.course_fit_artifact_id }}
       RACE_LAP_ARTIFACT_ID: ${{ inputs.race_lap_artifact_id }}
       FRESHNESS_ACCEPTANCE_JSON: ${{ inputs.freshness_acceptance_json }}
+      V2_ACCEPTANCE_PATH: ${{ inputs.v2_acceptance_path }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -90,6 +95,7 @@ jobs:
               "course_fit_artifact_id": "COURSE_FIT_ARTIFACT_ID",
               "race_lap_artifact_id": "RACE_LAP_ARTIFACT_ID",
               "freshness_acceptance_json": "FRESHNESS_ACCEPTANCE_JSON",
+              "v2_acceptance_path": "V2_ACCEPTANCE_PATH",
           }
           if os.environ["GITHUB_EVENT_NAME"] == "repository_dispatch":
               number = os.environ.get("ROUTED_ISSUE_NUMBER", "")
@@ -104,7 +110,11 @@ jobs:
                       or not title.startswith("[RACENOTE_V056_FORWARD_PACI_T1]")):
                   raise SystemExit("invalid owner forward T1 request Issue")
               req = json.loads((issue.get("body") or "").strip())
-              required = set(keys) - {"paci_drive_sha256"}
+              required = {"target_date", "paci_drive_file_id", "race_lap_expected_period_to"}
+              if not req.get("v2_acceptance_path"):
+                  required |= {"analysis_artifact_id", "analysis_generation_id",
+                               "course_fit_artifact_id", "race_lap_artifact_id",
+                               "freshness_acceptance_json"}
               if not isinstance(req, dict) or not required <= set(req) or set(req) - set(keys):
                   raise SystemExit("incorrect forward T1 Issue input fields")
               values = {key: str(req.get(key, "") or "") for key in keys}
@@ -118,22 +128,34 @@ jobs:
                   raise SystemExit("bad date in " + key)
           if not re.fullmatch(r"[A-Za-z0-9_-]{10,128}", values["paci_drive_file_id"]):
               raise SystemExit("bad PACI Drive ID")
-          for key in ("analysis_artifact_id", "course_fit_artifact_id", "race_lap_artifact_id"):
-              if not re.fullmatch(r"[1-9][0-9]{6,19}", values[key]):
-                  raise SystemExit("bad artifact ID in " + key)
-          if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{3,127}", values["analysis_generation_id"]):
-              raise SystemExit("bad Analysis generation")
           if values["paci_drive_sha256"] and not re.fullmatch(r"[0-9a-f]{64}", values["paci_drive_sha256"]):
               raise SystemExit("bad PACI SHA256")
-          try:
-              freshness=json.loads(values["freshness_acceptance_json"])
-          except (ValueError,TypeError) as exc:
-              raise SystemExit("A05 freshness acceptance must be JSON") from exc
-          if not isinstance(freshness,dict) or freshness.get("schema_version")!="racenote-forward-analysis-rrdb-acceptance-v1":
-              raise SystemExit("Missing A05 dedicated-operation freshness receipt")
-          if len(values["freshness_acceptance_json"])>12000:
-              raise SystemExit("A05 acceptance receipt unreasonably large")
-          values["freshness_acceptance_json"]=json.dumps(freshness,separators=(",",":"),ensure_ascii=False)
+          v2 = values["v2_acceptance_path"]
+          if v2:
+              if not re.fullmatch(r"horse-racing/jrdb/forward-acceptance/[A-Za-z0-9_./-]+\.json", v2) or ".." in v2.split("/"):
+                  raise SystemExit("unapproved v2 acceptance path")
+              if any(values[k] for k in ("analysis_artifact_id", "course_fit_artifact_id",
+                                         "race_lap_artifact_id", "analysis_generation_id",
+                                         "freshness_acceptance_json")):
+                  raise SystemExit("v2 mode must not include legacy artifact/A05 inputs")
+              import pathlib
+              if not pathlib.Path(v2).is_file():
+                  raise SystemExit("committed v2 producer acceptance not found")
+          else:
+              for key in ("analysis_artifact_id", "course_fit_artifact_id", "race_lap_artifact_id"):
+                  if not re.fullmatch(r"[1-9][0-9]{6,19}", values[key]):
+                      raise SystemExit("bad artifact ID in " + key)
+              if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{3,127}", values["analysis_generation_id"]):
+                  raise SystemExit("bad Analysis generation")
+              try:
+                  freshness=json.loads(values["freshness_acceptance_json"])
+              except (ValueError,TypeError) as exc:
+                  raise SystemExit("A05 freshness acceptance must be JSON") from exc
+              if not isinstance(freshness,dict) or freshness.get("schema_version")!="racenote-forward-analysis-rrdb-acceptance-v1":
+                  raise SystemExit("Missing A05 dedicated-operation freshness receipt")
+              if len(values["freshness_acceptance_json"])>12000:
+                  raise SystemExit("A05 acceptance receipt unreasonably large")
+              values["freshness_acceptance_json"]=json.dumps(freshness,separators=(",",":"),ensure_ascii=False)
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
               for key, env in keys.items():
                   stream.write(f"{env}={values[key]}\n")
@@ -160,12 +182,13 @@ jobs:
               raise SystemExit('Forward date must be today or within 7 days (JST)')
           if not date.fromisoformat(cutoff) < target:
               raise SystemExit('RaceLap cutoff must be before target')
-          for key in ('ANALYSIS_ARTIFACT_ID','COURSE_FIT_ARTIFACT_ID','RACE_LAP_ARTIFACT_ID'):
-              if not re.fullmatch(r'[1-9][0-9]{6,19}',os.environ[key]):
-                  raise SystemExit('Invalid artifact ID: '+key)
-          gen=os.environ['ANALYSIS_GENERATION']
-          if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{3,127}',gen):
-              raise SystemExit('Invalid analysis generation')
+          if not os.environ.get("V2_ACCEPTANCE_PATH"):
+              for key in ('ANALYSIS_ARTIFACT_ID','COURSE_FIT_ARTIFACT_ID','RACE_LAP_ARTIFACT_ID'):
+                  if not re.fullmatch(r'[1-9][0-9]{6,19}',os.environ[key]):
+                      raise SystemExit('Invalid artifact ID: '+key)
+              gen=os.environ['ANALYSIS_GENERATION']
+              if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]{3,127}',gen):
+                  raise SystemExit('Invalid analysis generation')
           root=Path('horse-racing/jrdb/daily')/d.replace('-','')/'v056_day'
           if root.exists() or root.is_symlink():
               raise SystemExit('Immutable forward T1 target already exists: '+str(root))
@@ -191,6 +214,7 @@ jobs:
           python horse-racing/jrdb/src/racenote_v056_forward_drive_paci.py "${args[@]}"
           echo "PACI=$PACI" >> "$GITHUB_ENV"
       - name: Fetch accepted Analysis, Course Fit and RaceLap artifacts
+        if: ${{ env.V2_ACCEPTANCE_PATH == '' }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/v056-artifacts /tmp/racenote-analysis /tmp/racenote-fit /tmp/racenote-lap
@@ -229,6 +253,22 @@ jobs:
           unzip -q /tmp/v056-artifacts/RACE_LAP.zip -d /tmp/racenote-lap/current
           test -s /tmp/racenote-lap/current/race_lap.parquet
           test -s /tmp/racenote-lap/current/manifest.json
+      - name: Materialize v2 pinned CURRENT inputs
+        if: ${{ env.V2_ACCEPTANCE_PATH != '' }}
+        run: |
+          set -euo pipefail
+          python horse-racing/jrdb/src/racenote_forward_source_resolver.py \
+            --acceptance "$V2_ACCEPTANCE_PATH" \
+            --repo-root . \
+            --output-root /tmp/racenote-v2-sources
+          mv /tmp/racenote-v2-sources/analysis /tmp/racenote-analysis
+          mv /tmp/racenote-v2-sources/course_fit /tmp/racenote-fit
+          mkdir -p /tmp/racenote-lap
+          mv /tmp/racenote-v2-sources/race_lap /tmp/racenote-lap/current
+          test -s /tmp/racenote-analysis/current.json
+          test -s /tmp/racenote-fit/fit/research/candidate_fit_view.parquet
+          test -s /tmp/racenote-lap/current/manifest.json
+          test -s /tmp/racenote-lap/current/race_lap.parquet
       - name: Fetch RRDB CURRENT with receipt and CRC
         run: |
           set -euo pipefail
@@ -236,7 +276,12 @@ jobs:
           # before a possibly rotated RRDB CURRENT is downloaded.
           EXPECTED_RRDB_ID="$(python - <<'PY'
           import json,os
-          print(json.loads(os.environ["FRESHNESS_ACCEPTANCE_JSON"])["rrdb"]["file_id"])
+          if os.environ.get("V2_ACCEPTANCE_PATH"):
+              from pathlib import Path
+              data=json.loads(Path(os.environ["V2_ACCEPTANCE_PATH"]).read_text(encoding="utf-8"))
+          else:
+              data=json.loads(os.environ["FRESHNESS_ACCEPTANCE_JSON"])
+          print(data["rrdb"]["file_id"])
           PY
           )"
           python horse-racing/jrdb/src/racenote_fetch_rrdb_current.py \
@@ -248,6 +293,7 @@ jobs:
           unzip -q /tmp/v056-artifacts/rrdb.zip -d /tmp/racenote-rrdb
           test -f /tmp/racenote-rrdb/postrace_review/v0_1/current.json
       - name: A05 preflight accepted Analysis and RRDB coverage before T1
+        if: ${{ env.V2_ACCEPTANCE_PATH == '' }}
         run: |
           set -euo pipefail
           mkdir -p /tmp/racenote-freshness
@@ -273,22 +319,29 @@ jobs:
           set -euo pipefail
           TARGET="horse-racing/jrdb/daily/${TARGET_DATE//-/}/v056_day"
           BASE_SHA="$(git rev-parse HEAD)"
-          python horse-racing/jrdb/src/racenote_v056_forward_turn1.py \
-            --date "$TARGET_DATE" \
-            --paci "$PACI" \
-            --paci-source-receipt /tmp/racenote-paci/source_receipt.json \
-            --main-sha "$BASE_SHA" \
-            --analysis-root /tmp/racenote-analysis \
-            --course-fit-root /tmp/racenote-fit \
-            --racereview-root /tmp/racenote-rrdb/postrace_review/v0_1 \
-            --race-lap-current-bundle /tmp/racenote-lap/current \
-            --race-lap-expected-period-to "$EXPECTED_PERIOD_TO" \
-            --freshness-acceptance /tmp/racenote-freshness/acceptance.json \
-            --analysis-artifact-id "$ANALYSIS_ARTIFACT_ID" \
-            --analysis-generation-id "$ANALYSIS_GENERATION" \
-            --rrdb-zip /tmp/v056-artifacts/rrdb.zip \
-            --rrdb-receipt /tmp/v056-artifacts/rrdb-receipt.json \
+          args=(
+            --date "$TARGET_DATE"
+            --paci "$PACI"
+            --paci-source-receipt /tmp/racenote-paci/source_receipt.json
+            --main-sha "$BASE_SHA"
+            --analysis-root /tmp/racenote-analysis
+            --course-fit-root /tmp/racenote-fit
+            --racereview-root /tmp/racenote-rrdb/postrace_review/v0_1
+            --race-lap-current-bundle /tmp/racenote-lap/current
+            --race-lap-expected-period-to "$EXPECTED_PERIOD_TO"
+            --rrdb-zip /tmp/v056-artifacts/rrdb.zip
+            --rrdb-receipt /tmp/v056-artifacts/rrdb-receipt.json
             --output-root "$TARGET"
+          )
+          if [[ -n "$V2_ACCEPTANCE_PATH" ]]; then
+            args+=(--v2-source-acceptance "$V2_ACCEPTANCE_PATH"
+                   --v2-materialization-receipt /tmp/racenote-v2-sources/materialization_receipt.json)
+          else
+            args+=(--freshness-acceptance /tmp/racenote-freshness/acceptance.json
+                   --analysis-artifact-id "$ANALYSIS_ARTIFACT_ID"
+                   --analysis-generation-id "$ANALYSIS_GENERATION")
+          fi
+          python horse-racing/jrdb/src/racenote_v056_forward_turn1.py "${args[@]}"
           python - <<'PY'
           import os, json
           from pathlib import Path
