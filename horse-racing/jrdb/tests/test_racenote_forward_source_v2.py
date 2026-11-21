@@ -62,7 +62,7 @@ def test_archive_duplicate_members_rejected(tmp_path):
 def test_source_materialize_requires_repo_acceptance(tmp_path):
     p = tmp_path / "receipt.json"
     p.write_text("{}")
-    with pytest.raises(ValueError, match="committed"):
+    with pytest.raises(ValueError, match="reviewed"):
         source.materialize(p, tmp_path, tmp_path / "out")
 
 
