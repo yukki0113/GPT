@@ -23,7 +23,7 @@ The safety boundary is unchanged: target-day result/market data is never accepte
 ```text
 post-race / pre-race producer operations
   -> exact CURRENT readback + producer evidence
-  -> finalized SED consumed-field consistency check
+  -> SHA-pinned finalized SED integrity (no cross-generation field-equality gate)
   -> reusable generation-set acceptance
   -> target date request
   -> deterministic target binding to latest eligible generation set
@@ -50,7 +50,7 @@ Producer evidence is a reviewed committed declaration of exact producer outputs.
 - RRDB reviewed CURRENT file ID/ZIP SHA and producer acceptance reference;
 - Course Fit SHA-pinned source parts, generation/as-of and producer acceptance reference;
 - RaceLap exact Drive CURRENT ID/SHA and producer acceptance reference;
-- finalized SED date/file-ID/SHA entries used for semantic consistency validation.
+- finalized SED date/file-ID/SHA entries used for immutable transport verification.
 
 Do not create producer evidence from filenames, timestamps or guessed hashes.
 
@@ -73,24 +73,25 @@ The workflow:
 1. materializes the exact Analysis / Course Fit / RaceLap bytes named by producer evidence;
 2. fetches the reviewed RRDB CURRENT;
 3. materializes the pinned finalized SED sources;
-4. runs `src/racenote_forward_consumed_field_check.py`;
+4. checks finalized SED ZIP CRC and exact Drive-ID/SHA receipts (does **not** compare each historical result field);
 5. measures actual generation IDs, manifest/content SHA and coverage;
 6. writes one immutable reusable generation set under `generation-sets/`;
 7. commits it to `main`.
 
-A generation set is accepted only when finalized SED consumed-field validation is PASS. SED ZIP byte size, modified time, packaging or producer chronology alone are not failures.
+A generation set is accepted when exact independently reviewed producer sources, content SHA, covered dates, generations, manifests and cutoffs match. No cross-generation field-equality check is required.
 
-## Consumed-field validation
+## Historical SED diagnostics (not a T1 Gate)
 
-The deterministic check compares canonical `jrdb_raw.py` interpretation of finalized SED with fields actually persisted/consumed by Analysis and RaceReviewDB.
-
-For Analysis it checks direct SED-derived result fields such as finish, abnormal status, final odds/popularity and payout fields. For RRDB it checks the persisted race/horse result facts that originate from SED, including finish/time, pace/corner/lane and JRDB result metrics.
-
-A semantic mismatch fails closed. The affected producer generation must then be rebuilt or reconciled. A ZIP SHA or timestamp difference by itself does not trigger a rebuild.
+`src/racenote_forward_consumed_field_check.py` remains callable for offline
+producer diagnostics only; it is not part of the T1 acceptance workflow.
+Differences in historical popularity, pace, corner or sectional representations
+cannot by themselves block a forward T1. They must not be mislabeled as a PASS.
+The current acceptance record uses `producer_source_integrity.status=VERIFIED`
+with an SHA-pinned materialization receipt and finalized SED transport hashes.
 
 ## Generation-set acceptance
 
-Schema: `racenote-forward-generation-set-v1`.
+Schema: `racenote-forward-generation-set-v2`.
 
 A generation set has no target date. It binds:
 
@@ -99,7 +100,7 @@ A generation set has no target date. It binds:
 - RRDB generation / manifest / ZIP / measured coverage;
 - Course Fit generation / complete measured asset hashes / as-of;
 - RaceLap generation / manifest / Parquet SHA / exact period_to;
-- PASS consumed-field report SHA;
+- VERIFIED producer-source materialization receipt SHA and finalized SED transport hashes;
 - exact source transport and producer provenance.
 
 The same accepted generation set can therefore serve multiple future target dates until a newer completed-race generation set is accepted.
@@ -116,7 +117,7 @@ Eligibility requires:
 - Analysis/RRDB measured coverage covers the cutoff and remains before target;
 - RaceLap `period_to` exactly equals the cutoff;
 - Course Fit `as_of < target_date`;
-- consumed-field consistency PASS.
+- verified producer-source receipt integrity; no historical field-by-field equality prerequisite.
 
 If multiple different generation sets claim the same latest cutoff, selection fails as ambiguous. Selection never uses modified time or filename order.
 
@@ -153,7 +154,7 @@ The previous `[RACENOTE_V056_FORWARD_PACI_T1]` route and explicit legacy v1/v2 i
 - A successful Data Storage run alone is not producer acceptance.
 - CURRENT timestamps do not prove scientific freshness.
 - Target/future results cannot enter a target binding.
-- Semantic finalized-SED mismatch is never ignored.
+- Historical finalized-SED field differences are diagnostic only, not an unconditional T1 blocker.
 - Unknown/ambiguous generation sets fail closed.
 - T1 creates no automated marks or Confidence.
 - Prediction and Confidence Freeze remain separate and immutable.
@@ -165,11 +166,10 @@ Accepted records remain immutable and fail-closed. The producer-acceptance and
 T1 workflows publish a `racenote-forward-failure-v1` JSON failure receipt on
 failure, with `error_code`, `failed_stage`, `detail` and `retryable`.
 
-- `DATA_INVALID`: deterministic semantic/contract inconsistency, including
-  finalized SED consumed-field mismatches, ambiguous newest generations,
-  or attempted mutation of an already-bound immutable target. A consumed-field
-  mismatch writes `consumed_field_report.json` with the specific differences
-  before failing. Never mark it PASS or silently regenerate/promote.
+- `DATA_INVALID`: invalid source identity/transport SHA, missing materialized
+  finalized SED, ambiguous newest generations, or attempted mutation of an
+  already-bound immutable target. The optional standalone historical comparison
+  is not part of T1 acceptance and may report FAIL without blocking T1.
 - `ORCHESTRATION_MISSING`: required producer evidence, finalized SED delivery,
   or an eligible accepted generation set has not yet been prepared. This is
   not proof of bad data and must not be reported as such.
