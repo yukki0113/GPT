@@ -60,7 +60,7 @@ jobs:
           def validate_request():
               path=os.environ["PRODUCER_EVIDENCE_PATH"]
               if (not re.fullmatch(
-                      r"horse-racing/jrdb/forward-acceptance/producer-evidence/[A-Za-z0-9_.-]+\\.json",
+                      r"horse-racing/jrdb/forward-acceptance/producer-evidence/[A-Za-z0-9_.-]+\.json",
                       path or "")
                       or ".." in path.split("/")):
                   raise DataInvalid("invalid producer_evidence_path")
