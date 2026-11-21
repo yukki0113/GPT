@@ -101,7 +101,9 @@ def main() -> int:
             raise ValueError("v2 source acceptance and legacy A05 inputs are mutually exclusive")
         if args.v2_materialization_receipt is None:
             raise ValueError("v2 materialization receipt is mandatory")
-        from racenote_forward_source_acceptance import accept as accept_v2, _load, _sha
+        from racenote_forward_source_acceptance import (
+            accept as accept_v2, _load, _sha, _resolve_target_acceptance,
+        )
         import tempfile
         materialized = _load(args.v2_materialization_receipt)
         if (materialized.get("status") != "MATERIALIZED"
@@ -120,8 +122,11 @@ def main() -> int:
             )
         if source_lock["acceptance_sha256"] != materialized.get("acceptance_sha256"):
             raise ValueError("v2 materialization is not bound to committed acceptance")
+        effective_acceptance, _ = _resolve_target_acceptance(
+            args.v2_source_acceptance, Path("."), args.date
+        )
         for name in ("analysis", "course_fit", "race_lap"):
-            entry = _load(args.v2_source_acceptance)[name]
+            entry = effective_acceptance[name]
             receipt = materialized.get("sources", {}).get(name)
             if not isinstance(receipt, dict):
                 raise ValueError(name + ": missing materialization receipt")
