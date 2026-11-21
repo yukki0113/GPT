@@ -1,0 +1,173 @@
+#!/usr/bin/env python3
+"""v2 forward source acceptance; transport-agnostic, fail-closed.
+
+All input paths are already materialized. No network, ingestion or prediction.
+Producer acceptance is an independently reviewed, committed record. The caller
+must supply its repository-relative path; this module binds it to git HEAD.
+"""
+from __future__ import annotations
+
+from datetime import date
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+import re
+
+from racenote_v056_forward_freshness import (
+    _inspect_analysis, _inspect_rrdb, _date, _sha,
+    ForwardFreshnessError,
+)
+from jrdb_race_lap_forward_current import validate as validate_lap
+
+SCHEMA = "racenote-forward-source-acceptance-v2"
+LOCK_SCHEMA = "racenote-forward-source-lock-v2"
+SAFE_REF = re.compile(r"horse-racing/jrdb/forward-acceptance/[A-Za-z0-9_./-]+\\.json\\Z")
+HEX = re.compile(r"[a-f0-9]{64}\\Z")
+
+
+def _load(path: Path) -> dict:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("acceptance must be a JSON object")
+    return value
+
+
+def _canonical_receipt(path: Path, repo_root: Path) -> str:
+    """Prevent a self-signed local acceptance being mistaken for producer approval."""
+    resolved = path.resolve()
+    base = repo_root.resolve()
+    if not resolved.is_relative_to(base):
+        raise ValueError("acceptance must be a committed repository file")
+    rel = resolved.relative_to(base).as_posix()
+    if not SAFE_REF.fullmatch(rel) or ".." in Path(rel).parts:
+        raise ValueError("acceptance path not in reviewed forward-acceptance directory")
+    stored = subprocess.run(
+        ["git", "-C", str(base), "show", f"HEAD:{rel}"],
+        capture_output=True, check=True,
+    ).stdout
+    if stored != path.read_bytes():
+        raise ValueError("acceptance differs from committed HEAD")
+    return hashlib.sha256(stored).hexdigest()
+
+
+def _expected(entry: object, label: str) -> dict:
+    if not isinstance(entry, dict) or entry.get("status") != "ACCEPTED":
+        raise ValueError(f"{label}: accepted producer receipt missing")
+    if not isinstance(entry.get("producer_acceptance_ref"), str) or len(entry["producer_acceptance_ref"]) < 12:
+        raise ValueError(f"{label}: independent producer reference missing")
+    for field in ("generation_id", "manifest_sha256"):
+        value = entry.get(field)
+        if field.endswith("sha256") and (not isinstance(value, str) or not HEX.fullmatch(value)):
+            raise ValueError(f"{label}: invalid {field}")
+        if field == "generation_id" and (not isinstance(value, str) or not value):
+            raise ValueError(f"{label}: missing generation")
+    return entry
+
+
+def _match(actual: dict, accepted: dict, keys: tuple[str, ...], label: str) -> None:
+    for key in keys:
+        if str(actual.get(key)) != str(accepted.get(key)):
+            raise ValueError(f"{label}: {key} differs from accepted producer generation")
+
+
+def _course_fit(root: Path, accepted: dict, target_date: str) -> dict:
+    # Course Fit schema/format is not promoted to a generic CURRENT standard.
+    # Only a producer-accepted, as-of-pinned snapshot can be used in v2.
+    path = root / "manifest.json"
+    if not path.is_file() or path.is_symlink():
+        raise ValueError("course_fit: missing accepted manifest")
+    manifest = _load(path)
+    if manifest.get("validation_status") != "PASS":
+        raise ValueError("course_fit: manifest not PASS")
+    value = {
+        "generation_id": manifest.get("generation_id"),
+        "manifest_sha256": _sha(path),
+    }
+    _match(value, accepted, ("generation_id", "manifest_sha256"), "course_fit")
+    as_of = accepted.get("as_of")
+    if _date(as_of, "course_fit as_of") >= _date(target_date, "target"):
+        raise ValueError("course_fit: target/future leakage")
+    # Validate the complete staged file set against producer-declared digest list.
+    assets = accepted.get("assets")
+    if not isinstance(assets, dict) or not assets:
+        raise ValueError("course_fit: missing independently accepted asset hashes")
+    for name, digest in assets.items():
+        relative = Path(name)
+        if (not name or relative.is_absolute() or ".." in relative.parts or
+                not isinstance(digest, str) or not HEX.fullmatch(digest)):
+            raise ValueError("course_fit: unsafe asset")
+        file = (root / relative).resolve()
+        if not file.is_relative_to(root.resolve()) or not file.is_file() or _sha(file) != digest:
+            raise ValueError(f"course_fit: asset digest mismatch: {name}")
+    return {**value, "as_of": as_of, "assets": assets}
+
+
+def accept(
+    acceptance_path: Path, *, repo_root: Path, target_date: str,
+    analysis_root: Path, rrdb_root: Path, rrdb_zip: Path, rrdb_receipt: Path,
+    course_fit_root: Path, race_lap_current_bundle: Path,
+    paci_sha256: str, output: Path,
+) -> dict:
+    committed_digest = _canonical_receipt(acceptance_path, repo_root)
+    a = _load(acceptance_path)
+    if a.get("schema_version") != SCHEMA or a.get("status") != "ACCEPTED":
+        raise ValueError("v2 producer acceptance missing")
+    if a.get("target_date") != target_date:
+        raise ValueError("v2 target date mismatch")
+    completion = a.get("completion_evidence")
+    if not isinstance(completion, dict) or completion.get("status") != "PASS" or not completion.get("reference"):
+        raise ValueError("verified completed-results source missing")
+    cutoff = _date(completion.get("required_completed_through"), "completion cutoff")
+    target = _date(target_date, "target date")
+    if cutoff >= target:
+        raise ValueError("cutoff includes target day")
+    if not isinstance(paci_sha256, str) or not HEX.fullmatch(paci_sha256):
+        raise ValueError("invalid PACI content hash")
+    expected = {name: _expected(a.get(name), name) for name in ("analysis", "rrdb", "course_fit", "race_lap")}
+    measured_analysis = _inspect_analysis(analysis_root)
+    measured_rrdb = _inspect_rrdb(rrdb_root, rrdb_zip, rrdb_receipt)
+    for key, actual in (("analysis", measured_analysis), ("rrdb", measured_rrdb)):
+        _match(actual, expected[key], ("generation_id", "manifest_sha256", "coverage_through"), key)
+        if not cutoff <= _date(actual["coverage_through"], key + " coverage") < target:
+            raise ValueError(key + ": stale or future coverage")
+    _match(measured_rrdb, expected["rrdb"], ("zip_sha256", "file_id"), "rrdb")
+    # Only approved source identities, never an arbitrary local copy.
+    for name in ("analysis", "course_fit", "race_lap"):
+        entry = expected[name]
+        if entry.get("source_mode") not in ("actions_artifact", "drive_current", "data_storage_handoff"):
+            raise ValueError(name + ": unsupported source mode")
+        if not entry.get("source_ref") or not entry.get("source_sha256"):
+            raise ValueError(name + ": source provenance missing")
+        if not HEX.fullmatch(str(entry["source_sha256"])):
+            raise ValueError(name + ": source digest invalid")
+    course_fit = _course_fit(course_fit_root, expected["course_fit"], target_date)
+    lap_root = race_lap_current_bundle
+    lap_manifest = lap_root / "manifest.json"
+    lap_parquet = lap_root / "race_lap.parquet"
+    lap = validate_lap(lap_parquet, lap_manifest, target_date, cutoff.isoformat())
+    lap_actual = {
+        "generation_id": lap["generation_id"],
+        "manifest_sha256": _sha(lap_manifest),
+        "parquet_sha256": _sha(lap_parquet),
+        "period_to": lap["race_lap_period_to"],
+    }
+    _match(lap_actual, expected["race_lap"], tuple(lap_actual), "race_lap")
+    # All source transport hashes are independently accepted and must be checked by
+    # the materializer before this gate. This lock alone cannot attest acquisition.
+    receipt = {
+        "schema_version": LOCK_SCHEMA, "status": "READY_FOR_T1",
+        "target_date": target_date, "required_completed_through": cutoff.isoformat(),
+        "acceptance_sha256": committed_digest, "paci_sha256": paci_sha256,
+        "completion_evidence": completion,
+        "analysis": {**measured_analysis, "source_mode": expected["analysis"]["source_mode"],
+                     "source_ref": expected["analysis"]["source_ref"]},
+        "rrdb": measured_rrdb,
+        "course_fit": course_fit,
+        "race_lap": lap_actual,
+    }
+    if output.exists():
+        raise FileExistsError(output)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(receipt, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    return receipt
