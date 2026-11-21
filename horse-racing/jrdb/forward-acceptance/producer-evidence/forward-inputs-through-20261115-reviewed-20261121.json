@@ -1,0 +1,68 @@
+{
+  "schema_version": "racenote-forward-producer-evidence-v1",
+  "status": "VERIFIED",
+  "completion_evidence": {
+    "status": "PASS",
+    "source": "DEDICATED_DATA_OPERATIONS",
+    "reference": "https://github.com/yukki0113/GPT/actions/runs/43778813606",
+    "required_completed_through": "2026-11-15"
+  },
+  "analysis": {
+    "status": "ACCEPTED",
+    "source_mode": "drive_current",
+    "source_ref": "1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5",
+    "source_sha256": "a98ddbc0def1894b40a1420f3e032f379dc32c33b6fb5bee74c98950a56ed232",
+    "archive_format": "tar.xz",
+    "producer_acceptance_ref": "https://github.com/yukki0113/GPT/issues/2680"
+  },
+  "rrdb": {
+    "status": "ACCEPTED",
+    "file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
+    "zip_sha256": "bed7e71937e725ed697e0f18b85d5e043d484e238f8873e61eb076b56d5b0005",
+    "producer_acceptance_ref": "https://github.com/yukki0113/GPT/issues/2680"
+  },
+  "course_fit": {
+    "status": "ACCEPTED",
+    "source_mode": "drive_current",
+    "source_parts": [
+      {
+        "source_ref": "1ljLg_jxVdZtpJ_Aqku0L93y8nwnfXUTQ",
+        "source_sha256": "b27f2293a100755aa1ac0c902c2e6338a8393cd208c5de0912ff7a81f89783ba",
+        "archive_format": "zip"
+      },
+      {
+        "source_ref": "1yxP0EtPRmcTnrAgmgBMlAAj257r3pgYE",
+        "source_sha256": "ddc07eca88fe1b56391efcaa3b84ff4cf34121f69c7262a024177b82702dea72",
+        "archive_format": "zip"
+      }
+    ],
+    "manifest_mode": "accepted_asset_manifest",
+    "generation_id": "rrdb_horse_course_fit_v0_1_asof20260101_g38370479179",
+    "as_of": "2026-01-01",
+    "producer_acceptance_ref": "https://github.com/yukki0113/GPT/blob/main/horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json"
+  },
+  "race_lap": {
+    "status": "ACCEPTED",
+    "source_mode": "drive_current",
+    "source_ref": "1RdmS-8q0NsA8opCvNioaqVotk2wiEZz-",
+    "source_sha256": "f0d6ee53ff7ccee43226a1132b7a0c6d74e71330a9a2eca9f068b110bfa6c36e",
+    "archive_format": "zip",
+    "producer_acceptance_ref": "https://github.com/yukki0113/GPT/actions/runs/44721079214"
+  },
+  "finalized_sed": [
+    {
+      "date": "2026-11-14",
+      "source_ref": "1ats5LhsZgs9lm2RXhizY3OF66How_kE2",
+      "source_sha256": "e3199d3e5552fd45bae6999465babfc655c8e1004a07e578bb7ee4fbd705e29b"
+    },
+    {
+      "date": "2026-11-15",
+      "source_ref": "1gjj4vI8k4qrRozjuvZiHGnfeokomSouA",
+      "source_sha256": "e853f04a6aca2f3e2cd336b5a2556b2684823e6928c16f8b10a0f394b60c8628"
+    }
+  ],
+  "evidence_basis": {
+    "source_review": "https://github.com/yukki0113/GPT/issues/2680",
+    "note": "Direct Drive file identities and SHA-pinned sources from prior documented verification. Semantic consumed-field acceptance is NOT asserted; the dedicated validation workflow must independently PASS before any generation is accepted."
+  }
+}
