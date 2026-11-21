@@ -50,10 +50,11 @@ def generation_record(generation_id: str, cutoff: str = "2026-11-15") -> dict:
             "verified_at_utc": "2026-11-16T00:00:00+00:00",
             "required_completed_through": cutoff,
         },
-        "consumed_field_consistency": {
-            "status": "PASS",
-            "report_sha256": digest,
-            "dates": ["2026-11-14", cutoff],
+        "producer_source_integrity": {
+            "status": "VERIFIED",
+            "materialization_receipt_sha256": digest,
+            "finalized_sed_dates": ["2026-11-14", cutoff],
+            "semantic_cross_generation_comparison": "NOT_REQUIRED",
         },
         "analysis": {"coverage_through": cutoff},
         "rrdb": {"coverage_through": cutoff},
@@ -101,14 +102,14 @@ def test_target_binding_fails_closed_on_ambiguous_latest_generation(tmp_path):
     assert caught.value.error_code == "DATA_INVALID"
 
 
-def test_target_binding_requires_consumed_field_pass(tmp_path):
+def test_target_binding_requires_verified_source_integrity(tmp_path):
     repo = tmp_path / "repo"
     repo.mkdir()
     init_repo(repo)
     folder = repo / "horse-racing/jrdb/forward-acceptance/generation-sets"
     folder.mkdir(parents=True)
     record = generation_record("bad")
-    record["consumed_field_consistency"]["status"] = "FAIL"
+    record["producer_source_integrity"]["status"] = "UNVERIFIED"
     (folder / "bad.json").write_text(json.dumps(record) + "\n")
     commit_all(repo)
     with pytest.raises(forward_errors.OrchestrationMissing, match="no accepted") as caught:
@@ -194,7 +195,10 @@ def test_forward_workflows_expose_single_orchestrated_t1_entry():
     assert "Resolve or create target binding from accepted generation set" in t1
     assert "racenote_forward_target_binding.py" in t1
     assert "race_lap_expected_period_to" in t1
-    assert "racenote_forward_consumed_field_check.py" in acceptance
+    assert "racenote_forward_consumed_field_check.py" not in acceptance
+    assert "Verify finalized SED transport integrity" in acceptance
+    assert "--consumed-field-report" not in acceptance
+    assert "materialization_receipt.json" in acceptance
     assert 'export PRODUCER_EVIDENCE_PATH="$path"' in acceptance
     assert t1.index("Validate pre-race target and immutable destination before binding") < t1.index("Resolve or create target binding from accepted generation set")
     assert "data, _ = _resolve_target_acceptance(" in t1
