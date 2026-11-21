@@ -187,11 +187,11 @@ def t2_plan(repo_root: Path, mode: str, *, version: str,
         "prediction_draft":PREDICTION_INCOMING,
         "confidence_draft":CONFIDENCE_INCOMING,
         "prediction_freeze_workflow":
-            f".github/workflows/racenote_{version.replace('-r6','_r6')}_llm_prediction_freeze.yml"
-            if version!="v056" else ".github/workflows/racenote_v056_llm_prediction_freeze.yml",
+            ".github/workflows/racenote_v056_llm_prediction_freeze.yml"
+            if version=="v056" else ".github/workflows/racenote_v055_llm_prediction_freeze.yml",
         "confidence_freeze_workflow":
-            f".github/workflows/racenote_{version.replace('-r6','_r6')}_llm_confidence_freeze.yml"
-            if version!="v056" else ".github/workflows/racenote_v056_llm_confidence_freeze.yml",
+            ".github/workflows/racenote_v056_llm_confidence_freeze.yml"
+            if version=="v056" else ".github/workflows/racenote_v055_llm_confidence_freeze.yml",
         "execution_boundary":"LLM_AUTHORED_PREDICTION_THEN_INDEPENDENT_CONFIDENCE_FREEZE",
     }
 
