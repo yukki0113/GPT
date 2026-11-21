@@ -90,6 +90,7 @@ def test_v2_acceptance_checks_immutable_generation_and_cutoff(tmp_path, monkeypa
             "manifest_sha256": digest, "coverage_through": "2026-11-15",
             "file_id": "reviewedrrdbfile123", "zip_sha256": digest,
         }
+    data["race_lap"].update({"period_to": "2026-11-15", "parquet_sha256": digest})
     a.write_text(json.dumps(data))
     monkeypatch.setattr(gate, "_canonical_receipt", lambda *args: sha(a.read_bytes()))
     monkeypatch.setattr(gate, "_inspect_analysis", lambda _: {
