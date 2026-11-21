@@ -123,10 +123,19 @@ def main() -> int:
         for name in ("analysis", "course_fit", "race_lap"):
             entry = _load(args.v2_source_acceptance)[name]
             receipt = materialized.get("sources", {}).get(name)
-            if not isinstance(receipt, dict) or any(
-                receipt.get(field) != entry.get(field)
-                for field in ("source_mode", "source_ref", "source_sha256", "producer_acceptance_ref")
-            ):
+            if not isinstance(receipt, dict):
+                raise ValueError(name + ": missing materialization receipt")
+            if receipt.get("source_mode") != entry.get("source_mode") or receipt.get(
+                    "producer_acceptance_ref") != entry.get("producer_acceptance_ref"):
+                raise ValueError(name + ": materialization and source acceptance mismatch")
+            if entry.get("source_parts") is not None:
+                expected_parts = [{**part, "archive_format": part.get("archive_format", "zip")}
+                                  for part in entry["source_parts"]]
+                if receipt.get("source_parts") != expected_parts:
+                    raise ValueError(name + ": multipart materialization identity mismatch")
+            elif any(receipt.get(field) != entry.get(field)
+                     for field in ("source_ref", "source_sha256")) or receipt.get(
+                         "archive_format") != entry.get("archive_format", "zip"):
                 raise ValueError(name + ": materialization and source acceptance mismatch")
         if source_lock["race_lap"]["period_to"] != args.race_lap_expected_period_to:
             raise ValueError("v2 RaceLap cutoff argument differs from validated source")

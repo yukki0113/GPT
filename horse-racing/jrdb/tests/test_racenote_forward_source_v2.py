@@ -142,7 +142,12 @@ def test_drive_materializer_pins_accepted_zip_and_cleans_on_error(tmp_path, monk
     for name in ("analysis", "course_fit", "race_lap"):
         archive = tmp_path / (name + ".zip")
         with zipfile.ZipFile(archive, "w") as z:
-            z.writestr("source.txt", name)
+            if name == "race_lap":
+                for x in ("manifest.json", "race_lap.parquet", "audit.json"):
+                    z.writestr("current/" + x, x)
+                z.writestr("resolver_receipt.json", "{}")
+            else:
+                z.writestr("source.txt", name)
         fid = "reviewed_" + name + "_source_123"
         archives[fid] = archive
         declaration[name] = {
@@ -157,8 +162,9 @@ def test_drive_materializer_pins_accepted_zip_and_cleans_on_error(tmp_path, monk
     ))
     receipt = source.materialize(accepted_file, tmp_path, tmp_path / "out")
     assert receipt["status"] == "MATERIALIZED"
-    for name in ("analysis", "course_fit", "race_lap"):
+    for name in ("analysis", "course_fit"):
         assert (tmp_path / "out" / name / "source.txt").read_text() == name
+    assert (tmp_path / "out/race_lap/manifest.json").is_file()
     assert (tmp_path / "out/materialization_receipt.json").is_file()
 
     declaration["race_lap"]["source_sha256"] = "0" * 64
@@ -188,6 +194,115 @@ def test_legacy_course_fit_requires_full_accepted_assets(tmp_path):
     asset.write_bytes(b"tampered")
     with pytest.raises(ValueError, match="asset digest"):
         gate._course_fit(root, accepted, "2026-11-21")
+
+
+
+def test_analysis_tar_xz_accepts_canonical_root_and_blocks_link(tmp_path):
+    import tarfile
+    import io
+    valid = tmp_path / "valid.tar.xz"
+    with tarfile.open(valid, "w:xz") as tf:
+        root = tarfile.TarInfo(".")
+        root.type = tarfile.DIRTYPE
+        tf.addfile(root)
+        info = tarfile.TarInfo("./current.json")
+        data = b'{"status":"CURRENT"}'
+        info.size = len(data)
+        tf.addfile(info, io.BytesIO(data))
+        info = tarfile.TarInfo("./generations/test/manifest.json")
+        data = b'{"validation_status":"PASS"}'
+        info.size = len(data)
+        tf.addfile(info, io.BytesIO(data))
+    source.unpack_verified_tar(valid, tmp_path / "unpacked")
+    assert (tmp_path / "unpacked/current.json").is_file()
+    assert (tmp_path / "unpacked/generations/test/manifest.json").is_file()
+    hostile = tmp_path / "hostile.tar.xz"
+    with tarfile.open(hostile, "w:xz") as tf:
+        link = tarfile.TarInfo("safe/target")
+        link.type = tarfile.SYMTYPE
+        link.linkname = "../../outside"
+        tf.addfile(link)
+    with pytest.raises(ValueError, match="unsafe"):
+        source.unpack_verified_tar(hostile, tmp_path / "rejected")
+    assert not (tmp_path / "rejected").exists()
+
+
+def test_drive_racelap_current_bundle_normalizes_exact_known_layout(tmp_path):
+    archive = tmp_path / "racelap.zip"
+    with zipfile.ZipFile(archive, "w") as z:
+        for name in ("manifest.json", "race_lap.parquet", "audit.json"):
+            z.writestr("current/" + name, name)
+        z.writestr("resolver_receipt.json", "{}")
+    root = tmp_path / "race_lap"
+    source.unpack_verified(archive, root)
+    source.normalize_racelap_current(root)
+    assert (root / "manifest.json").is_file()
+    assert (root / "race_lap.parquet").is_file()
+    assert not (root / "current").exists()
+    source.normalize_racelap_current(root)
+
+
+def test_racelap_unknown_bundle_layout_fails(tmp_path):
+    folder = tmp_path / "race_lap"
+    folder.mkdir()
+    (folder / "unexpected.json").write_text("{}")
+    with pytest.raises(ValueError, match="unknown"):
+        source.normalize_racelap_current(folder)
+
+
+
+def test_course_fit_split_distribution_requires_both_pinned_parts(tmp_path, monkeypatch):
+    import shutil
+    from types import SimpleNamespace
+    accepted_file = tmp_path / "source.json"
+    source_bytes = {}
+    parts = []
+    for index in (1, 2):
+        path = tmp_path / f"part{index}.zip"
+        with zipfile.ZipFile(path, "w") as z:
+            z.writestr(f"fit/test-part-{index}.parquet", str(index))
+            z.writestr("READ_FIRST.txt", "Both parts are required")
+        fid = f"approvedfitpart{index}123"
+        source_bytes[fid] = path
+        parts.append({"source_ref": fid, "source_sha256": sha(path.read_bytes()),
+                      "archive_format": "zip"})
+    declaration = {"schema_version": gate.SCHEMA, "status": "ACCEPTED",
+                   "analysis": {"status": "ACCEPTED", "source_mode": "drive_current",
+                                "source_ref": "none", "source_sha256": "0" * 64},
+                   "course_fit": {"status": "ACCEPTED", "source_mode": "drive_current",
+                                  "source_parts": parts,
+                                  "producer_acceptance_ref": "accepted-course-fit-full-archive"},
+                   "race_lap": {"status": "ACCEPTED", "source_mode": "drive_current",
+                                "source_ref": "none", "source_sha256": "0" * 64}}
+    accepted_file.write_text(json.dumps(declaration))
+    # Keep non-Course-Fit datasets materializable with known single-ZIP fixtures.
+    for name in ("analysis", "race_lap"):
+        path = tmp_path / (name + ".zip")
+        with zipfile.ZipFile(path, "w") as z:
+            if name == "race_lap":
+                for x in ("manifest.json", "race_lap.parquet", "audit.json"):
+                    z.writestr("current/" + x, "fixture")
+                z.writestr("resolver_receipt.json", "{}")
+            else:
+                z.writestr("current.json", "{}")
+        fid = "accepted" + name + "123"
+        source_bytes[fid] = path
+        declaration[name].update({"source_ref": fid, "source_sha256": sha(path.read_bytes()),
+                                  "producer_acceptance_ref": "accepted-" + name + "-run"})
+    accepted_file.write_text(json.dumps(declaration))
+    monkeypatch.setattr(source, "_canonical_receipt", lambda *args: sha(accepted_file.read_bytes()))
+    monkeypatch.setitem(sys.modules, "gdown", SimpleNamespace(
+        download=lambda id, output, quiet: str(shutil.copy2(source_bytes[id], output))
+    ))
+    receipt = source.materialize(accepted_file, tmp_path, tmp_path / "result")
+    assert receipt["sources"]["course_fit"]["source_parts"] == parts
+    assert (tmp_path / "result/course_fit/fit/test-part-1.parquet").read_text() == "1"
+    assert (tmp_path / "result/course_fit/fit/test-part-2.parquet").read_text() == "2"
+    declaration["course_fit"]["source_parts"][1]["source_sha256"] = "a" * 64
+    accepted_file.write_text(json.dumps(declaration))
+    with pytest.raises(ValueError, match="SHA mismatch"):
+        source.materialize(accepted_file, tmp_path, tmp_path / "tampered")
+    assert not (tmp_path / "tampered").exists()
 
 
 def test_v1_workflow_keeps_legacy_paths_and_v2_must_be_explicit():

@@ -1,7 +1,7 @@
 # RaceNote T1 v2 — accepted CURRENT input handoff
 
-Status: **PR CANDIDATE / NOT DEPLOYED / NO 2026-11-21 PREDICTION**
-Implementation branch: `feature/racenote-t1-source-v2-20261121`
+Status: **V2 GATE MERGED / INPUT ACCEPTANCE REQUIRED / NO 2026-11-21 PRE-RACE PREDICTION**
+Initial implementation: PR #2677 merged as `1ae39eb6049fc3fec44a7859a03f07b4b7f2fa8c`
 Tracking PR: https://github.com/yukki0113/GPT/pull/2677
 
 ## Why
@@ -12,7 +12,7 @@ The legacy forward T1 requires three specific GitHub Actions Artifact IDs regard
 
 Before dispatch, the dedicated data owner must create a reviewed and committed acceptance record in this directory named `YYYYMMDD.json`. It must be reviewed independently from the RaceNote T1 consumer and must identify the actual output of the dedicated producer operations. T1 **does not synthesize a PASS** from the fact that a ZIP exists or compute a self-approval. The acceptance file is pinned to the checked-out Git HEAD; local modifications are rejected.
 
-The approved source file references for `analysis`, `course_fit`, and `race_lap` are public Google Drive file IDs for exact SHA-pinned ZIP archives. `data_storage_handoff` names the *producer route*, not a license to read arbitrary local files: the accepted output must also be staged in that verified public Drive channel. The older `actions_artifact` mode remains available through v1.
+The approved source file references for `analysis`, `course_fit`, and `race_lap` are public Google Drive file IDs for SHA-pinned archives. Analysis CURRENT is normally a `tar.xz`; Course Fit and RaceLap are ZIP. The accepted Course Fit v0.1 baseline is distributed as **two** SHA-pinned Drive ZIP parts, not a single archive; use `course_fit.source_parts` with the exact full file IDs and SHA of both parts. The materializer only merges identical duplicate member bytes (the known `READ_FIRST.txt`). Specify `archive_format=tar.xz` on Analysis, and `archive_format=zip` on the others. The canonical RaceLap Drive ZIP wraps the dataset in `current/` and may also include `resolver_receipt.json`; the materializer normalizes only this verified layout. `data_storage_handoff` names the *producer route*, not a license to read arbitrary local files: the accepted output must also be staged in that verified public Drive channel. The older `actions_artifact` mode remains available through v1.
 
 RRDB remains under the existing, separately approved Drive CURRENT source contract and fetcher. PACI continues to come exclusively from the canonical Drive PACI folder with its independent receipt.
 
@@ -37,6 +37,7 @@ An accepted file uses the following **schema shape**, with literal values filled
     "source_mode": "data_storage_handoff",
     "source_ref": "reviewed-Drive-ZIP-file-ID",
     "source_sha256": "64-lowercase-hex",
+    "archive_format": "tar.xz",
     "producer_acceptance_ref": "independent-analysis-accepted-run",
     "generation_id": "observed-Analysis-generation",
     "manifest_sha256": "64-lowercase-hex",
@@ -55,7 +56,10 @@ An accepted file uses the following **schema shape**, with literal values filled
     "status": "ACCEPTED",
     "source_mode": "drive_current",
     "source_ref": "reviewed-Drive-ZIP-file-ID",
-    "source_sha256": "64-lowercase-hex",
+    "source_parts": [
+      {"source_ref": "reviewed-Drive-part1-file-ID", "source_sha256": "64-lowercase-hex", "archive_format": "zip"},
+      {"source_ref": "reviewed-Drive-part2-file-ID", "source_sha256": "64-lowercase-hex", "archive_format": "zip"}
+    ],
     "producer_acceptance_ref": "independent-coursefit-accepted-run",
     "generation_id": "observed-CourseFit-generation",
     "manifest_mode": "accepted_asset_manifest",
@@ -81,7 +85,7 @@ An accepted file uses the following **schema shape**, with literal values filled
 
 The schema shape is illustrative rather than a valid record. Actual records must list **every** Course Fit file in `assets`; in `accepted_asset_manifest` mode, `manifest_sha256` is SHA-256 of UTF-8 `json.dumps(assets, sort_keys=True, separators=(',', ':'))`. If the published Course Fit ZIP contains a native validated `manifest.json`, set `manifest_mode=native` and pin that exact manifest digest instead.
 
-For the v2 Drive materializer, Analysis ZIP contents must unpack to the canonical `current.json` and `generations/<generation>/...` layout; Course Fit ZIP must contain its approved complete file set; RaceLap ZIP must contain `race_lap.parquet` and `manifest.json` at its root. ZIPs with unsafe paths, symlinks, duplicate members, oversized unpacked data or mismatched SHA are rejected. The Analysis canonical resolver checks every underlying Parquet asset digest and actual MAX(race_date)/COUNT. RRDB uses the existing A05 manifest/ZIP validation, and RaceLap uses the canonical as-of/Parquet validator.
+For the v2 Drive materializer, Analysis ZIP contents must unpack to the canonical `current.json` and `generations/<generation>/...` layout; Course Fit's two ZIPs must jointly contain the approved complete file set; RaceLap ZIP must contain `race_lap.parquet` and `manifest.json` at its root. ZIPs with unsafe paths, symlinks, duplicate members, oversized unpacked data or mismatched SHA are rejected. The Analysis canonical resolver checks every underlying Parquet asset digest and actual MAX(race_date)/COUNT. RRDB uses the existing A05 manifest/ZIP validation, and RaceLap uses the canonical as-of/Parquet validator.
 
 ## Forward workflow invocation
 
