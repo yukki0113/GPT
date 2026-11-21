@@ -146,6 +146,33 @@ The previous `[RACENOTE_V056_FORWARD_PACI_T1]` route and explicit legacy v1/v2 i
 - Prediction and Confidence Freeze remain separate and immutable.
 - Target results, target market and final odds remain closed before the pre-result boundaries.
 
+## Structured failure contract
+
+Accepted records remain immutable and fail-closed. The producer-acceptance and
+T1 workflows publish a `racenote-forward-failure-v1` JSON failure receipt on
+failure, with `error_code`, `failed_stage`, `detail` and `retryable`.
+
+- `DATA_INVALID`: deterministic semantic/contract inconsistency, including
+  finalized SED consumed-field mismatches, ambiguous newest generations,
+  or attempted mutation of an already-bound immutable target. A consumed-field
+  mismatch writes `consumed_field_report.json` with the specific differences
+  before failing. Never mark it PASS or silently regenerate/promote.
+- `ORCHESTRATION_MISSING`: required producer evidence, finalized SED delivery,
+  or an eligible accepted generation set has not yet been prepared. This is
+  not proof of bad data and must not be reported as such.
+- `EXECUTION_FAILED`: unclassified shell/network/runner failures; inspect the
+  failing step and do not guess whether the input is invalid or simply missing.
+
+Both domain codes exit nonzero and write the same deterministic JSON shape.
+The existing A05/v2 explicit source paths remain supported. T1 prevalidates
+the requested JST target window and immutable output destination **before**
+creating a target binding, and resolves RRDB file identity through the accepted
+generation set rather than reading it from the minimal target-binding JSON.
+
+The CI workflow must execute `test_racenote_forward_acceptance_orchestrator.py`
+alongside the existing v2 and A05 regressions. Merge success and unit-test
+PASS do not themselves constitute a live pre-race forward acceptance.
+
 ## Main modules
 
 - `src/racenote_forward_source_resolver.py`
