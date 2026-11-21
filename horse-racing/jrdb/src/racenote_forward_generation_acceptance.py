@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from racenote_forward_errors import DataInvalid, OrchestrationMissing, run_cli
 from jrdb_race_lap_forward_current import validate as validate_lap
 from racenote_forward_source_acceptance import (
     GENERATION_SCHEMA,
@@ -115,18 +116,22 @@ def build_generation_set(
     course_fit_root: Path,
     race_lap_root: Path,
 ) -> dict[str, Any]:
+    if not evidence_path.is_file():
+        raise OrchestrationMissing("reviewed producer evidence has not been committed")
+    if not consumed_field_report.is_file():
+        raise OrchestrationMissing("consumed-field validation report not produced")
     evidence_sha = _canonical_receipt(evidence_path, repo_root)
     evidence = _load(evidence_path)
     if (evidence.get("schema_version") != PRODUCER_EVIDENCE_SCHEMA
             or evidence.get("status") != "VERIFIED"):
-        raise ValueError("producer evidence is not VERIFIED")
+        raise DataInvalid("producer evidence is not VERIFIED")
     completion = evidence.get("completion_evidence")
     if (not isinstance(completion, dict)
             or completion.get("status") != "PASS"
             or completion.get("source") not in ("DEDICATED_JRDB_RESULT_OPERATION", "DEDICATED_DATA_OPERATIONS")
             or not isinstance(completion.get("reference"), str)
             or len(completion["reference"]) < 8):
-        raise ValueError("completion evidence missing")
+        raise OrchestrationMissing("authoritative completed-race acceptance is missing")
     cutoff = _date(completion.get("required_completed_through"), "completion cutoff").isoformat()
 
     materialized = _load(materialization_receipt)
@@ -137,15 +142,15 @@ def build_generation_set(
 
     consistency = _load(consumed_field_report)
     if consistency.get("schema_version") != CONSISTENCY_SCHEMA or consistency.get("status") != "PASS":
-        raise ValueError("consumed-field consistency did not PASS")
+        raise DataInvalid("finalized SED consumed-field consistency did not PASS")
     expected_sed = evidence.get("finalized_sed")
     if not isinstance(expected_sed, list) or not expected_sed:
-        raise ValueError("producer evidence has no finalized_sed sources")
+        raise OrchestrationMissing("producer evidence has no finalized SED delivery")
     expected_dates = sorted(str(item.get("date")) for item in expected_sed if isinstance(item, dict))
     if expected_dates != sorted(consistency.get("dates") or []):
-        raise ValueError("consistency report dates differ from producer evidence")
+        raise DataInvalid("consistency report dates differ from producer evidence")
     if max(expected_dates) != cutoff:
-        raise ValueError("finalized SED coverage does not reach completion cutoff")
+        raise DataInvalid("finalized SED coverage does not reach completion cutoff")
     report_sha = _sha(consumed_field_report)
 
     analysis = _inspect_analysis(analysis_root)
@@ -273,4 +278,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(run_cli(main, "GENERATION_SET_ACCEPTANCE"))
