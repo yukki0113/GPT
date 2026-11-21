@@ -68,7 +68,14 @@ def _evidence_cutoff(record: dict, target: date) -> str | None:
     if not isinstance(completion, dict):
         raise DataInvalid("missing producer completion evidence")
     cutoff = completion.get("required_completed_through")
-    day = _date_before(cutoff, target, "producer cutoff")
+    try:
+        day = _date(cutoff, "producer cutoff")
+    except (ValueError, TypeError) as exc:
+        raise DataInvalid("producer cutoff: invalid date") from exc
+    # A future generation is not eligible for this target. It must not block
+    # an older, independently accepted generation that is eligible.
+    if day >= target:
+        return None
     if (completion.get("status") != "PASS"
             or completion.get("source") not in ("DEDICATED_JRDB_RESULT_OPERATION", "DEDICATED_DATA_OPERATIONS")
             or not isinstance(completion.get("reference"), str)
