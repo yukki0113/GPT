@@ -15,7 +15,7 @@ import tempfile
 import tarfile
 import zipfile
 
-from racenote_forward_source_acceptance import _canonical_receipt, _load, SCHEMA, HEX
+from racenote_forward_source_acceptance import _resolve_materialization_record, HEX
 
 MAX_ZIP = 500_000_000
 MAX_EXPANDED = 1_800_000_000
@@ -146,10 +146,8 @@ def normalize_racelap_current(destination: Path) -> None:
 
 
 def materialize(acceptance_path: Path, repo_root: Path, output_root: Path) -> dict:
-    accepted_sha = _canonical_receipt(acceptance_path, repo_root)
-    a = _load(acceptance_path)
-    if a.get("schema_version") != SCHEMA or a.get("status") != "ACCEPTED":
-        raise ValueError("unaccepted source declaration")
+    a, contract = _resolve_materialization_record(acceptance_path, repo_root)
+    accepted_sha = contract["record_sha256"]
     if output_root.exists():
         raise FileExistsError(output_root)
     try:
@@ -210,9 +208,34 @@ def materialize(acceptance_path: Path, repo_root: Path, output_root: Path) -> di
                                          for p in sources]} if raw_parts is not None
                        else sources[0]),
                 }
+        finalized = []
+        for item in a.get("finalized_sed") or []:
+            if not isinstance(item, dict):
+                raise ValueError("finalized_sed entry must be an object")
+            day = str(item.get("date", ""))
+            if not __import__("re").fullmatch(r"20\d{2}-\d{2}-\d{2}", day):
+                raise ValueError("finalized_sed entry has invalid date")
+            fid = item.get("source_ref") or item.get("file_id")
+            digest = item.get("source_sha256") or item.get("sha256")
+            if (not isinstance(fid, str) or len(fid) < 10
+                    or not all(c.isalnum() or c in "-_" for c in fid)
+                    or not isinstance(digest, str) or not HEX.fullmatch(digest)):
+                raise ValueError("finalized_sed source identity is not pinned")
+            target = output_root / "finalized_sed" / ("SED" + day[2:].replace("-", "") + ".zip")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if not gdown.download(id=fid, output=str(target), quiet=True):
+                raise ValueError("finalized_sed Drive source not available")
+            if not target.is_file() or target.stat().st_size > MAX_ZIP or _sha(target) != digest:
+                raise ValueError("finalized_sed accepted transport SHA mismatch")
+            finalized.append({"date": day, "source_ref": fid, "source_sha256": digest,
+                              "transport_size": target.stat().st_size,
+                              "local_name": target.name})
         result = {"schema_version": "racenote-forward-materialization-v2",
                   "status": "MATERIALIZED", "acceptance_sha256": accepted_sha,
-                  "sources": receipts}
+                  "source_contract_mode": contract["mode"],
+                  "generation_set_id": contract.get("generation_set_id"),
+                  "sources": receipts,
+                  "finalized_sed": finalized}
         (output_root / "materialization_receipt.json").write_text(
             json.dumps(result, sort_keys=True, indent=2) + "\n", encoding="utf-8")
         return result

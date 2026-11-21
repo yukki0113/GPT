@@ -156,7 +156,13 @@ def test_drive_materializer_pins_accepted_zip_and_cleans_on_error(tmp_path, monk
             "producer_acceptance_ref": "producer-run-" + name,
         }
     accepted_file.write_text(json.dumps(declaration))
-    monkeypatch.setattr(source, "_canonical_receipt", lambda *args: sha(accepted_file.read_bytes()))
+    monkeypatch.setattr(
+        source, "_resolve_materialization_record",
+        lambda *args: (
+            declaration,
+            {"mode": gate.SCHEMA, "record_sha256": sha(accepted_file.read_bytes())},
+        ),
+    )
     monkeypatch.setitem(sys.modules, "gdown", SimpleNamespace(
         download=lambda id, output, quiet: str(shutil.copy2(archives[id], output))
     ))
@@ -290,7 +296,13 @@ def test_course_fit_split_distribution_requires_both_pinned_parts(tmp_path, monk
         declaration[name].update({"source_ref": fid, "source_sha256": sha(path.read_bytes()),
                                   "producer_acceptance_ref": "accepted-" + name + "-run"})
     accepted_file.write_text(json.dumps(declaration))
-    monkeypatch.setattr(source, "_canonical_receipt", lambda *args: sha(accepted_file.read_bytes()))
+    monkeypatch.setattr(
+        source, "_resolve_materialization_record",
+        lambda *args: (
+            declaration,
+            {"mode": gate.SCHEMA, "record_sha256": sha(accepted_file.read_bytes())},
+        ),
+    )
     monkeypatch.setitem(sys.modules, "gdown", SimpleNamespace(
         download=lambda id, output, quiet: str(shutil.copy2(source_bytes[id], output))
     ))
