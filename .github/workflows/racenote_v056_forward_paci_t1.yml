@@ -52,7 +52,130 @@ concurrency:
   group: racenote-v056-forward-${{ inputs.target_date || github.event.client_payload.issue_number }}
   cancel-in-progress: false
 jobs:
+  resolve-prerequisites:
+    runs-on: ubuntu-latest
+    outputs:
+      target_date: ${{ steps.bootstrap.outputs.target_date }}
+      needs_acceptance: ${{ steps.bootstrap.outputs.needs_acceptance }}
+      producer_evidence_path: ${{ steps.bootstrap.outputs.producer_evidence_path }}
+      skip_t1: ${{ steps.bootstrap.outputs.skip_t1 }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Resolve T1 request and accepted producer prerequisites
+        id: bootstrap
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          ROUTED_ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+          MANUAL_TARGET_DATE: ${{ inputs.target_date }}
+          MANUAL_PACI_ID: ${{ inputs.paci_drive_file_id }}
+          MANUAL_PACI_SHA: ${{ inputs.paci_drive_sha256 }}
+          MANUAL_V2_PATH: ${{ inputs.v2_acceptance_path }}
+          MANUAL_ANALYSIS_ID: ${{ inputs.analysis_artifact_id }}
+          PYTHONPATH: horse-racing/jrdb/src
+          RACENOTE_FORWARD_FAILURE_JSON: /tmp/racenote-forward-bootstrap-failure.json
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, os, re, subprocess
+          from datetime import date, datetime, timedelta
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+          from racenote_forward_errors import DataInvalid, run_cli
+          from racenote_forward_t1_bootstrap import plan
+
+          def resolve():
+              if os.environ["GITHUB_EVENT_NAME"] == "repository_dispatch":
+                  number = os.environ.get("ROUTED_ISSUE_NUMBER","")
+                  if not number.isdecimal() or int(number) <= 0:
+                      raise DataInvalid("missing routed owner Issue")
+                  issue = json.loads(subprocess.check_output([
+                      "gh", "api", f"repos/{os.environ['GITHUB_REPOSITORY']}/issues/{number}"
+                  ], text=True))
+                  title = str(issue.get("title") or "")
+                  prefix = next((x for x in ("[RACENOTE_FORWARD_T1]",
+                                            "[RACENOTE_V056_FORWARD_PACI_T1]")
+                                 if title.startswith(x)), None)
+                  if (issue.get("user", {}).get("login") != "yukki0113"
+                          or "pull_request" in issue or prefix is None):
+                      raise DataInvalid("untrusted T1 Issue")
+                  request = json.loads((issue.get("body") or "").strip())
+                  if not isinstance(request,dict):
+                      raise DataInvalid("T1 body must be JSON object")
+                  target = request.get("target_date")
+                  paci_id = request.get("paci_drive_file_id")
+                  paci_sha = request.get("paci_drive_sha256","")
+                  explicit = any(request.get(x) for x in
+                                 ("v2_acceptance_path","analysis_artifact_id"))
+                  if title[len(prefix):].strip() != str(target).replace("-",""):
+                      raise DataInvalid("T1 issue title/date mismatch")
+              else:
+                  target = os.environ.get("MANUAL_TARGET_DATE")
+                  paci_id = os.environ.get("MANUAL_PACI_ID")
+                  paci_sha = os.environ.get("MANUAL_PACI_SHA")
+                  explicit = bool(os.environ.get("MANUAL_V2_PATH")
+                                  or os.environ.get("MANUAL_ANALYSIS_ID"))
+              try:
+                  day = date.fromisoformat(target)
+              except (ValueError,TypeError) as exc:
+                  raise DataInvalid("invalid T1 target date") from exc
+              if day.isoformat() != target:
+                  raise DataInvalid("noncanonical target date")
+              today = datetime.now(ZoneInfo("Asia/Tokyo")).date()
+              if not today <= day <= today + timedelta(days=7):
+                  raise DataInvalid("T1 is not a pre-race date within seven JST days")
+              if not isinstance(paci_id,str) or not re.fullmatch(
+                      r"[A-Za-z0-9_-]{10,128}",paci_id):
+                  raise DataInvalid("canonical PACI Drive ID is required")
+              if paci_sha and (not isinstance(paci_sha,str)
+                               or not re.fullmatch(r"[a-f0-9]{64}",paci_sha)):
+                  raise DataInvalid("PACI SHA invalid")
+              if explicit:
+                  # Legacy/explicit-v2 request keeps its own complete source gate.
+                  result = {"status":"EXPLICIT_SOURCE", "needs_acceptance":False,
+                            "producer_evidence_path":""}
+              else:
+                  result = plan(Path("."), target)
+              result["target_date"] = target
+              return result
+
+          def entry():
+              result=resolve()
+              with open(os.environ["GITHUB_OUTPUT"],"a",encoding="utf-8") as stream:
+                  stream.write("target_date="+result["target_date"]+"\n")
+                  stream.write("needs_acceptance="+str(result["needs_acceptance"]).lower()+"\n")
+                  stream.write("producer_evidence_path="+result["producer_evidence_path"]+"\n")
+                  stream.write("skip_t1="+str(result["status"]=="ALREADY_READY").lower()+"\n")
+              print("RACENOTE_FORWARD_T1_BOOTSTRAP",json.dumps(result,sort_keys=True))
+              return 0
+          raise SystemExit(run_cli(entry,"FORWARD_T1_PREFLIGHT"))
+          PY
+      - name: Upload bootstrap failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-forward-bootstrap-failure-${{ github.run_id }}
+          path: /tmp/racenote-forward-bootstrap-failure.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+  accept-producer:
+    needs: resolve-prerequisites
+    if: needs.resolve-prerequisites.outputs.needs_acceptance == 'true'
+    uses: ./.github/workflows/racenote_forward_acceptance_prepare.yml
+    with:
+      producer_evidence_path: ${{ needs.resolve-prerequisites.outputs.producer_evidence_path }}
+    secrets: inherit
+
   prepare-forward:
+    needs: [resolve-prerequisites, accept-producer]
+    if: ${{ always() && needs.resolve-prerequisites.result == 'success' && needs.resolve-prerequisites.outputs.skip_t1 != 'true' && (needs.accept-producer.result == 'success' || needs.accept-producer.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:

@@ -1,3 +1,10 @@
+## T1/T2 単一指示入口（2026-11-21）
+
+**最優先運用仕様**: `docs/racenote/RACENOTE_UNIFIED_T1_T2_INSTRUCTION_CONTRACT_20261121.md`。
+利用者には原則「T1」「T2」の指示だけを要求する。BACKTEST/FORWARDと日付/BTDAY/バージョンは進行中スレッドの文脈・現在のcanonical sessionから解決する。独立したproducer acceptanceやgeneration-set、PACI ID、2段階Freeze等の手入力を利用者に要求しない。
+FORWARD T1は既存Issue/dispatchから自動producer acceptanceを前置し、accepted generation-setを確定してから実T1へ進む。producer evidenceが未保存ならGPTが確定済みCURRENTの実証可能なsource ID/SHA・専用producer受入参照を調査して保存する。不明な値の推測やfail-openを禁じる。
+BACKTEST T1は既存BTDAY Orchestratorを再利用し、T2は両モードでLLM著述によるPrediction Freeze→独立Confidence Freezeの順を守る。機械の選馬・自信度生成は禁止。自動化された入口と実行成功は区別し、Actionsとmainを読み戻す。新規実PACIでのE2E成功は受入確認まで未確定。
+
 ## RaceNote v0.5.6 Confidence B/C正式定義の訂正（2026-11-05）
 
 最初の「Shadow v2.2着内軸判断をB/C正式定義へ昇格」という決定は撤回し、`docs/racenote/RACENOTE_V056_CONFIDENCE_BC_V22_PROMOTION_20261105.md` で訂正した。新規・未Freezeのv056 BTDAY/FORWARDは、A＝◎を勝ち馬として積極支持、B＝◎が最有力だが他にも勝ち負けできる馬がいる、C＝最終5頭の勝利候補間で優劣が付きにくい、Z＝従来の別枠。Shadow v2.2の「◎が3着内に残るか」は補助的なレビュー観点に限り、Cに4着以下の証拠を必須としない。Challengerや印はPrediction段階で決定し、Confidenceで変更しない。件数調整・既存Freezeの変更は禁止。

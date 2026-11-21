@@ -1,6 +1,11 @@
 name: RaceNote Forward Producer Acceptance Prepare
 
 on:
+  workflow_call:
+    inputs:
+      producer_evidence_path:
+        required: true
+        type: string
   repository_dispatch:
     types: [racenote_forward_acceptance_prepare_request]
   workflow_dispatch:
@@ -42,7 +47,7 @@ jobs:
           ROUTED_ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
         run: |
           set -euo pipefail
-          if [[ "${GITHUB_EVENT_NAME}" == "repository_dispatch" ]]; then
+          if [[ -z "${PRODUCER_EVIDENCE_PATH}" && "${GITHUB_EVENT_NAME}" == "repository_dispatch" ]]; then
             test "${ROUTED_ISSUE_NUMBER}" -gt 0
             body="$(gh api "repos/${GITHUB_REPOSITORY}/issues/${ROUTED_ISSUE_NUMBER}" --jq .body)"
             path="$(python - "$body" <<'PY'

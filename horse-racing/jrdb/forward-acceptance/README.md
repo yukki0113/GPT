@@ -1,6 +1,19 @@
 # RaceNote Forward T1 — reusable producer acceptance and target binding
 
-Status: **GENERATION-SET ORCHESTRATION CANDIDATE**
+Status: **AUTO-ACCEPTANCE PREREQUISITE CANDIDATE** (real forward T1 E2E acceptance remains separate).
+
+FORWARD T1 now automatically selects the latest eligible committed generation set
+or calls `racenote_forward_acceptance_prepare.yml` as a reusable `workflow_call`
+for the latest uniquely VERIFIED producer evidence. Users no longer issue a
+separate acceptance request in the normal T1 path. If no producer evidence
+is committed, the calling ChatGPT agent must verify/commit exact producer
+receipts from connected authoritative sources; the workflow fails closed with
+`ORCHESTRATION_MISSING` instead of inventing an acceptance.
+
+See `docs/racenote/RACENOTE_UNIFIED_T1_T2_INSTRUCTION_CONTRACT_20261121.md`
+for the one-instruction BACKTEST/FORWARD T1/T2 control-plane contract.
+
+
 
 This directory owns the Git-side acceptance records used by RaceNote v0.5.6 FORWARD T1.
 The safety boundary is unchanged: target-day result/market data is never accepted, producer CURRENT bytes remain SHA-pinned, and Prediction / Confidence stay separate immutable stages.
