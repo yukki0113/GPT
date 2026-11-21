@@ -26,6 +26,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       PYTHONPATH: horse-racing/jrdb/src
       PRODUCER_EVIDENCE_PATH: ${{ inputs.producer_evidence_path }}
+      RACENOTE_FORWARD_FAILURE_JSON: /tmp/racenote-forward-failure.json
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,18 +52,23 @@ jobs:
           PY
           )"
             echo "PRODUCER_EVIDENCE_PATH=$path" >> "$GITHUB_ENV"
+            export PRODUCER_EVIDENCE_PATH="$path"
           fi
           python - <<'PY'
           import os,re
           from pathlib import Path
-          path=os.environ["PRODUCER_EVIDENCE_PATH"]
-          if (not re.fullmatch(
-                  r"horse-racing/jrdb/forward-acceptance/producer-evidence/[A-Za-z0-9_.-]+\.json",
-                  path or "")
-                  or ".." in path.split("/")):
-              raise SystemExit("invalid producer_evidence_path")
-          if not Path(path).is_file():
-              raise SystemExit("committed producer evidence not found")
+          from racenote_forward_errors import DataInvalid, OrchestrationMissing, run_cli
+          def validate_request():
+              path=os.environ["PRODUCER_EVIDENCE_PATH"]
+              if (not re.fullmatch(
+                      r"horse-racing/jrdb/forward-acceptance/producer-evidence/[A-Za-z0-9_.-]+\.json",
+                      path or "")
+                      or ".." in path.split("/")):
+                  raise DataInvalid("invalid producer_evidence_path")
+              if not Path(path).is_file():
+                  raise OrchestrationMissing("committed producer evidence not found")
+              return 0
+          raise SystemExit(run_cli(validate_request, "PRODUCER_EVIDENCE_PREFLIGHT"))
           PY
 
       - name: Install deterministic validation dependencies
@@ -168,5 +174,34 @@ jobs:
             /tmp/racenote-producer-sources/consumed_field_report.json
             /tmp/racenote-producer-sources/generation_set.json
             /tmp/racenote-producer-sources/rrdb_receipt.json
+          retention-days: 14
+          if-no-files-found: error
+
+      - name: Write structured failure receipt
+        if: failure()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path("/tmp/racenote-forward-failure.json")
+          if not path.is_file():
+              path.write_text(json.dumps({
+                  "schema_version": "racenote-forward-failure-v1",
+                  "status": "FAILED",
+                  "error_code": "EXECUTION_FAILED",
+                  "failed_stage": "UNCLASSIFIED_RUNNER_STAGE",
+                  "detail": "Consult the failing workflow step; no typed contract error was emitted.",
+                  "retryable": None
+              },sort_keys=True)+"\n",encoding="utf-8")
+          print(path.read_text(encoding="utf-8"))
+          PY
+      - name: Upload producer acceptance failure evidence
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: racenote-forward-acceptance-failure-${{ github.run_id }}
+          path: |
+            /tmp/racenote-forward-failure.json
+            /tmp/racenote-producer-sources/consumed_field_report.json
           retention-days: 14
           if-no-files-found: error
