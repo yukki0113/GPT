@@ -39,10 +39,13 @@ def main() -> int:
     ap.add_argument("--racereview-root", type=Path, required=True)
     ap.add_argument("--race-lap-current-bundle", type=Path, required=True)
     ap.add_argument("--race-lap-expected-period-to", required=True)
-    ap.add_argument("--freshness-acceptance", type=Path, required=True,
+    ap.add_argument("--freshness-acceptance", type=Path,
                     help="Accepted Analysis+RRDB coverage receipt from dedicated operations")
-    ap.add_argument("--analysis-artifact-id", required=True)
-    ap.add_argument("--analysis-generation-id", required=True)
+    ap.add_argument("--analysis-artifact-id")
+    ap.add_argument("--v2-source-acceptance", type=Path,
+                    help="Committed v2 producer receipt; mutually exclusive with legacy A05")
+    ap.add_argument("--v2-materialization-receipt", type=Path)
+    ap.add_argument("--analysis-generation-id")
     ap.add_argument("--rrdb-zip", type=Path, required=True)
     ap.add_argument("--rrdb-receipt", type=Path, required=True)
     ap.add_argument("--output-root", type=Path, required=True)
@@ -93,17 +96,63 @@ def main() -> int:
     if args.output_root.exists():
         raise FileExistsError(f"output root already exists: {args.output_root}")
     # Fail before any forecast package, Reader or session can be created.
-    from racenote_v056_forward_freshness import validate as validate_freshness
-    freshness = validate_freshness(
-        args.freshness_acceptance,
-        target_date=args.date,
-        analysis_root=args.analysis_root,
-        analysis_artifact_id=args.analysis_artifact_id,
-        analysis_generation_id=args.analysis_generation_id,
-        rrdb_root=args.racereview_root,
-        rrdb_zip=args.rrdb_zip,
-        rrdb_receipt=args.rrdb_receipt,
-    )
+    if args.v2_source_acceptance:
+        if args.freshness_acceptance or args.analysis_artifact_id or args.analysis_generation_id:
+            raise ValueError("v2 source acceptance and legacy A05 inputs are mutually exclusive")
+        if args.v2_materialization_receipt is None:
+            raise ValueError("v2 materialization receipt is mandatory")
+        from racenote_forward_source_acceptance import accept as accept_v2, _load, _sha
+        import tempfile
+        materialized = _load(args.v2_materialization_receipt)
+        if (materialized.get("status") != "MATERIALIZED"
+                or materialized.get("schema_version") != "racenote-forward-materialization-v2"):
+            raise ValueError("v2 inputs have no validated materialization")
+        with tempfile.TemporaryDirectory(prefix="racenote-v2-lock-") as temporary:
+            source_lock = accept_v2(
+                args.v2_source_acceptance, repo_root=Path("."),
+                target_date=args.date, analysis_root=args.analysis_root,
+                rrdb_root=args.racereview_root, rrdb_zip=args.rrdb_zip,
+                rrdb_receipt=args.rrdb_receipt,
+                course_fit_root=args.course_fit_root,
+                race_lap_current_bundle=args.race_lap_current_bundle,
+                paci_sha256=paci_receipt["sha256"],
+                output=Path(temporary) / "forward_source_lock.json",
+            )
+        if source_lock["acceptance_sha256"] != materialized.get("acceptance_sha256"):
+            raise ValueError("v2 materialization is not bound to committed acceptance")
+        for name in ("analysis", "course_fit", "race_lap"):
+            entry = _load(args.v2_source_acceptance)[name]
+            receipt = materialized.get("sources", {}).get(name)
+            if not isinstance(receipt, dict) or any(
+                receipt.get(field) != entry.get(field)
+                for field in ("source_mode", "source_ref", "source_sha256", "producer_acceptance_ref")
+            ):
+                raise ValueError(name + ": materialization and source acceptance mismatch")
+        if source_lock["race_lap"]["period_to"] != args.race_lap_expected_period_to:
+            raise ValueError("v2 RaceLap cutoff argument differs from validated source")
+        freshness = {
+            "schema_version": "racenote-forward-analysis-rrdb-freshness-v2",
+            "status": "PASS", "target_date": args.date,
+            "required_completed_through": source_lock["required_completed_through"],
+            "analysis": source_lock["analysis"], "rrdb": source_lock["rrdb"],
+            "source_lock_sha256": hashlib.sha256(
+                json.dumps(source_lock, sort_keys=True, ensure_ascii=False).encode("utf-8")
+            ).hexdigest(),
+        }
+    else:
+        if not all((args.freshness_acceptance, args.analysis_artifact_id, args.analysis_generation_id)):
+            raise ValueError("legacy A05 requires all accepted source parameters")
+        from racenote_v056_forward_freshness import validate as validate_freshness
+        freshness = validate_freshness(
+            args.freshness_acceptance,
+            target_date=args.date,
+            analysis_root=args.analysis_root,
+            analysis_artifact_id=args.analysis_artifact_id,
+            analysis_generation_id=args.analysis_generation_id,
+            rrdb_root=args.racereview_root,
+            rrdb_zip=args.rrdb_zip,
+            rrdb_receipt=args.rrdb_receipt,
+        )
     selection_id = args.selection_id or f"DAILY-{args.date.replace('-', '')}"
 
     src = Path(__file__).resolve().parent
@@ -216,6 +265,10 @@ def main() -> int:
     audit_root = args.output_root / "source_audit"
     audit_root.mkdir(exist_ok=True)
     write_json(audit_root / "forward_analysis_rrdb_freshness.json", freshness)
+    if args.v2_source_acceptance:
+        write_json(audit_root / "forward_source_lock.json", source_lock)
+        base_handoff["source_contract_version"] = "v2"
+        base_handoff["source_lock_sha256"] = freshness["source_lock_sha256"]
     write_json(args.output_root / "operation_handoff.json", base_handoff)
     print(json.dumps({
         "status": base_handoff["status"],
