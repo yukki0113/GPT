@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+from datetime import datetime, timezone
 import io
 import json
 from pathlib import Path
@@ -76,6 +77,8 @@ def test_v2_acceptance_checks_immutable_generation_and_cutoff(tmp_path, monkeypa
         "target_date": "2026-11-21",
         "completion_evidence": {
             "status": "PASS", "reference": "JRDB-result-run-verified",
+            "source": "DEDICATED_JRDB_RESULT_OPERATION",
+            "verified_at_utc": datetime.now(timezone.utc).isoformat(),
             "required_completed_through": "2026-11-15",
         },
     }
