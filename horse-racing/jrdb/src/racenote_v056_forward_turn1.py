@@ -126,7 +126,7 @@ def main() -> int:
             if not isinstance(receipt, dict) or any(
                 receipt.get(field) != entry.get(field)
                 for field in ("source_mode", "source_ref", "source_sha256", "producer_acceptance_ref")
-            ):
+            ) or receipt.get("archive_format") != entry.get("archive_format", "zip"):
                 raise ValueError(name + ": materialization and source acceptance mismatch")
         if source_lock["race_lap"]["period_to"] != args.race_lap_expected_period_to:
             raise ValueError("v2 RaceLap cutoff argument differs from validated source")
