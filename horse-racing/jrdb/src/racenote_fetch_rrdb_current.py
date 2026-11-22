@@ -138,6 +138,7 @@ def fetch(destination: Path, receipt: Path, *, source_config: Path | None = None
             "generation_id": meta["generation_id"],
             "period_to": meta["period_to"],
             "manifest_sha256": meta["manifest_sha256"],
+            "archive_layout": meta["archive_layout"],
             "source_contract_sha256": source["source_contract_sha256"],
             "source_revision": source["source_revision"],
             "canonical_folder_id": source["canonical_folder_id"],
