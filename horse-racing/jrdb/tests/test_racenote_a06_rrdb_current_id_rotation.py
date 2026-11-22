@@ -101,7 +101,7 @@ class CurrentSourceTests(unittest.TestCase):
         self.assertEqual((self.root / "replay.zip").read_bytes(), replay.read_bytes())
 
     def test_ambiguous_both_zip_layouts_are_rejected(self):
-        mixed = self.root / "ambiguous.zip"
+        mixed = self.root / "mixed-layout-source.zip"
         make_zip(mixed, GEN1, "2026-11-01")
         with zipfile.ZipFile(mixed, "a") as z:
             z.writestr("current.json", json.dumps({
