@@ -23,8 +23,7 @@ GEN1 = "jrdb_race_review_v0_1_incremental_20261101_01"
 GEN2 = "jrdb_race_review_v0_1_incremental_20261108_01"
 
 
-def make_zip(path: Path, generation: str, period: str, *, corrupt_manifest=False):
-    root = "postrace_review/v0_1/"
+def make_zip(path: Path, generation: str, period: str, *, corrupt_manifest=False, root="postrace_review/v0_1/"):
     current = {
         "status": "CURRENT", "artifact_type": "jrdb_postrace_review",
         "generation_id": generation, "manifest": f"generations/{generation}/manifest.json",
@@ -88,6 +87,31 @@ class CurrentSourceTests(unittest.TestCase):
         self.assertEqual(b["generation_id"], GEN2)
         self.assertEqual(b["period_to"], "2026-11-08")
         self.assertEqual(json.loads((self.root/"second.json").read_text()), b)
+
+    def test_corrected_replay_root_zip_preserves_original_source_sha(self):
+        replay = self.root / "replay-root.zip"
+        generation = "jrdb_race_review_v0_1_replay_finalized_sed_20261115_01"
+        make_zip(replay, generation, "2026-11-15", root="")
+        record = self.fetch("replay", replay, expected_file_id=OLD_ID,
+                            expected_sha256=fetcher.sha256(replay))
+        self.assertEqual(record["generation_id"], generation)
+        self.assertEqual(record["period_to"], "2026-11-15")
+        self.assertEqual(record["archive_layout"], "ROOT")
+        self.assertEqual(record["sha256"], fetcher.sha256(replay))
+        self.assertEqual((self.root / "replay.zip").read_bytes(), replay.read_bytes())
+
+    def test_ambiguous_both_zip_layouts_are_rejected(self):
+        mixed = self.root / "mixed-layout-source.zip"
+        make_zip(mixed, GEN1, "2026-11-01")
+        with zipfile.ZipFile(mixed, "a") as z:
+            z.writestr("current.json", json.dumps({
+                "status": "CURRENT", "artifact_type": "jrdb_postrace_review",
+                "generation_id": GEN1,
+                "manifest": f"generations/{GEN1}/manifest.json",
+            }))
+        with self.assertRaisesRegex(ValueError, "ambiguous archive layout"):
+            self.fetch("ambiguous", mixed)
+        self.assertFalse((self.root / "ambiguous.zip").exists())
 
     def test_new_id_requires_reviewed_git_pointer_and_expected_identity(self):
         self.edit(file_id=NEW_ID, source_revision=2, approval_reference="GH-PR-reviewed-rotation-123")

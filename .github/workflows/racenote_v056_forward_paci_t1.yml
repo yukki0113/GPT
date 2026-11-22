@@ -499,6 +499,23 @@ jobs:
           unzip -tq /tmp/v056-artifacts/rrdb.zip
           mkdir -p /tmp/racenote-rrdb
           unzip -q /tmp/v056-artifacts/rrdb.zip -d /tmp/racenote-rrdb
+          # Corrected producer replay CURRENT stores current.json at ZIP root.
+          # Normalize *after* CRC, safe-member and CURRENT/manifest verification,
+          # while retaining the original Drive ZIP bytes/SHA as the accepted source.
+          python - <<'PY'
+          from pathlib import Path
+          root = Path("/tmp/racenote-rrdb")
+          canonical = root / "postrace_review/v0_1"
+          if (root / "current.json").is_file():
+              if canonical.exists() or {p.name for p in root.iterdir()} != {
+                      "current.json", "generations", "objects"}:
+                  raise SystemExit("RRDB root-layout contains unexpected members")
+              canonical.mkdir(parents=True)
+              for name in ("current.json", "generations", "objects"):
+                  (root / name).rename(canonical / name)
+          if not (canonical / "current.json").is_file():
+              raise SystemExit("RRDB canonical CURRENT missing after normalization")
+          PY
           test -f /tmp/racenote-rrdb/postrace_review/v0_1/current.json
       - name: A05 preflight accepted Analysis and RRDB coverage before T1
         if: ${{ env.V2_ACCEPTANCE_PATH == '' }}

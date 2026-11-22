@@ -32,7 +32,7 @@ def sha256(path):
     return h.hexdigest()
 
 
-def _manifest_within_root(pointer: dict) -> str:
+def _manifest_within_root(pointer: dict, prefix: str = "postrace_review/v0_1/") -> str:
     if pointer.get("status") != "CURRENT" or pointer.get("artifact_type") != "jrdb_postrace_review":
         raise ValueError("RRDB CURRENT pointer status/artifact mismatch")
     generation = pointer.get("generation_id")
@@ -44,29 +44,34 @@ def _manifest_within_root(pointer: dict) -> str:
     parts = Path(ref).parts
     if ".." in parts or "." in parts:
         raise ValueError("RRDB CURRENT manifest path unsafe")
-    return "postrace_review/v0_1/" + ref
+    return prefix + ref
 
 
 def _inspect_zip(path: Path) -> dict:
     with zipfile.ZipFile(path) as archive:
         members = archive.infolist()
         names = [member.filename for member in members]
-        if len(names) != len(set(names)) or CURRENT_MEMBER not in names:
-            raise ValueError("RRDB CURRENT invalid or duplicate archive members")
+        if len(names) != len(set(names)):
+            raise ValueError("RRDB CURRENT duplicate archive members")
+        candidates = [name for name in (CURRENT_MEMBER, "current.json") if name in names]
+        if len(candidates) != 1:
+            raise ValueError("RRDB CURRENT invalid or ambiguous archive layout")
+        current_member = candidates[0]
+        prefix = current_member.removesuffix("current.json")
         for member in members:
             name = member.filename
             parts = Path(name).parts
             if (name.startswith("/") or "\\" in name or ".." in parts
                     or (member.is_dir() and not name.endswith("/"))):
                 raise ValueError("RRDB CURRENT unsafe archive member")
-        if archive.getinfo(CURRENT_MEMBER).file_size > 10_000_000:
+        if archive.getinfo(current_member).file_size > 10_000_000:
             raise ValueError("RRDB CURRENT metadata too large")
         if archive.testzip() is not None:
             raise ValueError("RRDB CURRENT archive CRC failed")
-        current = json.loads(archive.read(CURRENT_MEMBER))
+        current = json.loads(archive.read(current_member))
         if not isinstance(current, dict):
             raise ValueError("RRDB CURRENT metadata must be an object")
-        manifest_path = _manifest_within_root(current)
+        manifest_path = _manifest_within_root(current, prefix)
         if manifest_path not in names or archive.getinfo(manifest_path).file_size > 10_000_000:
             raise ValueError("RRDB CURRENT manifest missing or too large")
         raw_manifest = archive.read(manifest_path)
@@ -81,6 +86,7 @@ def _inspect_zip(path: Path) -> dict:
             "generation_id": current["generation_id"],
             "period_to": manifest["period_to"],
             "manifest_sha256": hashlib.sha256(raw_manifest).hexdigest(),
+            "archive_layout": "ROOT" if not prefix else "PREFIXED",
         }
 
 
@@ -132,6 +138,7 @@ def fetch(destination: Path, receipt: Path, *, source_config: Path | None = None
             "generation_id": meta["generation_id"],
             "period_to": meta["period_to"],
             "manifest_sha256": meta["manifest_sha256"],
+            "archive_layout": meta["archive_layout"],
             "source_contract_sha256": source["source_contract_sha256"],
             "source_revision": source["source_revision"],
             "canonical_folder_id": source["canonical_folder_id"],
