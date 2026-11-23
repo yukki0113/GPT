@@ -39,9 +39,20 @@ Phase 1 successfully upgraded the production pin to DuckDB 2.0.1: PR #2713, main
 
 In Phase 2 the sealed DuckDB 2.0.1 wheel was **uploaded to private Drive and downloaded back**, then installed into a *new* Python 3.13 venv via `pip --no-index --no-deps`. Direct official Data Storage SQL returned **481,627** starts / **34,548** races on the actual JRDB 2016–2025 history. The 2026-10-25 京都11R 菊花賞 Reader reproduced the four Phase 1 evidence outputs **byte-for-byte**.
 
-The package with DuckDB+PyArrow successfully passed `data_storage check-deps` and the same four-file real-race replay in a freshly created environment. A third NumPy wheel is included in the final runtime candidate to avoid preinstalled-site-packages dependencies; see the CI logs and the latest pinned registry after final acceptance.
+The final **three-wheel bundle** (DuckDB 2.0.1, PyArrow 25.0.1, NumPy 2.2.4) was retrieved from its private Drive URL in this same session. Its full archive SHA and nested archive SHA, three wheel SHA/size values, and ZIP CRC checks were verified. All wheels were installed using `--no-index --no-deps` in a **new Python 3.13 venv with `system_site_packages=False`**; no Python package downloads or inherited NumPy were required. `data_storage check-deps` returned `success`, canonical history SQL returned 481,627 starts / 34,548 races, and the actual Kyoto 11R Reader produced all four Phase 1 evidence JSON outputs byte-for-byte. A nonzero CLI exit here denotes the independently tracked technical Reader `PARTIAL`, not an execution failure.
 
 The canonical Reader reports technical `PARTIAL` for eight matched races under both engine versions; this **is not an installation failure**. Scientific sampling gate discrepancy from the older PASS acceptance is independently tracked by GitHub issue #2714.
+
+## Verified immutable runtime distribution (private Drive)
+
+- Drive folder: `horse-racing/runtime_wheels` (`1p7_MS2UH5UEOfWfzdWJH87zKxQXg2vYX`).
+- **Canonical final artifact ID:** `1zsU9BGNUkWd4aHg2kDKMNh699tE2i9Db` (not any of the earlier DuckDB-only or two-wheel staging files).
+- Size: **90,518,136 bytes**.
+- Outer SHA-256: `ceee50c7f3e7b2dc74bc8401320d1b69e96cee8d7809383b876677c74c7caa16`.
+- Inner runtime ZIP SHA-256: `42b73a4b47613aeda27e89804ce6b5afeec70653e53eb4edad6ac62f152d989e`.
+- Package SHA-256 values: `duckdb` `39ffeb136abed770a496e5592a464f18a07b1543e7ddb1ff6453215e179f1647`, `pyarrow` `0befcf816e45a1af33ac775a9970b749e4868a230c7372f0ae5e932bee27039f`, `numpy` `bce43e386c16898b91e162e5baaad90c4b06f9dcbe36282490032cec98dc8ae7`.
+- Private Drive ACL: owner only; no `anyone` public access.
+- One-time wheel packaging CI: https://github.com/yukki0113/GPT/actions/runs/45107232260 . CI validates direct bundle bootstrap, Actions-wrapper bootstrap, fail-closed wrong SHA, and `check-deps` in new venvs.
 
 ## Operational limitations and rollback
 
