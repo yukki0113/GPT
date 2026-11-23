@@ -1,0 +1,102 @@
+name: Shared runtime dependency watch
+on:
+  schedule:
+    # Monday 09:35 JST, weekly. Monitoring ONLY, never upgrade by schedule.
+    - cron: '35 0 * * 1'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/shared_runtime_dependency_watch.yml'
+      - 'tools/data-storage/scripts/check_runtime_dependency_updates.py'
+      - 'tools/data-storage/tests/test_runtime_dependency_watch.py'
+      - 'tools/data-storage/config/chatgpt_offline_runtime_v1.json'
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: shared-runtime-dependency-watch-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  contract-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Offline deterministic tests (no production installation)
+        run: python -m unittest discover -s tools/data-storage/tests -p test_runtime_dependency_watch.py -v
+  monitor:
+    if: github.event_name != 'pull_request'
+    needs: contract-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Read-only official PyPI release check
+        run: python tools/data-storage/scripts/check_runtime_dependency_updates.py --output /tmp/runtime_dependency_watch.json
+      - name: Preserve monitoring receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtime-dependency-watch-report
+          path: /tmp/runtime_dependency_watch.json
+          retention-days: 90
+      - name: Open only new version-change review issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('/tmp/runtime_dependency_watch.json', 'utf8'));
+            if (report.schema_version !== 'gpt.runtime_dependency_watch.v1' ||
+                report.promotion !== 'NEVER_AUTOMATIC') {
+              core.setFailed('Unexpected dependency watch output schema');
+              return;
+            }
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const allOpen = await github.paginate(github.rest.issues.listForRepo, {
+              owner, repo, state: 'open', per_page: 100
+            });
+            for (const component of report.components) {
+              if (!component.newer_available) continue;
+              const {name, latest_stable_with_non_yanked_wheel: candidate,
+                     approved_runtime_version: current, change_type: kind} = component;
+              if (!['duckdb','pyarrow','numpy'].includes(name)) {
+                core.setFailed('Unexpected dependency name');
+                return;
+              }
+              const title = '[DEPENDENCY_WATCH] ' + name + ' ' + candidate + ' available';
+              if (allOpen.some(x => x.title === title)) {
+                core.info('Already open: ' + title);
+                continue;
+              }
+              const body = [
+                '## Shared runtime candidate (automated detection only)',
+                '- Package: ' + name,
+                '- Approved offline-runtime version: ' + current,
+                '- Latest stable non-yanked wheel release: ' + candidate,
+                '- Change type: ' + kind,
+                '- PyPI: ' + component.pypi_url,
+                '- Possible CPython 3.13 Linux x86_64 wheel: ' + component.python313_linux_x86_64_wheel_hint,
+                '- Wheel/ABI/glibc compatibility needs independent validation.',
+                '- Report generated at: ' + report.checked_at_utc,
+                '- Registry SHA: ' + report.runtime_registry_sha256,
+                '',
+                '## Mandatory human-approved promotion gates',
+                '1. Manually inspect official release notes, breaking changes, CVEs and, for DuckDB, official LTS/support status.',
+                '2. Check wheel Python/ABI/glibc tags, signed provenance where available, SHA-256 and private Drive storage.',
+                '3. On a candidate branch test full Data Storage/Forecast Reader suites, Python 3.12/3.13 where supported and full pinned JRDB real-data parity.',
+                '4. Compare S0–S4 race keys, 8 axes, previous joins, missing values, as-of guards and all Evidence Bundle hashes against approved baseline.',
+                '5. Draft explicit rollback, source/data hashes, CI links and decision report.',
+                '6. Only after owner approval, change requirements + offline registry + bootstrap expected versions together, then verify main CI. Never auto-merge.',
+                '',
+                'This issue **does not authorize any production upgrade**. Continue using existing pinned wheel until accepted.',
+                'Runbook: tools/data-storage/docs/SHARED_RUNTIME_DEPENDENCY_PROMOTION_PHASE3_20261123.md'
+              ].join('\n');
+              const created = await github.rest.issues.create({owner, repo, title, body});
+              core.info('Opened review Issue #' + created.data.number);
+            }
