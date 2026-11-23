@@ -83,7 +83,7 @@ def install(bundle: Path, archive_sha256: str, venv_dir: Path) -> dict:
              "from importlib.metadata import version; "
              "assert version('duckdb') == '2.0.1'; "
              "assert version('pyarrow') == '25.0.1'; "
-             "assert duckdb.sql('select 1').fetchone() == (1,); "
+             "assert duckdb.connect(':memory:').execute('select 1').fetchone() == (1,); "
              "assert pyarrow.table({'x':[1,2,3]}).num_rows == 3; "
              "print(json.dumps({'duckdb':duckdb.__version__,"
              "'pyarrow':pyarrow.__version__,'select_1':1}))")
