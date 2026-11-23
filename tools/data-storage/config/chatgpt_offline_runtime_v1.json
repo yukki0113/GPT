@@ -39,5 +39,7 @@
     "build": "official PyPI wheels, repackaged in one-time GitHub Actions CI",
     "run_url": "https://github.com/yukki0113/GPT/actions/runs/45107232260"
   },
-  "distribution_policy": "Do not publish JRDB proprietary data, access tokens, or Drive bearer URLs. Open-source wheels only."
+  "distribution_policy": "Do not publish JRDB proprietary data, access tokens, or Drive bearer URLs. Open-source wheels only.",
+  "drive_folder_path": "GPT/tools/runtime_wheels",
+  "storage_scope": "GPT shared tooling (not JRDB project-specific)"
 }
