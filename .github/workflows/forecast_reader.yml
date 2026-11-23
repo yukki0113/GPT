@@ -28,19 +28,4 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install pytest -r tools/data-storage/requirements.txt
       - run: PYTHONPATH=tools/data-storage python -m data_storage check-deps
-      - name: Export canonical JRDB Reader source for offline real-data acceptance
-        if: github.event_name == 'pull_request' && matrix.python-version == '3.13'
-        uses: actions/upload-artifact@v4
-        with:
-          name: jrdb-reader-canonical-src-2.0.1
-          retention-days: 5
-          path: |
-            horse-racing/jrdb/forecast_reader/**
-            horse-racing/jrdb/src/jrdb_raw.py
-            horse-racing/jrdb/src/jrdb_raw_history.py
-            horse-racing/jrdb/src/jrdb_ukc.py
-            tools/data-storage/data_storage/**
-            tools/data-storage/scripts/safe_unpack_staged_archive.py
-            tools/data-storage/requirements.txt
-
       - run: PYTHONPATH=tools/data-storage python -m pytest horse-racing/jrdb/forecast_reader/tests horse-racing/jrdb/tests/test_jrdb_raw_common.py horse-racing/jrdb/tests/test_jrdb_raw_history_batch.py tools/data-storage/tests -q
