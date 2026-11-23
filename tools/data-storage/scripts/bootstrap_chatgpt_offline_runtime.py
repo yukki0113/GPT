@@ -20,7 +20,7 @@ import tempfile
 import venv
 import zipfile
 
-PACKAGES = {"duckdb": "2.0.1", "pyarrow": "25.0.1"}
+PACKAGES = {"duckdb": "2.0.1", "pyarrow": "25.0.1", "numpy": "2.2.4"}
 BUNDLE_SCHEMA = "jrdb.offline_runtime_wheels.v1"
 
 
@@ -46,13 +46,13 @@ def verify_bundle(bundle: Path, expected_sha256: str) -> tuple[dict, dict[str, b
         if z.testzip():
             raise ValueError("HASH_MISMATCH: corrupted ZIP member")
         names = z.namelist()
-        if len(names) != 3 or len(set(names)) != len(names) or "wheel_manifest.json" not in names:
-            raise ValueError("INVALID_BUNDLE: expected exactly two wheels and manifest")
+        if len(names) != 4 or len(set(names)) != len(names) or "wheel_manifest.json" not in names:
+            raise ValueError("INVALID_BUNDLE: expected exactly three wheels and manifest")
         m = json.loads(z.read("wheel_manifest.json"))
         if m.get("schema_version") != BUNDLE_SCHEMA or m.get("python") != "3.13" or m.get("platform") != "linux_x86_64":
             raise ValueError("INVALID_BUNDLE: runtime manifest")
         entries = m.get("packages")
-        if not isinstance(entries, list) or len(entries) != 2:
+        if not isinstance(entries, list) or len(entries) != 3:
             raise ValueError("INVALID_BUNDLE: package count")
         payload = {}
         found = {}
@@ -79,7 +79,7 @@ def install(bundle: Path, archive_sha256: str, venv_dir: Path) -> dict:
     manifest, wheels = verify_bundle(bundle, archive_sha256)
     if venv_dir.exists():
         raise ValueError("DESTINATION_EXISTS: supply a fresh environment")
-    venv.EnvBuilder(with_pip=True, system_site_packages=True).create(venv_dir)
+    venv.EnvBuilder(with_pip=True, system_site_packages=False).create(venv_dir)
     python = venv_dir / "bin" / "python"
     with tempfile.TemporaryDirectory(prefix="jrdb_wheels_") as tmp:
         staged = []
@@ -89,14 +89,14 @@ def install(bundle: Path, archive_sha256: str, venv_dir: Path) -> dict:
             staged.append(str(p))
         subprocess.run([str(python), "-m", "pip", "install", "--no-index",
                         "--no-deps", "--disable-pip-version-check", *staged], check=True)
-    check = ("import json, duckdb, pyarrow; "
+    check = ("import json, duckdb, pyarrow, numpy; "
              "from importlib.metadata import version; "
              "assert version('duckdb') == '2.0.1'; "
              "assert version('pyarrow') == '25.0.1'; "
              "assert duckdb.connect(':memory:').execute('select 1').fetchone() == (1,); "
              "assert pyarrow.table({'x':[1,2,3]}).num_rows == 3; "
              "print(json.dumps({'duckdb':duckdb.__version__,"
-             "'pyarrow':pyarrow.__version__,'select_1':1}))")
+             "'pyarrow':pyarrow.__version__,'numpy':numpy.__version__,'select_1':1}))")
     out = subprocess.check_output([str(python), "-c", check], text=True)
     return {"status": "PASS", "archive_sha256": archive_sha256,
             "wheel_manifest": manifest, "version_check": json.loads(out)}
