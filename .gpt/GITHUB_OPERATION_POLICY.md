@@ -206,7 +206,7 @@ Dを選んだ場合、Issue作成前に以下を確認します。
 - external transient: retry / backoff
 - domain validation: 原因確認。正常なfail-closedを成功扱いに変えない
 - implementation error: 実装修正
-- managed-runtime dependency transport failure: Parquet / DuckDB処理では `tools/data-storage/` のlocal bootstrapを1回確認し、proxy/network policyで依存取得不能なら `[DATA_STORAGE_FALLBACK]` Actions経路へ切り替える。canonical DuckDB/Parquet処理を別engineへ暗黙再実装しない。
+- managed-runtime dependency transport failure: Parquet / DuckDB処理では先にC-1を適用する。GPT Python 3.13 Linux x86_64の承認wheel / 適合venvを確認し、非対応・bundle取得不可なら通常pinned requirements復旧を一度試す。どちらも利用できずproxy/network policyで依存が導入できない場合、再現可能かつ公開条件を満たす入力に限り `[DATA_STORAGE_FALLBACK]` Actions経路へ切り替える。canonical DuckDB/Parquet処理を別engineへ暗黙再実装しない。
 
 同じrequestを理由確認なしでrerunしません。
 
