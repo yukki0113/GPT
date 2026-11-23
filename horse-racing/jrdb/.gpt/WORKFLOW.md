@@ -260,7 +260,7 @@ Secrets、Actions固有権限、Actions artifact chain、長時間・大容量ru
 
 `horse-racing/jrdb` のcanonical query / validation / conversionは共通 `tools/data-storage/` を利用する。GPTのPython 3.13 Linux x86_64環境で`check-deps`が未充足なら、**第一復旧経路はregistryでSHA固定されたprivate Drive 3-wheel bundle**とする。GitHub `main` のregistry・bootstrap script・Phase 2 runbookを再取得し、native Drive connectorで取得したZIPのID/size/SHAを照合後、新規隔離venvへoffline installし、`check-deps`と対象moduleのauditを確認する。互換venvがあればそのまま再利用する。
 
-対応外環境・Drive取得不可・検証失敗時は、勝手に未知のwheelをinstallせず通常のpinned requirements復旧を一度試す。管理runtimeでそれもblockedの場合に限り、入力の再現可能性と非公開データ境界を確認して既存`[DATA_STORAGE_FALLBACK]`を使用する。Actions-native固有のSecrets/取得/凍結/正式監査は従来どおりD系を維持。**JRDBでのwheel E2E PASSを、このProject固有の実データE2E PASSと読み替えない。** 予想のas-of、サンプル、identity、leakage、publication contractは変更しない。詳細はroot `.gpt/GITHUB_OPERATION_POLICY.md` C-1と`tools/data-storage/docs/JRDB_CHATGPT_OFFLINE_RUNTIME_PHASE2_20261123.md`。
+対応外環境・Drive取得不可・検証失敗時は、勝手に未知のwheelをinstallせず通常のpinned requirements復旧を一度試す。管理runtimeでそれもblockedの場合に限り、入力の再現可能性と非公開データ境界を確認して既存`[DATA_STORAGE_FALLBACK]`を使用する。Actions-native固有のSecrets/取得/凍結/正式監査は従来どおりD系を維持。**Forecast Readerでのwheel E2E PASSを、RaceNote・Niche Query・他のJRDB consumer全体の実データE2E PASSと読み替えない。** 予想のas-of、サンプル、identity、leakage、publication contractは変更しない。詳細はroot `.gpt/GITHUB_OPERATION_POLICY.md` C-1と`tools/data-storage/docs/JRDB_CHATGPT_OFFLINE_RUNTIME_PHASE2_20261123.md`。
 
 ### D. Actions-Native Execution
 
