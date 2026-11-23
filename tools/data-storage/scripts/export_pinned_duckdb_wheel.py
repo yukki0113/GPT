@@ -11,22 +11,22 @@ import subprocess
 import sys
 from pathlib import Path
 
-PIN = "1.1.3"
+PIN = "2.0.1"
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--output-dir", type=Path, required=True)
     ap.add_argument("--python-version", choices=("312", "313"), default="313")
     args = ap.parse_args()
-    args.output_dir.mkdir(parents=True, exist_ok=True)
+    # DuckDB 2.0 uses CPython 3.12 stable ABI wheels on both 3.12 and 3.13.\n    args.output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run([sys.executable, "-m", "pip", "download", "--no-deps",
                     "--only-binary=:all:", "--python-version", args.python_version,
-                    "--implementation", "cp", "--abi", "cp" + args.python_version,
+                    "--implementation", "cp", "--abi", "abi3",
                     "--platform", "manylinux2014_x86_64",
                     "--dest", str(args.output_dir),
                     f"duckdb=={PIN}"], check=True)
     files = list(args.output_dir.glob("duckdb-*.whl"))
-    if len(files) != 1 or not files[0].name.startswith("duckdb-1.1.3-"):
+    if len(files) != 1 or not files[0].name.startswith(f"duckdb-{PIN}-"):
         raise ValueError("expected one pinned wheel")
     f = files[0]
     audit = {"package": "duckdb", "version": PIN, "filename": f.name,
