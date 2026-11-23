@@ -20,7 +20,11 @@ on:
       - "horse-racing/jrdb/racenote/src/racenote_trend_aggregator.py"
       - ".github/workflows/data_storage.yml"
       - ".github/workflows/jrdb_analysis_parquet_canonical_issue.yml"
-  pull_request:\n    paths:\n      - 'tools/data-storage/**'\n      - '.github/workflows/data_storage.yml'\n  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'tools/data-storage/**'
+      - '.github/workflows/data_storage.yml'
+  workflow_dispatch:
     inputs:
       config_path:
         description: Repository-relative YAML config; leave blank to run tests only
@@ -37,7 +41,11 @@ permissions:
 
 jobs:
   test-and-run:
-    runs-on: ubuntu-latest\n    strategy:\n      fail-fast: false\n      matrix:\n        python-version: ['3.12', '3.13']
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.13']
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
