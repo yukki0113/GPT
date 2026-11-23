@@ -27,6 +27,9 @@ jobs:
           python-version: '3.13'
       - name: Offline deterministic tests (no production installation)
         run: python -m unittest discover -s tools/data-storage/tests -p test_runtime_dependency_watch.py -v
+      - name: Live read-only PyPI smoke on PR (no Issues)
+        if: github.event_name == 'pull_request'
+        run: python tools/data-storage/scripts/check_runtime_dependency_updates.py --output /tmp/pr_runtime_watch_smoke.json
   monitor:
     if: github.event_name != 'pull_request'
     needs: contract-tests
