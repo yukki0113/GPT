@@ -52,7 +52,7 @@ jobs:
           import duckdb, pyarrow
           assert duckdb.__version__ == '2.0.1'
           assert pyarrow.__version__ == '25.0.1'
-          assert duckdb.sql('select 1').fetchone()[0]==1
+          assert duckdb.connect(':memory:').execute('select 1').fetchone()[0]==1
           print('Offline import PASS',duckdb.__version__,pyarrow.__version__)
           PY
       - uses: actions/upload-artifact@v4
