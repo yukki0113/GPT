@@ -42,6 +42,24 @@ For proprietary JRDB inputs, public link sharing must not be introduced merely t
 
 Parquet is not an operational-database replacement. Keep SQLite where transactions, frequent updates, constraints, or indexed point lookups dominate. Use this package for rebuilt/append-oriented warehouse and mart datasets.
 
+## GPT / Work: private Drive offline wheel-first route (2026-11-23)
+
+For a **fresh ChatGPT-side Python 3.13 Linux x86_64 runtime**, first read the **current** `config/chatgpt_offline_runtime_v1.json`, `scripts/bootstrap_chatgpt_offline_runtime.py` and `docs/JRDB_CHATGPT_OFFLINE_RUNTIME_PHASE2_20261123.md` from GitHub `main`. Use an existing matching venv if `check-deps` already succeeds; do not reinstall per task.
+
+If dependencies are missing or mismatched, prefer the **approved private Drive three-wheel bundle**, fetched with the native Drive connector by **exact registry Drive file ID** and materialized as binary. Verify the registry's size and outer SHA-256 *before executing*, then use a fresh venv:
+
+```bash
+python tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py \
+  --bundle /path/to/verified-native-drive-bundle.zip \
+  --archive-sha256 <sha256-from-current-registry> \
+  --venv /tmp/new-empty-runtime-venv
+PYTHONPATH=tools/data-storage /tmp/new-empty-runtime-venv/bin/python -m data_storage check-deps
+```
+
+The bootstrap checks the exact platform, pinned DuckDB 2.0.1 / PyArrow 25.0.1 / NumPy 2.2.4 package versions, nested bundle and wheel integrity, then installs with `pip --no-index --no-deps`; `--venv` must not exist. No runtime persistence between chats is assumed. This package provides the verified *dependency runtime*, not universal E2E qualification for unrelated projects. On unsupported Python/OS/CPU or failed verified Drive retrieval, try normal pinned requirements repair once if permitted, then the existing Actions fallback *only when its reproducible-input and data-access constraints are satisfied*. Never publish JRDB licensed inputs/Drive tokens or use unreviewed wheels.
+
+Version discovery/promotion is controlled by `docs/SHARED_RUNTIME_DEPENDENCY_PROMOTION_PHASE3_20261123.md`: monitor may open review Issues, but updating production pins/wheels requires isolated tests, immutable real JRDB E2E parity and explicit approval. Data Storage's full `requirements.txt` also covers ingestion/other optional packages; the three-wheel offline bundle is scoped to the verified SQL/Parquet runtime, not a complete replacement for every optional ingestion dependency.
+
 ## Runtime bootstrap / Install
 
 From the repository root, reuse the dedicated environment when possible:
