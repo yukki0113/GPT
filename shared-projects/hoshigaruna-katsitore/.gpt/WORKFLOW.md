@@ -12,6 +12,10 @@
 
 GitHub Connectorは `yukki0113/GPT` の接続のみを使用する。
 
+## Shared Data Storage runtime routing
+
+この共同予想Projectで外部管理のJRDB / NAR等のParquetを正規adapter経由で集計する場合、repository共通`tools/data-storage/`とroot `.gpt/GITHUB_OPERATION_POLICY.md` C-1を適用する。GPT Python 3.13 Linux x86_64で必要なときはregistry承認済み非公開Drive wheelを検証してoffline bootstrapし、通常分析でのActions起動を目的化しない。**本Projectの共有権限・外部管理sourceの開示境界（`.gpt/DATA_BOUNDARY.md`）を優先し、DriveファイルIDや秘密のbinaryを共同チャットへ列挙・転載しない。** 対応外runtimeや未検証domainをPASSとみなさず、各sourceのas-of/公開条件を維持する。
+
 ## 2. Scope boundary
 
 通常の新規実装・文書・schema・adapterは次のroot以下へ置く。

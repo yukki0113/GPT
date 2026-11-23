@@ -97,34 +97,23 @@ GitHub正本module取得
 
 正本moduleと同等の処理を独自に再実装して置き換えないことを原則とします。
 
-#### C-1. Parquet / DuckDB managed-runtime fallback
+#### C-1. Parquet / DuckDB: GPT側wheel優先ルーティング（2026-11-23）
 
-Parquet / DuckDB処理では repository共通 `tools/data-storage/` を最初にresolveする。
+Parquet / DuckDB処理は repository共通 `tools/data-storage/` の正本CLI / moduleを使用する。ChatGPTの新しいPython sandboxでも、依存がimportできないだけではActionsへ直行しない。
 
-標準判定:
+1. GitHub `main` の `tools/data-storage/README.md`、`tools/data-storage/config/chatgpt_offline_runtime_v1.json`、`tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py` とPhase 2 runbookを確認する。固定file ID・SHA・バージョンは**毎回registryの現物**から読む。
+2. 現在のruntime、既存venv、`data_storage check-deps`を確認する。canonical pinに一致し既存環境が正常なら再installしない（1.1.3等の`DEPENDENCY_MISMATCH`はPASSとみなさない）。
+3. **Python 3.13 / Linux x86_64** で必要な依存が欠ける・一致しない場合、標準の復旧経路は**非公開Driveの承認済み3-wheel bundle**。native Google Drive connectorでregistryに一致するbinaryを取得しsandboxへmaterialize。Drive ID・size・外側ZIP SHA-256を照合してから、現行bootstrapに`--bundle`・`--archive-sha256`・未使用`--venv`を渡す。bootstrapの内包wheelハッシュ・プラットフォーム検証後、networkを使用しない独立venvに導入する。`check-deps`と目的処理のauditまで確認する。
+4. 非対応OS/CPU/Python、bundle取得不可、またはwheel導入不可なら**勝手に互換wheelを探さず**、既存の`requirements.txt`を用いる通常venv bootstrap/repairを一度確認する（許可される環境のみ）。ネットワーク・管理runtime制限でこれも不可なら、再現可能な入力に対してのみ既存`[DATA_STORAGE_FALLBACK]`を検討する。private Drive入力やJRDB有料データをpublic Issue/artifactへ転送しない。
+5. Actions-native固有のSecrets・正式artifact chain・immutable publication・長時間runner等が必要なD系処理は、wheel導入でCへ強制変更しない。入力はnative connector + immutable manifestのSHA/size/as-ofで認証し、既存のdomain・prediction・leakage判定を保持する。
 
-```text
-tools/data-storage/README.md確認
--> .venv-data-storage + check-deps
--> DEPENDENCY_MISSINGなら requirements から通常repairを1回
--> PASSならCとしてlocal実行
--> managed runtimeのproxy/network policyでrepair自体がblocked
-   -> 入力がcheckout / Actions artifactから再現可能か確認
-   -> YES: [DATA_STORAGE_FALLBACK] Issue + .github/workflows/data_storage_fallback_issue.yml
-   -> NO: reproducible input routeを先に解決
-```
+承認済みbundleはDuckDB 2.0.1 / PyArrow 25.0.1 / NumPy 2.2.4の**組合せ**。その導入とJRDB Forecast Reader実データE2Eは検証済みだが、別sandboxでの毎回の成功や、NAR/BRDB/Eval等の全domain E2E成功は保証しない。環境の再利用・キャッシュ永続性を仮定しない。更新候補の検知と本番昇格は別で、Phase 3の承認gateを通すまでregistryやwheelを差し替えない。
 
-Actions fallbackは、local環境に依存を入れられない場合の**実行環境代替**であり、scientific semanticsの代替ではない。DuckDB SQLが正本ならDuckDB SQLを維持し、PyArrow/pandas等への暗黙再実装で回避しない。
-
-Fallback正本:
-
+正本:
+- `tools/data-storage/docs/JRDB_CHATGPT_OFFLINE_RUNTIME_PHASE2_20261123.md`
+- `tools/data-storage/docs/SHARED_RUNTIME_DEPENDENCY_PROMOTION_PHASE3_20261123.md`
 - `tools/data-storage/docs/CODEX_LOCAL_FIRST_ACTIONS_FALLBACK.md`
-- `tools/data-storage/scripts/data_storage_fallback_runner.py`
-- `.github/workflows/data_storage_fallback_issue.yml`
-
-Fallback requestはowner起票の `[DATA_STORAGE_FALLBACK]` Issueに限定し、任意shellではなくrepo内Python entrypoint + argv配列を実行する。結果はrun/artifact/auditを確認してから後続判断に使う。
-
-このfallbackは、Secrets・formal publication・project固有guardが必要なD系workflowを置き換えない。
+- `tools/data-storage/config/chatgpt_offline_runtime_v1.json`
 
 ### D. Actions-Native Execution
 
@@ -217,7 +206,7 @@ Dを選んだ場合、Issue作成前に以下を確認します。
 - external transient: retry / backoff
 - domain validation: 原因確認。正常なfail-closedを成功扱いに変えない
 - implementation error: 実装修正
-- managed-runtime dependency transport failure: Parquet / DuckDB処理では `tools/data-storage/` のlocal bootstrapを1回確認し、proxy/network policyで依存取得不能なら `[DATA_STORAGE_FALLBACK]` Actions経路へ切り替える。canonical DuckDB/Parquet処理を別engineへ暗黙再実装しない。
+- managed-runtime dependency transport failure: Parquet / DuckDB処理では先にC-1を適用する。GPT Python 3.13 Linux x86_64の承認wheel / 適合venvを確認し、非対応・bundle取得不可なら通常pinned requirements復旧を一度試す。どちらも利用できずproxy/network policyで依存が導入できない場合、再現可能かつ公開条件を満たす入力に限り `[DATA_STORAGE_FALLBACK]` Actions経路へ切り替える。canonical DuckDB/Parquet処理を別engineへ暗黙再実装しない。
 
 同じrequestを理由確認なしでrerunしません。
 

@@ -109,7 +109,7 @@ RaceNote作業では追加で `docs/racenote/README.md` と `docs/racenote/FOREC
 
 1. `README.md` / HANDOFF / CONTEXTを確認。
 2. 対象Pythonと対応README・schema/reference/contractを確認。
-3. Parquet / DuckDBを扱う場合は、repository共通 `tools/data-storage/` をresolveし、既存 `.venv-data-storage` + `check-deps` を先に確認する。依存が現在のPythonへ入っていないだけでは停止せず、必要なら `tools/data-storage/requirements.txt` からbootstrapする。
+3. Parquet / DuckDBを扱う場合は、repository共通 `tools/data-storage/` とroot `.gpt/GITHUB_OPERATION_POLICY.md` C-1をresolveする。適合venvの`check-deps`を確認し、ChatGPT Python 3.13 Linux x86_64ではregistry承認済みprivate Drive wheelからoffline bootstrapを第一復旧経路とする。通常pip/Actionsは条件付きfallback。
 4. 2026 Raw（PACI / SED / HJC）を扱う場合は、`docs/JRDB_2026_Raw_Drive_Reference.md` を確認し、Google Drive上の既存Rawを最優先でresolveする。Drive inventoryを確認せずupstream全日付取得を開始しない。
 5. 既存仕様を壊さない範囲で改修。
 6. 可能な範囲で実行テスト / 回帰確認。
@@ -256,23 +256,11 @@ Secrets、Actions固有権限、Actions artifact chain、長時間・大容量ru
 
 同一処理を「Issueを投げるためだけ」にActionsへ送らない。
 
-#### Parquet / DuckDB execution preflight
+### Parquet / DuckDB 実行経路 — 2026-11-23
 
-JRDBでParquet / DuckDBを読む・集計する・validationする処理では、`tools/data-storage/` をrepository共通の汎用CRUD / Data Storage基盤として扱う。
+`horse-racing/jrdb` のcanonical query / validation / conversionは共通 `tools/data-storage/` を利用する。GPTのPython 3.13 Linux x86_64環境で`check-deps`が未充足なら、**第一復旧経路はregistryでSHA固定されたprivate Drive 3-wheel bundle**とする。GitHub `main` のregistry・bootstrap script・Phase 2 runbookを再取得し、native Drive connectorで取得したZIPのID/size/SHAを照合後、新規隔離venvへoffline installし、`check-deps`と対象moduleのauditを確認する。互換venvがあればそのまま再利用する。
 
-```text
-Parquet / DuckDB task
--> tools/data-storage/README.md 確認
--> 既存 .venv-data-storage を確認
--> check-deps PASSならそのまま再利用
--> absent / DEPENDENCY_MISSINGなら requirements からbootstrap
--> check-deps再実行
--> 共通CLI またはJRDB正本module/configを実行
-```
-
-`import duckdb` / `import pyarrow` の失敗だけで「この環境では扱えない」と結論しない。依存install自体が失敗・禁止される場合のみ実行不能として報告する。
-
-単純query / validation / conversionは共通CLIを優先し、JRDB固有のscientific semantics、schema、canonical key、current pointer、publication contractはJRDB正本module/configへ委譲する。
+対応外環境・Drive取得不可・検証失敗時は、勝手に未知のwheelをinstallせず通常のpinned requirements復旧を一度試す。管理runtimeでそれもblockedの場合に限り、入力の再現可能性と非公開データ境界を確認して既存`[DATA_STORAGE_FALLBACK]`を使用する。Actions-native固有のSecrets/取得/凍結/正式監査は従来どおりD系を維持。**Forecast Readerでのwheel E2E PASSを、RaceNote・Niche Query・他のJRDB consumer全体の実データE2E PASSと読み替えない。** 予想のas-of、サンプル、identity、leakage、publication contractは変更しない。詳細はroot `.gpt/GITHUB_OPERATION_POLICY.md` C-1と`tools/data-storage/docs/JRDB_CHATGPT_OFFLINE_RUNTIME_PHASE2_20261123.md`。
 
 ### D. Actions-Native Execution
 

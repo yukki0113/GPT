@@ -43,6 +43,10 @@ GitHub `yukki0113/GPT` の `main` ブランチ配下 `horse-racing/eval/` をPyt
 
 詳細は `.gpt/HANDOFF.md`、`docs/OCR_Validation_Contract.md`、各Phase2 contract、`docs/Eval_PWA_Analysis_Comment_Contract_v0_1.md` を参照してください。
 
+## DuckDB / Parquet runtime route (2026-11-23)
+
+EvalのParquet / DuckDB集計が必要な場合は`tools/data-storage/`を利用し、GPT Python 3.13 Linux x86_64では承認済みprivate Drive wheelによるオフラインbootstrapを第一復旧経路とする。詳細は`.gpt/WORKFLOW.md`とroot `.gpt/GITHUB_OPERATION_POLICY.md` C-1。これにより通常の集計をActionsへ送る必要性は減るが、**JRDB PACI認証取得・正式enrichmentのD系運用は従来どおり**で、研究・OCR・as-of・完成CSVの検証条件も変更しない。JRDB実データでのwheel E2E合格をEval全工程の受入済みと扱わない。
+
 ## GitHub運用ルーティング — 2026-09-10
 
 Issue / GitHub Actionsを一律の標準経路にはしません。処理開始時に「GitHub Actions環境が本当に必要か」を判定し、次の4系統から選びます。

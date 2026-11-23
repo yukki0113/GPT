@@ -51,6 +51,10 @@
 | 開催後Analysis/Mart更新 | `docs/README_post_race_analysis_mart_refresh.md` |
 | PWA / 条件別集計 / Newspaper表示運用 | `pwa/.gpt/HANDOFF.md` + `pwa/README.md` |
 
+## GPT-side DuckDB runtime (2026-11-23)
+
+Forecast ReaderおよびJRDBのread-only Parquet分析では、既存の適合venvを再利用し、必要時は**承認済みprivate Drive 3-wheel（DuckDB 2.0.1 / PyArrow 25.0.1 / NumPy 2.2.4）をGPT側へオフライン導入**する経路を標準とする。直接実行はデータ取得・as-of監査・科学的判定の変更を意味しない。実行環境はPython 3.13 Linux x86_64の検証済み範囲を守り、正本registryと`tools/data-storage/docs/JRDB_CHATGPT_OFFLINE_RUNTIME_PHASE2_20261123.md`を必読。D系Secrets/正式publishはActionsを維持し、環境復旧不能時は条件を満たす既存Actions fallbackを使う。独立sandboxでの再検証を省略しない。
+
 ## Niche Query (reusable historical aggregation)
 
 - Entry: `src/niche_query/run_query.py` and `src/niche_query/build_request.py`; QuerySpec/config examples under `config/niche_query/`.

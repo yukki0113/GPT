@@ -113,7 +113,7 @@ GitにはNAR原本ZIP、大容量CSV、Parquet、DuckDBをcommitしません。
 
 Parquet / DuckDBを使う加工・検証・query・benchmarkは、リポジトリ共通の `tools/data-storage/` を標準実装として利用します。
 
-GPT / Work実行時は、現在のPython環境に `duckdb` / `pyarrow` が無いことだけを理由に停止しません。repository rootの `.venv-data-storage` を確認し、`check-deps` がPASSすれば再利用します。未作成または `DEPENDENCY_MISSING` の場合は `tools/data-storage/requirements.txt` からbootstrapして再確認します。環境作成・依存install自体が失敗または禁止される場合だけ実行不能として報告します。
+GPT / Work実行時は、現在のPython環境に `duckdb` / `pyarrow` が無いことだけを理由に停止しません。既存適合venvの `check-deps` がPASSすれば再利用し、GPT Python 3.13 Linux x86_64で不足・不一致なら、GitHub `main` のregistryに固定された**private Drive 3-wheel bundleをnative connectorで取得・SHA検証し、隔離venvへoffline bootstrap**する経路を第一復旧候補とします。非対応環境・取得失敗時は通常のpinned requirements repairを一度確認し、管理runtimeでblockedの場合だけ既存Actions fallbackを検討します。NAR固有の実データE2Eが未確認なら受入済みとしません。詳細は `.gpt/WORKFLOW.md` とroot `.gpt/GITHUB_OPERATION_POLICY.md` C-1を正本とします。
 
 - durable analytical dataはParquetを基本とする。
 - DuckDBはParquetを直接queryするin-process engineとして利用し、永続 `.duckdb` ファイルを必須としない。

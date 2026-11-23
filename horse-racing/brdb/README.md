@@ -132,6 +132,10 @@ BRDB はこれらを再取得・再実装せず、利用可能性と coverage �
 過去 chat の説明だけを current truth とせず、latest `main` を優先します。
 
 
+## GPT-side wheel-first data runtime
+
+BRDBのParquet / DuckDB処理は、共通`tools/data-storage/`とroot `.gpt/GITHUB_OPERATION_POLICY.md` C-1に従う。Python 3.13 Linux x86_64で不足依存がある場合は、GitHub `main` に登録されたprivate Drive wheelをSHA検証後にGPT側の隔離venvへoffline installする。**JRDB Forecast ReaderのE2E実績はBRDB固有の研究・血統identity/as-of/consumerゲートの合格を意味しない。** BRDB `.gpt/WORKFLOW.md`とPhase 2 runbookを確認し、Actionsが固有に必要な工程を置換しない。
+
 ## Phase 1 implementation
 
 - `schema/brdb_pedigree_fact_schema_v0_1.sql`

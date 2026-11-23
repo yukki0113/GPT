@@ -42,15 +42,9 @@ races array) to supply unavailable eligibility, class and weight conditions.
 Absent coverage returns NEED_INPUT/UNKNOWN_CONDITION. Do not infer those fields
 from grade alone. See the evidence contract for source metadata fields.
 
-For local dependency preflight use the common `data_storage check-deps`. If the
-pinned dependency repair is blocked, follow the existing dynamic Drive runbook and
-DATA_STORAGE_FALLBACK contract. The fallback step's repository entrypoint is
-`horse-racing/jrdb/forecast_reader/forecast_reader_runner.py` with argv for request,
-inputs and output-dir. All staged source paths and hashes must match the same
-manifest; inspect Actions audit and all four JSON files before accepting results.
-Do not publish proprietary inputs in the request or artifact. No new shell entrypoint
-or credential mechanism is introduced. Live Actions fallback has not been rerun for
-this reader.
+**ChatGPT-side wheel-first:** On a new Python 3.13 Linux x86_64 sandbox, inspect the current GitHub `main` runtime registry and Phase 2 runbook. Reuse a matching venv that passes `data_storage check-deps`; otherwise fetch the exact SHA-pinned **private Drive** three-wheel bundle through the native connector and run the canonical offline bootstrap in a new isolated venv. Verify archive/wheel SHAs, `check-deps`, immutable historical input provenance and all four output JSON files. Never substitute an unreviewed wheel or silently use DuckDB 1.1.3. A successful installation is distinct from Reader PASS/PARTIAL; the known technical PARTIAL for the Kyoto 11R 8/10 sampling case is tracked separately in Issue #2714.
+
+On an unsupported runtime or inaccessible approved bundle, try the regular pinned requirements repair once. When blocked by managed-runtime network policy, the existing `DATA_STORAGE_FALLBACK` remains available **only** with reproducible permitted inputs. Its repository entrypoint is `horse-racing/jrdb/forecast_reader/forecast_reader_runner.py` with argv for request, inputs and output-dir. Inspect the Actions audit and all four JSONs. Never publish proprietary JRDB input in a public Issue/artifact; the live Actions fallback is not claimed to have been rerun for this Reader. See `tools/data-storage/docs/JRDB_CHATGPT_OFFLINE_RUNTIME_PHASE2_20261123.md` and root Git operation policy C-1.
 
 ### Immutable historical-generation route
 

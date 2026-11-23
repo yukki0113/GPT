@@ -60,28 +60,15 @@ Secrets、Actions固有権限、artifact chain、長時間runner、immutable fre
 - focused unit test / regression
 - 固定入力に対する変換・比較・監査
 
-### Parquet / DuckDB の共通実行基盤
+### Parquet / DuckDB の共通実行基盤（GPT wheel-first）
 
-Parquet / DuckDBを扱うC系統の処理では、repository共通の汎用CRUD / Data Storage Tool `tools/data-storage/` を第一選択とする。
+C系のParquet変換・DuckDB query・validation・benchmarkは `tools/data-storage/` の正本module/CLIを第一選択とします。
 
-`duckdb` / `pyarrow` 等が現在のPython環境へimportできないことだけを理由に「実行環境がない」として停止しない。まず既存の `.venv-data-storage` を確認し、利用可能なら再利用する。未作成または依存不足なら `tools/data-storage/requirements.txt` から専用venvをbootstrapし、`data_storage check-deps` で確認してから処理を続行する。
+**ChatGPTのPython 3.13 / Linux x86_64 sandboxでは、承認済み非公開Drive wheelのオフラインbootstrapを標準復旧経路とします。** GitHub `main` のruntime registry・bootstrap script・Phase 2 runbookを読み、native Drive connectorで**registryの正確なfile ID**を取得・materialize。ZIP size/SHA-256とwheel SHA、runtime条件を検証し、新しいvenvへ`--no-index --no-deps`で導入します。既存の適合venvが`check-deps`にPASSする場合は再installしません。wheel導入後も`check-deps`、処理本体のauditを確認します。
 
-標準preflight:
+非対応環境や承認bundleを取得できない場合は、`tools/data-storage/requirements.txt`からの通常venv bootstrap / repairを一度試みます。管理runtimeのネットワーク制約でそれも不可の場合だけ、入力再現性を確認して`[DATA_STORAGE_FALLBACK]` Actions経路を検討します。別のSQL engineを代替実装せず、秘密・有料Raw・非公開Parquetをpublic GitHubへ運びません。wheelパッケージは全projectのE2E合格証ではなく、prediction/as-of/manifest等は各project正本を適用します。
 
-```bash
-if [ ! -x .venv-data-storage/bin/python ]; then
-  python -m venv .venv-data-storage
-fi
-.venv-data-storage/bin/python -m pip install -r tools/data-storage/requirements.txt
-PYTHONPATH=tools/data-storage \
-  .venv-data-storage/bin/python -m data_storage check-deps
-```
-
-既存venvで `check-deps` がPASSする場合は再install不要。依存install自体が失敗・禁止されている場合だけ、その事実を実行不能理由として報告する。
-
-単純なParquet query / validation / conversionは共通CLIを優先する。project固有の意味論・schema・canonical key・生成contractがある処理は、そのproject正本module/configを使い、共通Toolへ意味論を再実装しない。
-
-可能なら `source_commit` / source・input・output SHA / module version / generated_at を残し、再現性を確保します。
+入口: `tools/data-storage/README.md`、`tools/data-storage/config/chatgpt_offline_runtime_v1.json`、`tools/data-storage/docs/JRDB_CHATGPT_OFFLINE_RUNTIME_PHASE2_20261123.md`。アップデートはPhase 3手順とユーザー承認を必須とし、ChatGPT sandbox間でvenvが永続すると仮定しません。現在利用できるPython/OSが異なる場合に、対応外wheelを強制installしません。
 
 ### D. Actions-Native Execution
 
