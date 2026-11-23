@@ -7,6 +7,12 @@
 > **2026-10-30 現行r6運用の優先案内**：新規BTDAYの標準手順は [RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md](RACENOTE_V055_R6_PIPELINE_CURRENT_RUNBOOK_20261030.md)。T2開始直後に次BTDAYのT1 Orchestratorを起動する `PIPELINE` が通常モード、`T2_ONLY` は先行起動を止めるモード。独立したLLM予想→Prediction Freeze→独立Confidence→Confidence Freeze→Batch同期→次T1の状態照合を守る。以下の旧手順・旧日付の「current」表記は当時の履歴として保持し、現行r6の起動口を置き換えない。更新前の全文は `operation-backups/20261030_pre_pipeline/README.md` に退避済み。
 
 
+## GPT側Data Storage運用（2026-11-23 / PR #2720）
+
+RaceNote関連の**純粋に決定的な**DuckDB / Parquet query・validation・分析は、対応するChatGPT runtimeではrepository共通 `tools/data-storage/` をGPT側で直接実行する。既存の適合venvを優先し、不足時は最新mainのruntime registryで指定された承認済みprivate Drive三輪bundle（DuckDB 2.0.1 / PyArrow 25.0.1 / NumPy 2.2.4）を検証してoffline bootstrapする。詳細は `../../../tools/data-storage/README.md`（repository rootからは `tools/data-storage/README.md`）と `../../.gpt/GITHUB_OPERATION_POLICY.md` ではなく **repository rootの `.gpt/GITHUB_OPERATION_POLICY.md`**、JRDB `.gpt/WORKFLOW.md` を正本とする。
+
+**T1/T2のActions-native工程とLLMによる予想・二段階Freezeはそのまま維持**する。Prediction/Confidenceの選定ロジック、as-of境界、結果・市場情報の遮断、immutable artifact、run受入を変更しない。実行経路の判断は [RACENOTE_UNIFIED_T1_T2_INSTRUCTION_CONTRACT_20261121.md](RACENOTE_UNIFIED_T1_T2_INSTRUCTION_CONTRACT_20261121.md) に従い、wheel導入のみをもってRaceNote全体のE2E成功とはみなさない。
+
 ## RaceNote research-work handoff area — 2026-10-05
 
 Substantial design / execution / audit handoffs are stored under:
