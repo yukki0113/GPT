@@ -4,6 +4,16 @@
 **意図はユーザー入力の簡素化であり、Prediction・Confidenceの機械化や受入基準緩和ではない。**
 未受入の実行を完成・正式昇格として扱わない。
 
+## GPT側 DuckDB / Parquet実行経路（2026-11-23 PR #2720対応）
+
+T1/T2全体をGPTローカルへ移管する規則ではない。各サブ処理を上位正本 `.gpt/GITHUB_OPERATION_POLICY.md` のA/B/C/Dで判定する。
+
+- **C: GPTローカル優先** — 既存のGitHub正本moduleと取得・検証済み入力だけで完結し、Secrets、公式Actions run、immutable Freeze / artifact chainを必要としないDuckDB / Parquet query・集計・validation・diagnostic。新規のSQL engine・RaceNote独自互換実装を作らず、共通 `tools/data-storage/` を使う。
+- **依存関係** — 現行 `tools/data-storage/README.md`、`config/chatgpt_offline_runtime_v1.json`、`scripts/bootstrap_chatgpt_offline_runtime.py`、`docs/JRDB_CHATGPT_OFFLINE_RUNTIME_PHASE2_20261123.md` を最新mainから読む。まず既存適合venvの `data_storage check-deps` を確認。ChatGPT Python 3.13 / Linux x86_64で不足・不一致なら、registry記載の**承認済みprivate Drive三輪bundle（DuckDB 2.0.1 / PyArrow 25.0.1 / NumPy 2.2.4）**をnative Drive connectorで正確なfile IDから取得し、size / outer SHA-256照合後に正本bootstrapで新規隔離venvへoffline導入する。wheel内SHA、version、runtime検証・`check-deps`・対象処理auditを省略しない。
+- **条件付きfallback** — 非対応runtime、承認bundle取得不能等の場合、許可される環境でpinned requirementsによる通常修復を一度確認。ローカル修復不能で入力の再現性・公開境界が満たされる場合に限り既存 `[DATA_STORAGE_FALLBACK]` を検討する。JRDB有料Raw・private Drive入力はpublic Issue / artifactへ転送しない。
+- **D: Actions-native維持** — JRDB認証取得、既存T1 Orchestratorと正式artifact/commit chain、Prediction Freeze・Confidence Freeze、immutable保存・正式run監査等は従来のActions経路を維持する。wheel導入だけを理由にローカル化しない。T2の印・Confidenceは引き続きLLMが全馬比較して著述する。
+- **予想科学的境界は不変** — input receipt・manifest SHA/size・as-of・market/result遮断・Reader coverage・validation・freeze順序を維持する。Forecast Readerの実データE2E成功はRaceNote T1/T2全体のE2E認証ではない。新sandboxごとに環境と入力を検証し、既存Freezeや運用defaultを変更しない。
+
 ## ユーザー側の入口
 
 利用者は原則 **「T1」** または **「T2」** だけ指示する。直近の会話・進行中セッションに
