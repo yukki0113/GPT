@@ -12,7 +12,7 @@
 
 `tools/data-storage/config/chatgpt_offline_runtime_v1.json`
 
-This registry pins the exact private Drive file ID, archive **SHA-256**, inner package manifest, and independently checked wheel SHAs. The storage folder is `horse-racing/runtime_wheels` in Drive. Only the registered file may be considered eligible for installing executable code.
+This registry pins the exact private Drive file ID, archive **SHA-256**, inner package manifest, and independently checked wheel SHAs. The storage folder is `GPT/tools/runtime_wheels` in Drive. The folder is **shared tooling storage**, not specific to central horse racing; the JRDB runtime remains one consumer and the exact registry-pinned file is the approved executable artifact. Only the registered file may be considered eligible for installing executable code.
 
 ## Operation: fresh ChatGPT sandbox
 
@@ -45,7 +45,7 @@ The canonical Reader reports technical `PARTIAL` for eight matched races under b
 
 ## Verified immutable runtime distribution (private Drive)
 
-- Drive folder: `horse-racing/runtime_wheels` (`1p7_MS2UH5UEOfWfzdWJH87zKxQXg2vYX`).
+- Drive folder: `GPT/tools/runtime_wheels` (`1p7_MS2UH5UEOfWfzdWJH87zKxQXg2vYX`).
 - **Canonical final artifact ID:** `1zsU9BGNUkWd4aHg2kDKMNh699tE2i9Db` (not any of the earlier DuckDB-only or two-wheel staging files).
 - Size: **90,518,136 bytes**.
 - Outer SHA-256: `ceee50c7f3e7b2dc74bc8401320d1b69e96cee8d7809383b876677c74c7caa16`.
@@ -53,6 +53,8 @@ The canonical Reader reports technical `PARTIAL` for eight matched races under b
 - Package SHA-256 values: `duckdb` `39ffeb136abed770a496e5592a464f18a07b1543e7ddb1ff6453215e179f1647`, `pyarrow` `0befcf816e45a1af33ac775a9970b749e4868a230c7372f0ae5e932bee27039f`, `numpy` `bce43e386c16898b91e162e5baaad90c4b06f9dcbe36282490032cec98dc8ae7`.
 - Private Drive ACL: owner only; no `anyone` public access.
 - One-time wheel packaging CI: https://github.com/yukki0113/GPT/actions/runs/45107232260 . CI validates direct bundle bootstrap, Actions-wrapper bootstrap, fail-closed wrong SHA, and `check-deps` in new venvs.
+
+The `runtime_wheels` folder was moved without replacing any file bytes. Folder ID `1p7_MS2UH5UEOfWfzdWJH87zKxQXg2vYX`, artifact ID `1zsU9BGNUkWd4aHg2kDKMNh699tE2i9Db`, and archive SHA remain unchanged. Original `horse-racing/` parent no longer contains the folder; the new `GPT/tools/` parent is `1-9K3G_99wzw3QwSdF5luMaeHtQNXjGmC`. Non-JRDB tooling may keep other versioned wheel bundles in the same shared folder, but must use independently validated registry entries rather than assuming compatibility with this Python 3.13 Linux wheel set.
 
 ## Operational limitations and rollback
 
