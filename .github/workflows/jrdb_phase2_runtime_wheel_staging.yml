@@ -4,6 +4,7 @@ on:
     paths:
       - '.github/workflows/jrdb_phase2_runtime_wheel_staging.yml'
       - 'tools/data-storage/scripts/export_pinned_duckdb_wheel.py'
+      - 'tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py'
   workflow_dispatch:
 permissions:
   contents: read
