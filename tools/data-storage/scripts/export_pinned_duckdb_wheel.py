@@ -18,7 +18,8 @@ def main():
     ap.add_argument("--output-dir", type=Path, required=True)
     ap.add_argument("--python-version", choices=("312", "313"), default="313")
     args = ap.parse_args()
-    # DuckDB 2.0 uses CPython 3.12 stable ABI wheels on both 3.12 and 3.13.\n    args.output_dir.mkdir(parents=True, exist_ok=True)
+    # DuckDB 2.0 uses CPython 3.12 stable ABI wheels on both 3.12 and 3.13.
+    args.output_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run([sys.executable, "-m", "pip", "download", "--no-deps",
                     "--only-binary=:all:", "--python-version", args.python_version,
                     "--implementation", "cp", "--abi", "abi3",
