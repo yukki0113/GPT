@@ -84,6 +84,16 @@ jobs:
           print("Verified wheel:", wheel.name, audit["sha256"])
           PY
 
+      - name: Upload validated wheel (open-source package only)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: duckdb-2.0.1-wheel-python-${{ matrix.python-version }}
+          retention-days: 7
+          path: |
+            ${{ runner.temp }}/duckdb-wheel/*.whl
+            ${{ runner.temp }}/duckdb-wheel/wheel_integrity.json
+
       - name: Tests
         env:
           PYTHONPATH: tools/data-storage
