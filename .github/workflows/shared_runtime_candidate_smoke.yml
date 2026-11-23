@@ -1,0 +1,94 @@
+name: Shared runtime candidate isolated smoke
+on:
+  workflow_dispatch:
+    inputs:
+      duckdb_version:
+        description: 'Exact DuckDB stable candidate version'
+        required: true
+        default: '2.0.1'
+        type: string
+      pyarrow_version:
+        description: 'Exact PyArrow stable candidate version'
+        required: true
+        default: '25.0.1'
+        type: string
+      numpy_version:
+        description: 'Exact NumPy stable candidate version'
+        required: true
+        default: '2.2.4'
+        type: string
+permissions:
+  contents: read
+jobs:
+  isolated-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Validate requested exact versions
+        env:
+          DUCKDB_VERSION: ${{ inputs.duckdb_version }}
+          PYARROW_VERSION: ${{ inputs.pyarrow_version }}
+          NUMPY_VERSION: ${{ inputs.numpy_version }}
+        run: |
+          python - <<'PY'
+          import os,re
+          for name in ('DUCKDB_VERSION','PYARROW_VERSION','NUMPY_VERSION'):
+              value=os.environ[name]
+              if not re.fullmatch(r'[0-9]+(?:\.[0-9]+)+', value):
+                  raise SystemExit('Rejected untrusted version for '+name)
+          PY
+      - name: Fetch official candidate wheels (review sandbox only)
+        env:
+          DUCKDB_VERSION: ${{ inputs.duckdb_version }}
+          PYARROW_VERSION: ${{ inputs.pyarrow_version }}
+          NUMPY_VERSION: ${{ inputs.numpy_version }}
+        run: |
+          python -m pip download --only-binary=:all: --no-deps -d /tmp/candidate-wheelhouse "duckdb==$DUCKDB_VERSION" "pyarrow==$PYARROW_VERSION" "numpy==$NUMPY_VERSION"
+      - name: Produce immutable candidate SHA receipt
+        env:
+          DUCKDB_VERSION: ${{ inputs.duckdb_version }}
+          PYARROW_VERSION: ${{ inputs.pyarrow_version }}
+          NUMPY_VERSION: ${{ inputs.numpy_version }}
+        run: |
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          wheels=sorted(Path('/tmp/candidate-wheelhouse').glob('*.whl'))
+          assert len(wheels)==3, wheels
+          result={'schema_version':'gpt.runtime_candidate_smoke.v1',
+                  'decision':'SMOKE_ONLY_NOT_PROMOTION',
+                  'versions':{p:os.environ[p.upper()+'_VERSION'] for p in ('duckdb','pyarrow','numpy')},
+                  'wheels':[{'filename':p.name,'size_bytes':p.stat().st_size,
+                             'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in wheels]}
+          Path('/tmp/candidate-receipt.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(result,indent=2))
+          PY
+      - name: Install in fresh isolated environment and exercise Parquet SQL
+        env:
+          DUCKDB_VERSION: ${{ inputs.duckdb_version }}
+          PYARROW_VERSION: ${{ inputs.pyarrow_version }}
+          NUMPY_VERSION: ${{ inputs.numpy_version }}
+        run: |
+          python -m venv /tmp/candidate-venv
+          /tmp/candidate-venv/bin/python -m pip install --no-index --no-deps /tmp/candidate-wheelhouse/*.whl
+          /tmp/candidate-venv/bin/python - <<'PY'
+          import os
+          from importlib.metadata import version
+          import duckdb,pyarrow as pa,numpy as np
+          for p in ('duckdb','pyarrow','numpy'):
+              assert version(p)==os.environ[p.upper()+'_VERSION'], (p,version(p))
+          t=pa.table({'value':np.array([11,23,37], dtype=np.int64)})
+          c=duckdb.connect(':memory:')
+          c.register('candidate_fixture',t)
+          assert c.execute('SELECT COUNT(*), SUM(value) FROM candidate_fixture').fetchone()==(3,71)
+          print('ISOLATED_CANDIDATE_PARQUET_SQL_SMOKE_PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shared-runtime-candidate-smoke-receipt
+          path: /tmp/candidate-receipt.json
+          retention-days: 90
