@@ -38,6 +38,7 @@ jobs:
             horse-racing/jrdb/forecast_reader/**
             horse-racing/jrdb/src/jrdb_raw.py
             horse-racing/jrdb/src/jrdb_raw_history.py
+            horse-racing/jrdb/src/jrdb_ukc.py
             tools/data-storage/data_storage/**
             tools/data-storage/scripts/safe_unpack_staged_archive.py
             tools/data-storage/requirements.txt
