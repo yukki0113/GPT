@@ -55,6 +55,13 @@ jobs:
           assert duckdb.connect(':memory:').execute('select 1').fetchone()[0]==1
           print('Offline import PASS',duckdb.__version__,pyarrow.__version__)
           PY
+      - name: Smoke canonical offline bootstrap with fresh environment
+        run: |
+          ARCHIVE=/tmp/jrdb_phase2_runtime_wheels_py313_linux_x86_64.zip
+          SHA=$(sha256sum "$ARCHIVE" | cut -d' ' -f1)
+          python tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py \
+            --bundle "$ARCHIVE" --archive-sha256 "$SHA" --venv /tmp/phase2-bootstrap
+          PYTHONPATH=tools/data-storage /tmp/phase2-bootstrap/bin/python -m data_storage check-deps
       - uses: actions/upload-artifact@v4
         with:
           name: jrdb-phase2-runtime-wheels-py313-linux-x86_64
