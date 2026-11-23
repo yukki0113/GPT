@@ -23,7 +23,7 @@ def main():
     subprocess.run([sys.executable, "-m", "pip", "download", "--no-deps",
                     "--only-binary=:all:", "--python-version", args.python_version,
                     "--implementation", "cp", "--abi", "abi3",
-                    "--platform", "manylinux2014_x86_64",
+                    "--platform", "manylinux_2_27_x86_64",
                     "--dest", str(args.output_dir),
                     f"duckdb=={PIN}"], check=True)
     files = list(args.output_dir.glob("duckdb-*.whl"))
