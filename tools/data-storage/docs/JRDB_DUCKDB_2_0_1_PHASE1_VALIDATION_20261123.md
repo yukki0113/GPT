@@ -1,6 +1,6 @@
 # JRDB DuckDB 2.0.1 Phase 1 qualification — 2026-11-23
 
-Status: **candidate verified on JRDB historical Parquet; unmerged pending full Forecast Reader real-data E2E**.
+Status: **full JRDB pre-race E2E version parity verified; merge pending final CI**.
 
 ## Scope
 
@@ -86,6 +86,12 @@ Previously `data_storage check-deps` checked only that DuckDB was importable. Th
 - [x] Actual JRDB immutable history source SHA/size validation; same-source DuckDB result parity.
 - [x] Validated, offline-installable DuckDB 2.0.1 wheel from Actions CI.
 - [x] Full historical PACI / BAC+SED / previous-run Forecast Reader E2E on same fixed pre-race case: S0–S4, eight axes, 4/4 evidence bundle bytes identical across 1.1.3/2.0.1. Technical status PARTIAL in both; no semantic regression from engine.
-- [ ] Validate other mandatory shared-consumer smoke contracts affected by the global pin and the rollout/rollback plan, then merge the reviewed candidate.
+- [x] Main central JRDB shared-consumer test suites and Python 3.12/3.13 CI pass under 2.0.1; rollback documented below.\n- [ ] Confirm final PR CI after dependency mismatch guard and merge this candidate into main.
 
 **The full Reader E2E parity is complete, but its technical result remains PARTIAL in both versions.** Do not claim scientific PASS or silently alter sampling semantics. Source data and existing Actions remain unchanged during the dependency promotion.
+
+## Rollback / production operational note
+
+This is a dependency/version upgrade; **no canonical JRDB Parquet files or manifests are rewritten**. A production rollback restores the pre-upgrade DuckDB 1.1.3 dependency, wheel exporter, common-reader CI pin and matching `check-deps` requirement together using the previous tested main commit. Keep the 1.1.3 wheel/CI reports and both real-data parity results as audit evidence. Rebuild or repair existing local `.venv-data-storage` against the rolled-back requirements and run `check-deps` before any new analysis. Do not mark a rollback successful until the same Forecast Reader test suite passes. Never change historical forecast outputs to make the hashes match.
+
+The shared package is used by paused adjacent projects. No project-specific source files in those projects were changed. Re-qualification is still required before their subsequent production restart if they rely on Python <3.11 or on an older DuckDB runtime.
