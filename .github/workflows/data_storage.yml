@@ -64,6 +64,26 @@ jobs:
           PYTHONPATH: tools/data-storage
         run: python -m data_storage check-deps
 
+      - name: Verify pinned offline wheel export
+        run: |
+          python tools/data-storage/scripts/export_pinned_duckdb_wheel.py \
+            --python-version ${{ matrix.python-version == '3.13' && '313' || '312' }} \
+            --output-dir "${{ runner.temp }}/duckdb-wheel"
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          import os
+          import hashlib
+          base = Path(os.environ["RUNNER_TEMP"]) / "duckdb-wheel"
+          audit = json.loads((base / "wheel_integrity.json").read_text())
+          wheel = base / audit["filename"]
+          assert audit["version"] == "2.0.1"
+          assert wheel.is_file()
+          assert hashlib.sha256(wheel.read_bytes()).hexdigest() == audit["sha256"]
+          assert "cp312-abi3-manylinux_2_27_x86_64" in wheel.name
+          print("Verified wheel:", wheel.name, audit["sha256"])
+          PY
+
       - name: Tests
         env:
           PYTHONPATH: tools/data-storage
