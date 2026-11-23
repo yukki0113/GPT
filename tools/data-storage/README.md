@@ -92,6 +92,8 @@ verified against the 1.1.3 baseline before accepting this candidate into product
 Existing historical evidence and 1.1.3 result hashes remain immutable.
 Newer wheels must be separately qualified on all execution CPUs before the pin is raised.
 
+The following normal-requirements repair flow is for Codex or other runtimes where the approved ChatGPT wheel route is unavailable or unsupported. It does **not** supersede the GPT Python 3.13 Linux x86_64 private-wheel-first route above.
+
 ## Codex / managed-runtime fallback
 
 If `check-deps` fails and the documented `pip install -r tools/data-storage/requirements.txt` repair is itself blocked by a managed-runtime proxy/network policy, do not silently replace the canonical DuckDB/Parquet implementation with another engine.
