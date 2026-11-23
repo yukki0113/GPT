@@ -20,6 +20,10 @@ on:
       - "horse-racing/jrdb/racenote/src/racenote_trend_aggregator.py"
       - ".github/workflows/data_storage.yml"
       - ".github/workflows/jrdb_analysis_parquet_canonical_issue.yml"
+  pull_request:
+    paths:
+      - 'tools/data-storage/**'
+      - '.github/workflows/data_storage.yml'
   workflow_dispatch:
     inputs:
       config_path:
@@ -38,13 +42,17 @@ permissions:
 jobs:
   test-and-run:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.12', '3.13']
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.python-version }}
           cache: pip
           cache-dependency-path: tools/data-storage/requirements.txt
 
@@ -55,6 +63,36 @@ jobs:
         env:
           PYTHONPATH: tools/data-storage
         run: python -m data_storage check-deps
+
+      - name: Verify pinned offline wheel export
+        run: |
+          python tools/data-storage/scripts/export_pinned_duckdb_wheel.py \
+            --python-version ${{ matrix.python-version == '3.13' && '313' || '312' }} \
+            --output-dir "${{ runner.temp }}/duckdb-wheel"
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          import os
+          import hashlib
+          base = Path(os.environ["RUNNER_TEMP"]) / "duckdb-wheel"
+          audit = json.loads((base / "wheel_integrity.json").read_text())
+          wheel = base / audit["filename"]
+          assert audit["version"] == "2.0.1"
+          assert wheel.is_file()
+          assert hashlib.sha256(wheel.read_bytes()).hexdigest() == audit["sha256"]
+          assert "cp312-abi3-manylinux_2_27_x86_64" in wheel.name
+          print("Verified wheel:", wheel.name, audit["sha256"])
+          PY
+
+      - name: Upload validated wheel (open-source package only)
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: duckdb-2.0.1-wheel-python-${{ matrix.python-version }}
+          retention-days: 7
+          path: |
+            ${{ runner.temp }}/duckdb-wheel/*.whl
+            ${{ runner.temp }}/duckdb-wheel/wheel_integrity.json
 
       - name: Tests
         env:

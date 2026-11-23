@@ -38,7 +38,7 @@ For proprietary JRDB inputs, public link sharing must not be introduced merely t
 - SQLite/Parquet storage and query benchmark with repeated median timing
 - manifest-driven immutable asset materialization from Google Drive/source indexes
 - exact size + SHA-256 verification with SHA-keyed local cache
-- dependency diagnostics with `DEPENDENCY_MISSING` and a non-zero CLI exit
+- dependency diagnostics with `DEPENDENCY_MISSING` / `DEPENDENCY_MISMATCH` and a non-zero CLI exit
 
 Parquet is not an operational-database replacement. Keep SQLite where transactions, frequent updates, constraints, or indexed point lookups dominate. Use this package for rebuilt/append-oriented warehouse and mart datasets.
 
@@ -56,7 +56,7 @@ PYTHONPATH=tools/data-storage \
   .venv-data-storage/bin/python -m data_storage check-deps
 ```
 
-If the environment exists but `check-deps` reports `DEPENDENCY_MISSING`, install/repair from the pinned requirements and run the check again:
+If the environment exists but `check-deps` reports `DEPENDENCY_MISSING` **or** `DEPENDENCY_MISMATCH`, install/repair from the pinned requirements and run the check again:
 
 ```bash
 .venv-data-storage/bin/python -m pip install -r tools/data-storage/requirements.txt
@@ -64,9 +64,15 @@ PYTHONPATH=tools/data-storage \
   .venv-data-storage/bin/python -m data_storage check-deps
 ```
 
+An already-installed DuckDB 1.1.3 is explicitly rejected as `DEPENDENCY_MISMATCH` after this 2.0.1 promotion: a successful import alone is not enough.
 Do not reinstall dependencies on every task when the existing environment already passes `check-deps`. Only report the task as blocked when environment creation or dependency installation itself is unavailable/fails.
 
-DuckDB is pinned to `1.1.3`. Newer wheels must be separately qualified on all execution CPUs before the pin is raised.
+DuckDB is pinned to `2.0.1` (LTS). Python 3.11+ is required by DuckDB 2.0.
+Promotions must pass the JRDB Forecast Reader and shared data-storage regression suites
+(including Python 3.12/3.13 CI), with real immutable-manifest JRDB data parity
+verified against the 1.1.3 baseline before accepting this candidate into production.
+Existing historical evidence and 1.1.3 result hashes remain immutable.
+Newer wheels must be separately qualified on all execution CPUs before the pin is raised.
 
 ## Codex / managed-runtime fallback
 
