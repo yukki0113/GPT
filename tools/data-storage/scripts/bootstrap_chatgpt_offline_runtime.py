@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -32,7 +33,16 @@ def verify_bundle(bundle: Path, expected_sha256: str) -> tuple[dict, dict[str, b
         raise ValueError("HASH_MISMATCH: archive")
     if sys.version_info[:2] != (3, 13) or platform.system() != "Linux" or platform.machine() != "x86_64":
         raise ValueError("UNSUPPORTED_RUNTIME: expected Python 3.13 Linux x86_64")
-    with zipfile.ZipFile(bundle) as z:
+    raw = bundle.read_bytes()
+    # Google Drive stores the original Actions distribution ZIP, which wraps
+    # exactly one offline runtime ZIP. A direct runtime ZIP is also supported.
+    with zipfile.ZipFile(io.BytesIO(raw)) as wrapper:
+        outer_members = wrapper.namelist()
+        if len(outer_members) == 1 and outer_members[0] == "jrdb_phase2_runtime_wheels_py313_linux_x86_64.zip":
+            if wrapper.testzip():
+                raise ValueError("HASH_MISMATCH: outer ZIP")
+            raw = wrapper.read(outer_members[0])
+    with zipfile.ZipFile(io.BytesIO(raw)) as z:
         if z.testzip():
             raise ValueError("HASH_MISMATCH: corrupted ZIP member")
         names = z.namelist()
