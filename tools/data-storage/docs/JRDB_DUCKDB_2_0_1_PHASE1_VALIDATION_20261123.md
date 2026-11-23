@@ -39,12 +39,53 @@ Both official DuckDB wheels were installed into separate Python 3.13 virtual env
 
 The sample attribute SQL tested available historical attributes, **not the full canonical eight-axis Forecast Reader result**; previous distance/class were not reconstructed in the sample query. Durations are one-off diagnostics, not evidence of systematic speed improvement.
 
+## Canonical real-race full E2E parity — 2026-10-25 Kyoto 11R 菊花賞
+
+**Both engine versions executed the exact same repository Forecast Reader CLI end to end**, in isolated Python 3.13 environments. Official native Google Drive was used to obtain all inputs, without publishing raw JRDB bytes.
+
+Immutable source material, SHA verified individually before use:
+
+- PACI261025.zip: SHA `2fcce9418b51b55de3d6ea70e1c73510c24a9daf40047d0d1d6a026ea8847484`, 500,673 bytes.
+- Analysis generation manifest `analysis-v1_4-postrace-20261018-01`: SHA `f8627085b9ff905166a8b6c51f842bdc382d2a3529b11fb72086d41b843f5557`; prior-year 2016–2025 Parquet assets 10/10 verified.
+- Warehouse final manifest `jrdb_normalized_warehouse_v1_2010_2025_g20260921`: SHA `62fb6eb79546e3e0dd2b70592e0324d52c33c361f7073e78c2b420b82e1e008d`; BAC 2015–2025 11/11 and SED2025 1/1 verified by SHA and size.
+- Source native Drive metadata was checked twice for stable identity, original name, parent, size, and modified time. Previous historical as-of provenance is based on the immutable manifest publication times, **not on a claim that this comparison was observed in October**.
+
+The same request `2026-10-25 / 京都11R / as_of=2026-10-25T15:30:00+09:00`, source paths, and metadata observations were passed to both environments; identical Forecast Reader source/config was used.
+
+| E2E dimension | 1.1.3 and 2.0.1 |
+| --- | --- |
+| Historical rows | 481,627; exact parity |
+| Historical race count | 34,548 |
+| S0 exact race keys | 8, identical keys |
+| S1–S4 supplements | 0; same pre-existing shortage |
+| Cohort horse starts | 143 |
+| Previous join | 143 requested / 143 joined / 0 missing |
+| PACI runner previous joins | 18/18 |
+| Eight-axis trends | Every axis 143 valid / 0 missing in exact-only cohort |
+| Target results accessed | No, `as_of` guard respected |
+| Technical reader status | **PARTIAL in both versions**, not PASS |
+| Status reason | `NO_ACCEPTABLE_SUPPLEMENT`: 8/10 selected races, no permissible extra |
+| Whole evidence bundle | **All four JSON outputs byte-identical between engines** |
+
+Both versions produced these same file SHA-256s:
+
+- `forecast_evidence.json`: `1e7e9f6c6d5e31971d28ccc9f1cb83e7170c48a2fbf3624412eb666286eaf861`
+- `sampling_audit.json`: `3f39eda328c7ecc80480c6584a7c7fe00a383e89e3aa8c8984f728e06d3f1dd9`
+- `source_audit.json`: `955747262bf9d6067cd98c6184c927b3f45890578b20bd6e11eda8a4c373f292`
+- `manifest.json`: `aa2bbad364553f8c46db76fb1cd99e1d5bfc87b248afe0224c7049ff745`
+
+**Important distinction:** the original October acceptance report documented Reader PASS with eight selected races under its then-code/config SHA. Under the *current same-code* comparison, both 1.1.3 and 2.0.1 yield PARTIAL because selection marks no acceptable supplement as a sampling flag. This difference from the older acceptance is **not caused by the DuckDB version**. Do not relabel PARTIAL as PASS or change scientific semantics within this dependency upgrade. Investigate the prior acceptance vs current sampling gate separately.
+
+## Deployment safeguard
+
+Previously `data_storage check-deps` checked only that DuckDB was importable. The proposed upgrade now rejects stale 1.1.3 as `DEPENDENCY_MISMATCH` when 2.0.1 is the canonical pin, preventing legacy local virtualenvs from silently bypassing the upgrade. Focused tests cover both mismatch and expected-version success. Existing deployments must run the normal documented requirements repair path after merging.
+
 ## Outstanding before production promotion
 
 - [x] 2.0.1 CI test runs (Python 3.12/3.13) and common reader tests.
 - [x] Actual JRDB immutable history source SHA/size validation; same-source DuckDB result parity.
 - [x] Validated, offline-installable DuckDB 2.0.1 wheel from Actions CI.
-- [ ] Full historical, PACI, BAC/SED Warehouse-condition and previous-run Forecast Reader E2E on a pinned pre-race case under DuckDB 2.0.1; assert S0–S4, eight-axis output and evidence bundle parity with established 1.1.3 baseline.
+- [x] Full historical PACI / BAC+SED / previous-run Forecast Reader E2E on same fixed pre-race case: S0–S4, eight axes, 4/4 evidence bundle bytes identical across 1.1.3/2.0.1. Technical status PARTIAL in both; no semantic regression from engine.
 - [ ] Validate other mandatory shared-consumer smoke contracts affected by the global pin and the rollout/rollback plan, then merge the reviewed candidate.
 
-**Never interpret the partial real-data parity above as a completed full Forecast Reader acceptance.** Data and existing Actions remain unchanged until promotion.
+**The full Reader E2E parity is complete, but its technical result remains PARTIAL in both versions.** Do not claim scientific PASS or silently alter sampling semantics. Source data and existing Actions remain unchanged during the dependency promotion.
