@@ -18,6 +18,12 @@ At setup, DuckDB `2.0.1`, PyArrow `25.0.1`, NumPy `2.2.4` are approved **as a te
 - DuckDB LTS support cannot safely be deduced from version numbers or from PyPI. A reviewer checks the [official DuckDB release calendar](https://duckdb.org/release_calendar), release notes and support window.
 - Official PyPI JSON API description: https://docs.pypi.org/api/json/ .
 
+## Candidate isolation smoke (reviewer-initiated)
+
+`.github/workflows/shared_runtime_candidate_smoke.yml` offers a manual, explicitly versioned `workflow_dispatch` for a reviewer. It obtains official binary wheels for the three exact versions, stores filenames/size/SHA in a 90-day receipt, installs them into a **fresh isolated Python 3.13** environment, and tests PyArrow/NumPy to DuckDB SQL bridging. PR CI exercises the same smoke with the currently accepted three-version baseline.
+
+**A PASS here only confirms installability and a tiny synthetic SQL check.** It does not use or access JRDB-licensed data, does not install into the ChatGPT runtime, does not change the Drive wheel, does not update `main`, and does **not** prove actual Forecast Reader parity. Full JRDB E2E on frozen as-of manifests and explicit approval remain mandatory. The candidate version inputs accept only numeric stable version strings and cannot inject shell commands.
+
 ## Mandatory promotion decision gate
 
 An Issue is a review request, **not** authorization to upgrade. Candidate remains isolated from `main` and the approved Drive wheel.
@@ -40,7 +46,7 @@ The current Forecast Reader 8/10 case can produce `PARTIAL` under both DuckDB 1.
 ## Release choreography
 
 1. Detection creates `[DEPENDENCY_WATCH]` Issue with candidate evidence, no binaries or repo changes.
-2. In a review branch, pin the **candidate** exact dependencies for testing; do not change current main. Run isolated unit/smoke and fixed real-data acceptance tests.
+2. A reviewer may run the isolated candidate smoke manually with exact versions. In a review branch, pin the **candidate** exact dependencies for testing; do not change current main. Run full shared tests and fixed real-data acceptance.
 3. Prepare a proposed promotion PR with results, verified wheel hashes, new private Drive file ID, explicit rollback and owner signoff request. Draft only until approval.
 4. After approval, merge atomic consistency changes to `requirements.txt`, `pyproject.toml`, `data_storage/dependencies.py`, wheel exporter / offline bootstrap expected versions, runtime registry, and runbooks. Avoid mixed old/new binaries.
 5. Retain the prior Drive bundle for rollback, perform after-merge readback and close the corresponding review Issue with evidence.
