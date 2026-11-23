@@ -62,6 +62,24 @@ jobs:
           python tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py \
             --bundle "$ARCHIVE" --archive-sha256 "$SHA" --venv /tmp/phase2-bootstrap
           PYTHONPATH=tools/data-storage /tmp/phase2-bootstrap/bin/python -m data_storage check-deps
+      - name: Offline bootstrap from Actions-style outer ZIP, plus hash rejection
+        run: |
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+          inner=Path('/tmp/jrdb_phase2_runtime_wheels_py313_linux_x86_64.zip')
+          with zipfile.ZipFile('/tmp/phase2-outer.zip','w',compression=zipfile.ZIP_DEFLATED) as z:
+              z.write(inner,inner.name)
+          PY
+          OUTER_SHA=$(sha256sum /tmp/phase2-outer.zip | cut -d' ' -f1)
+          python tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py \
+            --bundle /tmp/phase2-outer.zip --archive-sha256 "$OUTER_SHA" --venv /tmp/phase2-nested
+          if python tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py \
+            --bundle /tmp/phase2-outer.zip --archive-sha256 "$(printf '0%.0s' {1..64})" --venv /tmp/phase2-must-not-exist; then
+            echo "Expected corrupted hash to be rejected" >&2
+            exit 1
+          fi
+          test ! -e /tmp/phase2-must-not-exist
       - uses: actions/upload-artifact@v4
         with:
           name: jrdb-phase2-runtime-wheels-py313-linux-x86_64
