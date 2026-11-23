@@ -1,0 +1,43 @@
+{
+  "schema_version": "jrdb.chatgpt_offline_runtime_registry.v1",
+  "created_at": "2026-11-23",
+  "source": "private_google_drive",
+  "drive_file_id": "1zsU9BGNUkWd4aHg2kDKMNh699tE2i9Db",
+  "drive_parent_folder_id": "1p7_MS2UH5UEOfWfzdWJH87zKxQXg2vYX",
+  "name": "jrdb-phase2-duckdb2.0.1-pyarrow25.0.1-numpy2.2.4-py313-linux-x86_64.zip",
+  "size_bytes": 90518136,
+  "sha256": "ceee50c7f3e7b2dc74bc8401320d1b69e96cee8d7809383b876677c74c7caa16",
+  "nested_archive_name": "jrdb_phase2_runtime_wheels_py313_linux_x86_64.zip",
+  "nested_sha256": "42b73a4b47613aeda27e89804ce6b5afeec70653e53eb4edad6ac62f152d989e",
+  "runtime": {
+    "python_major_minor": "3.13",
+    "os": "linux",
+    "architecture": "x86_64",
+    "duckdb": "2.0.1",
+    "pyarrow": "25.0.1",
+    "numpy_dependency": "bundled numpy==2.2.4 (no preinstalled runtime dependencies)",
+    "numpy": "2.2.4"
+  },
+  "packages": [
+    {
+      "package": "duckdb",
+      "version": "2.0.1",
+      "sha256": "39ffeb136abed770a496e5592a464f18a07b1543e7ddb1ff6453215e179f1647"
+    },
+    {
+      "package": "pyarrow",
+      "version": "25.0.1",
+      "sha256": "0befcf816e45a1af33ac775a9970b749e4868a230c7372f0ae5e932bee27039f"
+    },
+    {
+      "package": "numpy",
+      "version": "2.2.4",
+      "sha256": "bce43e386c16898b91e162e5baaad90c4b06f9dcbe36282490032cec98dc8ae7"
+    }
+  ],
+  "provenance": {
+    "build": "official PyPI wheels, repackaged in one-time GitHub Actions CI",
+    "run_url": "https://github.com/yukki0113/GPT/actions/runs/45107232260"
+  },
+  "distribution_policy": "Do not publish JRDB proprietary data, access tokens, or Drive bearer URLs. Open-source wheels only."
+}

@@ -1,0 +1,90 @@
+name: JRDB Phase2 offline runtime wheel staging
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/jrdb_phase2_runtime_wheel_staging.yml'
+      - 'tools/data-storage/scripts/export_pinned_duckdb_wheel.py'
+      - 'tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Download official binary wheels only, no JRDB inputs
+        run: |
+          python tools/data-storage/scripts/export_pinned_duckdb_wheel.py --python-version 313 --output-dir /tmp/duckdb-wheel
+          python -m pip download --only-binary=:all: --no-deps --dest /tmp/pyarrow-wheel 'pyarrow==25.0.1'
+          python -m pip download --only-binary=:all: --no-deps --dest /tmp/numpy-wheel 'numpy==2.2.4'
+      - name: Create verifiable offline package
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import zipfile
+          from pathlib import Path
+          dd = list(Path('/tmp/duckdb-wheel').glob('duckdb-*.whl'))
+          pa = list(Path('/tmp/pyarrow-wheel').glob('pyarrow-*.whl'))
+          np = list(Path('/tmp/numpy-wheel').glob('numpy-*.whl'))
+          assert len(dd)==1 and len(pa)==1 and len(np)==1, (dd, pa, np)
+          assert dd[0].name.startswith('duckdb-2.0.1-')
+          assert pa[0].name.startswith('pyarrow-25.0.1-')
+          assert np[0].name.startswith('numpy-2.2.4-')
+          members = []
+          for p in dd + pa + np:
+              members.append({'name':p.name,'size_bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+          manifest={'schema_version':'jrdb.offline_runtime_wheels.v1','python':'3.13','platform':'linux_x86_64','packages':members}
+          Path('/tmp/jrdb_runtime_wheel_manifest.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          with zipfile.ZipFile('/tmp/jrdb_phase2_runtime_wheels_py313_linux_x86_64.zip','w',compression=zipfile.ZIP_DEFLATED) as z:
+              for p in dd + pa + np: z.write(p,p.name)
+              z.writestr('wheel_manifest.json',json.dumps(manifest,indent=2,sort_keys=True)+'\n')
+          print(json.dumps(manifest,indent=2))
+          PY
+      - name: Offline smoke with fresh isolated environment
+        run: |
+          python -m venv /tmp/phase2-offline
+          /tmp/phase2-offline/bin/python -m pip install --no-index --no-deps /tmp/duckdb-wheel/*.whl /tmp/pyarrow-wheel/*.whl /tmp/numpy-wheel/*.whl
+          /tmp/phase2-offline/bin/python - <<'PY'
+          import duckdb, pyarrow, numpy
+          assert duckdb.__version__ == '2.0.1'
+          assert pyarrow.__version__ == '25.0.1'
+          assert numpy.__version__ == '2.2.4'
+          assert duckdb.connect(':memory:').execute('select 1').fetchone()[0]==1
+          print('Offline import PASS',duckdb.__version__,pyarrow.__version__)
+          PY
+      - name: Smoke canonical offline bootstrap with fresh environment
+        run: |
+          ARCHIVE=/tmp/jrdb_phase2_runtime_wheels_py313_linux_x86_64.zip
+          SHA=$(sha256sum "$ARCHIVE" | cut -d' ' -f1)
+          python tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py \
+            --bundle "$ARCHIVE" --archive-sha256 "$SHA" --venv /tmp/phase2-bootstrap
+          PYTHONPATH=tools/data-storage /tmp/phase2-bootstrap/bin/python -m data_storage check-deps
+      - name: Offline bootstrap from Actions-style outer ZIP, plus hash rejection
+        run: |
+          python - <<'PY'
+          import zipfile
+          from pathlib import Path
+          inner=Path('/tmp/jrdb_phase2_runtime_wheels_py313_linux_x86_64.zip')
+          with zipfile.ZipFile('/tmp/phase2-outer.zip','w',compression=zipfile.ZIP_DEFLATED) as z:
+              z.write(inner,inner.name)
+          PY
+          OUTER_SHA=$(sha256sum /tmp/phase2-outer.zip | cut -d' ' -f1)
+          python tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py \
+            --bundle /tmp/phase2-outer.zip --archive-sha256 "$OUTER_SHA" --venv /tmp/phase2-nested
+          if python tools/data-storage/scripts/bootstrap_chatgpt_offline_runtime.py \
+            --bundle /tmp/phase2-outer.zip --archive-sha256 "$(printf '0%.0s' {1..64})" --venv /tmp/phase2-must-not-exist; then
+            echo "Expected corrupted hash to be rejected" >&2
+            exit 1
+          fi
+          test ! -e /tmp/phase2-must-not-exist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jrdb-phase2-runtime-wheels-py313-linux-x86_64
+          path: /tmp/jrdb_phase2_runtime_wheels_py313_linux_x86_64.zip
+          retention-days: 7
