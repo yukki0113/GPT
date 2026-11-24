@@ -75,12 +75,19 @@ def _relative_rows(relative_row: dict) -> list[dict]:
         relation = rel.get("relationship")
         name = rel.get("horse_name")
         stats = rel.get("scope_stats") or {}
-        starts = sum((x or {}).get("starts", 0) for x in stats.values())
-        top3 = sum((x or {}).get("top3", 0) for x in stats.values())
-        if starts <= 0:
-            note = "5条件合計で該当出走なし / historical as-of未検証"
-        else:
-            note = f"5条件単純合計 {starts}走・3着以内{top3}回（scope重複あり / historical as-of未検証）"
+        scopes = ("VENUE_COURSE_EXACT", "VENUE_DISTANCE", "VENUE_BAND",
+                  "ALL_VENUES_DISTANCE", "ALL_VENUES_BAND")
+        require(set(stats) == set(scopes), "relative scope set mismatch")
+        parts = []
+        for scope in scopes:
+            cell = stats[scope]
+            require(isinstance(cell, dict), "relative scope invalid")
+            starts, wins, top3 = (cell.get(k) for k in ("starts", "wins", "top3"))
+            require(all(type(x) is int for x in (starts, wins, top3)), "relative counts invalid")
+            require(0 <= wins <= top3 <= starts, "relative counts inconsistent")
+            parts.append(f"{scope}: {starts}走・3着以内{top3}回" if starts
+                         else f"{scope}: 該当出走なし")
+        note = " / ".join(parts) + "（scope重複あり・合算不可 / 馬場状態未確認 / historical as-of未検証）"
         out.append({
             "name": name,
             "relationship": relation,

@@ -104,7 +104,26 @@ class TestProjection(unittest.TestCase):
         self.assertEqual(row["condition_records"][0]["starts"], 12)
         self.assertIn("observation only", row["condition_records"][0]["source_label"])
         self.assertEqual(row["relatives"][0]["relationship"], "MATERNAL_HALF_SIBLING")
-        self.assertIn("scope重複あり", row["relatives"][0]["note"])
+        note = row["relatives"][0]["note"]
+        self.assertIn("scope重複あり・合算不可", note)
+        self.assertIn("VENUE_COURSE_EXACT: 2走・3着以内1回", note)
+        self.assertIn("ALL_VENUES_DISTANCE: 1走・3着以内0回", note)
+        self.assertIn("VENUE_DISTANCE: 該当出走なし", note)
+        self.assertNotIn("3走・3着以内1回", note)
+        self.assertIn("馬場状態未確認", note)
+
+    def test_relative_scope_missing_rejected(self):
+        r = relatives()
+        del r["horses"][0]["relatives"][0]["scope_stats"]["VENUE_BAND"]
+        with self.assertRaisesRegex(ValueError, "scope set mismatch"):
+            mod.build(v06(), r, "a" * 64)
+
+    def test_relative_invalid_counts_rejected(self):
+        r = relatives()
+        r["horses"][0]["relatives"][0]["scope_stats"]["VENUE_BAND"]["top3"] = 1
+        with self.assertRaisesRegex(ValueError, "counts inconsistent"):
+            mod.build(v06(), r, "a" * 64)
+
 
     def test_identity_mismatch_rejected(self):
         r = relatives()

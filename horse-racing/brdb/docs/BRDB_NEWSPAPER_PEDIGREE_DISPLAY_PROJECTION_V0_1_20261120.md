@@ -36,7 +36,7 @@ PR #2655 で受入済みの private v0.6 馬場4状態・父/母父/配合観測
 
 v0.6 の natural-language review は未許可なので、レビュー文や適性結論を生成しない。condition records は primary observation の state-side `starts/wins/top3` をそのまま記述統計として載せるだけで、方向やtierは source label に provenance として残す。
 
-M7 relatives は private detail の名前・relationship と5 scope cellの単純合計を表示候補へ投影する。ただし scope は重複するため、note に「scope重複あり」を明記する。合計は独立標本・馬場状態別近親実績・適性根拠ではない。
+M7 relatives は private detail の名前・relationship と5 scope cellを固定順で個別表示する。包含関係にあるscopeの合算は禁止し、0件は該当出走なしと表示する。各scopeの件数を検証し、不足・不整合はfail-closed。noteにはscope重複・合算不可、馬場状態未確認、historical as-of未検証を明記する。独立標本・馬場状態別近親実績・適性根拠ではない。
 
 ## Safety boundary
 
