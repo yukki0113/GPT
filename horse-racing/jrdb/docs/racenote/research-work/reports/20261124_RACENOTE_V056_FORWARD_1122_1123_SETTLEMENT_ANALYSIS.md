@@ -71,7 +71,7 @@ Zは新馬・障害などの特殊区分で、低自信度という意味では�
 累積◎単勝ROI **75.8%**、複勝 **87.3%**、◎軸馬連4点 **76.0%**、3連複5頭BOX **72.9%**。
 
 - Sheet: https://docs.google.com/spreadsheets/d/1z9TJQJ61WEcrVSDxhAWP9D48plP1ixU0hCH-QGZrhnU/edit
-- 48R明細CSV（Drive）: https://drive.google.com/file/d/1bbTG3qCj4TUj4uuZ096uBPNarCbEuerA/view
+- 48R明細CSV（Drive）: https://drive.google.com/file/d/1oDB1dTjccRDSvluV0fbpWwH5P-wzcShE/view
 
 ## 採否
 
