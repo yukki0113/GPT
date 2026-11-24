@@ -8,7 +8,9 @@ NAR公式CSVを安定取得・保存し、予想時点情報と結果情報を�
 
 2026-09-17から Phase 1（canonical foundation）。
 
-Phase 0の取得基盤は維持する。現在の実装対象はfield catalog、canonical schema、pre/post splitter、race status、as-of evidence validation、共有Parquet基盤への接続まで。指数・モデル・自動予想へは自動的に進めない。
+Phase 0の取得基盤は維持する。現在の実装対象はfield catalog、canonical schema、pre/post splitter、race status、as-of evidence validation、共有Parquet基盤への接続まで。データ基盤の範囲から本番指数・モデル・自動予想へ自動昇格しない。
+
+2026-11-24: ユーザー承認済みの予想研究ルートは P8→P9→P10。研究の現行状態・設計追補・固定ベンチマークは `docs/NAR_PREDICTION_RESEARCH_CURRENT.md`、機械可読設定は `research/p8/experiment_registry.json` を参照。P8.0はバージョンを分けた修正版採用により受入済み。次はP8A.1。旧順位再現FAILは不変証跡として保持し、旧版探索・再承認は不要。P8A.1以降の実行前gate、期間ロック、保存・読み戻しを維持する。本番予想は未承認。
 
 ## Source of truth
 
@@ -23,7 +25,7 @@ Drive上の役割は次のとおり。
 - `00_raw/odds/`: NAR公式オッズ情報ZIPの不変原本
 - `10_canonical/`: rawから再生成するParquet canonical
 - `20_audit/`: 取得・canonical変換・validation監査
-- `30_analysis/`: 将来の分析・研究成果
+- `30_analysis/`: 分析・研究成果（run別に保存・読み戻し）
 - `data_pdf_manual.pdf`: NAR公式データダウンロード説明書
 
 Gitに原本ZIP、大容量CSV、Parquet、DuckDB、認証情報を置かない。
