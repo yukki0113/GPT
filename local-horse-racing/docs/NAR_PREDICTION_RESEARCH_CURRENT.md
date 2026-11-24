@@ -1,6 +1,6 @@
-# NAR 予想研究 CURRENT / P8設計追補 v1.2
+# NAR 予想研究 CURRENT / P8設計追補 v1.3
 
-決定日: 2026-11-24 JST。Status: **P8A_COMPLETE_RESEARCH_CANDIDATE_FROZEN / READY_FOR_P8B.1**。
+決定日: 2026-11-24 JST。Status: **P8_RESEARCH_COMPLETE / READY_FOR_P9_DESIGN**。
 
 ## 1. 正式研究ルート・適用順位
 
@@ -58,13 +58,13 @@
 | P8A.1 | COMPLETE: hl60 selected, A2 rejected |
 | P8A.2 | COMPLETE_SCOPED: opponent and speed selected; direct class mapping HOLD |
 | P8A.3 | COMPLETE: P8-Astar-r1 FROZEN_FOR_P8B |
-| P8B.1 | READY_NOT_EXECUTED（course/class; additional asset audit） |
-| P8B.2 | WAIT_P8B.1（draw/pace） |
-| P8B.3 / P8.close | WAIT（統合候補freeze後2024–25確認、採否・保存） |
-| P9 | WAIT_P8_CLOSE（補助評価） |
+| P8B.1 | COMPLETE_SCOPED（course/going tested; direct class mapping HOLD） |
+| P8B.2 | COMPLETE_SCOPED（draw/style/pressure tested; not promoted） |
+| P8B.3 / P8.close | COMPLETE（locked confirmation; Bstar not promoted; Astar selected for P9） |
+| P9 | READY_DESIGN_NOT_EXECUTED（Astar fixed baseline） |
 | P10 | WAIT_P9（統合・精度/回収率・独立検証） |
 
-P8Aは研究候補の確定まで実行済み。P8B未実行。P8終了、production promotion、2026評価、全family漏洩監査完了とはしない。
+P8研究完了。P9設計未実施。本番採用・2026評価は未承認。未採用familyと保留事項は§10を参照。
 
 ## 7. 不変証跡・取得先
 
@@ -89,4 +89,13 @@ P8Aは研究候補の確定まで実行済み。P8B未実行。P8終了、produc
 2. P8Bでは追加post/race_resultの10年分の資産監査とcorner/lap parse feasibilityを行う（実際の2024–25予想評価はまだロック）。B1/B2: Astar-r1を固定基礎として会場・距離・回り・転入/距離移動・条件補正の個別アブレーション。クラスコードの全国等価性を仮定しない。B3/B4は後続。2017–21開発、2022–23比較、2024–25はB統合候補freeze後に一度のみ確認。2026不可。
 3. Astar-r1の1走評価は基礎の縮約、0走/曖昧はUNKNOWN。B補正の最低件数と欠損時補正0を独立管理し、能力のない馬を0とみなさない。全候補のfeature/score/evaluator isolation・同日/未来注入・thread/rank gate・coverage監視・run別保存読み戻しを維持。B検証は未着手。
 
-本書と現行registryが研究再開の正本。次回はP8B.1から開始し、P8Aの再採否や旧版探索は不要。
+上記§9はP8B.1の実行時契約として保存する。次工程は§10に従う。
+
+## 10. P8B確定・P8.close / P9開始点（v1.3）
+
+- P8B 46候補を2017–21開発、2022–23比較で評価。B1 venue180/k3/w.25を唯一の確認候補に固定、B3 gateは2022年負差のため不採用、統合も不採用。B2 going・B4 style/pressureは開発gateで不採用。クラス直接補正はHOLD。ハロン・正規化上がり・RACE_DAYは未実施/延期。P8Aの係数は不変。
+- 10追加post/race_result資産150529件の完全性確認、2016–23の有効104616レースのcorner parse/照合PASS（馬群中間順位近似、地点差あり）、lap coverage 25838。全候補feature/prediction t1/t4 byte parity、同日/未来注入、score-only隔離の scoped PASS。確認期間281378全ENTRY行のFreezeもexact parity、2023 B1 prefix不変、A3/A4 history reference prefix差0、label poison試験PASS。
+- 2024–25確認はB候補Git freeze e839575419fa448f96cb70c6dbdd7203964f34a7 後に一度開示。27070 eligible、A0 6893/26432、AC0 6942/26432、Astar8390/26524、Bstar8449/26524。Bstar vs Astar +.222440pp CI [.076645,.362809]、venue-day sensitivity [.079141,.361694]。最低+.3ppに未達でBstar NOT_PROMOTED_MIN_INCREMENT。Astar vs A0共通26432R +3.132567pp CI [2.723288,3.507331]、full wins +1497、coverage/副指標gate PASS。**P9の固定研究基準は P8-Astar-r1（B補正なし）**。Astarは本番採用ではない。2024–25は既知の回顧確認、独立未見検証と称さない。
+- Git report `docs/NAR_P8B_REPORT_20261124.md`、handoff `docs/NAR_P9_HANDOFF_20261124.md`、source/config/test `research/p8/b/`（exact UTF-8 executed source bundles + materializer）。候補config SHA 046a10f66cd3d8f1f2ce208e76bb55106edc7154587cdb4eb1db21a154da354e、confirmation result SHA 05bee0c3c56b84df507b22acec4b2935ab1751eba3d70d48fe1b2e0bee54ef41、closure SHA 4cf6d7f49d394b530f81fb516cafbfe3a3fdcdb9d338be14ae6446db5f7ba919。
+- Drive `/GPT/local-horse-racing/30_analysis/P8/P8B_20261124/` folder https://drive.google.com/drive/folders/1H2-0ly-ly_6QLlr7NEdKu7xdETu2h5pE（18ファイル559826990 bytes SHA readback parity）、Library `/地方競馬予想/P8/P8B_20261124/`（8ファイルSHA readback parity）。report SHA e9de7bf7eccaeb89eeb18addeef8049946dddb4ad50d89a17960d90af8638b80、compact ZIP SHA c6a578868978c658ab0d7013fea17fdd67c42735c3bfc8dc82f07486ced22a41。P8.close追補・読戻し監査は別途保存。旧P8.0/A/B FreezeやCanonicalは不変。
+- P9は設計から開始。補助評価（騎手・厩舎・ライン・血統）の候補・時点名寄せ・縮約・比較基準・期間分割を事前確定。P8の2024–25確認を未見扱いせず、結果に合わせた再調整を禁止。2026は別承認のCanonical拡張とfreezeまで不使用。P10回収率/独立検証・本番運用は未着手。
