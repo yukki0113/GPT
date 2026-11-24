@@ -1,8 +1,8 @@
 name: Shared runtime dependency watch
 on:
   schedule:
-    # Monday 09:35 JST, weekly. Monitoring ONLY, never upgrade by schedule.
-    - cron: '35 0 * * 1'
+    # First day of each month at 09:35 JST (00:35 UTC). Monitoring ONLY, never upgrade by schedule.
+    - cron: '35 0 1 * *'
   workflow_dispatch:
   pull_request:
     paths:
