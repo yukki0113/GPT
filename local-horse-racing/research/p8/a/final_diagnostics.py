@@ -1,0 +1,29 @@
+"""Final validation diagnostics only; never used to tune or route. P8A selection already frozen."""
+import duckdb,json,csv,hashlib,numpy as np
+from pathlib import Path
+O=Path(__file__).parent;c=duckdb.connect();c.execute('set threads=4');sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+m=json.loads((O/'pred_manifest_a34val.json').read_text());assert m['status']=='PASS';files=[str(O/k) for k,v in m['files'].items() if k.endswith('_t4.parquet') and sha(O/k)==v];assert len(files)==2
+im=json.loads((O/'input_manifest.json').read_text());assert sha(O/'labels.parquet')==im['labels_sha256'];c.execute(f"create view p as select * from read_parquet({files!r})");c.execute(f"create view l as select * from read_parquet('{O/'labels.parquet'}') where year(race_date) between 2022 and 2023");c.execute(f"create view e as select runner_id,horse_key,race_date,venue,distance_m,field_size,race_name,conditions,trainer_affiliation from read_parquet('{O/'entry.parquet'}')");c.execute(f"create view h as select runner_id,horse_key,race_date,venue,distance_m,trainer_affiliation from read_parquet('{O/'history.parquet'}')")
+c.execute("create table eligible as select race_id from l where status='NORMAL' and is_model_target group by race_id having count(*) filter(where finish_position=1)>0")
+c.execute("create table j as select p.*,l.finish_position,e.horse_key,e.distance_m,e.conditions,e.race_name,e.trainer_affiliation from p join eligible using(race_id) left join l using(runner_id) join e using(runner_id)")
+final='one_run_combined';out=[];segs=[]
+for name in ['a0',final]:
+ r='r_'+name;s='s_'+name;n='n_'+name
+ q=f'''with rr as (select race_id,year(race_date) yr,count(*) runners,count({s}) scored,max(case when {r}=1 and finish_position=1 then 1 else 0 end) win,max(case when {r}=1 and finish_position between 1 and 3 then 1 else 0 end) top3,max(case when {r}<=3 and finish_position=1 then 1 else 0 end) winner3 from j group by all), pairs as (select year(a.race_date) yr,count(*) n,count(*) filter(where a.finish_position<b.finish_position) concordant from j a join j b on a.race_id=b.race_id and a.{r}<b.{r} and a.finish_position<>b.finish_position group by 1) select *,concordant::double/n concordance from pairs order by 1'''
+ rows=c.execute(q).fetchall();out.extend([{'model':name,'year':x[0],'comparable_pairs':x[1],'concordant':x[2],'concordance':x[3]} for x in rows]);
+ dims={'month':"strftime(race_date,'%Y-%m')",'distance':"case when distance_m<=1000 then '<=1000' when distance_m<=1400 then '1001-1400' when distance_m<=1700 then '1401-1700' when distance_m<=2000 then '1701-2000' else '>2000' end",'field_size':"case when field_size<=8 then '<=8' when field_size<=12 then '9-12' else '>12' end",'class_code':"coalesce(nullif(regexp_extract(translate(race_name,'ＡＢＣ１２３４５６７８９','ABC123456789'),'[ABC][1-9]',0),''),'UNKNOWN')",'venue':'venue'}
+ for dim,expr in dims.items():
+  q=f'''with rr as (select race_id,year(race_date) yr,{expr} segment,count(*) runners,count({s}) scored,max(case when {r}=1 and finish_position=1 then 1 else 0 end) win,max(case when {r}=1 and finish_position between 1 and 3 then 1 else 0 end) top3,max(case when {r}<=3 and finish_position=1 then 1 else 0 end) winner3 from j group by all) select yr,segment,count(*) races,sum(runners) runners,sum(scored) scored_runners,count(*) filter(where scored>0) scored_races,sum(win) wins,sum(top3) top3,sum(winner3) winner3 from rr group by all order by 1,2'''
+  cur=c.execute(q);k=[x[0] for x in cur.description];segs.extend([{'model':name,'dimension':dim,**dict(zip(k,row))} for row in cur.fetchall()]);
+ # Target-top1 segments depend on model; descriptive only, not paired comparisons.
+ c.execute(f'create or replace table top as select * from j where {r}=1');c.execute('''create or replace table lastobs as select t.runner_id,arg_max(h.venue,h.race_date) prior_venue,arg_max(h.trainer_affiliation,h.race_date) prior_affiliation from top t left join h on h.horse_key=t.horse_key and h.race_date<t.race_date and h.race_date>=t.race_date-interval '365 days' group by t.runner_id''')
+ for dim,expr in [('top1_history',f"case when {n}=1 then '1' when {n}<=3 then '2-3' when {n}<=8 then '4-8' else '9+' end"),('top1_venue_change',"case when prior_venue is null then 'UNKNOWN' when prior_venue=venue then 'SAME' else 'CHANGED' end"),('top1_trainer_affiliation_change',"case when prior_affiliation is null or trainer_affiliation is null then 'UNKNOWN' when prior_affiliation=trainer_affiliation then 'SAME' else 'CHANGED' end")]:
+  q=f'''select year(race_date) yr,{expr} segment,count(*) races,count(*) runners,count(*) scored_runners,count(*) scored_races,count(*) filter(where finish_position=1) wins,count(*) filter(where finish_position between 1 and 3) top3,null::bigint winner3 from top join lastobs using(runner_id) group by all order by 1,2'''
+  cur=c.execute(q);k=[x[0] for x in cur.description];segs.extend([{'model':name,'dimension':dim,**dict(zip(k,row))} for row in cur.fetchall()]);
+with open(O/'final_segments.csv','w') as f:w=csv.DictWriter(f,fieldnames=list(segs[0]));w.writeheader();w.writerows(segs)
+with open(O/'rank_concordance.csv','w') as f:w=csv.DictWriter(f,fieldnames=list(out[0]));w.writeheader();w.writerows(out)
+# final versus A0 common runner paired bootstrap
+r=list(csv.DictReader(open(O/'blocks_a34val_one_run_combined_a0.csv')));rng=np.random.default_rng(20261124);tot=np.zeros(2000);den=np.zeros(2000)
+for y in (2022,2023):
+ z=[x for x in r if x['race_date'].startswith(str(y))];n=np.array([int(x['n']) for x in z]);d=np.array([int(x['delta']) for x in z]);i=rng.integers(0,len(n),size=(2000,len(n)));tot+=d[i].sum(1);den+=n[i].sum(1)
+ci=np.quantile(100*tot/den,[.025,.975]).tolist();(O/'final_paired_ci.json').write_text(json.dumps({'model':final,'ref':'a0','ci95_pp':ci,'seed':20261124,'repetitions':2000,'stratified_by_year':True},indent=2)+'\n');print(out,ci)
