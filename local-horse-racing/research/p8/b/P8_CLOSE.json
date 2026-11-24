@@ -1,0 +1,27 @@
+{
+  "status": "P8_RESEARCH_COMPLETE_READY_P9_DESIGN",
+  "p8a": "P8-Astar-r1",
+  "p8b": "P8-Bstar-r1 NOT_PROMOTED_MIN_INCREMENT",
+  "candidate_config_sha256": "046a10f66cd3d8f1f2ce208e76bb55106edc7154587cdb4eb1db21a154da354e",
+  "confirmation_result_sha256": "05bee0c3c56b84df507b22acec4b2935ab1751eba3d70d48fe1b2e0bee54ef41",
+  "confirmation_diagnostics_sha256": "5ae0888711a2488ab13de75e090a940c62945ffa658fef444bf9598dc232492b",
+  "drive_folder_id": "1H2-0ly-ly_6QLlr7NEdKu7xdETu2h5pE",
+  "drive_readback": {
+    "files": 18,
+    "bytes": 559826990,
+    "sha256": "4e23fc35d18118a44ded282fe7f32614b4838791fafd969270369fb86859517c"
+  },
+  "library_readback": {
+    "files": 8,
+    "sha256": "91b0c5c384e6cc6ea95dafdf89b6bba41c5b0f1c690986186c8769c38ae9da5d"
+  },
+  "source_bundle": {
+    "executed_sources_development.json": "8fc8971ab662e635c0b91516fd9df400f9dbcca308fe8837e05ab2a2e203bb0f",
+    "executed_sources_confirmation_b.json": "8271b1e7dba83d380f17c2171c5a99472759f335a203e70c3df9c7825820711c",
+    "executed_sources_confirmation_a.json": "8411214976134fc288c1dede4c3c9ae5eddd5dd2d1825bdd3439a495bb10d16e",
+    "materialize_executed_sources.py": "0f7896b0e27d64a938326b69d9962a0a9d224baa97713de2e27882d074f0d683"
+  },
+  "next_phase": "P9.design",
+  "2026_excluded": true,
+  "production_approved": false
+}
