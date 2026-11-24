@@ -52,3 +52,40 @@
 - 外部JSONやGame8を自動で再クロールすること。
 - ゲーム内告知を自動で取得したと偽ること。
 - 実際のプレイで勝てるかやカード効果解釈の完全保証。
+
+
+## 2026-11-24追補：Drive規制正本の更新ファイル参照（再発防止）
+
+### 原因と対応
+
+2026-12-04施行差分の書込み時、`files__manage_library` でLibraryへ保存したJSONの `file_id` を、Google Drive `update_file(file_uri=...)` にそのまま渡して `INVALID_ARGUMENT` となった。**LibraryのファイルIDはDriveの更新用ファイル参照ではない**。JSON構築・規制値の不一致ではなく、ファイルサービス間の受渡し方法の誤りだった。
+
+修正後は、まず更新候補をDriveの同じ非公開DBフォルダへ**別名ステージングアップロード**する。そのステージングをDriveコネクタの `fetch(download_raw_file=true, include_base64=false)` で再取得し、返却された `file_uri.file_id`（この環境では `sediment://file_...`）を**元ファイルIDのまま** `update_file` に渡す。実際のコンテンツの根拠は、作成したJSONのバイト列とステージング再取得のSHA一致で確認する。
+
+### 実行手順（一般化）
+
+1. 現行正本を独立取得し、変更前の該当カード・履歴・件数を照合する。日付指定の追加イベントとして作成し、既存 `baseline_entries` は変更しない。
+2. 元のDrive正本を別名バックアップし、更新候補を**実際にコネクタが受け付ける添付ファイル参照**から `upload_file` で別ファイルに保存する。Library `file_id` をコネクタ参照として直接流用しない。受け付ける添付が用意できないときは正本更新を試行せず、その不足を報告する。
+3. ステージングを **Driveから別要求で再取得**して候補ファイルとのバイトSHAを照合する。成功後、下記の形式で既存の正本ファイルを更新する。更新先の `canonical_file_id` は実際に取得したIDを使い、生成しない。
+
+```javascript
+const staged = await tools.mcp__Google_Drive__fetch({
+  url: verified_staging_url,
+  download_raw_file: true,
+  include_base64: false,
+});
+const ref = staged.result.file_uri?.file_id;
+if (typeof ref !== "string" || !ref.startsWith("sediment://")) {
+  throw new Error("Drive connector staging reference unavailable");
+}
+await tools.mcp__Google_Drive__update_file({
+  fileId: canonical_file_id,
+  file_uri: ref,
+  mime_type: "application/json",
+});
+```
+
+4. **元の正本URL**を再取得し、バイトSHA一致、履歴保持、イベント件数、前後値、施行日前後の規制計算を検証して完了とする。ステージング成功だけを「正本更新済み」とは呼ばない。
+5. 更新元の適用日・根拠の区別と単一ライター運用は既存の規則に従う。基準値変更・新旧イベントの直接破壊・Gen10 SQLiteや所持台帳の不要な変更は行わない。
+
+実績：2026-12-04施行6件のJSON差分を既存規制正本へ反映し、Driveから独立再取得した候補と正本のSHA-256一致を確認。これは**Driveのファイル受渡し失敗の修正**であって、禁止制限の全件追加検証を要求する仕組みではない。
