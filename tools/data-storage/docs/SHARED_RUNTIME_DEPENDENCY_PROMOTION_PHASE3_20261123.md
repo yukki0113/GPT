@@ -10,7 +10,7 @@ At setup, DuckDB `2.0.1`, PyArrow `25.0.1`, NumPy `2.2.4` are approved **as a te
 
 ## Scheduled monitoring
 
-- `.github/workflows/shared_runtime_dependency_watch.yml` checks **once weekly Monday 09:35 Asia/Tokyo** and may be triggered manually. Monitoring is a lightweight Actions-native control-plane task; **normal Forecast Reader analysis remains local in ChatGPT with no Actions launch**.
+- `.github/workflows/shared_runtime_dependency_watch.yml` checks **monthly on the 1st at 09:35 Asia/Tokyo (00:35 UTC)** and may be triggered manually. Monitoring is a lightweight Actions-native control-plane task; **normal Forecast Reader analysis remains local in ChatGPT with no Actions launch**.
 - `tools/data-storage/scripts/check_runtime_dependency_updates.py` uses official PyPI JSON release data (stable, not yanked, published binary wheel available). It compares with exact approved offline-runtime baseline from GitHub. It intentionally does **not** install a package or edit any registry.
 - A CPython 3.13 Linux x86_64 wheel filename hint is only an indicative preflight. Full supported tag, glibc minimum, NumPy ABI, `Requires-Python`, provenance and cryptographic checks are required separately.
 - When a newer version appears, create one distinct `[DEPENDENCY_WATCH]` review Issue per package and version. Check existing open Issues first. No notification when there is no change; failure of PyPI retrieval/response should fail the workflow and must not be interpreted as `NO_UPDATES`.
@@ -58,4 +58,4 @@ The current Forecast Reader 8/10 case can produce `PARTIAL` under both DuckDB 1.
 - The first monitor covers three packages constituting the verified offline runtime. Other Data Storage dependencies (PyYAML, gdown, cryptography) remain pinned/ranged as before; expand only after identifying their runtime vs ingestion responsibilities.
 - New thread / non-CPython 3.13 / non-Linux x86_64 validation is still a separate acceptance requirement.
 - If the monitoring workflow itself cannot access official PyPI, the run fails and operators investigate; do not silently mark everything up-to-date.
-- Security-critical upstream advisories require expedited human review; weekly stable-version discovery alone is **not** continuous vulnerability monitoring or a CVE database.
+- Security-critical upstream advisories require expedited human review; monthly stable-version discovery alone is **not** continuous vulnerability monitoring or a CVE database.
