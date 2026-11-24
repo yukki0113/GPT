@@ -10,8 +10,9 @@
 4. 本ディレクトリの `.gpt/CONTEXT.md`
 5. 本ディレクトリの `.gpt/WORKFLOW.md`
 6. `docs/CANONICAL_DATA_SPEC.md`
-7. 対象source / test / docs / workflow
-8. Parquet / DuckDB処理を扱う場合はリポジトリ共通 `tools/data-storage/README.md`
+7. 予想研究の場合は `docs/NAR_PREDICTION_RESEARCH_CURRENT.md` → 同書が指定する設計・`research/p8/experiment_registry.json`・証跡
+8. 対象source / test / docs / workflow
+9. Parquet / DuckDB処理を扱う場合はリポジトリ共通 `tools/data-storage/README.md`
 
 `.gpt/ISSUE_REQUEST_CONTRACTS.md` は Actions-native 実行（下記D）を選ぶ場合に確認する。
 
@@ -156,13 +157,17 @@ PYTHONPATH=tools/data-storage .venv-data-storage/bin/python -m pytest tools/data
 
 実データsmokeではまず1か月等の小範囲でrow count、race status、as-of evidenceを確認し、その後に年単位・10年単位へ広げる。
 
+## Prediction research flow（2026-11-24）
+
+予想研究は現行CURRENTに従う。P8.0の過去FAILは保存したままtie12を研究基準として受入済み。次工程P8A.1は未実行。各runで入力SHA・依存・候補config・feature/score/evaluator隔離・リーク・thread/prefix/rank gateを確認し、設計の期間分割と採否基準を守る。Gitにcode/config/test/summary、Driveに詳細成果物、Libraryにportable bundle/引き継ぎ書を保存し、読み戻し・整合性確認後にCURRENTを更新する。旧レポートのHOLD/PENDINGは当時の監査状態であり、現行CURRENTに優先しない。
+
 ## Current scope stop
 
 以下は別途明示的に進めるまで実装しない。
 
 - `PRE_ASOF_PENDING` の無監査自動昇格
 - 馬・騎手・調教師の完全な恒久ID名寄せ
-- 派生as-of特徴量の量産
-- 指数・モデル・予想
+- 承認済みP8–P10研究契約の外での派生as-of特徴量の量産
+- 本番指数・モデル・予想（研究用の実験・検証はCURRENTに従う）
 - odds市場期待値ロジック
 - 自動定期実行・販売運用
