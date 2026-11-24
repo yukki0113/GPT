@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "purpose": "prespecified venue-day sensitivity and rank concordance; frozen predictions only, no tuning",
+  "venue_day_ci95_pp": {
+    "bstar_vs_astar": [
+      0.07914068293030423,
+      0.36169363122564063
+    ],
+    "astar_vs_a0": [
+      2.7472787476574143,
+      3.520772789840296
+    ],
+    "bstar_vs_a0": [
+      2.9646422385629174,
+      3.7504058398393014
+    ],
+    "bstar_vs_ac0": [
+      2.774053726315012,
+      3.56104042428181
+    ]
+  },
+  "rank_concordance": [
+    {
+      "model": "a0",
+      "yr": 2024,
+      "comparable": 540874,
+      "concordant": "355157.0"
+    },
+    {
+      "model": "a0",
+      "yr": 2025,
+      "comparable": 541033,
+      "concordant": "355682.0"
+    },
+    {
+      "model": "ac0",
+      "yr": 2024,
+      "comparable": 540874,
+      "concordant": "356361.5"
+    },
+    {
+      "model": "ac0",
+      "yr": 2025,
+      "comparable": 541033,
+      "concordant": "356639.5"
+    },
+    {
+      "model": "astar",
+      "yr": 2024,
+      "comparable": 619295,
+      "concordant": "424105.5"
+    },
+    {
+      "model": "astar",
+      "yr": 2025,
+      "comparable": 621001,
+      "concordant": "426906.0"
+    },
+    {
+      "model": "bstar",
+      "yr": 2024,
+      "comparable": 619295,
+      "concordant": "424934.5"
+    },
+    {
+      "model": "bstar",
+      "yr": 2025,
+      "comparable": 621001,
+      "concordant": "427672.0"
+    }
+  ],
+  "selection_unchanged": true,
+  "confirmation_prediction_sha256": "beb507aebc45c458ed4b1c2f2e9a0f91fda4fde32fd0efabe03fe850c7cd7c3f"
+}
