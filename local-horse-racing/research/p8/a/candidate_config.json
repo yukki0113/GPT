@@ -1,0 +1,42 @@
+{
+  "model_id": "P8-Astar-r1",
+  "research_status": "FROZEN_FOR_P8B_NOT_PRODUCTION",
+  "source_generation": "nar_canonical_v1_201601_202512_g20260917",
+  "input_stage": "ENTRY",
+  "target_cutoff": "00:00 JST; history_date < target_date",
+  "base": {
+    "window_days": 365,
+    "half_life_days": 60,
+    "min_runs": 2,
+    "p": "1-(finish_position-1)/(finish_count-1)",
+    "valid_history": "NORMAL/is_model_target, finish_count>1, valid rank, finish_time_seconds>0, unambiguous surrogate, prior dirt"
+  },
+  "opponent": {
+    "weight": 0.2,
+    "per_observation": "prior A0 of other ENTRY runners, >=3 known and >=50%; global prior 365d runner-weighted mean/std, min100; clip z [-3,3]/6",
+    "min_valid_history": 2,
+    "aggregate": "same half-life weighted mean of available deltas"
+  },
+  "speed": {
+    "weight": 0.3,
+    "reference": "same venue,distance,surface, historical date minus 365 days to exclusive historical date; one winner time per valid race; min100 races, robust median and 1.4826*MAD >0; clip((median-time)/scale,-3,3)/6+.5",
+    "min_valid_history": 2,
+    "aggregate": "same half-life weighted mean of available scores"
+  },
+  "score": "if n>=2: F + (0.2*O if n_opp>=2 else 0) + (0.3*(S-F) if n_speed>=2 else 0); if n==1: (p+1.5)/4; if n==0 or ambiguous: NULL",
+  "ranking": "round(score,12) desc, horse_no asc; store raw finite score",
+  "no_score_reason": [
+    "AMBIGUOUS_IDENTITY",
+    "INSUFFICIENT_HISTORY",
+    "UNKNOWN"
+  ],
+  "class_direct": "HOLD_INFEASIBLE_MAPPING",
+  "prize_proxy": "NOT_SELECTED",
+  "gap_score": "NOT_SELECTED",
+  "confirmation": "LOCKED_2024_2025 until P8B config Freeze; 2026 excluded",
+  "selection_shortlist_sha256": "4e0ff557697de0ccfbb64f6cc5d5cc1e56f75a67b90c409feecbc281686d6fe1",
+  "a1a2_decision_sha256": "b44f0eea77b330dac305338239b3a5a7c1f27777cbd1e8fca8389732814da7af",
+  "a34_decision_sha256": "a0fa9e98732a2fa94a489bc5d58ee2b3e19c46f692d517477f8a3a7e3744d2c6",
+  "validation_prediction_manifest_sha256": "64a701c81b8a6db4106ea9c056d3cb89dce56117921f4e69c4017bfa9e785c25",
+  "production_approved": false
+}
