@@ -1,5 +1,5 @@
 {
-  "status": "REGISTERED_FROM_DESIGN_NOT_EXECUTED",
+  "status": "READY_P8A_1_NOT_EXECUTED",
   "design_sha256": "8ba456092f52642aa2c8a0a66b0f065e9a5bd83db13bd9a49957c2ca6fc906c5",
   "periods": {
     "warmup": [
@@ -136,10 +136,82 @@
     "seed": 20261124
   },
   "ranking": {
+    "active": "round(score,12) desc, horse_no asc",
+    "status": "ACCEPTED_FOR_RESEARCH",
     "legacy": "raw score desc, horse_no asc",
-    "proposal": "round(score,12) desc, horse_no asc",
-    "proposal_status": "PENDING_DESIGN_AMENDMENT"
+    "legacy_strict_rank_gate": "FAIL_STRICT_RANK_PARITY",
+    "score_storage": "unrounded finite numeric; NULL unknown; nonfinite fail-closed",
+    "float_abs_tolerance": 1e-12,
+    "rank_parity": "exact",
+    "required_threads": [
+      1,
+      4
+    ],
+    "retest_each_family": true,
+    "round_boundary_tests_required": true
   },
   "no_selection_or_validation_opened": true,
-  "note": "Design candidate families extracted; shortlist/individual configurations still to be frozen before execution; no performance-driven edits."
+  "note": "Original candidate grids and gates unchanged. P8A.1 requires run-specific configuration freeze and family/scoring/evaluator isolation gates before scoring. 2024–25 locked except previously known pilot; 2026 excluded. Original registry preserved in P8.0 evidence ZIP.",
+  "schema_version": 2,
+  "current_design": "docs/NAR_PREDICTION_RESEARCH_CURRENT.md",
+  "current_design_sha256": "930b70fa90445612c55dd1729be7c34be72d9fcc59692f066f176b1b7a51a0eb",
+  "prior_registry_sha256": "49e80d7f89931ce4872ad7539b5ce7c4ffb0305a1d6824a5d893e6ee47f8d140",
+  "baseline_reference": {
+    "id": "RECOVERY-PILOT-r0.1-tie12",
+    "scope": "2025-only H2 known pilot",
+    "eligible_races": 7009,
+    "prediction_rows": 191949,
+    "metrics": [
+      {
+        "model": "a",
+        "predicted_races": 6810,
+        "win_count": 1783,
+        "top3_count": 3893,
+        "winner_in_top3": 3462
+      },
+      {
+        "model": "ac",
+        "predicted_races": 6810,
+        "win_count": 1791,
+        "top3_count": 3890,
+        "winner_in_top3": 3489
+      },
+      {
+        "model": "acj",
+        "predicted_races": 6810,
+        "win_count": 1830,
+        "top3_count": 3937,
+        "winner_in_top3": 3501
+      }
+    ],
+    "freeze_relative_path": "tie_repair/threads4/pilot_prediction_freeze.parquet",
+    "freeze_sha256": "da104ae2137eefa141f4bb1ae630d1ce274b175f0802a1615e3dd2feba216669",
+    "coefficient_changes": false,
+    "production_approved": false
+  },
+  "p8_0": {
+    "status": "ACCEPTED_WITH_VERSIONED_BASELINE_REPLACEMENT",
+    "legacy_gate": "FAIL_STRICT_RANK_PARITY",
+    "legacy_mismatches": 8,
+    "archive_vs_new_rank_diff": 30,
+    "new_threads_rank_diff": 0,
+    "input_partitions_verified": 40,
+    "baseline_guard_scope": "baseline only",
+    "evidence_zip_sha256": "6c48f8c33cf6f5aa65703f7a876223404820111971692a08a4c1687eef5eae6b",
+    "input_manifest_sha256": "5efafa73f8c6d5ac68d2e77df5001650815bc5a56112003d0618f70c1e51013c",
+    "tie_repair_audit_sha256": "59a2a68693304d7e342b68cb4f2532e97f09ba3e6e1ca3e3e273a0d350718246",
+    "entity_audit_sha256": "910e707dedc8e8b1505fb0877c2e95ceae5b501d352b5fa948676ccb4000025a",
+    "baseline_guard_audit_sha256": "44958233484b15f692d92b569913c61b29b0db698e98f6d3913eb2811589ac0a"
+  },
+  "canonical": {
+    "generation": "nar_canonical_v1_201601_202512_g20260917",
+    "manifest_sha256": "bdc6cc603f5a199fa513bffea3b0450588df828c0bdbac5c52e980f4ab6f926a",
+    "integrity_correction": "P0-01-20261124",
+    "stage": "ENTRY",
+    "cutoff": "target_date 00:00 JST; history_date < target_date",
+    "p8b_additional_partitions": 10
+  },
+  "next_phase": "P8A.1",
+  "confirmation_locked": true,
+  "production_approved": false
 }
