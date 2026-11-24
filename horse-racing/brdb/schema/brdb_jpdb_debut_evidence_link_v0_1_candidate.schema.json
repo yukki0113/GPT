@@ -1,0 +1,445 @@
+{
+  "$id": "urn:brdb:jpdb-debut-evidence-link:v0.1-candidate",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "brdb_history_cutoff_exclusive": {
+      "const": "2026-01-01"
+    },
+    "brdb_history_gap_2026": {
+      "const": true
+    },
+    "brdb_temporal_status": {
+      "const": "AS_OF_UNVERIFIED"
+    },
+    "horses": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "brdb": {
+            "additionalProperties": false,
+            "properties": {
+              "population_refs": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "cohort": {
+                      "enum": [
+                        "A1_RACE_ACTUAL_STARTERS",
+                        "FIRST_OBSERVED_JRA_START_CANDIDATE"
+                      ]
+                    },
+                    "evidence_id": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "lane": {
+                      "enum": [
+                        "SIRE_ID",
+                        "BMS_ID",
+                        "PARENT_ID_PAIR",
+                        "LINEAGE_CODE_PAIR"
+                      ]
+                    },
+                    "sample_status": {
+                      "enum": [
+                        "DESCRIPTIVE",
+                        "LOW_SAMPLE",
+                        "NO_SAMPLE",
+                        "SOURCE_UNAVAILABLE"
+                      ]
+                    },
+                    "scope": {
+                      "enum": [
+                        "ALL",
+                        "SURFACE",
+                        "SURFACE_DISTANCE",
+                        "SURFACE_MONTH",
+                        "SURFACE_AGE"
+                      ]
+                    },
+                    "usage": {
+                      "const": "RESEARCH_REFERENCE_ONLY"
+                    }
+                  },
+                  "required": [
+                    "evidence_id",
+                    "cohort",
+                    "lane",
+                    "scope",
+                    "sample_status",
+                    "usage"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 40,
+                "minItems": 40,
+                "type": "array"
+              },
+              "profile_status": {
+                "enum": [
+                  "DATED_PACI_UKC",
+                  "INVALID_OR_CONFLICTING_UKC",
+                  "MISSING_UKC"
+                ]
+              },
+              "relative_refs": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "evidence_id": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "relative_id": {
+                      "pattern": "^(?!00000000)[0-9]{8}$",
+                      "type": "string"
+                    },
+                    "sample_status": {
+                      "enum": [
+                        "LOW_SAMPLE",
+                        "NO_SAMPLE",
+                        "FIRST_START_UNRESOLVED",
+                        "NO_PRIOR_OBSERVED_START"
+                      ]
+                    },
+                    "scope": {
+                      "enum": [
+                        "ALL",
+                        "SURFACE",
+                        "SURFACE_DISTANCE",
+                        "SURFACE_MONTH",
+                        "SURFACE_AGE"
+                      ]
+                    },
+                    "usage": {
+                      "const": "RESEARCH_REFERENCE_ONLY"
+                    }
+                  },
+                  "required": [
+                    "evidence_id",
+                    "relative_id",
+                    "scope",
+                    "sample_status",
+                    "usage"
+                  ],
+                  "type": "object"
+                },
+                "minItems": 0,
+                "type": "array"
+              },
+              "relative_status": {
+                "enum": [
+                  "SOURCE_UNAVAILABLE",
+                  "NO_CONFIRMED_RELATIVE",
+                  "NO_ELIGIBLE_FIRST_HISTORY",
+                  "DESCRIPTIVE_FIRST_HISTORY"
+                ]
+              },
+              "status": {
+                "const": "RESEARCH_REFERENCE_ONLY"
+              }
+            },
+            "required": [
+              "status",
+              "profile_status",
+              "relative_status",
+              "population_refs",
+              "relative_refs"
+            ],
+            "type": "object"
+          },
+          "entry_cancel_flag_raw": {
+            "maxLength": 1,
+            "type": "string"
+          },
+          "horse_id": {
+            "pattern": "^(?!00000000)[0-9]{8}$",
+            "type": "string"
+          },
+          "horse_no": {
+            "maximum": 18,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "individual_eligibility": {
+            "enum": [
+              "KNOWN_PRIOR_JRA_START",
+              "PRIOR_HISTORY_UNRESOLVED",
+              "AGE_OR_HISTORY_UNCERTAIN",
+              "NO_PRIOR_START_OBSERVED_HISTORY_INCOMPLETE"
+            ]
+          },
+          "jpdb": {
+            "additionalProperties": false,
+            "properties": {
+              "evidence_refs": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "evidence_id": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "native_overlap_group": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "sample_status": {
+                      "enum": [
+                        "DESCRIPTIVE_ONLY",
+                        "INSUFFICIENT",
+                        "NO_HISTORY",
+                        "TARGET_CONDITION_UNAVAILABLE",
+                        "REVIEW_REQUIRED"
+                      ]
+                    },
+                    "scope": {
+                      "enum": [
+                        "ALL_FLAT",
+                        "SURFACE",
+                        "VENUE",
+                        "VENUE_SURFACE",
+                        "SURFACE_DISTANCE_EXACT",
+                        "CLASS_GRADE_RAW",
+                        "GOING_RAW",
+                        "COURSE_KEY",
+                        "COURSE_SIZE",
+                        "FINAL_SLOPE",
+                        "FINAL_STRAIGHT_M",
+                        "GEOMETRY_KEY",
+                        "TURN_DIRECTION",
+                        "NEWCOMER_ALL_FLAT",
+                        "NEWCOMER_SURFACE",
+                        "NEWCOMER_VENUE_SURFACE",
+                        "NEWCOMER_SURFACE_DISTANCE_EXACT"
+                      ]
+                    },
+                    "source_id": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "source_status": {
+                      "enum": [
+                        "OBSERVED",
+                        "NO_OBSERVED_HISTORY",
+                        "TARGET_CONDITION_UNAVAILABLE"
+                      ]
+                    },
+                    "window": {
+                      "enum": [
+                        "ROLLING_3Y",
+                        "RECENT_365D",
+                        "RECENT_90D"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "evidence_id",
+                    "source_id",
+                    "scope",
+                    "window",
+                    "source_status",
+                    "sample_status",
+                    "native_overlap_group"
+                  ],
+                  "type": "object"
+                },
+                "maxItems": 51,
+                "minItems": 51,
+                "type": "array"
+              },
+              "status": {
+                "const": "RESEARCH_CONTEXT_ONLY"
+              }
+            },
+            "required": [
+              "status",
+              "evidence_refs"
+            ],
+            "type": "object"
+          },
+          "race_key": {
+            "pattern": "^[0-9A-Fa-f]{8}$",
+            "type": "string"
+          },
+          "redundancy_group_id": {
+            "const": "SHARED_JRDB_HISTORY_NOT_INDEPENDENT"
+          },
+          "scheduled_jockey_code": {
+            "pattern": "^(?!00000)[0-9]{5}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "race_key",
+          "horse_no",
+          "horse_id",
+          "scheduled_jockey_code",
+          "entry_cancel_flag_raw",
+          "individual_eligibility",
+          "jpdb",
+          "brdb",
+          "redundancy_group_id"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "jpdb_history_cutoff_exclusive": {
+      "format": "date",
+      "type": "string"
+    },
+    "jpdb_temporal_status": {
+      "const": "PRIOR_DAY_ASSUMED_NOT_STRICTLY_ATTESTED"
+    },
+    "policy": {
+      "const": "NO_ADDITIVE_VOTES_NO_SCORES_NO_TARGET_OUTCOMES"
+    },
+    "prediction_safe": {
+      "const": false
+    },
+    "production_authorized": {
+      "const": false
+    },
+    "r4_authorized": {
+      "const": false
+    },
+    "races": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "distance": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "field_size": {
+            "maximum": 18,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "r3_contract_version": {
+            "enum": [
+              "racenote-independent-evidence-v0.1-candidate",
+              "racenote-independent-evidence-base-only-v0.1-candidate"
+            ]
+          },
+          "r3_detail_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "race_key": {
+            "pattern": "^[0-9A-Fa-f]{8}$",
+            "type": "string"
+          },
+          "surface": {
+            "enum": [
+              "1",
+              "2"
+            ]
+          }
+        },
+        "required": [
+          "race_key",
+          "field_size",
+          "surface",
+          "distance",
+          "r3_contract_version",
+          "r3_detail_sha256"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "research_only": {
+      "const": true
+    },
+    "schema_version": {
+      "const": "brdb-jpdb-debut-evidence-link-v0.1-candidate"
+    },
+    "source_assets": {
+      "additionalProperties": false,
+      "properties": {
+        "brdb_b5": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "brdb_b5_receipt": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "jpdb_r1": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "jpdb_r1_receipt": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "jpdb_r2": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "jpdb_r2_receipt": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "paci": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "r3_details": {
+          "additionalProperties": false,
+          "minProperties": 1,
+          "patternProperties": {
+            "^[0-9A-Fa-f]{8}$": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "paci",
+        "brdb_b5",
+        "brdb_b5_receipt",
+        "jpdb_r1",
+        "jpdb_r2",
+        "jpdb_r1_receipt",
+        "jpdb_r2_receipt",
+        "r3_details"
+      ],
+      "type": "object"
+    },
+    "target_date": {
+      "format": "date",
+      "type": "string"
+    },
+    "target_paci_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "target_date",
+    "target_paci_sha256",
+    "research_only",
+    "prediction_safe",
+    "production_authorized",
+    "r4_authorized",
+    "policy",
+    "brdb_history_cutoff_exclusive",
+    "brdb_history_gap_2026",
+    "jpdb_history_cutoff_exclusive",
+    "brdb_temporal_status",
+    "jpdb_temporal_status",
+    "source_assets",
+    "races",
+    "horses"
+  ],
+  "type": "object"
+}
