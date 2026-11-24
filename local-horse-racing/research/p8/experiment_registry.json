@@ -1,0 +1,145 @@
+{
+  "status": "REGISTERED_FROM_DESIGN_NOT_EXECUTED",
+  "design_sha256": "8ba456092f52642aa2c8a0a66b0f065e9a5bd83db13bd9a49957c2ca6fc906c5",
+  "periods": {
+    "warmup": [
+      2016,
+      2016
+    ],
+    "development": [
+      2017,
+      2021
+    ],
+    "validation": [
+      2022,
+      2023
+    ],
+    "locked_retrospective": [
+      2024,
+      2025
+    ],
+    "excluded": [
+      2026
+    ]
+  },
+  "baseline": [
+    "P8-A0",
+    "P8-AC0",
+    "P8-ACJ0"
+  ],
+  "A1": {
+    "last_n": [
+      3,
+      5,
+      8
+    ],
+    "last_n_max_days": 365,
+    "mean_days": [
+      90,
+      180,
+      365
+    ],
+    "half_life_days": [
+      30,
+      60,
+      90
+    ],
+    "half_life_window": 365,
+    "min_runs": 2
+  },
+  "A2": {
+    "selected_window": [
+      "median",
+      "top2_mean",
+      "last3_vs_prior",
+      "variance",
+      "days_since_last"
+    ],
+    "min_runs": 2,
+    "min_each_for_trend": 2
+  },
+  "A3": {
+    "opponent_weight": [
+      0.1,
+      0.2
+    ],
+    "known_opponents_min": 3,
+    "coverage_min": 0.5
+  },
+  "A4": {
+    "ref_days": 365,
+    "min_races": 100,
+    "z_clip": [
+      -3,
+      3
+    ],
+    "blend": [
+      0.15,
+      0.3
+    ]
+  },
+  "A5": {
+    "one_run_shrink_k": 3,
+    "zero_run": "UNKNOWN"
+  },
+  "B1": {
+    "distance_bands_m": [
+      1000,
+      1400,
+      1700,
+      2000
+    ],
+    "shrink_k": [
+      3,
+      10
+    ],
+    "weights": [
+      0.15,
+      0.25
+    ]
+  },
+  "B2": {
+    "ref_days": 365,
+    "min_races": 100
+  },
+  "B3": {
+    "ref_days": 365,
+    "min_races": 200,
+    "shrink_k": 100
+  },
+  "B4": {
+    "style_first_corner_percentile": [
+      0.3333333333333333,
+      0.6666666666666666
+    ],
+    "pressure_bins": [
+      0.25,
+      0.4
+    ],
+    "min_known": 4,
+    "min_known_share": 0.5,
+    "min_races": 100,
+    "shrink_k": 100
+  },
+  "B_other_weights": [
+    0.1,
+    0.2
+  ],
+  "primary_gate": {
+    "win_delta_pp_min": 0.3,
+    "paired_95ci_lower_gt": 0,
+    "secondary_loss_pp_max": 0.5,
+    "race_coverage_loss_pp_max": 0.5,
+    "runner_coverage_loss_pp_max": 1,
+    "both_validation_years_positive": true,
+    "bootstrap_repetitions": 2000,
+    "seed": 20261124
+  },
+  "ranking": {
+    "legacy": "raw score desc, horse_no asc",
+    "proposal": "round(score,12) desc, horse_no asc",
+    "proposal_status": "PENDING_DESIGN_AMENDMENT"
+  },
+  "no_selection_or_validation_opened": true,
+  "note": "Design candidate families extracted; shortlist/individual configurations still to be frozen before execution; no performance-driven edits."
+}
