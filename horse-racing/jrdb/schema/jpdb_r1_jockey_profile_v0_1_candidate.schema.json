@@ -1,0 +1,526 @@
+{
+  "$defs": {
+    "evidence": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {"properties": {"dimension": {"const": "ALL_FLAT"}}},
+          "then": {"properties": {"condition": {"additionalProperties": false,"properties": {},"required": [],"type": "object"}}}
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "SURFACE"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"surface_code": {"enum": ["1","2"]}},
+                "required": ["surface_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "VENUE"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"venue_code": {"pattern": "^0[1-9]$|^10$","type": "string"}},
+                "required": ["venue_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "SURFACE_DISTANCE_EXACT"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"distance_m": {"minimum": 1,"type": "integer"},"surface_code": {"enum": ["1","2"]}},
+                "required": ["surface_code","distance_m"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "CLASS_GRADE_RAW"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"grade_code": {"type": "string"},"race_class_code": {"type": "string"}},
+                "required": ["race_class_code","grade_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "GOING_RAW"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"surface_code": {"enum": ["1","2"]},"track_condition_code": {"const": null}},
+                "required": ["surface_code","track_condition_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "COURSE_KEY"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"course_key": {"minLength": 1,"type": "string"}},
+                "required": ["course_key"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "GEOMETRY_KEY"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"geometry_key": {"minLength": 1,"type": "string"}},
+                "required": ["geometry_key"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "TURN_DIRECTION"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"turn_direction": {"anyOf": [{"minLength": 1,"type": "string"},{"type": "null"}]}},
+                "required": ["turn_direction"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "FINAL_SLOPE"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"final_straight_slope_flag": {"anyOf": [{"type": "boolean"},{"type": "null"}]}},
+                "required": ["final_straight_slope_flag"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "COURSE_SIZE"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"course_size_class": {"anyOf": [{"minLength": 1,"type": "string"},{"type": "null"}]}},
+                "required": ["course_size_class"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "FINAL_STRAIGHT_M"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"final_straight_m": {"anyOf": [{"minimum": 0,"type": "number"},{"type": "null"}]}},
+                "required": ["final_straight_m"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "VENUE_SURFACE"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"surface_code": {"enum": ["1","2"]},"venue_code": {"minLength": 1,"type": "string"}},
+                "required": ["venue_code","surface_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "CLASS_ONLY"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"race_class_code": {"minLength": 1,"type": "string"}},
+                "required": ["race_class_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "CLASS_SURFACE"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"race_class_code": {"minLength": 1,"type": "string"},"surface_code": {"enum": ["1","2"]}},
+                "required": ["race_class_code","surface_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "NEWCOMER_ALL_FLAT"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"race_class_code": {"const": "A1"}},
+                "required": ["race_class_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "NEWCOMER_SURFACE"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {"race_class_code": {"const": "A1"},"surface_code": {"enum": ["1","2"]}},
+                "required": ["race_class_code","surface_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "NEWCOMER_VENUE_SURFACE"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {
+                  "race_class_code": {"const": "A1"},
+                  "surface_code": {"enum": ["1","2"]},
+                  "venue_code": {"minLength": 1,"type": "string"}
+                },
+                "required": ["race_class_code","venue_code","surface_code"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"dimension": {"const": "NEWCOMER_SURFACE_DISTANCE_EXACT"}}},
+          "then": {
+            "properties": {
+              "condition": {
+                "additionalProperties": false,
+                "properties": {
+                  "distance_m": {"minimum": 1,"type": "integer"},
+                  "race_class_code": {"const": "A1"},
+                  "surface_code": {"enum": ["1","2"]}
+                },
+                "required": ["race_class_code","surface_code","distance_m"],
+                "type": "object"
+              }
+            }
+          }
+        },
+        {
+          "else": {
+            "properties": {
+              "metrics": {"$ref": "#/$defs/metrics"},
+              "sample_n": {"minimum": 0,"type": "integer"},
+              "source_status": {"enum": ["OBSERVED","NO_OBSERVED_HISTORY"]}
+            }
+          },
+          "if": {"properties": {"status": {"const": "TARGET_CONDITION_UNAVAILABLE"}}},
+          "then": {
+            "properties": {
+              "metrics": {"const": null},
+              "sample_n": {"const": null},
+              "source_status": {"const": "TARGET_CONDITION_UNAVAILABLE"}
+            }
+          }
+        }
+      ],
+      "properties": {
+        "condition": {"type": "object"},
+        "dimension": {
+          "enum": [
+            "ALL_FLAT",
+            "SURFACE",
+            "VENUE",
+            "SURFACE_DISTANCE_EXACT",
+            "CLASS_GRADE_RAW",
+            "GOING_RAW",
+            "COURSE_KEY",
+            "GEOMETRY_KEY",
+            "TURN_DIRECTION",
+            "FINAL_SLOPE",
+            "COURSE_SIZE",
+            "FINAL_STRAIGHT_M",
+            "VENUE_SURFACE",
+            "CLASS_ONLY",
+            "CLASS_SURFACE",
+            "NEWCOMER_ALL_FLAT",
+            "NEWCOMER_SURFACE",
+            "NEWCOMER_VENUE_SURFACE",
+            "NEWCOMER_SURFACE_DISTANCE_EXACT"
+          ]
+        },
+        "direction": {"const": "UNCLASSIFIED"},
+        "evidence_id": {"minLength": 1,"type": "string"},
+        "interpretation_policy": {"const": "DESCRIPTIVE_ONLY"},
+        "metrics": {"anyOf": [{"$ref": "#/$defs/metrics"},{"type": "null"}]},
+        "redundancy_group_id": {"enum": ["JOCKEY_BASE","JOCKEY_CONDITION","JOCKEY_CLASS"]},
+        "sample_n": {"anyOf": [{"minimum": 0,"type": "integer"},{"type": "null"}]},
+        "scope": {"minLength": 1,"type": "string"},
+        "source_status": {"enum": ["TARGET_CONDITION_UNAVAILABLE","OBSERVED","NO_OBSERVED_HISTORY"]},
+        "status": {"enum": ["TARGET_CONDITION_UNAVAILABLE","REVIEW_REQUIRED","NO_HISTORY","INSUFFICIENT","DESCRIPTIVE_ONLY"]}
+      },
+      "required": [
+        "evidence_id",
+        "dimension",
+        "condition",
+        "scope",
+        "status",
+        "source_status",
+        "sample_n",
+        "metrics",
+        "direction",
+        "redundancy_group_id",
+        "interpretation_policy"
+      ],
+      "type": "object"
+    },
+    "horse": {
+      "additionalProperties": false,
+      "properties": {
+        "entry_cancel_flag_raw": {"maxLength": 1,"type": "string"},
+        "horse_id": {"pattern": "^[0-9]{8}$","type": "string"},
+        "horse_no": {"maximum": 99,"minimum": 1,"type": "integer"},
+        "scheduled_jockey_code": {"pattern": "^(?!00000)[0-9]{5}$","type": "string"},
+        "windows": {
+          "additionalProperties": false,
+          "properties": {
+            "RECENT_365D": {"$ref": "#/$defs/window"},
+            "RECENT_90D": {"$ref": "#/$defs/window"},
+            "ROLLING_3Y": {"$ref": "#/$defs/window"}
+          },
+          "required": ["ROLLING_3Y","RECENT_365D","RECENT_90D"],
+          "type": "object"
+        }
+      },
+      "required": ["horse_no","horse_id","scheduled_jockey_code","entry_cancel_flag_raw","windows"],
+      "type": "object"
+    },
+    "metrics": {
+      "additionalProperties": false,
+      "properties": {
+        "actual_starts_candidate": {"minimum": 0,"type": "integer"},
+        "cancellations": {"minimum": 0,"type": "integer"},
+        "demotion_review": {"minimum": 0,"type": "integer"},
+        "dnf": {"minimum": 0,"type": "integer"},
+        "entries": {"minimum": 0,"type": "integer"},
+        "exclusions": {"minimum": 0,"type": "integer"},
+        "first_observed": {"anyOf": [{"pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$","type": "string"},{"type": "null"}]},
+        "invalid_normal_finish": {"minimum": 0,"type": "integer"},
+        "last_observed": {"anyOf": [{"pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$","type": "string"},{"type": "null"}]},
+        "nonstarters": {"minimum": 0,"type": "integer"},
+        "normal_finishers": {"minimum": 0,"type": "integer"},
+        "normal_top2_rate": {"anyOf": [{"maximum": 1,"minimum": 0,"type": "number"},{"type": "null"}]},
+        "normal_top3_rate": {"anyOf": [{"maximum": 1,"minimum": 0,"type": "number"},{"type": "null"}]},
+        "normal_win_rate": {"anyOf": [{"maximum": 1,"minimum": 0,"type": "number"},{"type": "null"}]},
+        "sample_support_status": {"enum": ["REVIEW_REQUIRED","NO_HISTORY","INSUFFICIENT","DESCRIPTIVE_ONLY"]},
+        "start_basis_top3_rate_candidate": {"anyOf": [{"maximum": 1,"minimum": 0,"type": "number"},{"type": "null"}]},
+        "start_basis_win_rate_candidate": {"anyOf": [{"maximum": 1,"minimum": 0,"type": "number"},{"type": "null"}]},
+        "start_rate_status": {"enum": ["REVIEW_REQUIRED","NO_STARTS","CANDIDATE_ONLY"]},
+        "top2": {"minimum": 0,"type": "integer"},
+        "top3": {"minimum": 0,"type": "integer"},
+        "unknown_codes": {"minimum": 0,"type": "integer"},
+        "unresolved_count": {"minimum": 0,"type": "integer"},
+        "wins": {"minimum": 0,"type": "integer"}
+      },
+      "required": [
+        "entries",
+        "normal_finishers",
+        "cancellations",
+        "exclusions",
+        "dnf",
+        "demotion_review",
+        "unknown_codes",
+        "invalid_normal_finish",
+        "wins",
+        "top2",
+        "top3",
+        "first_observed",
+        "last_observed",
+        "nonstarters",
+        "actual_starts_candidate",
+        "unresolved_count",
+        "normal_win_rate",
+        "normal_top2_rate",
+        "normal_top3_rate",
+        "start_basis_win_rate_candidate",
+        "start_basis_top3_rate_candidate",
+        "start_rate_status",
+        "sample_support_status"
+      ],
+      "type": "object"
+    },
+    "race": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "else": {"properties": {"is_newcomer_race": {"const": false}}},
+          "if": {"properties": {"race_class_code": {"const": "A1"}}},
+          "then": {"properties": {"is_newcomer_race": {"const": true}}}
+        }
+      ],
+      "properties": {
+        "course": {
+          "additionalProperties": false,
+          "properties": {
+            "course_key": {"minLength": 1,"type": "string"},
+            "course_size_class": {"anyOf": [{"minLength": 1,"type": "string"},{"type": "null"}]},
+            "final_straight_m": {"anyOf": [{"minimum": 0,"type": "number"},{"type": "null"}]},
+            "final_straight_slope_flag": {"anyOf": [{"type": "boolean"},{"type": "null"}]},
+            "geometry_key": {"minLength": 1,"type": "string"},
+            "physical_version_id": {"minLength": 1,"type": "string"},
+            "turn_direction": {"anyOf": [{"minLength": 1,"type": "string"},{"type": "null"}]}
+          },
+          "required": [
+            "course_key",
+            "geometry_key",
+            "turn_direction",
+            "final_straight_slope_flag",
+            "course_size_class",
+            "final_straight_m",
+            "physical_version_id"
+          ],
+          "type": "object"
+        },
+        "distance_m": {"minimum": 1,"type": "integer"},
+        "entry_count": {"minimum": 1,"type": "integer"},
+        "grade_code": {"maxLength": 1,"type": "string"},
+        "horses": {"items": {"$ref": "#/$defs/horse"},"minItems": 1,"type": "array"},
+        "is_newcomer_race": {"type": "boolean"},
+        "physical_data_status": {"const": "PARTIAL"},
+        "race_class_code": {"minLength": 1,"type": "string"},
+        "race_key_raw": {"pattern": "^[0-9]{5}[0-9a-fA-F][0-9]{2}$","type": "string"},
+        "surface_code": {"enum": ["1","2"]},
+        "target_going_status": {"const": "UNKNOWN"},
+        "venue_code": {"pattern": "^0[1-9]$|^10$","type": "string"}
+      },
+      "required": [
+        "race_key_raw",
+        "venue_code",
+        "surface_code",
+        "distance_m",
+        "race_class_code",
+        "grade_code",
+        "is_newcomer_race",
+        "target_going_status",
+        "physical_data_status",
+        "course",
+        "entry_count",
+        "horses"
+      ],
+      "type": "object"
+    },
+    "source": {
+      "additionalProperties": false,
+      "properties": {
+        "asof_policy": {"const": "JPDB_SED_PRIOR_DAY_ASSUMED_AVAILABLE_V1"},
+        "class_authority": {"const": "BAC_SED_CLASS_EQUAL_FIXED_COHORT"},
+        "course_seed_sha256": {
+          "additionalProperties": false,
+          "properties": {
+            "geometry": {"pattern": "^[0-9a-f]{64}$","type": "string"},
+            "mapping": {"pattern": "^[0-9a-f]{64}$","type": "string"},
+            "master": {"pattern": "^[0-9a-f]{64}$","type": "string"}
+          },
+          "required": ["master","mapping","geometry"],
+          "type": "object"
+        },
+        "daily_paci_bac_manifest_sha256": {"pattern": "^[0-9a-f]{64}$","type": "string"},
+        "daily_sed_manifest_sha256": {"pattern": "^[0-9a-f]{64}$","type": "string"},
+        "historical_coverage_to_inclusive": {"pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$","type": "string"},
+        "historical_generation": {"minLength": 1,"type": "string"},
+        "historical_jockey_role": {"const": "SED_ACTUAL"},
+        "historical_manifest_sha256": {"pattern": "^[0-9a-f]{64}$","type": "string"},
+        "interpretation_policy": {"const": "NO_ADDITIVE_VOTES_OR_CAUSAL_SKILL_LABELS"},
+        "population_filter_id": {"const": "JPDB_FLAT_RIDE_START_V1_CANDIDATE"},
+        "strict_asof_certified": {"const": false},
+        "target_jockey_role": {"const": "PACI_KYI_SCHEDULED_IN_STORED_VERSION"},
+        "target_paci_sha256": {"pattern": "^[0-9a-f]{64}$","type": "string"},
+        "target_version_status": {"const": "OBSERVED_PACI_VERSION_NOT_TIME_ATTESTED"}
+      },
+      "required": [
+        "historical_manifest_sha256",
+        "daily_sed_manifest_sha256",
+        "daily_paci_bac_manifest_sha256",
+        "target_paci_sha256",
+        "historical_generation",
+        "course_seed_sha256",
+        "asof_policy",
+        "strict_asof_certified",
+        "target_version_status",
+        "historical_jockey_role",
+        "target_jockey_role",
+        "population_filter_id",
+        "historical_coverage_to_inclusive",
+        "class_authority",
+        "interpretation_policy"
+      ],
+      "type": "object"
+    },
+    "window": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {"items": {"$ref": "#/$defs/evidence"},"maxItems": 17,"minItems": 15,"type": "array"},
+        "period_from_inclusive": {"pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$","type": "string"},
+        "period_to_exclusive": {"pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$","type": "string"}
+      },
+      "required": ["period_from_inclusive","period_to_exclusive","evidence"],
+      "type": "object"
+    }
+  },
+  "$id": "jpdb_r1_jockey_profile_v0_1_candidate.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "prediction_safe": {"const": false},
+    "races": {"items": {"$ref": "#/$defs/race"},"minItems": 1,"type": "array"},
+    "schema_version": {"const": "jpdb-r1-jockey-profile-v0.1-candidate"},
+    "source": {"$ref": "#/$defs/source"},
+    "target_date": {"pattern": "^20[0-9]{2}-[0-9]{2}-[0-9]{2}$","type": "string"}
+  },
+  "required": ["schema_version","target_date","prediction_safe","source","races"],
+  "title": "JPDB R1 research-only profile",
+  "type": "object"
+}

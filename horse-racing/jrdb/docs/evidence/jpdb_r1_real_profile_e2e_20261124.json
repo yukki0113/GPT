@@ -1,0 +1,353 @@
+{
+  "audit_date_jst": "2026-11-24",
+  "class_audit": {
+    "class_mismatches": 0,
+    "flat_rows": 179436,
+    "newcomer_by_year": {
+      "2023": {
+        "entries": 3931,
+        "races": 302
+      },
+      "2024": {
+        "entries": 3982,
+        "races": 302
+      },
+      "2025": {
+        "entries": 4032,
+        "races": 304
+      },
+      "2026": {
+        "entries": 3269,
+        "races": 256
+      }
+    },
+    "status": "PASS"
+  },
+  "daily_paci_manifest_sha256": "4ab484cd5f6f876279968aea98e12357c314daa99198b8b806b1906b13c04723",
+  "daily_paci_sed_pairs": 97,
+  "daily_sed_manifest_sha256": "5c3e8df888ef32de1d7e7660b6032f72ee85227e52a720740ec3df86206b2035",
+  "fixed_2026_paci_sed_combined_sha256": "790213961912cc4bd81ac7932e17d8c54ccf20341220d1031504763cb2d635f1",
+  "historical_assets_sha_verified": 9,
+  "historical_manifest_sha256": "292100c9231b482180fba44f94870331b6a3202900c9ed7647ca222726851902",
+  "manifest_serialization": "fresh research manifests derived from identical pinned pair bytes; not prior manifest byte identity",
+  "milestone": {
+    "R1": "FIXED_SOURCE_RESEARCH_PASS",
+    "R2": "NOT_IMPLEMENTED",
+    "R3_R6": "NOT_IMPLEMENTED_OR_APPROVED"
+  },
+  "new_source_sha256": {
+    "schema/jpdb_r1_jockey_profile_v0_1_candidate.schema.json": "d21246a0e3576f57e5dd45abefcb58ef86a2537301595ca9d347ca8a6f84fab1",
+    "src/jpdb_r1_profile_builder.py": "61fdbe40f9549813c26bb05ca473274e029f964cb0e7f2647f3f01912084035e",
+    "src/jpdb_r1_real_profile_e2e.py": "28f3f27c4a81860c4a06b5ee3040f07286baebd6abcef2c6e1be5c00e2a5a656",
+    "tests/test_jpdb_r1_profile_builder.py": "643f03129d5cf8cd8668ff5f156f8dbcd1ba74e0b15090c8593905bfe7dd959a"
+  },
+  "prediction_safe": false,
+  "production_changed": false,
+  "profile_version": "jpdb-r1-jockey-profile-v0.1-candidate",
+  "proofs": [
+    {
+      "evidence_count": 1740,
+      "independent_cells": 1524,
+      "independent_count_date_fields": 19812,
+      "profile_sha256": "481970faa6f26047347b24c5bbef87cbf6623b9c595b385b567eab8ea022f4c4",
+      "race_summaries": [
+        {
+          "entries": 7,
+          "newcomer": true,
+          "race_key_raw": "05263305",
+          "rolling_3y_known_cells": {
+            "ALL_FLAT": 7,
+            "COURSE_KEY": 7,
+            "COURSE_SIZE": 7,
+            "FINAL_SLOPE": 7,
+            "FINAL_STRAIGHT_M": 7,
+            "GEOMETRY_KEY": 7,
+            "NEWCOMER_ALL_FLAT": 7,
+            "NEWCOMER_SURFACE": 7,
+            "NEWCOMER_SURFACE_DISTANCE_EXACT": 7,
+            "NEWCOMER_VENUE_SURFACE": 7,
+            "SURFACE": 7,
+            "SURFACE_DISTANCE_EXACT": 7,
+            "TURN_DIRECTION": 7,
+            "VENUE": 7,
+            "VENUE_SURFACE": 7
+          },
+          "rolling_3y_n_ge_30_resolved": {
+            "ALL_FLAT": 7,
+            "COURSE_KEY": 6,
+            "COURSE_SIZE": 7,
+            "FINAL_SLOPE": 7,
+            "FINAL_STRAIGHT_M": 6,
+            "GEOMETRY_KEY": 6,
+            "NEWCOMER_ALL_FLAT": 6,
+            "NEWCOMER_SURFACE": 6,
+            "NEWCOMER_SURFACE_DISTANCE_EXACT": 5,
+            "NEWCOMER_VENUE_SURFACE": 6,
+            "SURFACE": 7,
+            "SURFACE_DISTANCE_EXACT": 6,
+            "TURN_DIRECTION": 7,
+            "VENUE": 7,
+            "VENUE_SURFACE": 6
+          },
+          "surface_code": "1"
+        },
+        {
+          "entries": 16,
+          "newcomer": false,
+          "race_key_raw": "05263312",
+          "rolling_3y_known_cells": {
+            "ALL_FLAT": 16,
+            "CLASS_ONLY": 16,
+            "CLASS_SURFACE": 16,
+            "COURSE_KEY": 16,
+            "COURSE_SIZE": 16,
+            "FINAL_SLOPE": 16,
+            "FINAL_STRAIGHT_M": 16,
+            "GEOMETRY_KEY": 16,
+            "SURFACE": 16,
+            "SURFACE_DISTANCE_EXACT": 16,
+            "TURN_DIRECTION": 16,
+            "VENUE": 16,
+            "VENUE_SURFACE": 16
+          },
+          "rolling_3y_n_ge_30_resolved": {
+            "ALL_FLAT": 16,
+            "CLASS_ONLY": 16,
+            "CLASS_SURFACE": 15,
+            "COURSE_KEY": 10,
+            "COURSE_SIZE": 16,
+            "FINAL_SLOPE": 16,
+            "FINAL_STRAIGHT_M": 15,
+            "GEOMETRY_KEY": 15,
+            "SURFACE": 16,
+            "SURFACE_DISTANCE_EXACT": 12,
+            "TURN_DIRECTION": 16,
+            "VENUE": 16,
+            "VENUE_SURFACE": 15
+          },
+          "surface_code": "2"
+        },
+        {
+          "entries": 13,
+          "newcomer": true,
+          "race_key_raw": "09263306",
+          "rolling_3y_known_cells": {
+            "ALL_FLAT": 13,
+            "COURSE_KEY": 13,
+            "COURSE_SIZE": 13,
+            "FINAL_SLOPE": 13,
+            "FINAL_STRAIGHT_M": 13,
+            "GEOMETRY_KEY": 13,
+            "NEWCOMER_ALL_FLAT": 13,
+            "NEWCOMER_SURFACE": 13,
+            "NEWCOMER_SURFACE_DISTANCE_EXACT": 13,
+            "NEWCOMER_VENUE_SURFACE": 13,
+            "SURFACE": 13,
+            "SURFACE_DISTANCE_EXACT": 13,
+            "TURN_DIRECTION": 13,
+            "VENUE": 13,
+            "VENUE_SURFACE": 13
+          },
+          "rolling_3y_n_ge_30_resolved": {
+            "ALL_FLAT": 13,
+            "COURSE_KEY": 10,
+            "COURSE_SIZE": 13,
+            "FINAL_SLOPE": 13,
+            "FINAL_STRAIGHT_M": 13,
+            "GEOMETRY_KEY": 13,
+            "NEWCOMER_ALL_FLAT": 13,
+            "NEWCOMER_SURFACE": 10,
+            "NEWCOMER_SURFACE_DISTANCE_EXACT": 1,
+            "NEWCOMER_VENUE_SURFACE": 0,
+            "SURFACE": 13,
+            "SURFACE_DISTANCE_EXACT": 13,
+            "TURN_DIRECTION": 13,
+            "VENUE": 13,
+            "VENUE_SURFACE": 13
+          },
+          "surface_code": "2"
+        }
+      ],
+      "repeat_equal": true,
+      "status_counts": {
+        "DESCRIPTIVE_ONLY": 1100,
+        "INSUFFICIENT": 352,
+        "NO_HISTORY": 72,
+        "TARGET_CONDITION_UNAVAILABLE": 216
+      },
+      "target_date": "2026-06-13",
+      "target_paci_sha256": "439c6622b5c32f44ff3e63b9aee404a8ec3f153bb246ab87d64c94965cebe8db"
+    },
+    {
+      "evidence_count": 1932,
+      "independent_cells": 1692,
+      "independent_count_date_fields": 21996,
+      "profile_sha256": "886b1f9548b90f664ab2b63b7f2c1b60664ce1a200f3560352a503ea5265a2e0",
+      "race_summaries": [
+        {
+          "entries": 12,
+          "newcomer": true,
+          "race_key_raw": "05265404",
+          "rolling_3y_known_cells": {
+            "ALL_FLAT": 12,
+            "COURSE_KEY": 12,
+            "COURSE_SIZE": 12,
+            "FINAL_SLOPE": 12,
+            "FINAL_STRAIGHT_M": 12,
+            "GEOMETRY_KEY": 12,
+            "NEWCOMER_ALL_FLAT": 12,
+            "NEWCOMER_SURFACE": 12,
+            "NEWCOMER_SURFACE_DISTANCE_EXACT": 12,
+            "NEWCOMER_VENUE_SURFACE": 12,
+            "SURFACE": 12,
+            "SURFACE_DISTANCE_EXACT": 12,
+            "TURN_DIRECTION": 12,
+            "VENUE": 12,
+            "VENUE_SURFACE": 12
+          },
+          "rolling_3y_n_ge_30_resolved": {
+            "ALL_FLAT": 12,
+            "COURSE_KEY": 10,
+            "COURSE_SIZE": 12,
+            "FINAL_SLOPE": 12,
+            "FINAL_STRAIGHT_M": 12,
+            "GEOMETRY_KEY": 12,
+            "NEWCOMER_ALL_FLAT": 12,
+            "NEWCOMER_SURFACE": 11,
+            "NEWCOMER_SURFACE_DISTANCE_EXACT": 0,
+            "NEWCOMER_VENUE_SURFACE": 0,
+            "SURFACE": 12,
+            "SURFACE_DISTANCE_EXACT": 10,
+            "TURN_DIRECTION": 12,
+            "VENUE": 12,
+            "VENUE_SURFACE": 12
+          },
+          "surface_code": "2"
+        },
+        {
+          "entries": 10,
+          "newcomer": true,
+          "race_key_raw": "05265405",
+          "rolling_3y_known_cells": {
+            "ALL_FLAT": 10,
+            "COURSE_KEY": 10,
+            "COURSE_SIZE": 10,
+            "FINAL_SLOPE": 10,
+            "FINAL_STRAIGHT_M": 10,
+            "GEOMETRY_KEY": 10,
+            "NEWCOMER_ALL_FLAT": 10,
+            "NEWCOMER_SURFACE": 10,
+            "NEWCOMER_SURFACE_DISTANCE_EXACT": 10,
+            "NEWCOMER_VENUE_SURFACE": 10,
+            "SURFACE": 10,
+            "SURFACE_DISTANCE_EXACT": 10,
+            "TURN_DIRECTION": 10,
+            "VENUE": 10,
+            "VENUE_SURFACE": 10
+          },
+          "rolling_3y_n_ge_30_resolved": {
+            "ALL_FLAT": 10,
+            "COURSE_KEY": 8,
+            "COURSE_SIZE": 10,
+            "FINAL_SLOPE": 10,
+            "FINAL_STRAIGHT_M": 10,
+            "GEOMETRY_KEY": 8,
+            "NEWCOMER_ALL_FLAT": 10,
+            "NEWCOMER_SURFACE": 9,
+            "NEWCOMER_SURFACE_DISTANCE_EXACT": 5,
+            "NEWCOMER_VENUE_SURFACE": 6,
+            "SURFACE": 10,
+            "SURFACE_DISTANCE_EXACT": 9,
+            "TURN_DIRECTION": 10,
+            "VENUE": 10,
+            "VENUE_SURFACE": 10
+          },
+          "surface_code": "1"
+        },
+        {
+          "entries": 18,
+          "newcomer": false,
+          "race_key_raw": "05265412",
+          "rolling_3y_known_cells": {
+            "ALL_FLAT": 18,
+            "CLASS_ONLY": 18,
+            "CLASS_SURFACE": 18,
+            "COURSE_KEY": 18,
+            "COURSE_SIZE": 18,
+            "FINAL_SLOPE": 18,
+            "FINAL_STRAIGHT_M": 18,
+            "GEOMETRY_KEY": 18,
+            "SURFACE": 18,
+            "SURFACE_DISTANCE_EXACT": 18,
+            "TURN_DIRECTION": 18,
+            "VENUE": 18,
+            "VENUE_SURFACE": 18
+          },
+          "rolling_3y_n_ge_30_resolved": {
+            "ALL_FLAT": 18,
+            "CLASS_ONLY": 17,
+            "CLASS_SURFACE": 16,
+            "COURSE_KEY": 10,
+            "COURSE_SIZE": 18,
+            "FINAL_SLOPE": 18,
+            "FINAL_STRAIGHT_M": 17,
+            "GEOMETRY_KEY": 13,
+            "SURFACE": 18,
+            "SURFACE_DISTANCE_EXACT": 16,
+            "TURN_DIRECTION": 18,
+            "VENUE": 18,
+            "VENUE_SURFACE": 17
+          },
+          "surface_code": "1"
+        }
+      ],
+      "repeat_equal": true,
+      "status_counts": {
+        "DESCRIPTIVE_ONLY": 1180,
+        "INSUFFICIENT": 507,
+        "NO_HISTORY": 5,
+        "TARGET_CONDITION_UNAVAILABLE": 240
+      },
+      "target_date": "2026-11-15",
+      "target_paci_sha256": "3c80e70a74a13874a82b7f7cf4c5f9415d6abbf186ec0ccfa1d2842e51a7b050"
+    }
+  ],
+  "public_source_rows_exported": false,
+  "runtime": {
+    "duckdb": "2.0.1",
+    "python": "3.13.5"
+  },
+  "runtime_bootstrap": {
+    "archive_sha256": "ceee50c7f3e7b2dc74bc8401320d1b69e96cee8d7809383b876677c74c7caa16",
+    "bootstrap_git_blob_sha": "482b33ec71fcb4435833fd9ce2722f45dedcf896",
+    "canonical_dependency_report_git_blob_sha": "7b5b8cdebf9d811b828c573ed4b1bb7950f83df3",
+    "canonical_dependency_report_status": "success",
+    "dependency_check_note": "canonical dependency_report() executed directly; full CLI package not materialized",
+    "duckdb": "2.0.1",
+    "full_cli_check_deps_executed": false,
+    "new_actions_runs": 0,
+    "numpy": "2.2.4",
+    "pyarrow": "25.0.1",
+    "route": "APPROVED_PRIVATE_DRIVE_OFFLINE_WHEEL"
+  },
+  "schema_version": "jpdb-r1-real-profile-e2e-v1",
+  "scope": "FIXED_SOURCE_RESEARCH_ONLY",
+  "source_blob_sha_verified": {
+    "jpdb_history_reader.py": "eb133fd5853f04c223f47360e4c7132ef0505db7",
+    "jpdb_p2_condition_reader.py": "81f0c554767d3502807387565fb96940d4144cf8",
+    "jpdb_p2_course_master_reader.py": "bdd778267e6f742c874de390000dc7ef0c433e77",
+    "jpdb_performance_reader_v11.py": "4b095d26a1f9083105d0958c4a1f5d5cb627a6c3",
+    "jpdb_performance_reader_v12.py": "f08c270bd38b12482f52fe1b6e23171d85b488e4",
+    "jrdb_raw.py": "e2c7e982df684cd96fb87f81f0127b6567cabd64",
+    "jrdb_ukc.py": "15cc607e012085186c9cbd64d41c913acb43cf98"
+  },
+  "status": "PASS",
+  "strict_asof_certified": false,
+  "verification": {
+    "negative_schema_checks_passed": 6,
+    "real_profile_schema_passed": 2,
+    "same_input_repeated_in_same_reader": true,
+    "schema_validator": "jsonschema Draft202012Validator (host stdlib-only validation path; no data engine substitution)",
+    "synthetic_tests_passed": 5
+  }
+}
