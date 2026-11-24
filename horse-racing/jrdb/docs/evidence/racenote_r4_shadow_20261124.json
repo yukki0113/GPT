@@ -1,0 +1,550 @@
+{
+  "common_receipt_sha256": "66246e1878ec07c843c6b2a3ff5d4edb3f3e006cddfcbead033d7359666539bc",
+  "common_shadow": {
+    "b5_reference": {
+      "receipt_sha256": "af901a7ae8b79154a49ed26ecd99de2e450c0b6f82bbee802ed658934f6900f8",
+      "reference_horses": 55,
+      "reference_races": 4,
+      "status": "PASS_OTHER_FIELDS_ONLY_NOT_TARGET"
+    },
+    "cohorts": {
+      "NEWCOMER_A1": {
+        "baseline_matched_races": 2,
+        "counts": {
+          "baseline_matched_horses": 22,
+          "baseline_no_recent_or_older_runs": 22,
+          "brdb_horses": 42,
+          "brdb_observations": 630,
+          "existing_jockey_index": 22,
+          "existing_stable_index": 22,
+          "existing_training_context": 22,
+          "horses": 42,
+          "horses_with_r2_conflicts": 5,
+          "jpdb_evidence": 2142,
+          "jpdb_horses": 42,
+          "jpdb_newcomer_n_ge_30_horses": 41,
+          "pedigree_context_none": 22,
+          "r2_conflict_axes_comparators": 9,
+          "restricted_refs": 1845
+        },
+        "races": 4
+      },
+      "OTHER_NON_A1": {
+        "baseline_matched_races": 1,
+        "counts": {
+          "baseline_matched_horses": 18,
+          "baseline_no_recent_or_older_runs": 0,
+          "brdb_horses": 18,
+          "brdb_observations": 270,
+          "existing_jockey_index": 18,
+          "existing_stable_index": 18,
+          "existing_training_context": 18,
+          "horses": 34,
+          "horses_with_r2_conflicts": 5,
+          "jpdb_evidence": 1530,
+          "jpdb_horses": 34,
+          "pedigree_context_none": 18,
+          "r2_conflict_axes_comparators": 6,
+          "restricted_refs": 606
+        },
+        "races": 2
+      }
+    },
+    "input_manifest_sha256": "718b7b0b2d0d284a040eba987b36c51c02dc087a25b032770896ee4f438ecae2",
+    "no_prediction_or_confidence_generated": true,
+    "no_production_mutation": true,
+    "no_target_outcomes_opened": true,
+    "nonclaims": [
+      "TRUE_FORWARD_R4",
+      "STRICT_HISTORICAL_ASOF",
+      "B5_SAME_FIELD_ACCEPTANCE",
+      "PREDICTION_EFFECT",
+      "R5_AB",
+      "PRODUCTION_AUTHORIZATION"
+    ],
+    "prediction_safe": false,
+    "private_shadow_sha256": "1e6b9bdc6f4e9feda84460b7ed39aab3b641105f845acf072a98bc8d276e7f5b",
+    "production_authorized": false,
+    "r5_authorized": false,
+    "races": [
+      {
+        "baseline": {
+          "status": "BASELINE_READER_NOT_AVAILABLE"
+        },
+        "baseline_rrdb_history_status_counts": {},
+        "blood_band_contrast_status_counts": {
+          "LOW_OR_NO_SAMPLE": 2,
+          "NO_OPPOSITE_SIGN_OBSERVED": 2,
+          "OPPOSING_DESCRIPTIVE_DELTAS": 3
+        },
+        "brdb_population_scope": "GENERAL_STARTS_NOT_DEBUT_SPECIFIC",
+        "brdb_sample_status_counts": {
+          "DESCRIPTIVE": 77,
+          "LOW_SAMPLE": 23,
+          "NO_SAMPLE": 5
+        },
+        "cohort": "NEWCOMER_A1",
+        "contract_version": "racenote-independent-evidence-base-only-v0.1-candidate",
+        "counts": {
+          "brdb_horses": 7,
+          "brdb_observations": 105,
+          "horses": 7,
+          "horses_with_r2_conflicts": 0,
+          "jpdb_evidence": 357,
+          "jpdb_horses": 7,
+          "jpdb_newcomer_n_ge_30_horses": 6,
+          "r2_conflict_axes_comparators": 0,
+          "restricted_refs": 311
+        },
+        "coverage_status": "DUAL_SOURCE_RESEARCH",
+        "debut_specific_status": "B5_TARGET_NOT_ACCEPTED",
+        "detail_sha256": "56d0c8217bc5ed9c5af5b3f051545c96944e72343ef34fbbf0b26d1358adc349",
+        "jpdb_sample_status_counts": {
+          "DESCRIPTIVE_ONLY": 222,
+          "INSUFFICIENT": 70,
+          "NO_HISTORY": 23,
+          "TARGET_CONDITION_UNAVAILABLE": 42
+        },
+        "paci_sha256": "439c6622b5c32f44ff3e63b9aee404a8ec3f153bb246ab87d64c94965cebe8db",
+        "preview_sha256": "8515701620bae8fe6a2c7e65f8073a822f80754b6ff4422f09359414171b61c4",
+        "race_key_raw": "05263305",
+        "shadow_status": "R3_EVIDENCE_ONLY_BASELINE_PENDING",
+        "target_date": "2026-06-13"
+      },
+      {
+        "baseline": {
+          "status": "BASELINE_READER_NOT_AVAILABLE"
+        },
+        "baseline_rrdb_history_status_counts": {},
+        "blood_band_contrast_status_counts": {
+          "UNAVAILABLE_OR_NONUNIQUE": 16
+        },
+        "brdb_population_scope": "SOURCE_UNAVAILABLE",
+        "brdb_sample_status_counts": {},
+        "cohort": "OTHER_NON_A1",
+        "contract_version": "racenote-independent-evidence-v0.1-candidate",
+        "counts": {
+          "brdb_horses": 0,
+          "brdb_observations": 0,
+          "horses": 16,
+          "horses_with_r2_conflicts": 1,
+          "jpdb_evidence": 720,
+          "jpdb_horses": 16,
+          "r2_conflict_axes_comparators": 1,
+          "restricted_refs": 0
+        },
+        "coverage_status": "JPDB_ONLY_BRDB_UNAVAILABLE",
+        "debut_specific_status": "NOT_APPLICABLE",
+        "detail_sha256": "0366a6d60c94a778341fa0bce4fb1587aa53a042c797490e83d5be7675b9c1b6",
+        "jpdb_sample_status_counts": {
+          "DESCRIPTIVE_ONLY": 467,
+          "INSUFFICIENT": 155,
+          "NO_HISTORY": 2,
+          "TARGET_CONDITION_UNAVAILABLE": 96
+        },
+        "paci_sha256": "439c6622b5c32f44ff3e63b9aee404a8ec3f153bb246ab87d64c94965cebe8db",
+        "preview_sha256": "91a4e55a89537c20fc3fd6a47f7eb9584af91648164f89ad060d7817577d4d1c",
+        "race_key_raw": "05263312",
+        "shadow_status": "R3_EVIDENCE_ONLY_BASELINE_PENDING",
+        "target_date": "2026-06-13"
+      },
+      {
+        "baseline": {
+          "baseline_logic": "RaceNote-Human-Context-Reader-0.5.6-candidate",
+          "confidence_records_sha256": "bae76036af02e9cb8e57f28f1f5553f8a93a62a183afd4bd3075d41093187a35",
+          "freeze_records_opened": false,
+          "prediction_records_sha256": "9992e2dcbd885f9ca588c5b713f48e79a218521eb18c25e038e7225d4924e28c",
+          "reader_jockey_code": "NOT_EXPOSED_IN_READER; PACI_SCHEDULED_CODE_VERIFIED_SEPARATELY",
+          "reader_manifest_sha256": "0a39fb6c6a6a2d134a202418a960d1de1e93738d95a8251a250d811b1a4d9cd5",
+          "reader_sha256": "3875428e980ef5c41ec3dd7d1fa3bd8bf463af143df4d2b26fba7c5e76c5cca8",
+          "session_id": "V056-85577afa86abd5dcdd4a",
+          "status": "PASS_SEALED_V056_READER_MATCH",
+          "target_paci_sha256": "3c80e70a74a13874a82b7f7cf4c5f9415d6abbf186ec0ccfa1d2842e51a7b050"
+        },
+        "baseline_rrdb_history_status_counts": {
+          "NO_HISTORY": 12
+        },
+        "blood_band_contrast_status_counts": {
+          "LOW_OR_NO_SAMPLE": 5,
+          "NO_OPPOSITE_SIGN_OBSERVED": 2,
+          "OPPOSING_DESCRIPTIVE_DELTAS": 5
+        },
+        "brdb_population_scope": "GENERAL_STARTS_NOT_DEBUT_SPECIFIC",
+        "brdb_sample_status_counts": {
+          "DESCRIPTIVE": 111,
+          "LOW_SAMPLE": 43,
+          "NO_SAMPLE": 26
+        },
+        "cohort": "NEWCOMER_A1",
+        "contract_version": "racenote-independent-evidence-v0.1-candidate",
+        "counts": {
+          "baseline_matched_horses": 12,
+          "baseline_no_recent_or_older_runs": 12,
+          "brdb_horses": 12,
+          "brdb_observations": 180,
+          "existing_jockey_index": 12,
+          "existing_stable_index": 12,
+          "existing_training_context": 12,
+          "horses": 12,
+          "horses_with_r2_conflicts": 3,
+          "jpdb_evidence": 612,
+          "jpdb_horses": 12,
+          "jpdb_newcomer_n_ge_30_horses": 12,
+          "pedigree_context_none": 12,
+          "r2_conflict_axes_comparators": 7,
+          "restricted_refs": 407
+        },
+        "coverage_status": "DUAL_SOURCE_RESEARCH",
+        "debut_specific_status": "B5_TARGET_NOT_ACCEPTED",
+        "detail_sha256": "6b9ca4372aa8adb01403b4f374c346f822c20b69d3404bf0aab7082ed49cb2b1",
+        "jpdb_sample_status_counts": {
+          "DESCRIPTIVE_ONLY": 354,
+          "INSUFFICIENT": 184,
+          "NO_HISTORY": 2,
+          "TARGET_CONDITION_UNAVAILABLE": 72
+        },
+        "paci_sha256": "3c80e70a74a13874a82b7f7cf4c5f9415d6abbf186ec0ccfa1d2842e51a7b050",
+        "preview_sha256": "714597223ee908c0714eed9a591dab4367a1d28d09a1f9aa010fa73f9011cd52",
+        "race_key_raw": "05265404",
+        "shadow_status": "PASS_SEALED_READER_DESCRIPTIVE_SHADOW",
+        "target_date": "2026-11-15"
+      },
+      {
+        "baseline": {
+          "baseline_logic": "RaceNote-Human-Context-Reader-0.5.6-candidate",
+          "confidence_records_sha256": "bae76036af02e9cb8e57f28f1f5553f8a93a62a183afd4bd3075d41093187a35",
+          "freeze_records_opened": false,
+          "prediction_records_sha256": "9992e2dcbd885f9ca588c5b713f48e79a218521eb18c25e038e7225d4924e28c",
+          "reader_jockey_code": "NOT_EXPOSED_IN_READER; PACI_SCHEDULED_CODE_VERIFIED_SEPARATELY",
+          "reader_manifest_sha256": "0a39fb6c6a6a2d134a202418a960d1de1e93738d95a8251a250d811b1a4d9cd5",
+          "reader_sha256": "54bea2c8531dee6f2894bc81e82497057500f0040af0c085457734317b828dd2",
+          "session_id": "V056-85577afa86abd5dcdd4a",
+          "status": "PASS_SEALED_V056_READER_MATCH",
+          "target_paci_sha256": "3c80e70a74a13874a82b7f7cf4c5f9415d6abbf186ec0ccfa1d2842e51a7b050"
+        },
+        "baseline_rrdb_history_status_counts": {
+          "NO_HISTORY": 10
+        },
+        "blood_band_contrast_status_counts": {
+          "LOW_OR_NO_SAMPLE": 3,
+          "NO_OPPOSITE_SIGN_OBSERVED": 3,
+          "OPPOSING_DESCRIPTIVE_DELTAS": 4
+        },
+        "brdb_population_scope": "GENERAL_STARTS_NOT_DEBUT_SPECIFIC",
+        "brdb_sample_status_counts": {
+          "DESCRIPTIVE": 110,
+          "LOW_SAMPLE": 32,
+          "NO_SAMPLE": 8
+        },
+        "cohort": "NEWCOMER_A1",
+        "contract_version": "racenote-independent-evidence-v0.1-candidate",
+        "counts": {
+          "baseline_matched_horses": 10,
+          "baseline_no_recent_or_older_runs": 10,
+          "brdb_horses": 10,
+          "brdb_observations": 150,
+          "existing_jockey_index": 10,
+          "existing_stable_index": 10,
+          "existing_training_context": 10,
+          "horses": 10,
+          "horses_with_r2_conflicts": 1,
+          "jpdb_evidence": 510,
+          "jpdb_horses": 10,
+          "jpdb_newcomer_n_ge_30_horses": 10,
+          "pedigree_context_none": 10,
+          "r2_conflict_axes_comparators": 1,
+          "restricted_refs": 486
+        },
+        "coverage_status": "DUAL_SOURCE_RESEARCH",
+        "debut_specific_status": "B5_TARGET_NOT_ACCEPTED",
+        "detail_sha256": "ed8cdb8a7729584b6ffb482dacc0c0afea335f71444de9619ea85d23264ccb24",
+        "jpdb_sample_status_counts": {
+          "DESCRIPTIVE_ONLY": 312,
+          "INSUFFICIENT": 137,
+          "NO_HISTORY": 1,
+          "TARGET_CONDITION_UNAVAILABLE": 60
+        },
+        "paci_sha256": "3c80e70a74a13874a82b7f7cf4c5f9415d6abbf186ec0ccfa1d2842e51a7b050",
+        "preview_sha256": "a1c67d146e6525720494f04acf5309413e9c987e0e282576764ac69263b9f0dd",
+        "race_key_raw": "05265405",
+        "shadow_status": "PASS_SEALED_READER_DESCRIPTIVE_SHADOW",
+        "target_date": "2026-11-15"
+      },
+      {
+        "baseline": {
+          "baseline_logic": "RaceNote-Human-Context-Reader-0.5.6-candidate",
+          "confidence_records_sha256": "bae76036af02e9cb8e57f28f1f5553f8a93a62a183afd4bd3075d41093187a35",
+          "freeze_records_opened": false,
+          "prediction_records_sha256": "9992e2dcbd885f9ca588c5b713f48e79a218521eb18c25e038e7225d4924e28c",
+          "reader_jockey_code": "NOT_EXPOSED_IN_READER; PACI_SCHEDULED_CODE_VERIFIED_SEPARATELY",
+          "reader_manifest_sha256": "0a39fb6c6a6a2d134a202418a960d1de1e93738d95a8251a250d811b1a4d9cd5",
+          "reader_sha256": "f3ee4e9167ae3ad8fb412e7d1bd69f1bcfa6e8050e4435f13ae91bb881b12f9f",
+          "session_id": "V056-85577afa86abd5dcdd4a",
+          "status": "PASS_SEALED_V056_READER_MATCH",
+          "target_paci_sha256": "3c80e70a74a13874a82b7f7cf4c5f9415d6abbf186ec0ccfa1d2842e51a7b050"
+        },
+        "baseline_rrdb_history_status_counts": {
+          "AVAILABLE": 18
+        },
+        "blood_band_contrast_status_counts": {
+          "LOW_OR_NO_SAMPLE": 3,
+          "NO_OPPOSITE_SIGN_OBSERVED": 6,
+          "OPPOSING_DESCRIPTIVE_DELTAS": 9
+        },
+        "brdb_population_scope": "GENERAL_STARTS_NOT_DEBUT_SPECIFIC",
+        "brdb_sample_status_counts": {
+          "DESCRIPTIVE": 208,
+          "LOW_SAMPLE": 50,
+          "NO_SAMPLE": 12
+        },
+        "cohort": "OTHER_NON_A1",
+        "contract_version": "racenote-independent-evidence-v0.1-candidate",
+        "counts": {
+          "baseline_matched_horses": 18,
+          "baseline_no_recent_or_older_runs": 0,
+          "brdb_horses": 18,
+          "brdb_observations": 270,
+          "existing_jockey_index": 18,
+          "existing_stable_index": 18,
+          "existing_training_context": 18,
+          "horses": 18,
+          "horses_with_r2_conflicts": 4,
+          "jpdb_evidence": 810,
+          "jpdb_horses": 18,
+          "pedigree_context_none": 18,
+          "r2_conflict_axes_comparators": 5,
+          "restricted_refs": 606
+        },
+        "coverage_status": "DUAL_SOURCE_RESEARCH",
+        "debut_specific_status": "NOT_APPLICABLE",
+        "detail_sha256": "a5ca0a13dbec3af77dbc88cae31c051e27c5d02094ac8e5d1188ad651c66c334",
+        "jpdb_sample_status_counts": {
+          "DESCRIPTIVE_ONLY": 514,
+          "INSUFFICIENT": 186,
+          "NO_HISTORY": 2,
+          "TARGET_CONDITION_UNAVAILABLE": 108
+        },
+        "paci_sha256": "3c80e70a74a13874a82b7f7cf4c5f9415d6abbf186ec0ccfa1d2842e51a7b050",
+        "preview_sha256": "cd78068053b6ab6ce52b47458b4a0e0d6d276adae4c77e04a7781f11e4d687bc",
+        "race_key_raw": "05265412",
+        "shadow_status": "PASS_SEALED_READER_DESCRIPTIVE_SHADOW",
+        "target_date": "2026-11-15"
+      },
+      {
+        "baseline": {
+          "status": "BASELINE_READER_NOT_AVAILABLE"
+        },
+        "baseline_rrdb_history_status_counts": {},
+        "blood_band_contrast_status_counts": {
+          "LOW_OR_NO_SAMPLE": 4,
+          "NO_OPPOSITE_SIGN_OBSERVED": 6,
+          "OPPOSING_DESCRIPTIVE_DELTAS": 3
+        },
+        "brdb_population_scope": "GENERAL_STARTS_NOT_DEBUT_SPECIFIC",
+        "brdb_sample_status_counts": {
+          "DESCRIPTIVE": 135,
+          "LOW_SAMPLE": 37,
+          "NO_SAMPLE": 23
+        },
+        "cohort": "NEWCOMER_A1",
+        "contract_version": "racenote-independent-evidence-base-only-v0.1-candidate",
+        "counts": {
+          "brdb_horses": 13,
+          "brdb_observations": 195,
+          "horses": 13,
+          "horses_with_r2_conflicts": 1,
+          "jpdb_evidence": 663,
+          "jpdb_horses": 13,
+          "jpdb_newcomer_n_ge_30_horses": 13,
+          "r2_conflict_axes_comparators": 1,
+          "restricted_refs": 641
+        },
+        "coverage_status": "DUAL_SOURCE_RESEARCH",
+        "debut_specific_status": "B5_TARGET_NOT_ACCEPTED",
+        "detail_sha256": "6e8e40dc3c02f77c9f4e0e47f7019c4c4b005832fd0d2292fe56c237e5ffbc14",
+        "jpdb_sample_status_counts": {
+          "DESCRIPTIVE_ONLY": 411,
+          "INSUFFICIENT": 127,
+          "NO_HISTORY": 47,
+          "TARGET_CONDITION_UNAVAILABLE": 78
+        },
+        "paci_sha256": "439c6622b5c32f44ff3e63b9aee404a8ec3f153bb246ab87d64c94965cebe8db",
+        "preview_sha256": "1979fccdae48251e9529d67c2e9b39c3418a055a4013c6cd81b73f1770f8d907",
+        "race_key_raw": "09263306",
+        "shadow_status": "R3_EVIDENCE_ONLY_BASELINE_PENDING",
+        "target_date": "2026-06-13"
+      }
+    ],
+    "research_only": true,
+    "schema_version": "racenote-r4-shadow-audit-v0.1",
+    "source_commit": "569947dac871bce89f5762818b7151350f394000",
+    "status": "PARTIAL_R4_SHADOW_RESEARCH"
+  },
+  "debut_receipt_sha256": "fe0cc5e098096b678188e9f258fc931d0dc4a119a7ee2031fefb71f203e2de4a",
+  "debut_shadow": {
+    "common_receipt_sha256": "66246e1878ec07c843c6b2a3ff5d4edb3f3e006cddfcbead033d7359666539bc",
+    "history_cutoff_exclusive": "2026-01-01",
+    "history_gap_2026": true,
+    "horses": 42,
+    "horses_with_observed_population": 42,
+    "input_manifest_sha256": "30e359b54daf2ab192b5cc29d49b2a5d03f9dd923685f1149d94678c510443c6",
+    "per_race": [
+      {
+        "horses": 7,
+        "horses_with_observed_population": 7,
+        "population_cells": 280,
+        "population_status_counts": {
+          "DESCRIPTIVE": 107,
+          "LOW_SAMPLE": 31,
+          "NO_SAMPLE": 2,
+          "SOURCE_UNAVAILABLE": 140
+        },
+        "race_key": "05263305",
+        "relative_cells": 230,
+        "relative_status_counts": {
+          "FIRST_START_UNRESOLVED": 35,
+          "LOW_SAMPLE": 81,
+          "NO_PRIOR_OBSERVED_START": 70,
+          "NO_SAMPLE": 44
+        }
+      },
+      {
+        "horses": 12,
+        "horses_with_observed_population": 12,
+        "population_cells": 480,
+        "population_status_counts": {
+          "DESCRIPTIVE": 172,
+          "LOW_SAMPLE": 111,
+          "NO_SAMPLE": 57,
+          "SOURCE_UNAVAILABLE": 140
+        },
+        "race_key": "05265404",
+        "relative_cells": 250,
+        "relative_status_counts": {
+          "FIRST_START_UNRESOLVED": 35,
+          "LOW_SAMPLE": 89,
+          "NO_PRIOR_OBSERVED_START": 25,
+          "NO_SAMPLE": 101
+        }
+      },
+      {
+        "horses": 10,
+        "horses_with_observed_population": 10,
+        "population_cells": 400,
+        "population_status_counts": {
+          "DESCRIPTIVE": 220,
+          "LOW_SAMPLE": 62,
+          "NO_SAMPLE": 18,
+          "SOURCE_UNAVAILABLE": 100
+        },
+        "race_key": "05265405",
+        "relative_cells": 270,
+        "relative_status_counts": {
+          "FIRST_START_UNRESOLVED": 25,
+          "LOW_SAMPLE": 112,
+          "NO_PRIOR_OBSERVED_START": 65,
+          "NO_SAMPLE": 68
+        }
+      },
+      {
+        "horses": 13,
+        "horses_with_observed_population": 13,
+        "population_cells": 520,
+        "population_status_counts": {
+          "DESCRIPTIVE": 156,
+          "LOW_SAMPLE": 95,
+          "NO_SAMPLE": 49,
+          "SOURCE_UNAVAILABLE": 220
+        },
+        "race_key": "09263306",
+        "relative_cells": 480,
+        "relative_status_counts": {
+          "FIRST_START_UNRESOLVED": 75,
+          "LOW_SAMPLE": 126,
+          "NO_PRIOR_OBSERVED_START": 135,
+          "NO_SAMPLE": 144
+        }
+      }
+    ],
+    "population_cells": 1680,
+    "population_status_counts": {
+      "DESCRIPTIVE": 655,
+      "LOW_SAMPLE": 299,
+      "NO_SAMPLE": 126,
+      "SOURCE_UNAVAILABLE": 600
+    },
+    "prediction_safe": false,
+    "private_sha256": "00d0757b3a50a50e852eced9f7fa733f1ad62d4b9c254be403534b77c4c849ee",
+    "production_authorized": false,
+    "proofs": [
+      {
+        "horses": 20,
+        "paci_sha256": "439c6622b5c32f44ff3e63b9aee404a8ec3f153bb246ab87d64c94965cebe8db",
+        "races": [
+          "05263305",
+          "09263306"
+        ],
+        "receipt_sha256": "ed444c257b799f6eec89d555b56f96853c0b5c1fc5d36f62b634ef61295920a9",
+        "replay_byte_equal": true,
+        "review_sha256": "f567373f006e1808e1b4c2d00e7018f6306614151b1732cd9fea271dcb76f59e",
+        "target_date": "2026-06-13"
+      },
+      {
+        "horses": 22,
+        "paci_sha256": "3c80e70a74a13874a82b7f7cf4c5f9415d6abbf186ec0ccfa1d2842e51a7b050",
+        "races": [
+          "05265404",
+          "05265405"
+        ],
+        "receipt_sha256": "23702f32bb20062474e4ddc057f8116bcf47d2bee687fdcc14c778998ffb0e96",
+        "replay_byte_equal": true,
+        "review_sha256": "d75b0974a98d94ffb8d14aa17a90644386341f30843b710a2ffa2a0a026a08de",
+        "target_date": "2026-11-15"
+      }
+    ],
+    "r5_authorized": false,
+    "races": 4,
+    "relative_cells": 1230,
+    "relative_status_counts": {
+      "FIRST_START_UNRESOLVED": 170,
+      "LOW_SAMPLE": 408,
+      "NO_PRIOR_OBSERVED_START": 295,
+      "NO_SAMPLE": 357
+    },
+    "research_only": true,
+    "schema_version": "racenote-r4-debut-shadow-v0.1",
+    "status": "PASS_B5_SAME_FIELD_DESCRIPTIVE_SHADOW",
+    "temporal_status": "AS_OF_UNVERIFIED"
+  },
+  "prediction_safe": false,
+  "private_archive": {
+    "library_path": "/JPDB/R4/JPDB_R4_20261124_private_shadow.zip",
+    "readback_sha256": "4e03c406b4c944f60db8e350bca4d3abfdac51bad711d0632cd7a750f7e20c6f",
+    "sha256": "4e03c406b4c944f60db8e350bca4d3abfdac51bad711d0632cd7a750f7e20c6f"
+  },
+  "production_authorized": false,
+  "r5_authorized": false,
+  "remaining": [
+    "JUNE_13_V056_SEALED_READER_NOT_AVAILABLE_3R36",
+    "JUNE_13_TOKYO12R_BRDB_UNAVAILABLE_16",
+    "B5_2026_HISTORY_GAP_AND_AS_OF_UNVERIFIED",
+    "STRICT_HISTORICAL_ASOF_NOT_ATTESTED",
+    "R5_PAIRED_FREEZE_PROTOCOL_AND_PREREGISTRATION_NOT_ACCEPTED"
+  ],
+  "research_only": true,
+  "schema_version": "racenote-r4-shadow-acceptance-v0.1",
+  "source_commit": "569947dac871bce89f5762818b7151350f394000",
+  "source_sha256": {
+    "horse-racing/jrdb/src/racenote_r4_debut_shadow_audit.py": "7c7f7c6f402c2be22ecf1e25a6bcb6089fbb53cc770e48f1db2b0d842b0d1206",
+    "horse-racing/jrdb/src/racenote_r4_shadow_audit.py": "c04a176dc59c4c922d6ca4dc488d5c92f596139db960b59c8c1f6a7b0dcc0168",
+    "horse-racing/jrdb/tests/test_racenote_r4_shadow_audit.py": "c87d674700d39f67e8cf9f6725a095efad5bf0e7b0e94843e224737e0283c616"
+  },
+  "status": "PASS_INITIAL_R4_RESEARCH_SHADOW_BOTH_COHORTS_FULL_SIX_BASELINE_PENDING",
+  "tests": {
+    "b5_independent_replay_days": 2,
+    "common_replay_byte_equal": true,
+    "debut_replay_byte_equal": true,
+    "passed": 8,
+    "total": 8
+  }
+}

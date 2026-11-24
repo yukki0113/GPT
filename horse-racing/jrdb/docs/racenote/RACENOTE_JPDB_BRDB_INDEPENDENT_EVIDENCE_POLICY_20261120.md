@@ -63,3 +63,7 @@ DBは◎○▲、Confidence、勝率を決定しない。JPDB/BRDBが提供す�
 ## R3研究用共通Evidence契約の受入（2026-11-24）
 
 [共通契約・検証結果](../RACENOTE_R3_INDEPENDENT_EVIDENCE_CONTRACT_20261124.md)。既存R1/R2とBRDB M7受入済み出力を同一PACI・全登録馬で厳密結合する詳細sidecarと、固定表示軸の軽量previewを実装。6R76頭のうち両DBは通常1R18頭、残り5R58頭はBRDB未取得を明示。新馬4R42頭の両DB同時実データ検証は未完了。③④/D4の時点未認証数値は制限付き根拠参照に隔離。R3固定source技術契約PASS、R4 Shadow前に新馬戦BRDB取得・同一全馬結合受入が必要。R4/R5や本番採用・Confidence変更は未承認。
+
+### 2026-11-24 R4 初回Shadow受入追記
+
+[R4初回研究Shadow監査](../RACENOTE_R4_SHADOW_AUDIT_20261124.md) を参照。R3固定6R76頭の根拠監査、現行v056封印済みReader 3R40頭の両コホート照合、新馬戦B5同一4R42頭の専用lane再生成・照合を実測。初回研究Shadow PASS、6R全Reader比較はPARTIAL（6月3R36頭の同版封印Reader未取得）。R5未承認、TRUE_FORWARD・厳密as-of・予測効果・本番昇格は未認証。B5の2026履歴gapとAS_OF_UNVERIFIEDを維持する。
