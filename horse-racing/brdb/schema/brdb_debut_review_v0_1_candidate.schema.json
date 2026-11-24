@@ -1,0 +1,1043 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/yukki0113/GPT/horse-racing/brdb/schema/brdb_debut_review_v0_1_candidate.schema.json",
+  "title": "BRDB research-only debut field review v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "research_only",
+    "prediction_safe",
+    "production_authorized",
+    "temporal_status",
+    "source_equivalence_policy",
+    "target_date",
+    "history_cutoff_exclusive",
+    "history_start",
+    "population_start",
+    "history_gap_2026",
+    "scope_overlap",
+    "paci_sha256",
+    "source_commit",
+    "analysis_sha256",
+    "warehouse_sha256",
+    "pedigree_sha256",
+    "raw_reader_version",
+    "races",
+    "horses"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "brdb-debut-review-v0.1-candidate"
+    },
+    "research_only": {
+      "const": true
+    },
+    "prediction_safe": {
+      "const": false
+    },
+    "production_authorized": {
+      "const": false
+    },
+    "temporal_status": {
+      "const": "AS_OF_UNVERIFIED"
+    },
+    "source_equivalence_policy": {
+      "const": "USER_ACCEPTED_PROVIDER_EQUIVALENCE"
+    },
+    "target_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "history_cutoff_exclusive": {
+      "const": "2026-01-01"
+    },
+    "history_start": {
+      "const": "2016-01-01"
+    },
+    "population_start": {
+      "const": "2017-01-01"
+    },
+    "history_gap_2026": {
+      "const": true
+    },
+    "scope_overlap": {
+      "const": "COHORTS_LANES_SCOPES_AND_RELATIVES_NOT_INDEPENDENT"
+    },
+    "paci_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "analysis_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "warehouse_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "pedigree_sha256": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest.json",
+        "pedigree_fact.parquet",
+        "parent_relation.parquet"
+      ],
+      "properties": {
+        "manifest.json": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "pedigree_fact.parquet": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "parent_relation.parquet": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "raw_reader_version": {
+      "type": "string"
+    },
+    "races": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/race"
+      },
+      "minItems": 1
+    },
+    "horses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/horse"
+      },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "parent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "parent_id",
+        "guard",
+        "candidate_count",
+        "profile_date"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "RESOLVED_EXACT",
+            "RESOLVED_ALIAS",
+            "NO_CANDIDATE",
+            "MULTIPLE_CANDIDATES",
+            "INSUFFICIENT_KEY",
+            "INSUFFICIENT_GUARD",
+            "CONFLICT",
+            "TARGET_GUARD_REJECTED",
+            "SOURCE_UNAVAILABLE"
+          ]
+        },
+        "parent_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!00000000)[0-9]{8}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "guard": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "candidate_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "profile_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        }
+      }
+    },
+    "prior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "race_key",
+        "result_key",
+        "status"
+      ],
+      "properties": {
+        "race_key": {
+          "type": "string"
+        },
+        "result_key": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "INVALID_OR_NONPRIOR_REFERENCE",
+            "UNCONFIRMED_PRIOR_REFERENCE",
+            "NON_STARTER",
+            "STARTED_NORMAL",
+            "STARTED_ABNORMAL",
+            "UNKNOWN"
+          ]
+        }
+      }
+    },
+    "individual": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "prior_references",
+        "observed_prior_starts",
+        "lifetime_first_start_certified"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "KNOWN_PRIOR_JRA_START",
+            "PRIOR_HISTORY_UNRESOLVED",
+            "AGE_OR_HISTORY_UNCERTAIN",
+            "NO_PRIOR_START_OBSERVED_HISTORY_INCOMPLETE"
+          ]
+        },
+        "prior_references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/prior"
+          },
+          "maxItems": 5
+        },
+        "observed_prior_starts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "lifetime_first_start_certified": {
+          "const": false
+        }
+      }
+    },
+    "population": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "cohort",
+        "lane",
+        "scope",
+        "dimension",
+        "key1",
+        "key2",
+        "status",
+        "starts",
+        "horses",
+        "races",
+        "wins",
+        "top3",
+        "top3_rate",
+        "max_history_date",
+        "baseline_starts",
+        "baseline_top3",
+        "resolved_starts",
+        "resolved_top3",
+        "left_marginal_starts",
+        "left_marginal_top3",
+        "right_marginal_starts",
+        "right_marginal_top3"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "cohort": {
+          "enum": [
+            "A1_RACE_ACTUAL_STARTERS",
+            "FIRST_OBSERVED_JRA_START_CANDIDATE"
+          ]
+        },
+        "lane": {
+          "enum": [
+            "SIRE_ID",
+            "BMS_ID",
+            "PARENT_ID_PAIR",
+            "LINEAGE_CODE_PAIR"
+          ]
+        },
+        "scope": {
+          "enum": [
+            "ALL",
+            "SURFACE",
+            "SURFACE_DISTANCE",
+            "SURFACE_MONTH",
+            "SURFACE_AGE"
+          ]
+        },
+        "dimension": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "key1": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "key2": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "enum": [
+            "SOURCE_UNAVAILABLE",
+            "NO_SAMPLE",
+            "LOW_SAMPLE",
+            "DESCRIPTIVE"
+          ]
+        },
+        "starts": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "horses": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "races": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "wins": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "top3": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "top3_rate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "max_history_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "baseline_starts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "baseline_top3": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resolved_starts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "resolved_top3": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "left_marginal_starts": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "left_marginal_top3": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "right_marginal_starts": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "right_marginal_top3": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "SOURCE_UNAVAILABLE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "starts": {
+                "type": "null"
+              },
+              "horses": {
+                "type": "null"
+              },
+              "races": {
+                "type": "null"
+              },
+              "wins": {
+                "type": "null"
+              },
+              "top3": {
+                "type": "null"
+              },
+              "top3_rate": {
+                "type": "null"
+              },
+              "max_history_date": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "NO_SAMPLE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "starts": {
+                "const": 0
+              },
+              "horses": {
+                "const": 0
+              },
+              "races": {
+                "const": 0
+              },
+              "wins": {
+                "const": 0
+              },
+              "top3": {
+                "const": 0
+              },
+              "top3_rate": {
+                "type": "null"
+              },
+              "max_history_date": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "LOW_SAMPLE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "starts": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 29
+              },
+              "top3_rate": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "max_history_date": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "DESCRIPTIVE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "starts": {
+                "type": "integer",
+                "minimum": 30
+              },
+              "top3_rate": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "max_history_date": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dam_status",
+        "granddam_status",
+        "dam_id",
+        "granddam_id",
+        "target_profile_date",
+        "dam_profile_date",
+        "granddam_profile_date",
+        "path_candidates",
+        "accepted_paths",
+        "relative_count",
+        "overlapping_paths",
+        "first_candidate_relatives",
+        "unresolved_first_relatives",
+        "no_prior_relatives",
+        "complete_early_relatives",
+        "status",
+        "sample_status"
+      ],
+      "properties": {
+        "dam_status": {
+          "enum": [
+            "RESOLVED",
+            "NO_DATED_TARGET_PROFILE",
+            "NO_EXACT_DAM_EDGE",
+            "NO_DAM_PROFILE_BY_TARGET",
+            "DAM_GUARD_MISMATCH"
+          ]
+        },
+        "granddam_status": {
+          "enum": [
+            "RESOLVED",
+            "DAM_UNRESOLVED",
+            "NO_EXACT_GRANDDAM_EDGE",
+            "NO_GRANDDAM_PROFILE_BY_TARGET",
+            "GRANDDAM_GUARD_MISMATCH"
+          ]
+        },
+        "dam_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!00000000)[0-9]{8}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "granddam_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(?!00000000)[0-9]{8}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target_profile_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "dam_profile_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "granddam_profile_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "path_candidates": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "accepted_paths": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "relative_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "overlapping_paths": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "first_candidate_relatives": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unresolved_first_relatives": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "no_prior_relatives": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "complete_early_relatives": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "status": {
+          "enum": [
+            "SOURCE_UNAVAILABLE",
+            "NO_CONFIRMED_RELATIVE",
+            "NO_ELIGIBLE_FIRST_HISTORY",
+            "DESCRIPTIVE_FIRST_HISTORY"
+          ]
+        },
+        "sample_status": {
+          "enum": [
+            "SOURCE_UNAVAILABLE",
+            "NO_SAMPLE",
+            "LOW_SAMPLE"
+          ]
+        }
+      }
+    },
+    "relative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "relative_id",
+        "paths",
+        "relationships",
+        "path_count",
+        "relative_profile_date",
+        "relative_birth_date",
+        "relative_profile_source",
+        "history_status",
+        "first_observed_date",
+        "first_date",
+        "first_race_class",
+        "first_race_key",
+        "scope",
+        "first_starts",
+        "first_wins",
+        "first_top3",
+        "early_starts",
+        "early_wins",
+        "early_top3",
+        "early_top3_rate",
+        "max_history_date",
+        "early_history_keys",
+        "sample_status"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "relative_id": {
+          "type": "string",
+          "pattern": "^(?!00000000)[0-9]{8}$"
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "SAME_DAM",
+              "MATERNAL_AUNT_UNCLE"
+            ]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "FULL_SIBLING",
+              "MATERNAL_HALF_SIBLING",
+              "SAME_DAM_SIRE_UNVERIFIED",
+              "MATERNAL_AUNT_UNCLE"
+            ]
+          },
+          "minItems": 1
+        },
+        "path_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "relative_profile_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "relative_birth_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "relative_profile_source": {
+          "enum": [
+            "DATED_UKC",
+            "STATIC_PROFILE_DATE_CHECKED"
+          ]
+        },
+        "history_status": {
+          "enum": [
+            "FIRST_OBSERVED_CANDIDATE",
+            "FIRST_START_UNRESOLVED",
+            "NO_PRIOR_OBSERVED_START"
+          ]
+        },
+        "first_observed_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "first_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "first_race_class": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "first_race_key": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{8}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope": {
+          "enum": [
+            "ALL",
+            "SURFACE",
+            "SURFACE_DISTANCE",
+            "SURFACE_MONTH",
+            "SURFACE_AGE"
+          ]
+        },
+        "first_starts": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "first_wins": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "first_top3": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "early_starts": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "early_wins": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "early_top3": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "early_top3_rate": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 1
+        },
+        "max_history_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "early_history_keys": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[0-9a-fA-F]{8}$"
+              },
+              "minItems": 1,
+              "maxItems": 3,
+              "uniqueItems": true
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sample_status": {
+          "enum": [
+            "LOW_SAMPLE",
+            "NO_SAMPLE",
+            "FIRST_START_UNRESOLVED",
+            "NO_PRIOR_OBSERVED_START"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "early_starts": {
+                "const": 0
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "early_top3_rate": {
+                "type": "null"
+              },
+              "max_history_date": {
+                "type": "null"
+              },
+              "early_history_keys": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "sample_status": {
+                "const": "LOW_SAMPLE"
+              },
+              "early_top3_rate": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "max_history_date": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "horse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "race_key",
+        "horse_no",
+        "horse_id",
+        "age",
+        "race_class_code",
+        "profile_status",
+        "profile_date",
+        "individual_eligibility",
+        "parent_resolution",
+        "paci_cancel_flag",
+        "population_evidence",
+        "relative_coverage",
+        "relative_evidence"
+      ],
+      "properties": {
+        "race_key": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}$"
+        },
+        "horse_no": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18
+        },
+        "horse_id": {
+          "type": "string",
+          "pattern": "^(?!00000000)[0-9]{8}$"
+        },
+        "age": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "race_class_code": {
+          "const": "A1"
+        },
+        "profile_status": {
+          "enum": [
+            "DATED_PACI_UKC",
+            "INVALID_OR_CONFLICTING_UKC",
+            "MISSING_UKC"
+          ]
+        },
+        "profile_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date"
+        },
+        "individual_eligibility": {
+          "$ref": "#/$defs/individual"
+        },
+        "parent_resolution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "sire",
+            "dam",
+            "broodmare_sire"
+          ],
+          "properties": {
+            "sire": {
+              "$ref": "#/$defs/parent"
+            },
+            "dam": {
+              "$ref": "#/$defs/parent"
+            },
+            "broodmare_sire": {
+              "$ref": "#/$defs/parent"
+            }
+          }
+        },
+        "paci_cancel_flag": {
+          "type": "string"
+        },
+        "population_evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/population"
+          },
+          "minItems": 40,
+          "maxItems": 40
+        },
+        "relative_coverage": {
+          "$ref": "#/$defs/coverage"
+        },
+        "relative_evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/relative"
+          }
+        }
+      }
+    },
+    "race": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "race_key",
+        "race_class_code",
+        "surface",
+        "distance",
+        "declared_count"
+      ],
+      "properties": {
+        "race_key": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{8}$"
+        },
+        "race_class_code": {
+          "const": "A1"
+        },
+        "surface": {
+          "enum": [
+            "1",
+            "2"
+          ]
+        },
+        "distance": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "declared_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 18
+        }
+      }
+    }
+  }
+}
