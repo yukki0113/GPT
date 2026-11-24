@@ -1,0 +1,138 @@
+{
+  "status": "FROZEN_BEFORE_CONFIRMATION",
+  "id": "P8-Bstar-r1",
+  "selected": "b1_venue180_k3_w25",
+  "terms": [
+    "b1_venue180_k3_w25"
+  ],
+  "base": "P8-Astar-r1",
+  "base_config_sha256": "bea7046ab28aa1f18c11e387634f18d70e8687f38dd22cea54c5213b9f622bc2",
+  "validation_metrics_sha256": "9b07a05008ffa8c62e1351ff8daeb2a6660b956a51a35e5c0c58253cbd572ff0",
+  "shortlist_sha256": "330d8c31b2a42c75763ffaaa2c7f41808b2d197a026bbac55745d89bf2dca6fc",
+  "run_config_sha256": "cded573210d2accd03fc5d77e47a74bb5783e62e82febf2727b922b20f1fabcf",
+  "definitions": {
+    "b1_venue180_k3_w25": "case when n_hl60>=2 and n180>=2 and n_venue180>0 and d_venue180 is not null then 0.25*n_venue180/(n_venue180+3.0)*greatest(-1.,least(1.,d_venue180)) else 0.0 end"
+  },
+  "decisions": [
+    {
+      "wins_delta": 59,
+      "pp": 0.2235610624834224,
+      "top3_delta_pp": 0.10988594596642795,
+      "winner3_delta_pp": 0.1780910158766246,
+      "applied": 225198,
+      "den": 26391,
+      "model": "b1_venue180_k3_w25",
+      "family": "B1",
+      "dev_eligible": true,
+      "ci95": [
+        0.08404180937017287,
+        0.36199657728755885
+      ],
+      "annual": [
+        {
+          "wins_delta": 41,
+          "pp": 0.3128576879053796,
+          "top3_delta_pp": 0.09919877909194964,
+          "winner3_delta_pp": 0.045784051888592144,
+          "applied": 111327,
+          "den": 13105
+        },
+        {
+          "wins_delta": 18,
+          "pp": 0.13548095739876562,
+          "top3_delta_pp": 0.12042751768779165,
+          "winner3_delta_pp": 0.3085955140749661,
+          "applied": 113871,
+          "den": 13286
+        }
+      ],
+      "val_eligible": true
+    },
+    {
+      "wins_delta": 17,
+      "pp": 0.06441589935963017,
+      "top3_delta_pp": 0.060626728809063696,
+      "winner3_delta_pp": -0.015156682202265924,
+      "applied": 179963,
+      "den": 26391,
+      "model": "b3_drawgate_w20",
+      "family": "B3",
+      "dev_eligible": true,
+      "ci95": [
+        -0.03424811578153016,
+        0.16151753342164202
+      ],
+      "annual": [
+        {
+          "wins_delta": -5,
+          "pp": -0.03815337657382678,
+          "top3_delta_pp": 0.09156810377718429,
+          "winner3_delta_pp": 0.015261350629530714,
+          "applied": 87989,
+          "den": 13105
+        },
+        {
+          "wins_delta": 22,
+          "pp": 0.16558783682071354,
+          "top3_delta_pp": 0.030106879421947914,
+          "winner3_delta_pp": -0.04516031913292187,
+          "applied": 91974,
+          "den": 13286
+        }
+      ],
+      "val_eligible": false
+    },
+    {
+      "wins_delta": 74,
+      "pp": 0.28039862074191957,
+      "top3_delta_pp": 0.19324769807889053,
+      "winner3_delta_pp": 0.20082603918002348,
+      "applied": 247603,
+      "den": 26391,
+      "model": "combined",
+      "family": "B5",
+      "dev_eligible": true,
+      "ci95": [
+        0.09902225343139591,
+        0.45521624452356557
+      ],
+      "annual": [
+        {
+          "wins_delta": 40,
+          "pp": 0.30522701259061424,
+          "top3_delta_pp": 0.18313620755436857,
+          "winner3_delta_pp": 0.061045402518122856,
+          "applied": 122685,
+          "den": 13105
+        },
+        {
+          "wins_delta": 34,
+          "pp": 0.2559084750865573,
+          "top3_delta_pp": 0.20322143609814844,
+          "winner3_delta_pp": 0.33870239349691406,
+          "applied": 124918,
+          "den": 13286
+        }
+      ],
+      "val_eligible": false,
+      "development_combination": {
+        "wins_delta": 184,
+        "pp": 0.2881167499177928,
+        "top3_delta_pp": 0.26462897139188574,
+        "winner3_delta_pp": 0.38833127162832937,
+        "applied": 600436,
+        "den": 63863
+      },
+      "incremental_vs_best": {
+        "wins_delta": 15,
+        "pp": 0.05683755825849721,
+        "top3_delta_pp": 0.08336175211246258,
+        "winner3_delta_pp": 0.022735023303398886,
+        "applied": 247603,
+        "den": 26391
+      }
+    }
+  ],
+  "confirmation_opened": false,
+  "production_approved": false
+}
