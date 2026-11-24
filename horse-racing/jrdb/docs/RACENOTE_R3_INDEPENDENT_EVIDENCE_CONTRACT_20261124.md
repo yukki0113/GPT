@@ -47,3 +47,7 @@ R3技術契約は固定sourceで受入。R4は既走馬と新馬戦を別にShad
 ## 5. 新馬4R受入の実行準備 (2026-11-24)
 
 [固定入力復元・受入実行器](RACENOTE_R3_NEWCOMER_REPLAY_PREPARATION_20261124.md) 参照。前回14ファイルSHA/76頭identity一致、4R42頭のplan実行PASS、複数レース別manifest実行器の合成8テストPASS。BRDB受入済み対象4Rの実入力は未取得のため追加両DB E2E 0R、R4未承認。新馬専用血統契約はBRDB B5と別途照合する。
+
+## 6. 新馬4R技術受入完了 (2026-11-24、§5の更新)
+
+[新馬戦4R実データ受入記録](RACENOTE_R3_NEWCOMER_ACCEPTANCE_20261124.md) / [公開集計・SHA](RACENOTE_R3_NEWCOMER_ACCEPTANCE_20261124.json)。`PASS_R3_TECHNICAL_COMMON_EVIDENCE_RESEARCH`、4R42頭の全馬結合・独立照合・schema・再生成一致PASS。6月2RはD3/D4時点制約のため別版v0.2 base-only（D4未提供を明示）、11月2Rは既存M7 v0.3。JPDB 2142 evidence不変、BRDB一般出走観測630件・restricted refs1845件。回帰25件PASS。R3共通Evidence技術受入を完了し、B5新馬特化母集団の同対象接続検証は別レーンで未受入。R4、本番、予測安全性は未承認のまま。
