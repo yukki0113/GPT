@@ -6,6 +6,10 @@ NAR（地方競馬全国協会）の公式CSVを一次データ源とし、Web�
 
 2026-09-17から **Phase 1（canonical foundation）** に進みます。Phase 0の取得基盤は維持したまま、raw race CSVを予想時情報と結果情報へ物理分離し、as-of検証を通過した情報だけを将来のモデル入力へ昇格できる基盤を実装します。
 
+## 予想研究の現在地（2026-11-24）
+
+データ基盤のPhase 1とは別に、ユーザー承認済みの予想研究P8–P10を進める。研究再開の正本は [NAR予想研究 CURRENT](docs/NAR_PREDICTION_RESEARCH_CURRENT.md) と `research/p8/experiment_registry.json`。旧版の復元は終了し、P8.0の検証結果に基づく固定比較基準 `RECOVERY-PILOT-r0.1-tie12` を採用。次工程はP8A.1。研究用指数・モデルはこの契約内に限り対象とするが、本番・自動予想・買い目・市場Edgeは未承認。
+
 ## Current scope
 
 - NAR月次レース情報ZIP / オッズ情報ZIPの取得と不変保存
@@ -23,7 +27,7 @@ NAR（地方競馬全国協会）の公式CSVを一次データ源とし、Web�
 ## Still out of scope
 
 - as-of未検証列のモデル特徴量利用
-- 独自指数・機械学習モデル
+- 本番用の独自指数・機械学習モデル（承認済み研究は上記CURRENTに従う）
 - 自動予想、買い目生成、販売運用
 - oddsを使った市場期待値ロジック
 - 永続DuckDBを正本とする運用
@@ -130,3 +134,4 @@ GPT / Work実行時は、現在のPython環境に `duckdb` / `pyarrow` が無い
 - `docs/NAR_DATA_SPEC.md` — 公式仕様と実測メモ
 - `docs/DATA_ARCHITECTURE.md` — Git / Drive / canonicalの責務分離
 - `docs/CANONICAL_DATA_SPEC.md` — pre/post schema、field policy、as-of validation仕様
+- `docs/NAR_PREDICTION_RESEARCH_CURRENT.md` — 予想研究の現行設計追補・固定比較基準・進捗の正本
