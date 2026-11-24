@@ -384,3 +384,7 @@ Existing pedigree generation and Blood Review v0.1 remain unchanged. No PWA/News
 BRDBのBlood Reviewの最終的な利用目的は、**RaceNoteが過去走中心の評価から見落とし得る条件適性・潜在的な可能性を、独立した血統根拠として全馬比較へ追加すること**。特に新馬戦・経験の少ない馬について、父・母父の産駒実績、父系×母父系、検証済み近親情報を、JPDBの騎手条件実績および調教・厩舎の別Evidenceと合わせて利用可能にする研究を優先する。
 
 共通設計正本: [RaceNote JPDB×BRDB 独立Evidence方針](../jrdb/docs/racenote/RACENOTE_JPDB_BRDB_INDEPENDENT_EVIDENCE_POLICY_20261120.md)。BRDB単体の統合レビュー候補・CURRENT・Reader・PWA公開ゲートは引き続き本README以下の個別契約が優先し、**本追補だけで統合レビューやRaceNote/PWA投入を承認しない**。新馬戦での予想材料不足を解決できるかと、既走馬の見落とし改善とを別の評価群で検証する。事前時点未認証・未実装・小母数の根拠を適性確定に変換しない。
+
+## 2026-11-24 — JPDB×BRDB R3共通Evidence研究契約
+
+[共通契約・検証結果](../jrdb/docs/RACENOTE_R3_INDEPENDENT_EVIDENCE_CONTRACT_20261124.md)。既受入M7東京12Rのv0.3/④詳細/①②原出力をJPDB R1/R2と同一PACI SHA・全18頭で結合した研究用sidecarと軽量preview。①②は記述観測、③④/D4は時点未認証の制限付き参照を保持。新馬戦のBRDB同一全馬出力・統合実証は次の独立研究課題。M6/M7・既存レビュー契約・CURRENT・RaceNote/PWAの本番昇格判断を変更しない。

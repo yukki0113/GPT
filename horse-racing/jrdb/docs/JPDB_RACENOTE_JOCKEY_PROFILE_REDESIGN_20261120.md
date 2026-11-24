@@ -78,3 +78,7 @@ R1〜R5は**JPDB単体sidecarの内訳工程**として維持する。RaceNote�
 ## 8. R2実装・研究進捗（2026-11-24）
 
 JPDB単体R2の記述比較機能を実装し固定source実データ受入を完了した。正本：[R2 相対条件傾向研究](JPDB_R2_CONDITION_CONTEXT_RESEARCH_20261124.md)。R1の76頭・3216数値セルと一致、4群独立SQL 1032群PASS。本人内・他騎手比較・相対条件コントラストを別々に保持し、母数・未解決感度・期間矛盾を付与。2023–24選定→2025/2026同季節再現とP3市場感度を別研究として実施。安定適性の認証には支持不足、SUGGESTIVEは未認証。市場値は個別profileに非混入。R2 CONTEXTUAL研究PASS、R3共通Evidence契約へ進む根拠が整ったが、BRDB統合・予想投入・本番変更は未承認。
+
+## R3研究用共通Evidence契約の受入（2026-11-24）
+
+[共通契約・検証結果](RACENOTE_R3_INDEPENDENT_EVIDENCE_CONTRACT_20261124.md)。既存R1/R2とBRDB M7受入済み出力を同一PACI・全登録馬で厳密結合する詳細sidecarと、固定表示軸の軽量previewを実装。6R76頭のうち両DBは通常1R18頭、残り5R58頭はBRDB未取得を明示。新馬4R42頭の両DB同時実データ検証は未完了。③④/D4の時点未認証数値は制限付き根拠参照に隔離。R3固定source技術契約PASS、R4 Shadow前に新馬戦BRDB取得・同一全馬結合受入が必要。R4/R5や本番採用・Confidence変更は未承認。

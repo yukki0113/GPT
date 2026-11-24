@@ -59,3 +59,7 @@ DBは◎○▲、Confidence、勝率を決定しない。JPDB/BRDBが提供す�
 - 現行運用: `RACENOTE_V056_FORWARD_PACI_RUNTIME_20261030.md`
 
 **判断原則：JPDB/BRDBは「根拠と不確実性」を渡し、RaceNoteが「今回のレースにおける意味」を判断する。**
+
+## R3研究用共通Evidence契約の受入（2026-11-24）
+
+[共通契約・検証結果](../RACENOTE_R3_INDEPENDENT_EVIDENCE_CONTRACT_20261124.md)。既存R1/R2とBRDB M7受入済み出力を同一PACI・全登録馬で厳密結合する詳細sidecarと、固定表示軸の軽量previewを実装。6R76頭のうち両DBは通常1R18頭、残り5R58頭はBRDB未取得を明示。新馬4R42頭の両DB同時実データ検証は未完了。③④/D4の時点未認証数値は制限付き根拠参照に隔離。R3固定source技術契約PASS、R4 Shadow前に新馬戦BRDB取得・同一全馬結合受入が必要。R4/R5や本番採用・Confidence変更は未承認。
