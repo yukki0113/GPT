@@ -71,3 +71,7 @@ DBは◎○▲、Confidence、勝率を決定しない。JPDB/BRDBが提供す�
 ### 2026-11-24 R5 初回比較研究
 
 [事前固定protocol](../RACENOTE_R5_PAIRED_RESEARCH_PROTOCOL_20261124.md)、[初回A/B結果](../RACENOTE_R5_INITIAL_PAIRED_PILOT_20261124.md)。R4で両DB・同一封印Readerが揃う全3R40頭を対象にBを独立著述し、Prediction/Confidenceの私有Library凍結・読み戻し後にAと正本SED/HJCを開いた。A1新馬2Rで印5頭の3着内馬4→5、◎勝利1→0、OTHER1Rは◎/印集合と成績不変、Confidence B→C。初回研究pilot PASS、R5全体PARTIAL、50R/TRUE_FORWARD/独立意味論監査/性能認定は未完。B5制限数値は不使用、R6・本番未承認。
+
+### 2026-11-24 R5 prospective readiness / pilot再読
+
+[R5 forward準備・pilot根拠再読](../RACENOTE_R5_FORWARD_READINESS_20261124.md) を参照。40頭106根拠の再読・固定SHA照合、開催前入力分離preflight（合成11/11 PASS）、canonical Drive 100日分のメタデータ照合を実施。現行R1は対象PACIと歴史SEDを同一日付manifestに束縛し、BAC件数も固定のため、独立したforward adapterと新履歴世代の受入が次ゲート。R5全体PARTIAL、独立意味論監査未完、50R/TRUE_FORWARD 0R、R6・本番未承認。
