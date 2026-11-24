@@ -14,7 +14,7 @@ raw fieldは `nar/canonical/field_catalog.py` で次の3区分へ分類する。
 | --- | --- | --- |
 | `PRE_SAFE` | 発走前情報として利用し得る | stage制約を守って利用候補 |
 | `PRE_ASOF_PENDING` | 発走前snapshot候補だが時点性を広期間検証中 | `PENDING` の間は利用禁止 |
-| `POST_ONLY` | 結果・払戻等 | 特徴量利用禁止 |
+| `POST_ONLY` | 結果・払戻等 | 直接特徴量利用禁止。過去結果の許可列からのas-of派生のみ下記P0.1契約に従う |
 
 pre-race情報のavailability stageは次を使う。
 
@@ -26,6 +26,23 @@ pre-race情報のavailability stageは次を使う。
 | `POST` | 着順、タイム、人気、上がり、払戻 |
 
 `horselist.人気` は結果確定前実測で不安定・placeholder的な値を確認しているため `POST_ONLY` とし、pre-race market featureとして扱わない。
+
+## P0.1 research input contract (2026-11-24)
+
+この節を予想研究のas-of入力契約の正本とする。既存のfield catalogの分類・公開済みCanonicalの物理構造は変更しない。
+
+- 対象レースの入力は `pre` の `feature_policy=ALLOW` と利用段階制約を満たす列のみ。対象レースの `post` は予想確定後の目的変数・評価専用。結果由来の `control/race_status` も対象レースの予想入力には使わない。
+- 過去結果は独立した履歴特徴量生成工程だけが参照できる。許可対象は `post/runner_result` の着順・走破タイム・着差・上がり、`post/race_result` の上がり・ハロン・コーナー名称/通過順、および結合に必要なキー。過去の `pre` 条件と過去の `control/race_status` を結合し、非開催・結果不明・取消/中止等の無効観測を除外する。個々の派生特徴量の採用は別途検証する。
+- 初期の固定cutoffは対象レースの開催日 00:00 JST。すべての履歴行・統計の学習期間は対象日より厳密に前（`history.race_date < target.race_date`）。当日他R、対象R、未来行は除外する。確定時刻を確認できないデータで日中cutoffへ緩和しない。遅延確定・訂正履歴が不明な月次CSVは厳密な当時版の復元ではないことを監査に記録し、既知の遅延・未確定情報は除外する。
+- 馬・騎手・会場等の集計、標準化、学習済み係数、基準タイムも同じcutoffを守る。検証期間を含めた全期間集計を特徴量へ流用しない。対象結果/当日結果/未来結果を混入させた負例テストと、未来行を追加しても過去特徴量が不変である回帰テストを研究実装時の必須gateとする。
+- モデルは履歴生成工程が出力した監査済み派生特徴量だけを受け取り、raw/postに直接アクセスしない。履歴不足は未知として区別し、ゼロ成績で補完しない。履歴の期間・件数・最大日・source generation・入力SHA・cutoff・欠損/除外数を記録する。
+- 過去人気・オッズ・払戻はv0.10系の能力/騎手/会場特徴量から除外する。払戻は評価専用。NAR提供の8種の累積成績/最高タイムsnapshotは `PENDING` のまま保持し、派生特徴量の許可で自動昇格させない。
+- P1の会場特性記述統計では観測された結果・通過順を分析できるが、これは事後記述であり予想時特徴量ではない。予想に反映する場合は上記cutoffで再生成・時系列検証する。
+- 天候・馬場は `pre/race.weather` / `track_condition`、`PRE_SAFE / RACE_DAY / ALLOW`。ENTRY時点は使用不可、当日発表済みの時点のみ利用可。月次CSVに正確な観測時刻はないため当時の発表時点を証明できない場合は厳密な時点評価と区別する。馬体重は従来どおりWEIGH_IN以降。2026-09-18引き継ぎ書の「天候・馬場はpost」記述はこの節で訂正する。
+
+## Published generation integrity correction (P0-01)
+
+公開済み世代のParquet・manifest・CURRENT・ACCEPTED・原チェックサム・公開監査記録は不変の監査証跡として保持する。例外的なメタデータ訂正は [canonical_integrity_corrections.json](../config/canonical_integrity_corrections.json) を正本とし、元のledgerを上書きしない。照合時は世代ID・manifest SHA・原ledger SHA・公開監査SHA・原entry・実ファイルSHAが全て訂正記録に一致する場合のみ、指定1行の期待SHAを読み替える。他の差異はfail-closed。訂正適用のIDと両SHAを監査出力に残す。これは他年Parquetの再監査やfeature昇格を意味しない。新規世代の公開時は最終ACCEPTED等の内容確定後にチェックサムを生成し、公開監査・CURRENTとの照合を実施する。
 
 ## Canonical tables
 

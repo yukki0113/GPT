@@ -115,7 +115,7 @@ Drive搬送制約のため年単位wrapper ZIPへ格納する場合でも、内�
 - `post/runner_result`: 着順、タイム、着差、上がり3F、人気。
 - `post/payout`: payback 54列を券種long形式へ正規化。回収率評価専用。
 
-モデル特徴量生成はこの層を直接参照しない。
+モデルはこの層を直接参照しない。独立したas-of履歴生成工程のみ、対象日の前日以前の許可済み過去結果を参照して監査済み派生特徴量を生成できる。対象R・同日・未来結果、人気・オッズ・払戻の特徴量利用は禁止。詳細は `CANONICAL_DATA_SPEC.md` P0.1契約。
 
 ### 10_canonical/control
 
@@ -165,6 +165,10 @@ nar.canonical.parser
 10_canonical/pre             10_canonical/post
     |                             |
     v                             +--> labels / payout evaluation
+    |                             +--> separate historical as-of builder
+    |                                  (prior dates, allowlisted fields only)
+    |                                      |
+    +<-------------------------------------+
 as-of validator
     |
     v

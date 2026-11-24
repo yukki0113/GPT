@@ -48,7 +48,7 @@ field policy:
 
 - `PRE_SAFE`: stage制約を守れば利用候補。
 - `PRE_ASOF_PENDING`: 検証完了まで特徴量利用禁止。
-- `POST_ONLY`: 評価用以外へ渡さない。
+- `POST_ONLY`: 対象レースの結果は評価専用。過去結果の許可列のみ独立as-of履歴生成工程で利用し、対象日00:00 JSTより前に限定する。モデルの直接参照は禁止。過去人気・オッズ・払戻も特徴量禁止。詳細は `docs/CANONICAL_DATA_SPEC.md` のP0.1契約。
 
 `horselist.人気` はpre-race特徴量として使用しない。2026-09の結果確定前実測で不安定・placeholder的な値を確認している。
 
@@ -83,4 +83,6 @@ NAR地方競馬情報サイトの公式データダウンロード機能を利�
 - paybackは同着等で1レース複数行になり得る。
 - 中止・返還等は通常の結果欠損と区別する。
 - `race_status.is_model_target` と `is_return_target` を分離する。
-- 将来の集計特徴量は対象レース発走時刻より前の情報だけから生成する。
+- 将来の集計特徴量は対象日の前日以前の情報だけから生成する（初期cutoffは00:00 JST）。当日結果、未来情報、PENDING snapshotは禁止。
+- 天候・馬場は RACE_DAY / ALLOW、ENTRYでは使用しない。旧引き継ぎ書のpost分類より現行field catalogを優先する。
+- 公開済み世代の既知チェックサム差異は `config/canonical_integrity_corrections.json` の厳密な適用条件を守る。元データや原監査証跡は上書きしない。

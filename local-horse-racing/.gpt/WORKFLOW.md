@@ -101,7 +101,9 @@ Dを選ぶ場合は `.gpt/ISSUE_REQUEST_CONTRACTS.md` に従ってIssue発行前
 7. ParquetはZSTD、`race_year` Hive partition、canonical key unique / row count / schema / NULL validationを基本とする。
 8. canonicalとauditはDriveへ保存する。staging CSVは再生成可能な一時物であり長期正本にしない。
 9. 広期間as-of監査が完了するまで `PRE_ASOF_PENDING` を `VERIFIED_ASOF` 相当へ昇格しない。
-10. バックテスト・モデルはraw / postを特徴量入力として直接参照しない。
+10. バックテスト・モデルはraw / postを特徴量入力として直接参照しない。独立した履歴特徴量生成のみ、`docs/CANONICAL_DATA_SPEC.md` P0.1契約に従い、対象日00:00 JSTより前の許可済み過去結果を使用できる。
+11. 現行世代のチェックサム検証では `config/canonical_integrity_corrections.json` を確認する。指定条件を全て満たす訂正1行以外はfail-closed。旧台帳・監査記録を改変しない。
+12. ENTRY/RACE_DAY/WEIGH_INの境界、未来行追加不変性と対象・同日・未来結果の混入拒否を研究実装時に検証する。P1の事後記述統計と予想時入力を区別する。
 
 ## Commands
 

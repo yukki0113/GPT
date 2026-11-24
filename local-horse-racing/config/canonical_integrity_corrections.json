@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "corrections": [
+    {
+      "id": "P0-01-20261124",
+      "generation_id": "nar_canonical_v1_201601_202512_g20260917",
+      "status": "APPROVED_FOR_VERIFICATION",
+      "date": "2026-11-24",
+      "scope": "metadata_only_single_ledger_entry",
+      "ledger_path": "control/CHECKSUMS.sha256",
+      "ledger_sha256": "40bc2c2c6e8b8a6a396411e7cb408ba997e28ed7f4d462ddbd4ca9f2f5ba8de1",
+      "manifest_sha256": "bdc6cc603f5a199fa513bffea3b0450588df828c0bdbac5c52e980f4ab6f926a",
+      "publication_audit_sha256": "59a328c2f68b3cbff6e55616eb55cde4decdc528eb2d2dc430fa58795afe82a9",
+      "relative_path": "ACCEPTED.json",
+      "ledger_expected_sha256": "cb499f51cfcfdcd5ee116ef05c656f74f31051b9bfb2b9cce61f524ff45948ec",
+      "corrected_expected_sha256": "f1f946764a73b7a0c056eb4a33b43e763275fe52131e689fb6282075bfa400dd",
+      "basis": "Observed ACCEPTED.json bytes match original drive_publication_audit.json control_files.accepted_sha256; original ledger bytes match control_files.checksums_sha256. Cause of discrepancy unconfirmed.",
+      "original_files_preserved": true,
+      "parquet_changes": false,
+      "fail_closed": "Only apply if generation, manifest, original ledger hash, original entry, publication audit hash and accepted bytes all match; reject every other mismatch."
+    }
+  ]
+}

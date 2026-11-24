@@ -94,7 +94,9 @@ Parquet writer / schema・row-count・canonical-key・NULL validationは `tools/
 
 - `PRE_SAFE`: 発走前情報として利用可能。ただし `ENTRY` / `RACE_DAY` / `WEIGH_IN` の段階を守る。
 - `PRE_ASOF_PENDING`: 発走前snapshot候補だが、期間横断のas-of検証完了まで特徴量利用禁止。
-- `POST_ONLY`: 着順、タイム、人気、上がり、通過順、払戻など。評価用以外へ渡さない。
+- `POST_ONLY`: 対象レースの結果は評価専用。過去結果は独立したas-of履歴生成工程のみ、前日以前・許可列に限定して使用できる。人気・オッズ・払戻は特徴量にしない。モデルの直接参照は禁止。詳細は [P0.1 research input contract](docs/CANONICAL_DATA_SPEC.md#p01-research-input-contract-2026-11-24)。
+
+2026-11-24 P0.1: 天候・馬場は `PRE_SAFE / RACE_DAY / ALLOW`（ENTRY不可）。公開済み世代のチェックサム訂正は [訂正台帳](config/canonical_integrity_corrections.json) に限定し、旧世代を改変しない。
 
 ## Storage responsibilities
 
