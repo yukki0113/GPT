@@ -1,6 +1,6 @@
-# NAR 予想研究 CURRENT / P8設計追補 v1.1
+# NAR 予想研究 CURRENT / P8設計追補 v1.2
 
-決定日: 2026-11-24 JST。Status: **P8.0_ACCEPTED_WITH_VERSIONED_BASELINE_REPLACEMENT / READY_FOR_P8A.1**。
+決定日: 2026-11-24 JST。Status: **P8A_COMPLETE_RESEARCH_CANDIDATE_FROZEN / READY_FOR_P8B.1**。
 
 ## 1. 正式研究ルート・適用順位
 
@@ -42,7 +42,7 @@
 - 2016 warmup、2017–21 development、2022–23 validation、2024–25 locked retrospective（A/B候補両方freeze後に開示）、2026 excluded。2025 H2 pilot既知、旧研究の利用可能性もあるため2024–25は独立未見データではない。2026は別承認・データ拡張・freezeまで使わない。
 - ENTRY target rosterはpreの許可列だけから生成。対象control/postを対象抽出やscoreに渡さない。historyは対象日00:00 JSTより前のみ。過去人気/odds/payout/8種PENDING snapshotは禁止。天候/馬場は対象ENTRY禁止、過去条件として利用可。対象馬体重は禁止。全期間identity監査で過去キーを遡及修正しない。
 
-## 5. 次工程 P8A.1 の開始契約
+## 5. P8A.1 の開始契約（実行済み・歴史的要件）
 
 1. Git mainの本書・v1.0・現行registry・P0.1・共通runtime registryを読み、証跡ZIPをSHA照合、必要入力を実取得またはSHA検証済みcacheから再利用。共通 `data_storage check-deps` を実行（前回は版/SQL smokeのみ）。入力監査を無条件にやり直さず、同一bytes確認を新runに記録する。pilot scriptは再現証跡であり、絶対パス/単一connectionのまま本番研究実装に流用しない。
 2. P8A.1のrun_id・入力manifest・候補config・family allowlist・評価cohort定義をfreeze。2017–2023のみ結果を開示。2016は履歴のみ。A0/AC0/ACJ0を複数年で算出、A1の事前登録候補（last 3/5/8 within365、90/180/365日平均、365日内half-life 30/60/90、min2）を個別比較。A2はA1選定窓のmedian/top2 mean等。A1/A2の開発結果でshortlistを固定し、2022–23を比較・選択に使用（全Cartesian探索なし）。詳細はv1.0 §5、§7。候補採否はまだ未実施。
@@ -55,15 +55,16 @@
 | Phase | Status |
 |---|---|
 | P8.0 | ACCEPTED_WITH_VERSIONED_BASELINE_REPLACEMENT |
-| P8A.1 | READY_NOT_EXECUTED |
-| P8A.2 | WAIT_P8A.1（class/opponent/speed feasibility） |
-| P8A.3 | WAIT（A*候補freeze） |
-| P8B.1 / P8B.2 | WAIT（course/class, draw/pace・追加資産監査） |
+| P8A.1 | COMPLETE: hl60 selected, A2 rejected |
+| P8A.2 | COMPLETE_SCOPED: opponent and speed selected; direct class mapping HOLD |
+| P8A.3 | COMPLETE: P8-Astar-r1 FROZEN_FOR_P8B |
+| P8B.1 | READY_NOT_EXECUTED（course/class; additional asset audit） |
+| P8B.2 | WAIT_P8B.1（draw/pace） |
 | P8B.3 / P8.close | WAIT（統合候補freeze後2024–25確認、採否・保存） |
 | P9 | WAIT_P8_CLOSE（補助評価） |
 | P10 | WAIT_P9（統合・精度/回収率・独立検証） |
 
-P8A.1以降の新規成績は未計算。P8終了、production promotion、2026評価、全family漏洩監査完了とはしない。
+P8Aは研究候補の確定まで実行済み。P8B未実行。P8終了、production promotion、2026評価、全family漏洩監査完了とはしない。
 
 ## 7. 不変証跡・取得先
 
@@ -74,4 +75,18 @@ P8A.1以降の新規成績は未計算。P8終了、production promotion、2026�
 - canonical input_manifest SHA256 5efafa73f8c6d5ac68d2e77df5001650815bc5a56112003d0618f70c1e51013c; entity audit 910e707dedc8e8b1505fb0877c2e95ceae5b501d352b5fa948676ccb4000025a; tie audit 59a2a68693304d7e342b68cb4f2532e97f09ba3e6e1ca3e3e273a0d350718246; baseline guard 44958233484b15f692d92b569913c61b29b0db698e98f6d3913eb2811589ac0a。
 - 新比較基準の証跡: ZIP内 `tie_repair/threads4/pilot_prediction_freeze.parquet` SHA256 da104ae2137eefa141f4bb1ae630d1ce274b175f0802a1615e3dd2feba216669。threads1 SHA256 f46d5d93d911d4f106d04291624c97c1673e0fe2a99def27ad724c62ac792fbb。物理byte SHAは違っても論理再現gateはPASS。原FreezeはRecovery ZIPに不変保持。
 
-本書と現行registryが研究再開の正本。次回はP8A.1から開始し、旧版探索や同点修正版の再承認は不要。
+## 8. P8A確定・次工程（v1.2）
+
+- P8A.1〜3 実行済み。正式研究候補 `P8-Astar-r1`（`research/p8/a/candidate_config.json` SHA256 bea7046ab28aa1f18c11e387634f18d70e8687f38dd22cea54c5213b9f622bc2）。候補の凍結は研究用であり、P9昇格・本番採用ではない。
+- 365日半減期60日加重正規化着順 F、対戦相手の事前A0水準補正 O×0.20、基準タイム Sとの0.30 blend（各2件以上、欠損補正0）。履歴1走のみ (p+1.5)/4、0走/曖昧はUNKNOWN。tie12は不変。クラス直接補正はHOLD、賞金/着差候補は不採用（B2でクラス移動・比較可能性を別途研究）。計算式の厳密な定義はcandidate_configと実行コードを優先。
+- 2022–23: 26919 eligible / 26391 scored / 8329 wins / 16808 top1 3rd-or-better / 16310 winner in top3 / 261049 scored runners of 272409. A0 6776 wins / 26314 scored. Common runner cohort: 7669 vs 6776, +3.3936pp, CI [3.0093,3.7691], both years positive. Full cohort and common support differ; no ROI.
+- 32 input assets same-byte verified, 939724 ENTRY targets 2017–23, all t1/t4 freezes byte-identical, 7 boundary tests and stage guard PASS. Class mapping unresolved; no full P8 or independent confirmation. 2024–25 locked until both A/B freeze, 2026 excluded. No change to P8 v1.0 promotion criteria or B grids.
+- Git report `docs/NAR_P8A_REPORT_20261124.md` and exact code/config `research/p8/a/` saved/read back; evidence commit 1f7cbf9ad6af870d73c1d869aff4c7dea9767e77. Drive folder https://drive.google.com/drive/folders/1SNAOchX5htZrARZwgM-sBjwkq3J9mzEU (13 files, 452509626 bytes, all SHA readback parity). Library `/地方競馬予想/P8/P8A_20261124/` (compact ZIP 224 internal files all verified); report SHA256 669ac59d93cc183d91d2552e2da373e3cc4dc30ad207c673edd0fa94377c1691; portable evidence ZIP SHA256 209bd8ac6f333d5a7710513b21b8ebbc7d325e98a7b325241394abea9783b2dd. Annual Freeze and history-reference ZIP hashes in delivery_manifest.json/SHA256SUMS. Original P8.0 and P8A artifacts unchanged.
+
+## 9. P8B.1 開始契約
+
+1. 本書、現行registry、v1.0 §6–9、P8A report/candidate config、P0.1、共通storage contractを読む。保存済みP8A Freezeおよび必要canonicalをSHA照合。P8A候補を再最適化しない。必要時に同式で全ENTRY予想を再生成し、厳密rank parityを確認する。
+2. P8Bでは追加post/race_resultの10年分の資産監査とcorner/lap parse feasibilityを行う（実際の2024–25予想評価はまだロック）。B1/B2: Astar-r1を固定基礎として会場・距離・回り・転入/距離移動・条件補正の個別アブレーション。クラスコードの全国等価性を仮定しない。B3/B4は後続。2017–21開発、2022–23比較、2024–25はB統合候補freeze後に一度のみ確認。2026不可。
+3. Astar-r1の1走評価は基礎の縮約、0走/曖昧はUNKNOWN。B補正の最低件数と欠損時補正0を独立管理し、能力のない馬を0とみなさない。全候補のfeature/score/evaluator isolation・同日/未来注入・thread/rank gate・coverage監視・run別保存読み戻しを維持。B検証は未着手。
+
+本書と現行registryが研究再開の正本。次回はP8B.1から開始し、P8Aの再採否や旧版探索は不要。
