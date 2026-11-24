@@ -1,5 +1,5 @@
 {
-  "status": "READY_P8A_1_NOT_EXECUTED",
+  "status": "READY_P8B_1_NOT_EXECUTED",
   "design_sha256": "8ba456092f52642aa2c8a0a66b0f065e9a5bd83db13bd9a49957c2ca6fc906c5",
   "periods": {
     "warmup": [
@@ -150,11 +150,11 @@
     "retest_each_family": true,
     "round_boundary_tests_required": true
   },
-  "no_selection_or_validation_opened": true,
-  "note": "Original candidate grids and gates unchanged. P8A.1 requires run-specific configuration freeze and family/scoring/evaluator isolation gates before scoring. 2024–25 locked except previously known pilot; 2026 excluded. Original registry preserved in P8.0 evidence ZIP.",
-  "schema_version": 2,
+  "no_selection_or_validation_opened": false,
+  "note": "P8A development/validation evaluated and frozen; 2024–25 confirmation unopened; 2026 excluded. P8B candidate grids and gates unchanged.",
+  "schema_version": 3,
   "current_design": "docs/NAR_PREDICTION_RESEARCH_CURRENT.md",
-  "current_design_sha256": "930b70fa90445612c55dd1729be7c34be72d9fcc59692f066f176b1b7a51a0eb",
+  "current_design_sha256": "efe7fb966bcff65faa4985d92e1937fc5008031034edc58a20d9c08c072fcd61",
   "prior_registry_sha256": "49e80d7f89931ce4872ad7539b5ce7c4ffb0305a1d6824a5d893e6ee47f8d140",
   "baseline_reference": {
     "id": "RECOVERY-PILOT-r0.1-tie12",
@@ -211,7 +211,35 @@
     "cutoff": "target_date 00:00 JST; history_date < target_date",
     "p8b_additional_partitions": 10
   },
-  "next_phase": "P8A.1",
+  "next_phase": "P8B.1",
   "confirmation_locked": true,
-  "production_approved": false
+  "production_approved": false,
+  "previous_current_registry_sha256": "cc59b7dede36f8fbbaf9d88b084cdd999d8a34b0b31d00ce23cc70a8d8cc2691",
+  "p8a": {
+    "status": "COMPLETE_RESEARCH_CANDIDATE_FROZEN",
+    "model_id": "P8-Astar-r1",
+    "config": "research/p8/a/candidate_config.json",
+    "config_sha256": "bea7046ab28aa1f18c11e387634f18d70e8687f38dd22cea54c5213b9f622bc2",
+    "report": "docs/NAR_P8A_REPORT_20261124.md",
+    "report_sha256": "669ac59d93cc183d91d2552e2da373e3cc4dc30ad207c673edd0fa94377c1691",
+    "evidence_zip_sha256": "209bd8ac6f333d5a7710513b21b8ebbc7d325e98a7b325241394abea9783b2dd",
+    "drive_folder_id": "1SNAOchX5htZrARZwgM-sBjwkq3J9mzEU",
+    "library_folder": "/地方競馬予想/P8/P8A_20261124/",
+    "eligible_races": 26919,
+    "scored_races": 26391,
+    "win_count": 8329,
+    "top3_count": 16808,
+    "winner_in_top3": 16310,
+    "common_races_vs_a0": 26314,
+    "common_win_count": 7669,
+    "a0_win_count": 6776,
+    "paired_ci95_pp": [
+      3.0092850551658943,
+      3.769125342712701
+    ],
+    "direct_class_mapping": "HOLD",
+    "validation_opened": true,
+    "confirmation_opened": false,
+    "production_approved": false
+  }
 }
