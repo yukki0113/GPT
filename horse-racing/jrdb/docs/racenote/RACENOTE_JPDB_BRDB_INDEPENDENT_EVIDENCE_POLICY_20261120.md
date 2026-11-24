@@ -67,3 +67,7 @@ DBは◎○▲、Confidence、勝率を決定しない。JPDB/BRDBが提供す�
 ### 2026-11-24 R4 初回Shadow受入追記
 
 [R4初回研究Shadow監査](../RACENOTE_R4_SHADOW_AUDIT_20261124.md) を参照。R3固定6R76頭の根拠監査、現行v056封印済みReader 3R40頭の両コホート照合、新馬戦B5同一4R42頭の専用lane再生成・照合を実測。初回研究Shadow PASS、6R全Reader比較はPARTIAL（6月3R36頭の同版封印Reader未取得）。R5未承認、TRUE_FORWARD・厳密as-of・予測効果・本番昇格は未認証。B5の2026履歴gapとAS_OF_UNVERIFIEDを維持する。
+
+### 2026-11-24 R5 初回比較研究
+
+[事前固定protocol](../RACENOTE_R5_PAIRED_RESEARCH_PROTOCOL_20261124.md)、[初回A/B結果](../RACENOTE_R5_INITIAL_PAIRED_PILOT_20261124.md)。R4で両DB・同一封印Readerが揃う全3R40頭を対象にBを独立著述し、Prediction/Confidenceの私有Library凍結・読み戻し後にAと正本SED/HJCを開いた。A1新馬2Rで印5頭の3着内馬4→5、◎勝利1→0、OTHER1Rは◎/印集合と成績不変、Confidence B→C。初回研究pilot PASS、R5全体PARTIAL、50R/TRUE_FORWARD/独立意味論監査/性能認定は未完。B5制限数値は不使用、R6・本番未承認。

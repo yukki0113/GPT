@@ -1,0 +1,314 @@
+{
+  "audit": {
+    "A_confidence_sha256": "bae76036af02e9cb8e57f28f1f5553f8a93a62a183afd4bd3075d41093187a35",
+    "A_prediction_sha256": "9992e2dcbd885f9ca588c5b713f48e79a218521eb18c25e038e7225d4924e28c",
+    "B_confidence_sha256": "394ce65f3499929dc83246a36e7e27992e0c9932f0c32338c2ad9c27d623e4ae",
+    "B_prediction_sha256": "ba44c7bedec39eaae18c263fb0c760d953c5638eaaa73ab8b2102cc7dce8c810",
+    "cohorts": {
+      "A1": {
+        "A": {
+          "all_top3_in_five": 1,
+          "honmei_top3": 1,
+          "honmei_win": 1,
+          "top3_in_five": 4,
+          "winner_in_five": 2
+        },
+        "B": {
+          "all_top3_in_five": 1,
+          "honmei_top3": 1,
+          "honmei_win": 0,
+          "top3_in_five": 5,
+          "winner_in_five": 2
+        },
+        "changed_five": 2,
+        "changed_honmei": 2,
+        "dropped": 2,
+        "horses": 22,
+        "paired": {
+          "all_top3_in_five": {
+            "TIE": 2
+          },
+          "honmei_top3": {
+            "TIE": 2
+          },
+          "honmei_win": {
+            "A_BETTER": 1,
+            "TIE": 1
+          },
+          "top3_in_five": {
+            "B_BETTER": 1,
+            "TIE": 1
+          },
+          "winner_in_five": {
+            "TIE": 2
+          }
+        },
+        "promoted": 2,
+        "races": 2,
+        "trace_counts": {
+          "CONCERN": 8,
+          "RECONSIDER": 6,
+          "SUPPORT": 6,
+          "UNCERTAIN": 2,
+          "evidence_refs": 61,
+          "horses_with_brdb_refs": 22,
+          "horses_with_jpdb_refs": 18
+        }
+      },
+      "OTHER": {
+        "A": {
+          "all_top3_in_five": 0,
+          "honmei_top3": 0,
+          "honmei_win": 0,
+          "top3_in_five": 1,
+          "winner_in_five": 1
+        },
+        "B": {
+          "all_top3_in_five": 0,
+          "honmei_top3": 0,
+          "honmei_win": 0,
+          "top3_in_five": 1,
+          "winner_in_five": 1
+        },
+        "changed_five": 0,
+        "changed_honmei": 0,
+        "dropped": 0,
+        "horses": 18,
+        "paired": {
+          "all_top3_in_five": {
+            "TIE": 1
+          },
+          "honmei_top3": {
+            "TIE": 1
+          },
+          "honmei_win": {
+            "TIE": 1
+          },
+          "top3_in_five": {
+            "TIE": 1
+          },
+          "winner_in_five": {
+            "TIE": 1
+          }
+        },
+        "promoted": 0,
+        "races": 1,
+        "trace_counts": {
+          "CONCERN": 6,
+          "RECONSIDER": 8,
+          "SUPPORT": 4,
+          "evidence_refs": 45,
+          "horses_with_brdb_refs": 17,
+          "horses_with_jpdb_refs": 14
+        }
+      }
+    },
+    "prediction_safe": false,
+    "private_freeze_readback_sha_match": true,
+    "production_authorized": false,
+    "protocol_commit": "9968b6723facbb790212e0b7f555493afd1b7218",
+    "r4_manifest_sha256": "718b7b0b2d0d284a040eba987b36c51c02dc087a25b032770896ee4f438ecae2",
+    "r6_authorized": false,
+    "races": [
+      {
+        "all_horse_assessments": 12,
+        "cohort": "A1",
+        "confidence_A": "Z",
+        "confidence_B": "Z",
+        "horses": 12,
+        "metrics": {
+          "A": {
+            "all_top3_in_five": 0,
+            "honmei_top3": 0,
+            "honmei_win": 0,
+            "top3_in_five": 1,
+            "winner_in_five": 1
+          },
+          "B": {
+            "all_top3_in_five": 0,
+            "honmei_top3": 0,
+            "honmei_win": 0,
+            "top3_in_five": 2,
+            "winner_in_five": 1
+          },
+          "dropped": 1,
+          "five_changed": true,
+          "honmei_changed": true,
+          "paired": {
+            "all_top3_in_five": "TIE",
+            "honmei_top3": "TIE",
+            "honmei_win": "TIE",
+            "top3_in_five": "B_BETTER",
+            "winner_in_five": "TIE"
+          },
+          "promoted": 1
+        },
+        "race_key": "05265404",
+        "result_cross_validation": "PASS",
+        "result_sha256": "bb8346644b3a859ca14b227f7140527ebe400dfbb488dad7485551e4b9003241",
+        "trace_counts": {
+          "CONCERN": 4,
+          "RECONSIDER": 3,
+          "SUPPORT": 3,
+          "UNCERTAIN": 2,
+          "evidence_refs": 30,
+          "horses_with_brdb_refs": 12,
+          "horses_with_jpdb_refs": 8
+        },
+        "trace_family_counts": {
+          "BRDB:broodmare_sire": 8,
+          "BRDB:sire": 13,
+          "JPDB": 9
+        }
+      },
+      {
+        "all_horse_assessments": 10,
+        "cohort": "A1",
+        "confidence_A": "Z",
+        "confidence_B": "Z",
+        "horses": 10,
+        "metrics": {
+          "A": {
+            "all_top3_in_five": 1,
+            "honmei_top3": 1,
+            "honmei_win": 1,
+            "top3_in_five": 3,
+            "winner_in_five": 1
+          },
+          "B": {
+            "all_top3_in_five": 1,
+            "honmei_top3": 1,
+            "honmei_win": 0,
+            "top3_in_five": 3,
+            "winner_in_five": 1
+          },
+          "dropped": 1,
+          "five_changed": true,
+          "honmei_changed": true,
+          "paired": {
+            "all_top3_in_five": "TIE",
+            "honmei_top3": "TIE",
+            "honmei_win": "A_BETTER",
+            "top3_in_five": "TIE",
+            "winner_in_five": "TIE"
+          },
+          "promoted": 1
+        },
+        "race_key": "05265405",
+        "result_cross_validation": "PASS",
+        "result_sha256": "4e86bbda378d7c83bf0b38a1d10b773f1a976949deecdc0dbbf2f5bfb8acf533",
+        "trace_counts": {
+          "CONCERN": 4,
+          "RECONSIDER": 3,
+          "SUPPORT": 3,
+          "evidence_refs": 31,
+          "horses_with_brdb_refs": 10,
+          "horses_with_jpdb_refs": 10
+        },
+        "trace_family_counts": {
+          "BRDB:broodmare_sire": 8,
+          "BRDB:sire": 12,
+          "JPDB": 11
+        }
+      },
+      {
+        "all_horse_assessments": 18,
+        "cohort": "OTHER",
+        "confidence_A": "B",
+        "confidence_B": "C",
+        "horses": 18,
+        "metrics": {
+          "A": {
+            "all_top3_in_five": 0,
+            "honmei_top3": 0,
+            "honmei_win": 0,
+            "top3_in_five": 1,
+            "winner_in_five": 1
+          },
+          "B": {
+            "all_top3_in_five": 0,
+            "honmei_top3": 0,
+            "honmei_win": 0,
+            "top3_in_five": 1,
+            "winner_in_five": 1
+          },
+          "dropped": 0,
+          "five_changed": false,
+          "honmei_changed": false,
+          "paired": {
+            "all_top3_in_five": "TIE",
+            "honmei_top3": "TIE",
+            "honmei_win": "TIE",
+            "top3_in_five": "TIE",
+            "winner_in_five": "TIE"
+          },
+          "promoted": 0
+        },
+        "race_key": "05265412",
+        "result_cross_validation": "PASS",
+        "result_sha256": "0e4e875653866ef3f7aba3e892af5e3ccc33652d8a9fd7a2f283d9fa2cac4c12",
+        "trace_counts": {
+          "CONCERN": 6,
+          "RECONSIDER": 8,
+          "SUPPORT": 4,
+          "evidence_refs": 45,
+          "horses_with_brdb_refs": 17,
+          "horses_with_jpdb_refs": 14
+        },
+        "trace_family_counts": {
+          "BRDB:broodmare_sire": 8,
+          "BRDB:sire": 18,
+          "JPDB": 19
+        }
+      }
+    ],
+    "remaining": [
+      "PROSPECTIVE_50R_READING_AUDIT",
+      "TRUE_FORWARD",
+      "INDEPENDENT_SEMANTIC_AUDIT",
+      "B5_NUMERIC_AND_JPDB_BRDB_ABLATION",
+      "PERFORMANCE_CERTIFICATION",
+      "R6_APPROVAL"
+    ],
+    "research_only": true,
+    "result_roster_coverage": 40,
+    "result_source": "CANONICAL_JRDB_RESULT_QUERY_SED_HJC",
+    "schema_version": "racenote-r5-paired-pilot-audit-v0.1",
+    "semantic_audit": "AUTHOR_SELF_REVIEW_NOT_INDEPENDENT",
+    "status": "PASS_INITIAL_HISTORICAL_PAIRED_PILOT_ONLY",
+    "true_forward": false
+  },
+  "audit_receipt_sha256": "ac9e861ecf9b7d6fa47f1507db44a512938d37e86481cb249f559323db6f4617",
+  "prediction_safe": false,
+  "private_archive": {
+    "library_path": "/JPDB/R5/JPDB_R5_20261124_private_pilot.zip",
+    "readback_sha256": "96a564dc26608569daf31ec19a24837ad941e52f1ae2b437610eeb382a650012",
+    "sha256": "96a564dc26608569daf31ec19a24837ad941e52f1ae2b437610eeb382a650012"
+  },
+  "production_authorized": false,
+  "protocol_commit": "9968b6723facbb790212e0b7f555493afd1b7218",
+  "r5_full_complete": false,
+  "r6_authorized": false,
+  "raw_source_sha256": {
+    "HJC": "f344694031b6a4f917d7dee78ff4414b37e92e1d7c563cdc070cbd910c2c1e61",
+    "SED": "e853f04a6aca2f3e2cd336b5a2556b2684823e6928c16f8b10a0f394b60c8628"
+  },
+  "research_only": true,
+  "result_query_source_sha256": {
+    "jrdb_raw.py": "894a1dd693e68f00ac238be1ccc017e8df1d7771d046cf45efeccd81336ad803",
+    "jrdb_result_query.py": "72193291cd19a5f4eb92a26b63b5f9986344ca73e8df0e7951562727565863e0",
+    "jrdb_result_query_runner.py": "691a0287b8d95117eb5f3d0249b382a72a83a85c9af11c8209b773269662ebba",
+    "jrdb_ukc.py": "ec478ee94d2ea84c68afbcb3142be0a039b1f3bb4c65d34121c2e03f0352fefa"
+  },
+  "schema_version": "racenote-r5-initial-paired-acceptance-v0.1",
+  "source_base_commit": "eeb55cf15dd8518577a2f4df692572e782f62164",
+  "source_sha256": {
+    "racenote_r5_paired_audit.py": "5f585c5cb9692f5e4cc2f3c3b990f6e9033b95deb812416c3959aa6953f5448b",
+    "test_racenote_r5_paired_audit.py": "aab0902f630a0603beb3867658f0b5467b39a5e34dc7403706c3788ce2ff1bf5"
+  },
+  "status": "PASS_INITIAL_HISTORICAL_PAIRED_PILOT_ONLY",
+  "tests": {
+    "independent_audit_reexecution_byte_equal": true,
+    "new_tests_passed": 8
+  }
+}
