@@ -1,5 +1,5 @@
 {
-  "status": "P8_COMPLETE_READY_P9_DESIGN",
+  "status": "P9_COMPLETE_READY_P10_DESIGN",
   "design_sha256": "8ba456092f52642aa2c8a0a66b0f065e9a5bd83db13bd9a49957c2ca6fc906c5",
   "periods": {
     "warmup": [
@@ -151,10 +151,10 @@
     "round_boundary_tests_required": true
   },
   "no_selection_or_validation_opened": false,
-  "note": "P8 2024–25 retrospective confirmation opened once after B config freeze; no independent blind claim. P9 design required; 2026 excluded. Existing grids and historical gates unchanged.",
-  "schema_version": 4,
+  "note": "P8 retrospective confirmation already opened; P9 no qualified candidate, P9 did not reopen 2024–25. P10 design required; 2026 excluded. Existing grids and historical gates unchanged.",
+  "schema_version": 5,
   "current_design": "docs/NAR_PREDICTION_RESEARCH_CURRENT.md",
-  "current_design_sha256": "c514efedd1f774c7b8f84dc0614edb40e4a01daf7b00571dac35955f5579a1c4",
+  "current_design_sha256": "53da74eec5a0b61c332da8d487357189226ed479bd01e6732b91488c1a049d8e",
   "prior_registry_sha256": "49e80d7f89931ce4872ad7539b5ce7c4ffb0305a1d6824a5d893e6ee47f8d140",
   "baseline_reference": {
     "id": "RECOVERY-PILOT-r0.1-tie12",
@@ -211,10 +211,10 @@
     "cutoff": "target_date 00:00 JST; history_date < target_date",
     "p8b_additional_partitions": 10
   },
-  "next_phase": "P9.design",
+  "next_phase": "P10.design",
   "confirmation_locked": false,
   "production_approved": false,
-  "previous_current_registry_sha256": "bd7292eb1f8146b85024c542a9c640c6b36ecf3c8695c5373d18e6aa1b1db672",
+  "previous_current_registry_sha256": "86d457441c2fd04bf809a57c88e7431f8175646fa0840ab8ade9160aeb5c6b2a",
   "p8a": {
     "status": "COMPLETE_RESEARCH_CANDIDATE_FROZEN",
     "model_id": "P8-Astar-r1",
@@ -270,11 +270,37 @@
     "production_approved": false
   },
   "p9": {
-    "status": "READY_DESIGN_NOT_EXECUTED",
+    "status": "COMPLETE_NO_QUALIFIED_AUXILIARY_CANDIDATE",
     "fixed_base": "P8-Astar-r1",
     "base_config": "research/p8/a/candidate_config.json",
     "base_config_sha256": "bea7046ab28aa1f18c11e387634f18d70e8687f38dd22cea54c5213b9f622bc2",
     "confirmation_2024_25_already_opened": true,
+    "2026_excluded": true,
+    "production_approved": false,
+    "design": "docs/NAR_P9_RESEARCH_DESIGN_20261125.md",
+    "decision_config": "research/p9/candidate_config.json",
+    "decision_config_sha256": "129668ac2065221d5570ab319e601c146d2a3b66a32e6e2731cdc25eb9ee1e8e",
+    "report": "docs/NAR_P9_REPORT_20261125.md",
+    "report_sha256": "00367ce4911af819e46160003d699d3633a494af829a02d9f8cd2c821e9907fc",
+    "evidence_zip_sha256": "506a60106048f281225bafdb7b8554c9c3751f5826159372ec93224d6fdaa45a",
+    "closure_sha256": "923382f1e36733b109b5a601ab65dca62a18d1596613659b1ec1cf9c3a1154cd",
+    "drive_folder_id": "1MrH3jSAqKfGy7alio70sy9qmKwZcesum",
+    "library_folder": "/地方競馬予想/P9/P9_20261125/",
+    "development_candidates": 32,
+    "validation_candidates": 5,
+    "validation_eligible": 26919,
+    "validation_scored": 26391,
+    "validation_base_wins": 8329,
+    "validation_best_native_wins": 8346,
+    "selected_for_p10": "P8-Astar-r1",
+    "confirmation_p9": "NOT_APPLICABLE_NO_QUALIFIED_CANDIDATE"
+  },
+  "p10": {
+    "status": "READY_DESIGN_NOT_EXECUTED",
+    "fixed_model": "P8-Astar-r1",
+    "base_config": "research/p8/a/candidate_config.json",
+    "base_config_sha256": "bea7046ab28aa1f18c11e387634f18d70e8687f38dd22cea54c5213b9f622bc2",
+    "handoff": "docs/NAR_P10_HANDOFF_20261125.md",
     "2026_excluded": true,
     "production_approved": false
   }
