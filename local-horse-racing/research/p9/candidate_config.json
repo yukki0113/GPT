@@ -1,0 +1,70 @@
+{
+  "status": "FROZEN_BEFORE_RETROSPECTIVE",
+  "model_id": "P8-Astar-r1",
+  "selected": "astar",
+  "models": {
+    "astar": []
+  },
+  "base_config_sha256": "bea7046ab28aa1f18c11e387634f18d70e8687f38dd22cea54c5213b9f622bc2",
+  "shortlist_sha256": "088cb773b00fe8a0ad9ef9f9b7d6aaf1418eafcd04a27e33dcae920ab06a8451",
+  "validation_metrics_sha256": "fc5bd09ba15d0ed0778a6edf65a77f4f14259d72f8192b96d549b5273f5c9cd9",
+  "decisions": [
+    {
+      "model": "s365_k100_w20",
+      "wins": 8331,
+      "delta_wins": 2,
+      "annual_delta_wins": [
+        -8,
+        10
+      ],
+      "qualified": false,
+      "incremental_ref": null
+    },
+    {
+      "model": "d365_k30_w20",
+      "wins": 8332,
+      "delta_wins": 3,
+      "annual_delta_wins": [
+        14,
+        -11
+      ],
+      "qualified": false,
+      "incremental_ref": null
+    },
+    {
+      "model": "p365_k100_w10",
+      "wins": 8329,
+      "delta_wins": 0,
+      "annual_delta_wins": [
+        -4,
+        4
+      ],
+      "qualified": false,
+      "incremental_ref": null
+    },
+    {
+      "model": "prefix2",
+      "wins": 8346,
+      "delta_wins": 17,
+      "annual_delta_wins": [
+        7,
+        10
+      ],
+      "qualified": false,
+      "incremental_ref": "s365_k100_w20"
+    },
+    {
+      "model": "prefix3",
+      "wins": 8339,
+      "delta_wins": 10,
+      "annual_delta_wins": [
+        -4,
+        14
+      ],
+      "qualified": false,
+      "incremental_ref": "prefix2"
+    }
+  ],
+  "confirmation_opened": false,
+  "production_approved": false
+}
