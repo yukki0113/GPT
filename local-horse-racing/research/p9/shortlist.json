@@ -1,0 +1,305 @@
+{
+  "status": "FROZEN_BEFORE_VALIDATION",
+  "dev_metrics_sha256": "72d9da0e999beec1f91526730f69b8ffe54edbb72ed8418ef3ebc79d5c94acb2",
+  "ordered_winners": [
+    "s365_k100_w20",
+    "d365_k30_w20",
+    "p365_k100_w10"
+  ],
+  "models": {
+    "astar": [],
+    "s365_k100_w20": [
+      {
+        "family": "s",
+        "days": 365,
+        "min_n": 30,
+        "k": 100,
+        "weight": 0.2
+      }
+    ],
+    "d365_k30_w20": [
+      {
+        "family": "d",
+        "days": 365,
+        "min_n": 30,
+        "k": 30,
+        "weight": 0.2
+      }
+    ],
+    "p365_k100_w10": [
+      {
+        "family": "p",
+        "days": 365,
+        "min_n": 10,
+        "k": 100,
+        "weight": 0.1
+      }
+    ],
+    "prefix2": [
+      {
+        "family": "s",
+        "days": 365,
+        "min_n": 30,
+        "k": 100,
+        "weight": 0.2
+      },
+      {
+        "family": "d",
+        "days": 365,
+        "min_n": 30,
+        "k": 30,
+        "weight": 0.2
+      }
+    ],
+    "prefix3": [
+      {
+        "family": "s",
+        "days": 365,
+        "min_n": 30,
+        "k": 100,
+        "weight": 0.2
+      },
+      {
+        "family": "d",
+        "days": 365,
+        "min_n": 30,
+        "k": 30,
+        "weight": 0.2
+      },
+      {
+        "family": "p",
+        "days": 365,
+        "min_n": 10,
+        "k": 100,
+        "weight": 0.1
+      }
+    ]
+  },
+  "decisions": [
+    {
+      "model": "j180_k30_w10",
+      "family": "j",
+      "dev_delta_wins": -45,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "j180_k30_w20",
+      "family": "j",
+      "dev_delta_wins": -47,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "j180_k100_w10",
+      "family": "j",
+      "dev_delta_wins": -46,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "j180_k100_w20",
+      "family": "j",
+      "dev_delta_wins": -27,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "j365_k30_w10",
+      "family": "j",
+      "dev_delta_wins": -37,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "j365_k30_w20",
+      "family": "j",
+      "dev_delta_wins": -39,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "j365_k100_w10",
+      "family": "j",
+      "dev_delta_wins": -37,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "j365_k100_w20",
+      "family": "j",
+      "dev_delta_wins": -44,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "tk180_k30_w10",
+      "family": "tk",
+      "dev_delta_wins": -27,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "tk180_k30_w20",
+      "family": "tk",
+      "dev_delta_wins": -53,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "tk180_k100_w10",
+      "family": "tk",
+      "dev_delta_wins": -21,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "tk180_k100_w20",
+      "family": "tk",
+      "dev_delta_wins": -30,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "tk365_k30_w10",
+      "family": "tk",
+      "dev_delta_wins": -26,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "tk365_k30_w20",
+      "family": "tk",
+      "dev_delta_wins": -66,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "tk365_k100_w10",
+      "family": "tk",
+      "dev_delta_wins": -26,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "tk365_k100_w20",
+      "family": "tk",
+      "dev_delta_wins": -38,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "p180_k30_w10",
+      "family": "p",
+      "dev_delta_wins": -27,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "p180_k30_w20",
+      "family": "p",
+      "dev_delta_wins": -26,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "p180_k100_w10",
+      "family": "p",
+      "dev_delta_wins": -9,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "p180_k100_w20",
+      "family": "p",
+      "dev_delta_wins": -29,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "p365_k30_w10",
+      "family": "p",
+      "dev_delta_wins": -20,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "p365_k30_w20",
+      "family": "p",
+      "dev_delta_wins": -56,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "p365_k100_w10",
+      "family": "p",
+      "dev_delta_wins": 10,
+      "dev_qualifies": true,
+      "shortlisted": true
+    },
+    {
+      "model": "p365_k100_w20",
+      "family": "p",
+      "dev_delta_wins": -7,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "s365_k30_w10",
+      "family": "s",
+      "dev_delta_wins": 25,
+      "dev_qualifies": true,
+      "shortlisted": false
+    },
+    {
+      "model": "s365_k30_w20",
+      "family": "s",
+      "dev_delta_wins": 61,
+      "dev_qualifies": true,
+      "shortlisted": false
+    },
+    {
+      "model": "s365_k100_w10",
+      "family": "s",
+      "dev_delta_wins": 28,
+      "dev_qualifies": true,
+      "shortlisted": false
+    },
+    {
+      "model": "s365_k100_w20",
+      "family": "s",
+      "dev_delta_wins": 62,
+      "dev_qualifies": true,
+      "shortlisted": true
+    },
+    {
+      "model": "d365_k30_w10",
+      "family": "d",
+      "dev_delta_wins": -5,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "d365_k30_w20",
+      "family": "d",
+      "dev_delta_wins": 20,
+      "dev_qualifies": true,
+      "shortlisted": true
+    },
+    {
+      "model": "d365_k100_w10",
+      "family": "d",
+      "dev_delta_wins": -8,
+      "dev_qualifies": false,
+      "shortlisted": false
+    },
+    {
+      "model": "d365_k100_w20",
+      "family": "d",
+      "dev_delta_wins": 10,
+      "dev_qualifies": true,
+      "shortlisted": false
+    }
+  ],
+  "validation_opened": false
+}
