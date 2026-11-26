@@ -1,0 +1,666 @@
+{
+  "development": [
+    {
+      "track": "WIN",
+      "model": "jb_w10",
+      "delta": {
+        "wins": 15,
+        "top3": 0,
+        "winner3": 25,
+        "hits": 79,
+        "place": 954
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jb_w20",
+      "delta": {
+        "wins": -23,
+        "top3": -36,
+        "winner3": 58,
+        "hits": 112,
+        "place": 1921
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "jd_w10",
+      "delta": {
+        "wins": 10,
+        "top3": 5,
+        "winner3": 13,
+        "hits": 39,
+        "place": 806
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jd_w20",
+      "delta": {
+        "wins": 22,
+        "top3": -13,
+        "winner3": -38,
+        "hits": 27,
+        "place": 1478
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "js_w10",
+      "delta": {
+        "wins": 11,
+        "top3": -3,
+        "winner3": 16,
+        "hits": 34,
+        "place": 586
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "js_w20",
+      "delta": {
+        "wins": 5,
+        "top3": -8,
+        "winner3": 17,
+        "hits": 41,
+        "place": 1167
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jt_w10",
+      "delta": {
+        "wins": -5,
+        "top3": -5,
+        "winner3": -6,
+        "hits": 23,
+        "place": 616
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "jt_w20",
+      "delta": {
+        "wins": 19,
+        "top3": 30,
+        "winner3": -11,
+        "hits": 56,
+        "place": 1189
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jv_w10",
+      "delta": {
+        "wins": 8,
+        "top3": -1,
+        "winner3": -17,
+        "hits": -30,
+        "place": 479
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jv_w20",
+      "delta": {
+        "wins": 9,
+        "top3": -37,
+        "winner3": -20,
+        "hits": -19,
+        "place": 936
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "pb_w10",
+      "delta": {
+        "wins": -4,
+        "top3": 4,
+        "winner3": -29,
+        "hits": 1,
+        "place": 395
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "pb_w20",
+      "delta": {
+        "wins": -54,
+        "top3": -51,
+        "winner3": -24,
+        "hits": 17,
+        "place": 747
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "sw_w10",
+      "delta": {
+        "wins": -10,
+        "top3": 3,
+        "winner3": 4,
+        "hits": 42,
+        "place": 319
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "sw_w20",
+      "delta": {
+        "wins": 18,
+        "top3": 15,
+        "winner3": 25,
+        "hits": 78,
+        "place": 655
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "tb_w10",
+      "delta": {
+        "wins": 32,
+        "top3": -8,
+        "winner3": -7,
+        "hits": 8,
+        "place": 774
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "tb_w20",
+      "delta": {
+        "wins": 17,
+        "top3": -25,
+        "winner3": -7,
+        "hits": 16,
+        "place": 1456
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "tp_w10",
+      "delta": {
+        "wins": 11,
+        "top3": 15,
+        "winner3": -16,
+        "hits": -5,
+        "place": 584
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "tp_w20",
+      "delta": {
+        "wins": 2,
+        "top3": 11,
+        "winner3": -33,
+        "hits": 65,
+        "place": 1166
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jb_w10",
+      "delta": {
+        "wins": 15,
+        "top3": 0,
+        "winner3": 25,
+        "hits": 79,
+        "place": 954
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jb_w20",
+      "delta": {
+        "wins": -23,
+        "top3": -36,
+        "winner3": 58,
+        "hits": 112,
+        "place": 1921
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jd_w10",
+      "delta": {
+        "wins": 10,
+        "top3": 5,
+        "winner3": 13,
+        "hits": 39,
+        "place": 806
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jd_w20",
+      "delta": {
+        "wins": 22,
+        "top3": -13,
+        "winner3": -38,
+        "hits": 27,
+        "place": 1478
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "js_w10",
+      "delta": {
+        "wins": 11,
+        "top3": -3,
+        "winner3": 16,
+        "hits": 34,
+        "place": 586
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "js_w20",
+      "delta": {
+        "wins": 5,
+        "top3": -8,
+        "winner3": 17,
+        "hits": 41,
+        "place": 1167
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jt_w10",
+      "delta": {
+        "wins": -5,
+        "top3": -5,
+        "winner3": -6,
+        "hits": 23,
+        "place": 616
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jt_w20",
+      "delta": {
+        "wins": 19,
+        "top3": 30,
+        "winner3": -11,
+        "hits": 56,
+        "place": 1189
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jv_w10",
+      "delta": {
+        "wins": 8,
+        "top3": -1,
+        "winner3": -17,
+        "hits": -30,
+        "place": 479
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "PLACE",
+      "model": "jv_w20",
+      "delta": {
+        "wins": 9,
+        "top3": -37,
+        "winner3": -20,
+        "hits": -19,
+        "place": 936
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "PLACE",
+      "model": "pb_w10",
+      "delta": {
+        "wins": -4,
+        "top3": 4,
+        "winner3": -29,
+        "hits": 1,
+        "place": 395
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "pb_w20",
+      "delta": {
+        "wins": -54,
+        "top3": -51,
+        "winner3": -24,
+        "hits": 17,
+        "place": 747
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "sw_w10",
+      "delta": {
+        "wins": -10,
+        "top3": 3,
+        "winner3": 4,
+        "hits": 42,
+        "place": 319
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "sw_w20",
+      "delta": {
+        "wins": 18,
+        "top3": 15,
+        "winner3": 25,
+        "hits": 78,
+        "place": 655
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "tb_w10",
+      "delta": {
+        "wins": 32,
+        "top3": -8,
+        "winner3": -7,
+        "hits": 8,
+        "place": 774
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "tb_w20",
+      "delta": {
+        "wins": 17,
+        "top3": -25,
+        "winner3": -7,
+        "hits": 16,
+        "place": 1456
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "tp_w10",
+      "delta": {
+        "wins": 11,
+        "top3": 15,
+        "winner3": -16,
+        "hits": -5,
+        "place": 584
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "PLACE",
+      "model": "tp_w20",
+      "delta": {
+        "wins": 2,
+        "top3": 11,
+        "winner3": -33,
+        "hits": 65,
+        "place": 1166
+      },
+      "den": 63863,
+      "qualifies": true
+    }
+  ],
+  "validation": [
+    {
+      "track": "WIN",
+      "model": "tb_w10",
+      "delta": {
+        "wins": 11,
+        "top3": -17,
+        "winner3": 28,
+        "hits": 50,
+        "place": 370
+      },
+      "den": 26391,
+      "annual": {
+        "2022": {
+          "wins": 0,
+          "top3": -4,
+          "winner3": 19,
+          "hits": 33,
+          "place": 183
+        },
+        "2023": {
+          "wins": 11,
+          "top3": -13,
+          "winner3": 9,
+          "hits": 17,
+          "place": 187
+        }
+      },
+      "primary_delta_per100": 0.04168087605623129,
+      "ci95": {
+        "date": [
+          -0.052327603136303136,
+          0.1350525052957969
+        ],
+        "venue_date": [
+          -0.057092264656952295,
+          0.1366037289920037
+        ]
+      },
+      "qualified": false
+    },
+    {
+      "track": "PLACE",
+      "model": "jb_w20",
+      "delta": {
+        "wins": -20,
+        "top3": -16,
+        "winner3": 49,
+        "hits": 114,
+        "place": 850
+      },
+      "den": 26391,
+      "annual": {
+        "2022": {
+          "wins": -11,
+          "top3": -5,
+          "winner3": 25,
+          "hits": 56,
+          "place": 420
+        },
+        "2023": {
+          "wins": -9,
+          "top3": -11,
+          "winner3": 24,
+          "hits": 58,
+          "place": 430
+        }
+      },
+      "primary_delta_per100": 3.220794967981509,
+      "ci95": {
+        "date": [
+          2.9993119185788895,
+          3.445825703431144
+        ],
+        "venue_date": [
+          2.9999148694538302,
+          3.4369431347891224
+        ]
+      },
+      "qualified": true
+    }
+  ],
+  "confirmation": {
+    "status": "PLACE_RESEARCH_CANDIDATE_PROMOTED",
+    "candidate_sha": "be719a743c5773c941c81baf08fdff6a3f981def6b4b8e46c843f5acdcba6c78",
+    "prediction_manifest_sha": "4a213c3d46bfcbbd67948d2d0e6e01d59515b5f0c69de292f509db96af6ffc2a",
+    "metrics_sha": "6921197267f43d52d1de5a08419d8386c97ded975d40da9cadb11bcff061fd9a",
+    "native": {
+      "astar": {
+        "eligible": 27070,
+        "runners": 279513,
+        "scored_runners": 267844,
+        "scored_races": 26524,
+        "wins": 8390,
+        "top3": 17013,
+        "winner3": 16477,
+        "hits": 41602,
+        "place": 0,
+        "place_available": 34707,
+        "applied": 0
+      },
+      "jb_w20": {
+        "eligible": 27070,
+        "runners": 279513,
+        "scored_runners": 267844,
+        "scored_races": 26524,
+        "wins": 8378,
+        "top3": 17013,
+        "winner3": 16541,
+        "hits": 41700,
+        "place": 856,
+        "place_available": 34707,
+        "applied": 259317
+      }
+    },
+    "delta": {
+      "wins": -12,
+      "top3": 0,
+      "winner3": 64,
+      "hits": 98,
+      "place": 856
+    },
+    "annual": {
+      "2024": {
+        "wins": -6,
+        "top3": -4,
+        "winner3": 40,
+        "hits": 60,
+        "place": 433
+      },
+      "2025": {
+        "wins": -6,
+        "top3": 4,
+        "winner3": 24,
+        "hits": 38,
+        "place": 423
+      }
+    },
+    "per100": {
+      "wins": -0.045242044940431304,
+      "top3": 0.0,
+      "winner3": 0.24129090634896697,
+      "hits": 0.3694767003468557,
+      "place": 3.2272658724174335
+    },
+    "ci95": {
+      "date": {
+        "place": [
+          3.0178711427468916,
+          3.440366995088687
+        ],
+        "hits": [
+          0.13872908187550959,
+          0.6158074987856291
+        ],
+        "wins": [
+          -0.16811528479379492,
+          0.07918850635393491
+        ]
+      },
+      "venue_date": {
+        "place": [
+          3.0149730078144343,
+          3.447137918656893
+        ],
+        "hits": [
+          0.14341232648314,
+          0.6096281799383142
+        ],
+        "wins": [
+          -0.16634138864841586,
+          0.07914992977910608
+        ]
+      }
+    },
+    "gates": {
+      "primary_min_0_3": true,
+      "ci_positive": true,
+      "win_loss_le_0_1pp": true,
+      "top1_top3_loss_le_0_5pp": true,
+      "winner_in_top3_loss_le_0_5pp": true,
+      "total_hits_non_decrease": true,
+      "coverage_same": true,
+      "full_intent_primary_non_decrease": true,
+      "venue_review_no_material_decline": true
+    },
+    "venue_review": [],
+    "selected_for_p10_win": "P8-Astar-r1",
+    "selected_for_p10_place": "P95-PLACE-JB-r1",
+    "confirmation_opened": true,
+    "independent_blind": false,
+    "production_approved": false,
+    "2026_used": false
+  }
+}
