@@ -1,6 +1,6 @@
-# NAR 予想研究 CURRENT / P8・P9設計追補 v1.4
+# NAR 予想研究 CURRENT / P8・P9設計追補 v1.5
 
-決定日: 2026-11-25 JST。Status: **P9_RESEARCH_COMPLETE / READY_FOR_P10_DESIGN**。
+決定日: 2026-11-26 JST。Status: **P95_RESEARCH_COMPLETE / READY_FOR_P10_DESIGN**。
 
 ## 1. 正式研究ルート・適用順位
 
@@ -62,9 +62,10 @@
 | P8B.2 | COMPLETE_SCOPED（draw/style/pressure tested; not promoted） |
 | P8B.3 / P8.close | COMPLETE（locked confirmation; Bstar not promoted; Astar selected for P9） |
 | P9 | COMPLETE_NO_QUALIFIED_AUXILIARY_CANDIDATE（Astar維持） |
-| P10 | READY_DESIGN_NOT_EXECUTED（統合・精度/回収率・独立検証） |
+| P9.5 | COMPLETE（WIN=Astar維持、PLACE=JB研究候補） |
+| P10 | READY_DESIGN_NOT_EXECUTED（WIN/PLACE別比較・回収率・独立検証） |
 
-P8/P9研究完了。P10設計未実施。本番採用・2026評価は未承認。P8未採用familyと保留事項は§10、P9の結果は§11を参照。
+P8/P9/P9.5研究完了。P10設計未実施。本番採用・2026評価は未承認。P8未採用familyと保留事項は§10、P9の結果は§11を参照。
 
 ## 7. 不変証跡・取得先
 
@@ -108,3 +109,14 @@ P8/P9研究完了。P10設計未実施。本番採用・2026評価は未承認�
 - Drive `/GPT/local-horse-racing/30_analysis/P9/P9_20261125/` https://drive.google.com/drive/folders/1MrH3jSAqKfGy7alio70sy9qmKwZcesum（17ファイル348723252 bytes SHA readback parity）。Library `/地方競馬予想/P9/P9_20261125/`（8ファイルSHA readback parity）。
 - report SHA 00367ce4911af819e46160003d699d3633a494af829a02d9f8cd2c821e9907fc、compact ZIP SHA 506a60106048f281225bafdb7b8554c9c3751f5826159372ec93224d6fdaa45a、fallback decision config SHA 129668ac2065221d5570ab319e601c146d2a3b66a32e6e2731cdc25eb9ee1e8e、closure SHA 923382f1e36733b109b5a601ab65dca62a18d1596613659b1ec1cf9c3a1154cd。
 - P10は設計から開始。能力スコアを勝率と同一視しない。購入ルール・評価対象・費用・払戻評価専用境界を事前確定。2024–25は既知であり独立未見検証ではない、後付けの買い目選択/係数最適化は禁止。2026は別途明示承認されたCanonical拡張と候補freezeまで使わない。P10の収益性・本番運用未承認。
+
+## 12. P9.5確定・P10開始点（v1.5 / 2026-11-26）
+
+- P9.5はユーザー指示による追加研究。P8/P9.1–4の不採用・未昇格結果は変更しない。`docs/NAR_P95_RESEARCH_DESIGN_20261126.md` commit 3c11f6deebd09bbcdeb184e3d5120ef4ae46ef3b 事前固定。過去Astar順位残差の条件別4セル相互作用・厩舎内騎手差・同馬前後残差を検証。全18候補、2017–21開発、2022–23比較、2024–25は既知回顧確認。相手候補選択（PLACE）の独立評価を追加したが、P8/P9のWIN gateは変更しない。2026不使用、production未承認。
+- 開発64876 eligible/63863 scored、Astar20820勝、102015上位3頭内の実3着内馬。WIN tb_w10 +32勝、PLACE jb_w20 -23勝、+112純増、1921 gross拾上げ。shortlist commit c9ed323a0faeb8558e708d570e4cbecbb4379e7e。比較2022–23 26919 eligible/26391 scored、Astar8329勝/41539 hits、WIN8340勝（0/+11）不採用、PLACE8309勝/41653 hits（+56/+58、gross850）。候補freeze commit 61e311b070f0b2d86e43c00c33a682dc826667e3。
+- 確認2024–25 27070 eligible/26524 scored、Astar8390勝/41602 hits、JB8378勝/41700 hits（+98純増、+60/+38、gross856）、winner3 +64、top1 top3 同数、coverage不変。gross +3.227266/100R CI [3.017871,3.440367]、net +.369477/100R CI [.138729,.615807]、win -.045242pp CI [-.168115,.079189]。全PLACE gate通過。grossは基礎4位以下から新たに上位3頭へ選んだ実3着以内馬の件数、純増ではない。**WIN基準 P8-Astar-r1、別建てPLACE研究候補 P95-PLACE-JB-r1**。勝馬予測の優越を主張しない。馬券戦略・収益性・独立未見検証は未実施。
+- `research/p95/candidate_config.json` SHA be719a743c5773c941c81baf08fdff6a3f981def6b4b8e46c843f5acdcba6c78。365d、同馬除外、騎手×Astar相対順位3分割の4セル差、joint min20、other30/30/100、clip[-1,1]、shrink n/(n+100)、weight .20、欠損補正0、基礎UNKNOWN維持、tie12。能力スコアは確率でない。
+- 9family全行t1/t4 byte一致（NumPy整数prefixはsingle-thread、DuckDB read threads 1/4）、63年度境界、同日/未来注入・独立直接集計差0、全予想rank parity、score列7拒否・label poison PASS。初回一括timeout/3並列memory killを家族別checkpointに変更、数式不変。40 canonical資産確認再照合、P9履歴/対象/2017–23 JB全行prefix不変。脚質は2017–23 P8B時点特徴量のみ、確認期はJBのみ。
+- Git `docs/NAR_P95_REPORT_20261126.md`, `docs/NAR_P10_HANDOFF_20261126.md`, `research/p95/` exact source bundle/config/decision/confirmation. 保存commit 27728f016944fd00bf40d43a522dfb912f63d8e5。Drive `/GPT/local-horse-racing/30_analysis/P9/P95_20261126/` https://drive.google.com/drive/folders/1F0KwiqbZj2aCaoZXgVzKkln6gWxSTWDX（22ファイル664529141 bytes SHA parity）、Library `/地方競馬予想/P9/P95_20261126/`（10ファイルSHA parity）。
+- report SHA 82bbd179f1f664ffb164b2091c25264b5327473bb9eb58a37a63bb175cfb58d9; compact ZIP SHA 00b54f542d78c494d43f951e5771e86628b7efb26afce871436033d7fe19a377; confirmation SHA d84e247e9b80743c984a2b9765570d99d8cfea405df809964c4ea57cc7966997; closure SHA d10b835981c27229f338eff2580e8e8d9e2a13824e96b001b3ccf7a2f6cb445d.
+- P10開始時は最新 `docs/NAR_P10_HANDOFF_20261126.md` を優先。固定WINと別建てPLACEを独立の買い目/相手候補評価として事前登録し、比較・選択と払戻評価の境界を保持。既知期間の成績を見た再調整禁止。2026は別途明示承認のCanonical拡張と候補freezeまで使わない。本番運用・ROI未承認。旧P10 handoffは歴史資料として保持。
