@@ -1,0 +1,483 @@
+{
+  "status": "FROZEN_BEFORE_VALIDATION",
+  "metrics_sha": "b71174df1be6b6e4eb3d1a934f5cb0839ad10af6cd1b84069c46448e8c1f168b",
+  "selected": {
+    "WIN": "tb_w10",
+    "PLACE": "jb_w20"
+  },
+  "models": [
+    "tb_w10",
+    "jb_w20"
+  ],
+  "decisions": [
+    {
+      "track": "WIN",
+      "model": "jb_w10",
+      "delta": {
+        "wins": 15,
+        "top3": 0,
+        "winner3": 25,
+        "hits": 79,
+        "place": 954
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jb_w20",
+      "delta": {
+        "wins": -23,
+        "top3": -36,
+        "winner3": 58,
+        "hits": 112,
+        "place": 1921
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "jd_w10",
+      "delta": {
+        "wins": 10,
+        "top3": 5,
+        "winner3": 13,
+        "hits": 39,
+        "place": 806
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jd_w20",
+      "delta": {
+        "wins": 22,
+        "top3": -13,
+        "winner3": -38,
+        "hits": 27,
+        "place": 1478
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "js_w10",
+      "delta": {
+        "wins": 11,
+        "top3": -3,
+        "winner3": 16,
+        "hits": 34,
+        "place": 586
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "js_w20",
+      "delta": {
+        "wins": 5,
+        "top3": -8,
+        "winner3": 17,
+        "hits": 41,
+        "place": 1167
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jt_w10",
+      "delta": {
+        "wins": -5,
+        "top3": -5,
+        "winner3": -6,
+        "hits": 23,
+        "place": 616
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "jt_w20",
+      "delta": {
+        "wins": 19,
+        "top3": 30,
+        "winner3": -11,
+        "hits": 56,
+        "place": 1189
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jv_w10",
+      "delta": {
+        "wins": 8,
+        "top3": -1,
+        "winner3": -17,
+        "hits": -30,
+        "place": 479
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "jv_w20",
+      "delta": {
+        "wins": 9,
+        "top3": -37,
+        "winner3": -20,
+        "hits": -19,
+        "place": 936
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "pb_w10",
+      "delta": {
+        "wins": -4,
+        "top3": 4,
+        "winner3": -29,
+        "hits": 1,
+        "place": 395
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "pb_w20",
+      "delta": {
+        "wins": -54,
+        "top3": -51,
+        "winner3": -24,
+        "hits": 17,
+        "place": 747
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "sw_w10",
+      "delta": {
+        "wins": -10,
+        "top3": 3,
+        "winner3": 4,
+        "hits": 42,
+        "place": 319
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "WIN",
+      "model": "sw_w20",
+      "delta": {
+        "wins": 18,
+        "top3": 15,
+        "winner3": 25,
+        "hits": 78,
+        "place": 655
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "tb_w10",
+      "delta": {
+        "wins": 32,
+        "top3": -8,
+        "winner3": -7,
+        "hits": 8,
+        "place": 774
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "tb_w20",
+      "delta": {
+        "wins": 17,
+        "top3": -25,
+        "winner3": -7,
+        "hits": 16,
+        "place": 1456
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "tp_w10",
+      "delta": {
+        "wins": 11,
+        "top3": 15,
+        "winner3": -16,
+        "hits": -5,
+        "place": 584
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "WIN",
+      "model": "tp_w20",
+      "delta": {
+        "wins": 2,
+        "top3": 11,
+        "winner3": -33,
+        "hits": 65,
+        "place": 1166
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jb_w10",
+      "delta": {
+        "wins": 15,
+        "top3": 0,
+        "winner3": 25,
+        "hits": 79,
+        "place": 954
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jb_w20",
+      "delta": {
+        "wins": -23,
+        "top3": -36,
+        "winner3": 58,
+        "hits": 112,
+        "place": 1921
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jd_w10",
+      "delta": {
+        "wins": 10,
+        "top3": 5,
+        "winner3": 13,
+        "hits": 39,
+        "place": 806
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jd_w20",
+      "delta": {
+        "wins": 22,
+        "top3": -13,
+        "winner3": -38,
+        "hits": 27,
+        "place": 1478
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "js_w10",
+      "delta": {
+        "wins": 11,
+        "top3": -3,
+        "winner3": 16,
+        "hits": 34,
+        "place": 586
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "js_w20",
+      "delta": {
+        "wins": 5,
+        "top3": -8,
+        "winner3": 17,
+        "hits": 41,
+        "place": 1167
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jt_w10",
+      "delta": {
+        "wins": -5,
+        "top3": -5,
+        "winner3": -6,
+        "hits": 23,
+        "place": 616
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jt_w20",
+      "delta": {
+        "wins": 19,
+        "top3": 30,
+        "winner3": -11,
+        "hits": 56,
+        "place": 1189
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "jv_w10",
+      "delta": {
+        "wins": 8,
+        "top3": -1,
+        "winner3": -17,
+        "hits": -30,
+        "place": 479
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "PLACE",
+      "model": "jv_w20",
+      "delta": {
+        "wins": 9,
+        "top3": -37,
+        "winner3": -20,
+        "hits": -19,
+        "place": 936
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "PLACE",
+      "model": "pb_w10",
+      "delta": {
+        "wins": -4,
+        "top3": 4,
+        "winner3": -29,
+        "hits": 1,
+        "place": 395
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "pb_w20",
+      "delta": {
+        "wins": -54,
+        "top3": -51,
+        "winner3": -24,
+        "hits": 17,
+        "place": 747
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "sw_w10",
+      "delta": {
+        "wins": -10,
+        "top3": 3,
+        "winner3": 4,
+        "hits": 42,
+        "place": 319
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "sw_w20",
+      "delta": {
+        "wins": 18,
+        "top3": 15,
+        "winner3": 25,
+        "hits": 78,
+        "place": 655
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "tb_w10",
+      "delta": {
+        "wins": 32,
+        "top3": -8,
+        "winner3": -7,
+        "hits": 8,
+        "place": 774
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "tb_w20",
+      "delta": {
+        "wins": 17,
+        "top3": -25,
+        "winner3": -7,
+        "hits": 16,
+        "place": 1456
+      },
+      "den": 63863,
+      "qualifies": true
+    },
+    {
+      "track": "PLACE",
+      "model": "tp_w10",
+      "delta": {
+        "wins": 11,
+        "top3": 15,
+        "winner3": -16,
+        "hits": -5,
+        "place": 584
+      },
+      "den": 63863,
+      "qualifies": false
+    },
+    {
+      "track": "PLACE",
+      "model": "tp_w20",
+      "delta": {
+        "wins": 2,
+        "top3": 11,
+        "winner3": -33,
+        "hits": 65,
+        "place": 1166
+      },
+      "den": 63863,
+      "qualifies": true
+    }
+  ],
+  "validation_opened": false
+}
