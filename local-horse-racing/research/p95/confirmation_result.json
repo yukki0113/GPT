@@ -1,0 +1,112 @@
+{
+  "status": "PLACE_RESEARCH_CANDIDATE_PROMOTED",
+  "candidate_sha": "be719a743c5773c941c81baf08fdff6a3f981def6b4b8e46c843f5acdcba6c78",
+  "prediction_manifest_sha": "4a213c3d46bfcbbd67948d2d0e6e01d59515b5f0c69de292f509db96af6ffc2a",
+  "metrics_sha": "6921197267f43d52d1de5a08419d8386c97ded975d40da9cadb11bcff061fd9a",
+  "native": {
+    "astar": {
+      "eligible": 27070,
+      "runners": 279513,
+      "scored_runners": 267844,
+      "scored_races": 26524,
+      "wins": 8390,
+      "top3": 17013,
+      "winner3": 16477,
+      "hits": 41602,
+      "place": 0,
+      "place_available": 34707,
+      "applied": 0
+    },
+    "jb_w20": {
+      "eligible": 27070,
+      "runners": 279513,
+      "scored_runners": 267844,
+      "scored_races": 26524,
+      "wins": 8378,
+      "top3": 17013,
+      "winner3": 16541,
+      "hits": 41700,
+      "place": 856,
+      "place_available": 34707,
+      "applied": 259317
+    }
+  },
+  "delta": {
+    "wins": -12,
+    "top3": 0,
+    "winner3": 64,
+    "hits": 98,
+    "place": 856
+  },
+  "annual": {
+    "2024": {
+      "wins": -6,
+      "top3": -4,
+      "winner3": 40,
+      "hits": 60,
+      "place": 433
+    },
+    "2025": {
+      "wins": -6,
+      "top3": 4,
+      "winner3": 24,
+      "hits": 38,
+      "place": 423
+    }
+  },
+  "per100": {
+    "wins": -0.045242044940431304,
+    "top3": 0.0,
+    "winner3": 0.24129090634896697,
+    "hits": 0.3694767003468557,
+    "place": 3.2272658724174335
+  },
+  "ci95": {
+    "date": {
+      "place": [
+        3.0178711427468916,
+        3.440366995088687
+      ],
+      "hits": [
+        0.13872908187550959,
+        0.6158074987856291
+      ],
+      "wins": [
+        -0.16811528479379492,
+        0.07918850635393491
+      ]
+    },
+    "venue_date": {
+      "place": [
+        3.0149730078144343,
+        3.447137918656893
+      ],
+      "hits": [
+        0.14341232648314,
+        0.6096281799383142
+      ],
+      "wins": [
+        -0.16634138864841586,
+        0.07914992977910608
+      ]
+    }
+  },
+  "gates": {
+    "primary_min_0_3": true,
+    "ci_positive": true,
+    "win_loss_le_0_1pp": true,
+    "top1_top3_loss_le_0_5pp": true,
+    "winner_in_top3_loss_le_0_5pp": true,
+    "total_hits_non_decrease": true,
+    "coverage_same": true,
+    "full_intent_primary_non_decrease": true,
+    "venue_review_no_material_decline": true
+  },
+  "venue_review": [],
+  "selected_for_p10_win": "P8-Astar-r1",
+  "selected_for_p10_place": "P95-PLACE-JB-r1",
+  "confirmation_opened": true,
+  "independent_blind": false,
+  "production_approved": false,
+  "2026_used": false
+}
