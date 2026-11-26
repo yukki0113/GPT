@@ -1,0 +1,26 @@
+{
+  "status": "FROZEN_BEFORE_RETROSPECTIVE",
+  "model_id": "P95-PLACE-JB-r1",
+  "base": "P8-Astar-r1",
+  "base_config_sha256": "bea7046ab28aa1f18c11e387634f18d70e8687f38dd22cea54c5213b9f622bc2",
+  "track": "PLACE",
+  "selected": "jb_w20",
+  "term": {
+    "family": "jb",
+    "window_days": 365,
+    "joint_min": 20,
+    "other_cell_min": [
+      30,
+      30,
+      100
+    ],
+    "shrink_k": 100,
+    "weight": 0.2,
+    "contrast": "jockey x Astar rank-band, 4-cell difference-in-differences; exclude same horse, clip [-1,1]"
+  },
+  "validation_decision_sha256": "8d71841ce7427c2b2920012ccdd4aa0e0cd3b67eca8eead6a8b06b79c944b47d",
+  "shortlist_sha256": "cb2134988c956f2ad631086b20e6e30635f665f183225c96f8c0de619574bbb6",
+  "confirmation_opened": false,
+  "production_approved": false,
+  "2026_excluded": true
+}
