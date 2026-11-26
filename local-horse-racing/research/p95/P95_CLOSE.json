@@ -1,0 +1,67 @@
+{
+  "status": "P95_COMPLETE_READY_P10_DESIGN",
+  "win_base": "P8-Astar-r1",
+  "place_candidate": "P95-PLACE-JB-r1",
+  "place_config_sha256": "be719a743c5773c941c81baf08fdff6a3f981def6b4b8e46c843f5acdcba6c78",
+  "report_sha256": "82bbd179f1f664ffb164b2091c25264b5327473bb9eb58a37a63bb175cfb58d9",
+  "evidence_sha256": "00b54f542d78c494d43f951e5771e86628b7efb26afce871436033d7fe19a377",
+  "confirmation_sha256": "d84e247e9b80743c984a2b9765570d99d8cfea405df809964c4ea57cc7966997",
+  "source_bundle_sha256": "6785a05747c1194403fba91cb52c548f26f3d32be169bc3812fb67e7907421c4",
+  "handoff_sha256": "64f61fe8ed871897c193c74774e6df2fb4601d9429826349d49335b61fc67e20",
+  "delivery_manifest_sha256": "7c34f9416eed5a9232a1723a9ad8411b61c83b512ede61e5b3013b5f22df1d8f",
+  "design_commit": "3c11f6deebd09bbcdeb184e3d5120ef4ae46ef3b",
+  "shortlist_commit": "c9ed323a0faeb8558e708d570e4cbecbb4379e7e",
+  "candidate_commit": "61e311b070f0b2d86e43c00c33a682dc826667e3",
+  "code_report_commit": "27728f016944fd00bf40d43a522dfb912f63d8e5",
+  "drive_folder_id": "1F0KwiqbZj2aCaoZXgVzKkln6gWxSTWDX",
+  "drive_readback_files": 22,
+  "drive_readback_bytes": 664529141,
+  "drive_audit_sha256": "9e130a07a43ea52292f5511b459714068f1657af4662d39f6db7c8d22f6a127d",
+  "library_folder": "/地方競馬予想/P9/P95_20261126/",
+  "library_readback_files": 10,
+  "library_audit_sha256": "0b05c0508b1efed6d6df1922f8c54def4deefece90f5eb27899f8d85032533a8",
+  "development_candidates": 18,
+  "validation_candidates": 2,
+  "confirmation_candidates": 1,
+  "confirmation_delta": {
+    "wins": -12,
+    "top3": 0,
+    "winner3": 64,
+    "hits": 98,
+    "place": 856
+  },
+  "confirmation_ci95": {
+    "date": {
+      "place": [
+        3.0178711427468916,
+        3.440366995088687
+      ],
+      "hits": [
+        0.13872908187550959,
+        0.6158074987856291
+      ],
+      "wins": [
+        -0.16811528479379492,
+        0.07918850635393491
+      ]
+    },
+    "venue_date": {
+      "place": [
+        3.0149730078144343,
+        3.447137918656893
+      ],
+      "hits": [
+        0.14341232648314,
+        0.6096281799383142
+      ],
+      "wins": [
+        -0.16634138864841586,
+        0.07914992977910608
+      ]
+    }
+  },
+  "confirmation_independent_blind": false,
+  "production_approved": false,
+  "2026_used": false,
+  "next_phase": "P10.design"
+}
