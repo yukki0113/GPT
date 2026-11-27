@@ -79,8 +79,8 @@ def _verify_source(db, expected_sha, m4):
         if not meta.get('extractor_version'):
             raise ValueError('M4 missing extractor version')
         return meta['extractor_version']
-    versions=[r[0] for r in db.execute('SELECT version FROM schema_migrations')]
-    if versions!=[1]:raise ValueError('unsupported production schema')
+    versions=[r[0] for r in db.execute('SELECT version FROM schema_migrations ORDER BY version')]
+    if versions not in ([1], [1,2], [1,2,3], [1,2,3,4]):raise ValueError('unsupported production schema')
     return None
 
 

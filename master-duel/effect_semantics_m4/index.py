@@ -76,7 +76,7 @@ def build_private_index(source_db, dest, *, expected_source_sha256, replace=Fals
                 raise ValueError('source SQLite integrity_check failed')
             if src.execute('PRAGMA foreign_key_check').fetchall():
                 raise ValueError('source SQLite foreign keys invalid')
-            if [r[0] for r in src.execute('SELECT version FROM schema_migrations')] != [1]:
+            if [r[0] for r in src.execute('SELECT version FROM schema_migrations ORDER BY version')] not in ([1], [1,2], [1,2,3], [1,2,3,4]):
                 raise ValueError('unsupported source schema version')
             cards_count = 0
             tagged_cards = 0
