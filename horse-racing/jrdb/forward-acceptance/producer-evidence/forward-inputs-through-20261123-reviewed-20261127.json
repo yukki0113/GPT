@@ -1,0 +1,80 @@
+{
+  "schema_version": "racenote-forward-producer-evidence-v1",
+  "status": "VERIFIED",
+  "completion_evidence": {
+    "status": "PASS",
+    "source": "DEDICATED_DATA_OPERATIONS",
+    "reference": "https://github.com/yukki0113/GPT/actions/runs/45296089306",
+    "required_completed_through": "2026-11-23",
+    "verified_at_utc": "2026-11-27T13:40:34+00:00"
+  },
+  "analysis": {
+    "status": "ACCEPTED",
+    "source_mode": "drive_current",
+    "source_ref": "1IjtKHRj4Jgw14y5jGyV8sPBNIOzX_DG5",
+    "source_sha256": "18a3437596741022d99d6223e7c07058678add4defbcb86bff84e9778377ea4a",
+    "archive_format": "tar.xz",
+    "producer_acceptance_ref": "https://github.com/yukki0113/GPT/actions/runs/45296089306"
+  },
+  "rrdb": {
+    "status": "ACCEPTED",
+    "file_id": "1UwNfrupMTHRPhkzULPvClGre4MWz2TFg",
+    "zip_sha256": "0143bff1d228f4a9c81ecba8954a67d97c76a3d37fde9966978d5aaa8e47e187",
+    "producer_acceptance_ref": "https://github.com/yukki0113/GPT/actions/runs/45296089306"
+  },
+  "course_fit": {
+    "status": "ACCEPTED",
+    "source_mode": "drive_current",
+    "source_parts": [
+      {
+        "source_ref": "1ljLg_jxVdZtpJ_Aqku0L93y8nwnfXUTQ",
+        "source_sha256": "b27f2293a100755aa1ac0c902c2e6338a8393cd208c5de0912ff7a81f89783ba",
+        "archive_format": "zip"
+      },
+      {
+        "source_ref": "1yxP0EtPRmcTnrAgmgBMlAAj257r3pgYE",
+        "source_sha256": "ddc07eca88fe1b56391efcaa3b84ff4cf34121f69c7262a024177b82702dea72",
+        "archive_format": "zip"
+      }
+    ],
+    "manifest_mode": "accepted_asset_manifest",
+    "generation_id": "rrdb_horse_course_fit_v0_1_asof20260101_g38370479179",
+    "as_of": "2026-01-01",
+    "producer_acceptance_ref": "https://github.com/yukki0113/GPT/blob/main/horse-racing/jrdb/config/public_drive/racenote_a03_accepted_baselines_v1.json"
+  },
+  "race_lap": {
+    "status": "ACCEPTED",
+    "source_mode": "drive_current",
+    "source_ref": "1RdmS-8q0NsA8opCvNioaqVotk2wiEZz-",
+    "source_sha256": "ad9be19c38a54ac22d3290a65da555a9d44aa772705ef22d62230789dd992426",
+    "archive_format": "zip",
+    "producer_acceptance_ref": "https://github.com/yukki0113/GPT/actions/runs/46000614794"
+  },
+  "finalized_sed": [
+    {
+      "date": "2026-11-21",
+      "source_ref": "18Orlz7hrlMwSQGzMjkwQ4MzD5J29L22C",
+      "source_sha256": "2777db0dca0fe942ed0f8f01dbba20ae7295655260a6dfca5b4a195159c7fb3e"
+    },
+    {
+      "date": "2026-11-22",
+      "source_ref": "1Ijl9_-XslP-verbvc-Q4zT6iwWWiJ6ge",
+      "source_sha256": "864388be4b3785454281055179255dfa490c68303f9fc62c4e0a6dc0f32d44f3"
+    },
+    {
+      "date": "2026-11-23",
+      "source_ref": "1lTBRpjYf4e8RoLDcDmH8Y2kCxyTZibnY",
+      "source_sha256": "4b436a543fa9e278d7dc326e719be546e3ea15185084379656a43ad2b80c1e28"
+    }
+  ],
+  "evidence_basis": {
+    "source_review": "https://github.com/yukki0113/GPT/issues/2725",
+    "race_lap_review": "https://github.com/yukki0113/GPT/issues/2733",
+    "finalized_sed_reviews": [
+      "https://github.com/yukki0113/GPT/issues/2729",
+      "https://github.com/yukki0113/GPT/issues/2730",
+      "https://github.com/yukki0113/GPT/issues/2732"
+    ],
+    "note": "Analysis and RRDB current Drive bytes were read back after promotion and their 2026-11-23 generation manifests match the successful post-race artifact. RaceLap current Drive bytes were read back after the pre-race refresh and its manifest matches the successful resolver artifact and the finalized 2026-11-21 through 2026-11-23 SED transport hashes. Cross-generation historical field equality is not a Forward T1 prerequisite; source identity, SHA, coverage and pre-race cutoff remain fail-closed."
+  }
+}
