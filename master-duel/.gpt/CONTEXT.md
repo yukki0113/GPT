@@ -1,5 +1,8 @@
 > **2026-11-16 M3禁止制限の現行運用決定**：本番Gen6の禁止114・制限77・準制限24、合計215件をユーザー承認済み運用基準版として採用。外部ソース未検証の履歴は残すが、ゲーム内全件確認の有無だけでは構築を止めない。元DBの規制候補からprivate Driveの基準版JSONを分離して正本化。今後の変更は `REGULATION_REVISION`（ゲーム内告知）または `DATA_CORRECTION`（ゲーム内で発見した相違）の履歴追加、上限旧値不一致は停止。未掲載は3、実際の上限違反はBLOCK。31日再照合・全件再探索なし。仕様：[M3基準版](../docs/M3_USER_ACCEPTED_REGULATION_BASELINE_AND_NOTICE_DELTA_20261116.md)。以下2026-11-10のM3監査記述は過去履歴であり現行の構築ブロック要件ではない。
 
+> **2026-11-27 本番Gen13（現行優先）**：M1-U4で11/24実装候補34件を追加、13,982カード、schema v4、所持295種類不変。HEAD/ZIP独立読み戻し・正式M6-5A 34/34検索PASS。M4/M5-A/M5-BはGen13のSHAへ再生成済み。非公開Driveの `MD_M1U4_GENERATION_ASSETS_GEN13_20261127.json` と `MD_M1U4_M6_SOURCE_HANDOFF_GEN13_20261127.json` を参照し、常に最新HEADとバイトSHAを照合。旧M5-C・15出張候補はSTALE_HISTORICAL、無言のSHA付替え禁止。現行マスター検索へフォールバックし、既存M6審査ゲートは維持。未解決4件・coverage PARTIAL、U5後日照合。監査：[U4本番反映](../docs/M1_U4_PRODUCTION_PROMOTION_AUDIT_20261127.md)。
+
+
 > **2026-11-10 M5-C設計のみ**：テーマ別記事調査→構築構成/採用理由/展開グラフ（選択・ランダム・相手応答の分岐）→MDカード本文照合→非公開知識キャッシュ→M6 Bundleの工程を正式な追加設計として採用。出典依存/取得条件/改訂日時を維持し、必要時だけ再調査。設計書`docs/M5C_THEME_BUILD_AND_COMBO_KNOWLEDGE_DESIGN_20261110.md`。実データ収集・コード実装・本番HEAD変更なし。
 
 > **2026-11-10 M5-B**：M5の3テーマパイロットに続き全13,948枚から名称グループ580/関連候補合計7,785（引用）/属性・種族の効果候補2,288を非公開Driveの別派生SQLiteで索引化。`engine_m5/support.py` を正本とし、源DB SHA/M4 SHAでピン留め、原文証拠位置とハッシュ保存。全候補はUNVERIFIED、ルール判定を行わず、属性・種族のANDは同一M4原文区間。Drive Index ID 1Nhe6bvfmKe3oLR1iBik7MpqTDE9QmiuI、Manifest ID 1DfySkeey96qCPrzFxQTPnOCH65_bWVpb。本番HEAD・M4・M5-Aの私的索引は不変。[M5-B監査](../engine_m5/M5B_SUPPORT_AUDIT_20261110.md)。
