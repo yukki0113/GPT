@@ -111,6 +111,23 @@ jobs:
             --expected-file-id "$RRDB_ID"
           unzip -tq /tmp/racenote-producer-sources/rrdb.zip
           unzip -q /tmp/racenote-producer-sources/rrdb.zip -d /tmp/racenote-rrdb
+          # Current RRDB may use the validated ROOT archive layout. Normalize it
+          # to the canonical consumer path after the fetcher has verified CRC,
+          # safe members, CURRENT/manifest identity and source SHA.
+          python - <<'PY'
+          from pathlib import Path
+          root = Path("/tmp/racenote-rrdb")
+          canonical = root / "postrace_review/v0_1"
+          if (root / "current.json").is_file():
+              if canonical.exists() or {p.name for p in root.iterdir()} != {
+                      "current.json", "generations", "objects"}:
+                  raise SystemExit("RRDB root-layout contains unexpected members")
+              canonical.mkdir(parents=True)
+              for name in ("current.json", "generations", "objects"):
+                  (root / name).rename(canonical / name)
+          if not (canonical / "current.json").is_file():
+              raise SystemExit("RRDB canonical CURRENT missing after normalization")
+          PY
           test -s /tmp/racenote-rrdb/postrace_review/v0_1/current.json
 
       - name: Verify finalized SED transport integrity
